@@ -21,7 +21,7 @@ public class ConsumeKebabQuest extends Quest implements Listener {
                 new QuestTier(10, new QuestMoneyReward(30)),
                 new QuestTier(64, new QuestMoneyReward(80)),
                 new QuestTier(256, new QuestMoneyReward(160)),
-                new QuestTier(1024, new QuestMoneyReward(1000))
+                new QuestTier(1024, new QuestMoneyReward(400))
         );
     }
 

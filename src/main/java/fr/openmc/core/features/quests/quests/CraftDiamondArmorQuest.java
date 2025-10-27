@@ -32,9 +32,7 @@ public class CraftDiamondArmorQuest extends Quest implements Listener {
                 .requireAllSteps(true)
                 .build();
 
-        for (int i = 0; i < quest.getTiers().size(); i++) {
-            this.addTier(quest.getTiers().get(i));
-        }
+        quest.getTiers().forEach(this::addTier);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

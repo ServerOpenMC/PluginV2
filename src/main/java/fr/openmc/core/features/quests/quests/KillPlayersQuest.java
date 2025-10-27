@@ -22,9 +22,9 @@ public class KillPlayersQuest extends Quest implements Listener {
         );
 
         this.addTiers(
-                new QuestTier(5, new QuestMoneyReward(2500)),
-                new QuestTier(20, new QuestMoneyReward(5000)),
-                new QuestTier(30, new QuestMoneyReward(10000))
+                new QuestTier(5, new QuestMoneyReward(500)),
+                new QuestTier(20, new QuestMoneyReward(2500)),
+                new QuestTier(30, new QuestMoneyReward(5000))
         );
     }
 

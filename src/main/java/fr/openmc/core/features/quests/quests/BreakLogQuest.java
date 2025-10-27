@@ -41,10 +41,10 @@ public class BreakLogQuest extends Quest implements Listener {
 
 
         this.addTiers(
-                new QuestTier(500, new QuestMoneyReward(500), new QuestItemReward(Material.IRON_AXE, 1)),
-                new QuestTier(1500, new QuestMoneyReward(1000), new QuestItemReward(getEnchantedAxe(Material.IRON_AXE), 1)),
-                new QuestTier(5000, new QuestMoneyReward(3000), new QuestItemReward(getEnchantedAxe(Material.GOLDEN_AXE), 1)),
-                new QuestTier(15000, new QuestMoneyReward(7000), new QuestItemReward(getEnchantedAxe(Material.DIAMOND_AXE), 1))
+                new QuestTier(500, new QuestMoneyReward(300), new QuestItemReward(Material.IRON_AXE, 1)),
+                new QuestTier(1500, new QuestMoneyReward(500), new QuestItemReward(getEnchantedAxe(Material.IRON_AXE), 1)),
+                new QuestTier(5000, new QuestMoneyReward(1500), new QuestItemReward(getEnchantedAxe(Material.GOLDEN_AXE), 1)),
+                new QuestTier(15000, new QuestMoneyReward(3000), new QuestItemReward(getEnchantedAxe(Material.DIAMOND_AXE), 1))
 
         );
 
