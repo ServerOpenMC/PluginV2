@@ -107,6 +107,8 @@ public class HalloweenManager {
 
             List<ItemStack> rewards = new ArrayList<>();
 
+            final ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+            aywenite.setAmount(64);
             switch (rank) {
                 case 1 -> {
                     ItemStack customPumpkin = ItemStack.of(Material.PUMPKIN_PIE);
@@ -121,9 +123,6 @@ public class HalloweenManager {
                                 Component.text("lors de l'événement Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                         ));
                     });
-
-                    ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-                    aywenite.setAmount(64);
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone(), aywenite.clone()));
                     EconomyManager.addBalance(offlinePlayer.getUniqueId(), 20000);
@@ -144,9 +143,6 @@ public class HalloweenManager {
                         ));
                     });
 
-                    ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-                    aywenite.setAmount(64);
-
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone()));
                     EconomyManager.addBalance(offlinePlayer.getUniqueId(), 10000);
                 }
@@ -165,9 +161,6 @@ public class HalloweenManager {
                                 Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                         ));
                     });
-
-                    ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-                    aywenite.setAmount(64);
 
                     rewards.addAll(List.of(customPumpkin, aywenite));
                     EconomyManager.addBalance(offlinePlayer.getUniqueId(), 5000);
