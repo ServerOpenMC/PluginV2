@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.halloween;
+package fr.openmc.core.features.events.halloween.managers;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;

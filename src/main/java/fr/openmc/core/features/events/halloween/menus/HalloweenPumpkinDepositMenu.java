@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.halloween.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.events.halloween.HalloweenManager;
+import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

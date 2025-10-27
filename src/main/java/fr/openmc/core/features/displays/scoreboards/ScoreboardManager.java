@@ -14,7 +14,7 @@ import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.halloween.HalloweenManager;
+import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
 import net.kyori.adventure.text.Component;

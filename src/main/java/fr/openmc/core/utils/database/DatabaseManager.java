@@ -16,7 +16,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.features.events.halloween.HalloweenManager;
+import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;

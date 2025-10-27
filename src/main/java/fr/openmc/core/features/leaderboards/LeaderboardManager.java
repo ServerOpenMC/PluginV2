@@ -7,7 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.core.features.events.halloween.HalloweenManager;
+import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.utils.DateUtils;
