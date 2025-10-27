@@ -467,7 +467,7 @@ ORES:
     price:
       initial:
         buy: 4.0
-        sell: 2.0
+        sell: 1.0
       actual:
         buy: 4.0
         sell: 2.0

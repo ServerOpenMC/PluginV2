@@ -10,6 +10,8 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.InterestRewards;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.Transaction;
+import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -95,6 +97,14 @@ public class CityBankManager {
 
         city.updateBalance(-amount);
         EconomyManager.addBalance(player.getUniqueId(), amount);
+        TransactionsManager.registerTransaction(
+                new Transaction(
+                        "CONSOLE",
+                        player.getUniqueId().toString(),
+                        amount,
+                        "Retrait banque de ville"
+                )
+        );
 
         MessagesManager.sendMessage(player,
                 Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r"

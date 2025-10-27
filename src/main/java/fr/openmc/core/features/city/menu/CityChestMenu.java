@@ -105,7 +105,9 @@ public class CityChestMenu extends PaginatedMenu {
         map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));
             itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
-        }, true));
+        }, true).setOnClick(inventoryClickEvent -> {
+            exit(city, getInventory());
+        }));
 
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));

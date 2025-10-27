@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerBucketEntityEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 
 import java.util.Collection;
@@ -118,6 +119,14 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onAxolotlBucket(PlayerBucketEntityEvent e) {
         Entity entity = e.getEntity();
+        if (!MascotUtils.canBeAMascot(entity)) return;
+
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onVehicleEnter(VehicleEnterEvent e) {
+        Entity entity = e.getEntered();
         if (!MascotUtils.canBeAMascot(entity)) return;
 
         e.setCancelled(true);

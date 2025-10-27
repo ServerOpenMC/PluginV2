@@ -49,12 +49,16 @@ public class DynamicCooldownManager {
             this.uniqueId = cooldownUUID;
             this.group = group;
 
-            Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                    Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group))
+            );
 
             long delayTicks = getRemaining() / 50; //ticks
 
             this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group));
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group))
+                );
                 DynamicCooldownManager.clear(this.uniqueId, this.group, false);
             }, delayTicks);
         }
