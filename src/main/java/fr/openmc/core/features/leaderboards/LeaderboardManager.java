@@ -219,7 +219,7 @@ public class LeaderboardManager {
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(playerName).color(TextColor.color(255, 107, 37))))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(pumpkinCount + " Citrouilles").color(NamedTextColor.WHITE));
+                    .append(Component.text(pumpkinCount + " citrouilles").color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")

@@ -111,7 +111,7 @@ public class HalloweenManager {
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte de la Victoire (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
-                                Component.text("Récompense du Joueur ayant récolté le plus de citrouilles", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.text("Récompense du joueur ayant récolté le plus de citrouilles", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("lors de l'événement Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                         ));
                     });
@@ -132,7 +132,7 @@ public class HalloweenManager {
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte de l'Excellence (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
-                                Component.text("Récompense du Joueur ayant récolté la deuxième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.text("Récompense du joueur ayant récolté la deuxième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("grande quantité de citrouilles lors de l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                         ));
@@ -154,7 +154,7 @@ public class HalloweenManager {
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte du Mérite (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
-                                Component.text("Récompense du Joueur ayant récolté la troisième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.text("Récompense du joueur ayant récolté la troisième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("grande quantité de citrouilles lors de l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                         ));
@@ -176,7 +176,7 @@ public class HalloweenManager {
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte de Participation (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
-                                Component.text("Récompense du Joueur ayant participé à l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.text("Récompense du joueur ayant participé à l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                         ));
                     });
