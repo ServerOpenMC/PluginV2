@@ -4,11 +4,14 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.events.halloween.listeners.HalloweenNPCListener;
 import fr.openmc.core.features.events.halloween.models.HalloweenData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,6 +23,9 @@ public class HalloweenManager {
     private static Dao<HalloweenData, String> halloweenDataDao;
 
     public static void init() {
+        if (FancyNpcsHook.isHasFancyNpc())
+            Bukkit.getPluginManager().registerEvents(new HalloweenNPCListener(), OMCPlugin.getInstance());
+
         halloweenData = loadAllHalloweenDatas();
     }
 

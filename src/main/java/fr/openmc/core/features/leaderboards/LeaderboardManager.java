@@ -150,7 +150,7 @@ public class LeaderboardManager {
         if (moneyMap.isEmpty()) {
             return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard de l'argent des villes ----")
+        Component text = Component.text("--- Leaderboard de l'argent des villes ---")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
@@ -213,13 +213,13 @@ public class LeaderboardManager {
         for (var entry : pumpkinCountMap.entrySet()) {
             int rank = entry.getKey();
             String playerName = entry.getValue().getKey();
-            String money = entry.getValue().getValue();
+            String pumpkinCount = entry.getValue().getValue();
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(playerName).color(TextColor.color(255, 107, 37))))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(money + " Citrouilles").color(NamedTextColor.WHITE));
+                    .append(Component.text(pumpkinCount + " Citrouilles").color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
