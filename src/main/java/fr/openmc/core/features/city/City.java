@@ -20,6 +20,7 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,10 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.city.CityManager.citiesByName;
@@ -830,6 +828,15 @@ public class City {
                 .filter(notation -> notation.getCityUUID().equals(this.getUniqueId()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<CityNotation> getAvailableNotation() {
+        if (NotationManager.cityNotations.get(this.getUniqueId()) == null) return List.of();
+
+        return NotationManager.cityNotations.get(this.getUniqueId()).stream()
+                .filter(notation -> notation.getCityUUID().equals(this.getUniqueId()))
+                .filter(notation -> DateUtils.isBefore(notation.getWeekStr(), DateUtils.getWeekFormat()))
+                .toList();
     }
 
     /**

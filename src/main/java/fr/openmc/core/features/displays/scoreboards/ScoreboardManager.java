@@ -1,5 +1,8 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import de.oliver.fancynpcs.api.FancyNpcsPlugin;
+import de.oliver.fancynpcs.api.Npc;
+import de.oliver.fancynpcs.api.NpcManager;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.hooks.LuckPermsHook;
@@ -14,6 +17,7 @@ import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
 import net.kyori.adventure.text.Component;
@@ -224,18 +228,24 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fVille §7: " + cityName).setScore(17);
 
 
-            objective.getScore("  ").setScore(7);
+            objective.getScore("  ").setScore(6);
 
             City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
             boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());
             String location = isInRegion ? "§6Région Protégée" : "Nature";
             location = (chunkCity != null) ? chunkCity.getName() : location;
-            objective.getScore("§8• §fLocation §7: " + location).setScore(6);
+            objective.getScore("§8• §fLocation §7: " + location).setScore(5);
         }
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
+        NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
+        Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
+        if (halloweenNPC != null) {
+            String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
+            objective.getScore("§8• §d" + pumpkinCount + " §rCitrouilles").setScore(7);
+        }
 
         Contest data = ContestManager.data;
         int phase = data.getPhase();

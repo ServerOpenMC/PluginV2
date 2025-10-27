@@ -1,5 +1,7 @@
 package fr.openmc.core.features.mailboxes.letter;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -8,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +21,7 @@ import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 import static fr.openmc.core.utils.InputUtils.pluralize;
 
 @Getter
+@SuppressWarnings("UnstableApiUsage")
 public class LetterHead extends ItemStack {
     private final int letterId;
     private final int itemsCount;
@@ -37,6 +41,10 @@ public class LetterHead extends ItemStack {
                         .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
                         .append(Component.text(pluralize(" item", itemsCount), NamedTextColor.DARK_GREEN)))
         ));
+        TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(
+                DataComponentTypes.PROFILE
+        ).build();
+        this.setData(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplay);
         this.setItemMeta(skullMeta);
     }
 }

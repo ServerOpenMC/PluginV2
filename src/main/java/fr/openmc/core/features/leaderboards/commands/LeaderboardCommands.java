@@ -50,6 +50,13 @@ public class LeaderboardCommands {
         sender.sendMessage(createPlayTimeTextLeaderboard());
     }
 
+    @Subcommand({"pumpkinCount"})
+    @CommandPermission("omc.commands.leaderboard.money.pumpkin")
+    @Description("Affiche le leaderboard des citrouilles des joueurs")
+    void pumpkinCountCommand(CommandSender sender) {
+        sender.sendMessage(createPumpkinCountTextLeaderboard());
+    }
+
 
     @Subcommand("setPos")
     @CommandPermission("op")
@@ -57,10 +64,10 @@ public class LeaderboardCommands {
     void setPosCommand(
             Player player,
             @Named("leaderboardName")
-            @Suggest({"contributors", "money", "ville-money", "playtime"})
+            @Suggest({"contributors", "money", "ville-money", "playtime", "pumpkin-count"})
             String leaderboard
     ) {
-        if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
+        if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime") || leaderboard.equals("pumpkin-count")) {
             try {
                 LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
                 MessagesManager.sendMessage(
@@ -82,7 +89,7 @@ public class LeaderboardCommands {
         } else {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVeuillez spécifier un leaderboard valide : contributors, money, ville-money, playtime"),
+                    Component.text("§cVeuillez spécifier un leaderboard valide : contributors, money, ville-money, playtime, pumpkin-count"),
                     Prefix.STAFF,
                     MessageType.WARNING,
                     true
@@ -114,6 +121,7 @@ public class LeaderboardCommands {
         LeaderboardManager.updatePlayerMoneyMap();
         LeaderboardManager.updateCityMoneyMap();
         LeaderboardManager.updatePlayTimeMap();
+        LeaderboardManager.updatePumpkinCountMap();
         LeaderboardManager.updateHolograms();
         LeaderboardManager.updateHologramsViewers();
         sender.sendMessage("§aHologrammes mis à jour avec succès.");

@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Getter
@@ -68,5 +69,20 @@ public class Letter {
         SenderLetter senderLetter = new SenderLetter(player, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
         return new ItemBuilder(menu, senderLetter);
+    }
+
+    @Override
+    public String toString() {
+        return "Letter{" +
+                "letterId=" + letterId +
+                ", sender=" + sender +
+                ", items" + Arrays.toString(items) +
+                ", cachedItems=" + Arrays.toString(cachedItems) +
+                ", receiver=" + receiver +
+                ", itemsLength=" + items.length +
+                ", numItems=" + numItems +
+                ", sent=" + sent +
+                ", refused=" + refused +
+                '}';
     }
 }

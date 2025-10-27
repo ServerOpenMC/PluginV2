@@ -40,6 +40,7 @@ public class ListenersManager {
                 new NoMoreRabbit(),
                 new ArmorListener()
         );
+
         if (!OMCPlugin.isUnitTestVersion()) {
             registerEvents(
                     new ItemsAddersListener(),
