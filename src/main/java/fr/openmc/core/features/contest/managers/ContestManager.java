@@ -286,12 +286,6 @@ public class ContestManager {
                         §7
                         §8§m                                                     §r"""
         ));
-        Component messageMail = Component.text("Vous avez reçu la lettre du contest", NamedTextColor.DARK_GREEN)
-                .append(Component.text("\nCliquez ici", NamedTextColor.YELLOW))
-                .clickEvent(ClickEvent.runCommand("mailbox"))
-                .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
-                .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
-        Bukkit.broadcast(messageMail);
 
         // GET GLOBAL CONTEST INFORMATION
         String camp1Color = data.getColor1();
@@ -438,6 +432,15 @@ public class ContestManager {
 
             OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
+
+            if (player.isOnline() && player instanceof Player onelinePlayer) {
+                Component messageMail = Component.text("Vous avez reçu la lettre du contest", NamedTextColor.DARK_GREEN)
+                        .append(Component.text("\nCliquez ici", NamedTextColor.YELLOW))
+                        .clickEvent(ClickEvent.runCommand("mailbox"))
+                        .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
+                        .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
+                onelinePlayer.sendMessage(messageMail);
+            }
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());

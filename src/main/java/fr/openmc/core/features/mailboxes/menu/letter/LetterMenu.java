@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 import static fr.openmc.core.utils.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
@@ -51,23 +50,6 @@ public class LetterMenu extends Menu {
         super(player);
         this.letter = letter;
         this.letterHead = letter.toLetterHead();
-    }
-
-    public static LetterHead getById(Player player, int id) {
-        Letter letter = MailboxManager.getById(player, id);
-        if (letter == null || letter.isRefused()) {
-            MessagesManager.sendMessage(
-                    player,
-                    Component.text("La lettre avec #", NamedTextColor.DARK_RED)
-                            .append(Component.text(id, NamedTextColor.RED))
-                            .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED)),
-                    Prefix.MAILBOX,
-                    MessageType.ERROR,
-                    true
-            );
-            return null;
-        }
-        return letter.toLetterHead();
     }
 
     public static void refuseLetter(Player player, int id) {
@@ -135,22 +117,6 @@ public class LetterMenu extends Menu {
         getOwner().closeInventory();
     }
 
-    public void refuse() {
-        Component message = Component.text("Cliquez-ici", NamedTextColor.YELLOW)
-                .clickEvent(ClickEvent.runCommand("mailbox refuse " + letterHead.getLetterId()))
-                .hoverEvent(getHoverEvent("Refuser la lettre #" + letterHead.getLetterId()))
-                .append(Component.text(" si vous êtes sur de vouloir refuser la lettre.", NamedTextColor.GOLD));
-
-        MessagesManager.sendMessage(
-                getOwner(),
-                message,
-                Prefix.MAILBOX,
-                MessageType.WARNING,
-                true
-        );
-        getOwner().closeInventory();
-    }
-
     @Override
     public @NotNull InventorySize getInventorySize() {
         return InventorySize.LARGEST;
@@ -167,6 +133,11 @@ public class LetterMenu extends Menu {
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
         ItemStack[] items = letter.getCachedItems();
+
+        if (items == null || items.length == 0) {
+            byte[] serializedItems = letter.getItems();
+            items = serializedItems != null ? BukkitSerializer.deserializeItemStacks(serializedItems) : new ItemStack[0];
+        }
 
         for (int i = 0; i < items.length; i++)
             content.put(i + 9, new ItemBuilder(this, items[i]));
