@@ -64,9 +64,6 @@ public abstract class SternalBoardHandler<T> {
             .map(Object::toString)
             .toArray(String[]::new);
 
-    protected static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-    protected static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
-
     private static final MethodHandle SEND_PACKET;
     private static final SternalReflection.PacketConstructor PACKET_SB_OBJ;
     private static final SternalReflection.PacketConstructor PACKET_SB_DISPLAY_OBJ;
@@ -142,21 +139,6 @@ public abstract class SternalBoardHandler<T> {
         } catch (Throwable t) {
             throw new RuntimeException("Unable to create scoreboard", t);
         }
-    }
-
-    protected Component parseMiniMessage(String text) {
-        if (text == null || text.isEmpty()) {
-            return Component.empty();
-        }
-        return MINI_MESSAGE.deserialize(text);
-    }
-
-    protected String miniMessageToLegacy(String text) {
-        if (text == null || text.isEmpty()) {
-            return "";
-        }
-        Component component = MINI_MESSAGE.deserialize(text);
-        return LEGACY_SERIALIZER.serialize(component);
     }
 
     public void updateTitle(T title) {
