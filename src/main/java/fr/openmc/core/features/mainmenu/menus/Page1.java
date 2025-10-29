@@ -109,7 +109,7 @@ public class Page1 implements Menu {
         if (phase != 1) {
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
-                meta.itemName(Component.text(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()));
+                meta.itemName(data.getCampVSComponent());
                 meta.lore(List.of(
                                 Component.text("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)),
                                 Component.text("/contest", NamedTextColor.DARK_GRAY)
