@@ -24,8 +24,6 @@ public class ScoreboardManager implements Listener {
 
     private static final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
 
-    // TODO: prefix dans le tab ne s'affiche plus
-
     public static void init() {
         OMCPlugin.registerEvents(new ScoreboardListener());
 

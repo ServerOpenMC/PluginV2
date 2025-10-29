@@ -8,6 +8,8 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlobalTeamManager {
     private LuckPerms luckPerms = null;
     private final ObjectCacheRepository<SternalBoard> boardCache;
-    private List<Group> sortedGroups;
     private final Map<Group, Component> groupToPrefixCache = new ConcurrentHashMap<>();
 
     public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache) {
@@ -28,7 +29,7 @@ public class GlobalTeamManager {
     }
 
     private void initSortedGroups() {
-        sortedGroups = new ArrayList<>(luckPerms.getGroupManager().getLoadedGroups());
+        List<Group> sortedGroups = new ArrayList<>(luckPerms.getGroupManager().getLoadedGroups());
         sortedGroups.sort(Comparator.comparing(g -> -g.getWeight().orElse(0)));
 
         for (Group group : sortedGroups) {
@@ -44,6 +45,11 @@ public class GlobalTeamManager {
 
         Component prefix = groupToPrefixCache.getOrDefault(playerGroup, Component.empty());
 
+        updateScoreboardTeam(player, prefix);
+        updateTabListTeam(player, prefix, playerGroup);
+    }
+
+    private void updateScoreboardTeam(Player player, Component prefix) {
         SternalBoard board = boardCache.find(player.getUniqueId());
         if (board == null) return;
 
@@ -57,6 +63,23 @@ public class GlobalTeamManager {
                 board.updateLines(lines);
                 return;
             }
+        }
+    }
+
+    private void updateTabListTeam(Player player, Component prefix, Group group) {
+        Scoreboard scoreboard = player.getScoreboard();
+
+        String teamName = "lp_" + group.getName();
+        Team team = scoreboard.getTeam(teamName);
+
+        if (team == null) {
+            team = scoreboard.registerNewTeam(teamName);
+        }
+
+        team.prefix(prefix);
+
+        if (!team.hasEntry(player.getName())) {
+            team.addEntry(player.getName());
         }
     }
 
