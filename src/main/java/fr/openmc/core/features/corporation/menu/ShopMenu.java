@@ -1,16 +1,14 @@
-package fr.openmc.core.disabled.corporation.menu.shop;
+package fr.openmc.core.features.corporation.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.disabled.corporation.MethodState;
-import fr.openmc.core.disabled.corporation.company.Company;
-import fr.openmc.core.disabled.corporation.manager.CompanyManager;
-import fr.openmc.core.disabled.corporation.manager.PlayerShopManager;
-import fr.openmc.core.disabled.corporation.shops.Shop;
-import fr.openmc.core.disabled.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.manager.PlayerShopManager;
+import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
@@ -40,13 +38,21 @@ public class ShopMenu extends Menu {
     private final int itemIndex;
 
     private int amountToBuy = 1;
-
+    
+    public ShopMenu(Player owner) {
+        this(owner, PlayerShopManager.getPlayerShop(owner.getUniqueId()));
+    }
+    
+    public ShopMenu(Player owner, Shop shop) {
+        this(owner, shop, 0);
+    }
+    
     public ShopMenu(Player owner, Shop shop, int itemIndex) {
         super(owner);
         this.shop = shop;
         this.itemIndex = itemIndex;
         items.addAll(shop.getItems());
-        Shop.checkStock(shop);
+        shop.checkStock();
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public String getTexture() {
-        //            if (shop.getOwner().isCompany()){
+//            if (shop.getOwner().isCompany()){
 //                Company company = shop.getOwner().getCompany();
 //                if (company.getAllMembers().contains(getOwner().getUniqueId())){
 //                    return FontImageWrapper.replaceFontImages("§r§f:offset_-11::shop_menu:");
@@ -85,29 +91,25 @@ public class ShopMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> content = new HashMap<>();
-        Company company = null;
-
-        if (shop.getOwner().isCompany()){
-            company = shop.getOwner().getCompany();
-        }
-        if ((company == null && shop.isOwner(getOwner().getUniqueId())) || (company != null && company.getAllMembers().contains(getOwner().getUniqueId()))) {
+        
+        if (shop.isOwner(getOwner().getUniqueId())) {
             putOwnerItems(content);
         }
 
         content.put(39, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§cItem précédent");
+            itemMeta.itemName(Component.text("§cItem précédent"));
         }).setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, onFirstItem() ? itemIndex : itemIndex - 1).open()));
 
         content.put(41, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§aItem suivant");
+            itemMeta.itemName(Component.text("§aItem suivant"));
         }).setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, onLastItem() ? itemIndex : itemIndex + 1).open()));
 
         content.put(40, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§7Fermer");
+            itemMeta.itemName(Component.text("§7Fermer"));
         }).setCloseButton());
 
         content.put(19, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§5Définir à 1");
+            itemMeta.itemName(Component.text("§5Définir à 1"));
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy = 1;
@@ -115,7 +117,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(20, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§cRetirer 10");
+            itemMeta.displayName(Component.text("§cRetirer 10"));
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) return;
@@ -127,7 +129,7 @@ public class ShopMenu extends Menu {
             open();
         }));
         content.put(21, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§cRetirer 1");
+            itemMeta.displayName(Component.text("§cRetirer 1"));
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) return;
@@ -138,22 +140,22 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
             content.put(22, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
                 itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
-                List<String> lore = new ArrayList<>();
-                lore.add("§7■ Prix: §c" + EconomyManager.getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
-                lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
-                lore.add("§7■ Cliquez pour en acheter §f" + EconomyManager.getFormattedSimplifiedNumber(amountToBuy));
-                itemMeta.setLore(lore);
+                itemMeta.lore(List.of(
+                        Component.text("§7■ Prix: §c" + EconomyManager.getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy)),
+                        Component.text("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount())),
+                        Component.text("§7■ Cliquez pour en acheter §f" + EconomyManager.getFormattedSimplifiedNumber(amountToBuy))
+                ));
             }).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat"))).open()));
 
         content.put(23, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§aAjouter 1");
+            itemMeta.displayName(Component.text("§aAjouter 1"));
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 1;
             open();
         }));
         content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§aAjouter 10");
+            itemMeta.displayName(Component.text("§aAjouter 10"));
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 10;
@@ -161,7 +163,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(25, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§5Ajouter 64");
+            itemMeta.displayName(Component.text("§5Ajouter 64"));
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) amountToBuy = 64;
@@ -170,7 +172,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(44, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:company_box").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§7Catalogue");
+            itemMeta.displayName(Component.text("§7Catalogue"));
         }).setOnClick(inventoryClickEvent -> new ShopCatalogueMenu(getOwner(), shop, itemIndex).open()));
 
         return content;
@@ -184,48 +186,40 @@ public class ShopMenu extends Menu {
     private void putOwnerItems(Map<Integer, ItemBuilder> content) {
 
         content.put(0, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
-            itemMeta.setDisplayName("§c§lSupprimer le shop");
+            itemMeta.displayName(Component.text("§c§lSupprimer le shop"));
         }).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression"))).open()));
 
         content.put(3, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-            itemMeta.setDisplayName("§a§lVos ventes");
-            List<String> lore = new ArrayList<>();
-            lore.add("§7■ Ventes: §f" + shop.getSales().size());
-            lore.add("§7■ Cliquer pour voir vos ventes sur ce shop");
-            itemMeta.setLore(lore);
+            itemMeta.displayName(Component.text("§a§lVos ventes"));
+            itemMeta.lore(List.of(
+                    Component.text("§7■ Ventes: §f" + shop.getSales().size()),
+                    Component.text("§7■ Cliquer pour voir vos ventes sur ce shop")
+            ));
         }).setOnClick(inventoryClickEvent -> new ShopSalesMenu(getOwner(), shop, itemIndex).open()));
 
         content.put(4, shop.getIcon(this, true));
 
         content.put(5, new ItemBuilder(this, Material.BARREL, itemMeta -> {
-            itemMeta.setDisplayName("§6§lVoir les stocks");
-            List<String> lore = new ArrayList<>();
-            lore.add("§7■ Stocks: §f" + shop.getAllItemsAmount());
-            lore.add("§7■ Cliquer pour voir les stocks de ce shop");
-            itemMeta.setLore(lore);
+            itemMeta.displayName(Component.text("§6§lVoir les stocks"));
+            itemMeta.lore(List.of(
+                    Component.text("§7■ Stocks: §f" + shop.getAllItemsAmount()),
+                    Component.text("§7■ Cliquer pour voir les stocks de ce shop")
+            ));
         }).setOnClick(inventoryClickEvent -> new ShopStocksMenu(getOwner(), shop, itemIndex).open()));
 
         content.put(8, new ItemBuilder(this, Material.LIME_WOOL, itemMeta -> {
-            itemMeta.setDisplayName("§aCe shop vous appartient");
-            if (shop.getOwner().isCompany()) {
-                if (shop.getOwner().getCompany().getOwner().isCity()) {
-                    itemMeta.setLore(List.of(
-                            "§7■ Car vous faites partie de l'entreprise"
-                    ));
-                }
-            }
+            itemMeta.displayName(Component.text("§aCe shop vous appartient"));
         }));
 
         content.put(36, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
-            itemMeta.setDisplayName("§7Comment utiliser les shops");
+            itemMeta.displayName(Component.text("§7Comment utiliser les shops"));
         }).setOnClick(inventoryClickEvent -> {
 
             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta meta = (BookMeta) book.getItemMeta();
             if (meta != null) {
-                meta.setTitle("Guide des Shop");
-                meta.setAuthor("Nocolm");
-                meta.addPage(
+                meta = meta.toBuilder().title(Component.text("Guide des Shops")).author(Component.text("Nocolm"))
+                        .addPage(Component.text(
                         """
                                 Comment utiliser les shops !
                                 
@@ -233,15 +227,15 @@ public class ShopMenu extends Menu {
                                 1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main
                                 2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *
                                 """
-                );
-                meta.addPage(
+                        ))
+                        .addPage(Component.text(
                         """
                                 3. Ouvrez une fois le shop pour renouveler son stock
                                 
-                                Et voilà comment utiliser votre shops
+                                Et voilà comment utiliser votre shop
                                 
                                 §6▪ Pour plus d'info : /shop help§r"""
-                );
+                        )).build();
 
                 book.setItemMeta(meta);
             }
@@ -310,40 +304,17 @@ public class ShopMenu extends Menu {
     }
 
     private void accept () {
-        boolean isInCompany = CompanyManager.isInCompany(getOwner().getUniqueId());
-        if (isInCompany) {
-            MethodState deleteState = CompanyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
-            if (deleteState == MethodState.ERROR) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cCe shop n'existe pas dans votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
-                return;
-            }
-            if (deleteState == MethodState.WARNING) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cCe shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
-                return;
-            }
-            if (deleteState == MethodState.SPECIAL) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cIl vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
-                return;
-            }
-            if (deleteState == MethodState.ESCAPE) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
-            }
-            MessagesManager.sendMessage(getOwner(), Component.text("§a" + shop.getName() + " a été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
-            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +75" + EconomyManager.getEconomyIcon() + " de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
+        MethodState methodState = PlayerShopManager.deleteShop(getOwner().getUniqueId());
+        if (methodState == MethodState.WARNING) {
+            MessagesManager.sendMessage(getOwner(), Component.text("§cVotre shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
+            return;
         }
-        else {
-            MethodState methodState = PlayerShopManager.deleteShop(getOwner().getUniqueId());
-            if (methodState == MethodState.WARNING) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cVotre shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
-                return;
-            }
-            if (methodState == MethodState.ESCAPE) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
-                return;
-            }
-            MessagesManager.sendMessage(getOwner(), Component.text("§aVotre shop a bien été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
-            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +400" + EconomyManager.getEconomyIcon() + " de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.INFO, false);
+        if (methodState == MethodState.ESCAPE) {
+            MessagesManager.sendMessage(getOwner(), Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
+            return;
         }
+        MessagesManager.sendMessage(getOwner(), Component.text("§aVotre shop a bien été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
+        MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +400" + EconomyManager.getEconomyIcon() + " de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.INFO, false);
         getOwner().closeInventory();
     }
 

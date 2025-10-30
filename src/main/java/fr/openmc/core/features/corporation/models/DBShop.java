@@ -1,11 +1,10 @@
-package fr.openmc.core.disabled.corporation.models;
-
-import java.util.UUID;
+package fr.openmc.core.features.corporation.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
+
+import java.util.UUID;
 
 @Getter
 @DatabaseTable(tableName = "shops")

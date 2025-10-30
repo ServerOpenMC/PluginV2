@@ -1,27 +1,41 @@
-package fr.openmc.core.disabled.corporation.manager;
+package fr.openmc.core.features.corporation.manager;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.disabled.corporation.ItemsAdderIntegration;
-import fr.openmc.core.disabled.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.ItemsAdderIntegration;
+import fr.openmc.core.features.corporation.models.DBShop;
+import fr.openmc.core.features.corporation.models.DBShopItem;
+import fr.openmc.core.features.corporation.models.DBShopSale;
+import fr.openmc.core.features.corporation.models.ShopSupplier;
+import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShopBlocksManager {
+public class ShopManager {
 
     private static final Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
     private static final Map<Location, Shop> shopsByLocation = new HashMap<>();
+    
+    private static Dao<DBShop, UUID> shopsDao;
+    private static Dao<DBShopItem, UUID> itemsDao;
+    private static Dao<DBShopSale, UUID> salesDao;
+    private static Dao<ShopSupplier, UUID> suppliersDao;
 
     /**
      * Registers a shop's multiblock structure and maps its key locations.
@@ -30,7 +44,7 @@ public class ShopBlocksManager {
      * @param multiblock The multiblock structure associated with the shop.
      */
     public static void registerMultiblock(Shop shop, Shop.Multiblock multiblock) {
-        multiblocks.put(shop.getUuid(), multiblock);
+        multiblocks.put(shop.getOwnerUUID(), multiblock);
         Location stockLoc = multiblock.stockBlock();
         Location cashLoc = multiblock.cashBlock();
         shopsByLocation.put(stockLoc, shop);
@@ -63,30 +77,24 @@ public class ShopBlocksManager {
      *
      * @param shop The shop to place.
      * @param player The player placing the shop.
-     * @param isCompany Whether the shop belongs to a company (unused here but may be relevant elsewhere).
      */
-    public static void placeShop(Shop shop, Player player, boolean isCompany) {
-        Shop.Multiblock multiblock = multiblocks.get(shop.getUuid());
-        if (multiblock == null) {
-            return;
-        }
+    public static void placeShop(Shop shop, Player player) {
+        Shop.Multiblock multiblock = multiblocks.get(shop.getOwnerUUID());
+        if (multiblock == null) return;
+        
         Block cashBlock = multiblock.cashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
         if (ItemsAdderHook.isHasItemAdder()) {
-            boolean placed = ItemsAdderIntegration.placeShopFurniture(cashBlock);
-            if (!placed) {
-                cashBlock.setType(Material.OAK_SIGN);
-            }
+            if (! ItemsAdderIntegration.placeShopFurniture(cashBlock)) cashBlock.setType(Material.OAK_SIGN);
         } else {
             cashBlock.setType(Material.OAK_SIGN);
         }
 
         BlockData cashData = cashBlock.getBlockData();
-        if (cashData instanceof Directional directional) {
-            directional.setFacing(yaw.getOpposite().toBlockFace());
-            cashBlock.setBlockData(directional);
-        }
+        if (! (cashData instanceof Directional directional)) return;
+        directional.setFacing(yaw.getOpposite().toBlockFace());
+        cashBlock.setBlockData(directional);
     }
 
     /**
@@ -97,22 +105,15 @@ public class ShopBlocksManager {
      * @return True if successfully removed, false otherwise.
      */
     public static boolean removeShop(Shop shop) {
-        Shop.Multiblock multiblock = multiblocks.get(shop.getUuid());
-        if (multiblock == null) {
-            return false;
-        }
+        Shop.Multiblock multiblock = multiblocks.get(shop.getOwnerUUID());
+        if (multiblock == null) return false;
+        
         Block cashBlock = multiblock.cashBlock().getBlock();
         Block stockBlock = multiblock.stockBlock().getBlock();
 
         if (ItemsAdderHook.isHasItemAdder()) {
-
-            if (!ItemsAdderIntegration.hasFurniture(cashBlock)) {
-                return false;
-            }
-            if (!ItemsAdderIntegration.removeShopFurniture(cashBlock)){
-                return false;
-            }
-
+            if (! ItemsAdderIntegration.hasFurniture(cashBlock)) return false;
+            if (! ItemsAdderIntegration.removeShopFurniture(cashBlock)) return false;
         } else {
             if (cashBlock.getType() != Material.OAK_SIGN && cashBlock.getType() != Material.BARRIER || stockBlock.getType() != Material.BARREL) {
                 return false;
@@ -120,15 +121,28 @@ public class ShopBlocksManager {
         }
 
         // Async cleanup of location mappings
-        multiblocks.remove(shop.getUuid());
+        multiblocks.remove(shop.getOwnerUUID());
         cashBlock.setType(Material.AIR);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                shopsByLocation.entrySet().removeIf(entry -> entry.getValue().getUuid().equals(shop.getUuid()));
-            }
-        }.runTaskAsynchronously(OMCPlugin.getInstance());
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                shopsByLocation.entrySet().removeIf(entry -> entry.getValue().getOwnerUUID().equals(shop.getOwnerUUID())));
         return true;
     }
-
+    
+    public static void initDB(ConnectionSource connectionSource) {
+        try {
+            TableUtils.createTableIfNotExists(connectionSource, DBShop.class);
+            shopsDao = DaoManager.createDao(connectionSource, DBShop.class);
+            
+            TableUtils.createTableIfNotExists(connectionSource, DBShopSale.class);
+            salesDao = DaoManager.createDao(connectionSource, DBShopSale.class);
+            
+            TableUtils.createTableIfNotExists(connectionSource, DBShopItem.class);
+            itemsDao = DaoManager.createDao(connectionSource, DBShopItem.class);
+            
+            TableUtils.createTableIfNotExists(connectionSource, ShopSupplier.class);
+            suppliersDao = DaoManager.createDao(connectionSource, ShopSupplier.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
