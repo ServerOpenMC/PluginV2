@@ -90,7 +90,7 @@ public class HalloweenManager {
                 newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load halloween datas from database", e);
         }
 
         return newHalloweenDatas;
@@ -103,6 +103,7 @@ public class HalloweenManager {
         for (Map.Entry<Integer, Map.Entry<String, String>> entries : LeaderboardManager.getPumpkinCountMap().entrySet()) {
             int rank = entries.getKey();
             String playerName = entries.getValue().getKey();
+            int pumpkinCount = Integer.parseInt(entries.getValue().getValue());
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
 
             List<ItemStack> rewards = new ArrayList<>();
@@ -120,12 +121,15 @@ public class HalloweenManager {
                         meta.itemName(Component.text("La Tarte de la Victoire (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
                                 Component.text("Récompense du joueur ayant récolté le plus de citrouilles", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("lors de l'événement Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                Component.text("lors de l'événement Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.empty(),
+                                Component.text("Obtenu par ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                        .append(Component.text(offlinePlayer.getName() == null ? "Inconnu" : offlinePlayer.getName(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
                         ));
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone(), aywenite.clone()));
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 20000);
+                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 30000);
                 }
 
                 case 2 -> {
@@ -139,12 +143,15 @@ public class HalloweenManager {
                         meta.lore(List.of(
                                 Component.text("Récompense du joueur ayant récolté la deuxième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("grande quantité de citrouilles lors de l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.empty(),
+                                Component.text("Obtenu par ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                        .append(Component.text(offlinePlayer.getName() == null ? "Inconnu" : offlinePlayer.getName(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
                         ));
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone()));
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 10000);
+                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 20000);
                 }
 
                 case 3 -> {
@@ -158,30 +165,20 @@ public class HalloweenManager {
                         meta.lore(List.of(
                                 Component.text("Récompense du joueur ayant récolté la troisième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 Component.text("grande quantité de citrouilles lors de l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                Component.empty(),
+                                Component.text("Obtenu par ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                        .append(Component.text(offlinePlayer.getName() == null ? "Inconnu" : offlinePlayer.getName(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
                         ));
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite));
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 5000);
+                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 10000);
                 }
 
                 default -> {
-                    ItemStack customPumpkin = ItemStack.of(Material.PUMPKIN_PIE);
-                    customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
-                    customPumpkin.unsetData(DataComponentTypes.FOOD);
-
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
-                    customPumpkin.editMeta(meta -> {
-                        meta.itemName(Component.text("La Tarte de Participation (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
-                        meta.lore(List.of(
-                                Component.text("Récompense du joueur ayant participé à l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                        ));
-                    });
-
-                    rewards.add(customPumpkin);
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 100);
+                    if (pumpkinCount >= 1)
+                        EconomyManager.addBalance(offlinePlayer.getUniqueId(), 3000);
                 }
             }
 
