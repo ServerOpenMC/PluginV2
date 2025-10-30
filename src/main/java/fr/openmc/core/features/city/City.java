@@ -214,6 +214,7 @@ public class City {
             this.members = CityManager.getCityMembers(this);
 
         members.remove(player);
+        permissions.remove(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
             Bukkit.getPluginManager()
                     .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(player), this))
