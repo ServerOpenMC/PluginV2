@@ -103,6 +103,17 @@ public class CityInviteConditions {
 			}
 			return false;
 		}
+
+        if (newCity.getMembers().size() >= MemberLimitRewards.getMemberLimit(newCity.getLevel())) {
+            MessagesManager.sendMessage(invitedPlayer, Component.text("La ville a atteint sa limite de membre"), Prefix.CITY, MessageType.ERROR, false);
+
+            List<Player> playerInvitations = CityInviteCommands.invitations.get(invitedPlayer);
+            playerInvitations.remove(inviter);
+            if (playerInvitations.isEmpty()) {
+                CityInviteCommands.invitations.remove(invitedPlayer);
+            }
+            return false;
+        }
 		
 		return true;
 	}
