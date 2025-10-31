@@ -16,6 +16,8 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.Contest;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.displays.DreamScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
 import fr.openmc.core.utils.DateUtils;
@@ -71,16 +73,27 @@ public class ScoreboardManager implements Listener {
 
     public static Scoreboard createNewScoreboard(Player player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective objective;
-        if (canShowLogo) {
-            objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text(FontImageWrapper.replaceFontImages(":openmc:")));
+
+        Component displayName;
+
+        if (canShowLogo && DreamUtils.isInDream(player)) {
+            displayName = Component.text(FontImageWrapper.replaceFontImages(":dream_openmc:"));
+        } else if (canShowLogo) {
+            displayName = Component.text(FontImageWrapper.replaceFontImages(":openmc:"));
         } else {
-            objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
+            displayName = Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE);
         }
+
+
+        Objective objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, displayName);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         updateScoreboard(player, scoreboard, objective);
         return scoreboard;
+    }
+
+    public static void removePlayerScoreboard(Player player) {
+        playerScoreboards.remove(player.getUniqueId());
     }
 
     public static void updateAllScoreboards() {
@@ -121,6 +134,11 @@ public class ScoreboardManager implements Listener {
 
         for (String entry : scoreboard.getEntries()) {
             scoreboard.resetScores(entry);
+        }
+
+        if (DreamUtils.isInDream(player)) {
+            DreamScoreboard.updateDreamScoreboard(player, scoreboard, objective);
+            return;
         }
 
         // RESTART SCOREBOARD

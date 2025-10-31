@@ -1,6 +1,5 @@
 package fr.openmc.api.menulib.utils;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import fr.openmc.api.menulib.MenuLib;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -9,12 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Utility class for performing operations on {@link ItemStack}.
@@ -53,23 +50,6 @@ public class ItemUtils {
 			return Objects.equals(dataContainer.get(MenuLib.getItemIdKey(), PersistentDataType.STRING), itemId);
 		}
 		return false;
-	}
-	
-	/**
-	 * Creates a player skull item for the specified player UUID.
-	 *
-	 * @param playerUUID the UUID of the player whose skull is to be created
-	 * @return an {@link ItemStack} representing the player's skull
-	 */
-	public static ItemStack getPlayerSkull(UUID playerUUID) {
-		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		if (skullMeta != null) {
-			PlayerProfile profile = Bukkit.createProfile(playerUUID);
-			skullMeta.setPlayerProfile(profile);
-			skull.setItemMeta(skullMeta);
-		}
-		return skull;
 	}
 
 	/**
