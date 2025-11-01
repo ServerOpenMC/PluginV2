@@ -70,7 +70,6 @@ public class Restart {
 
                 if (!announce.contains(remainingTime)) {
                     remainingTime -= 1;
-                    ScoreboardManager.updateAllScoreboards();
                     return;
                 }
 
