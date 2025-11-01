@@ -59,12 +59,6 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		
-		if (!this.canEdit) {
-			MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions"), Prefix.CITY, MessageType.ERROR, false);
-			getOwner().closeInventory();
-			return null;
-		}
-		
 		for (CityPermission permission : CityPermission.values()) {
 			if (permission == CityPermission.OWNER) continue;
 			
@@ -78,8 +72,12 @@ public class CityRankPermsMenu extends PaginatedMenu {
 				);
 				itemMeta.lore(lore);
 			}).setOnClick(inventoryClickEvent -> {
-				CityRankCommands.swapPermission(getOwner(), newRank, permission);
-				new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
+				if (!canEdit)
+					MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier ce grade"), Prefix.CITY, MessageType.ERROR, true);
+				else {
+					CityRankCommands.swapPermission(getOwner(), newRank, permission);
+					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
+				}
 			}).hide(ItemUtils.getDataComponentType());
 			
 			items.add(itemBuilder);
@@ -108,6 +106,32 @@ public class CityRankPermsMenu extends PaginatedMenu {
 				itemMeta.displayName(Component.text("§aPage suivante"));
 				itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page suivante")));
 			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page + 1).open()));
+		}
+		
+		if (canEdit) {
+			map.put(52, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
+				itemMeta.displayName(Component.text("§cTout retirer"));
+				itemMeta.lore(List.of(Component.text("§7Cliquez pour retirer toutes les permissions du membre")));
+			}).setOnClick(inventoryClickEvent -> {
+				if (!canEdit)
+					MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des grades"), Prefix.CITY, MessageType.ERROR, true);
+				else {
+					CityRankCommands.removeAllPermissions(getOwner(), newRank);
+					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
+				}
+			}));
+			
+			map.put(53, new ItemBuilder(this, Material.GREEN_DYE, itemMeta -> {
+				itemMeta.displayName(Component.text("§aTout ajouter"));
+				itemMeta.lore(List.of(Component.text("§7Cliquez pour ajouter toutes les permissions au membre")));
+			}).setOnClick(inventoryClickEvent -> {
+				if (!canEdit)
+					MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des grades"), Prefix.CITY, MessageType.ERROR, true);
+				else {
+					CityRankCommands.addAllPermissions(getOwner(), newRank);
+					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
+				}
+			}));
 		}
 		
 		return map;

@@ -241,11 +241,8 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.displayName(Component.text("§bLes permissions du grade"));
 			itemMeta.lore(lorePerm);
 		}).setOnClick(inventoryClickEvent -> {
-			if (!canManageRanks) {
-				MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions"), Prefix.CITY, MessageType.ERROR, false);
-				return;
-			}
-			new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
+			if (!canManageRanks) new CityRankPermsMenu(getOwner(), oldRank, newRank, false, 0).open();
+			else new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {

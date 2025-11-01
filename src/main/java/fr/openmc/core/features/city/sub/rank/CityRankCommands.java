@@ -93,6 +93,62 @@ public class CityRankCommands {
 		rank.swapPermission(permission);
 	}
 	
+	/**
+	 * Add all permissions to a rank.
+	 *
+	 * @param player The player who is adding the permissions.
+	 * @param rank   The rank to add the permissions to.
+	 */
+	public static void addAllPermissions(Player player, DBCityRank rank) {
+		City city = CityManager.getPlayerCity(player.getUniqueId());
+		if (city == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (rank == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		
+		for (CityPermission permission : CityPermission.values()) {
+			if (permission != CityPermission.OWNER) return;
+			if (rank.getPermissionsSet().contains(permission)) continue;
+			rank.getPermissionsSet().add(permission);
+		}
+	}
+	
+	/**
+	 * Remove all permissions from a rank.
+	 *
+	 * @param player The player who is removing the permissions.
+	 * @param rank   The rank to remove the permissions from.
+	 */
+	public static void removeAllPermissions(Player player, DBCityRank rank) {
+		City city = CityManager.getPlayerCity(player.getUniqueId());
+		if (city == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (rank == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		
+		for (CityPermission permission : CityPermission.values()) {
+			if (permission != CityPermission.OWNER) continue;
+			if (!rank.getPermissionsSet().contains(permission)) continue;
+			rank.getPermissionsSet().remove(permission);
+		}
+	}
+	
 	@Subcommand("assign")
 	@CommandPermission("omc.commands.city.rank.assign")
 	public void assign(Player player, @Optional @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName, @Optional @Named("player") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer target) {
