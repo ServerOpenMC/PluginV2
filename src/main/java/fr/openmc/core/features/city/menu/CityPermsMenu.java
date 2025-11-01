@@ -11,6 +11,9 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -79,10 +82,12 @@ public class CityPermsMenu extends PaginatedMenu {
                 );
                 itemMeta.lore(edit ? lore : List.of());
             }).setOnClick(inventoryClickEvent -> {
-                if (!edit) return;
-                CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
-                player.closeInventory();
-                this.open();
+                if (!edit)
+                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des membres"), Prefix.CITY, MessageType.ERROR, true);
+                else {
+                    CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
+                    new CityPermsMenu(player, memberUUID, true).open();
+                }
             }).hide(ItemUtils.getDataComponentType());
 
             items.add(itemBuilder);
@@ -110,6 +115,32 @@ public class CityPermsMenu extends PaginatedMenu {
             itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page suivante")));
         }).setNextPageButton());
 
+        if (edit) {
+            map.put(52, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
+                itemMeta.displayName(Component.text("§cTout retirer"));
+                itemMeta.lore(List.of(Component.text("§7Cliquez pour retirer toutes les permissions du membre")));
+            }).setOnClick(inventoryClickEvent -> {
+                if (!edit)
+                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des membres"), Prefix.CITY, MessageType.ERROR, true);
+                else {
+                    CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                    new CityPermsMenu(getOwner(), memberUUID, true).open();
+                }
+            }));
+            
+            map.put(53, new ItemBuilder(this, Material.GREEN_DYE, itemMeta -> {
+                itemMeta.displayName(Component.text("§aTout ajouter"));
+                itemMeta.lore(List.of(Component.text("§7Cliquez pour ajouter toutes les permissions au membre")));
+            }).setOnClick(inventoryClickEvent -> {
+                if (!edit)
+                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des membres"), Prefix.CITY, MessageType.ERROR, true);
+                else {
+                    CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                    new CityPermsMenu(getOwner(), memberUUID, true).open();
+                }
+            }));
+        }
+        
         return map;
     }
 
