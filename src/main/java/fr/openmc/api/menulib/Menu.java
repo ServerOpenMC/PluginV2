@@ -160,28 +160,37 @@ public abstract class Menu implements InventoryHolder {
 	}
 
 	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
+		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) {
+			if (!this.getTakableSlot().contains(slot)) {
+				inventory.setItem(slot, ItemUtils.getInvisibleItem());
+			}
+			return;
+		}
+
 		if (this instanceof PaginatedMenu paginatedMenu) {
 			if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
-                    || (item.isNextButton() && paginatedMenu.isLastPage()))
+					|| (item.isNextButton() && paginatedMenu.isLastPage()))
 				return;
 		}
 
 		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
-			item = new ItemBuilder(this, item, itemMeta -> {
+			inventory.setItem(slot, new ItemBuilder(this, item, itemMeta -> {
 				itemMeta.displayName(Component.text("§aRetour"));
 				itemMeta.lore(List.of(
 						Component.text("§7Vous allez retourner au §a" +
 								(MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : "Menu Précédent") + "§7."),
 						Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
 				));
-			}, true);
+			}, true));
+			return;
+		}
+
+		if (item.getType().isAir() && !this.getTakableSlot().contains(slot)) {
+			inventory.setItem(slot, ItemUtils.getInvisibleItem());
+			return;
 		}
 
 		inventory.setItem(slot, item);
-
-		if ((item.getType().isAir() || item.isBackButton()) && !this.getTakableSlot().contains(slot)) {
-			item = new ItemBuilder(this, ItemUtils.getInvisibleItem());
-		}
 	}
 	
 	/**
