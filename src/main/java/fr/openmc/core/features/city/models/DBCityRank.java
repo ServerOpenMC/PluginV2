@@ -157,6 +157,24 @@ public class DBCityRank {
 	}
 	
 	/**
+	 * Clears all permissions from this rank.
+	 */
+	public void clearPermissions() {
+		permissionsSet.clear();
+	}
+	
+	/**
+	 * Adds all available permissions to this rank, except OWNER.
+	 */
+	public void addAllPermissions() {
+		for (CityPermission permission : CityPermission.values()) {
+			if (permission != CityPermission.OWNER) {
+				permissionsSet.add(permission);
+			}
+		}
+	}
+	
+	/**
 	 * Adds a member to this rank.
 	 *
 	 * @param playerUUID The UUID of the player to add as a member.

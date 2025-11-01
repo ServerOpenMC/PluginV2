@@ -74,6 +74,9 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+        if (!canModifyRankPermissions(city, player, rank.getPriority())) {
+            return false;
+        }
         if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
@@ -98,6 +101,7 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+        
         DBCityRank rank = city.getRankByName(rankName);
         if (rank == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -109,6 +113,16 @@ public class CityRankCondition {
             return false;
         }
 
+        return canModifyRankPermissions(city, player, rank.getPriority());
+    }
+    
+    public static boolean canModifyRankPermissions(City city, Player player, int rankPriority) {
+        if (city.getRankOfMember(player.getUniqueId()) == null) return true;
+        
+        if (city.getRankOfMember(player.getUniqueId()).getPriority() >= rankPriority) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_CANNOT_MODIFY_HIGHER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
         return true;
     }
 }

@@ -33,6 +33,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -736,7 +737,7 @@ public class City {
      * @param member The UUID of the member to check.
      * @return The CityRank object representing the member's rank, or null if not found.
      */
-    public DBCityRank getRankOfMember(UUID member) {
+    public @Nullable DBCityRank getRankOfMember(UUID member) {
         for (DBCityRank rank : cityRanks) {
             if (rank.getMembersSet().contains(member)) {
                 return rank;

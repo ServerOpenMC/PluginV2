@@ -138,6 +138,7 @@ public class MessagesManager {
         CITY_RANKS_MAX(Component.text("Le nombre maximum de grades a été atteint, tu ne peux pas en ajouter d'autres.")),
         CITY_RANKS_ALREADY_EXIST(Component.text("Ce grade existe déjà.")),
         CITY_RANKS_CANNOT_DELETE(Component.text("Tu ne peux pas supprimer le grade de propriétaire.")),
+        CITY_RANKS_CANNOT_MODIFY_HIGHER(Component.text("Tu ne peux pas modifier un grade supérieur ou égal au tien.")),
 
         CITY_NOT_FOUND(Component.text("La ville n'existe pas")),
 

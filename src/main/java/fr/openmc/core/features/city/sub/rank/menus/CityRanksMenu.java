@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
+import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -71,7 +72,7 @@ public class CityRanksMenu extends Menu {
 									Component.text("§7Priorité : §d" + priority).decoration(TextDecoration.ITALIC, false),
 									Component.text("§7Permissions : §b" + rank.getPermissionsSet().size()).decoration(TextDecoration.ITALIC, false),
 									Component.empty(),
-									Component.text(canManageRanks ? "§e§lCLIQUEZ POUR MODIFIER LE ROLE" : "§e§lCLIQUEZ POUR S'Y INFORMER")
+									Component.text(canManageRanks && CityRankCondition.canModifyRankPermissions(city, getOwner(), priority) ? "§e§lCLIQUEZ POUR MODIFIER LE ROLE" : "§e§lCLIQUEZ POUR S'Y INFORMER")
 							));
 						}
 				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open())

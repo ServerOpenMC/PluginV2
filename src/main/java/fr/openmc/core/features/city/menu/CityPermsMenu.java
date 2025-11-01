@@ -128,7 +128,7 @@ public class CityPermsMenu extends PaginatedMenu {
                 }
             }));
             
-            map.put(53, new ItemBuilder(this, Material.GREEN_DYE, itemMeta -> {
+            map.put(53, new ItemBuilder(this, Material.LIME_DYE, itemMeta -> {
                 itemMeta.displayName(Component.text("§aTout ajouter"));
                 itemMeta.lore(List.of(Component.text("§7Cliquez pour ajouter toutes les permissions au membre")));
             }).setOnClick(inventoryClickEvent -> {

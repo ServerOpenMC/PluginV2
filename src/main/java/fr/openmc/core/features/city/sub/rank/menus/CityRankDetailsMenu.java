@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
+import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
@@ -100,6 +101,12 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Priorité actuelle : §d" + this.newRank.getPriority())
 			));
 		}).setOnClick(inventoryClickEvent -> {
+			if (!canManageRanks) return;
+			
+			if (!CityRankCondition.canModifyRankPermissions(city, getOwner(), newRank.getPriority())) {
+				return;
+			}
+			
 			if (inventoryClickEvent.isLeftClick()) {
 				new CityRankDetailsMenu(getOwner(), city, newRank.withPriority((newRank.getPriority() + 1) % 18)).open();
 			} else if (inventoryClickEvent.isRightClick()) {
@@ -165,7 +172,8 @@ public class CityRankDetailsMenu extends Menu {
 		Map<Integer, ItemBuilder> map = new HashMap<>();
 		Player player = getOwner();
 		
-		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
+		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)
+				&& CityRankCondition.canModifyRankPermissions(city, player, oldRank.getPriority());
 		
 		List<Component> lorePriority = new ArrayList<>(List.of(Component.text("§7Priorité actuelle : §d" + this.newRank.getPriority())));
 		if (canManageRanks) {

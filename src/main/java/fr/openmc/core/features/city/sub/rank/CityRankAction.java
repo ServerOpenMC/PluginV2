@@ -189,6 +189,9 @@ public class CityRankAction {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
+		if (!CityRankCondition.canModifyRankPermissions(city, player, rank.getPriority())) {
+			return;
+		}
 		
 		city.changeRank(player, member.getUniqueId(), rank);
 	}

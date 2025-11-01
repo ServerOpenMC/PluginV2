@@ -43,6 +43,11 @@ public class CityKickCondition {
             MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+        
+        if (city.getRankOfMember(player.getUniqueId()).getPriority() <= city.getRankOfMember(playerToKick.getUniqueId()).getPriority()) {
+            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure un membre ayant un grade supérieur ou égal au tien"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
         return true;
     }
 }
