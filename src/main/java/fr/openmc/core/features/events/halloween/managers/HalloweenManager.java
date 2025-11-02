@@ -103,7 +103,7 @@ public class HalloweenManager {
         for (Map.Entry<Integer, Map.Entry<String, String>> entries : LeaderboardManager.getPumpkinCountMap().entrySet()) {
             int rank = entries.getKey();
             String playerName = entries.getValue().getKey();
-            int pumpkinCount = Integer.parseInt(entries.getValue().getValue());
+            String pumpkinCount = entries.getValue().getValue();
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
 
             List<ItemStack> rewards = new ArrayList<>();
@@ -177,7 +177,7 @@ public class HalloweenManager {
                 }
 
                 default -> {
-                    if (pumpkinCount >= 1)
+                    if (!pumpkinCount.equals("0"))
                         EconomyManager.addBalance(offlinePlayer.getUniqueId(), 3000);
                 }
             }
