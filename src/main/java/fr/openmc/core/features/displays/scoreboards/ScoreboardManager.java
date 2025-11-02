@@ -7,7 +7,7 @@ import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.api.scoreboard.repository.impl.ObjectCacheRepositoryImpl;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
-import fr.openmc.core.features.displays.scoreboards.sb.DefaultScoreboard;
+import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,7 +28,7 @@ public class ScoreboardManager implements Listener {
         OMCPlugin.registerEvents(new ScoreboardListener());
 
         registerScoreboard(
-                new DefaultScoreboard(),
+                new MainScoreboard(),
                 new RestartScoreboard(),
                 new CityWarScoreboard()
         );

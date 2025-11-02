@@ -28,7 +28,7 @@ import java.util.List;
 import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
 import static net.kyori.adventure.text.Component.*;
 
-public class DefaultScoreboard extends BaseScoreboard {
+public class MainScoreboard extends BaseScoreboard {
     @Override
     public void update(Player player, SternalBoard board) {
         List<Component> lines = new ArrayList<>(getDefaultLines(player));
@@ -45,7 +45,7 @@ public class DefaultScoreboard extends BaseScoreboard {
             lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
                     .append(Component.text(textToSmall("fin:"), NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF06DC)))
+                    .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF8F06)))
             );
         }
 

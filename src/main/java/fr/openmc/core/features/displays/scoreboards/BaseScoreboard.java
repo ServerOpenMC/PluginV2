@@ -72,7 +72,7 @@ public abstract class BaseScoreboard {
     /**
      * @return Un {@link Component} pour le footer
      */
-    protected Component getFooter() {
+    public static Component getFooter() {
         return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6>%s</gradient>".formatted(textToSmall("play.openmc.fr")));
     }
 }

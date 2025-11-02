@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
+import fr.openmc.core.utils.MathUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -38,7 +39,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         War war = city.getWar();
         City enemyCity = war.getCityAttacker().equals(city) ? war.getCityDefender() : war.getCityAttacker();
 
-        List<Component> lines = new ArrayList<>(DefaultScoreboard.getDefaultLines(player));
+        List<Component> lines = new ArrayList<>(MainScoreboard.getDefaultLines(player));
 
         lines.add(MiniMessage.miniMessage()
                 .deserialize("<gradient:#FF0000:#FF7F7F>%s</gradient>".formatted(textToSmall("GUERRE EN COURS")))
@@ -47,7 +48,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         lines.add(text("  • ", net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY)
                 .append(text(textToSmall("ennemi:"), TextColor.color(0xAAAAAA)))
                 .appendSpace()
-                .append(text(textToSmall(enemyCity.getName()), TextColor.color(0xFF06DC)))
+                .append(text(textToSmall(enemyCity.getName()), TextColor.color(0xFF0634)))
         );
 
         Component phaseComponent;
@@ -82,9 +83,9 @@ public class CityWarScoreboard extends BaseScoreboard {
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(text(textToSmall("distance:"), NamedTextColor.GRAY))
                 .appendSpace()
-                .append(text(direction, TextColor.color(0xFF06DC)))
+                .append(text(direction, TextColor.color(0xFFE206)))
                 .appendSpace()
-                .append(text("(%s)".formatted(rounded), TextColor.color(0xF092E3)))
+                .append(text("(%s)".formatted(rounded), TextColor.color(0xFFFE35)))
         );
 
 
@@ -92,7 +93,7 @@ public class CityWarScoreboard extends BaseScoreboard {
             case PREPARATION -> lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                     .append(text(textToSmall("début dans:"), NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(text(DateUtils.convertSecondToTime(war.getPreparationTimeRemaining()), TextColor.color(0xFF06DC)))
+                    .append(text(DateUtils.convertSecondToTime(war.getPreparationTimeRemaining()), TextColor.color(0xF52727)))
             );
 
             case COMBAT -> {
@@ -113,7 +114,7 @@ public class CityWarScoreboard extends BaseScoreboard {
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                         .append(text(textToSmall("fin dans:"), NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(text(DateUtils.convertSecondToTime(war.getCombatTimeRemaining()), TextColor.color(0xFF06DC)))
+                        .append(text(DateUtils.convertSecondToTime(war.getCombatTimeRemaining()), TextColor.color(0xF52727)))
                 );
             }
 
@@ -155,10 +156,12 @@ public class CityWarScoreboard extends BaseScoreboard {
         double maxHealth = entity.getAttribute(Attribute.MAX_HEALTH).getValue();
         double ratio = health / maxHealth;
 
-        TextColor color;
-        if (ratio > 0.7) color = TextColor.color(0x14FF59);
-        else if (ratio > 0.3) color = TextColor.color(0xF6FF1F);
-        else color = TextColor.color(0xFF3D1F);
+        int fullLifeColor = 0x14FF59; // Vert
+        int noLifeColor = 0xFF3D1F;   // Rouge
+
+        double lerpRatio = 1.0 - ratio;
+        int interpolatedColor = MathUtils.lerpColor(fullLifeColor, noLifeColor, lerpRatio);
+        TextColor color = TextColor.color(interpolatedColor);
 
         return text("%d/%d %s".formatted((int) health, (int) maxHealth, FontImageWrapper.replaceFontImages(":heart:")), color);
     }
