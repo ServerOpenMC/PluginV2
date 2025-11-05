@@ -1,11 +1,12 @@
 package fr.openmc.core.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.mock.MockBukkitHelper;
+import fr.openmc.mock.ServerMock;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
-import org.mockbukkit.mockbukkit.ServerMock;
 
 class MotdUtilsTest {
 
@@ -13,9 +14,7 @@ class MotdUtilsTest {
 
     @BeforeEach
     void setUp() {
-        server = MockBukkit.mock();
-
-        server.addSimpleWorld("world");
+        this.server = MockBukkitHelper.safeMock();
 
         MockBukkit.load(OMCPlugin.class);
     }
