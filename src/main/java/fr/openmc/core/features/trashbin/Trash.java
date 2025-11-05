@@ -12,7 +12,7 @@ public class Trash {
 
     @Command("trash")
     @CommandPermission("omc.commands.trash")
-    @Description("Ouvre une poubelle pour jette les items")
+    @Description("Ouvre une poubelle pour jetter les items")
 
     private void trash(Player player) {
 
