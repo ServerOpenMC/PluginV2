@@ -96,7 +96,7 @@ public class AdminShopManager {
         }
 
         double totalPrice = item.getActualBuyPrice() * amount;
-        if (EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice, "Achat AdminShop")) {
+        if (EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice, "Achat AdminShop - " + amount + "x " + itemId)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
