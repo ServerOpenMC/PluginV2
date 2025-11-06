@@ -52,7 +52,7 @@ public class Money {
     @Description("Permet d'ajouter de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.add")
     public void addMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        EconomyManager.addBalance(target.getUniqueId(), amount, "Admin");
+        EconomyManager.addBalance(target.getUniqueId(), amount, "Admin - Ajout par " + player == null ? "Console" : player.getName()));
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté §e" + EconomyManager.getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(), Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
