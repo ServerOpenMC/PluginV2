@@ -8,7 +8,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class Trash {
+public class TrashCommand {
 
     @Command("trash")
     @CommandPermission("omc.commands.trash")
