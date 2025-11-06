@@ -18,7 +18,7 @@ import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
 import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
-import fr.openmc.core.features.trashbin.Trash;
+import fr.openmc.core.features.trashbin.TrashCommand;
 import fr.openmc.core.features.updates.UpdateCommand;
 import lombok.Getter;
 import revxrsal.commands.Lamp;
