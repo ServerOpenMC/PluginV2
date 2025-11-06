@@ -61,7 +61,7 @@ public class CommandsManager {
                 new CreditsCommand(),
                 new CubeCommands(),
                 new HalloweenCommands(),
-                new Trash()
+                new TrashCommand()
         );
     }
 }
