@@ -68,10 +68,10 @@ public class EconomyManager {
 
         if (reason != null) {
             TransactionsManager.registerTransaction(new Transaction(
-                    playerUUID.toString(),
-                    "CONSOLE",
-                    amount,
-                    reason
+                playerUUID.toString(),
+                "CONSOLE",
+                amount,
+                reason
             ));
         }
 
@@ -88,10 +88,10 @@ public class EconomyManager {
         if (bank.withdraw(amount)) {
             if (reason != null) {
                 TransactionsManager.registerTransaction(new Transaction(
-                        "CONSOLE",
-                        playerUUID.toString(),
-                        amount,
-                        reason
+                    "CONSOLE",
+                    playerUUID.toString(),
+                    amount,
+                    reason
                 ));
             }
 
@@ -109,19 +109,31 @@ public class EconomyManager {
      * @param fromPlayer UUID of the player to withdraw from
      * @param toPlayer   UUID of the player to add to
      * @param amount     Amount to transfer
+     * @return true if the transfer was successful, false otherwise
+     */
+    public static boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount) {
+        return transferBalance(fromPlayer, toPlayer, amount, null);
+    }
+
+    /**
+     * Transfer balance from one player to another
+     * 
+     * @param fromPlayer UUID of the player to withdraw from
+     * @param toPlayer   UUID of the player to add to
+     * @param amount     Amount to transfer
      * @param reason     Reason for the transaction
      * @return true if the transfer was successful, false otherwise
      */
     public static boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount, @Nullable String reason) {
-        if (withdrawBalance(fromPlayer, amount, reason)) {
-            addBalance(toPlayer, amount, reason);
+        if (withdrawBalance(fromPlayer, amount)) {
+            addBalance(toPlayer, amount);
 
             if (reason != null) {
                 TransactionsManager.registerTransaction(new Transaction(
-                        toPlayer.toString(),
-                        fromPlayer.toString(),
-                        amount,
-                        reason
+                    toPlayer.toString(),
+                    fromPlayer.toString(),
+                    amount,
+                    reason
                 ));
             }
 

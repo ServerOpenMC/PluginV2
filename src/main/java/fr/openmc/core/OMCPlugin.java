@@ -119,7 +119,10 @@ public class OMCPlugin extends JavaPlugin {
         ListenersManager.init();
         EconomyManager.init();
         BankManager.init();
-        ScoreboardManager.init();
+
+        if (!isUnitTestVersion())
+            ScoreboardManager.init();
+
         HomesManager.init();
         TPAQueue.initCommand();
         FreezeManager.init();
