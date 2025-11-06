@@ -13,7 +13,6 @@ public class Trash {
     @Command("trash")
     @CommandPermission("omc.commands.trash")
     @Description("Ouvre une poubelle pour jetter les items")
-
     private void trash(Player player) {
 
         Inventory bin = Bukkit.createInventory(player, 54, ChatColor.RED + "Poubelle");
