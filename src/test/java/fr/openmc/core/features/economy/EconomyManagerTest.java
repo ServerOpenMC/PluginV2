@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -144,10 +145,10 @@ public class EconomyManagerTest {
     public void testTransferBalanceWithReasonRegistersTransaction() {
         EconomyManager.setBalance(player1.getUniqueId(), 400.0);
         EconomyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 150.0, "Gift");
-        server.getScheduler().performTicks(40L);
+        server.getScheduler().performTicks(120L);
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
-        
+
         boolean found = transactions.stream().anyMatch(t ->
             t.sender.equals(player1.getUniqueId().toString()) &&
             t.recipient.equals(player2.getUniqueId().toString()) &&

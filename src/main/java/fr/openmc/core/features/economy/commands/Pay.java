@@ -24,7 +24,7 @@ public class Pay {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous payer vous-même"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
-        if(EconomyManager.transferBalance(player.getUniqueId(), target.getUniqueId(), amount, "Paiement")) {
+        if(EconomyManager.transferBalance(player.getUniqueId(), target.getUniqueId(), amount, "Paiement de " + player.getName() + " à " + target.getName())) {
             MessagesManager.sendMessage(player, Component.text("§aVous avez payé §e" + target.getName() + "§a de §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
             MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
         } else {
