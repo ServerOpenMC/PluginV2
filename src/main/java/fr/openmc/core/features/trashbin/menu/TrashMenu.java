@@ -1,14 +1,14 @@
 package fr.openmc.core.features.trashbin.menu;
 
-import com.j256.ormlite.stmt.query.In;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -16,7 +16,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,12 +89,12 @@ public class TrashMenu extends Menu {
 
         if (clickedSlot == VALIDATE) {
             destroyItems(e.getInventory());
-            p.sendMessage("Objets détruits");
+            MessagesManager.sendMessage(p, Component.text("Objets détruits"), Prefix.OPENMC, MessageType.INFO,  true);
         }
 
         if (clickedSlot == CANCEL) {
             returnItems(p, e.getInventory());
-            p.sendMessage("Objets retourner dans votre inventaire");
+            MessagesManager.sendMessage(p, Component.text("Objets retourné dans votre inventaire"), Prefix.OPENMC, MessageType.INFO,  true);
         }
     }
 
@@ -103,7 +102,8 @@ public class TrashMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {
 
         Inventory inv = event.getInventory();
-        returnItems((Player) event.getPlayer(), inv);
+        Player player = (Player) event.getPlayer();
+        returnItems(player, inv);
 
     }
 
