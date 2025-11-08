@@ -1,5 +1,6 @@
-package fr.openmc.core.features.trashbin;
+package fr.openmc.core.features.trashbin.commands;
 
+import fr.openmc.core.features.trashbin.menu.TrashMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,9 +16,9 @@ public class TrashCommand {
     @Description("Ouvre une poubelle pour jetter les items")
     private void trash(Player player) {
 
-        Inventory bin = Bukkit.createInventory(player, 54, ChatColor.RED + "Poubelle");
+        new TrashMenu(player).open();
 
-        player.openInventory(bin);
+
     }
 
 }
