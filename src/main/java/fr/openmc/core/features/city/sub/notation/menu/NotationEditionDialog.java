@@ -108,7 +108,7 @@ public class NotationEditionDialog {
                                 Component.text("Une justification de la note est obligatoire")
                         )
                 )
-                .multiline(TextDialogInput.MultilineOptions.create(5, 40))
+                .multiline(TextDialogInput.MultilineOptions.create(7, 40))
                 .build()
         );
 
@@ -125,7 +125,7 @@ public class NotationEditionDialog {
                         ActionButton.builder(Component.text(ButtonType.SAVE.getLabel()))
                                 .action(DialogAction.customClick((response, audience) -> {
                                             float noteArchitectural = response.getFloat("input_note_architectural");
-                                            float noteCoherence = response.getFloat("input_note_architectural");
+                                            float noteCoherence = response.getFloat("input_note_coherence");
                                             String description = response.getText("input_description");
 
                                             if (noteArchitectural > NotationNote.NOTE_ARCHITECTURAL.getMaxNote()) {

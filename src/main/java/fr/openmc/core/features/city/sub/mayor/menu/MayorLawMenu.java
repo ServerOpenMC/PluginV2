@@ -212,6 +212,9 @@ public class MayorLawMenu extends Menu {
                             player,
                             "§eVous pouvez entrer votre message que vous voulez diffuser dans toute la ville ! Tapez cancel pour annuler l'action",
                             input -> {
+                                if (input == null)
+                                    return;
+
                                 for (UUID uuidMember : city.getMembers()) {
                                     if (uuidMember == player.getUniqueId()) continue;
 

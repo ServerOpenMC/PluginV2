@@ -131,16 +131,15 @@ public class ErrorReporter {
             String firstStack = currentError.size() > 1 ? currentError.get(1) : "";
             String signature = firstLine + "|" + firstStack;
 
-            boolean alreadyReported = !reportedErrors.add(signature);
+            if (reportedErrors.contains(signature)) return;
+            reportedErrors.add(signature);
 
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             String pluginVersion = OMCPlugin.getInstance().getPluginMeta().getVersion();
             String mcVersion = Bukkit.getBukkitVersion();
 
-            String prefix = alreadyReported ? "⚠️" : "🚨";
-            String mention = (alreadyReported || notifIds.isEmpty())
-                    ? ""
-                    : notifIds.stream().map(id -> "<@" + id + ">").collect(Collectors.joining(" "));
+            String prefix = "🚨";
+            String mention = notifIds.stream().map(id -> "<@" + id + ">").collect(Collectors.joining(" "));
 
             String discordMsg = prefix + " **Erreur interceptée !** " + mention + "\n"
                     + "Date: `" + timestamp + "`\n"

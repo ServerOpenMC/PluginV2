@@ -119,7 +119,10 @@ public class OMCPlugin extends JavaPlugin {
         ListenersManager.init();
         EconomyManager.init();
         BankManager.init();
-        ScoreboardManager.init();
+
+        if (!isUnitTestVersion())
+            ScoreboardManager.init();
+
         HomesManager.init();
         TPAQueue.initCommand();
         FreezeManager.init();
@@ -217,8 +220,9 @@ public class OMCPlugin extends JavaPlugin {
         }
 
         // If the plugin crashes, shutdown the server
-        if (!isUnitTestVersion() || !Bukkit.isStopping())
-            Bukkit.shutdown();
+        if (!isUnitTestVersion())
+            if (!Bukkit.isStopping())
+                Bukkit.shutdown();
     }
 
     private void logLoadMessage() {

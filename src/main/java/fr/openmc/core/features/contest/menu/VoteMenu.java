@@ -220,7 +220,7 @@ public class VoteMenu extends Menu {
                 ConfirmMenu menu = new ConfirmMenu(
                         player,
                         () -> {
-                            ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
+                            ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 2, colorFinal));
                             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
                             MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 

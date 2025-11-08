@@ -41,7 +41,7 @@ public class NotationManager {
     /**
      * Jour d'application de la notation.
      */
-    private static final DayOfWeek APPLY_NOTATION_DAY = DayOfWeek.MONDAY;
+    private static final DayOfWeek APPLY_NOTATION_DAY = DayOfWeek.SUNDAY;
 
     /**
      * Map des notations par semaine (clé : chaine de la semaine, valeur : liste de CityNotation).

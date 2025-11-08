@@ -208,19 +208,24 @@ public class City {
      * Allows a player to leave a city and updates the database and region
      * permissions.
      *
-     * @param player The UUID of the player leaving the city.
+     * @param playerUUID The UUID of the player leaving the city.
      */
-    public void removePlayer(UUID player) {
+    public void removePlayer(UUID playerUUID) {
         if (this.members == null)
             this.members = CityManager.getCityMembers(this);
 
-        members.remove(player);
-        permissions.remove(player);
+        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
+
+        if (offlinePlayer.isOnline() && offlinePlayer instanceof Player player)
+            player.closeInventory();
+
+        members.remove(playerUUID);
+        permissions.remove(playerUUID);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
             Bukkit.getPluginManager()
-                    .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(player), this))
+                    .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(playerUUID), this))
         );
-        CityManager.removePlayerFromCity(this, player);
+        CityManager.removePlayerFromCity(this, playerUUID);
     }
 
     /**

@@ -20,6 +20,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import javax.annotation.Nullable;
+
 public class EconomyManager {
     @Getter
     private static Map<UUID, EconomyPlayer> balances;
@@ -44,10 +46,11 @@ public class EconomyManager {
         balances = loadAllBalances();
 
         CommandsManager.getHandler().register(
-                new Pay(),
-                new Baltop(),
-                new History(),
-                new Money());
+            new Pay(),
+            new Baltop(),
+            new History(),
+            new Money()
+        );
     }
 
     public static double getBalance(UUID playerUUID) {
@@ -56,17 +59,87 @@ public class EconomyManager {
     }
 
     public static void addBalance(UUID playerUUID, double amount) {
+        addBalance(playerUUID, amount, null);
+    }
+
+    public static void addBalance(UUID playerUUID, double amount, @Nullable String reason) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
         bank.deposit(amount);
+
+        if (reason != null) {
+            TransactionsManager.registerTransaction(new Transaction(
+                playerUUID.toString(),
+                "CONSOLE",
+                amount,
+                reason
+            ));
+        }
+
         savePlayerBank(bank);
     }
 
     public static boolean withdrawBalance(UUID playerUUID, double amount) {
+        return withdrawBalance(playerUUID, amount, null);
+    }
+
+    public static boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
+
         if (bank.withdraw(amount)) {
+            if (reason != null) {
+                TransactionsManager.registerTransaction(new Transaction(
+                    "CONSOLE",
+                    playerUUID.toString(),
+                    amount,
+                    reason
+                ));
+            }
+
             savePlayerBank(bank);
+
             return true;
         }
+
+        return false;
+    }
+
+    /**
+     * Transfer balance from one player to another
+     * 
+     * @param fromPlayer UUID of the player to withdraw from
+     * @param toPlayer   UUID of the player to add to
+     * @param amount     Amount to transfer
+     * @return true if the transfer was successful, false otherwise
+     */
+    public static boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount) {
+        return transferBalance(fromPlayer, toPlayer, amount, null);
+    }
+
+    /**
+     * Transfer balance from one player to another
+     * 
+     * @param fromPlayer UUID of the player to withdraw from
+     * @param toPlayer   UUID of the player to add to
+     * @param amount     Amount to transfer
+     * @param reason     Reason for the transaction
+     * @return true if the transfer was successful, false otherwise
+     */
+    public static boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount, @Nullable String reason) {
+        if (withdrawBalance(fromPlayer, amount)) {
+            addBalance(toPlayer, amount);
+
+            if (reason != null) {
+                TransactionsManager.registerTransaction(new Transaction(
+                    toPlayer.toString(),
+                    fromPlayer.toString(),
+                    amount,
+                    reason
+                ));
+            }
+
+            return true;
+        }
+
         return false;
     }
 

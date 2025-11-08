@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.Normalizer;
 import java.util.Map;
 
 public class MessagesManager {
@@ -15,6 +16,17 @@ public class MessagesManager {
     /*
     For use the beautiful message, create a prefix.
      */
+
+    private static final Map<Character, Character> SMALL_CHAR_MAP = Map.ofEntries(
+            // Uppercase
+            Map.entry('A', 'ᴀ'), Map.entry('B', 'ʙ'), Map.entry('C', 'ᴄ'), Map.entry('D', 'ᴅ'),
+            Map.entry('E', 'ᴇ'), Map.entry('F', 'ꜰ'), Map.entry('G', 'ɢ'), Map.entry('H', 'ʜ'),
+            Map.entry('I', 'ɪ'), Map.entry('J', 'ᴊ'), Map.entry('K', 'ᴋ'), Map.entry('L', 'ʟ'),
+            Map.entry('M', 'ᴍ'), Map.entry('N', 'ɴ'), Map.entry('O', 'ᴏ'), Map.entry('P', 'ᴘ'),
+            Map.entry('Q', 'ǫ'), Map.entry('R', 'ʀ'), Map.entry('S', 'ꜱ'), Map.entry('T', 'ᴛ'),
+            Map.entry('U', 'ᴜ'), Map.entry('V', 'ᴠ'), Map.entry('W', 'ᴡ'), Map.entry('X', 'x'),
+            Map.entry('Y', 'ʏ'), Map.entry('Z', 'ᴢ')
+    );
 
     /**
      * Sends a formatted message to the player with or without sound.
@@ -25,7 +37,6 @@ public class MessagesManager {
      * @param type    The type of message (information, error, success, warning)
      * @param sound   Indicates whether a sound should be played (true) or not (false)
      */
-
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
@@ -86,23 +97,18 @@ public class MessagesManager {
 
         Bukkit.broadcast(messageComponent);
     }
-        
-    public static String textToSmall(String text) {
-        Map<Character, Character> charMap = Map.ofEntries(
-                Map.entry('A', 'ᴀ'), Map.entry('B', 'ʙ'), Map.entry('C', 'ᴄ'), Map.entry('D', 'ᴅ'),
-                Map.entry('E', 'ᴇ'), Map.entry('F', 'ꜰ'), Map.entry('G', 'ɢ'), Map.entry('H', 'ʜ'),
-                Map.entry('I', 'ɪ'), Map.entry('J', 'ᴊ'), Map.entry('K', 'ᴋ'), Map.entry('L', 'ʟ'),
-                Map.entry('M', 'ᴍ'), Map.entry('N', 'ɴ'), Map.entry('O', 'ᴏ'), Map.entry('P', 'ᴘ'),
-                Map.entry('Q', 'ǫ'), Map.entry('R', 'ʀ'), Map.entry('S', 'ѕ'), Map.entry('T', 'ᴛ'),
-                Map.entry('U', 'ᴜ'), Map.entry('V', 'ᴠ'), Map.entry('W', 'ᴡ'), Map.entry('X', 'ʏ'),
-                Map.entry('Y', 'ʏ'), Map.entry('Z', 'ᴢ'), Map.entry('1', '₁'), Map.entry('2', '₂'),
-                Map.entry('3', '₃'), Map.entry('4', '₄'), Map.entry('5', '₅'), Map.entry('6', '₆'),
-                Map.entry('7', '₇'), Map.entry('8', '₈'), Map.entry('9', '₉'), Map.entry('0', '₀')
-        );
 
-        StringBuilder result = new StringBuilder();
-        for(char c : text.toCharArray()) {
-            result.append(charMap.getOrDefault(c, c));
+    public static String textToSmall(String text) {
+        if (text == null || text.isEmpty()) return text;
+
+        // Pour retirer les accents
+        text = Normalizer.normalize(text, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+
+        StringBuilder result = new StringBuilder(text.length());
+
+        for (char c : text.toUpperCase().toCharArray()) {
+            result.append(SMALL_CHAR_MAP.getOrDefault(c, c));
         }
 
         return result.toString();
