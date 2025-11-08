@@ -4,6 +4,7 @@ import com.j256.ormlite.stmt.query.In;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TrashMenu extends Menu {
     /**
@@ -78,7 +81,7 @@ public class TrashMenu extends Menu {
         Inventory clickedInvetory = e.getClickedInventory();
 
         if (!clickedInvetory.equals(trashBin)) {
-            return;
+            e.setCancelled(false);
         }
 
         if (clickedSlot < 0 || clickedSlot > CANCEL) {
@@ -100,7 +103,7 @@ public class TrashMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {
 
         Inventory inv = event.getInventory();
-        destroyItems(inv);
+        returnItems((Player) event.getPlayer(), inv);
 
     }
 
@@ -123,13 +126,6 @@ public class TrashMenu extends Menu {
             content.put(i, filler);
         }
 
-        //Test
-        content.put(2, validate);
-        content.put(3, validate);
-        content.put(7, validate);
-        content.put(12, validate);
-
-
         content.put(VALIDATE, validate);
         content.put(CANCEL, cancel);
 
@@ -138,12 +134,8 @@ public class TrashMenu extends Menu {
 
     @Override
     public List<Integer> getTakableSlot() {
-        List<Integer> takable = new ArrayList<>();
-        for (int i = DROP_START; i <= DROP_END; i++) {
-            takable.add(i);
-        }
-        return takable;
+        Stream<Integer> takable = IntStream.rangeClosed(DROP_START, DROP_END).boxed();
+        return Stream.concat(takable, MenuUtils.getInventoryItemSlots().stream()).toList();
     }
-
 
 }
