@@ -27,25 +27,25 @@ public class BreakWheatQuest extends Quest implements Listener {
         this.addTiers(
                 new QuestTier(
                         100,
-                        new QuestMoneyReward(500),
+                        new QuestMoneyReward(100),
                         new QuestItemReward(Material.WOODEN_HOE, 1)
                 ),
 
                 new QuestTier(
                         500,
-                        new QuestMoneyReward(1500),
+                        new QuestMoneyReward(500),
                         new QuestItemReward(getEnchantedHoe(Material.STONE_HOE, 1, 1), 1)
                 ),
 
                 new QuestTier(
                         2000,
-                        new QuestMoneyReward(5000),
+                        new QuestMoneyReward(1000),
                         new QuestItemReward(getEnchantedHoe(Material.IRON_HOE, 2, 1), 1)
                 ),
 
                 new QuestTier(
                         5000,
-                        new QuestMoneyReward(10000),
+                        new QuestMoneyReward(2000),
                         new QuestItemReward(getEnchantedHoe(Material.DIAMOND_HOE, 3, 2), 1)
                 )
         );

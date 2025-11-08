@@ -23,7 +23,7 @@ public class TransactionsManager {
         transactionsDao = DaoManager.createDao(connectionSource, Transaction.class);
     }
 
-    public static List<Transaction> getTransactionsByPlayers(UUID playerUUID, int limit) {
+    public static List<Transaction> getTransactionsByPlayers(UUID playerUUID) {
         if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
             return List.of(new Transaction("CONSOLE", "CONSOLE", 0, "Désactivé"));
         }

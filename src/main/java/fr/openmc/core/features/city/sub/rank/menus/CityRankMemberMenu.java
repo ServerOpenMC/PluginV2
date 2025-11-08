@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

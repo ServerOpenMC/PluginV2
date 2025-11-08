@@ -25,7 +25,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
         this.addTiers(
                 new QuestTier(1, new QuestMoneyReward(20)),
                 new QuestTier(64, new QuestMoneyReward(140)),
-                new QuestTier(512, new QuestItemReward(Material.ANCIENT_DEBRIS, 2))
+                new QuestTier(512, new QuestItemReward(Material.DIAMOND, 6))
         );
     }
 

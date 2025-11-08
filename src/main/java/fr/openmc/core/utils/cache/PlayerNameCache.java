@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.cache;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

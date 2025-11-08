@@ -395,19 +395,19 @@ ORES:
     price:
       initial:
         buy: 3.0
-        sell: 2.0
+        sell: 0.5
       actual:
         buy: 3.0
-        sell: 2.0
+        sell: 0.5
 - GOLD_INGOT:
     slot: 13
     price:
       initial:
         buy: 12.0
-        sell: 8.0
+        sell: 2.0
       actual:
         buy: 12.0
-        sell: 8.0
+        sell: 2.0
 - RAW_GOLD:
     slot: 22
     price:
@@ -417,33 +417,15 @@ ORES:
       actual:
         buy: 9.999397949070577
         sell: 0.0
-- NETHERITE_INGOT:
-    slot: 32
-    price:
-      initial:
-        buy: 1000000.0
-        sell: 0.0
-      actual:
-        buy: 1000000.0
-        sell: 0.0
 - IRON_INGOT:
     slot: 12
     price:
       initial:
         buy: 8.0
-        sell: 5.0
+        sell: 1.5
       actual:
         buy: 8.0
-        sell: 5.0
-- NETHERITE_SCRAP:
-    slot: 30
-    price:
-      initial:
-        buy: 500000.0
-        sell: 0.0
-      actual:
-        buy: 500000.0
-        sell: 0.0
+        sell: 1.5
 - RAW_IRON:
     slot: 21
     price:
@@ -489,7 +471,7 @@ MISC:
         buy: 4.0
         sell: 0.0
       actual:
-        buy: 3.9989653650781314
+        buy: 4
         sell: 0.0
 - SLIME_BALL:
     slot: 14

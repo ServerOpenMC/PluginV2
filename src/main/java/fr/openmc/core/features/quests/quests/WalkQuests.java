@@ -17,10 +17,10 @@ public class WalkQuests extends Quest implements Listener {
         super("Le randonneur", List.of("Marcher {target} blocs"), Material.LEATHER_BOOTS, true);
 
         this.addTiers(
-                new QuestTier(4000, new QuestMoneyReward(500)),
-                new QuestTier(10000, new QuestMoneyReward(1200)),
-                new QuestTier(30000, new QuestMoneyReward(3200)),
-                new QuestTier(100000, new QuestMoneyReward(8000))
+                new QuestTier(4000, new QuestMoneyReward(300)),
+                new QuestTier(10000, new QuestMoneyReward(800)),
+                new QuestTier(30000, new QuestMoneyReward(2000)),
+                new QuestTier(100000, new QuestMoneyReward(5000))
         );
     }
 

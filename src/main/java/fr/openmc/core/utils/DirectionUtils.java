@@ -19,15 +19,22 @@ public class DirectionUtils {
             return "•";
         }
 
-        double playerYaw = (player.getLocation().getYaw() % 360 + 360) % 360;
-        double targetYaw = Math.toDegrees(Math.atan2(dx, dz));
-        if (targetYaw < 0) {
-            targetYaw += 360;
-        }
+        double len = Math.sqrt(dx * dx + dz * dz);
+        double dirX = dx / len;
+        double dirZ = dz / len;
 
-        double deltaYaw = (targetYaw - playerYaw + 360) % 360;
+        double playerYaw = player.getLocation().getYaw();
+        double yawRad = Math.toRadians(playerYaw);
+        double forwardX = -Math.sin(yawRad);
+        double forwardZ = Math.cos(yawRad);
+
+        double det = forwardX * dirZ - forwardZ * dirX;
+        double dot = forwardX * dirX + forwardZ * dirZ;
+        double angleDeg = Math.toDegrees(Math.atan2(det, dot)); // dans (-180, 180]
+        if (angleDeg < 0) angleDeg += 360; // normaliser dans [0,360)
+
         final String[] ARROWS = {
-                "↑", // 0° +/- 22.5°
+                "↑", // 0° +/- 22.5° (devant)
                 "↗", // 45°
                 "→", // 90°
                 "↘", // 135°
@@ -38,7 +45,7 @@ public class DirectionUtils {
         };
 
         // On ajoute 22.5 pour centrer les secteurs, puis on divise par 45°
-        int index = (int) ((deltaYaw + 22.5) / 45) % 8;
+        int index = (int) ((angleDeg + 22.5) / 45) % 8;
         return ARROWS[index];
     }
 }

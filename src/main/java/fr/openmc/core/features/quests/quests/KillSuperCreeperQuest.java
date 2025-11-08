@@ -22,7 +22,7 @@ public class KillSuperCreeperQuest extends Quest implements Listener {
                 Material.CREEPER_HEAD
         );
 
-        this.addTier(new QuestTier(1, new QuestMoneyReward(1000)));
+        this.addTier(new QuestTier(1, new QuestMoneyReward(500)));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

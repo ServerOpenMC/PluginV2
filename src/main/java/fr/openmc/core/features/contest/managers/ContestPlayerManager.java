@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,53 +17,53 @@ public class ContestPlayerManager  {
      * Map reliant un nombre de points à un titre correspondant.
      * Par exemple, 10000 points correspondent à "Dictateur en ".
      */
-    private static final Map<Integer, String> RANKS = Map.of(
-            10000, "Dictateur en ",
-            2500, "Colonel en ",
-            2000, "Addict en ",
-            1500, "Dieu en ",
-            1000, "Légende en ",
-            750, "Sénior en ",
-            500, "Pro en ",
-            250, "Semi-pro en ",
-            100, "Amateur en ",
-            0, "Noob en "
-    );
+    private static final Map<Integer, String> RANKS = new LinkedHashMap<>() {{
+        put(10000, "Dictateur en ");
+        put(2500, "Colonel en ");
+        put(2000, "Addict en ");
+        put(1500, "Dieu en ");
+        put(1000, "Légende en ");
+        put(750, "Sénior en ");
+        put(500, "Pro en ");
+        put(250, "Semi-pro en ");
+        put(100, "Amateur en ");
+        put(0, "Noob en ");
+    }};
 
     /**
      * Map reliant le nombre de points minimum à atteindre pour obtenir le rang suivant
      * au nombre de points à partir desquels ce rang est débloqué.
      * Par exemple, pour 2500 points, le rang suivant commence à 10000 points.
      */
-    private static final Map<Integer, Integer> GOAL_POINTS = Map.of(
-            10000, 0,
-            2500, 10000,
-            2000, 2500,
-            1500, 2000,
-            1000, 1500,
-            750, 1000,
-            500, 750,
-            250, 500,
-            100, 250,
-            0, 100
-    );
+    private static final Map<Integer, Integer> GOAL_POINTS = new LinkedHashMap<>() {{
+        put(10000, 0);
+        put(2500, 10000);
+        put(2000, 2500);
+        put(1500, 2000);
+        put(1000, 1500);
+        put(750, 1000);
+        put(500, 750);
+        put(250, 500);
+        put(100, 250);
+        put(0, 100);
+    }};
 
     /**
      * Map convertissant le nombre de points en un rang numérique compris entre 1 et 10.
      * Par exemple, 10000 points correspondent au rang 10.
      */
-    private static final Map<Integer, Integer> POINTS_TO_INT_RANK = Map.of(
-            10000, 10,
-            2500, 9,
-            2000, 8,
-            1500, 7,
-            1000, 6,
-            750, 5,
-            500, 4,
-            250, 3,
-            100, 2,
-            0, 1
-    );
+    private static final Map<Integer, Integer> POINTS_TO_INT_RANK = new LinkedHashMap<>() {{
+        put(10000, 10);
+        put(2500, 9);
+        put(2000, 8);
+        put(1500, 7);
+        put(1000, 6);
+        put(750, 5);
+        put(500, 4);
+        put(250, 3);
+        put(100, 2);
+        put(0, 1);
+    }};
 
     /**
      * Map des multiplicateurs d'argent pour la récompense en fonction du rang.

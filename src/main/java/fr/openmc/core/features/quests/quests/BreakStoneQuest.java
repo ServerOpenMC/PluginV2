@@ -20,10 +20,10 @@ public class BreakStoneQuest extends Quest implements Listener {
 
 
         this.addTiers(
-                new QuestTier(10000, new QuestMoneyReward(2000)),
-                new QuestTier(30000, new QuestMoneyReward(4000)),
-                new QuestTier(80000, new QuestMoneyReward(6000)),
-                new QuestTier(150000, new QuestMoneyReward(10000))
+                new QuestTier(10000, new QuestMoneyReward(500)),
+                new QuestTier(30000, new QuestMoneyReward(2000)),
+                new QuestTier(80000, new QuestMoneyReward(3500)),
+                new QuestTier(150000, new QuestMoneyReward(5500))
         );
     }
 

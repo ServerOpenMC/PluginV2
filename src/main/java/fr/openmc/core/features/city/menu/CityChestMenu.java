@@ -204,7 +204,7 @@ public class CityChestMenu extends PaginatedMenu {
             return;
         }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
+        City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
             return;
         }
@@ -225,7 +225,6 @@ public class CityChestMenu extends PaginatedMenu {
     public boolean hasNextPage() {
         return this.page < this.city.getChestPages();
     }
-
 
     public boolean hasPreviousPage() {
         return this.page > 1;

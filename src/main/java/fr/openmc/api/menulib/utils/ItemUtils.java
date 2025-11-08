@@ -2,10 +2,10 @@ package fr.openmc.api.menulib.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import fr.openmc.api.menulib.MenuLib;
+import fr.openmc.core.utils.cache.CachePlayerProfile;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -65,7 +65,7 @@ public class ItemUtils {
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		if (skullMeta != null) {
-			PlayerProfile profile = Bukkit.createProfile(playerUUID);
+			PlayerProfile profile = CachePlayerProfile.getPlayerProfile(playerUUID);
 			skullMeta.setPlayerProfile(profile);
 			skull.setItemMeta(skullMeta);
 		}

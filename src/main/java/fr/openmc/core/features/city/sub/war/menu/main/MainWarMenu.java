@@ -19,7 +19,7 @@ import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.PlayerNameCache;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

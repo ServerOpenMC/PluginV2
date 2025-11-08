@@ -7,7 +7,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.autocomplete.FriendsRequestAutoComplete;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

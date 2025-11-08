@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 import org.bukkit.OfflinePlayer;

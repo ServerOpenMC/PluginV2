@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.commands.autocomplete;
 
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;

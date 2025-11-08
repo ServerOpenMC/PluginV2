@@ -17,9 +17,9 @@ public class SmeltIronQuest extends Quest implements Listener {
         super("Chaud devant !", List.of("Faire fondre {target} lingots de fer"), Material.IRON_ORE);
 
         this.addTiers(
-                new QuestTier(256, new QuestMoneyReward(2000)),
-                new QuestTier(512, new QuestMoneyReward(4000)),
-                new QuestTier(1536, new QuestMoneyReward(8000))
+                new QuestTier(256, new QuestMoneyReward(500)),
+                new QuestTier(512, new QuestMoneyReward(1200)),
+                new QuestTier(1536, new QuestMoneyReward(2500))
         );
     }
 

@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -23,7 +23,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fr.openmc.core.utils.InputUtils.pluralize;
 

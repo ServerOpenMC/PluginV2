@@ -1,6 +1,6 @@
 package fr.openmc.core.features.friend.autocomplete;
 
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;

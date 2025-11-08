@@ -7,7 +7,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

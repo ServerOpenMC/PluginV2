@@ -2,18 +2,18 @@ package fr.openmc.core;
 
 import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
-import org.mockbukkit.mockbukkit.ServerMock;
+
+import fr.openmc.mock.MockBukkitHelper;
+import fr.openmc.mock.ServerMock;
 
 public class OMCPluginTest {
 
     public OMCPlugin plugin;
-    public static ServerMock server;
+    public ServerMock server;
 
     @BeforeEach
     void setUp() {
-        server = MockBukkit.mock();
-
-        server.addSimpleWorld("world");
+        this.server = MockBukkitHelper.safeMock();
 
         plugin = MockBukkit.load(OMCPlugin.class);
     }

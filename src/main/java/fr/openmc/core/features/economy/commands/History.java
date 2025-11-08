@@ -1,7 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.economy.TransactionsMenu;
+import fr.openmc.core.features.economy.menu.TransactionsMenu;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;

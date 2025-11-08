@@ -6,7 +6,7 @@ import fr.openmc.core.disabled.corporation.MethodState;
 import fr.openmc.core.disabled.corporation.manager.CompanyManager;
 import fr.openmc.core.disabled.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

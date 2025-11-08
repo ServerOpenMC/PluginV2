@@ -2,11 +2,11 @@ package fr.openmc.core.features.contest.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.format.NamedTextColor;
+
 import java.util.UUID;
 
 @DatabaseTable(tableName = "contest_players")
