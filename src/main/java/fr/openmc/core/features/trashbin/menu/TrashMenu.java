@@ -53,7 +53,7 @@ public class TrashMenu extends Menu {
                 inv.setItem(i, null);
             }
         }
-        MessagesManager.sendMessage(p, Component.text("Objets retourné dans votre inventaire"), Prefix.OPENMC, MessageType.INFO,  true);
+        MessagesManager.sendMessage(p, Component.text("Objets retournés dans votre inventaire"), Prefix.OPENMC, MessageType.INFO,  true);
     }
 
     @Override
