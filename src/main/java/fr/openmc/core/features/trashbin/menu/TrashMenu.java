@@ -33,11 +33,9 @@ public class TrashMenu extends Menu {
     }
 
     int DROP_START = 0;
-    int DROP_END = 17;
-    int FILLER_START = 18;
-    int FILLER_END = 24;
-    int VALIDATE = 25;
-    int CANCEL = 26;
+    int DROP_END = 24;
+    int CANCEL = 25;
+    int VALIDATE = 26;
 
     public void destroyItems(Inventory inv) {
         for (int i = DROP_START; i <= DROP_END; i++) {
@@ -112,19 +110,12 @@ public class TrashMenu extends Menu {
 
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
-        ItemBuilder filler = new ItemBuilder(this, Material.WHITE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.itemName(Component.text(""));
-        });
         ItemBuilder validate = new ItemBuilder(this, Material.GREEN_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.itemName(Component.text("Détruire les objets"));
         });
         ItemBuilder cancel = new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.itemName(Component.text("Annuler"));
         });
-
-        for (int i = FILLER_START; i <= FILLER_END; i++) {
-            content.put(i, filler);
-        }
 
         content.put(VALIDATE, validate);
         content.put(CANCEL, cancel);
