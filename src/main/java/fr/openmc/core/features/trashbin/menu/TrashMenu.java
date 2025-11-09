@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,14 +34,16 @@ public class TrashMenu extends Menu {
     }
 
     int DROP_START = 0;
-    int DROP_END = 24;
-    int CANCEL = 25;
+    int DROP_END = 17;
+    int CANCEL = 18;
     int VALIDATE = 26;
 
-    public void destroyItems(Inventory inv) {
+    public void destroyItems(Player p, Inventory inv) {
         for (int i = DROP_START; i <= DROP_END; i++) {
             inv.setItem(i, null);
         }
+
+        MessagesManager.sendMessage(p, Component.text("Objets détruits"), Prefix.OPENMC, MessageType.INFO,  true);
     }
     public void returnItems(Player p, Inventory inv) {
         for (int i = DROP_START; i <= DROP_END; i++) {
@@ -49,8 +52,8 @@ public class TrashMenu extends Menu {
                 p.getInventory().addItem(item);
                 inv.setItem(i, null);
             }
-            inv.close();
         }
+        MessagesManager.sendMessage(p, Component.text("Objets retourné dans votre inventaire"), Prefix.OPENMC, MessageType.INFO,  true);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class TrashMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {/*
         Player p = (Player) e.getWhoClicked();
 
         int clickedSlot = e.getRawSlot();
@@ -94,7 +97,9 @@ public class TrashMenu extends Menu {
             returnItems(p, e.getInventory());
             MessagesManager.sendMessage(p, Component.text("Objets retourné dans votre inventaire"), Prefix.OPENMC, MessageType.INFO,  true);
         }
+    */
     }
+
 
     @Override
     public void onClose(InventoryCloseEvent event) {
@@ -102,7 +107,6 @@ public class TrashMenu extends Menu {
         Inventory inv = event.getInventory();
         Player player = (Player) event.getPlayer();
         returnItems(player, inv);
-
     }
 
     @Override
@@ -110,11 +114,18 @@ public class TrashMenu extends Menu {
 
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
-        ItemBuilder validate = new ItemBuilder(this, Material.GREEN_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.itemName(Component.text("Détruire les objets"));
+        ItemBuilder validate = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
+            itemMeta.displayName(Component.text("Détruire les objets"));
+            itemMeta.lore(List.of(Component.text("Détruire les objets pour §bToujours")));
+        }).setOnClick(inventoryClickEvent -> {
+            destroyItems((Player) inventoryClickEvent.getWhoClicked(), inventoryClickEvent.getInventory());
         });
-        ItemBuilder cancel = new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.itemName(Component.text("Annuler"));
+        ItemBuilder cancel = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
+            itemMeta.displayName(Component.text("Annuler"));
+            itemMeta.lore(List.of(Component.text("Les objets seront rétournés dans votre inventaire")));
+        }).setOnClick(inventoryClickEvent -> {
+            returnItems((Player) inventoryClickEvent.getWhoClicked(), inventoryClickEvent.getInventory());
+            inventoryClickEvent.getWhoClicked().closeInventory();
         });
 
         content.put(VALIDATE, validate);
