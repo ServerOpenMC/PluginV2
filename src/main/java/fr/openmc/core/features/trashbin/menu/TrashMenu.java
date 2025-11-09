@@ -72,34 +72,9 @@ public class TrashMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent e) {/*
-        Player p = (Player) e.getWhoClicked();
+    public void onInventoryClick(InventoryClickEvent e) {
 
-        int clickedSlot = e.getRawSlot();
-
-        Inventory trashBin = e.getView().getTopInventory();
-        Inventory clickedInvetory = e.getClickedInventory();
-
-        if (!clickedInvetory.equals(trashBin)) {
-            e.setCancelled(false);
-        }
-
-        if (clickedSlot < 0 || clickedSlot > CANCEL) {
-            return;
-        }
-
-        if (clickedSlot == VALIDATE) {
-            destroyItems(e.getInventory());
-            MessagesManager.sendMessage(p, Component.text("Objets détruits"), Prefix.OPENMC, MessageType.INFO,  true);
-        }
-
-        if (clickedSlot == CANCEL) {
-            returnItems(p, e.getInventory());
-            MessagesManager.sendMessage(p, Component.text("Objets retourné dans votre inventaire"), Prefix.OPENMC, MessageType.INFO,  true);
-        }
-    */
     }
-
 
     @Override
     public void onClose(InventoryCloseEvent event) {
