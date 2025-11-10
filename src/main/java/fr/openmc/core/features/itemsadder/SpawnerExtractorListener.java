@@ -73,7 +73,7 @@ public class SpawnerExtractorListener implements Listener {
         if (mobName == null)
             return;
 
-        EntityType entityType = EnumUtils.match(mobName, EntityType.class);
+        EntityType entityType = EntityType.fromName(mobName);
         if (entityType == null)
             return;
 
