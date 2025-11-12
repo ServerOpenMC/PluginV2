@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation.models;
+package fr.openmc.core.features.corporation.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -9,10 +9,8 @@ import java.util.UUID;
 @DatabaseTable(tableName = "shop_suppliers")
 @Getter
 public class ShopSupplier {
-    @DatabaseField(id = true)
-    private UUID id; // différencie les supplier (un joueur peut avoir plusieurs suppliers)
-    @DatabaseField(canBeNull = false)
-    private UUID shop;
+    @DatabaseField(canBeNull = false, id = true, columnName = "owner_uuid")
+    private UUID ownerUUID;
     @DatabaseField(canBeNull = false)
     private UUID item;
     @DatabaseField(canBeNull = false)
@@ -25,10 +23,9 @@ public class ShopSupplier {
     ShopSupplier() {
         // required for ORMLite
     }
-
-    public ShopSupplier(UUID id, UUID shop, UUID item, UUID player, int amount, long time) {
-        this.id = id;
-        this.shop = shop;
+    
+    public ShopSupplier(UUID ownerUUID, UUID item, UUID player, int amount, long time) {
+        this.ownerUUID = ownerUUID;
         this.item = item;
         this.player = player;
         this.amount = amount;
