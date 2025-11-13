@@ -15,7 +15,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class CubeListener implements Listener {
+    private final Set<UUID> playersInBubble = new HashSet<>();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -67,12 +72,14 @@ public class CubeListener implements Listener {
         AttributeInstance attr = player.getAttribute(Attribute.GRAVITY);
         if (attr == null) return;
 
-        if (insideAny) {
+        UUID uuid = player.getUniqueId();
+
+        if (insideAny && !playersInBubble.contains(uuid)) {
+            playersInBubble.add(uuid);
             attr.setBaseValue(0.04);
-            player.addPotionEffect(new PotionEffect(
-                    PotionEffectType.JUMP_BOOST, 220, 2, true, false, true
-            ));
-        } else {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, Integer.MAX_VALUE, 2, true, false, true));
+        } else if (!insideAny && playersInBubble.contains(uuid)) {
+            playersInBubble.remove(uuid);
             attr.setBaseValue(0.08);
             player.removePotionEffect(PotionEffectType.JUMP_BOOST);
         }

@@ -1,8 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.economy.Transaction;
-import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -23,15 +21,7 @@ public record QuestMoneyReward(double amount) implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        EconomyManager.addBalance(player.getUniqueId(), amount);
-        TransactionsManager.registerTransaction(
-                new Transaction(
-                        player.getUniqueId().toString(),
-                        "CONSOLE",
-                        amount,
-                        "Récompense de quête"
-                )
-        );
+        EconomyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
         MessagesManager.sendMessage(
                 player,
                 Component.text("§aVous avez reçu §e" + amount + EconomyManager.getEconomyIcon()),

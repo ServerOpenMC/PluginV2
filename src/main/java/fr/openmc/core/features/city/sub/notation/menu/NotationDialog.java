@@ -104,12 +104,12 @@ public class NotationDialog {
         Component base = Component.empty();
 
         if (notation != null) {
-            String activity = String.format("%.2f/" + NotationNote.NOTE_ACTIVITY.getMaxNote(), notation.getNoteActivity());
-            String eco = String.format("%.2f/" + NotationNote.NOTE_PIB.getMaxNote(), notation.getNoteEconomy());
-            String military = String.format("%.2f/" + NotationNote.NOTE_MILITARY.getMaxNote(), notation.getNoteMilitary());
-            String arch = String.format("%.2f/" + NotationNote.NOTE_ARCHITECTURAL.getMaxNote(), notation.getNoteArchitectural());
-            String coh = String.format("%.2f/" + NotationNote.NOTE_COHERENCE.getMaxNote(), notation.getNoteCoherence());
-            String total = String.format("%.2f/%.0f", notation.getTotalNote(), NotationNote.getMaxTotalNote());
+            String activity = String.format("%.2f/" + NotationNote.NOTE_ACTIVITY.getMaxNote(), Math.round(notation.getNoteActivity() * 100.0) / 100.0);
+            String eco = String.format("%.2f/" + NotationNote.NOTE_PIB.getMaxNote(), Math.round(notation.getNoteEconomy() * 100.0) / 100.0);
+            String military = String.format("%.2f/" + NotationNote.NOTE_MILITARY.getMaxNote(), Math.round(notation.getNoteMilitary() * 100.0) / 100.0);
+            String arch = String.format("%.2f/" + NotationNote.NOTE_ARCHITECTURAL.getMaxNote(), Math.round(notation.getNoteArchitectural() * 100.0) / 100.0);
+            String coh = String.format("%.2f/" + NotationNote.NOTE_COHERENCE.getMaxNote(), Math.round(notation.getNoteCoherence() * 100.0) / 100.0);
+            String total = String.format("%.2f/%.0f", Math.round(notation.getTotalNote() * 100.0) / 100.0, NotationNote.getMaxTotalNote());
             String money = String.format("%.1f", notation.getMoney());
 
             base = base

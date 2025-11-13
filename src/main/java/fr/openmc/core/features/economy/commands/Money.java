@@ -1,15 +1,11 @@
 package fr.openmc.core.features.economy.commands;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.economy.Transaction;
-import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,38 +52,22 @@ public class Money {
     @Description("Permet d'ajouter de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.add")
     public void addMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        EconomyManager.addBalance(target.getUniqueId(), amount);
+        EconomyManager.addBalance(target.getUniqueId(), amount, "Admin - Ajout par " + player == null ? "Console" : player.getName());
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté §e" + EconomyManager.getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(), Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
         }
-
-        TransactionsManager.registerTransaction(new Transaction(
-                target.getUniqueId().toString(),
-                "CONSOLE",
-                amount,
-                "Admin"
-        ));
     }
 
     @Subcommand("remove")
     @Description("Permet de retirer de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.remove")
     public void removeMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        if(EconomyManager.withdrawBalance(target.getUniqueId(), amount)) {
+        if(EconomyManager.withdrawBalance(target.getUniqueId(), amount, "Admin  - Retirer par " + player == null ? "Console" : player.getName())) {
             MessagesManager.sendMessage(player, Component.text("§aVous avez retiré §e" + EconomyManager.getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
             if(target.isOnline()) {
                 MessagesManager.sendMessage(target.getPlayer(), Component.text("§cVous avez perdu §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
             }
-
-            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            TransactionsManager.registerTransaction(new Transaction(
-                        "CONSOLE",
-                        target.getUniqueId().toString(),
-                        amount,
-                        "Admin"
-                ));
-            });
         } else {
             MessagesManager.sendMessage(player, Component.text("§cLe joueur n'a pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
         }

@@ -15,11 +15,8 @@ public class ScoreboardListener implements Listener {
         Player player = event.getPlayer();
         SternalBoard board = boardCache.find(player.getUniqueId());
 
-        if (board == null) {
-            createNewBoard(player);
-        } else {
-            updateBoard(player, board);
-        }
+        if (board == null) createNewBoard(player);
+        else updateBoard(player, board);
     }
 
     @EventHandler
