@@ -3,9 +3,8 @@ package fr.openmc.core.listeners;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.api.hooks.LuckPermsHook;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import org.bukkit.Bukkit;
@@ -42,7 +41,7 @@ public class AsyncChatListener implements Listener {
 
         final String formattedMessage = colorize(translateHexColorCodes(rawMessage));
 
-        event.renderer((source, sourceDisplayName, component, viewer) -> Component.text(formattedMessage));
+        event.renderer((source, sourceDisplayName, component, viewer) -> LegacyComponentSerializer.legacySection().deserialize(formattedMessage));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (message.contains(p.getName()))
@@ -55,7 +54,7 @@ public class AsyncChatListener implements Listener {
     }
 
     private String translateHexColorCodes(final String message) {
-        final char colorChar = TextColor.HEX_CHARACTER;
+        final char colorChar = '§'; //TextColor.HEX_CHARACTER;
 
         final Matcher matcher = Pattern.compile("&#([A-Fa-f0-9]{6})").matcher(message);
         final StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
