@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
+import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
@@ -100,6 +101,12 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Priorité actuelle : §d" + this.newRank.getPriority())
 			));
 		}).setOnClick(inventoryClickEvent -> {
+			if (!canManageRanks) return;
+			
+			if (!CityRankCondition.canModifyRankPermissions(city, getOwner(), newRank.getPriority())) {
+				return;
+			}
+			
 			if (inventoryClickEvent.isLeftClick()) {
 				new CityRankDetailsMenu(getOwner(), city, newRank.withPriority((newRank.getPriority() + 1) % 18)).open();
 			} else if (inventoryClickEvent.isRightClick()) {
@@ -165,7 +172,8 @@ public class CityRankDetailsMenu extends Menu {
 		Map<Integer, ItemBuilder> map = new HashMap<>();
 		Player player = getOwner();
 		
-		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
+		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)
+				&& CityRankCondition.canModifyRankPermissions(city, player, oldRank.getPriority());
 		
 		List<Component> lorePriority = new ArrayList<>(List.of(Component.text("§7Priorité actuelle : §d" + this.newRank.getPriority())));
 		if (canManageRanks) {
@@ -241,11 +249,8 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.displayName(Component.text("§bLes permissions du grade"));
 			itemMeta.lore(lorePerm);
 		}).setOnClick(inventoryClickEvent -> {
-			if (!canManageRanks) {
-				MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions"), Prefix.CITY, MessageType.ERROR, false);
-				return;
-			}
-			new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
+			if (!canManageRanks) new CityRankPermsMenu(getOwner(), oldRank, newRank, false, 0).open();
+			else new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
