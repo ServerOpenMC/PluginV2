@@ -18,6 +18,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.sub.mayor.perks.event.MilitaryDissuasion;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -280,6 +281,8 @@ public class MayorLawMenu extends Menu {
                             Player member = Bukkit.getPlayer(uuid);
 
                             if (member == null || !member.isOnline()) continue;
+
+                            if (DreamUtils.isDreamWorld(member.getWorld())) continue;
 
                             ImpotCollection.spawnZombies(member, city);
 	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);

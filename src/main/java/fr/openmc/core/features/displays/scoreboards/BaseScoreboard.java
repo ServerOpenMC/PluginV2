@@ -8,8 +8,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
-import java.util.*;
-
 import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
 
 public abstract class BaseScoreboard {
@@ -22,24 +20,17 @@ public abstract class BaseScoreboard {
      * @param board Le scoreboard à initialiser
      */
     public void init(Player player, SternalBoard board) {
-        updateTitle(board);
+        updateTitle(player, board);
         update(player, board);
     }
 
     /**
      * Met à jour le titre du scoreboard
      *
+     * @param player Le joueur du scoreboard à mettre à jour
      * @param board Le scoreboard à mettre à jour
      */
-    protected void updateTitle(SternalBoard board) {
-        board.updateTitle(getTitle());
-    }
-
-    public Component getTitle() {
-        return canShowLogo
-                ? Component.text(FontImageWrapper.replaceFontImages(":openmc:"))
-                : Component.text("OPENMC", NamedTextColor.LIGHT_PURPLE);
-    }
+    protected abstract void updateTitle(Player player, SternalBoard board);
 
     /**
      * Met à jour les lignes du scoreboard
@@ -67,6 +58,15 @@ public abstract class BaseScoreboard {
      */
     protected int updateInterval() {
         return 5; // Toutes les 5 secondes par défaut
+    }
+
+    /**
+     * @return Un {@link Component} pour le titre
+     */
+    public Component getTitle() {
+        return canShowLogo
+                ? Component.text(FontImageWrapper.replaceFontImages(":openmc:"))
+                : Component.text("OPENMC", NamedTextColor.LIGHT_PURPLE);
     }
 
     /**

@@ -2,7 +2,11 @@ package fr.openmc.core.utils;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+
+import java.util.Random;
 
 public class LocationUtils {
     public static Location getSafeNearbySurface(Location location, int radius) {
@@ -38,5 +42,33 @@ public class LocationUtils {
                 location.getBlockY(),
                 location.getBlockZ() + 0.5
         );
+    }
+
+    public static Location findLocationInBiome(World world, Biome biome) {
+        Random random = new Random();
+        WorldBorder border = world.getWorldBorder();
+
+        Location center = border.getCenter();
+        double radius = border.getSize() / 2.0;
+
+        for (int i = 0; i < 1000; i++) {
+            double x = center.getX() + (random.nextDouble() * 2 - 1) * radius;
+            double z = center.getZ() + (random.nextDouble() * 2 - 1) * radius;
+
+            Location loc = world.getHighestBlockAt((int) x, (int) z).getLocation();
+
+            if (world.getBiome(loc) == biome) {
+                return loc.add(0, 1, 0);
+            }
+        }
+        return null;
+    }
+
+    public static boolean isSameLocation(Location a, Location b) {
+        if (a == null || b == null) return false;
+        return a.getWorld().equals(b.getWorld())
+                && a.getBlockX() == b.getBlockX()
+                && a.getBlockY() == b.getBlockY()
+                && a.getBlockZ() == b.getBlockZ();
     }
 }

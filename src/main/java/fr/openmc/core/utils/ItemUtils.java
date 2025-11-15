@@ -1,6 +1,9 @@
 package fr.openmc.core.utils;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -21,7 +24,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -427,6 +432,34 @@ public class ItemUtils {
         return hasEnoughSpace(player, item, 1);
     }
 
+    public static int countItems(Player player, ItemStack item) {
+        int count = 0;
+        for (ItemStack stack : player.getInventory().getContents()) {
+            if (stack != null && isSimilar(item, stack)) {
+                count += stack.getAmount();
+            }
+        }
+        return count;
+    }
+
+    public static void setTag(ItemStack item, String key, String value) {
+        if (item == null || item.getType().isAir()) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
+        meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, value);
+        item.setItemMeta(meta);
+    }
+
+    public static String getTag(ItemStack item, String key) {
+        if (item == null || item.getType().isAir()) return null;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return null;
+
+        NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
+        return meta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
+    }
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
      * Deux items sont considérés similaires s'ils ont le même type

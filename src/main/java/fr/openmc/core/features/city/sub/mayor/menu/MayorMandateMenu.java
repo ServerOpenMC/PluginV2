@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.SkullUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -77,7 +78,7 @@ public class MayorMandateMenu extends Menu {
         loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
 
 
-        inventory.put(3, new ItemBuilder(this, ItemUtils.getPlayerSkull(mayor.getMayorUUID()), itemMeta -> {
+        inventory.put(3, new ItemBuilder(this, SkullUtils.getPlayerSkull(mayor.getMayorUUID()), itemMeta -> {
             itemMeta.displayName(Component.text("Maire " + mayor.getName()).color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(loreMayor);
         }));
@@ -112,7 +113,7 @@ public class MayorMandateMenu extends Menu {
 	    loreOwner.add(Component.text(perk1 == null ? "§cErreur de la réforme" : perk1.getName()));
         loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
 
-        inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
+        inventory.put(5, new ItemBuilder(this, SkullUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
             itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName()));
             itemMeta.lore(loreOwner);
         }));
