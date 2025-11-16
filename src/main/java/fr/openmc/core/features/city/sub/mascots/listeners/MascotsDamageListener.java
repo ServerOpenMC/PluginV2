@@ -37,7 +37,8 @@ public class MascotsDamageListener implements Listener {
             EntityDamageEvent.DamageCause.LIGHTNING,
             EntityDamageEvent.DamageCause.BLOCK_EXPLOSION,
             EntityDamageEvent.DamageCause.ENTITY_EXPLOSION,
-            EntityDamageEvent.DamageCause.FIRE_TICK
+            EntityDamageEvent.DamageCause.FIRE_TICK,
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK
     );
 
     @EventHandler
