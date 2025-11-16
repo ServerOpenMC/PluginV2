@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.events.ArmorEquipEvent;
 import fr.openmc.core.utils.ArmorType;
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public class ArmorListener implements Listener {
                         equipping ? event.getCurrentItem() : null
                 );
 
-                Bukkit.getPluginManager().callEvent(armorEquipEvent);
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));
 
                 if (armorEquipEvent.isCancelled()) event.setCancelled(true);
             }
@@ -102,7 +103,7 @@ public class ArmorListener implements Listener {
                 player, method, newArmorType, oldArmorPiece, newArmorPiece
         );
 
-        Bukkit.getPluginManager().callEvent(armorEquipEvent);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));
 
         if (armorEquipEvent.isCancelled()) event.setCancelled(true);
     }
@@ -129,7 +130,7 @@ public class ArmorListener implements Listener {
 
             ArmorEquipEvent armorEquipEvent = new ArmorEquipEvent(player, ArmorEquipEvent.EquipMethod.HOTBAR, newArmorType, oldArmor, item);
 
-            Bukkit.getServer().getPluginManager().callEvent(armorEquipEvent);
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));
 
             if (armorEquipEvent.isCancelled()) {
                 event.setCancelled(true);
@@ -157,7 +158,7 @@ public class ArmorListener implements Listener {
                 event.getOldCursor()
         );
 
-        Bukkit.getPluginManager().callEvent(armorEquipEvent);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));
 
         if (armorEquipEvent.isCancelled()) {
             event.setResult(Event.Result.DENY);
@@ -180,7 +181,7 @@ public class ArmorListener implements Listener {
                 null
         );
 
-        Bukkit.getPluginManager().callEvent(armorEquipEvent);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));
 
         if (armorEquipEvent.isCancelled()) {
 
@@ -211,15 +212,13 @@ public class ArmorListener implements Listener {
         for (ItemStack item : player.getInventory().getArmorContents()) {
             if (isAirOrNull(item)) continue;
 
-            Bukkit.getPluginManager().callEvent(
-                    new ArmorEquipEvent(
-                            player,
-                            ArmorEquipEvent.EquipMethod.DEATH,
-                            ArmorType.match(item),
-                            item,
-                            null
-                    )
-            );
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(new ArmorEquipEvent(
+                    player,
+                    ArmorEquipEvent.EquipMethod.DEATH,
+                    ArmorType.match(item),
+                    item,
+                    null
+            )));
         }
     }
 
@@ -237,7 +236,7 @@ public class ArmorListener implements Listener {
                 event.getItem()
         );
 
-        Bukkit.getPluginManager().callEvent(armorEquipEvent);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));
 
         if (armorEquipEvent.isCancelled()) event.setCancelled(true);
     }
