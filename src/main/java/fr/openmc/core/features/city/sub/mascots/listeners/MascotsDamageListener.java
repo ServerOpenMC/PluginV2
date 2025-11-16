@@ -38,15 +38,12 @@ public class MascotsDamageListener implements Listener {
             EntityDamageEvent.DamageCause.BLOCK_EXPLOSION,
             EntityDamageEvent.DamageCause.ENTITY_EXPLOSION,
             EntityDamageEvent.DamageCause.FIRE_TICK,
-            EntityDamageEvent.DamageCause.ENTITY_ATTACK
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK // Fix le fait de pouvoir attaquer sa propre mascotte
     );
 
     @EventHandler
     void onMascotDamageCaused(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof LivingEntity entity)) return;
-
-        if (entity instanceof Player) return;
-
         if (!MascotUtils.canBeAMascot(entity)) return;
 
         EntityDamageEvent.DamageCause cause = e.getCause();
