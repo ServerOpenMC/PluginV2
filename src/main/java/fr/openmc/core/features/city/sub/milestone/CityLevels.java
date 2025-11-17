@@ -84,7 +84,7 @@ public enum CityLevels {
             Component.text("Niveau 3"),
             Component.text("Ville peu développée"),
             List.of(
-                    new CommandRequirement("/city bank view", 1),
+                    new CommandRequirement("/city bank", 1),
                     new CommandRequirement("/city chest", 1),
                     new TemplateRequirement(
                             city -> city.getChunks().size() >= 10,
