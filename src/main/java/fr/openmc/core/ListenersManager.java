@@ -6,6 +6,7 @@ import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
 import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
+import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
@@ -38,7 +39,8 @@ public class ListenersManager {
                 new InteractListener(),
                 new AywenCapListener(),
                 new NoMoreRabbit(),
-                new ArmorListener()
+                new ArmorListener(),
+                new SpawnerExtractorListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {

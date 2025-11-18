@@ -11,7 +11,7 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Range;
 
 public class CityBankCommand {
-    @Command({"city bank view", "ville bank view"})
+    @Command({"city bank", "ville bank"})
     @Description("Ouvre le menu de la banque de ville")
     void bank(Player player) {
         if (CityManager.getPlayerCity(player.getUniqueId()) == null)
