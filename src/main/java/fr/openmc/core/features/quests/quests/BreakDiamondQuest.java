@@ -23,9 +23,9 @@ public class BreakDiamondQuest extends Quest implements Listener {
         );
 
         this.addTiers(
-                new QuestTier(100, new QuestMoneyReward(2500)),
-                new QuestTier(400, new QuestMoneyReward(5000)),
-                new QuestTier(800, new QuestMoneyReward(10000))
+                new QuestTier(100, new QuestMoneyReward(500)),
+                new QuestTier(400, new QuestMoneyReward(2000)),
+                new QuestTier(800, new QuestMoneyReward(4500))
         );
     }
 

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.view;
 
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -62,7 +63,7 @@ public class CityViewManager {
 
         MessagesManager.sendMessage(
                 player,
-                Component.text("Visualisation des claims des villes."),
+                Component.text("Visualisation des claims des villes en cours pendant 30 secondes"),
                 Prefix.CITY
         );
     }
@@ -148,7 +149,7 @@ public class CityViewManager {
                 return;
 
             viewData.claims().forEach((chunkPos, city) -> {
-                showChunkBorders(player, chunkPos, city, city.equals(playerCity), player.getLocation().getBlockY());
+                showChunkBorders(player, chunkPos, city, city.equals(playerCity), WorldGuardHook.doesChunkContainWGRegion(chunkPos.getChunkInWorld()), player.getLocation().getBlockY() + 1);
             });
         }, 0L, VIEW_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
@@ -177,11 +178,11 @@ public class CityViewManager {
      * @param isPlayerCity true si c’est la ville du joueur
      * @param playerY      hauteur du joueur (pour placer les particules)
      */
-    private static void showChunkBorders(@NotNull Player player, @NotNull ChunkPos chunkPos, @NotNull City city, boolean isPlayerCity, int playerY) {
+    private static void showChunkBorders(@NotNull Player player, @NotNull ChunkPos chunkPos, @NotNull City city, boolean isPlayerCity, boolean isRegion, int playerY) {
         List<Location> particleLocations = calculateParticleLocations(chunkPos, city, playerY);
 
         Particle particle = isPlayerCity ? Particle.CHERRY_LEAVES : Particle.TINTED_LEAVES;
-        Object data = isPlayerCity ? null : Color.RED;
+        Object data = isPlayerCity ? null : isRegion ? Color.ORANGE : Color.RED;
         particleLocations.forEach(location ->
                 ParticleUtils.sendParticlePacket(
                         player,

@@ -1,5 +1,6 @@
 package fr.openmc.core.commands.utils;
 
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -9,9 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Default;
-import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Spawn {
@@ -19,11 +18,14 @@ public class Spawn {
     @Command("spawn")
     @Description("Permet de se rendre au spawn")
     @CommandPermission("omc.commands.spawn")
-    public void spawn(CommandSender sender, @Default("me") Player target) {
+    public void spawn(
+            CommandSender sender,
+            @Named("player") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+    ) {
         
         Location spawnLocation = SpawnManager.getSpawnLocation();
 
-        if(sender instanceof Player player && player == target) {
+        if (sender instanceof Player player && (target == null || player.getUniqueId().equals(target.getUniqueId()))) {
             PlayerUtils.sendFadeTitleTeleport(player, spawnLocation);
             MessagesManager.sendMessage(player, Component.text("§aVous avez été envoyé au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
         } else {

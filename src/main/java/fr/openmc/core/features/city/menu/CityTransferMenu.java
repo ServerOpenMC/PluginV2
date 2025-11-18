@@ -10,7 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -35,7 +35,7 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.LIGHT_GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CityTransferMenu extends PaginatedMenu {
                 items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
                     itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(List.of(
-                            Component.text("§7Voulez-vous donner à §d" + title + playerOffline.getName() + " §7votre ville ?"),
+		                    Component.text("§7Voulez-vous transférer la ville à §d" + title + playerOffline.getName() + "§7 ?"),
                             Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                     ));
                 }).setOnClick(inventoryClickEvent -> {
@@ -113,12 +113,12 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Transferer";
+	    return "Menu des villes - Transférer";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

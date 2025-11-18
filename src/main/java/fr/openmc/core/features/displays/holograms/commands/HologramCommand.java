@@ -1,24 +1,17 @@
 package fr.openmc.core.features.displays.holograms.commands;
 
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
+import fr.openmc.core.features.displays.holograms.commands.autocomplete.HologramAutoComplete;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static fr.openmc.core.features.displays.holograms.HologramLoader.hologramFolder;
 
@@ -28,14 +21,17 @@ public class HologramCommand {
     @Subcommand("setPos")
     @CommandPermission("op")
     @Description("Défini la position d'un Hologram.")
-    void setPosCommand(Player player, String hologramName) {
+    void setPosCommand(
+            Player player,
+            @Named("hologramName") @SuggestWith(HologramAutoComplete.class) String hologramName
+    ) {
         if (HologramLoader.displays.containsKey(hologramName)) {
 
             try {
                 HologramLoader.setHologramLocation(hologramName, player.getLocation());
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§aPosition du hologramme " + hologramName + " mise à jour."),
+                        Component.text("§aPosition de l'hologramme " + hologramName + " mise à jour."),
                         Prefix.STAFF,
                         MessageType.SUCCESS,
                         true
@@ -43,7 +39,7 @@ public class HologramCommand {
             } catch (IOException e) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§cErreur lors de la mise à jour de la position du hologram " + hologramName + ": " + e.getMessage()),
+                        Component.text("§cErreur lors de la mise à jour de la position de l'hologramme " + hologramName + ": " + e.getMessage()),
                         Prefix.STAFF,
                         MessageType.ERROR,
                         true
@@ -54,7 +50,7 @@ public class HologramCommand {
             String list = String.join(", ", HologramLoader.displays.keySet());
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVeuillez spécifier un hologramme valide: " + list),
+                    Component.text("§cVeuillez spécifier un hologramme valide : " + list),
                     Prefix.STAFF,
                     MessageType.WARNING,
                     true
@@ -69,7 +65,7 @@ public class HologramCommand {
         HologramLoader.unloadAll();
         MessagesManager.sendMessage(
                 sender,
-                Component.text("§cHolograms désactivés avec succès."),
+                Component.text("§cHologrammes désactivés avec succès."),
                 Prefix.STAFF,
                 MessageType.SUCCESS,
                 true
@@ -84,7 +80,7 @@ public class HologramCommand {
         HologramLoader.loadAllFromFolder(hologramFolder);
         MessagesManager.sendMessage(
                 sender,
-                Component.text("§aHolograms activés avec succès."),
+                Component.text("§aHologrammes activés avec succès."),
                 Prefix.STAFF,
                 MessageType.SUCCESS,
                 true

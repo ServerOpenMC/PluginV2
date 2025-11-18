@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -104,6 +105,12 @@ public class UrneListener implements Listener {
             return;
         }
 
+        if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.MAYOR)) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("Vous devez etre niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " de ville pour poser l'urne"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
+        }
+
         if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
@@ -119,7 +126,7 @@ public class UrneListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
         Location urneLocation = event.getFurniture().getEntity().getLocation();
-        if (!FancyNpcsHook.hasFancyNpc())
+        if (!FancyNpcsHook.isHasFancyNpc())
             return;
 
         if (!"omc_blocks:urne".equals(event.getNamespacedID()))
@@ -129,6 +136,13 @@ public class UrneListener implements Listener {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
         Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
+
+        if (CityManager.getCityFromChunk(locationMayor.getChunk()) == null) {
+            locationMayor = urneLocation.clone().add(0, 1, 0);
+        }
+        if (CityManager.getCityFromChunk(locationOwner.getChunk()) == null) {
+            locationOwner = urneLocation.clone().add(0, 1, 0);
+        }
 
         NPCManager.createNPCS(playerCity.getUniqueId(), locationMayor, locationOwner, player.getUniqueId());
     }
@@ -145,23 +159,13 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity.getMayor() == null) {
-            event.setCancelled(true);
-            return;
-        }
-
-        if (playerCity.getMayor().getMayorUUID() == null) {
-            event.setCancelled(true);
-            return;
-        }
-
         if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le propriétaire"), Prefix.MAYOR, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         NPCManager.removeNPCS(playerCity.getUniqueId());
     }

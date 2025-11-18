@@ -33,7 +33,7 @@ public class CityUnclaimAction {
         }
 
         if (!city.hasChunk(chunkX, chunkZ)) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez avoir ce claim pour le unclaim!"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Vous devez posséder ce claim pour le unclaim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -45,7 +45,7 @@ public class CityUnclaimAction {
         int price = calculatePrice(city.getChunks().size());
         int ayweniteNb = calculateAywenite(city.getChunks().size());
 
-        EconomyManager.addBalance(sender.getUniqueId(), price);
+        EconomyManager.addBalance(sender.getUniqueId(), price, "Unclaim de chunk de ville");
         ItemStack aywenite = ayweniteItemStack.clone();
         aywenite.setAmount(ayweniteNb);
         for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {

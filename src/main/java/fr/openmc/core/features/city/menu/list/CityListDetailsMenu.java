@@ -13,11 +13,12 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -48,12 +49,12 @@ public class CityListDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Menu de détails de la Ville " + city.getName();
+		return "Menu de détails de la ville " + city.getName();
 	}
 
 	@Override
 	public String getTexture() {
-		return null;
+		return "§r§f:offset_-48::city_template3x9:";
 	}
 
 	@Override
@@ -70,9 +71,14 @@ public class CityListDetailsMenu extends Menu {
 	public @NotNull Map<Integer, ItemBuilder> getContent() {
 		Map<Integer, ItemBuilder> map = new HashMap<>();
 
+		map.put(0, new ItemBuilder(this, Material.DIAMOND,
+				itemMeta ->
+						itemMeta.displayName(Component.text("§7Niveau : §3" + this.city.getLevel()))).hide(ItemUtils.getDataComponentType())
+		);
+
 		List<Component> loreOwner = new ArrayList<>();
 
-		if (MayorManager.phaseMayor == 2) {
+		if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 			Mayor mayor = this.city.getMayor();
 			ElectionType electionType = mayor.getElectionType();
 			Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
@@ -80,32 +86,32 @@ public class CityListDetailsMenu extends Menu {
 			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
 			loreOwner.add(Component.empty());
-			loreOwner.add(Component.text(perk1.getName()));
-			loreOwner.addAll(perk1.getLore());
+			loreOwner.add(Component.text(perk1 == null ? "§cErreur" : perk1.getName()));
+			loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
 			if (electionType == ElectionType.OWNER_CHOOSE) {
 				loreOwner.add(Component.empty());
-				loreOwner.add(Component.text(perk2.getName()));
-				loreOwner.addAll(perk2.getLore());
+				loreOwner.add(Component.text(perk2 == null ? "§cErreur" : perk2.getName()));
+				loreOwner.addAll(perk2 == null ? List.of() : perk2.getLore());
 				loreOwner.add(Component.empty());
-				loreOwner.add(Component.text(perk3.getName()));
-				loreOwner.addAll(perk3.getLore());
+				loreOwner.add(Component.text(perk3 == null ? "§cErreur" : perk3.getName()));
+				loreOwner.addAll(perk3 == null ? List.of() : perk3.getLore());
 			}
 
 			map.put(12, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
 					itemMeta -> {
 						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CityPermission.OWNER)).getName()));
 						itemMeta.lore(loreOwner);
-					})
+					}).hide(ItemUtils.getDataComponentType())
 			);
 
 			if (electionType == ElectionType.ELECTION) {
 				List<Component> loreMayor = new ArrayList<>();
 				loreMayor.add(Component.empty());
-				loreMayor.add(Component.text(perk2.getName()));
-				loreMayor.addAll(perk2.getLore());
+				loreMayor.add(Component.text(perk2 == null ? "§cErreur" : perk2.getName()));
+				loreMayor.addAll(perk2 == null ? List.of() : perk2.getLore());
 				loreMayor.add(Component.empty());
-				loreMayor.add(Component.text(perk3.getName()));
-				loreMayor.addAll(perk3.getLore());
+				loreMayor.add(Component.text(perk3 == null ? "§cErreur" : perk3.getName()));
+				loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
 
 				map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
 								itemMeta -> {
@@ -115,20 +121,18 @@ public class CityListDetailsMenu extends Menu {
 									);
 									itemMeta.lore(loreMayor);
 								}
-						)
+						).hide(ItemUtils.getDataComponentType())
 				);
 			}
 		} else {
 			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
-					itemMeta -> {
-						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CityPermission.OWNER)).getName()));
-					})
+					itemMeta -> itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CityPermission.OWNER)).getName())))
 			);
 		}
 		
 		LivingEntity entity = (LivingEntity) city.getMascot().getEntity();
-		
-		map.put(8, new ItemBuilder(this, new ItemStack(entity != null ? Bukkit.getItemFactory().getSpawnEgg(entity.getType()) : Material.BARRIER),
+
+		map.put(8, new ItemBuilder(this, new ItemStack(entity != null ? city.getMascot().getMascotEgg() : Material.BARRIER),
 				itemMeta -> itemMeta.displayName(Component.text(entity != null ? "§dNiveau de la Mascotte : " + city.getMascot().getLevel() : "§cAucune mascotte trouvée (bug)"))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
@@ -139,7 +143,7 @@ public class CityListDetailsMenu extends Menu {
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> {
-					itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
+					itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
 					itemMeta.lore(List.of(
 							Component.empty(),
 									Component.text("§e§lCLIQUEZ ICI POUR VOIR LES MEMBRES")

@@ -21,7 +21,7 @@ public class MilestonesManager {
 
     private static Dao<MilestoneModel, String> millestoneDao;
 
-    public MilestonesManager() {
+    public static void init() {
         registerMilestones(
                 new TutorialMilestone()
         );
@@ -47,7 +47,7 @@ public class MilestonesManager {
     }
 
     /**
-     * Load all milestones data from the database.
+     * Load all milestone data from the database.
      * This method retrieves all MilestoneModel entries and populates the player data for each milestone type.
      */
     public static void loadMilestonesData() {
@@ -60,12 +60,12 @@ public class MilestonesManager {
                 milestone.getPlayerData().put(data.getUUID(), data);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     /**
-     * Save all milestones data to the database.
+     * Save all milestone data to the database.
      * This method iterates through each milestone and saves the player data for each milestone type.
      */
     public static void saveMilestonesData() {
@@ -77,7 +77,7 @@ public class MilestonesManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -153,7 +153,7 @@ public class MilestonesManager {
      * This method adds the provided milestones to the internal set and registers their quests.
      * @param milestonesRegister the milestones to register
      */
-    public void registerMilestones(Milestone... milestonesRegister) {
+    public static void registerMilestones(Milestone... milestonesRegister) {
         for (Milestone milestone : milestonesRegister) {
             if (milestone == null) continue;
             milestones.add(milestone);
@@ -166,7 +166,7 @@ public class MilestonesManager {
      * Register the Milestone command.
      * This method registers the MilestoneCommand with the CommandsManager.
      */
-    public void registerMilestoneCommand() {
+    public static void registerMilestoneCommand() {
         CommandsManager.getHandler().register(new MilestoneCommand());
     }
 
@@ -175,7 +175,7 @@ public class MilestonesManager {
      * This method iterates through the steps of the milestone and registers any Listener instances.
      * @param milestone the milestone whose quests are to be registered
      */
-    public void registerQuestMilestone(Milestone milestone) {
+    public static void registerQuestMilestone(Milestone milestone) {
         for (Quest quest : milestone.getSteps()) {
             if (quest instanceof Listener listener) {
                 OMCPlugin.registerEvents(listener);

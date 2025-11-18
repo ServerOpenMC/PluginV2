@@ -1,6 +1,7 @@
 package fr.openmc.core.features.privatemessage.command;
 
-import fr.openmc.core.features.privatemessage.PrivateMessageManager;
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
+import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -13,20 +14,23 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("socialspy")
 public class SocialSpyCommand {
 
-    @DefaultFor("~")
+    @CommandPlaceholder()
     @Description("Active ou désactive le social spy")
     @CommandPermission("omc.admin.commands.privatemessage.socialspy")
     public void toggleSocialSpyCommand(Player player) {
-        PrivateMessageManager.getInstance().getSpyManager().toggleSocialSpy(player);
+        SocialSpyManager.toggleSocialSpy(player);
     }
 
     @Subcommand("toggle")
     @Description("Active ou désactive le social spy pour un joueur spécifique")
     @CommandPermission("omc.admin.commands.privatemessage.socialspy.admin")
-    public void toggleSocialSpyForPlayer(Player admin, @Named("target") Player target) {
-        PrivateMessageManager.getInstance().getSpyManager().toggleSocialSpy(target);
+    public void toggleSocialSpyForPlayer(
+            Player admin,
+            @SuggestWith(OnlinePlayerAutoComplete.class) @Named("target") Player target
+    ) {
+        SocialSpyManager.toggleSocialSpy(target);
 
-        String status = PrivateMessageManager.getInstance().getSpyManager().hasSocialSpyEnabled(target)
+        String status = SocialSpyManager.hasSocialSpyEnabled(target)
                 ? "activé" : "désactivé";
 
         MessagesManager.sendMessage(admin,
@@ -42,7 +46,7 @@ public class SocialSpyCommand {
         StringBuilder spyList = new StringBuilder("§6Joueurs avec Social Spy activé:\n");
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (PrivateMessageManager.getInstance().getSpyManager().hasSocialSpyEnabled(onlinePlayer)) {
+            if (SocialSpyManager.hasSocialSpyEnabled(onlinePlayer)) {
                 spyList.append("§7- §a").append(onlinePlayer.getName()).append("\n");
                 spyCount++;
             }

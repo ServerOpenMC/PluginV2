@@ -2,7 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

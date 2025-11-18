@@ -23,8 +23,8 @@ public class TutorialMilestone implements Milestone {
     public List<Component> getDescription() {
         return List.of(
                 Component.text("§7Découvrez §dOpenMC §7!"),
-                Component.text("§7Passez en revue les §dFeatures"),
-                Component.text("§8§oLes Villes, les Contests, l'Admin Shop, les Quêtes, ..."),
+                Component.text("§7Passez en revue les §dfeatures"),
+                Component.text("§8§oLes villes, les contests, l'adminshop, les quêtes, ..."),
                 Component.text("§7Idéal pour se lancer dans l'aventure !")
         );
     }

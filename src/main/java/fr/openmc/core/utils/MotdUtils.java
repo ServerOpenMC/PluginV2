@@ -13,9 +13,9 @@ import java.util.Random;
 
 public class MotdUtils {
     private static Component motd;
-    private final YamlConfiguration motdConfig;
+    private static YamlConfiguration motdConfig = null;
 
-    public MotdUtils() {
+    public static void init() {
         File motdFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "motd.yml");
 
         if (!motdFile.exists()) {
@@ -40,6 +40,6 @@ public class MotdUtils {
                 motd = Component.text(line1 + "\n" + line2);
                 Bukkit.getServer().motd(motd);
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12000 ticks = 10 minutes
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12 000 ticks = 10 minutes
     }
 }

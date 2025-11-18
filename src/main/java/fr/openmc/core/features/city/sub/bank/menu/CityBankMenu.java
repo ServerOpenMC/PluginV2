@@ -35,12 +35,12 @@ public class CityBankMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Banque";
+	    return "Menu des villes - Banque";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE)) {
             loreBankDeposit = List.of(
-                    Component.text("§7Votre argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7Votre argent sera placé dans la §6banque de la ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
             );
         } else {
@@ -89,16 +89,14 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE)) {
 
-            Supplier<ItemBuilder> interestItemSupplier = () -> {
-                return new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                    itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
-                    itemMeta.lore(List.of(
-                                    Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                            Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
-                            )
-                    );
-                });
-            };
+            Supplier<ItemBuilder> interestItemSupplier = () -> new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+	            itemMeta.itemName(Component.text("§6L'argent de votre ville"));
+                itemMeta.lore(List.of(
+                                Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+		                Component.text("§7Votre prochain intérêt est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
+                        )
+                );
+            });
 
             MenuUtils.runDynamicItem(player, this, 13, interestItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
@@ -108,7 +106,7 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE)) {
             loreBankTake = List.of(
-                    Component.text("§7L'argent sera pris dans la §6Banque de la Ville"),
+		            Component.text("§7L'argent sera pris dans la §6Banque de la ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
             );
         } else {
@@ -118,7 +116,7 @@ public class CityBankMenu extends Menu {
         }
 
         inventory.put(15, new ItemBuilder(this, Material.DISPENSER, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Retirer de l'§6Argent"));
+	        itemMeta.itemName(Component.text("§7Retirer de l'§6argent"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
             if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE))) {
@@ -133,7 +131,7 @@ public class CityBankMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+		            Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
 

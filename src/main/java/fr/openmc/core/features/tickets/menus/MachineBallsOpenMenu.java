@@ -38,7 +38,7 @@ public class MachineBallsOpenMenu extends Menu {
     private int animationTick = 0;
     private final int maxAnimationTicks = 60;
     private final List<LootItem> lootItems;
-    private final List<Integer> displaySlots = IntStream.range(19, 25).boxed().toList();
+    private final List<Integer> displaySlots = IntStream.range(19, 26).boxed().toList();
 
     private int itemOffset = 0;
     private LootItem winningItem = null;
@@ -52,7 +52,7 @@ public class MachineBallsOpenMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§6§lMachine à Boules";
+        return "§6§lMachine à boules";
     }
 
     @Override
@@ -74,6 +74,7 @@ public class MachineBallsOpenMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {
         if (animationTask != null && !animationTask.isCancelled()) {
             animationTask.cancel();
+            finishAnimation(false);
         }
         Player player = (Player) event.getPlayer();
         player.playSound(Sound.sound(Key.key("minecraft", "block.barrel.close"),
@@ -144,7 +145,7 @@ public class MachineBallsOpenMenu extends Menu {
             @Override
             public void run() {
                 if (animationTick >= maxAnimationTicks) {
-                    finishAnimation();
+                    finishAnimation(true);
                     cancel();
                     return;
                 }
@@ -162,7 +163,7 @@ public class MachineBallsOpenMenu extends Menu {
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 4L);
     }
 
-    private void finishAnimation() {
+    private void finishAnimation(boolean withLatency) {
         winningItem = selectRandomLoot();
         finished = true;
 
@@ -208,7 +209,7 @@ public class MachineBallsOpenMenu extends Menu {
                             Prefix.OPENMC, MessageType.INFO);
                 }
             }
-        }.runTaskLater(OMCPlugin.getInstance(), 60L);
+        }.runTaskLater(OMCPlugin.getInstance(), withLatency ? 60L : 0L);
     }
 
     private LootItem selectRandomLoot() {

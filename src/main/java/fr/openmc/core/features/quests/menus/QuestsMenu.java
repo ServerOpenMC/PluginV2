@@ -16,6 +16,7 @@ import fr.openmc.core.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -59,7 +60,7 @@ public class QuestsMenu extends Menu {
     }
 
     public @NotNull String getName() {
-        return "Menu des Quêtes";
+        return "Menu des quêtes";
     }
 
     @Override
@@ -115,11 +116,15 @@ public class QuestsMenu extends Menu {
         }
 
         if (this.currentPage > 0) {
-            content.put(19, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest()));
+            content.put(19, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest(), meta ->
+                    meta.displayName(Component.text("Page précédente").decoration(TextDecoration.ITALIC, false))
+            ));
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(25, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest()));
+            content.put(25, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest(), meta ->
+                    meta.displayName(Component.text("Page suivante").decoration(TextDecoration.ITALIC, false))
+            ));
         }
 
         return content;

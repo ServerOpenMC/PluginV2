@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.menu.create;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
@@ -11,8 +11,8 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -45,7 +45,7 @@ public class MayorColorMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Couleur";
+	    return "Menu des maires - Couleur";
     }
 
     @Override
@@ -102,7 +102,7 @@ public class MayorColorMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 if (type.equals("create")) {
                     List<Component> loreAccept = new ArrayList<>(List.of(
-                            Component.text("§7Vous allez vous présenter en tant que §6Maire de " + city.getName()),
+		                    Component.text("§7Vous allez vous présenter en tant que §6maire de " + city.getName()),
                             Component.empty(),
                             Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
                     ));
@@ -132,7 +132,7 @@ public class MayorColorMenu extends Menu {
                                             assert playerMember != null;
                                             if (playerMember == player) continue;
                                             if (playerMember.isOnline()) {
-                                                MessagesManager.sendMessage(playerMember.getPlayer(), Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
+	                                            MessagesManager.sendMessage(playerMember.getPlayer(), Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
                                             }
                                         }
                                     } else { // donc si c MenuType.OWNER
@@ -141,7 +141,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
                             },
                             player::closeInventory,

@@ -6,11 +6,12 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
-import fr.openmc.core.features.homes.icons.IconCategory;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -34,7 +35,7 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 public class HomeChangeIconMenu extends PaginatedMenu {
 
     private final Home home;
-    private IconCategory currentCategory = IconCategory.ALL;
+    private HomeIcon.IconCategory currentCategory = HomeIcon.IconCategory.ALL;
     private String searchQuery;
 
     private static final Map<UUID, Long> CATEGORY_COOLDOWNS = new ConcurrentHashMap<>();
@@ -72,7 +73,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.BLUE_STAINED_GLASS_PANE;
+        return null;
     }
 
     @Override
@@ -101,25 +102,27 @@ public class HomeChangeIconMenu extends PaginatedMenu {
                 itemMeta -> itemMeta.displayName(Component.text("§7Retour")), true));
 
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         // Search button
         map.put(51, new ItemBuilder(this, Material.OAK_SIGN, meta -> {
             meta.displayName(Component.text("§eRecherche"));
             List<Component> lore = new ArrayList<>();
-            if (!searchQuery.isEmpty()) lore.add(Component.text("§7Recherche actuelle: §f" + searchQuery));
+            if (! searchQuery.isEmpty()) lore.add(Component.text("§7Recherche actuelle : §f" + searchQuery));
             lore.add(Component.empty());
-            lore.add(Component.text("§7■ §aCliquez §2gauche §apour rechercher"));
-            lore.add(Component.text("§7■ §cCliquez §4droit §cpour réinitialiser"));
+            lore.add(Component.text("§7■ §aClique §2gauche §apour rechercher"));
+            lore.add(Component.text("§7■ §cClique §4droit §cpour réinitialiser"));
             meta.lore(lore);
         }).setOnClick(event -> {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
 
                 DialogInput.send(getOwner(), Component.text("Entrez votre recherche pour un item"), MAX_LENGTH, input -> {
+                    if (input == null) return;
+
                     searchQuery = input;
-                    currentCategory = IconCategory.ALL;
+                    currentCategory = HomeIcon.IconCategory.ALL;
                     setPage(0);
                     refresh();
                 });
@@ -131,8 +134,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
         // Invisible items
         for (int slot : List.of(46, 47, 52)) {
-            map.put(slot, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_invisible")).getBest(),
-                    itemMeta -> itemMeta.displayName(Component.empty())));
+            map.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
         // Category selector
@@ -142,11 +144,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("§7Sélection de catégorie"));
             lore.add(Component.empty());
-            lore.add(Component.text("§7Catégories disponibles:"));
+            lore.add(Component.text("§7Catégories disponibles :"));
 
-            lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == IconCategory.ALL));
-            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == IconCategory.CUSTOM));
-            lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == IconCategory.VANILLA));
+            lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == HomeIcon.IconCategory.ALL));
+            lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == HomeIcon.IconCategory.VANILLA));
+            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == HomeIcon.IconCategory.CUSTOM));
 
             lore.add(Component.empty());
             lore.add(Component.text("§7■ §aClique §2gauche §apour aller à la catégorie suivante"));
@@ -166,7 +168,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             CATEGORY_COOLDOWNS.put(getOwner().getUniqueId(), now);
 
             getOwner().playSound(getOwner().getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
-            IconCategory[] CATEGORIES = IconCategory.values();
+            HomeIcon.IconCategory[] CATEGORIES = HomeIcon.IconCategory.values();
             if (event.getClick().isLeftClick()) {
                 currentCategory = CATEGORIES[(currentCategory.ordinal() + 1) % CATEGORIES.length];
             } else if (event.getClick().isRightClick()) {
@@ -186,8 +188,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-    }
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
     public void onClose(InventoryCloseEvent event) {}

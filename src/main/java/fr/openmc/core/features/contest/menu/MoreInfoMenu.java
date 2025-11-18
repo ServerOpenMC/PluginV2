@@ -48,23 +48,23 @@ public class MoreInfoMenu extends Menu {
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = Arrays.asList(
-                Component.text("§7Tout les vendredi, le Contest commence"),
+                Component.text("§7Tout les vendredi, le contest commence"),
                 Component.text("§7Et les votes s'ouvrent, et il faut choisir"),
                 Component.text("§7Entre 2 camps, une ambience se crée dans le spawn...")
         );
 
         List<Component> lore1 = Arrays.asList(
                 Component.text("§7La nuit tombe sur le spawn pendant 2 jours"),
-                Component.text("§7Que la Fête commence!"),
+                Component.text("§7Que la fête commence !"),
                 Component.text("§7Des trades sont disponible"),
-                Component.text("§7Donnant des Coquillages de Contest!")
+                Component.text("§7Donnant des coquillages de contest !")
         );
 
         List<Component> lore2 = Arrays.asList(
-                Component.text("§7Le levé de Soleil sur le Spawn!"),
+                Component.text("§7Le levé de soleil sur le spawn !"),
                 Component.text("§7Les résultats tombent, et un camp"),
-                Component.text("§7sera gagnant. Et des récompenses seront attribué"),
-                Component.text(("§7A chacun."))
+                Component.text("§7sera gagnant. Et des récompenses seront attribuées"),
+                Component.text(("§7à chacun."))
         );
 
 
@@ -74,19 +74,19 @@ public class MoreInfoMenu extends Menu {
         boolean ench1 = phase == 3;
 
         inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§1Les Votes - Vendredi"));
+            itemMeta.displayName(Component.text("§r§1Les votes - Vendredi"));
             itemMeta.lore(lore0);
             itemMeta.setEnchantmentGlintOverride(ench0);
         }));
 
         inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§cL'Affrontement - Samedi-Dimanche"));
+            itemMeta.displayName(Component.text("§r§cL'affrontement - Samedi-Dimanche"));
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }));
 
         inventory.put(15, new ItemBuilder(this, Material.YELLOW_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§eLes Résultats - Lundi"));
+            itemMeta.displayName(Component.text("§r§eLes résultats - Lundi"));
             itemMeta.lore(lore2);
         }));
 

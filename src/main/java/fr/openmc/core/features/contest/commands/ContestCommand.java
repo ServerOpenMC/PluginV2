@@ -1,5 +1,8 @@
 package fr.openmc.core.features.contest.commands;
 
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
+import fr.openmc.core.features.contest.commands.autocomplete.ColorContestAutoComplete;
+import fr.openmc.core.features.contest.commands.autocomplete.TradeContestAutoComplete;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.contest.managers.TradeYMLManager;
@@ -23,7 +26,7 @@ import java.util.*;
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
     @Cooldown(4)
-    @DefaultFor("~")
+    @CommandPlaceholder()
     public static void mainCommand(Player player) {
         int phase = ContestManager.data.getPhase();
         if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
@@ -46,7 +49,7 @@ public class ContestCommand {
     @Subcommand("setphase")
     @Description("Permet de lancer une procédure de phase")
     @CommandPermission("omc.admin.commands.contest.setphase")
-    public void setPhase(Integer phase) {
+    public void setPhase(@Named("phase") @Suggest({"1", "2", "3"}) Integer phase) {
         switch(phase) {
             case 2:
                 ContestManager.initPhase2();
@@ -63,11 +66,16 @@ public class ContestCommand {
     @Subcommand("setcontest")
     @Description("Permet de définir un Contest")
     @CommandPermission("omc.admin.commands.contest.setcontest")
-    @AutoComplete("@colorContest")
-    public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
+    public void setContest(
+            Player player,
+            @Named("nom du camp 1") String camp1,
+            @Named("couleur du camp 1") @SuggestWith(ColorContestAutoComplete.class) String color1,
+            @Named("nom du camp 2") String camp2,
+            @Named("couleur du camp 2") @SuggestWith(ColorContestAutoComplete.class) String color2
+    ) {
         int phase = ContestManager.data.getPhase();
         if (phase == 1) {
-            // It's weird but it's for performance reasons
+	        // It is unique, but it is for performance reasons
             if (new HashSet<>(ContestManager.getColorContestList()).containsAll(Arrays.asList(color1, color2))) {
                 ContestManager.clearDB();
                 ContestManager.insertCustomContest(camp1, color1, camp2, color2);
@@ -83,9 +91,12 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
-    @CommandPermission("omc.admin.commands.contest.settrade")
-    @AutoComplete("@trade")
-    public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
+    public void setTrade(
+            Player player,
+            @Named("trade") @SuggestWith(TradeContestAutoComplete.class) String trade,
+            @Named("tradeAmount") int amount,
+            @Named("shellAmount") int amountShell
+    ) {
         YamlConfiguration config = TradeYMLManager.getContestConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
@@ -111,9 +122,13 @@ public class ContestCommand {
     @Subcommand("addpoints")
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("omc.admin.commands.contest.addpoints")
-    public void addPoints(Player player, Player target, Integer points) {
+    public void addPoints(
+            Player player,
+            @Named("membre") @SuggestWith(OnlinePlayerAutoComplete.class) Player target,
+            @Named("points") Integer points
+    ) {
         if (ContestManager.data.getPhase()!=3) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le contest n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 

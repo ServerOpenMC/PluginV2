@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -13,12 +14,14 @@ import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class OpenContestMenuQuest extends Quest implements Listener {
 
     public OpenContestMenuQuest() {
         super(
-                "Ouvrez le menu des Contests",
+                "Ouvrez le menu des contests",
                 List.of(
                         "§fTapez §d/contest §fou bien aller dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oUne méthode compétitive pour gagner des grosses récompenses !"
@@ -44,7 +47,7 @@ public class OpenContestMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(1000),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §6Contests§f opposent 2 groupes sur un thème, les gagnants remportent une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §9Mailbox§f, un système de lettre pour recevoir ou bien envoyer des lettres ! Sur ce, nous vous souhaitons le meilleur de votre aventure sur §dOpenMC §f!",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §6contests§f opposent 2 groupes sur un thème, les gagnants remportent une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §9mailbox§f, un système de lettre pour recevoir ou bien envoyer des lettres !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -57,7 +60,20 @@ public class OpenContestMenuQuest extends Quest implements Listener {
                             aywenite.setAmount(30);
                             items.add(aywenite);
 
-                            //TODO: ajouter les tickets de la V1
+                            FileConfiguration config = OMCPlugin.getConfigs();
+                            if (config != null) {
+                                LocalDate today = LocalDate.now();
+                                LocalDate limitDate = LocalDate.of(
+                                        config.getInt("features.aywen_pelush.year", 2025),
+                                        config.getInt("features.aywen_pelush.month", 11),
+                                        config.getInt("features.aywen_pelush.day", 3)
+                                );
+
+                                if (!limitDate.isBefore(today)) {
+                                    ItemStack aywenPlush = CustomItemRegistry.getByName("omc_plush:peluche_awyen").getBest();
+                                    items.add(aywenPlush);
+                                }
+                            }
 
                             ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
 
@@ -70,11 +86,10 @@ public class OpenContestMenuQuest extends Quest implements Listener {
     @EventHandler
     public void onContestCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        String message = event.getMessage();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (!message.equals("/contest")) return;
+        if (!event.getMessage().equals("/contest")) return;
 
         this.incrementProgress(player.getUniqueId());
     }

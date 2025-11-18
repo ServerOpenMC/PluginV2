@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum TutorialStep {
     BREAK_AYWENITE(null),
     CITY_CREATE(null),
+    CITY_LEVEL_2(null),
     HOME_CREATE(null),
     HOME_UPGRADE(null),
     OPEN_QUEST(null),
@@ -27,10 +28,11 @@ public enum TutorialStep {
         this.quest = quest;
     }
     
-    // ça peut paraitre con de faire ça mais obligatoire pour pas avoir d'instance nulle de quete.
+    // ça peut paraitre con de faire ça, mais obligatoire pour pas avoir d'instance nulle de quête.
     static {
         BREAK_AYWENITE.quest = new BreakAyweniteQuest();
         CITY_CREATE.quest = new CityCreateQuest();
+        CITY_LEVEL_2.quest = new CityLevelTwoQuest();
         HOME_CREATE.quest = new HomeCreateQuest();
         HOME_UPGRADE.quest = new HomeUpgradeQuest();
         OPEN_QUEST.quest = new OpenQuestMenuQuest();

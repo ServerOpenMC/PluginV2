@@ -1,11 +1,12 @@
 package fr.openmc.core.features.city.sub.war.actions;
 
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseParticipantsMenu;
@@ -42,16 +43,21 @@ public class WarActions {
             return;
         }
 
+        if (!FeaturesRewards.hasUnlockFeature(launchCity, FeaturesRewards.Feature.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (!launchCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cgueere §f! Changez la type de votre ville avec §c/city type §fou dans le §cMenu Principal des Villes"),
+                    Component.text("Votre ville n'est pas dans un statut de §cgueere §f! Changez la type de votre ville avec §c/city type §fou dans le §cmenu principal des villes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!cityAttack.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer n'est pas dans un statut de guerre!"),
+                    Component.text("La ville que vous essayez d'attaquer n'est pas dans un statut de guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -63,30 +69,44 @@ public class WarActions {
             return;
         }
 
+        if (WarManager.getPendingDefenseFor(launchCity) != null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Vous avez déjà été déclaré en guerre !"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (launchCity.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est en déjà en guerre!"),
+                    Component.text("Votre ville est en déjà en guerre !"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (WarManager.getPendingDefenseFor(cityAttack) != null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("La ville que vous essayez d'attaquer et déjà en préparation des troupes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer est déjà en guerre!"),
+                    Component.text("La ville que vous essayez d'attaquer est déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (cityAttack.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer est en période d'immunité!"),
+                    Component.text("La ville que vous essayez d'attaquer est en période d'immunité !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (launchCity.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est en période d'immunité!"),
+                    Component.text("Votre ville est en période d'immunité !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -142,7 +162,7 @@ public class WarActions {
     public static void confirmLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Une des villes est déjà en guerre!"),
+                    Component.text("Une des villes est déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -177,7 +197,7 @@ public class WarActions {
     public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Une des villes est déjà en guerre!"),
+                    Component.text("Une des villes est déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -227,7 +247,7 @@ public class WarActions {
      * @param cityAttack        The city being attacked.
      * @param attackers         The list of UUIDs of players from the launching city who will participate in the war.
      * @param allDefenders      The list of UUIDs of all potential defenders from the defending city.
-     * @param requiredParticipants The number of defenders required to start the war.
+     * @param requiredParticipants The number of defenders required starting the war.
      * @param pending           The pending defense object containing information about the war.
      */
     public static void launchWar(City cityLaunch, City cityAttack, List<UUID> attackers, List<UUID> allDefenders, int requiredParticipants, WarPendingDefense pending) {

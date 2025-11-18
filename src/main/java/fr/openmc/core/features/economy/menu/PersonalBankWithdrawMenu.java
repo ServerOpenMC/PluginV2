@@ -6,9 +6,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -59,7 +56,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         double halfMoneyBankPlayer = moneyBankPlayer/2;
 
         List<Component> loreBankWithdrawAll = List.of(
-                Component.text("§7Tout l'argent placé dans §6Votre Banque §7vous sera donné"),
+                Component.text("§7Tout l'argent placé dans §6votre banque §7vous sera donné"),
                 Component.empty(),
                 Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                 Component.empty(),
@@ -67,22 +64,15 @@ public class PersonalBankWithdrawMenu extends Menu {
         );
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre l'§6Argent de votre banque"));
+            itemMeta.itemName(Component.text("§7Prendre l'§6argent de votre banque"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
-            if (halfMoneyBankPlayer != 0) {
-                BankManager.withdrawBankBalance(player.getUniqueId(), moneyBankPlayer);
-                EconomyManager.addBalance(player.getUniqueId(), moneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer)
-                            + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
-            } else {
-                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
-            }
             player.closeInventory();
+            BankManager.withdraw(player.getUniqueId(), String.valueOf(moneyBankPlayer));
         }));
 
         List<Component> loreBankWithdrawHalf = List.of(
-            Component.text("§7La Moitié de l'Argent sera pris de §6Votre Banque §7pour vous le donner"),
+                Component.text("§7La moitié de l'argent sera pris de §6votre banque §7pour vous le donner"),
                 Component.empty(),
             Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                 Component.empty(),
@@ -90,23 +80,16 @@ public class PersonalBankWithdrawMenu extends Menu {
         );
 
         inventory.put(13, new ItemBuilder(this,new ItemStack(Material.DISPENSER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6Argent de votre banque"));
+            itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6argent de votre banque"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
-            if (halfMoneyBankPlayer != 0) {
-                BankManager.withdrawBankBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                EconomyManager.addBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
-            } else {
-                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
-            }
-
+            BankManager.withdraw(player.getUniqueId(), String.valueOf(halfMoneyBankPlayer));
             player.closeInventory();
         }));
 
 
         List<Component> loreBankWithdrawInput = List.of(
-            Component.text("§7L'argent demandé sera pris dans §6Votre Banque §7pour vous le donner"),
+                Component.text("§7L'argent demandé sera pris dans §6votre banque §7pour vous le donner"),
             Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
         );
 
@@ -114,15 +97,17 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
-                    BankManager.withdrawBankBalance(player, input)
-            );
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input -> {
+                if (input == null) return;
+
+                BankManager.withdraw(player.getUniqueId(), input);
+            });
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de votre Banque"),
+                    Component.text("§7Vous allez retourner au menu de votre banque"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));

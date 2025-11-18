@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -16,22 +17,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class WorldGuardHook {
-
+    @Getter
     private static boolean hasWorldGuard;
 
-    public WorldGuardHook() {
+    public static void init() {
         hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     }
 
-    /**
-     * Retourne si l'instance a WorldGuard
-     */
-    public static boolean hasWorldGuard() {
-        return hasWorldGuard;
-    }
-
     public static boolean isRegionConflict(Location location) {
-        if(!hasWorldGuard()) return false;
+        if (!isHasWorldGuard()) return false;
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         World world = WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(location.getWorld().getName());
@@ -54,7 +48,7 @@ public class WorldGuardHook {
     }
 
     public static boolean doesChunkContainWGRegion(Chunk chunk) {
-        if (!hasWorldGuard()) return false;
+        if (!isHasWorldGuard()) return false;
 
         org.bukkit.World world = chunk.getWorld();
         int minX = chunk.getX() << 4;

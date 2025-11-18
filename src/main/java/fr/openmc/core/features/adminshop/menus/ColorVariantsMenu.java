@@ -8,7 +8,10 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -70,7 +73,7 @@ public class ColorVariantsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des variantes de couleur pour " + originalItem.getName();
+        return "Menu des variantes de couleur pour " + originalItem.getBaseType();
     }
 
     @Override
@@ -101,10 +104,10 @@ public class ColorVariantsMenu extends Menu {
         }
 
         int[] organizedSlots = {
-                4,
                 11, 12, 13, 14, 15,
                 20, 21, 22, 23, 24,
-                29, 30, 31, 32, 33
+                29, 30, 31, 32, 33,
+                38, 39, 40, 41, 42
         };
 
         int maxVariants = Math.min(variants.size(), organizedSlots.length);
@@ -118,7 +121,6 @@ public class ColorVariantsMenu extends Menu {
         for (int i = 0; i < maxVariants; i++) {
             Material variant = variants.get(i);
             int slot = organizedSlots[i];
-            if (slot == 4) continue;
 
             ItemStack itemStack = new ItemStack(variant);
             ItemMeta meta = itemStack.getItemMeta();
@@ -133,12 +135,11 @@ public class ColorVariantsMenu extends Menu {
             itemStack.setItemMeta(meta);
 
             ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
-            String finalColorName = colorName;
             itemBuilder.setItemId(variant.name())
                     .setOnClick(event -> {
                         ShopItem colorVariant = new ShopItem(
                                 variant.name(),
-                                "§7" + finalColorName + " " + getFormattedTypeName(baseType),
+                                ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 variant,
                                 originalItem.getSlot(),
                                 originalItem.getInitialSellPrice(),
@@ -162,12 +163,7 @@ public class ColorVariantsMenu extends Menu {
 
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aRetour à la catégorie"));
-        });
-
-        backButton.setItemId("back")
-                .setOnClick(event -> {
-                    previousMenu.open();
-                });
+        }, true);
 
         content.put(49, backButton);
 

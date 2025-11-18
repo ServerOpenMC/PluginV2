@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -64,10 +65,11 @@ public class War {
         String message = String.format("""
                         §8§m                                                     §r
                         §7
-                        §c§lGUERRE!§r §7La préparation de la guerre commence§7
+                        §c§lGUERRE !§r §7La préparation de la guerre commence§7
                         §8§oPréparez vous pour le combat contre %s
                         §8§oVous avez §c§l%d minutes §8pour vous équiper.
                         §8§oVous serez en §4%d §8VS §4%d
+                        §8§oLorsque le combat commencera vous serez §4téléporter §8a votre §cmascotte.
                         §7
                         §8§m                                                     §r""",
                 cityAttacker.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
@@ -87,6 +89,12 @@ public class War {
 
             player.sendMessage(Component.text(message));
         }
+
+        LivingEntity mascotAttacker = (LivingEntity) cityAttacker.getMascot().getEntity();
+        mascotAttacker.clearActivePotionEffects();
+
+        LivingEntity mascotDefender = (LivingEntity) cityDefender.getMascot().getEntity();
+        mascotDefender.clearActivePotionEffects();
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::startCombat, (long) TIME_PREPARATION * 60 * 20);
     }
@@ -112,7 +120,7 @@ public class War {
         String message = """
                 §8§m                                                     §r
                 §7
-                §c§lGUERRE!§r §7Le comabat est imminent!§7
+                §c§lGUERRE !§r §7Le comabat est imminent!§7
                 §8§oBattez vous contre §c%s!
                 §8§oVous avez §c§l%d minutes §8§ode combat.
                 §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
@@ -157,7 +165,7 @@ public class War {
 
     /**
      * Ends the war and notifies the WarManager.
-     * This method sets the phase to ENDED and calls the endWar method in WarManager.
+     * This method sets the phase to END and calls the endWar method in WarManager.
      */
     public void end() {
         this.phase = WarPhase.ENDED;

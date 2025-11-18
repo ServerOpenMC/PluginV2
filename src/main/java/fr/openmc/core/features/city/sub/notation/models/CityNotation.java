@@ -11,12 +11,16 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CityNotation {
-    @DatabaseField(id = true, columnName = "city_uuid")
+    @DatabaseField(generatedId = true)
+    private Integer id;
+    @DatabaseField(columnName = "city_uuid")
     private UUID cityUUID;
     @DatabaseField
     private String weekStr;
     @DatabaseField(defaultValue = "0", columnName = "economy")
     private Double noteEconomy;
+    @DatabaseField(defaultValue = "0", columnName = "military")
+    private Double noteMilitary;
     @DatabaseField(defaultValue = "0", columnName = "activity")
     private Double noteActivity;
     @DatabaseField(defaultValue = "0", columnName = "architectural")
@@ -42,6 +46,9 @@ public class CityNotation {
 
     public double getTotalNote() {
         double total = 0;
+        if (noteMilitary != null) {
+            total += noteMilitary;
+        }
         if (noteEconomy != null) {
             total += noteEconomy;
         }

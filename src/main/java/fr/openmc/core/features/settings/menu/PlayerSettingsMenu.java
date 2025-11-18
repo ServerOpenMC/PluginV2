@@ -2,7 +2,7 @@ package fr.openmc.core.features.settings.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
@@ -14,7 +14,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import io.papermc.paper.datacomponent.DataComponentType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -87,7 +86,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
         }));
 
         buttons.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        buttons.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        buttons.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
         buttons.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return buttons;
@@ -95,7 +94,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Paramètres";
+        return "Menu des paramètres";
     }
 
     @Override

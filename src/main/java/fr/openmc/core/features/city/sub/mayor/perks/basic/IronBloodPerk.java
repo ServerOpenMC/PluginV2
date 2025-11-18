@@ -4,16 +4,18 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -31,19 +33,19 @@ public class IronBloodPerk implements Listener {
             return;
         }
         perkIronBloodCooldown.put(city, currentTime);
-        org.bukkit.Location location = mobMascot.getLocation().clone();
-        location.add(0, 3, 0);
+        Location location = LocationUtils.getSafeNearbySurface(mobMascot.getLocation().clone(), 10);
 
-        IronGolem golem = (IronGolem) location.getWorld().spawnEntity(location, EntityType.IRON_GOLEM);
-        golem.setPlayerCreated(false);
-        golem.setLootTable(null);
-        golem.setGlowing(true);
-        golem.setHealth(30);
+        IronGolem golem = location.getWorld().spawn(location, IronGolem.class, CreatureSpawnEvent.SpawnReason.CUSTOM, g -> {
+            g.setPlayerCreated(false);
+            g.setLootTable(null);
+            g.setGlowing(true);
+            g.setHealth(30);
+        });
 
         Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
-            if (!golem.isValid() || golem.isDead()) {
+            if (!golem.isValid())
                 return;
-            }
+
             List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
                     .filter(Player.class::isInstance)
                     .map(Player.class::cast)
@@ -73,13 +75,12 @@ public class IronBloodPerk implements Listener {
     private static void scheduleGolemDespawn(IronGolem golem, UUID mascotUUID) {
         long delayInitial = 3 * 60 * 20L;  // 3 minutes
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            if (!golem.isValid() || golem.isDead()) {
+            if (!golem.isValid())
                 return;
-            }
 
             List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
-                    .filter(ent -> ent instanceof Player)
-                    .map(ent -> (Player) ent)
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUniqueId().equals(MascotUtils.getCityFromEntity(mascotUUID).getUniqueId());

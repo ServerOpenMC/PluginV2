@@ -26,7 +26,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
 
     public ClaimLetterQuest() {
         super(
-                "Ouvrir la lettre des Récompenses",
+                "Ouvrir la lettre des récompenses",
                 List.of(
                         "§fTapez §d/mailbox §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu mailbox",
                         "§8§oUn moyen efficace d'envoyer des items à d'autres joueurs !"
@@ -41,7 +41,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §fEt maintenant ? Vous pouvez lier votre compte Discord à votre compte Minecraft afin d'assurer la sécurité de votre compte !",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Vous avez découvert les bases d'OpenMC. Et maintenant, libre à vous d'aller découvrir les features par vous même ! Sur ce, nous vous souhaitons le meilleur de votre aventure sur §dOpenMC §f!",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

@@ -1,19 +1,18 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
+import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
+import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -38,22 +37,17 @@ public class MayorCommands {
 
         if (warp == null) {
             if (MayorManager.phaseMayor == 2) {
-                MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Demandez au §6Maire §fActuel d'en mettre un ! §8§o*via /city setwarp ou avec le Menu des Lois*"), Prefix.CITY, MessageType.INFO, true);
+	            MessagesManager.sendMessage(player, Component.text("Le warp de lavVille n'est pas encore défini ! Demandez au §6maire §factuel d'en mettre un ! §8§o*via /city setwarp ou avec le menu des lois*"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }
-            MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Vous devez attendre que un Maire soit élu pour mettre un Warp"), Prefix.CITY, MessageType.INFO, true);
+	        MessagesManager.sendMessage(player, Component.text("Le warp de la ville n'est pas encore défini ! Vous devez attendre que un maire soit élu pour mettre un warp"), Prefix.CITY, MessageType.INFO, true);
             return;
         }
 
-        player.sendTitle("§0:tp_effect%", "§a§lTéléportation...", 20, 10, 10);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                player.teleportAsync(warp).thenAccept(success -> {
-                    MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
-                });
-            }
-        }.runTaskLater(OMCPlugin.getInstance(), 10);
+        PlayerUtils.sendFadeTitleTeleport(
+                player,
+                warp
+        );
     }
 
     @Command({"city setwarp", "ville setwarp"})

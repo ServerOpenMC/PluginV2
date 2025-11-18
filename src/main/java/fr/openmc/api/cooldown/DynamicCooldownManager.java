@@ -49,12 +49,17 @@ public class DynamicCooldownManager {
             this.uniqueId = cooldownUUID;
             this.group = group;
 
-            Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                    Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group))
+            );
 
-            long delayTicks = duration / 50; //ticks
+            long delayTicks = getRemaining() / 50; //ticks
+
             this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group));
-                DynamicCooldownManager.clear(this.uniqueId, group);
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group))
+                );
+                DynamicCooldownManager.clear(this.uniqueId, this.group, false);
             }, delayTicks);
         }
 
@@ -77,7 +82,7 @@ public class DynamicCooldownManager {
         }
     }
 
-    public DynamicCooldownManager() {
+    public static void init() {
         loadCooldowns();
     }
 
@@ -97,12 +102,13 @@ public class DynamicCooldownManager {
 
             for (Cooldown cooldown : dbCooldowns) {
                 if (cooldown.isReady()) {
+                    Bukkit.getPluginManager().callEvent(new CooldownEndEvent(cooldown.uniqueId, cooldown.group));
                     cooldownDao.delete(cooldown);
                     continue;
                 }
 
                 cooldowns.computeIfAbsent(cooldown.uniqueId, k -> new HashMap<>())
-                        .put(cooldown.group, cooldown);
+                        .put(cooldown.group, new Cooldown(cooldown.uniqueId, cooldown.group, cooldown.duration, cooldown.lastUse));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des cooldowns depuis la base de données", e);
@@ -114,11 +120,12 @@ public class DynamicCooldownManager {
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
-                if (cooldown.isReady()) return;
-                try {
-                    cooldownDao.createOrUpdate(cooldown);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                if (!cooldown.isReady()) {
+                    try {
+                        cooldownDao.createOrUpdate(cooldown);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         });
@@ -137,7 +144,7 @@ public class DynamicCooldownManager {
     /**
      * @param uuid  Entity UUID to check
      * @param group Cooldown group
-     * @return true if entity can perform action
+     * @return true if an entity can perform action
      */
     public static boolean isReady(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
@@ -245,9 +252,12 @@ public class DynamicCooldownManager {
      * @param uuid  Entity UUID
      * @param group Cooldown group
      */
-    public static void clear(UUID uuid, String group) {
+    public static void clear(UUID uuid, String group, boolean callEvent) {
         var userCooldowns = cooldowns.get(uuid);
+
         if (userCooldowns != null) {
+            if (callEvent) Bukkit.getPluginManager().callEvent(new CooldownEndEvent(uuid, group));
+
             Cooldown removed = userCooldowns.remove(group);
             if (removed != null) removed.cancelTask();
             if (userCooldowns.isEmpty()) cooldowns.remove(uuid);

@@ -58,7 +58,7 @@ public class CityManageConditions {
         }
 
         if (city.getPlayerWithPermission(CityPermission.OWNER).equals(target)) {
-            MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -79,12 +79,12 @@ public class CityManageConditions {
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.OWNER))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Tu n'es pas le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Ce joueur n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -115,7 +115,7 @@ public class CityManageConditions {
         }
 
         if (!city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Tu n'es pas le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

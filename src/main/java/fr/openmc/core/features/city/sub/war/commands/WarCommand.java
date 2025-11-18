@@ -1,10 +1,11 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
@@ -16,7 +17,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.DefaultFor;
+import revxrsal.commands.annotation.CommandPlaceholder;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -28,7 +29,7 @@ import java.util.UUID;
 @Command({"guerre", "war"})
 @CommandPermission("omc.commands.city.war")
 public class WarCommand {
-    @DefaultFor("~")
+    @CommandPlaceholder()
     void mainCommand(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
@@ -36,9 +37,14 @@ public class WarCommand {
             return;
         }
 
+        if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (!playerCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cguerre §f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Principal des Villes"),
+                    Component.text("Votre ville n'est pas dans un statut de §cguerre §f ! Changez la type de votre ville avec §c/city type §fou depuis le §cmenu principal des villes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -53,6 +59,13 @@ public class WarCommand {
         if (!playerCity.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
             MessagesManager.sendMessage(player,
                     Component.text("Vous n'avez pas la permission de lancer une guerre pour la ville"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (WarManager.getPendingDefenseFor(playerCity) != null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Vous avez déjà été déclaré en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -74,6 +87,11 @@ public class WarCommand {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
             player.sendMessage("§cVous n'avez pas de ville.");
+            return;
+        }
+
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

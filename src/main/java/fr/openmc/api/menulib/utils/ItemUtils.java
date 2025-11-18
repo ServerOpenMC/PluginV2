@@ -2,7 +2,10 @@ package fr.openmc.api.menulib.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import fr.openmc.api.menulib.MenuLib;
-import org.bukkit.Bukkit;
+import fr.openmc.core.utils.cache.CachePlayerProfile;
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,12 +33,12 @@ public class ItemUtils {
 		ItemStack itemStack = new ItemStack(material);
 		ItemMeta meta = itemStack.getItemMeta();
 		if (meta != null) {
-			meta.setDisplayName(name);
+			meta.displayName(Component.text(name));
 		}
 		itemStack.setItemMeta(meta);
 		return itemStack;
 	}
-	
+
 	/**
 	 * Checks if the provided {@link ItemStack} has the specified item ID stored in its
 	 * {@link PersistentDataContainer}.
@@ -62,10 +65,40 @@ public class ItemUtils {
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		if (skullMeta != null) {
-			PlayerProfile profile = Bukkit.createProfile(playerUUID);
+			PlayerProfile profile = CachePlayerProfile.getPlayerProfile(playerUUID);
 			skullMeta.setPlayerProfile(profile);
 			skull.setItemMeta(skullMeta);
 		}
 		return skull;
+	}
+
+	/**
+	 * Get an array of DataComponentType that are allowed for items.
+	 *
+	 * @return An array of DataComponentType.
+	 */
+	public static DataComponentType[] getDataComponentType() {
+		return new DataComponentType[] {
+				DataComponentTypes.CONSUMABLE,
+				DataComponentTypes.FOOD,
+				DataComponentTypes.BUNDLE_CONTENTS,
+				DataComponentTypes.ENCHANTMENTS,
+				DataComponentTypes.DAMAGE,
+				DataComponentTypes.DAMAGE_RESISTANT,
+				DataComponentTypes.UNBREAKABLE,
+				DataComponentTypes.ATTRIBUTE_MODIFIERS,
+				DataComponentTypes.TRIM,
+				DataComponentTypes.PROVIDES_TRIM_MATERIAL,
+				DataComponentTypes.JUKEBOX_PLAYABLE,
+				DataComponentTypes.FIREWORKS,
+				DataComponentTypes.FIREWORK_EXPLOSION,
+				DataComponentTypes.POTION_CONTENTS,
+				DataComponentTypes.POTION_DURATION_SCALE,
+				DataComponentTypes.DEATH_PROTECTION,
+				DataComponentTypes.DYED_COLOR,
+				DataComponentTypes.CONTAINER_LOOT,
+				DataComponentTypes.CONTAINER,
+				DataComponentTypes.RARITY
+		};
 	}
 }

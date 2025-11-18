@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -16,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
 
     public OpenSettingsMenuQuest() {
         super(
-                "Ouvrir le menu des Paramètres",
+                "Ouvrir le menu des paramètres",
                 List.of(
                         "§fTapez §d/settings §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oCela va vous permettre de configurer votre expérience de jeu !"
@@ -42,8 +42,8 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, etc." +
-                                " Sujet à part, vous pouvez passer en mode compétition grâce aux §6Contests§f, une sorte de concours hebdomadaire !",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §9paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, ..." +
+                                " Sujet à part, vous pouvez passer en mode compétition grâce aux §6contests§f, une sorte de concours hebdomadaire !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -54,14 +54,14 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onSettingsMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onSettingsMenuOpen(OpenMenuEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getInventory().getHolder() == null) return;
+        if (event.getMenu() == null) return;
 
-        if (!event.getInventory().getHolder().getClass().equals(PlayerSettingsMenu.class)) return;
+        if (!(event.getMenu() instanceof PlayerSettingsMenu)) return;
 
         this.incrementProgress(player.getUniqueId());
     }

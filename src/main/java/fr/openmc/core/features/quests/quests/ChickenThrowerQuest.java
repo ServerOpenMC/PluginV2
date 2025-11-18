@@ -16,16 +16,16 @@ public class ChickenThrowerQuest extends Quest implements Listener {
 
     public ChickenThrowerQuest() {
         super(
-                "Lanceur de Poules",
+                "Lanceur de poules",
                 List.of("Lancer {target} oeufs"),
                 new ItemStack(Material.EGG)
         );
 
         this.addTiers(
-                new QuestTier(50, new QuestMoneyReward(500)),
-                new QuestTier(200, new QuestMoneyReward(2000)),
-                new QuestTier(500, new QuestMoneyReward(5000)),
-                new QuestTier(1000, new QuestMoneyReward(10000))
+                new QuestTier(50, new QuestMoneyReward(150)),
+                new QuestTier(200, new QuestMoneyReward(500)),
+                new QuestTier(500, new QuestMoneyReward(1000)),
+                new QuestTier(1000, new QuestMoneyReward(1500))
         );
     }
 

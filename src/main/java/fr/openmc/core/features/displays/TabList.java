@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class TabList {
     private static ProtocolManager protocolManager = null;
 
-    public TabList() {
+    public static void init() {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null)
             protocolManager = ProtocolLibrary.getProtocolManager();
     }
@@ -32,7 +32,7 @@ public class TabList {
     public static void updateTabList(Player player) {
         int visibleOnlinePlayers = 0;
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.canSee(player)) {
+            if (player.canSee(p)) {
                 visibleOnlinePlayers++;
             }
         }

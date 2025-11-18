@@ -5,8 +5,8 @@ import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
@@ -59,12 +59,12 @@ public class HomeConfigMenu extends Menu {
         Map<Integer, ItemBuilder> content = new HashMap<>();
         Player player = getOwner();
 
-        content.put(4, new ItemBuilder(this, home.getIconItem()));
+        content.put(4, new ItemBuilder(this, home.getIconItem()).hide(ItemUtils.getDataComponentType()));
 
-        content.put(20, new ItemBuilder(this, HomeIconRegistry.getRandomIcon().getItemStack(), itemMeta -> {
+        content.put(20, new ItemBuilder(this, home.getIcon().getItemStack(), itemMeta -> {
             itemMeta.displayName(Component.text("§aChanger l'icône"));
             itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
-        }).setOnClick(inventoryClickEvent -> new HomeChangeIconMenu(player, home).open()));
+        }).hide(ItemUtils.getDataComponentType()).setOnClick(inventoryClickEvent -> new HomeChangeIconMenu(player, home).open()));
 
         content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
             itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
@@ -77,36 +77,36 @@ public class HomeConfigMenu extends Menu {
                     .style(Style.style(TextDecoration.ITALIC.withState(false)))
                     .build();
             itemMeta.lore(Collections.singletonList(lore));
-        }).setOnClick(e -> {
-            DialogInput.send(getOwner(), Component.text("Entrez votre nouveau nom de home"), MAX_LENGTH_HOME_NAME, input -> {
-                if (!HomeUtil.isValidHomeName(input)) return;
+        }).setOnClick(e -> DialogInput.send(getOwner(), Component.text("Entrez votre nouveau nom de home"), MAX_LENGTH_HOME_NAME, input -> {
+            if (input == null) return;
 
-                if (HomesManager.getHomesNames(getOwner().getUniqueId()).contains(input)) {
-                    TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
-                    MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
-                    return;
-                }
+            if (!HomeUtil.isValidHomeName(input)) return;
 
-                TextComponent message = Component.text()
-                        .append(Component.text("Ton home ", NamedTextColor.GREEN))
-                        .append(Component.text(home.getName(), NamedTextColor.YELLOW))
-                        .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
-                        .append(Component.text(input, NamedTextColor.YELLOW))
-                        .append(Component.text(".", NamedTextColor.GREEN))
-                        .build();
+            if (HomesManager.getHomesNames(getOwner().getUniqueId()).contains(input)) {
+                TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
+                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
 
-                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
-                HomesManager.renameHome(home, input);
-            });
-        }));
+            TextComponent message = Component.text()
+                    .append(Component.text("Ton home ", NamedTextColor.GREEN))
+                    .append(Component.text(home.getName(), NamedTextColor.YELLOW))
+                    .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
+                    .append(Component.text(input, NamedTextColor.YELLOW))
+                    .append(Component.text(".", NamedTextColor.GREEN))
+                    .build();
 
-            content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
-                itemMeta.displayName(Component.text(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home"));
-                itemMeta.lore(List.of(Component.text("§7■ §cClique §4gauche §cpour supprimer votre home")));
-            }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
+            MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
+            HomesManager.renameHome(home, input);
+        })));
+
+        content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
+            itemMeta.displayName(Component.text(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home"));
+            itemMeta.lore(List.of(Component.text("§7■ §cClique §4gauche §cpour supprimer votre home")));
+        }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
         content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
-        content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        content.put(44, MailboxMenuManager.cancelBtn(this).setCloseButton());
 
         return content;
     }

@@ -7,10 +7,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -35,7 +32,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -56,22 +53,17 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
 
-        try {
-            for (UUID uuid : city.getMembers()) {
-                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+        for (UUID uuid : city.getMembers()) {
+            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-                String title = city.getRankName(uuid) + " ";
+            if (playerOffline == null) continue;
 
-                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
-            }
-            return items;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
+            String title = city.getRankName(uuid) + " ";
+
+            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
         }
+
         return items;
     }
 
@@ -83,6 +75,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
+        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§e§lCLIQUEZ ICI POUR RETOURNER")
+            ));
+        }, true));
         map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
         map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
         map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
@@ -91,12 +89,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des détails des Membres de " + city.getName();
+	    return "Menu du détail des membres de " + city.getName();
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

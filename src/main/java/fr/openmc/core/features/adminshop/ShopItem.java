@@ -2,6 +2,7 @@ package fr.openmc.core.features.adminshop;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.List;
 @Getter
 public class ShopItem {
     private final String id;
-    private final String name;
+    private final Component name;
     private final Material material;
     private final int slot;
     private final double initialSellPrice;
@@ -23,7 +24,7 @@ public class ShopItem {
      * List of materials that have color variants.
      */
     private static final List<String> COLOR_VARIANTS_MATERIALS = Arrays.asList(
-            "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS"
+            "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS", "GLASS_PANE"
     );
 
     /**
@@ -38,7 +39,7 @@ public class ShopItem {
      * @param actualSellPrice   The actual sell price of the item.
      * @param actualBuyPrice    The actual buy price of the item.
      */
-    public ShopItem(String id, String name, Material material, int slot,
+    public ShopItem(String id, Component name, Material material, int slot,
                     double initialSellPrice, double initialBuyPrice,
                     double actualSellPrice, double actualBuyPrice) {
         this.id = id;

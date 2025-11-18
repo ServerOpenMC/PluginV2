@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.actions.CityCreateAction;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
@@ -39,12 +39,12 @@ public class NoCityMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Aucune";
+	    return "Menu des villes - Aucune";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -65,9 +65,9 @@ public class NoCityMenu extends Menu {
 
             Component nameNotif;
             List<Component> loreNotif = new ArrayList<>();
-            if (!CityCommands.invitations.containsKey(player)) {
+        if (!CityInviteCommands.invitations.containsKey(player)) {
                 nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
-                loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
+	            loreNotif.add(Component.text("§7Un habitant d'une ville doit vous §6inviter"));
                 loreNotif.add(Component.text("§6via /city invite"));
 
             inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
@@ -75,7 +75,7 @@ public class NoCityMenu extends Menu {
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
         } else {
-            List<Player> invitations = CityCommands.invitations.get(player);
+            List<Player> invitations = CityInviteCommands.invitations.get(player);
             nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
 
             loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
@@ -95,7 +95,7 @@ public class NoCityMenu extends Menu {
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
                             Component.empty(),
-                            Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir créer une ville")
+		                    Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir créer une ville")
                     );
                 } else {
                     loreCreate = List.of(
@@ -116,8 +116,10 @@ public class NoCityMenu extends Menu {
                 }).setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) return;
 
-                    DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
-                            CityCreateAction.beginCreateCity(player, input)
+                    DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+                                if (input == null) return;
+                                CityCreateAction.beginCreateCity(player, input);
+                            }
                     );
                 });
             };

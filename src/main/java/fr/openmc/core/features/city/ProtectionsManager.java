@@ -21,7 +21,7 @@ public class ProtectionsManager {
     private static final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
     private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
 
-    public ProtectionsManager() {
+	public static void init() {
         OMCPlugin.registerEvents(
                 new BlockProtection(),
                 new BowProtection(),
@@ -87,8 +87,7 @@ public class ProtectionsManager {
 	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 	    
 	    if (city.isInWar()) return; // En guerre, pas de protection
-        
-        
+
         if (!city.isMember(player)) {
             event.setCancelled(true);
             cancelMessage(player);
@@ -99,10 +98,17 @@ public class ProtectionsManager {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
 		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
-		if (city == null || !CityType.WAR.equals(city.getType()))
-			return;
-		
-		event.setCancelled(true);
+		if (city == null || city.isInWar()) return;
+
+		if (entity instanceof Player player) {
+			if (canInteract(player, loc)) return;
+
+			event.setCancelled(true);
+			cancelMessage(player);
+		} else {
+			event.setCancelled(true);
+		}
+
 	}
 	
 	/**

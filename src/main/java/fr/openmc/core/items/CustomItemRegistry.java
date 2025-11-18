@@ -18,14 +18,14 @@ public class CustomItemRegistry {
     static final HashMap<String, CustomItem> items = new HashMap<>();
     static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
 
-    public CustomItemRegistry() {
+    public static void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
 
-        // Ici, enregistrer tous les items custom
+        // ** REGISTRER ITEMSTACK OF ITEM ADDER **
 
         /* Buttons */
         registerSimpleItem("_iainternal:icon_cancel", Material.DARK_OAK_DOOR, "Fermer");
-        registerSimpleItem("_iainternal:icon_back_orange", Material.ARROW, "Page précedente");
+        registerSimpleItem("_iainternal:icon_back_orange", Material.ARROW, "Page précédente");
         registerSimpleItem("_iainternal:icon_next_orange", Material.ARROW, "Page suivante");
         registerSimpleItem("_iainternal:icon_search", Material.SPYGLASS, "Rechercher");
         registerSimpleItem("omc_menus:accept_btn", Material.GREEN_CONCRETE, "Accepter");
@@ -37,15 +37,23 @@ public class CustomItemRegistry {
         registerSimpleItem("omc_menus:64_btn", Material.PAPER);
         registerSimpleItem("omc_menus:minus_btn", Material.PAPER);
         registerSimpleItem("omc_menus:plus_btn", Material.PAPER);
-        registerSimpleItem("omc_plush:peluche_seinyy", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_accept_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_refuse_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_cancel_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_arrow_left", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_arrow_right", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_send", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_hourglass", Material.PAPER);
 
         /* Items */
         registerSimpleItem("omc_contest:contest_shell", Material.NAUTILUS_SHELL);
         registerSimpleItem("omc_items:aywenite", Material.AMETHYST_SHARD);
         registerSimpleItem("omc_foods:kebab", Material.COOKED_BEEF);
         registerSimpleItem("omc_foods:the_mixture", Material.HONEY_BOTTLE);
+        registerSimpleItem("omc_foods:courgette", Material.SEA_PICKLE);
         registerSimpleItem("omc_items:mascot_stick", Material.STICK);
         registerSimpleItem("omc_items:warp_stick", Material.STICK);
+        registerSimpleItem("omc_items:aywen_cap", Material.IRON_HELMET);
         registerSimpleItem("omc_items:suit_helmet", Material.IRON_HELMET);
         registerSimpleItem("omc_items:suit_chestplate", Material.IRON_CHESTPLATE);
         registerSimpleItem("omc_items:suit_leggings", Material.IRON_LEGGINGS);
@@ -55,7 +63,12 @@ public class CustomItemRegistry {
         registerSimpleItem("omc_homes:omc_homes_icon_bin", Material.CHEST);
         registerSimpleItem("omc_homes:omc_homes_icon_information", Material.CHEST);
         registerSimpleItem("omc_homes:omc_homes_icon_upgrade", Material.CHEST);
-        registerSimpleItem("omc_homes:omc_homes_invisible", Material.CHEST);
+
+        /* Blocs */
+        registerSimpleItem("omc_blocks:aywenite_block", Material.AMETHYST_BLOCK);
+        registerSimpleItem("omc_plush:peluche_seinyy", Material.PAPER);
+        registerSimpleItem("omc_plush:peluche_awyen", Material.PAPER);
+        registerSimpleItem("omc_blocks:urne", Material.GLASS);
 
         /* Homes icons */
         registerSimpleItem("omc_homes:omc_homes_icon_axenq", Material.CHEST);

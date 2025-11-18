@@ -5,23 +5,29 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.hooks.ItemsAdderHook;
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
+import fr.openmc.core.features.contest.menu.ContributionMenu;
+import fr.openmc.core.features.contest.menu.MoreInfoMenu;
+import fr.openmc.core.features.contest.menu.TradeMenu;
+import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -29,9 +35,10 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -41,7 +48,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand;
 
 public class ContestManager {
 
@@ -57,27 +63,32 @@ public class ContestManager {
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE","BLACK"
     );
+    private static final Set<Class<? extends Menu>> contestMenus = new HashSet<>();
+
+    static {
+        contestMenus.add(ContributionMenu.class);
+        contestMenus.add(MoreInfoMenu.class);
+        contestMenus.add(TradeMenu.class);
+        contestMenus.add(VoteMenu.class);
+    }
 
     /**
      * Constructeur du ContestManager :
-     * - Enregistre les évents liés aux contests si ItemsAdder est présent
+     * – Enregistre les évents liés aux contests si ItemsAdder est présent
      * - Enregistre les suggestions pour l’autocomplétion des commandes
      * - Enregistre la commande principale /contest
      * - Initialise les données globales et les joueurs
      * - Programme le lancement et la fin des différentes phases du contest
      */
-    public ContestManager() {
+    public static void init() {
         // ** LISTENERS **
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
         }
 
         // ** COMMANDS **
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("colorContest", SuggestionProvider.of(ContestManager.getColorContestList()));
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(TradeYMLManager.getRessListFromConfig()));
-
         CommandsManager.getHandler().register(
                 new ContestCommand()
         );
@@ -172,7 +183,7 @@ public class ContestManager {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Contest.class);
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -190,7 +201,7 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                        §6§lCONTEST!§r §7 Les votes sont ouverts !§7
+                        §6§lCONTEST !§r §7 Les votes sont ouverts !§7
                         §7
                         §8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*
                         §7
@@ -224,9 +235,9 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                        §6§lCONTEST!§r §7Les contributions ont commencé!§7
-                        §7Echanger des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
-                        §8§ovia la Borne des Contest ou /contest
+                        §6§lCONTEST !§r §7Les contributions ont commencé!§7
+                        §7Échangez des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
+                        §8§ovia la borne des contest ou /contest
                         §7
                         §8§m                                                     §r"""
         ));
@@ -251,25 +262,28 @@ public class ContestManager {
         ParticleUtils.color2 = null;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            InventoryView openInv = player.getOpenInventory();
+            InventoryHolder holder = openInv.getTopInventory().getHolder();
+
+            if (holder instanceof Menu menu) {
+                if (contestMenus.contains(menu.getClass())) {
+                    player.closeInventory();
+                }
+            }
+
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
         }
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                        §6§lCONTEST!§r §7Time over! §7
-                        §7Fin du Contest, retrouvez vos récompenses et le bilan de ce Contest
+                        §6§lCONTEST !§r §7Time over ! §7
+                        §7Fin du contest, retrouvez vos récompenses et le bilan de ce Contest
                         §7sous forme de livre
                         §8§o*/contest pour voir quand le prochain contest arrive*
                         §7
                         §8§m                                                     §r"""
         ));
-        Component messageMail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
-                .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
-                .clickEvent(getRunCommand("mail"))
-                .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
-                .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
-        Bukkit.broadcast(messageMail);
 
         // GET GLOBAL CONTEST INFORMATION
         String camp1Color = data.getColor1();
@@ -278,12 +292,12 @@ public class ContestManager {
         NamedTextColor color2 = ColorUtils.getReadableColor(ColorUtils.getNamedTextColor(camp2Color));
         String camp1Name = data.getCamp1();
         String camp2Name = data.getCamp2();
-
-        //CREATE PART OF BOOK
+        
+        // Create part of the book
         ItemStack baseBook = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta baseBookMeta = (BookMeta) baseBook.getItemMeta();
-        baseBookMeta.setTitle("Les Résultats du Contest");
-        baseBookMeta.setAuthor("Les Contest");
+        baseBookMeta.setTitle("Les Résultats du contest");
+        baseBookMeta.setAuthor("Les contests");
 
         List<Component> lore = Arrays.asList(
                 Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
@@ -354,26 +368,26 @@ public class ContestManager {
         }
 
         baseBookMeta.addPages(
-                Component.text("§8§lStatistiques Globales \n§0Gagnant : ")
+                Component.text("§8§lStatistiques globales \n§0Gagnant : ")
                         .append(Component.text(campWinner).decoration(TextDecoration.ITALIC, false).color(colorWinner))
-                        .append(Component.text("\n§0Taux de Vote : §8"))
+                        .append(Component.text("\n§0Taux de vote : §8"))
                         .append(Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Taux de Points : §8"))
+                        .append(Component.text("\n§0Taux de points : §8"))
                         .append(Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
                         .append(Component.text( "\n\n§0Perdant : "))
                         .append(Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser))
-                        .append(Component.text("\n§0Taux de Vote : §8"))
+                        .append(Component.text("\n§0Taux de vote : §8"))
                         .append(Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Taux de Points : §8"))
+                        .append(Component.text("\n§0Taux de points : §8"))
                         .append(Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Multiplicateur d'Infériorité : §bx"))
+                        .append(Component.text("\n§0Multiplicateur d'infériorité : §bx"))
                         .append(Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.AQUA))
-                        .append(Component.text("\n§8§oProchaine page : Classement des 10 Meilleurs Contributeur"))
+                        .append(Component.text("\n§8§oProchaine page : classement des 10 meilleurs contributeurs"))
         );
 
 
         // 2EME PAGE - LES CLASSEMENTS
-        final Component[] leaderboard = {Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)")};
+        final Component[] leaderboard = {Component.text("§8§lLe classement du contest (jusqu'au 10ème)")};
 
         Map<UUID, ContestPlayer> orderedMap = dataPlayer.entrySet()
                 .stream()
@@ -409,7 +423,7 @@ public class ContestManager {
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
         AtomicInteger rank = new AtomicInteger(1);
-        // For each player in contest
+
         orderedMap.forEach((uuid, dataPlayer1) -> {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
@@ -417,19 +431,27 @@ public class ContestManager {
             OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
 
+            if (player.isOnline() && player instanceof Player onelinePlayer) {
+                Component messageMail = Component.text("Vous avez reçu la lettre du contest", NamedTextColor.DARK_GREEN)
+                        .append(Component.text("\nCliquez ici", NamedTextColor.YELLOW))
+                        .clickEvent(ClickEvent.runCommand("mailbox"))
+                        .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
+                        .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
+                onelinePlayer.sendMessage(messageMail);
+            }
+
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
-            String playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) + playerCampName;
-            // ex                                                             Novice en + Moutarde
+            String playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) + playerCampName; // ex. Novice en + Moutarde
 
             bookMetaPlayer.addPages(
-                    Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
+                    Component.text("§8§lStatistiques personnelles\n§0Votre camp : ")
                             .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                            .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
+                            .append(Component.text("\n§0Votre titre sur le contest §8: "))
                             .append(Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                            .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
+                            .append(Component.text("\n§0Votre rang sur le contest : §8#"))
                             .append(Component.text(rank.get()))
-                            .append(Component.text("\n§0Points Déposés : §b" + points))
+                            .append(Component.text("\n§0Points déposés : §b" + points))
             );
 
             List<ItemStack> itemListRewards = new ArrayList<>();
@@ -449,7 +471,8 @@ public class ContestManager {
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(player.getUniqueId(), money);
+                EconomyManager.addBalance(player.getUniqueId(), money, "Récompense contest - Gagnant");
+ 
                 // Gagnant - Aywenite
                 int ayweniteMin = 40;
                 int ayweniteMax = 60;
@@ -469,7 +492,7 @@ public class ContestManager {
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(player.getUniqueId(), money);
+                EconomyManager.addBalance(player.getUniqueId(), money, "Récompense contest - Perdant");
 
                 // Perdant - Aywenite
                 int ayweniteMin = 20;
@@ -482,8 +505,8 @@ public class ContestManager {
                 // Perdant - EVENT
                 losers.add(player.getUniqueId());
             }
-            // PRINT REWARDS
 
+            // PRINT REWARDS
             textRewards += "\n§8+ §6" + money + "$ ";
             textRewards += "\n§9+ §d" + aywenite + " d'Aywenite ";
             textRewards += "\n§7Boost de §b" + multiplicator;
@@ -507,20 +530,22 @@ public class ContestManager {
         try {
             Bukkit.getServer().getPluginManager().callEvent(new ContestEndEvent(data, winners, losers));
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
+        
+        // Exécuter les requêtes SQL dans un autre thread
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             TradeYMLManager.addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
-                    try {
-                        TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+
+            try {
+                TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
             TradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
-            dataPlayer = new HashMap<>(); // on supprime les données précédentes du joueurs
-            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
+            dataPlayer = new HashMap<>(); // on supprime les données précédentes des joueurs
+            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
     }
 
@@ -555,11 +580,13 @@ public class ContestManager {
     private static void scheduleStartContest() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_CONTEST_DAY) * 20;
 
-        if (DateUtils.getCurrentDayOfWeek().equals(START_CONTEST_DAY)) {
+        if (data.getPhase() == 1 && DateUtils.getCurrentDayOfWeek().equals(START_CONTEST_DAY)) {
             ContestManager.initPhase1();
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (data.getPhase() != 1) return;
+
             ContestManager.initPhase1();
             scheduleStartContest();
         }, delayInTicks);
@@ -571,11 +598,13 @@ public class ContestManager {
     private static void scheduleStartTradeContest() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_TRADE_CONTEST_DAY) * 20;
 
-        if (DateUtils.getCurrentDayOfWeek().equals(START_TRADE_CONTEST_DAY)) {
+        if (data.getPhase() == 2 && DateUtils.getCurrentDayOfWeek().equals(START_TRADE_CONTEST_DAY)) {
             ContestManager.initPhase2();
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (data.getPhase() != 2) return;
+
             ContestManager.initPhase2();
             scheduleStartTradeContest();
         }, delayInTicks);
@@ -587,11 +616,13 @@ public class ContestManager {
     private static void scheduleEndContest() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(END_CONTEST_DAY) * 20;
 
-        if (DateUtils.getCurrentDayOfWeek().equals(END_CONTEST_DAY)) {
+        if (data.getPhase() == 3 && DateUtils.getCurrentDayOfWeek().equals(END_CONTEST_DAY)) {
             ContestManager.initPhase3();
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (data.getPhase() != 3) return;
+
             ContestManager.initPhase3();
             scheduleEndContest();
         }, delayInTicks);

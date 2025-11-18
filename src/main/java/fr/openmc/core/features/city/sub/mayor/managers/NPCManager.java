@@ -5,19 +5,20 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.MayorNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.OwnerNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.api.hooks.FancyNpcsHook;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -66,7 +67,7 @@ public class NPCManager implements Listener {
     }
 
     public static void createNPCS(UUID cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
 
         City city = CityManager.getCity(cityUUID);
@@ -110,7 +111,7 @@ public class NPCManager implements Listener {
     }
 
     public static void removeNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
         if (!ownerNpcMap.containsKey(cityUUID) || !mayorNpcMap.containsKey(cityUUID)) return;
 
         Npc ownerNpc = ownerNpcMap.remove(cityUUID).getNpc();
@@ -124,7 +125,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
         MayorNPC mayorNPC = mayorNpcMap.get(cityUUID);
@@ -139,7 +140,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateAllNPCS() {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         Set<UUID> cityUUIDs = new HashSet<>(ownerNpcMap.keySet()); // Copie
 
@@ -158,7 +159,7 @@ public class NPCManager implements Listener {
     }
 
     public static void moveNPC(String type, Location location, UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         if (type.equalsIgnoreCase("owner")) {
             OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
@@ -176,14 +177,14 @@ public class NPCManager implements Listener {
     }
 
     public static boolean hasNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return false;
+        if (!FancyNpcsHook.isHasFancyNpc()) return false;
 
         return ownerNpcMap.containsKey(cityUUID) && mayorNpcMap.containsKey(cityUUID);
     }
 
     @EventHandler
     public void onInteractWithMayorNPC(NpcInteractEvent event) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         Player player = event.getPlayer();
 
@@ -195,6 +196,11 @@ public class NPCManager implements Listener {
             if (city == null) {
                 MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
+                return;
+            }
+
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -230,7 +236,7 @@ public class NPCManager implements Listener {
                                     itemToGive,
                                     "mayor:mayor-npc-move",
                                     300,
-                                    "§7Vous avez 300s pour séléctionner votre emplacement",
+		                            "§7Vous avez 300s pour sélectionner votre emplacement",
                                     "§7Vous n'avez pas eu le temps de déplacer votre NPC",
                                     locationClick -> {
                                         if (locationClick == null) return true;
@@ -284,6 +290,11 @@ public class NPCManager implements Listener {
                 return;
             }
 
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             Chunk npcChuck = event.getNpc().getData().getLocation().getChunk();
 
             if (!city.hasChunk(npcChuck.getX(), npcChuck.getZ())) {
@@ -311,7 +322,7 @@ public class NPCManager implements Listener {
                                     itemToGive,
                                     "mayor:owner-npc-move",
                                     300,
-                                    "§7Vous avez 300s pour séléctionner votre emplacement",
+		                            "§7Vous avez 300s pour sélectionner votre emplacement",
                                     "§7Vous n'avez pas eu le temps de déplacer votre NPC",
                                     locationClick -> {
                                         if (locationClick == null) return true;

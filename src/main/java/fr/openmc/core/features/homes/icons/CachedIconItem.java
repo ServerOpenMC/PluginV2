@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
@@ -95,10 +96,12 @@ public class CachedIconItem {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         home.setIcon(homeIcon);
                         MessagesManager.sendMessage(player,
-                                Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée avec succès !"),
+                                Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée en §2" + homeIcon.getVanillaName() + "§a !"),
                                 Prefix.HOME, MessageType.SUCCESS, true);
+
+                        HomeIconCacheManager.clearRenderedCache();
                     });
                     player.closeInventory();
-                });
+                }).hide(ItemUtils.getDataComponentType());
     }
 }

@@ -26,7 +26,7 @@ public class AyweniterPerk implements Listener {
     private static final double DROP_CHANCE = 0.01; //1%
     private final Random random = new Random();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();

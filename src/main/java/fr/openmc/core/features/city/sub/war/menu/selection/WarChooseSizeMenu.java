@@ -44,7 +44,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Guerres !"),
-                Component.text("§7La préparation..., le combat, ..."),
+                Component.text("§7La préparation, le combat, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN SAVOIR PLUS!")
         );
 
@@ -107,7 +107,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

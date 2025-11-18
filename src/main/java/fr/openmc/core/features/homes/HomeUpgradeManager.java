@@ -63,7 +63,7 @@ public class HomeUpgradeManager {
             if (EconomyManager.getBalance(player.getUniqueId()) < price) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("La ville n'as pas assez d'argent (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"),
+                        Component.text("Tu n'as pas assez d'argent sur toi ! (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"),
                         Prefix.HOME,
                         MessageType.ERROR,
                         true

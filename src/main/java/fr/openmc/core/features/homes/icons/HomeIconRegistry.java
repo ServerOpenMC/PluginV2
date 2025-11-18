@@ -38,7 +38,7 @@ public class HomeIconRegistry {
 
         // Vanilla icons registration
         for (Material material : Material.values()) {
-            if (material.isItem() && !material.isAir()) {
+            if (!material.isLegacy() && material.isItem() && !material.isAir()) {
                 HomeIcon icon = HomeIcon.vanilla(material);
                 icons.put(icon.id(), icon);
                 vanillaIcons.add(icon);
@@ -119,10 +119,10 @@ public class HomeIconRegistry {
     /**
      * Filters icons by their category.
      *
-     * @param category The {@link IconCategory} to filter by.
+     * @param category The {@link HomeIcon.IconCategory} to filter by.
      * @return List of matching {@link HomeIcon} objects.
      */
-    public static List<HomeIcon> getIconsByCategory(IconCategory category) {
+    public static List<HomeIcon> getIconsByCategory(HomeIcon.IconCategory category) {
         return switch (category) {
             case CUSTOM -> getCustomIcons();
             case VANILLA -> getVanillaIcons();
@@ -148,44 +148,31 @@ public class HomeIconRegistry {
     }
 
     /**
-     * Converts a legacy {@link OldHomeIcon} to a modern {@link HomeIcon}.
+     * Converts a legacy {@link LegacyHomeIcon} to a modern {@link HomeIcon}.
      *
      * @param legacyIcon The legacy icon.
      * @return A matching {@link HomeIcon}, or default if none matches.
      */
-    public static HomeIcon fromLegacyHomeIcon(OldHomeIcon legacyIcon) {
+    public static HomeIcon fromLegacyHomeIcon(LegacyHomeIcon legacyIcon) {
         String customId = "custom:" + legacyIcon.getName().toLowerCase();
         return getIconOrDefault(customId);
     }
 
     /**
-     * Converts a modern {@link HomeIcon} back to a legacy {@link OldHomeIcon} enum.
+     * Converts a modern {@link HomeIcon} back to a legacy {@link LegacyHomeIcon} enum.
      *
      * @param icon The current icon.
-     * @return The corresponding {@link OldHomeIcon}, or {@code DEFAULT} if not found.
+     * @return The corresponding {@link LegacyHomeIcon}, or {@code DEFAULT} if not found.
      */
-    public static OldHomeIcon toLegacyHomeIcon(HomeIcon icon) {
+    public static LegacyHomeIcon toLegacyHomeIcon(HomeIcon icon) {
         if (icon.isCustom()) {
             String iconName = icon.id().replace("custom:", "").toUpperCase();
             try {
-                return OldHomeIcon.valueOf(iconName);
+                return LegacyHomeIcon.valueOf(iconName);
             } catch (IllegalArgumentException e) {
-                return OldHomeIcon.DEFAULT;
+                return LegacyHomeIcon.DEFAULT;
             }
         }
-        return OldHomeIcon.DEFAULT;
-    }
-
-    /**
-     * Returns a random custom icon, or the default icon if none are registered.
-     *
-     * @return A random {@link HomeIcon}.
-     */
-    public static HomeIcon getRandomIcon() {
-        if (customIcons.isEmpty()) {
-            return getDefaultIcon();
-        }
-        int randomIndex = (int) (Math.random() * customIcons.size());
-        return customIcons.get(randomIndex);
+        return LegacyHomeIcon.DEFAULT;
     }
 }

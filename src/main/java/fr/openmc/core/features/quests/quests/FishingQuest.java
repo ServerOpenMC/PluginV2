@@ -19,7 +19,7 @@ public class FishingQuest extends Quest implements Listener {
 
     public FishingQuest() {
         super(
-                "Pêcheur Expérimenté",
+                "Pêcheur expérimenté",
                 List.of("Pêcher {target} poissons"),
                 new ItemStack(Material.FISHING_ROD)
         );
@@ -27,25 +27,25 @@ public class FishingQuest extends Quest implements Listener {
         this.addTiers(
                 new QuestTier(
                         50,
-                        new QuestMoneyReward(1000),
+                        new QuestMoneyReward(200),
                         new QuestItemReward(getEnchantedRod(1, 0, 1), 1)  // Luck I, Unbreaking I
                 ),
 
                 new QuestTier(
                         150,
-                        new QuestMoneyReward(3000),
+                        new QuestMoneyReward(500),
                         new QuestItemReward(getEnchantedRod(2, 1, 1), 1)  // Luck II, Lure I, Unbreaking I
                 ),
 
                 new QuestTier(
                         500,
-                        new QuestMoneyReward(8000),
+                        new QuestMoneyReward(1000),
                         new QuestItemReward(getEnchantedRod(3, 2, 1, true), 1)  // + Mending
                 ),
 
                 new QuestTier(
                         1000,
-                        new QuestMoneyReward(15000),
+                        new QuestMoneyReward(1500),
                         new QuestItemReward(getEnchantedRod(3, 3, 3, true), 1)  // Toutes les enchantements max
                 )
         );

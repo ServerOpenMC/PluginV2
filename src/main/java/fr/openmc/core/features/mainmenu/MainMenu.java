@@ -7,11 +7,7 @@ import fr.openmc.core.features.mainmenu.menus.Page1;
 import org.bukkit.entity.Player;
 
 public class MainMenu {
-
-    private final OMCPlugin plugin;
-
-    public MainMenu(OMCPlugin plugin) {
-        this.plugin = plugin;
+    public static void init(OMCPlugin plugin) {
         new PacketListener(plugin);
     }
 

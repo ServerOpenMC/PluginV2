@@ -8,13 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HomeIconCacheManager {
 
-    private static final ConcurrentHashMap<IconCategory, List<CachedIconItem>> CACHED_ITEMS = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<HomeIcon.IconCategory, List<CachedIconItem>> CACHED_ITEMS = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, List<CachedIconItem>> CACHED_SEARCH_RESULTS = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, List<ItemStack>> RENDERED_ITEMS_CACHE = new ConcurrentHashMap<>();
     private static volatile boolean initialized = false;
@@ -31,7 +30,7 @@ public class HomeIconCacheManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                for (IconCategory category : IconCategory.values())
+                for (HomeIcon.IconCategory category : HomeIcon.IconCategory.values())
                     initializeCategoryCache(category);
 
                 initialized = true;
@@ -47,7 +46,7 @@ public class HomeIconCacheManager {
      *
      * @param category The icon category to initialize.
      */
-    private static void initializeCategoryCache(IconCategory category) {
+    private static void initializeCategoryCache(HomeIcon.IconCategory category) {
         List<HomeIcon> icons = HomeIconRegistry.getIconsByCategory(category);
         List<CachedIconItem> cachedItems = new ArrayList<>();
 
@@ -72,7 +71,7 @@ public class HomeIconCacheManager {
      * @param player   The Player requesting the items.
      * @return A list of ItemStacks representing the icons in the specified category.
      */
-    public static List<ItemStack> getItemsForCategory(IconCategory category, HomeChangeIconMenu menu, Home home, Player player) {
+    public static List<ItemStack> getItemsForCategory(HomeIcon.IconCategory category, HomeChangeIconMenu menu, Home home, Player player) {
         if (!initialized) initializeCategoryCache(category);
 
         List<CachedIconItem> cachedItems = CACHED_ITEMS.get(category);
@@ -84,14 +83,12 @@ public class HomeIconCacheManager {
         String cacheKey = category.name() + "_" + home.getIcon().id();
 
         List<ItemStack> cachedRenderedItems = RENDERED_ITEMS_CACHE.get(cacheKey);
-        if (cachedRenderedItems != null && cachedRenderedItems.size() == cachedItems.size()) {
-            return cloneItemList(cachedRenderedItems);
-        }
+        if (cachedRenderedItems != null && cachedRenderedItems.size() == cachedItems.size()) return cloneItemList(cachedRenderedItems);
 
         List<ItemStack> items = new ArrayList<>();
-        for (CachedIconItem cachedItem : cachedItems) {
-            items.add(cachedItem.createItemForMenu(menu, home, player));
-        }
+        cachedItems.forEach(cachedItem ->
+                items.add(cachedItem.createItemForMenu(menu, home, player))
+        );
 
         if (RENDERED_ITEMS_CACHE.size() > MAX_CACHE_SIZE) RENDERED_ITEMS_CACHE.clear(); // Limit cache size to avoid memory issues
 
@@ -138,9 +135,7 @@ public class HomeIconCacheManager {
         }
 
         List<ItemStack> items = new ArrayList<>();
-        for (CachedIconItem cachedIconItem : cachedItems) {
-            items.add(cachedIconItem.createItemForMenu(menu, home, player));
-        }
+        cachedItems.forEach(cachedItem -> items.add(cachedItem.createItemForMenu(menu, home, player)));
 
         if (RENDERED_ITEMS_CACHE.size() > MAX_CACHE_SIZE) RENDERED_ITEMS_CACHE.clear(); // Limit cache size to avoid memory issues
         RENDERED_ITEMS_CACHE.put(cacheKey, cloneItemList(items));
@@ -156,9 +151,7 @@ public class HomeIconCacheManager {
      */
     private static List<ItemStack> cloneItemList(List<ItemStack> items) {
         List<ItemStack> clonedItems = new ArrayList<>();
-        for (ItemStack item : items) {
-            clonedItems.add(item.clone());
-        }
+        items.forEach(item -> clonedItems.add(item.clone()));
         return clonedItems;
     }
 
@@ -172,6 +165,10 @@ public class HomeIconCacheManager {
         CACHED_SEARCH_RESULTS.clear();
         RENDERED_ITEMS_CACHE.clear();
         initialized = false;
+    }
+
+    public static void clearRenderedCache() {
+        RENDERED_ITEMS_CACHE.clear();
     }
 
     /**
@@ -195,7 +192,7 @@ public class HomeIconCacheManager {
         stats.append("- Initialisé: ").append(initialized).append("\n");
         stats.append("- Catégories en cache: ").append(CACHED_ITEMS.size()).append("\n");
 
-        for (IconCategory category : CACHED_ITEMS.keySet()) {
+        for (HomeIcon.IconCategory category : CACHED_ITEMS.keySet()) {
             List<CachedIconItem> items = CACHED_ITEMS.get(category);
             stats.append("  - ").append(category).append(": ").append(items != null ? items.size() : 0).append(" items\n");
         }
@@ -204,58 +201,5 @@ public class HomeIconCacheManager {
         stats.append("- Items rendus en cache: ").append(RENDERED_ITEMS_CACHE.size()).append("\n");
 
         return stats.toString();
-    }
-
-    /**
-     * Invalidates the render cache for a specific icon ID.
-     * <p>
-     * This method removes all cached items that end with the specified icon ID.
-     *
-     * @param iconId The ID of the icon to invalidate from the render cache.
-     */
-    public static void invalidateRenderCache(String iconId) {
-        RENDERED_ITEMS_CACHE.entrySet().removeIf(entry -> entry.getKey().endsWith("_" + iconId));
-    }
-
-    /**
-     * Retrieves a paginated list of ItemStacks for the specified icon category.
-     *
-     * @param category       The icon category to retrieve items for.
-     * @param menu           The HomeChangeIconMenu instance.
-     * @param home           The Home instance.
-     * @param player         The Player requesting the items.
-     * @param page           The page number to retrieve (0-based).
-     * @param itemsPerPage   The number of items per page.
-     * @return A list of ItemStacks representing the icons in the specified category for the given page.
-     */
-    public static List<ItemStack> getItemsForCategoryPaginated(IconCategory category, HomeChangeIconMenu menu,
-                                                               Home home, Player player, int page, int itemsPerPage) {
-        if (!initialized) initializeCategoryCache(category);
-
-        List<CachedIconItem> cachedItems = CACHED_ITEMS.get(category);
-        if (cachedItems == null) {
-            initializeCategoryCache(category);
-            cachedItems = CACHED_ITEMS.get(category);
-        }
-
-        int startIndex = page * itemsPerPage;
-        int endIndex = Math.min(startIndex + itemsPerPage, cachedItems.size());
-
-        if (startIndex >= cachedItems.size()) return Collections.emptyList();
-
-        String cacheKey = category.name() + "_" + home.getIcon().id() + "_page_" + page;
-        List<ItemStack> cachedPage = RENDERED_ITEMS_CACHE.get(cacheKey);
-
-        if (cachedPage != null) return cloneItemList(cachedPage);
-
-        List<ItemStack> pageItems = new ArrayList<>();
-        for (int i = startIndex; i < endIndex; i++) {
-            pageItems.add(cachedItems.get(i).createItemForMenu(menu, home, player));
-        }
-
-        if (RENDERED_ITEMS_CACHE.size() > 200) RENDERED_ITEMS_CACHE.clear();
-        RENDERED_ITEMS_CACHE.put(cacheKey, cloneItemList(pageItems));
-
-        return pageItems;
     }
 }

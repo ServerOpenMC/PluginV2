@@ -19,9 +19,9 @@ public class KillZombieQuest extends Quest implements Listener {
         super("Apocalypse zombie ?", List.of("Tuer {target} zombies"), Material.ZOMBIE_HEAD);
 
         this.addTiers(
-                new QuestTier(1000, new QuestMoneyReward(8000)),
-                new QuestTier(4000, new QuestMoneyReward(10000)),
-                new QuestTier(10000, new QuestMoneyReward(15000))
+                new QuestTier(1000, new QuestMoneyReward(300)),
+                new QuestTier(4000, new QuestMoneyReward(1200)),
+                new QuestTier(10000, new QuestMoneyReward(3000))
         );
     }
 

@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityMountEvent;
 
+import java.util.UUID;
+
 public class MountProtection implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityMount(EntityMountEvent event) {
@@ -15,18 +17,23 @@ public class MountProtection implements Listener {
 
         Entity mount = event.getMount();
 
-        if (!(mount instanceof Tameable tameable)) return;
+        if (mount instanceof Tameable tameable) {
+            if (!tameable.isTamed()) return;
 
+            UUID ownerUUID = tameable.getOwnerUniqueId();
 
-        if (!tameable.isTamed()) return;
-        
-        if (!tameable.getOwnerUniqueId().equals(player.getUniqueId())) {
-            if (!ProtectionsManager.canInteract(player, mount.getLocation())) {
-                event.setCancelled(true);
-                ProtectionsManager.cancelMessage(player);
-            } else {
-                ProtectionsManager.verify(player, event, mount.getLocation());
+            if (ownerUUID == null) return;
+
+            if (!ownerUUID.equals(player.getUniqueId())) {
+                if (!ProtectionsManager.canInteract(player, mount.getLocation())) {
+                    event.setCancelled(true);
+                    ProtectionsManager.cancelMessage(player);
+                } else {
+                    ProtectionsManager.verify(player, event, mount.getLocation());
+                }
             }
+        } else {
+            ProtectionsManager.verify(player, event, mount.getLocation());
         }
     }
 }

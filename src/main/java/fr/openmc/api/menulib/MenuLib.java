@@ -1,7 +1,9 @@
 package fr.openmc.api.menulib;
 
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
 import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -11,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +34,13 @@ import java.util.function.Consumer;
  */
 public final class MenuLib implements Listener {
     private static final Map<Player, Deque<Menu>> menuHistory = new HashMap<>();
+
+    private static final Set<Class<? extends Menu>> ignoredMenus = new HashSet<>();
+    static {
+        ignoredMenus.add(ConfirmMenu.class);
+        ignoredMenus.add(fr.openmc.core.features.adminshop.menus.ConfirmMenu.class);
+        ignoredMenus.add(HomeDeleteConfirmMenu.class);
+    }
     @Getter
     private static NamespacedKey itemIdKey;
 
@@ -63,13 +73,13 @@ public final class MenuLib implements Listener {
      * When a player clicks on the specified {@link ItemStack} in the menu,
      * the provided {@link Consumer} is executed to handle the {@link InventoryClickEvent}.
      *
-     * @param menu      The {@link Menu} in which the click event will be associated.
-     * @param itemStack The {@link ItemStack} that will trigger the event when clicked.
-     * @param e         A {@link Consumer} of {@link InventoryClickEvent} representing the event handler
-     *                  to be executed when the {@link ItemStack} is clicked within the menu.
+     * @param menu        The {@link Menu} in which the click event will be associated.
+     * @param itemBuilder The {@link ItemBuilder} that will trigger the event when clicked.
+     * @param e           A {@link Consumer} of {@link InventoryClickEvent} representing the event handler
+     *                    to be executed when the {@link ItemStack} is clicked within the menu.
      */
-    public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-        menu.getItemClickEvents().put(new ItemBuilder(menu, itemStack), e);
+    public static void setItemClickEvent(Menu menu, ItemBuilder itemBuilder, Consumer<InventoryClickEvent> e) {
+        menu.getItemClickEvents().put(itemBuilder, e);
     }
 
     public static void clearHistory(Player player) {
@@ -93,22 +103,44 @@ public final class MenuLib implements Listener {
     public static Menu getLastMenu(Player player) {
         Deque<Menu> history = menuHistory.get(player);
 
-        if (history == null || history.isEmpty() || history.size() < 2) {
+        if (history == null || history.size() < 2) {
             return null;
         }
 
         Iterator<Menu> iterator = history.iterator();
 
-        iterator.next();
+        Menu current = iterator.next();
 
-        return iterator.next();
+        while (iterator.hasNext()) {
+            Menu previous = iterator.next();
+
+            if (!ignoredMenus.contains(previous.getClass())
+                    && !previous.getClass().equals(current.getClass())
+            ) {
+                return previous;
+            }
+        }
+
+        return null;
     }
 
     public static Menu popAndGetPreviousMenu(Player player) {
         Deque<Menu> history = menuHistory.get(player);
         if (history == null || history.size() < 2) return null;
-        history.pop();
-        return history.peek();
+
+        Menu current = history.pop();
+
+        while (!history.isEmpty()) {
+            Menu previous = history.pop();
+
+            if (!ignoredMenus.contains(previous.getClass()) && previous != current) {
+                return previous;
+            }
+
+            current = history.pop();
+        }
+
+        return null;
     }
 
     public static boolean hasPreviousMenu(Player player) {
@@ -131,23 +163,18 @@ public final class MenuLib implements Listener {
         if (!(e.getInventory().getHolder() instanceof Menu menu))
             return;
 
-        if (e.getCurrentItem() == null)
-            return;
-
-        if (menu.getTakableSlot().contains(e.getSlot()))
+        if (menu.getTakableSlot().contains(e.getRawSlot()))
             return;
 
         e.setCancelled(true);
         menu.onInventoryClick(e);
 
-        ItemBuilder itemClicked = menu.getContent().get(e.getSlot());
+        ItemBuilder itemClicked = menu.getContent().get(e.getRawSlot());
 
         if (itemClicked != null && itemClicked.isBackButton()) {
             Player player = (Player) e.getWhoClicked();
             Menu previous = MenuLib.popAndGetPreviousMenu(player);
-            if (previous != null) {
-                previous.open();
-            }
+            if (previous != null) previous.open();
             return;
         }
 
@@ -156,13 +183,31 @@ public final class MenuLib implements Listener {
             if (itemClickEvents.isEmpty())
                 return;
 
+            Consumer<InventoryClickEvent> action = itemClickEvents.get(itemClicked);
+            if (action != null) {
+                action.accept(e);
+                return;
+            }
+
             for (Map.Entry<ItemBuilder, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
-                if (ItemUtils.isSimilar(entry.getKey(), e.getCurrentItem()))
+                if (ItemUtils.isSimilarMenu(entry.getKey(), e.getCurrentItem())) {
                     entry.getValue().accept(e);
+                    break;
+                }
             }
         } catch (Exception ex) {
             OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while handling a click event in a menu: {}", ex.getMessage(), ex);
         }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent e) {
+        if (!(e.getInventory().getHolder() instanceof Menu menu))
+            return;
+
+        if (e.getRawSlots().stream().anyMatch(menu.getTakableSlot()::contains))
+            return;
+        e.setCancelled(true);
     }
 
     /**
@@ -170,14 +215,14 @@ public final class MenuLib implements Listener {
      */
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
-        if (e.getInventory().getHolder(false) instanceof PaginatedMenu menu)
-            menu.onClose(e);
+        if (!(e.getPlayer() instanceof  Player player)) return;
+        if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu)
+            paginatedMenu.onClose(e);
 
         if (e.getInventory().getHolder(false) instanceof Menu menu) {
             menu.onClose(e);
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
-                    Player player = (Player) e.getPlayer();
                     MenuLib.clearHistory(player);
                 }
             }, 1L);

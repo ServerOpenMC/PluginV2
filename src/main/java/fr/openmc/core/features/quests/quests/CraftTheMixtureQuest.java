@@ -27,8 +27,8 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
         this.addTiers(
                 new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest(), 16)),
                 new QuestTier(32, new QuestMoneyReward(100)),
-                new QuestTier(128, new QuestMoneyReward(500)),
-                new QuestTier(512, new QuestMoneyReward(2000))
+                new QuestTier(128, new QuestMoneyReward(300)),
+                new QuestTier(512, new QuestMoneyReward(700))
         );
     }
 

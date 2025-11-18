@@ -45,7 +45,7 @@ public class TntPlaceListener implements Listener {
         if (current >= MAX_TNT_PER_DAY && !sameCity) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("La ville §4" + cityAtLoc.getName() + " §fa atteint sa limite journalière de tnt! §8(§c" + current + "§8/§c" + MAX_TNT_PER_DAY + " tnt journalière§8)"),
+		            Component.text("La ville §4" + cityAtLoc.getName() + " §fa atteint sa limite journalière de tnt ! §8(§c" + current + "§8/§c" + MAX_TNT_PER_DAY + " tnt journalière§8)"),
                     Prefix.CITY,
                     MessageType.WARNING,
                     false

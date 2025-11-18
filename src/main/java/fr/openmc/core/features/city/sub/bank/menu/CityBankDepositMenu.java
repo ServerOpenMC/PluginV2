@@ -9,9 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -35,12 +33,12 @@ public class CityBankDepositMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de la banque de Ville - Remplir";
+	    return "Menu de la banque de ville - Remplir";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -70,7 +68,7 @@ public class CityBankDepositMenu extends Menu {
 
         if (hasPermissionMoneyGive) {
             loreBankDepositAll = List.of(
-                    Component.text("§7Tout votre argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7Tout votre argent sera placé dans la §6banque de la ville"),
                     Component.empty(),
                     Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
@@ -83,17 +81,10 @@ public class CityBankDepositMenu extends Menu {
         }
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer tout votre §6Argent"));
+	        itemMeta.itemName(Component.text("§7Déposer tout votre §6argent"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityBankConditions.canCityDeposit(city, player)) return;
-
-            if (EconomyManager.withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer != 0) {
-                city.updateBalance(moneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
-            } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            }
+            city.depositCityBank(player, String.valueOf(moneyPlayer));
             player.closeInventory();
         }));
 
@@ -102,7 +93,7 @@ public class CityBankDepositMenu extends Menu {
 
         if (hasPermissionMoneyGive) {
             loreBankDepositHalf = List.of(
-                    Component.text("§7La moitié de votre Argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7La moitié de votre argent sera placé dans la §6banque de la ville"),
                     Component.empty(),
                     Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
@@ -115,17 +106,10 @@ public class CityBankDepositMenu extends Menu {
         }
 
         inventory.put(13, new ItemBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6Argent"));
+	        itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6argent"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityBankConditions.canCityDeposit(city, player)) return;
-
-            if (EconomyManager.withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer != 0) {
-                city.updateBalance(halfMoneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
-            } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            }
+            city.depositCityBank(player, String.valueOf(halfMoneyPlayer));
             player.closeInventory();
         }));
 
@@ -134,7 +118,7 @@ public class CityBankDepositMenu extends Menu {
 
         if (hasPermissionMoneyGive) {
             loreBankDepositInput = List.of(
-                    Component.text("§7Votre argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7Votre argent sera placé dans la §6banque de la ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
             );
         } else {
@@ -149,8 +133,10 @@ public class CityBankDepositMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
-                    city.depositCityBank(player, input)
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input -> {
+                        if (input == null) return;
+                city.depositCityBank(player, input);
+                    }
             );
 
         }));
@@ -158,7 +144,7 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+		            Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));

@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
 @DatabaseTable(tableName = "contests")
@@ -69,5 +71,21 @@ public class Contest {
         } else {
             return -1;
         }
+    }
+
+    public NamedTextColor getColor1AsNamedTextColor() {
+        return NamedTextColor.NAMES.value(color1.toLowerCase());
+    }
+
+    public NamedTextColor getColor2AsNamedTextColor() {
+        return NamedTextColor.NAMES.value(color2.toLowerCase());
+    }
+
+    public Component getCampVSComponent() {
+        return Component.text()
+                .append(Component.text(camp1, getColor1AsNamedTextColor()))
+                .append(Component.text(" VS ", NamedTextColor.GRAY))
+                .append(Component.text(camp2, getColor2AsNamedTextColor()))
+                .build();
     }
 }

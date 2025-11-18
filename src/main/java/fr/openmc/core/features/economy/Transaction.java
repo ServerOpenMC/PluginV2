@@ -1,12 +1,11 @@
 package fr.openmc.core.features.economy;
 
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
 import java.util.Objects;
@@ -58,9 +57,9 @@ public class Transaction {
             }
 
             itemmeta.setLore(List.of(
-                    "§r§6Destination:§f " + recipient,
-                    "§r§6Montant:§f " + this.amount,
-                    "§r§6Raison:§f " + reason));
+                    "§r§6Destination :§f " + recipient,
+                    "§r§6Montant :§f " + this.amount,
+                    "§r§6Raison :§f " + reason));
         } else {
             itemstack = new ItemStack(Material.LIME_CONCRETE, 1);
             itemmeta = itemstack.getItemMeta();
@@ -72,9 +71,9 @@ public class Transaction {
             }
 
             itemmeta.setLore(List.of(
-                    "§r§6Envoyeur:§f " + senderName,
-                    "§r§6Montant:§f " + this.amount,
-                    "§r§6Raison:§f " + reason));
+                    "§r§6Envoyeur :§f " + senderName,
+                    "§r§6Montant :§f " + this.amount,
+                    "§r§6Raison :§f " + reason));
         }
 
         itemstack.setItemMeta(itemmeta);

@@ -1,5 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.events.MemberJoinEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
@@ -44,12 +46,19 @@ public class CityCreateQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Cette version d'OpenMC est centrée autour des villes. Vous y trouverez une §eMilestone spéciale pour les Villes §fqui vous guidera dans cette aventure singulière ! Mais avant cela, il faudrait peut être mettre un §2Home §f?",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Cette version d'OpenMC est centrée autour des villes. Vous y trouverez une §emilestone spéciale pour les villes §f (/city milestone) qui vous guidera dans cette aventure singulière ! Et si vous passiez votre ville au §3niveau 2 §f?",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
                 new QuestMethodsReward(
-                        player -> TutorialUtils.completeStep(type, player, step)
+                        player -> {
+                            TutorialUtils.completeStep(type, player, step);
+
+                            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                            if (playerCity.getLevel() >= 2) {
+                                TutorialStep.CITY_LEVEL_2.getQuest().incrementProgress(player.getUniqueId());
+                            }
+                        }
                 )
         ));
     }
@@ -69,6 +78,8 @@ public class CityCreateQuest extends Quest implements Listener {
 
         if (MilestonesManager.getPlayerStep(type, player.getUniqueId()) != step.ordinal()) return;
 
-        if (player.isOnline()) this.incrementProgress(player.getUniqueId());
+        if (player.isOnline()) {
+            this.incrementProgress(player.getUniqueId());
+        }
     }
 }

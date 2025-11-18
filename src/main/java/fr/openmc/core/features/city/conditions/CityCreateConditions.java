@@ -42,7 +42,7 @@ public class CityCreateConditions {
         }
 
         if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() + " §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -52,7 +52,7 @@ public class CityCreateConditions {
         }
 
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
-            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir uniquement des caractères alphanumerique et doit faire moins de 24 caractères"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

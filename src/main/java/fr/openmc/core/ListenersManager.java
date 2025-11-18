@@ -2,8 +2,11 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.cube.listeners.CubeListener;
+import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
+import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
 import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
-import fr.openmc.core.features.mailboxes.MailboxListener;
+import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
@@ -14,16 +17,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ListenersManager {
-    public ListenersManager() {
+    public static void init() {
         registerEvents(
                 new HappyGhastListener(),
                 new SessionsListener(),
-                new JoinMessageListener(),
+                new JoinQuitMessageListener(),
                 new UpdateListener(),
                 new ClockInfos(),
-                new MailboxListener(),
                 new ChronometerListener(),
-                new CubeListener(OMCPlugin.getInstance()),
+                new CubeListener(),
+                new RepulseEffectListener(),
+                new MultiBlocksListeners(),
                 new ItemInteraction(),
                 new ChatInput(),
                 new RespawnListener(),
@@ -33,11 +37,18 @@ public class ListenersManager {
                 new BossbarListener(),
                 new PlayerSettingsManager(),
                 new InteractListener(),
-                new BlockBreakListener(),
-                new ItemsAddersListener(),
-                new ItemsAddersListener(),
-                new TicketListener()
+                new AywenCapListener(),
+                new NoMoreRabbit(),
+                new ArmorListener(),
+                new SpawnerExtractorListener()
         );
+
+        if (!OMCPlugin.isUnitTestVersion()) {
+            registerEvents(
+                    new ItemsAddersListener(),
+                    new TicketListener()
+            );
+        }
     }
 
     private static void registerEvents(Listener... args) {

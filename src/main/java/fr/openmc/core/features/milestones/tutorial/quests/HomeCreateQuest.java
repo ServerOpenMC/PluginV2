@@ -29,9 +29,9 @@ public class HomeCreateQuest extends Quest implements Listener {
 
     public HomeCreateQuest() {
         super(
-                "Poser un Home",
+                "Poser un home",
                 List.of(
-                        "§fTapez §d/sethome §fen étant là où vous voulez poser votre Home",
+                        "§fTapez §d/sethome §fen étant là où vous voulez poser votre home",
                         "§8§oC'est très utile d'en faire un pour se téléporter à sa base !"
                 ),
                 Material.ENDER_PEARL
@@ -45,7 +45,7 @@ public class HomeCreateQuest extends Quest implements Listener {
                 new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
                 new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les Homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 Home au début. Il va falloir penser à les améliorer...",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 home au début. Il va falloir penser à les améliorer...",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -63,5 +63,4 @@ public class HomeCreateQuest extends Quest implements Listener {
 
         this.incrementProgress(player.getUniqueId());
     }
-
 }

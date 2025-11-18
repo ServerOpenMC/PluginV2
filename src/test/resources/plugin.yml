@@ -1,5 +1,0 @@
-name: OpenMC
-version: ${version}
-main: fr.openmc.core.TestPlugin
-api-version: '1.21.8'
-prefix: OMC

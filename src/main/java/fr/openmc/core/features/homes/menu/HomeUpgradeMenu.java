@@ -53,9 +53,9 @@ public class HomeUpgradeMenu extends Menu {
                 if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
                     lore.add(Component.text("§cVous avez atteint le nombre maximum de homes"));
                 } else {
-                    lore.add(Component.text("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon()));
-                    lore.add(Component.text("§bAywenite: §d" + nextUpgrade.getAyweniteCost()));
-                    lore.add(Component.text("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit()));
+                    lore.add(Component.text("§bPrix : §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon()));
+                    lore.add(Component.text("§bAywenite : §d" + nextUpgrade.getAyweniteCost()));
+                    lore.add(Component.text("§6Nombre de home au prochain niveau : §e" + nextUpgrade.getLimit()));
                     lore.add(Component.text("§7→ Clique gauche pour améliorer"));
                 }
 

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -16,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
 
     public OpenQuestMenuQuest() {
         super(
-                "Ouvrir le menu des Quêtes",
+                "Ouvrir le menu des quêtes",
                 List.of(
                         "§fTapez §d/quests §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu et voir quelles quêtes vous pouvez accomplir",
                         "§8§oCela va pouvoir vous lancer dans l'aventure et vous donner des défis afin de vous diversifier !"
@@ -42,7 +42,7 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -53,14 +53,14 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onQuestMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onQuestMenuOpen(OpenMenuEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getInventory().getHolder() == null) return;
+        if (event.getMenu() == null) return;
 
-        if (!event.getInventory().getHolder().getClass().equals(QuestsMenu.class)) return;
+        if (!(event.getMenu() instanceof QuestsMenu)) return;
 
         this.incrementProgress(player.getUniqueId());
     }

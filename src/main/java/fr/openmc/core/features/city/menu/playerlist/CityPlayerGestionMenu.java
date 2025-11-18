@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
@@ -10,7 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
-import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.messages.MessagesManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -35,12 +35,12 @@ public class CityPlayerGestionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Modifier un Joueur";
+	    return "Menu des villes - Modifier un joueur";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -109,7 +109,7 @@ public class CityPlayerGestionMenu extends Menu {
 
 
         List<Component> lorePlayerTarget = List.of(
-                Component.text("§7Vous êtes entrain de modifier son status dans la §dville")
+		        Component.text("§7Vous êtes en train de modifier son statut dans la §dville")
         );
 
         inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
@@ -133,7 +133,9 @@ public class CityPlayerGestionMenu extends Menu {
         inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.itemName(Component.text("§cModifier les permissions"));
             itemMeta.lore(lorePermission);
-        }).setOnClick(inventoryClickEvent -> CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId())));
+        }).setOnClick(inventoryClickEvent ->
+                new CityPermsMenu(player, playerTarget.getUniqueId(), true).open()
+        ));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));

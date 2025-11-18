@@ -1,8 +1,9 @@
 package fr.openmc.api.menulib;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,11 +34,10 @@ import java.util.function.Consumer;
  * A menu is tied to a specific player and provides methods for customization,
  * handling inventory interactions, and managing permissions.
  */
+@Getter
 public abstract class Menu implements InventoryHolder {
-	@Getter
 	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
-	@Getter
 	private final Player owner;
 	
 	/**
@@ -48,7 +48,6 @@ public abstract class Menu implements InventoryHolder {
 	protected Menu(Player owner) {
 		this.owner = owner;
 	}
-	
 	
 	/**
 	 * Retrieves the name of the menu.
@@ -119,7 +118,6 @@ public abstract class Menu implements InventoryHolder {
 	 *
 	 * @return A non-null list of integers representing the takable inventory slot indices.
 	 */
-
 	public abstract List<Integer> getTakableSlot();
 
 	/**
@@ -151,26 +149,45 @@ public abstract class Menu implements InventoryHolder {
 				setItem(owner, inventory, slot, item);
 			});
 
+            Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
+
 			owner.openInventory(inventory);
 		} catch (Exception e) {
 			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
 			owner.closeInventory();
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
 	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
-		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
+		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) {
+			if (!this.getTakableSlot().contains(slot)) {
+				inventory.setItem(slot, ItemUtils.getInvisibleItem());
+			}
+			return;
+		}
 
-		if (item.isBackButton()) {
-			item = new ItemBuilder(this, item, itemMeta -> {
+		if (this instanceof PaginatedMenu paginatedMenu) {
+			if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
+					|| (item.isNextButton() && paginatedMenu.isLastPage()))
+				return;
+		}
+
+		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
+			inventory.setItem(slot, new ItemBuilder(this, item, itemMeta -> {
 				itemMeta.displayName(Component.text("§aRetour"));
 				itemMeta.lore(List.of(
 						Component.text("§7Vous allez retourner au §a" +
 								(MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : "Menu Précédent") + "§7."),
 						Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
 				));
-			}, true);
+			}, true));
+			return;
+		}
+
+		if (item.getType().isAir() && !this.getTakableSlot().contains(slot)) {
+			inventory.setItem(slot, ItemUtils.getInvisibleItem());
+			return;
 		}
 
 		inventory.setItem(slot, item);
@@ -186,13 +203,26 @@ public abstract class Menu implements InventoryHolder {
 	 * in that slot.
 	 */
 	public final Map<Integer, ItemBuilder> fill(Material material) {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
-		for (int i = 0; i < getInventorySize().getSize(); i++) {
-            ItemBuilder filler = new ItemBuilder(this, material, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
-			map.put(i, filler);
-		}
-		return map;
+		return fill(new ItemStack(material));
 	}
+
+    /**
+     * Fills the entire inventory with the specified {@link ItemStack}.
+     * Each slot in the inventory is populated with a copy of the provided item,
+     * with its display name set to a single space character to create a blank appearance.
+     *
+     * @param item The {@link ItemStack} to use for filling the inventory.
+     * @return     A {@link Map} where the key represents the inventory slot index,
+     *             and the value is the {@link ItemBuilder} placed in that slot.
+     */
+    public final Map<Integer, ItemBuilder> fill(ItemStack item) {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
+        for (int i = 0; i < getInventorySize().getSize(); i++) {
+            ItemBuilder filler = new ItemBuilder(this, item, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
+            map.put(i, filler);
+        }
+        return map;
+    }
 	
 	/**
 	 * Checks if the given {@link ItemStack} is associated with the specified item ID.

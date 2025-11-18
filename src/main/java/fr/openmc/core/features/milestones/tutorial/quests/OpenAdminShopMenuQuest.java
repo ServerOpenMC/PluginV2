@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -16,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
 
     public OpenAdminShopMenuQuest() {
         super(
-                "Ouvrir le menu de l'Admin Shop",
+                "Ouvrir le menu de l'adminshop",
                 List.of(
                         "§fTapez §c/adminshop §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oLe marché qui varie en fonction de l'offre et de la demande !"
@@ -42,7 +42,7 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! L'§cAdmin Shop §fvous servira à vous procurer de l'argent et des blocs ! Vous pouvez d'ailleurs dès maintenant vendre ou acheter une ressource à l'Admin Shop !",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! L'§cadminshop §fvous servira à vous procurer de l'argent et des blocs ! Vous pouvez d'ailleurs dès maintenant vendre ou acheter une ressource à l'adminshop !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -53,14 +53,14 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onAdminShopMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onAdminShopMenuOpen(OpenMenuEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getInventory().getHolder() == null) return;
+        if (event.getMenu() == null) return;
 
-        if (!event.getInventory().getHolder().getClass().equals(AdminShopMenu.class)) return;
+        if (!(event.getMenu() instanceof AdminShopMenu)) return;
 
         this.incrementProgress(player.getUniqueId());
     }

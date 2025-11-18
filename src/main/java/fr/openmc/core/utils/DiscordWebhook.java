@@ -1,6 +1,9 @@
 package fr.openmc.core.utils;
 
+import net.minidev.json.JSONObject;
+
 import javax.net.ssl.HttpsURLConnection;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
@@ -22,14 +25,24 @@ public class DiscordWebhook {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
 
-        String jsonPayload = String.format("{\"content\":\"%s\"}", message);
+        JSONObject json = new JSONObject();
+        json.put("content", message);
+
         try (OutputStream os = conn.getOutputStream()) {
-            os.write(jsonPayload.getBytes(StandardCharsets.UTF_8));
+            os.write(json.toString().getBytes(StandardCharsets.UTF_8));
         }
 
         int status = conn.getResponseCode();
+
         if (status != 204) {
-            throw new RuntimeException("Échec du webhook, code HTTP : " + status);
+            String errorResponse = "";
+            try (InputStream err = conn.getErrorStream()) {
+                if (err != null) {
+                    errorResponse = new String(err.readAllBytes(), StandardCharsets.UTF_8);
+                }
+            }
+
+            throw new RuntimeException("Echec du webhook, code HTTP : " + status + " → " + errorResponse);
         }
     }
 }

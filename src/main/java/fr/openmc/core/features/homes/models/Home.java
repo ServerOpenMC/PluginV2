@@ -1,20 +1,18 @@
 package fr.openmc.core.features.homes.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
-import fr.openmc.core.features.homes.icons.OldHomeIcon;
+import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +21,9 @@ import java.util.UUID;
 @DatabaseTable(tableName = "homes")
 public class Home {
 
-    @DatabaseField(id = true)
+    @DatabaseField(id = true, canBeNull = false, unique = true, columnName = "home_uuid")
+    private UUID uniqueId;
+    @DatabaseField(canBeNull = false)
     private UUID owner;
     @Setter
     @DatabaseField(canBeNull = false)
@@ -50,15 +50,16 @@ public class Home {
         // required for ORMLite
     }
 
-    public Home(UUID owner, String name, Location location, HomeIcon icon) {
+    public Home(UUID uniqueId, UUID owner, String name, Location location, HomeIcon icon) {
+        this.uniqueId = uniqueId;
         this.owner = owner;
         this.name = name;
         setLocation(location);
         this.iconId = icon.getSaveId();
     }
 
-    public Home(UUID owner, String name, Location location, OldHomeIcon legacyIcon) {
-        this(owner, name, location, HomeIconRegistry.fromLegacyHomeIcon(legacyIcon));
+    public Home(UUID uniqueId, UUID owner, String name, Location location, LegacyHomeIcon legacyIcon) {
+        this(uniqueId, owner, name, location, HomeIconRegistry.fromLegacyHomeIcon(legacyIcon));
     }
 
     public Location getLocation() {
@@ -67,9 +68,9 @@ public class Home {
 
     public void setLocation(Location location) {
         world = location.getWorld().getName();
-        x = location.getBlockX();
-        y = location.getBlockY();
-        z = location.getBlockZ();
+        x = (double) Math.round(location.getX() * 10d) / 10d;
+        y = (double) Math.round(location.getY() * 10d) / 10d;
+        z = (double) Math.round(location.getZ() * 10d) / 10d;
         yaw = location.getYaw();
         pitch = location.getPitch();
     }
@@ -77,9 +78,9 @@ public class Home {
     public String serializeLocation() {
         Location location = getLocation();
         return location.getWorld().getName() + "," +
-                location.getBlockX() + "," +
-                location.getBlockY() + "," +
-                location.getBlockZ() + "," +
+                (double) Math.round(location.getX() * 10d) / 10d + "," +
+                (double) Math.round(location.getY() * 10d) / 10d + "," +
+                (double) Math.round(location.getZ() * 10d) / 10d + "," +
                 location.getYaw() + "," +
                 location.getPitch();
     }
@@ -103,20 +104,20 @@ public class Home {
         item.lore(List.of(
                 Component.text("§6Position:"),
                 Component.text("§6  W: §e" + location.getWorld().getName()),
-                Component.text("§6  X: §e" + location.getBlockX()),
-                Component.text("§6  Y: §e" + location.getBlockY()),
-                Component.text("§6  Z: §e" + location.getBlockZ())));
+                Component.text("§6  X: §e" + (double) Math.round(location.getX() * 10d) / 10d),
+                Component.text("§6  Y: §e" + (double) Math.round(location.getY() * 10d) / 10d),
+                Component.text("§6  Z: §e" + (double) Math.round(location.getZ() * 10d) / 10d)));
         item.setItemMeta(meta);
         return item;
     }
 
     @Deprecated
-    public OldHomeIcon getLegacyIcon() {
+    public LegacyHomeIcon getLegacyIcon() {
         return HomeIconRegistry.toLegacyHomeIcon(getIcon());
     }
 
     @Deprecated
-    public void setLegacyIcon(OldHomeIcon legacyIcon) {
+    public void setLegacyIcon(LegacyHomeIcon legacyIcon) {
         this.iconId = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon).getSaveId();
     }
 
@@ -127,7 +128,8 @@ public class Home {
     @Override
     public String toString() {
         return "Home{" +
-                "owner=" + owner +
+                "uniqueId=" + uniqueId +
+                ", owner=" + owner +
                 ", name='" + name + '\'' +
                 ", location=" + serializeLocation() +
                 ", icon=" + iconId +
@@ -143,7 +145,7 @@ public class Home {
             return icon;
 
         try {
-            OldHomeIcon legacyIcon = OldHomeIcon.valueOf(iconId.toUpperCase());
+            LegacyHomeIcon legacyIcon = LegacyHomeIcon.valueOf(iconId.toUpperCase());
             return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
         } catch (IllegalArgumentException e) {
             return HomeUtil.mapLegacyCustomId(iconId);

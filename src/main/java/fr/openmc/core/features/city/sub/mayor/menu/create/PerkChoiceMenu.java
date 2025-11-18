@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -69,31 +70,81 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
             if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
+            List<Component> perkLore = new ArrayList<>(newPerk.getLore());
+
+            perkLore.add(Component.text(newPerk.getCategory().getName()));
+
+            switch (newPerk.getCategory()) {
+                case AGRICULTURAL -> {
+                    if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_AGRICULTURAL)) {
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_AGRICULTURAL) + " pour débloquer ceci"));
+                    }
+                }
+                case ECONOMIC -> {
+                    if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_ECONOMY)) {
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_ECONOMY) + " pour débloquer ceci"));
+                    }
+                }
+                case MILITARY -> {
+                    if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_MILITARY)) {
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_MILITARY) + " pour débloquer ceci"));
+                    }
+                }
+                case STRATEGY -> {
+                    if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_STRATEGY)) {
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_STRATEGY) + " pour débloquer ceci"));
+                    }
+                }
+            }
+
+
             ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
                 itemMeta.customName(Component.text(newPerk.getName()));
-                itemMeta.lore(newPerk.getLore());
+                itemMeta.lore(perkLore);
             })
-                    .hide(newPerk.getToHide())
+                    .hide((newPerk != null) ? newPerk.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
-                boolean isPerkEvent = (newPerk.getType() == PerkType.EVENT) &&
-                        (
-                                ("perk1".equals(perkNumber) && ((perk2 != null && perk2.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
-                                        ("perk2".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
-                                        ("perk3".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk2 != null && perk2.getType() == PerkType.EVENT)))
-                        );
-                if (isPerkEvent) {
-                    MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.MAYOR, MessageType.ERROR, false);
-                    return;
-                }
+                        switch (newPerk.getCategory()) {
+                            case AGRICULTURAL -> {
+                                if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_AGRICULTURAL)) {
+                                    return;
+                                }
+                            }
+                            case ECONOMIC -> {
+                                if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_ECONOMY)) {
+                                    return;
+                                }
+                            }
+                            case MILITARY -> {
+                                if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_MILITARY)) {
+                                    return;
+                                }
+                            }
+                            case STRATEGY -> {
+                                if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_STRATEGY)) {
+                                    return;
+                                }
+                            }
+                        }
 
-                if (Objects.equals(perkNumber, "perk1")) {
-                    new MayorCreateMenu(player, newPerk, perk2, perk3, type).open();
-                } else if (Objects.equals(perkNumber, "perk2")) {
-                    new MayorCreateMenu(player, perk1, newPerk, perk3, type).open();
-                } else if (Objects.equals(perkNumber, "perk3")) {
-                    new MayorCreateMenu(player, perk1, perk2, newPerk, type).open();
-                }
+                        boolean isPerkEvent = (newPerk.getType() == PerkType.EVENT) &&
+                                (
+                                        ("perk1".equals(perkNumber) && ((perk2 != null && perk2.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
+                                                ("perk2".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
+                                                ("perk3".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk2 != null && perk2.getType() == PerkType.EVENT)))
+                                );
+                        if (isPerkEvent) {
+	                        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 réformes de type évènement !"), Prefix.MAYOR, MessageType.ERROR, false);
+                            return;
+                        }
 
+                        if (Objects.equals(perkNumber, "perk1")) {
+                            new MayorCreateMenu(player, newPerk, perk2, perk3, type).open();
+                        } else if (Objects.equals(perkNumber, "perk2")) {
+                            new MayorCreateMenu(player, perk1, newPerk, perk3, type).open();
+                        } else if (Objects.equals(perkNumber, "perk3")) {
+                            new MayorCreateMenu(player, perk1, perk2, newPerk, type).open();
+                        }
             });
 
             items.add(perkItem);
@@ -122,7 +173,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Reformes";
+	    return "Menu des maires - Reformes";
     }
 
     @Override

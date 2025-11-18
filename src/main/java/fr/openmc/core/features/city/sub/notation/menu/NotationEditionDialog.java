@@ -79,9 +79,9 @@ public class NotationEditionDialog {
 
         inputs.add(DialogInput
                 .numberRange("input_note_architectural",
-                        Component.text("Note Architectural").hoverEvent(
+                        Component.text("Note Architecturale").hoverEvent(
                                 Component.text("Note sur " + NotationNote.NOTE_ARCHITECTURAL.getMaxNote() + " points")
-                                        .append(Component.text("qui compte, les batiments, les infrastructures et l'esthétique de la ville"))
+                                        .append(Component.text("qui prend en compte, les bâtiments, les infrastructures et l'esthétique de la ville"))
                         ), 0, NotationNote.NOTE_ARCHITECTURAL.getMaxNote()
                 )
                 .initial(0f)
@@ -91,9 +91,9 @@ public class NotationEditionDialog {
 
         inputs.add(DialogInput
                 .numberRange("input_note_coherence",
-                        Component.text("Note Coherence").hoverEvent(
+                        Component.text("Note Cohérence").hoverEvent(
                                 Component.text("Note sur " + NotationNote.NOTE_COHERENCE.getMaxNote() + " points")
-                                        .append(Component.text("qui compte, la cohérence des builds, et le changement progressif de theme."))
+                                        .append(Component.text("qui prend en compte, la cohérence des builds et le changement progressif de thème."))
                         ), 0, NotationNote.NOTE_COHERENCE.getMaxNote()
                 )
                 .initial(0f)
@@ -108,14 +108,14 @@ public class NotationEditionDialog {
                                 Component.text("Une justification de la note est obligatoire")
                         )
                 )
-                .multiline(TextDialogInput.MultilineOptions.create(5, 40))
+                .multiline(TextDialogInput.MultilineOptions.create(7, 40))
                 .build()
         );
 
 
         int finalCityEditIndex = cityEditIndex;
         Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Classement des Notations Semaine " + weekStr + " - Edition de la ville : " + cityEdited.getName() + " (" + (finalCityEditIndex + 1) + "/" + cities.size() + ")"))
+                .base(DialogBase.builder(Component.text("Classement des notations semaine " + weekStr + " - Édition de la ville : " + cityEdited.getName() + " (" + (finalCityEditIndex + 1) + "/" + cities.size() + ")"))
                         .body(body)
                         .inputs(inputs)
                         .canCloseWithEscape(true)
@@ -125,8 +125,16 @@ public class NotationEditionDialog {
                         ActionButton.builder(Component.text(ButtonType.SAVE.getLabel()))
                                 .action(DialogAction.customClick((response, audience) -> {
                                             float noteArchitectural = response.getFloat("input_note_architectural");
-                                            float noteCoherence = response.getFloat("input_note_architectural");
+                                            float noteCoherence = response.getFloat("input_note_coherence");
                                             String description = response.getText("input_description");
+
+                                            if (noteArchitectural > NotationNote.NOTE_ARCHITECTURAL.getMaxNote()) {
+                                                noteArchitectural = NotationNote.NOTE_ARCHITECTURAL.getMaxNote();
+                                            }
+
+                                            if (noteCoherence > NotationNote.NOTE_COHERENCE.getMaxNote()) {
+                                                noteCoherence = NotationNote.NOTE_COHERENCE.getMaxNote();
+                                            }
 
                                             CityNotation cityNotation = new CityNotation(
                                                     cityEdited.getUniqueId(),

@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "description": "Le datapack d'OpenMC",
+    "min_format": [88, 0],
+		"max_format": [88, 0]
+  }
+}

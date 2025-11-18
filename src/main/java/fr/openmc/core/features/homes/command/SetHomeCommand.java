@@ -1,0 +1,111 @@
+package fr.openmc.core.features.homes.command;
+
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
+import fr.openmc.core.features.homes.events.HomeCreateEvent;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.features.homes.world.DisabledWorldHome;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.SuggestWith;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.util.List;
+import java.util.UUID;
+
+public class SetHomeCommand {
+
+    @Command("sethome")
+    @Description("Permet de définir votre home")
+    @CommandPermission("omc.commands.home.sethome")
+    public void setHome(
+            Player player,
+            @Named("home") @SuggestWith(HomeAutoComplete.class) String name
+    ) {
+        if(DisabledWorldHome.isDisabledWorld(player.getWorld())) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
+            return;
+        }
+
+        if(player.hasPermission("omc.admin.homes.sethome.other") && name.contains(":")) {
+            String[] split = name.split(":");
+            String targetName = split[0];
+            String homeName = split[1];
+
+            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
+            if(!target.hasPlayedBefore()) {
+                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
+
+            if(split.length < 2) {
+                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
+
+            if (!HomeUtil.isValidHomeName(homeName)) {
+                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
+            List<Home> homes = HomesManager.getHomes(target.getUniqueId());
+            for (Home home : homes) {
+                if (home.getName().equalsIgnoreCase(homeName)) {
+                    MessagesManager.sendMessage(player, Component.text("§cCe joueur a déjà un home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+                    return;
+                }
+            }
+
+            Home home = new Home(UUID.randomUUID(), target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
+            HomesManager.addHome(home);
+
+            MessagesManager.sendMessage(player, Component.text("§aLe home §e" + homeName + " §aa été défini pour §e" + targetName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+            if(target.isOnline() && target instanceof Player targetPlayer) {
+                MessagesManager.sendMessage(targetPlayer, Component.text("§aUn admin vous a défini un home §e" + homeName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+            }
+
+            return;
+        }
+
+        if (!HomeUtil.isValidHomeName(name)) {
+            MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+            return;
+        }
+
+        int currentHome = HomesManager.getHomes(player.getUniqueId()).size();
+        int homesLimit = HomesManager.getHomeLimit(player.getUniqueId());
+
+        if(currentHome >= homesLimit) {
+            MessagesManager.sendMessage(player, Component.text("§cVous avez atteint la limite de homes."), Prefix.HOME, MessageType.ERROR, true);
+            return;
+        }
+
+        List<Home> homes = HomesManager.getHomes(player.getUniqueId());
+
+        for (Home home : homes) {
+            if (home.getName().equalsIgnoreCase(name)) {
+                MessagesManager.sendMessage(player, Component.text("§cVous avez déjà un home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
+        }
+
+        Home home = new Home(UUID.randomUUID(), player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new HomeCreateEvent(home, player));
+        });
+        HomesManager.addHome(home);
+
+
+        MessagesManager.sendMessage(player, Component.text("§aVotre home §e" + name + " §aa été défini."), Prefix.HOME, MessageType.SUCCESS, true);
+    }
+}

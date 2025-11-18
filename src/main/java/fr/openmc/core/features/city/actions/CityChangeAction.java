@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -30,7 +31,13 @@ public class CityChangeAction {
     public static void beginChangeCity(Player player, CityType typeChange) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, player)) return;
+        if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
+
+        if (typeChange.equals(CityType.WAR) && !FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
+	        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         String cityTypeActuel;
         String cityTypeAfter;
         cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
@@ -41,10 +48,10 @@ public class CityChangeAction {
         confirmLore.add(Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter));
         if (typeChange == CityType.WAR) {
             confirmLore.add(Component.empty());
-            confirmLore.add(Component.text("§c⚠ Vous pourrez être exposé à des guerres contre des personnes à tout moment !"));
+	        confirmLore.add(Component.text("§c⚠ Vous pourrez être exposé à des guerres contre d'autres villes à tout moment !"));
         }
         confirmLore.add(Component.empty());
-        confirmLore.add(Component.text("§c⚠ Ta Mascotte §4§lperdera 1 niveau !"));
+	    confirmLore.add(Component.text("§c⚠ Ta mascotte §4§lperdera 1 niveau !"));
 
         ConfirmMenu menu = new ConfirmMenu(
                 player,
@@ -55,7 +62,7 @@ public class CityChangeAction {
                 player::closeInventory,
                 confirmLore,
                 List.of(
-                        Component.text("§7Ne pas changer le §dType de Ville")
+		                Component.text("§7Ne pas changer le §dtype de ville")
                 )
         );
         menu.open();
@@ -64,7 +71,7 @@ public class CityChangeAction {
     public static void finishChange(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender)) {
+        if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -74,17 +81,17 @@ public class CityChangeAction {
         Mascot mascot = city.getMascot();
 
         if (mascot == null) {
-            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas de Mascotte pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas de mascotte pour changer le type de votre ville (contactez le staff)"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!mascot.isAlive()) {
-            MessagesManager.sendMessage(sender, Component.text("Votre Mascotte doit être soigné à 100%"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Votre mascotte doit être en vie pour changer le type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " avant de changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -116,8 +123,8 @@ public class CityChangeAction {
                     mob.getHealth(),
                     maxHealth
             )));
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         String cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";

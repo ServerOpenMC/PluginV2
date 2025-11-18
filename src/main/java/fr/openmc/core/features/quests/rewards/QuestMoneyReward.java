@@ -21,7 +21,7 @@ public record QuestMoneyReward(double amount) implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        EconomyManager.addBalance(player.getUniqueId(), amount);
+        EconomyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
         MessagesManager.sendMessage(
                 player,
                 Component.text("§aVous avez reçu §e" + amount + EconomyManager.getEconomyIcon()),

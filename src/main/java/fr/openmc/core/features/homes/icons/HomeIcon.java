@@ -61,7 +61,6 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
                 return new ItemStack(Material.GRASS_BLOCK);
         }
     }
-
     /**
      * Converts a material name to a readable format (e.g. "STONE_BRICKS" -> "Stone Bricks").
      *
@@ -173,5 +172,16 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
                 ", type=" + type +
                 ", materialOrCustomId='" + materialOrCustomId + '\'' +
                 '}';
+    }
+
+    public enum IconCategory {
+        ALL,
+        VANILLA,
+        CUSTOM
+    }
+
+    public enum IconType {
+        VANILLA,
+        CUSTOM
     }
 }

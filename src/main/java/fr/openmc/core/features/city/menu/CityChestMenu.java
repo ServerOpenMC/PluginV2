@@ -3,12 +3,14 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityChestAction;
+import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import lombok.Getter;
@@ -26,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static fr.openmc.core.features.city.conditions.CityChestConditions.*;
 
@@ -53,7 +56,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -78,13 +81,17 @@ public class CityChestMenu extends PaginatedMenu {
         return Arrays.asList(contents);
     }
 
-    private static final List<Integer> CITY_ITEM_SLOTS =
+    private static final List<Integer> CITY_MENU_ITEM_SLOTS =
             IntStream.rangeClosed(0, 44)
                     .boxed()
                     .toList();
+
     @Override
     public List<Integer> getTakableSlot() {
-        return CITY_ITEM_SLOTS;
+        return Stream.concat(
+                CITY_MENU_ITEM_SLOTS.stream(),
+                MenuUtils.getInventoryItemSlots().stream()
+        ).toList();
     }
 
     @Override
@@ -94,6 +101,14 @@ public class CityChestMenu extends PaginatedMenu {
         Player player = getOwner();
 
         Map<Integer, ItemBuilder> map = new HashMap<>();
+
+        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+        }, true).setOnClick(inventoryClickEvent -> {
+            exit(city, getInventory());
+        }));
+
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setOnClick(inventoryClickEvent -> {
@@ -130,16 +145,22 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
 
-        if (city.hasPermission(getOwner().getUniqueId(), CityPermission.CHEST_UPGRADE) && city.getChestPages() < 5) {
+        List<Component> loreUpgrade = new ArrayList<>(List.of(
+                Component.text("§7Votre ville doit avoir : "),
+                Component.text("§8- §6" + city.getChestPages() * UPGRADE_PER_MONEY).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                Component.text("§8- §d" + city.getChestPages() * UPGRADE_PER_AYWENITE + " d'Aywenite"),
+                Component.empty()
+        ));
+        if (city.getChestPages() >= ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
+	        loreUpgrade.add(Component.text("§cLimite atteinte"));
+        } else {
+            loreUpgrade.add(Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE"));
+        }
+
+        if (city.hasPermission(getOwner().getUniqueId(), CityPermission.CHEST_UPGRADE) && city.getChestPages() < ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
             map.put(47, new ItemBuilder(this, Material.ENDER_CHEST, itemMeta -> {
                 itemMeta.displayName(Component.text("§aAméliorer le coffre"));
-                itemMeta.lore(List.of(
-                        Component.text("§7Votre ville doit avoir : "),
-                        Component.text("§8- §6" + city.getChestPages() * UPGRADE_PER_MONEY).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
-                        Component.text("§8- §d" + city.getChestPages() * UPGRADE_PER_AYWENITE + " d'Aywenite"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE")
-                ));
+                itemMeta.lore(loreUpgrade);
             }).setOnClick(inventoryClickEvent -> {
                 if (!canCityChestUpgrade(city, player)) return;
 
@@ -153,12 +174,12 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu du Coffre de " + this.city.getName() + " - Page " + this.page;
+	    return "Menu du coffre de " + this.city.getName() + " - Page " + this.page;
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override
@@ -177,12 +198,13 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        if (Restart.isRestarting) return;
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) {
             return;
         }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
+        City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
             return;
         }
@@ -203,7 +225,6 @@ public class CityChestMenu extends PaginatedMenu {
     public boolean hasNextPage() {
         return this.page < this.city.getChestPages();
     }
-
 
     public boolean hasPreviousPage() {
         return this.page > 1;

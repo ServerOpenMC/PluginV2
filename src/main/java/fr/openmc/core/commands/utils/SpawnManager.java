@@ -3,6 +3,7 @@ package fr.openmc.core.commands.utils;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -15,7 +16,7 @@ public class SpawnManager {
     private static FileConfiguration spawnConfig;
     @Getter private static Location spawnLocation;
 
-    public SpawnManager() {
+    public static void init() {
         spawnFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "spawn.yml");
         loadSpawnConfig();
     }
@@ -32,13 +33,17 @@ public class SpawnManager {
 
     private static void loadSpawnLocation() {
         if (spawnConfig.contains("spawn")) {
+            World world = OMCPlugin.getInstance().getServer().getWorld(spawnConfig.getString("spawn.world", "world"));
+            double x = spawnConfig.getDouble("spawn.x", 0.0);
+            double z = spawnConfig.getDouble("spawn.z", 0.0);
+
             spawnLocation = new Location(
-                OMCPlugin.getInstance().getServer().getWorld(spawnConfig.getString("spawn.world", "world")),
-                spawnConfig.getDouble("spawn.x", 0.0),
-                spawnConfig.getDouble("spawn.y", 0.0),
-                spawnConfig.getDouble("spawn.z", 0.0),
-                (float) spawnConfig.getDouble("spawn.yaw", 0.0),
-                (float) spawnConfig.getDouble("spawn.pitch", 0.0)
+                    world,
+                    x,
+                    spawnConfig.getDouble("spawn.y", world.getHighestBlockYAt((int) x, (int) z) + 1),
+                    z,
+                    (float) spawnConfig.getDouble("spawn.yaw", 0.0),
+                    (float) spawnConfig.getDouble("spawn.pitch", 0.0)
             );
         }
     }

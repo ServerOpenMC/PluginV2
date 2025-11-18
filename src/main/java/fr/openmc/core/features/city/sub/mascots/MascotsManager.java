@@ -22,7 +22,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -47,11 +46,10 @@ public class MascotsManager {
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
     public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%.0f/%.0f❤";
     public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
-    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:trans_rights_are_human_rights");
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
-    public MascotsManager() {
+    public static void init() {
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -59,7 +57,7 @@ public class MascotsManager {
         try {
             spigotYMLConfig.save(new File("spigot.yml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
@@ -67,15 +65,20 @@ public class MascotsManager {
         loadMascots();
 
         OMCPlugin.registerEvents(
-                new MascotsProtectionsListener(),
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
+                new MascotsSleepingListener(),
                 new MascotImmuneListener(),
-                new MascotsTargetListener()
+                new MascotsTargetListener(),
+                new MascotsRenameListener(),
+                new MascotsPotionListener()
         );
         if (!OMCPlugin.isUnitTestVersion()) {
             new MascotsSoundListener();
+            OMCPlugin.registerEvents(
+                    new MascotsProtectionsListener()
+            );
         }
 
         CommandsManager.getHandler().register(
@@ -100,7 +103,7 @@ public class MascotsManager {
                 mascotsByEntityUUID.put(mascot.getMascotUUID(), mascot);
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -109,15 +112,15 @@ public class MascotsManager {
             try {
                 mascotsDao.createOrUpdate(mascot);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
 
-    public static void createMascot(City city, UUID cityUUID, String cityName, World player_world, Location mascot_spawn) {
-        LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn, EntityType.ZOMBIE);
+    public static void createMascot(City city, UUID cityUUID, String cityName, World playerWorld, Location mascotSpawn) {
+        LivingEntity mob = (LivingEntity) playerWorld.spawnEntity(mascotSpawn, EntityType.ZOMBIE);
 
-        Chunk chunk = mascot_spawn.getChunk();
+        Chunk chunk = mascotSpawn.getChunk();
         setMascotsData(mob, cityName, 300, 300);
         mob.setGlowing(true);
 
@@ -128,7 +131,7 @@ public class MascotsManager {
             try {
                 mascotsDao.create(new Mascot(cityUUID, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
 
@@ -148,7 +151,7 @@ public class MascotsManager {
             try {
                 mascotsDao.delete(mascot);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
 
@@ -181,9 +184,7 @@ public class MascotsManager {
         mascotsLevels = MascotsLevels.valueOf("level" + level);
 
         double maxHealth = mascotsLevels.getHealth();
-        mob.getAttribute(Attribute.MAX_HEALTH).removeModifier(MAX_HEALTH_KEY);
-        mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
-
+        mob.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
         if (mob.getHealth() == lastHealth) {
             mob.setHealth(maxHealth);
         }
@@ -207,7 +208,7 @@ public class MascotsManager {
 
         // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
         if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && entityMascot.getHeight() <= 1.0) {
-            MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
+	        MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la mascotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
             return;
         }
 
@@ -217,7 +218,7 @@ public class MascotsManager {
                 Material blockType = checkLoc.getBlock().getType();
 
                 if (blockType != Material.AIR) {
-                    MessagesManager.sendMessage(player, Component.text("Libérez de l'espace tout autour de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
+	                MessagesManager.sendMessage(player, Component.text("Libérez de l'espace tout autour de la mascotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
                     return;
                 }
             }
@@ -230,7 +231,7 @@ public class MascotsManager {
         if (!DynamicCooldownManager.isReady(mascots.getMascotUUID(), "mascots:move")) {
             cooldown = DynamicCooldownManager.getRemaining(mascots.getMascotUUID(), "mascots:move");
             hasCooldown = true;
-            DynamicCooldownManager.clear(entityMascot.getUniqueId(), "mascots:move");
+            DynamicCooldownManager.clear(entityMascot.getUniqueId(), "mascots:move", false);
         }
 
         entityMascot.remove();
@@ -260,7 +261,8 @@ public class MascotsManager {
 
     private static void setMascotsData(LivingEntity mob, String cityName, double maxHealth, double baseHealth) {
         mob.setAI(false);
-        mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
+
+        mob.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
         mob.setHealth(baseHealth);
         mob.setPersistent(true);
         mob.setRemoveWhenFarAway(false);

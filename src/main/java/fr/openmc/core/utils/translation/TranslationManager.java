@@ -16,7 +16,7 @@ public class TranslationManager {
     private static File translationFolder;
     private static final Map<String, FileConfiguration> loadedLanguages = new HashMap<>();
 
-    public TranslationManager(File inTranslationFolder, String inDefaultLanguage) {
+    public static void init(File inTranslationFolder, String inDefaultLanguage) {
         defaultLanguage = inDefaultLanguage;
         translationFolder = inTranslationFolder;
 
@@ -44,7 +44,7 @@ public class TranslationManager {
      *
      * @param path  The path to the translation
      * @param language The language of the translation, "default" for default language
-     * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
+     * @param placeholders The placeholders you want to replace in a pair with values ("player", player.getName())
      */
     public static String getTranslation(String path, String language, String... placeholders) {
         return replacePlaceholders(getTranslation(path, language), placeholders);
@@ -90,7 +90,7 @@ public class TranslationManager {
      * Replaces the keys (between {}) in a String with the value Strings.
      *
      * @param text The string to modify
-     * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
+     * @param placeholders The placeholders you want to replace in a pair with values ("player", player.getName())
      */
     public static String replacePlaceholders(String text, String... placeholders) {
         for (int i = 0; i < placeholders.length; i += 2) {

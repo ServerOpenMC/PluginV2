@@ -30,7 +30,7 @@ public class CityKickCondition {
         }
 
         if (player.getUniqueId().equals(playerToKick.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas t'auto exclure de la ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Tu ne peux pas t'exclure toi même de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

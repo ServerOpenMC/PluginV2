@@ -39,12 +39,12 @@ public class CityModifyMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Modifier";
+	    return "Menu des villes - Modifier";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -93,6 +93,7 @@ public class CityModifyMenu extends Menu {
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
             DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+                if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
                     City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
@@ -111,7 +112,7 @@ public class CityModifyMenu extends Menu {
 
         if (hasPermissionOwner) {
             loreTransfer = List.of(
-                    Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
+		            Component.text("§dLa Ville §7sera transférer à §dla personne §7que vous sélectionnerez"),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );
@@ -122,7 +123,7 @@ public class CityModifyMenu extends Menu {
         }
 
         inventory.put(13, new ItemBuilder(this, Material.TOTEM_OF_UNDYING, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Transferer la §dVille"));
+	        itemMeta.itemName(Component.text("§7Transférer la §dville"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
@@ -130,7 +131,7 @@ public class CityModifyMenu extends Menu {
             if (!CityManageConditions.canCityTransfer(cityCheck, player)) return;
 
             if (city.getMembers().size() - 1 == 0) {
-                MessagesManager.sendMessage(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
+	            MessagesManager.sendMessage(player, Component.text("Il y a pas de membre a qui vous pouvez transférer la ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -176,10 +177,8 @@ public class CityModifyMenu extends Menu {
             }
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§e§lCLIQUEZ ICI POUR RETOURNER")
-            ));
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
         }, true));
 
         return inventory;

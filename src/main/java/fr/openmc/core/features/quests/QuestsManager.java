@@ -21,11 +21,11 @@ public class QuestsManager {
     static final Map<String, Quest> quests = new HashMap<>();
 
     /**
-     * Constructor for QuestsManager.
+     * Initialisation for QuestsManager.
      * This constructor initializes the instance of QuestsManager,
      * loads default quests, and loads all quest progress.
      */
-    public QuestsManager() {
+    public static void init() {
         loadDefaultQuests();
         QuestProgressSaveManager.loadAllQuestProgress();
     }

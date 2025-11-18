@@ -4,7 +4,6 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -14,14 +13,7 @@ import java.util.UUID;
 
 public class PrivateMessageManager {
 
-    private final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
-    @Getter private static PrivateMessageManager instance;
-    @Getter private final SocialSpyManager spyManager;
-
-    public PrivateMessageManager() {
-        instance = this;
-        this.spyManager = new SocialSpyManager();
-    }
+    private static final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
 
     /**
      * Send a private message from sender to receiver.
@@ -30,10 +22,9 @@ public class PrivateMessageManager {
      * @param receiver The player receiving the message.
      * @param message The message to send.
      */
-    public void sendPrivateMessage(Player sender, Player receiver, String message) {
+    public static void sendPrivateMessage(Player sender, Player receiver, String message) {
         if (sender.equals(receiver)) {
-            MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à " +
-                    "vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
@@ -48,7 +39,7 @@ public class PrivateMessageManager {
 
         sender.sendMessage("§7[§eToi §6§l→ §r§9" + receiver.getName() + "§7] §f" + message);
         receiver.sendMessage("§7[§e" + sender.getName() + " §6§l→ §r§9Toi§7] §f" + message);
-        spyManager.broadcastToSocialSpy(sender, receiver, message);
+        SocialSpyManager.broadcastToSocialSpy(sender, receiver, message);
 
         lastMessageFrom.put(receiver.getUniqueId(), sender.getUniqueId());
         lastMessageFrom.put(sender.getUniqueId(), receiver.getUniqueId());
@@ -60,7 +51,7 @@ public class PrivateMessageManager {
      * @param sender The player sending the message.
      * @param message The message to send.
      */
-    public void replyToLastMessage(Player sender, String message) {
+    public static void replyToLastMessage(Player sender, String message) {
         UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
         if (lastReceiverId == null) {
             MessagesManager.sendMessage(sender, Component.text("§cVous n'avez pas de message privé récent."), Prefix.OPENMC, MessageType.ERROR, true);

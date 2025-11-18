@@ -5,11 +5,11 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
         map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu des Détails de la Ville en guerre"),
+		            Component.text("§7Vous allez retourner au menu des détails de la ville en guerre"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));
@@ -115,7 +115,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

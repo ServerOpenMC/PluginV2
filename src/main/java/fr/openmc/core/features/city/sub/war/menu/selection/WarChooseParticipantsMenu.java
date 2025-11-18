@@ -5,12 +5,12 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -45,7 +45,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                 .sorted(Comparator.comparing((UUID uuid) -> !Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline())
                         .thenComparing(uuid -> {
                             if (cityLaunch.hasPermission(uuid, CityPermission.OWNER)) return 0;
-                            else if (MayorManager.cityMayor.get(cityLaunch.getUniqueId()).getMayorUUID().equals(uuid))
+                            else if (MayorManager.cityMayor.get(cityLaunch.getUniqueId()) != null && (MayorManager.cityMayor.get(cityLaunch.getUniqueId()).getMayorUUID().equals(uuid)))
                                 return 1;
                             else return 2;
                         }))
@@ -82,7 +82,9 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
             OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(memberUUID);
             boolean isSelected = selected.contains(memberUUID);
             boolean isOwner = cityLaunch.hasPermission(memberUUID, CityPermission.OWNER);
-            boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
+            boolean isMayor = MayorManager.phaseMayor == 2
+                    && cityLaunch.getMayor() != null
+                    && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
 
@@ -162,7 +164,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

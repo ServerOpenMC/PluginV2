@@ -14,9 +14,13 @@ import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.EnumUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 public class MascotsSoundListener {
 
@@ -34,10 +38,19 @@ public class MascotsSoundListener {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
 
-                String soundName = packet.getSoundEffects().read(0).toString();
-                String[] splitedSound = soundName.split("\\.");
+                Object soundObj = packet.getSoundEffects().read(0); // CraftSound
+                String soundName = soundObj.toString(); // CraftSound{holder=Reference{ResourceKey[minecraft:sound_event / minecraft:entity.zombie.ambient]=...}}
 
-                if (!splitedSound[0].equals("ENTITY")) return;
+                int index = soundName.indexOf("/ ");
+                if (index == -1) return;
+                String name = soundName.substring(index + 2, soundName.indexOf("]", index)); // "minecraft:entity.zombie.ambient"
+
+                if (!name.startsWith("minecraft:entity.")) return;
+
+                String[] parts = name.split("\\.");
+                String entityName = parts[1].toUpperCase(Locale.ROOT);
+                EntityType soundEntity = EnumUtils.match(entityName, EntityType.class);
+                if (soundEntity == null) return;
 
                 UUID playerUUID = event.getPlayer().getUniqueId();
                 if (PlayerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
@@ -57,14 +70,17 @@ public class MascotsSoundListener {
                         .map(entity -> MascotsManager.mascotsByEntityUUID.get(entity.getUniqueId()))
                         .toList();
 
-                EntityType soundEntity = EnumUtils.match(splitedSound[1].toUpperCase(Locale.ROOT), EntityType.class);
-
                 for (Mascot mascot : mascotsNear) {
-                    EntityType entityType = mascot.getEntity().getType();
+                    Entity entity = mascot.getEntity();
+                    EntityType entityType = entity.getType();
 
-                    if (entityType.equals(soundEntity) || (SOUND_TO_ENTITY.containsKey(soundEntity) && SOUND_TO_ENTITY.get(soundEntity) == entityType)) {
-                        event.setCancelled(true);
-                        break;
+                    if (entityType.equals(soundEntity)
+                            || (SOUND_TO_ENTITY.containsKey(soundEntity) && SOUND_TO_ENTITY.get(soundEntity) == entityType)) {
+
+                        if (entity.getLocation().distanceSquared(location) < 1.0) {
+                            event.setCancelled(true);
+                            break;
+                        }
                     }
                 }
             }

@@ -8,9 +8,11 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
-import fr.openmc.core.utils.PlayerNameCache;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -59,7 +61,7 @@ public class CityTopMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -78,37 +80,41 @@ public class CityTopMenu extends PaginatedMenu {
 
         cities.forEach(city -> {
             UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
-            String ownerName = PlayerNameCache.getName(ownerUUID);
 
-            List<Component> cityLore = new ArrayList<>();
+            if (ownerUUID != null) {
+                String ownerName = PlayerNameCache.getName(ownerUUID);
 
-            cityLore.add(Component.text("§7Propriétaire : " + ownerName));
-            if (MayorManager.phaseMayor == 2) {
-                String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
-                NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null)
-                        ? NamedTextColor.WHITE
-                        : city.getMayor().getMayorColor();
-                cityLore.add(Component.text("§7Maire : ")
-                        .append(Component.text(mayorCity)
-                                .color(mayorColor)
-                                .decoration(TextDecoration.ITALIC, false)));
+                List<Component> cityLore = new ArrayList<>();
+
+                cityLore.add(Component.text("§7Propriétaire : " + ownerName));
+                if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+                    String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
+                    NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null)
+                            ? NamedTextColor.WHITE
+                            : city.getMayor().getMayorColor();
+                    cityLore.add(Component.text("§7Maire : ")
+                            .append(Component.text(mayorCity)
+                                    .color(mayorColor)
+                                    .decoration(TextDecoration.ITALIC, false)));
+                }
+                cityLore.add(Component.text("§7Niveau: §3" + city.getLevel()));
+                cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + " membres"));
+                cityLore.add(Component.text("§7Superficie : §6" + city.getChunks().size() + " chunks"));
+                cityLore.add(Component.text("§7Richesses : §6"
+                        + EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
+                        + EconomyManager.getEconomyIcon()));
+	            cityLore.add(Component.text("§7Points de puissances : §c" + city.getPowerPoints()));
+
+                int currentRank = rank.getAndIncrement();
+
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+                    itemMeta.displayName(Component.text("n°" + currentRank + " " + city.getName())
+                            .color(LeaderboardManager.getRankColor(currentRank))
+                            .decoration(TextDecoration.ITALIC, false)
+                    );
+                    itemMeta.lore(cityLore);
+                }));
             }
-            cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + " membres"));
-            cityLore.add(Component.text("§7Superficie : §6" + city.getChunks().size() + " chunks"));
-            cityLore.add(Component.text("§7Richesses : §6"
-                    + EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                    + EconomyManager.getEconomyIcon()));
-            cityLore.add(Component.text("§7Points de Puissances : §c" + city.getPowerPoints()));
-
-            int currentRank = rank.getAndIncrement();
-
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
-                itemMeta.displayName(Component.text("n°" + currentRank + " " + city.getName())
-                        .color(LeaderboardManager.getRankColor(currentRank))
-                        .decoration(TextDecoration.ITALIC, false)
-                );
-                itemMeta.lore(cityLore);
-            }));
         });
 
         return items;
@@ -146,12 +152,12 @@ public class CityTopMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Classement des Villes";
+	    return "Menu des classement des villes";
     }
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override
@@ -276,10 +282,10 @@ public class CityTopMenu extends PaginatedMenu {
      * @return The calculated score.
      */
     private double getGlobalScore(City city) {
-        double moneyScore = city.getBalance() / 1000.0;
-        double claimScore = city.getChunks().size() * 5;
-        double populationScore = city.getMembers().size() * 10;
-        double powerScore = city.getPowerPoints() * 2;
+        double moneyScore = city.getBalance() / 4000.0;
+        double claimScore = city.getChunks().size() * 6;
+        double populationScore = city.getMembers().size() * 5;
+        double powerScore = city.getPowerPoints() * 10;
 
         return moneyScore + claimScore + populationScore + powerScore;
     }
