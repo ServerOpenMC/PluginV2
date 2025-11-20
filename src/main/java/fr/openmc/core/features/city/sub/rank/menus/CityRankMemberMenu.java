@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -65,12 +66,21 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu").decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(lore);
 			}).setOnClick(event -> {
-				if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) return;
+				if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					return;
+				}
 
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
 					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
 					return;
+				}
+				
+				if (city.getRankOfMember(player.getUniqueId()) != null) {
+					if (!CityRankCondition.canModifyRankPermissions(city, getOwner(), city.getRankOfMember(player.getUniqueId()).getPriority())) {
+						return;
+					}
 				}
 
 				new CityRankAssignMenu(getOwner(), uuid, city).open();
