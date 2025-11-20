@@ -7,15 +7,13 @@ import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 
 public class MascotFriendlyPerk implements Listener {
@@ -78,5 +76,30 @@ public class MascotFriendlyPerk implements Listener {
         if (event.getItem().getType() == Material.MILK_BUCKET) {
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updatePlayerEffects(player), 1L);
         }
+    }
+
+    @EventHandler
+    public void onDreamEntrered(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+
+        if (!DreamUtils.isDreamWorld(event.getTo())) return;
+        if (DreamUtils.isDreamWorld(event.getFrom())) return;
+
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) return;
+        if (playerCity.getMascot() == null) return;
+
+        int level = playerCity.getMascot().getLevel();
+        for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
+            player.removePotionEffect(potionEffect.getType());
+        }
+    }
+
+    @EventHandler
+    public void onDreamLeave(PlayerTeleportEvent event) {
+        if (!DreamUtils.isDreamWorld(event.getFrom())) return;
+        if (DreamUtils.isDreamWorld(event.getTo())) return;
+
+        updatePlayerEffects(event.getPlayer());
     }
 }

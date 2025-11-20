@@ -143,9 +143,7 @@ public class TradeYMLManager {
                 } else if (selectedObj instanceof String s && s.matches("\\d+")) {
                     selected = Integer.parseInt(s);
                 } else {
-                    OMCPlugin.getInstance().getLogger().warning(
-                            "⚠️ Valeur inattendue pour 'selected' dans TradeYMLManager : " + selectedObj + " (réinitialisation à 0)"
-                    );
+                    OMCPlugin.getInstance().getSLF4JLogger().warn("⚠️ Valeur inattendue pour 'selected' dans TradeYMLManager : {} (réinitialisation à 0)", selectedObj);
                 }
 
                 fusionContestList.put("selected", selected + 1);

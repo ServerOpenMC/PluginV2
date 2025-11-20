@@ -5,7 +5,6 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -16,6 +15,7 @@ import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -122,7 +122,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             }
 
             List<Component> finalLorePlayer = lorePlayer;
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
                 itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(inventoryClickEvent -> {

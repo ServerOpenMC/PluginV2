@@ -8,3 +8,12 @@ multiblocks:
     material: LAPIS_BLOCK
     vulnerable: false
     bossbar: true
+  - type: CUBE
+    world: world_dream
+    origin:
+      x: -171
+      z: -117
+    size: 5
+    material: LAPIS_BLOCK
+    vulnerable: false
+    bossbar: true

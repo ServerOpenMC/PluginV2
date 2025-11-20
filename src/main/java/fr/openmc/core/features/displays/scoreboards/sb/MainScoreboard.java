@@ -30,6 +30,11 @@ import static net.kyori.adventure.text.Component.*;
 
 public class MainScoreboard extends BaseScoreboard {
     @Override
+    protected void updateTitle(Player player, SternalBoard board) {
+        board.updateTitle(getTitle());
+    }
+
+    @Override
     public void update(Player player, SternalBoard board) {
         List<Component> lines = new ArrayList<>(getDefaultLines(player));
 
