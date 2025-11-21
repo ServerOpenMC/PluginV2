@@ -1,13 +1,12 @@
 package fr.openmc.core.features.homes.models;
 
-import java.util.UUID;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import fr.openmc.core.features.homes.HomeLimits;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Getter
 @DatabaseTable(tableName = "home_limits")
