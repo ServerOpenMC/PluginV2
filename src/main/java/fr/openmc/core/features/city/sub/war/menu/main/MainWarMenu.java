@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.sub.war.menu.main;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -19,6 +18,7 @@ import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -114,7 +114,7 @@ public class MainWarMenu extends PaginatedMenu {
             loreCity.add(Component.text("§e§lCLIQUE GAUCHE POUR LANCER UNE GUERRE"));
 
 
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
                 itemMeta.displayName(Component.text("§c" + city.getName()));
                 itemMeta.lore(loreCity);
             }).setOnClick(inventoryClickEvent -> {

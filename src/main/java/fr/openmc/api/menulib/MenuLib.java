@@ -163,10 +163,10 @@ public final class MenuLib implements Listener {
         if (!(e.getInventory().getHolder() instanceof Menu menu))
             return;
 
-        if (menu.getTakableSlot().contains(e.getRawSlot()))
-            return;
+        if (!menu.getTakableSlot().contains(e.getRawSlot())) {
+            e.setCancelled(true);
+        }
 
-        e.setCancelled(true);
         menu.onInventoryClick(e);
 
         ItemBuilder itemClicked = menu.getContent().get(e.getRawSlot());
@@ -216,8 +216,10 @@ public final class MenuLib implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (!(e.getPlayer() instanceof  Player player)) return;
-        if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu)
+        if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu) {
             paginatedMenu.onClose(e);
+            return;
+        }
 
         if (e.getInventory().getHolder(false) instanceof Menu menu) {
             menu.onClose(e);

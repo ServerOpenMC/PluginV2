@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -29,6 +30,7 @@ public class AyweniterPerk implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
+        if (DreamUtils.isDreamWorld(block.getWorld())) return;
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 

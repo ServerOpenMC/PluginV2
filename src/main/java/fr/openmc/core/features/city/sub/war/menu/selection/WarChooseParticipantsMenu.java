@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -88,7 +89,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
 
-            ItemBuilder item = new ItemBuilder(this, ItemUtils.getPlayerSkull(memberUUID), meta -> {
+            ItemBuilder item = new ItemBuilder(this, SkullUtils.getPlayerSkull(memberUUID), meta -> {
                 meta.displayName(Component.text((isSelected ? "§a✔ " : "") + prefix + offline.getName())
                         .decoration(TextDecoration.ITALIC, false));
                 meta.lore(List.of(Component.text(isSelected ? "§c§lCLIQUEZ POUR RETIRER" : "§a§lCLIQUEZ POUR SÉLECTIONNER")));

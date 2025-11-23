@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -91,16 +92,16 @@ public class MayorVoteMenu extends PaginatedMenu {
             boolean ench = playerVote != null && candidate == playerVote;
 
 
-            ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
-                itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
-                itemMeta.lore(loreMayor);
-                itemMeta.setEnchantmentGlintOverride(ench);
-            }).setOnClick(inventoryClickEvent -> {
-                if (MayorManager.hasVoted(player) && playerVote != null) {
-                    if (candidate.getCandidateUUID().equals(playerVote.getCandidateUUID())) {
-	                    MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6maire"), Prefix.MAYOR, MessageType.ERROR, false);
-                        return;
-                    }
+            ItemStack mayorItem = new ItemBuilder(this, SkullUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
+                    itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.lore(loreMayor);
+                    itemMeta.setEnchantmentGlintOverride(ench);
+                }).setOnClick(inventoryClickEvent -> {
+                    if (MayorManager.hasVoted(player) && playerVote != null) {
+                        if (candidate.getCandidateUUID().equals(playerVote.getCandidateUUID())) {
+                            MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6maire"), Prefix.MAYOR, MessageType.ERROR, false);
+                            return;
+                        }
 
                     playerVote.setVote(playerVote.getVote() - 1);
                     MayorManager.removeVotePlayer(player);

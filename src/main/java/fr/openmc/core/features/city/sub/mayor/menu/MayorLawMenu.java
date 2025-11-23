@@ -18,6 +18,9 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.sub.mayor.perks.event.MilitaryDissuasion;
+import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -281,6 +284,8 @@ public class MayorLawMenu extends Menu {
 
                             if (member == null || !member.isOnline()) continue;
 
+                            if (DreamUtils.isDreamWorld(member.getWorld())) continue;
+
                             ImpotCollection.spawnZombies(member, city);
 	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
 
@@ -346,6 +351,24 @@ public class MayorLawMenu extends Menu {
                         // spawn d'un total de 100 aywenite progressivement sur une minute
                         IdyllicRain.spawnAywenite(city, 100);
 
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                    } else if (PerkManager.hasPerk(city.getMayor(), Perks.CHAOS_DREAM.getId())) {
+                        // Reve chaotique (id: 18) - Perk Event
+                        for (UUID uuid : city.getMembers()) {
+                            Player member = Bukkit.getPlayer(uuid);
+
+                            if (member == null || !member.isOnline()) continue;
+
+                            MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §eRêve Chaotique §f!"), Prefix.MAYOR, MessageType.INFO, false);
+
+                            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+
+                            if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
+                                DreamManager.tpPlayerDream(player);
+                            } else {
+                                DreamManager.tpPlayerToLastDreamLocation(player);
+                            }
+                        }
                         DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     }
                 });

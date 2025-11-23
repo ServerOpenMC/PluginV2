@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -84,7 +85,7 @@ public class MayorNpcMenu extends Menu {
 	    loreMayor.add(Component.text(perk3 == null ? "§cErreur de la réforme" : perk3.getName()));
         loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
 
-            inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
+        inventory.put(4, new ItemBuilder(this, SkullUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
                 itemMeta.displayName(Component.text("§eMaire " + city.getMayor().getName()));
                 itemMeta.lore(loreMayor);
             }));
