@@ -426,11 +426,12 @@ public class MayorManager {
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksAll(city);
                 if (perks.size() < 3) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn(
-                            "Aucune combinaison de réformes débloquées trouvée pour la ville {} (OWNER_CHOOSE)",
-                            city.getName());
-                    return;
-                }
+                OMCPlugin.getInstance().getSLF4JLogger().warn(
+                        "No unlocked mayor perks combination found for city {} (OWNER_CHOOSE)",
+                        city.getName()
+                );
+                return;
+            }
                 createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color,
                         ElectionType.OWNER_CHOOSE);
             }
@@ -470,12 +471,13 @@ public class MayorManager {
                       perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
                   }
 
-                  if (perk1 == null || perks.size() < 2) {
-                      OMCPlugin.getInstance().getSLF4JLogger().warn(
-                              "Impossible de sélectionner des réformes débloquées pour la ville {} (ELECTION)",
-                              city.getName());
-                      return;
-                  }
+                if (perk1 == null || perks.size() < 2) {
+                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                            "Unable to select unlocked mayor perks for city {} (ELECTION)",
+                            city.getName()
+                    );
+                    return;
+                }
 
                   createMayor(ownerName, ownerUUID, city, perk1, perks.getFirst(),
                           perks.get(1), color, ElectionType.ELECTION);
