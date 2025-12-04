@@ -426,12 +426,12 @@ public class MayorManager {
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksAll(city);
                 if (perks.size() < 3) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn(
-                        "No unlocked mayor perks combination found for city {} (OWNER_CHOOSE)",
-                        city.getName()
-                );
-                return;
-            }
+                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                            "No unlocked mayor perks combination found for city {} (OWNER_CHOOSE)",
+                            city.getName()
+                    );
+                    return;
+                }
                 createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color,
                         ElectionType.OWNER_CHOOSE);
             }
