@@ -478,7 +478,7 @@ public class MayorManager {
                     return;
                 }
 
-                  createMayor(ownerName, ownerUUID, city, perk1, perks.getFirst(),
+                createMayor(ownerName, ownerUUID, city, perk1, perks.getFirst(),
                           perks.get(1), color, ElectionType.ELECTION);
 
             }
