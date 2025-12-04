@@ -463,7 +463,6 @@ public class MayorManager {
                 // personne s'est présenté, owner = maire
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksBasic(city);
-
                   Perks perk1;
                   if (mayor == null || (mayor.getIdPerk1() == 0)) {
                       perk1 = PerkManager.getRandomPerkEvent(city);
