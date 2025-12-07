@@ -4,12 +4,12 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.disabled.corporation.company.Company;
 import fr.openmc.core.disabled.corporation.data.MerchantData;
 import fr.openmc.core.disabled.corporation.manager.CompanyManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.SkullUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -94,7 +94,7 @@ public class CompanyBaltopMenu extends Menu {
             } else {
                 merchantUUID = companies.getFirst().getMerchantsUUID().get(i - 13);
                 if (merchantUUID == null) merchantHead = new ItemStack(Material.AIR);
-                else merchantHead = ItemUtils.getPlayerSkull(merchantUUID);
+                else merchantHead = SkullUtils.getPlayerSkull(merchantUUID);
             }
             content.put(i, new ItemBuilder(this, merchantHead, itemMeta -> {
                 if (merchantUUID == null) return;
@@ -117,7 +117,7 @@ public class CompanyBaltopMenu extends Menu {
         UUID ownerUUIDSecond;
         if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWithPermission(CityPermission.OWNER);
         else ownerUUIDSecond = companies.get(1).getOwner().getPlayer();
-        content.put(21, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDSecond), itemMeta -> {
+        content.put(21, new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUIDSecond), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(1).getOwner().isCity() ? companies.get(1).getName() : Bukkit.getOfflinePlayer(ownerUUIDSecond).getName()));
             itemMeta.lore(List.of(
                     Component.text("§4■ Propriétaire")
@@ -133,7 +133,7 @@ public class CompanyBaltopMenu extends Menu {
             else {
                 merchantUUID = companies.get(1).getMerchantsUUID().get(i - 22);
                 if (merchantUUID == null) merchantHead = new ItemStack(Material.AIR);
-                else merchantHead = ItemUtils.getPlayerSkull(merchantUUID);
+                else merchantHead = SkullUtils.getPlayerSkull(merchantUUID);
             }
             content.put(i, new ItemBuilder(this, merchantHead, itemMeta -> {
                 if (merchantUUID == null) return;
@@ -156,7 +156,7 @@ public class CompanyBaltopMenu extends Menu {
         UUID ownerUUIDThird;
         if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWithPermission(CityPermission.OWNER);
         else ownerUUIDThird = companies.get(2).getOwner().getPlayer();
-        content.put(30, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDThird), itemMeta -> {
+        content.put(30, new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUIDThird), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(2).getOwner().isCity() ? companies.get(2).getName() : Bukkit.getOfflinePlayer(ownerUUIDThird).getName()));
             itemMeta.lore(List.of(
                     Component.text("§4■ Propriétaire")
@@ -172,7 +172,7 @@ public class CompanyBaltopMenu extends Menu {
             else {
                 merchantUUID = companies.get(2).getMerchantsUUID().get(i - 31);
                 if (merchantUUID == null) merchantHead = new ItemStack(Material.AIR);
-                else merchantHead = ItemUtils.getPlayerSkull(merchantUUID);
+                else merchantHead = SkullUtils.getPlayerSkull(merchantUUID);
             }
             content.put(i, new ItemBuilder(this, merchantHead, itemMeta -> {
                 if (merchantUUID == null) return;

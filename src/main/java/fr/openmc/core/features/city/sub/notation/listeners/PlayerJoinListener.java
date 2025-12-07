@@ -21,16 +21,16 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-
         if (playerCity == null) return;
 
         CityNotation notation = playerCity.getNotationOfWeek(DateUtils.getWeekFormat());
-        if (notation != null) {
-            int rankCity = NotationManager.getSortedNotationForWeek(DateUtils.getWeekFormat()).indexOf(notation) + 1;
-            MessagesManager.sendMessage(player,
-                    Component.text("§3§lNOTATION ! §7Votre ville a été notée et elle est placée n°" + rankCity + " des meilleures villes !")
-                            .clickEvent(ClickEvent.runCommand("/city notation ")).hoverEvent(Component.text("§eCliquez pour voir la notation de votre ville !")),
-                    Prefix.CITY, MessageType.INFO, false);
-        }
+        if (notation == null) return;
+
+        int rankCity = NotationManager.getSortedNotationForWeek(DateUtils.getWeekFormat()).indexOf(notation) + 1;
+        MessagesManager.sendMessage(player,
+                Component.text("§3§lNOTATION ! §7Votre ville a été notée et elle est placée n°" + rankCity + " des meilleures villes !")
+                        .clickEvent(ClickEvent.runCommand("city notation"))
+                        .hoverEvent(Component.text("§eCliquez pour voir la notation de votre ville !")),
+                Prefix.CITY, MessageType.INFO, false);
     }
 }

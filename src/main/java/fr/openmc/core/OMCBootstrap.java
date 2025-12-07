@@ -1,9 +1,11 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.dream.registries.DreamEnchantementRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import io.papermc.paper.registry.event.RegistryEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +30,10 @@ public class OMCBootstrap implements PluginBootstrap {
                     }
                 }
         ));
+
+        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
+                .newHandler(DreamEnchantementRegistry::loadEnchantmentInBootstrap)
+        );
     }
 
     @Override

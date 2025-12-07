@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class AnalyticsManager {
     static Dao<Statistic, String> statsDao;
@@ -48,7 +47,7 @@ public class AnalyticsManager {
 
             return stats.getFirst().getValue();
         } catch (SQLException e) {
-	        OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Statistics of " + playerUUID, e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Statistics of {}", playerUUID, e);
             return defaultValue;
         }
     }

@@ -8,6 +8,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
+import fr.openmc.core.features.dream.displays.DreamScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -27,7 +28,8 @@ public class ScoreboardManager implements Listener {
         registerScoreboard(
                 new MainScoreboard(),
                 new RestartScoreboard(),
-                new CityWarScoreboard()
+                new CityWarScoreboard(),
+                new DreamScoreboard()
         );
 
         Bukkit.getScheduler().runTaskTimer(
@@ -66,6 +68,7 @@ public class ScoreboardManager implements Listener {
 
             SternalBoard board = boardCache.find(player.getUniqueId()) == null ? createNewBoard(player) : boardCache.find(player.getUniqueId());
 
+            active.updateTitle(player, board);
             active.update(player, board);
             playerUpdates.put(active, now);
 

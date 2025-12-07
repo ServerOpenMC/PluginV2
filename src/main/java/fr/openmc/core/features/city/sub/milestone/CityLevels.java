@@ -84,7 +84,7 @@ public enum CityLevels {
             Component.text("Niveau 3"),
             Component.text("Ville peu développée"),
             List.of(
-                    new CommandRequirement("/city bank view", 1),
+                    new CommandRequirement("/city bank", 1),
                     new CommandRequirement("/city chest", 1),
                     new TemplateRequirement(
                             city -> city.getChunks().size() >= 10,
@@ -575,6 +575,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.SCULK, 1028)
             ),
             List.of(
+                    FeaturesRewards.LEVEL_10,
                     PlayerBankLimitRewards.LEVEL_10,
                     InterestRewards.LEVEL_10,
                     MascotsLevelsRewards.LEVEL_10,

@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -81,7 +82,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
             }
 
             String finalTitle = title;
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
         }
 
         return items;

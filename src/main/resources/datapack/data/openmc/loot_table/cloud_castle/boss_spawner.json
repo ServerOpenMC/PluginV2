@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": {
+                "PublicBukkitValues": {
+                  "openmc:to_dream_item": "omc_dream:cloud_orb"
+                }
+              },
+              "conditions": []
+            }
+          ],
+          "conditions": []
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "functions": []
+}

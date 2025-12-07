@@ -4,10 +4,10 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -62,7 +62,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				lore.add(Component.empty());
 				lore.add(Component.text("§e§lCLIQUEZ ICI POUR ASSIGNER UN GRADE"));
 			}
-			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
 				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu").decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(lore);
 			}).setOnClick(event -> {

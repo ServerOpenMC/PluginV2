@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class AnimationsManager {
 
@@ -44,7 +43,7 @@ public class AnimationsManager {
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             return JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load Animation " + ressourcePath, e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load Animation {}", ressourcePath, e);
             return null;
         }
     }

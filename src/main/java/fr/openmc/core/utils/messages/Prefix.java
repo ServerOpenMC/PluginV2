@@ -29,6 +29,7 @@ public enum Prefix {
     DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>"),
     SETTINGS("<gradient:#2C82E0:#67C8FF>ѕᴇᴛᴛɪɴɢѕ</gradient>"),
     MILLESTONE("<gradient:#A2D182:#B8E89D>ᴍɪʟʟᴇѕᴛᴏɴᴇ</gradient>"),
+    DREAM("<gradient:#4498DB:#412AEF>ᴅʀᴇᴀᴍ</gradient>"),
     MAILBOX("<gradient:#2C43C4:#6A76D9>ᴍᴀɪʟʙᴏx</gradient>"),
     HALLOWEEN("<gradient:#FF7518:#FFD580>ʜᴀʟʟᴏᴡᴇᴇɴ</gradient>")
     ;
