@@ -130,6 +130,7 @@ public class PerkManager {
             case ECONOMIC -> FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_ECONOMY);
             case MILITARY -> FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_MILITARY);
             case STRATEGY -> FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_STRATEGY);
+            case DREAM -> FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_DREAM);
         };
     }
 }
