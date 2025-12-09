@@ -64,8 +64,6 @@ public class MascotUtils {
 	}
 
 	public static void updateDisplayName(LivingEntity entityMascot, Mascot mascot, double damage) {
-		double newHealth = Math.floor(entityMascot.getHealth());
-		entityMascot.setHealth(newHealth);
 		AttributeInstance maxHealthInst = entityMascot.getAttribute(Attribute.MAX_HEALTH);
 		if (maxHealthInst == null) return;
 		double maxHealth = maxHealthInst.getValue();
@@ -81,6 +79,7 @@ public class MascotUtils {
 					healthAfterDamage,
 					maxHealth
 			)));
+            entityMascot.setHealth(healthAfterDamage);
 		}
 	}
 
