@@ -24,6 +24,7 @@ import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.orb.PlayerObtainOrb;
 import fr.openmc.core.features.dream.listeners.others.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.others.PlayerEatSomnifere;
+import fr.openmc.core.features.dream.listeners.others.SingularityCraftListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
@@ -80,7 +81,8 @@ public class DreamManager {
                 new CloudStructureDispenserListener(),
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
-                new DreamArmorImplListener()
+                new DreamArmorImplListener(),
+                new SingularityCraftListener()
         );
 
         // ** MANAGERS **

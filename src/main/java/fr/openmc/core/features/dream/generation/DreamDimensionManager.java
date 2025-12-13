@@ -102,7 +102,7 @@ public class DreamDimensionManager {
 
         World dream = creator.createWorld();
 
-        dream.getWorldBorder().setSize(25000);
+        dream.getWorldBorder().setSize(10000);
 
         // ** SPAWNING RULES **
         dream.setSpawnLimit(SpawnCategory.MONSTER, 10);
