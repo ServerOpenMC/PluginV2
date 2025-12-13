@@ -88,7 +88,7 @@ java {
 }
 
 paperweight {
-  addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
+    addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
 }
 
 tasks.withType(JavaCompile).configureEach {
