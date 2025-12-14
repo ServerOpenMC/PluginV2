@@ -8,6 +8,7 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
@@ -159,6 +160,12 @@ public class Page2 implements Menu {
         } else if (SETTINGS_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(player));
         } else if (MAILBOX_SLOTS.contains(slot)) {
+            if (DreamUtils.isInDreamWorld(player)) {
+                PacketMenuLib.closeMenu(player);
+                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder à votre boîte aux lettres depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
+                return;
+            }
+
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(player));
         } else if (ADVANCEMENTS_SLOT == slot) {
             PacketMenuLib.closeMenu(player);
@@ -176,12 +183,24 @@ public class Page2 implements Menu {
                 player.sendActionBar(message);
             });
         } else if (COMPANY_SLOTS.contains(slot) || SHOPS_SLOTS.contains(slot)) {
+            if (DreamUtils.isInDreamWorld(player)) {
+                PacketMenuLib.closeMenu(player);
+                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder aux entreprises ou shops depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
+                return;
+            }
+
             MessagesManager.sendMessage(player, Component.text("Les entreprises et shops on été désactivé :sad:.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
         } else if (LEADERBOARD_SLOTS.contains(slot)) {
             // TODO: Ajouter un menu de classement
             PacketMenuLib.closeMenu(player);
             player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Le menu de leaderboard est toujours en développement :sad:.\nVous pouvez toujours utiliser le /lb ou regarder les holograms dans le spawn."), NamedTextColor.RED));
         } else if (BANK_SLOTS.contains(slot)) {
+            if (DreamUtils.isInDreamWorld(player)) {
+                PacketMenuLib.closeMenu(player);
+                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder à la banque depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
+                return;
+            }
+
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(player));
         } else if (COMING_SOON_1_SLOTS.contains(slot) || COMING_SOON_2_SLOTS.contains(slot)
                 || COMING_SOON_3_SLOTS.contains(slot) || COMING_SOON_4_SLOTS.contains(slot)
