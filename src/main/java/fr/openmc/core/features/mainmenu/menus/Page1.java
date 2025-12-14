@@ -24,6 +24,7 @@ import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
@@ -215,48 +216,24 @@ public class Page1 implements Menu {
             return;
         }
 
+        if (DreamUtils.isInDreamWorld(player)) {
+            PacketMenuLib.closeMenu(player);
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas interagir avec le menu principal depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
+            return;
+        }
+
         int slot = event.slot();
         if (CITY_SLOTS.contains(slot)) {
-            if (DreamUtils.isInDreamWorld(player)) {
-                PacketMenuLib.closeMenu(player);
-                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder à votre ville depuis le monde des rêves."), Prefix.DREAM);
-                return;
-            }
-
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.mainCommand(player));
         } else if (QUEST_SLOTS.contains(slot)) {
-            if (DreamUtils.isInDreamWorld(player)) {
-                PacketMenuLib.closeMenu(player);
-                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder aux quêtes depuis le monde des rêves."), Prefix.DREAM);
-                return;
-            }
-
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> QuestCommand.onQuest(player));
         } else if (MILESTONES_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MainMilestonesMenu(player).open());
         } else if (CONTEST_SLOTS.contains(slot)) {
-            if (DreamUtils.isInDreamWorld(player)) {
-                PacketMenuLib.closeMenu(player);
-                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder aux contests depuis le monde des rêves."), Prefix.DREAM);
-                return;
-            }
-
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.mainCommand(player));
         } else if (SHOP_SLOTS.contains(slot)) {
-            if (DreamUtils.isInDreamWorld(player)) {
-                PacketMenuLib.closeMenu(player);
-                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder aux shops depuis le monde des rêves."), Prefix.DREAM);
-                return;
-            }
-
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
         } else if (HOME_SLOTS.contains(slot)) {
-            if (DreamUtils.isInDreamWorld(player)) {
-                PacketMenuLib.closeMenu(player);
-                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder à vos homes depuis le monde des rêves."), Prefix.DREAM);
-                return;
-            }
-
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
@@ -266,12 +243,6 @@ public class Page1 implements Menu {
         } else if (SETTINGS_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(player));
         } else if (MAILBOX_SLOTS.contains(slot)) {
-            if (DreamUtils.isInDreamWorld(player)) {
-                PacketMenuLib.closeMenu(player);
-                MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas accéder à votre boîte aux lettres depuis le monde des rêves."), Prefix.DREAM);
-                return;
-            }
-
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(player));
         } else if (ADVANCEMENTS_SLOT == slot) {
             PacketMenuLib.closeMenu(player);
