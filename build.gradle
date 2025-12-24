@@ -55,7 +55,9 @@ dependencies {
     compileOnly "dev.lone:api-itemsadder:${itemsAdderVersion}"
     compileOnly "net.luckperms:api:${luckpermsVersion}"
     compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
-    compileOnly "com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:${fastAsyncWorldeditVersion}"
+    compileOnly ("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:${fastAsyncWorldeditVersion}") {
+        exclude group: 'org.lz4', module: 'lz4-java'
+    }
     compileOnly "com.sk89q.worldedit:worldedit-bukkit:${worldeditVersion}"
     compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
