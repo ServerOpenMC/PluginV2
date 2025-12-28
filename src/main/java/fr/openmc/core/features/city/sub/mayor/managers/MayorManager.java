@@ -424,7 +424,14 @@ public class MayorManager {
             // si maire n'a pas choisis les perks
             if ((mayor.getIdPerk1() == 0) && (mayor.getIdPerk2() == 0) && (mayor.getIdPerk3() == 0)) {
                 NamedTextColor color = getRandomMayorColor();
-                List<Perks> perks = PerkManager.getRandomPerksAll();
+                List<Perks> perks = PerkManager.getRandomPerksAll(city);
+                if (perks.size() < 3) {
+                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                            "No unlocked mayor perks combination found for city {} (OWNER_CHOOSE)",
+                            city.getName()
+                    );
+                    return;
+                }
                 createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color,
                         ElectionType.OWNER_CHOOSE);
             }
@@ -442,7 +449,7 @@ public class MayorManager {
 
                 Perks perk1;
                 if (mayor == null || (mayor.getIdPerk1() == 0)) {
-                    perk1 = PerkManager.getRandomPerkEvent();
+                    perk1 = PerkManager.getRandomPerkEvent(city);
                 } else {
                     perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
                 }
@@ -455,17 +462,24 @@ public class MayorManager {
             } else {
                 // personne s'est présenté, owner = maire
                 NamedTextColor color = getRandomMayorColor();
-                List<Perks> perks = PerkManager.getRandomPerksBasic();
+                List<Perks> perks = PerkManager.getRandomPerksBasic(city);
+                  Perks perk1;
+                  if (mayor == null || (mayor.getIdPerk1() == 0)) {
+                      perk1 = PerkManager.getRandomPerkEvent(city);
+                  } else {
+                      perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+                  }
 
-                Perks perk1;
-                if (mayor == null || (mayor.getIdPerk1() == 0)) {
-                    perk1 = PerkManager.getRandomPerkEvent();
-                } else {
-                    perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+                if (perk1 == null || perks.size() < 2) {
+                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                            "Unable to select unlocked mayor perks for city {} (ELECTION)",
+                            city.getName()
+                    );
+                    return;
                 }
 
                 createMayor(ownerName, ownerUUID, city, perk1, perks.getFirst(),
-                        perks.get(1), color, ElectionType.ELECTION);
+                          perks.get(1), color, ElectionType.ELECTION);
 
             }
         }

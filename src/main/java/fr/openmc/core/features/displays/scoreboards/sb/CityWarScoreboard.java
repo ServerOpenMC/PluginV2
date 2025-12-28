@@ -26,9 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
-import static net.kyori.adventure.text.Component.*;
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
 
 public class CityWarScoreboard extends BaseScoreboard {
+    @Override
+    protected void updateTitle(Player player, SternalBoard board) {
+        board.updateTitle(getTitle());
+    }
 
     @Override
     public void update(Player player, SternalBoard board) {

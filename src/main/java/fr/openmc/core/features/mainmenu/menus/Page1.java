@@ -16,6 +16,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.Contest;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.homes.command.TpHomeCommand;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
@@ -23,13 +24,15 @@ import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -210,6 +213,12 @@ public class Page1 implements Menu {
         }
 
         if (event.clickType() != ClickType.LEFT_CLICK) {
+            return;
+        }
+
+        if (DreamUtils.isInDreamWorld(player)) {
+            PacketMenuLib.closeMenu(player);
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas interagir avec le menu principal depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 

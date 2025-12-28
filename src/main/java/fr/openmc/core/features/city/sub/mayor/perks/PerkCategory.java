@@ -8,6 +8,7 @@ public enum PerkCategory {
 	STRATEGY("§8§oRéformes de stratégie"),
 	AGRICULTURAL("§8§oRéformes d'agriculture"),
 	ECONOMIC("§8§oRéformes économiques"),
+    DREAM("§8§oRéformes Oniriques"),
     ;
 
     private final String name;

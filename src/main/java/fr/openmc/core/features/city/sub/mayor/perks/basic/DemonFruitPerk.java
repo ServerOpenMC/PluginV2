@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class DemonFruitPerk implements Listener {
     private static final NamespacedKey RANGE_MODIFIER_KEY = new NamespacedKey("mayor_perks","demon_fruit");
@@ -116,6 +118,37 @@ public class DemonFruitPerk implements Listener {
         }
     }
 
+    @EventHandler
+    public void onDreamEntrered(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+
+        if (!DreamUtils.isDreamWorld(event.getTo())) return;
+        if (DreamUtils.isDreamWorld(event.getFrom())) return;
+
+        if (hasRangeAttribute(player)) {
+            removeReachBonus(player);
+        }
+    }
+
+    @EventHandler
+    public void onDreamLeave(PlayerTeleportEvent event) {
+        if (!DreamUtils.isDreamWorld(event.getFrom())) return;
+        if (DreamUtils.isDreamWorld(event.getTo())) return;
+
+        Player player = event.getPlayer();
+        int phase = MayorManager.phaseMayor;
+
+        if (phase == 2) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            if (playerCity == null) return;
+
+            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;
+
+            if (!hasRangeAttribute(player)) applyReachBonus(player);
+        } else {
+            removeReachBonus(player);
+        }
+    }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {

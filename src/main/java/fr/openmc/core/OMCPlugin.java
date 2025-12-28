@@ -21,6 +21,8 @@ import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
+import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
@@ -139,8 +141,6 @@ public class OMCPlugin extends JavaPlugin {
 
         MascotsManager.init();
 
-        MultiBlockManager.init();
-
         PlayerSettingsManager.loadAllPlayerSettings();
 
         MailboxManager.loadLetters();
@@ -153,10 +153,14 @@ public class OMCPlugin extends JavaPlugin {
         QuestsManager.init();
         CityManager.init();
         ContestManager.init();
+        DreamManager.init();
+        MultiBlockManager.init();
         if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
+
+        DreamDimensionManager.postInit();
         if (!OMCPlugin.isUnitTestVersion()) {
             LeaderboardManager.init();
             MainMenu.init(this);
@@ -168,9 +172,8 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // SAUVEGARDE
-        if (!OMCPlugin.isUnitTestVersion()) {
-            HologramLoader.unloadAll();
-        }
+        // - Dimension des Reves
+        DreamManager.disable();
 
         // - Mailboxes
         MailboxManager.saveLetters();
@@ -213,6 +216,11 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
+
+
+        if (!OMCPlugin.isUnitTestVersion()) {
+            HologramLoader.unloadAll();
+        }
 
         // - Close all inventories
         for (Player player : Bukkit.getOnlinePlayers()) {

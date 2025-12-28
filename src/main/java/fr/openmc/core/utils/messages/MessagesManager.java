@@ -106,9 +106,24 @@ public class MessagesManager {
                 .replaceAll("\\p{M}", "");
 
         StringBuilder result = new StringBuilder(text.length());
+        boolean colorCode = false;
 
         for (char c : text.toUpperCase().toCharArray()) {
-            result.append(SMALL_CHAR_MAP.getOrDefault(c, c));
+            if (c == '§') {
+                colorCode = true;
+                result.append(c);
+                continue;
+            }
+
+            if (colorCode) {
+                result.append(c);
+                colorCode = false;
+                continue;
+            }
+
+            char upper = Character.toUpperCase(c);
+            result.append(SMALL_CHAR_MAP.getOrDefault(upper, c));
+
         }
 
         return result.toString();

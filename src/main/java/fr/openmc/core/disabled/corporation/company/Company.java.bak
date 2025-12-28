@@ -1,6 +1,5 @@
 package fr.openmc.core.disabled.corporation.company;
 
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.disabled.corporation.CorpPermission;
 import fr.openmc.core.disabled.corporation.MethodState;
@@ -16,6 +15,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -454,10 +454,10 @@ public class Company {
 
     public ItemStack getHead() {
         if (owner.isPlayer()) {
-            return ItemUtils.getPlayerSkull(owner.getPlayer());
+            return SkullUtils.getPlayerSkull(owner.getPlayer());
         }
         else {
-            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWithPermission(CityPermission.OWNER));
+            return SkullUtils.getPlayerSkull(owner.getCity().getPlayerWithPermission(CityPermission.OWNER));
         }
     }
 

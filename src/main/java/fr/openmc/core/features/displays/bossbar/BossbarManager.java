@@ -149,6 +149,8 @@ public class BossbarManager {
      * @return The bossbar for the specified player, or null if not found
      */
     public static BossBar getBossBar(BossbarsType type, Player player) {
+        if (activeBossBars.get(type) == null) return null;
+
         return activeBossBars.get(type).get(player.getUniqueId());
 
     }
