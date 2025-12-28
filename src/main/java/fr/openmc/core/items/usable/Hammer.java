@@ -11,39 +11,19 @@ import org.bukkit.util.RayTraceResult;
 
 public class Hammer extends CustomUsableItem {
 
+    private static final float MAX_HARDNESS = 41.0f;
     private final Material vanillaMaterial;
     private final int radius;
     private final int depth;
-    private static final float MAX_HARDNESS = 41.0f;
 
     protected Hammer(String namespacedId,
-                             Material vanillaMaterial,
-                             int radius,
-                             int depth) {
+                     Material vanillaMaterial,
+                     int radius,
+                     int depth) {
         super(namespacedId);
         this.vanillaMaterial = vanillaMaterial;
         this.radius = radius;
-        this.depth  = depth;
-    }
-
-    @Override
-    public ItemStack getVanilla() {
-        return ItemStack.of(vanillaMaterial);
-    }
-
-    @Override
-    public void onBlockBreak(Player player, BlockBreakEvent event) {
-        if (player.getGameMode() != GameMode.SURVIVAL)
-            return;
-
-        ItemStack tool = player.getInventory().getItemInMainHand();
-        if (tool.getType().isAir())
-            return;
-
-        Block broken = event.getBlock();
-        BlockFace face = getDestroyedBlockFace(player).getOppositeFace();
-
-        breakArea(player, broken, face, tool, radius, depth);
+        this.depth = depth;
     }
 
     private static void breakArea(Player player,
@@ -52,7 +32,6 @@ public class Hammer extends CustomUsableItem {
                                   ItemStack tool,
                                   int radius,
                                   int depth) {
-
         Material targetType = origin.getType();
         if (targetType.isAir()) return;
         if (targetType.getHardness() > MAX_HARDNESS) return;
@@ -70,7 +49,7 @@ public class Hammer extends CustomUsableItem {
                 break;
             case EAST:
             case WEST:
-                apply = (x,y,z) -> work(world, player, tool, baseX + z, baseY + y, baseZ + x, targetType);
+                apply = (x, y, z) -> work(world, player, tool, baseX + z, baseY + y, baseZ + x, targetType);
                 break;
             case UP:
             case DOWN:
@@ -109,6 +88,26 @@ public class Hammer extends CustomUsableItem {
         return result != null && result.getHitBlockFace() != null
                 ? result.getHitBlockFace()
                 : BlockFace.SELF;
+    }
+
+    @Override
+    public ItemStack getVanilla() {
+        return ItemStack.of(vanillaMaterial);
+    }
+
+    @Override
+    public void onBlockBreak(Player player, BlockBreakEvent event) {
+        if (player.getGameMode() != GameMode.SURVIVAL)
+            return;
+
+        ItemStack tool = player.getInventory().getItemInMainHand();
+        if (tool.getType().isAir())
+            return;
+
+        Block broken = event.getBlock();
+        BlockFace face = getDestroyedBlockFace(player).getOppositeFace();
+
+        breakArea(player, broken, face, tool, radius, depth);
     }
 
     @FunctionalInterface
