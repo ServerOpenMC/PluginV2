@@ -1,9 +1,7 @@
 package fr.openmc.core.items.usable;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.items.usable.items.DiamondHammer;
-import fr.openmc.core.items.usable.items.IronHammer;
-import fr.openmc.core.items.usable.items.NetheriteHammer;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -17,10 +15,10 @@ public class CustomUsableItemRegistry {
      * Initializes the registry and registers all custom usable items.
      * This constructor should be called once during server startup.
      */
-    public CustomUsableItemRegistry() {
-        new IronHammer();
-        new DiamondHammer();
-        new NetheriteHammer();
+    public static void init() {
+        new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0);
+        new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1);
+        new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2);
     }
 
     /**

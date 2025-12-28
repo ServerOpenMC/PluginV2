@@ -9,14 +9,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
-public abstract class AbstractHammer extends CustomUsableItem {
+public class Hammer extends CustomUsableItem {
 
     private final Material vanillaMaterial;
     private final int radius;
     private final int depth;
     private static final float MAX_HARDNESS = 41.0f;
 
-    protected AbstractHammer(String namespacedId,
+    protected Hammer(String namespacedId,
                              Material vanillaMaterial,
                              int radius,
                              int depth) {
@@ -37,7 +37,7 @@ public abstract class AbstractHammer extends CustomUsableItem {
             return;
 
         ItemStack tool = player.getInventory().getItemInMainHand();
-        if (tool == null || tool.getType().isAir())
+        if (tool.getType().isAir())
             return;
 
         Block broken = event.getBlock();
