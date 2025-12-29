@@ -1,6 +1,7 @@
-package fr.openmc.core.items.usable;
+package fr.openmc.core.items.usable.tools;
 
 import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.items.usable.CustomUsableItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,7 +19,7 @@ public class Hammer extends CustomUsableItem {
     private final int radius;
     private final int depth;
 
-    protected Hammer(String namespacedId, Material vanillaMaterial, int radius, int depth) {
+    public Hammer(String namespacedId, Material vanillaMaterial, int radius, int depth) {
         super(namespacedId);
         this.vanillaMaterial = vanillaMaterial;
         this.radius = radius;
