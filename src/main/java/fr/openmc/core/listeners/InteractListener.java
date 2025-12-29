@@ -21,8 +21,7 @@ public class InteractListener implements Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomUsableItem usableItem = CustomUsableItemRegistry.getByItemStack(itemInHand);
 
-        if (usableItem != null)
-            usableItem.handleInteraction(player, event);
+        if (usableItem != null) usableItem.handleInteraction(player, event);
     }
 
 }

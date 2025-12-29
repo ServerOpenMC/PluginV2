@@ -21,8 +21,7 @@ public class BlockBreakListener implements Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomUsableItem usableItem = CustomUsableItemRegistry.getByItemStack(itemInHand);
 
-        if (usableItem != null)
-            usableItem.handleBlockBreak(player, event);
+        if (usableItem != null) usableItem.handleBlockBreak(player, event);
     }
 
 }

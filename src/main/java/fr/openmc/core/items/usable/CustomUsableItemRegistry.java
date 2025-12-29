@@ -16,9 +16,9 @@ public class CustomUsableItemRegistry {
      * This constructor should be called once during server startup.
      */
     public static void init() {
-        new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0);
-        new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1);
-        new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2);
+        register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
+        register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
+        register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
     }
 
     /**

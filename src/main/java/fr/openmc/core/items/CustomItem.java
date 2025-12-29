@@ -6,12 +6,14 @@ import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class CustomItem {
-    public abstract ItemStack getVanilla();
-    @Getter private final String name;
+    @Getter
+    private final String name;
 
     public CustomItem(String name) {
         this.name = name;
     }
+
+    public abstract ItemStack getVanilla();
 
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance(getName());
@@ -42,6 +44,7 @@ public abstract class CustomItem {
      * Order:
      * 1. ItemsAdder
      * 2. Vanilla
+     *
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
