@@ -9,6 +9,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -97,7 +98,7 @@ public class CustomItemRegistry {
     public static void registerSimpleItem(String name, ItemStack item) {
         register(name, new CustomItem(name) {
             @Override
-            public ItemStack getVanilla() {
+            public @NotNull ItemStack getVanilla() {
                 return item;
             }
         });
@@ -110,7 +111,7 @@ public class CustomItemRegistry {
     public static void registerSimpleItem(String name, Material material, String displayName) {
         registerItem(new CustomItem(name) {
             @Override
-            public ItemStack getVanilla() {
+            public @NotNull ItemStack getVanilla() {
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = item.getItemMeta();
                 meta.displayName(Component.text(displayName).decoration(TextDecoration.ITALIC, false));
