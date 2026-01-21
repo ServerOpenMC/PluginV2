@@ -109,28 +109,17 @@ public class CityRankPermsMenu extends PaginatedMenu {
 		}
 		
 		if (canEdit) {
-			map.put(52, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
-				itemMeta.displayName(Component.text("§cTout retirer"));
-				itemMeta.lore(List.of(Component.text("§7Cliquez pour retirer toutes les permissions du membre")));
+			map.put(53, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+				itemMeta.displayName(Component.text("§6Gérer toutes les permissions du grade"));
+				itemMeta.lore(List.of(
+						Component.text("§cClique-gauche pour tout retirer"),
+						Component.text("§aClique-droit pour tout ajouter")
+				));
 			}).setOnClick(inventoryClickEvent -> {
-				if (!canEdit)
-					MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des grades"), Prefix.CITY, MessageType.ERROR, true);
-				else {
-					CityRankCommands.removeAllPermissions(getOwner(), newRank);
-					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
-				}
-			}));
-			
-			map.put(53, new ItemBuilder(this, Material.LIME_DYE, itemMeta -> {
-				itemMeta.displayName(Component.text("§aTout ajouter"));
-				itemMeta.lore(List.of(Component.text("§7Cliquez pour ajouter toutes les permissions au membre")));
-			}).setOnClick(inventoryClickEvent -> {
-				if (!canEdit)
-					MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des grades"), Prefix.CITY, MessageType.ERROR, true);
-				else {
-					CityRankCommands.addAllPermissions(getOwner(), newRank);
-					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
-				}
+				if (inventoryClickEvent.isLeftClick()) CityRankCommands.removeAllPermissions(getOwner(), newRank);
+				else CityRankCommands.addAllPermissions(getOwner(), newRank);
+				
+				new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
 			}));
 		}
 		

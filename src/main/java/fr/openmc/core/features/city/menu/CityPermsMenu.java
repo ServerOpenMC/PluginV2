@@ -116,28 +116,17 @@ public class CityPermsMenu extends PaginatedMenu {
         }).setNextPageButton());
 
         if (edit) {
-            map.put(52, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
-                itemMeta.displayName(Component.text("§cTout retirer"));
-                itemMeta.lore(List.of(Component.text("§7Cliquez pour retirer toutes les permissions du membre")));
+            map.put(53, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                itemMeta.displayName(Component.text("Gérer toutes les permissions du membre"));
+                itemMeta.lore(List.of(
+                        Component.text("§cClique-gauche pour tout retirer"),
+                        Component.text("§aClique-droit pour tout ajouter")
+                ));
             }).setOnClick(inventoryClickEvent -> {
-                if (!edit)
-                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des membres"), Prefix.CITY, MessageType.ERROR, true);
-                else {
-                    CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
-                    new CityPermsMenu(getOwner(), memberUUID, true).open();
-                }
-            }));
-            
-            map.put(53, new ItemBuilder(this, Material.LIME_DYE, itemMeta -> {
-                itemMeta.displayName(Component.text("§aTout ajouter"));
-                itemMeta.lore(List.of(Component.text("§7Cliquez pour ajouter toutes les permissions au membre")));
-            }).setOnClick(inventoryClickEvent -> {
-                if (!edit)
-                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des membres"), Prefix.CITY, MessageType.ERROR, true);
-                else {
-                    CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
-                    new CityPermsMenu(getOwner(), memberUUID, true).open();
-                }
+                if (inventoryClickEvent.isLeftClick()) CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                else CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                
+	            new CityPermsMenu(getOwner(), memberUUID, true).open();
             }));
         }
         
