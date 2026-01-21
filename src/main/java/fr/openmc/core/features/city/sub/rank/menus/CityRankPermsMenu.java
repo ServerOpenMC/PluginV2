@@ -117,7 +117,7 @@ public class CityRankPermsMenu extends PaginatedMenu {
 				));
 			}).setOnClick(inventoryClickEvent -> {
 				if (inventoryClickEvent.isLeftClick()) CityRankCommands.removeAllPermissions(getOwner(), newRank);
-				else CityRankCommands.addAllPermissions(getOwner(), newRank);
+				else if (inventoryClickEvent.isRightClick()) CityRankCommands.addAllPermissions(getOwner(), newRank);
 				
 				new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
 			}));

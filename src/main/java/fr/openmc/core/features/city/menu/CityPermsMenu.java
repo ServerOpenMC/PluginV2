@@ -124,7 +124,7 @@ public class CityPermsMenu extends PaginatedMenu {
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 if (inventoryClickEvent.isLeftClick()) CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
-                else CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                else if (inventoryClickEvent.isRightClick()) CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
                 
 	            new CityPermsMenu(getOwner(), memberUUID, true).open();
             }));
