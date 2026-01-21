@@ -128,6 +128,9 @@ public class DreamItemRegistry {
         registerDreamItem(new MeteoWand("omc_dream:meteo_wand"));
         registerDreamItem(new MetalDetector("omc_dream:metal_detector"));
 
+        // # ENCHANTEMENTS
+
+
         CommandsManager.getHandler().register(
                 new DreamItemCommand()
         );

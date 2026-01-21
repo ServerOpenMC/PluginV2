@@ -35,7 +35,7 @@ public abstract class DreamEnchantment {
     public abstract EnchantmentRegistryEntry.EnchantmentCost getMaximalmCost();
 
     public DreamItem getEnchantedBookItem(int level) {
-        return new DreamItem(getKey().asMinimalString()) {
+        return new DreamItem(getKey().asMinimalString() + level) {
             @Override
             public ItemStack getVanilla() {
                 return getEnchantedBook(level);
@@ -64,9 +64,7 @@ public abstract class DreamEnchantment {
                         .registryAccess()
                         .getRegistry(RegistryKey.ENCHANTMENT);
 
-                Enchantment enchantment = enchantmentRegistry.getOrThrow(
-                        RegistryKey.ENCHANTMENT.typedKey(getKey())
-                );
+                Enchantment enchantment = enchantmentRegistry.getOrThrow(RegistryKey.ENCHANTMENT.typedKey(getKey()));
 
                 meta.addStoredEnchant(enchantment, level, false);
                 bookEnchanted.setItemMeta(meta);

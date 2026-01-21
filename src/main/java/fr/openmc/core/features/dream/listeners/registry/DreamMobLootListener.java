@@ -29,6 +29,8 @@ public class DreamMobLootListener implements Listener {
         DreamMob dreamMob = DreamMobsRegistry.getFromEntity(entity);
         if (dreamMob == null) return;
 
+        if (dreamMob.getDreamLoots() == null) return;
+
         for (DreamLoot loot : dreamMob.getDreamLoots()) {
             if (Math.random() >= loot.chance()) return;
 

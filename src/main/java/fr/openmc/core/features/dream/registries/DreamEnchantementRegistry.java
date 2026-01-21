@@ -61,6 +61,12 @@ public class DreamEnchantementRegistry {
             dreamEnchantments.put(key, dreamEnchant);
             enchantments.put(key, enchantment);
 
+            for (int level = 1; level <= dreamEnchant.getMaxLevel(); level++)
+                DreamItemRegistry.register(
+                        key.asMinimalString() + level,
+                        dreamEnchant.getEnchantedBookItem(level)
+                );
+
             if (dreamEnchant instanceof Listener listener) {
                 OMCPlugin.registerEvents(listener);
             }

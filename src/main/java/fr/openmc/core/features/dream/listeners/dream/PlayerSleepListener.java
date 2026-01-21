@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.listeners.dream;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,14 +29,10 @@ public class PlayerSleepListener implements Listener {
 
         if (playersDreaming.contains(player.getUniqueId())) return;
 
-        playersDreaming.add(player.getUniqueId());
         Random random = new Random();
-
         double randomValue = random.nextDouble();
 
         if (randomValue < DreamManager.calculateDreamProbability(player)) return;
-
-        DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
 
         player.addPotionEffect(new PotionEffect(
                 PotionEffectType.NAUSEA,
@@ -45,21 +42,28 @@ public class PlayerSleepListener implements Listener {
                 false,
                 false
         ));
+        playersDreaming.add(player.getUniqueId());
+         
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                    DreamManager.tpPlayerDream(player);
-                } else {
-                    DreamManager.tpPlayerToLastDreamLocation(player);
-                }
-            }
-        }.runTaskLater(OMCPlugin.getInstance(), 20L * 5);
     }
 
     @EventHandler
     public void onNightSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) playersDreaming.clear();
+        for (UUID uuid : playersDreaming) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
+                        DreamManager.tpPlayerDream(player);
+                    } else {
+                        DreamManager.tpPlayerToLastDreamLocation(player);
+                    }
+                }
+            }.runTaskLater(OMCPlugin.getInstance(), 20L * 5);
+        }
+        playersDreaming.clear();
     }
 }
