@@ -170,12 +170,12 @@ public class CityRankAction {
 		}
 		
 		if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
-			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (!city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		DBCityRank rank = city.getRankByName(rankName);

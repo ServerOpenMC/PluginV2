@@ -787,7 +787,7 @@ public class City {
         }
         
         if (hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         

@@ -67,12 +67,12 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				itemMeta.lore(lore);
 			}).setOnClick(event -> {
 				if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 					return;
 				}
 
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
 					return;
 				}

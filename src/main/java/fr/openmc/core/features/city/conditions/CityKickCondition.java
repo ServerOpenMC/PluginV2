@@ -5,7 +5,6 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -30,22 +29,22 @@ public class CityKickCondition {
         }
 
         if (player.getUniqueId().equals(playerToKick.getUniqueId())) {
-	        MessagesManager.sendMessage(player, Component.text("Tu ne peux pas t'exclure toi même de la ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK_HIMSELF.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.KICK))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'exclure un membre"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.hasPermission(playerToKick.getUniqueId(), CityPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         
         if (city.getRankOfMember(player.getUniqueId()).getPriority() <= city.getRankOfMember(playerToKick.getUniqueId()).getPriority()) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure un membre ayant un grade supérieur ou égal au tien"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

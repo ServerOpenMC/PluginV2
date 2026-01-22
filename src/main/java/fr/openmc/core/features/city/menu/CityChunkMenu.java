@@ -327,7 +327,7 @@ public class CityChunkMenu extends Menu {
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -363,7 +363,7 @@ public class CityChunkMenu extends Menu {
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

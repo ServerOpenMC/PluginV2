@@ -6,7 +6,6 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -38,7 +37,7 @@ public class CityPermsConditions {
         }
 
         if (city.hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -54,12 +53,12 @@ public class CityPermsConditions {
         }
 
         if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CityPermission.PERMS) {
-            MessagesManager.sendMessage(sender, Component.text("Seul le propriétaire peut modifier cette permission"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_ONLY_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
