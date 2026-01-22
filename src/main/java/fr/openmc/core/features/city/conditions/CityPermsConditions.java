@@ -18,7 +18,7 @@ public class CityPermsConditions {
         City senderCity = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (senderCity == null) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite aucune ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -28,17 +28,17 @@ public class CityPermsConditions {
         }
 
         if (!Objects.equals(senderCity.getUniqueId(), city.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.getMembers().contains(playerUUID)) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, Component.text("Le propriétaire a les pleins pouvoirs"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -54,7 +54,7 @@ public class CityPermsConditions {
         }
 
         if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de gérer les permissions"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

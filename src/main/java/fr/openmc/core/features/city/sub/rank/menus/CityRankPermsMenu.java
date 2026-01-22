@@ -73,7 +73,7 @@ public class CityRankPermsMenu extends PaginatedMenu {
 				itemMeta.lore(lore);
 			}).setOnClick(inventoryClickEvent -> {
 				if (!canEdit)
-					MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier ce grade"), Prefix.CITY, MessageType.ERROR, true);
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_MODIFY_HIGHER.getMessage(), Prefix.CITY, MessageType.ERROR, true);
 				else {
 					CityRankCommands.swapPermission(getOwner(), newRank, permission);
 					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();

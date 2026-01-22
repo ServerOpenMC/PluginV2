@@ -133,26 +133,28 @@ public class MessagesManager {
     public enum Message {
         // Command messages
         NO_PERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
-        NO_PERMISSION_2(Component.text("§cVous n'avez pas le droit de faire ceci")),
+        NO_PERMISSION_2(Component.text("§cVous n'avez pas le droit de faire ceci.")),
         MISSING_ARGUMENT(Component.text("§cVous devez spécifier un argument.")),
 
         // Player messages
         PLAYER_NOT_FOUND(Component.text("§cLe joueur n'a pas été trouvé.")),
 
         // General messages
-        PLAYER_MISSING_MONEY(Component.text("Tu n'as pas assez d'argent")),
+        PLAYER_MISSING_MONEY(Component.text("Tu n'as pas assez d'argent.")),
 
         // City messages
-        PLAYER_NO_CITY(Component.text("Tu n'es pas dans une ville")),
-        PLAYER_IN_CITY(Component.text("Tu es déjà dans une ville")),
-        CITY_NO_FREE_CLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
+        PLAYER_NO_CITY(Component.text("Tu n'es pas dans une ville.")),
+        PLAYER_IN_CITY(Component.text("Tu es déjà dans une ville.")),
+        CITY_NO_FREE_CLAIM(Component.text("Cette ville n'a pas de claims gratuits.")),
+        TARGET_IN_OTHER_CITY(Component.text("Ce joueur n'est pas dans ta ville.")),
+        TARGET_NO_CITY(Component.text("Ce joueur n'est pas dans une ville.")),
 
-        PLAYER_NO_ACCESS_PERMS(Component.text("Tu n'as pas la permission d'accéder aux permissions ou grades de cette ville")),
-        PLAYER_NO_CLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville")),
-        PLAYER_NO_OWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
-        PLAYER_NO_RENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
-        PLAYER_NO_MONEY_GIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
-        PLAYER_NO_MONEY_TAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
+        PLAYER_NO_ACCESS_PERMS(Component.text("Tu n'as pas la permission d'accéder aux permissions de cette ville.")),
+        PLAYER_NO_CLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville.")),
+        PLAYER_NO_OWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire.")),
+        PLAYER_NO_RENAME(Component.text("Tu n'as pas la permission de renommer ta ville.")),
+        PLAYER_NO_MONEY_GIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville.")),
+        PLAYER_NO_MONEY_TAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville.")),
         PLAYER_IS_OWNER(Component.text("Le propriétaire a tous les pouvoirs.")),
 
         CITY_RANKS_NOT_EXIST(Component.text("Ce grade n'existe pas.")),
@@ -160,6 +162,7 @@ public class MessagesManager {
         CITY_RANKS_ALREADY_EXIST(Component.text("Ce grade existe déjà.")),
         CITY_RANKS_CANNOT_DELETE(Component.text("Tu ne peux pas supprimer le grade de propriétaire.")),
         CITY_RANKS_CANNOT_MODIFY_HIGHER(Component.text("Tu ne peux pas modifier un grade supérieur ou égal au tien.")),
+        CITY_RANKS_CANNOT_ASSIGN(Component.text("Tu n'as pas la permission d'assigner des grades.")),
 
         CITY_NOT_FOUND(Component.text("La ville n'existe pas")),
 

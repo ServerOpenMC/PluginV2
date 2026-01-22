@@ -83,7 +83,7 @@ public class CityPermsMenu extends PaginatedMenu {
                 itemMeta.lore(edit ? lore : List.of());
             }).setOnClick(inventoryClickEvent -> {
                 if (!edit)
-                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions des membres"), Prefix.CITY, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, true);
                 else {
                     CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
                     new CityPermsMenu(player, memberUUID, true).open();
