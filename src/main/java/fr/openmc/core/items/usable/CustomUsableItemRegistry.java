@@ -1,6 +1,8 @@
 package fr.openmc.core.items.usable;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.items.usable.tools.Hammer;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -15,7 +17,9 @@ public class CustomUsableItemRegistry {
      * This constructor should be called once during server startup.
      */
     public static void init() {
-        // register here
+        register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
+        register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
+        register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
     }
 
     /**
