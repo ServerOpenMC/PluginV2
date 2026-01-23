@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -15,9 +16,10 @@ import static fr.openmc.core.features.economy.EconomyManager.*;
 
 public class PlayerDeathListener implements Listener {
     public static final double LOSS_MONEY = 0.35;
-    
-    @EventHandler(ignoreCancelled = true)
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onPlayerDead(PlayerDeathEvent event) {
+        if (event.isCancelled()) return;
         Player player = event.getPlayer();
         double balance = getBalance(player.getUniqueId());
 

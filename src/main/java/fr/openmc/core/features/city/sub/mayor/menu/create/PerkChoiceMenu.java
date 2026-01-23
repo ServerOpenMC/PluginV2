@@ -95,6 +95,11 @@ public class PerkChoiceMenu extends PaginatedMenu {
 	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_STRATEGY) + " pour débloquer ceci"));
                     }
                 }
+                case DREAM -> {
+                    if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_DREAM)) {
+                        perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_DREAM) + " pour débloquer ceci"));
+                    }
+                }
             }
 
 
@@ -122,6 +127,11 @@ public class PerkChoiceMenu extends PaginatedMenu {
                             }
                             case STRATEGY -> {
                                 if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_STRATEGY)) {
+                                    return;
+                                }
+                            }
+                            case DREAM -> {
+                                if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_DREAM)) {
                                     return;
                                 }
                             }

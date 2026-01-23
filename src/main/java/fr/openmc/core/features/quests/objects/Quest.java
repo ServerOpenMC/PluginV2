@@ -1,6 +1,7 @@
 package fr.openmc.core.features.quests.objects;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
@@ -487,7 +488,11 @@ public class Quest {
             
             try {
                 Player onlinePlayer = Bukkit.getPlayer(playerUUID);
-                if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
+                if (onlinePlayer != null
+                        && onlinePlayer.isOnline()
+                        && (!onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)
+                        || DreamUtils.isInDreamWorld(onlinePlayer))) return;
+
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
                 int currentTarget = this.getCurrentTarget(playerUUID);

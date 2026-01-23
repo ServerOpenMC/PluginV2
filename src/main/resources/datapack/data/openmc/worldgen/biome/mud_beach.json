@@ -1,0 +1,38 @@
+{
+  "temperature": 0.8,
+  "downfall": 0.9,
+  "has_precipitation": false,
+  "temperature_modifier": "none",
+  "creature_spawn_probability": 0,
+  "effects": {
+    "sky_color": 4210752,
+    "fog_color": 0,
+    "water_color": 15068927,
+    "water_fog_color": 12895439,
+    "grass_color": 4210752,
+    "foliage_color": 12763842,
+    "particle": {
+      "options": {
+        "type": "ash"
+      },
+      "probability": 0.01
+    }
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:zombie",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 50
+      }
+    ]
+  },
+  "spawn_costs": {},
+  "carvers": [],
+  "features": []
+}

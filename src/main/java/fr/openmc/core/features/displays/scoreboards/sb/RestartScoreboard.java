@@ -11,10 +11,16 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.kyori.adventure.text.Component.*;
 import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
 
 public class RestartScoreboard extends BaseScoreboard {
+    @Override
+    protected void updateTitle(Player player, SternalBoard board) {
+        board.updateTitle(getTitle());
+    }
+
     @Override
     public void update(Player player, SternalBoard board) {
         List<Component> lines = new ArrayList<>();

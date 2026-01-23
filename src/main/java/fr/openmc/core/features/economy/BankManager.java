@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class BankManager {
     @Getter
@@ -95,7 +94,7 @@ public class BankManager {
             banksDao.createOrUpdate(bank);
             return true;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save bank " + bank.getPlayerUUID(), e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to save bank " + bank.getPlayerUUID(), e);
             return false;
         }
     }

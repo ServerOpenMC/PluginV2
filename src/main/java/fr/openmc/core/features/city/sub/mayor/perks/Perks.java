@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks;
 
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -191,6 +192,42 @@ public enum Perks {
                     Component.text("§7aurez des §3effets bonus §7si la mascotte est en vie !")
             ),
             ItemStack.of(Material.SADDLE)
+    ),
+    GREAT_SLEEPER(
+            16,
+            PerkType.BASIC,
+            PerkCategory.DREAM,
+            0,
+            "§e§lGrand Dormeur",
+            List.of(
+                    Component.text("§7Augmente de §340% la probabilité"),
+                    Component.text("§7de faire un §3rêve.")
+            ),
+            ItemStack.of(Material.WHITE_BED)
+    ),
+    GREAT_DREAM(
+            17,
+            PerkType.BASIC,
+            PerkCategory.DREAM,
+            0,
+            "§e§lGrand Rêveur",
+            List.of(
+                    Component.text("§7Augmente de §360% le temps dans"),
+                    Component.text("§7les §3rêves.")
+            ),
+            DreamItemRegistry.getByName("omc_dream:somnifere").getBest()
+    ),
+    CHAOS_DREAM(
+            18,
+            PerkType.EVENT,
+            PerkCategory.DREAM,
+            24 * 60 * 60 * 1000L, // 1 jour
+            "§e§lRêve Chaotique",
+            List.of(
+                    Component.text("§7Envoie tout les membres connectés dans"),
+                    Component.text("§3les rêves §8(Cooldown : 1j)")
+            ),
+            DreamItemRegistry.getByName("omc_dream:singularity").getBest()
     )
     ;
 

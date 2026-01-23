@@ -3,6 +3,7 @@ package fr.openmc.core.features.cube;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
+import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -234,13 +235,22 @@ public class Cube extends MultiBlock {
                     Block block = loc.getBlock();
                     Material type = block.getType();
 
-                    switch (type) {
-                        case DIRT, GRASS_BLOCK, SAND, GRAVEL -> block.setType(Material.WARPED_NYLIUM);
-                        case OAK_LOG, BIRCH_LOG, SPRUCE_LOG, JUNGLE_LOG, DARK_OAK_LOG,
-                             ACACIA_LOG, MANGROVE_LOG -> block.setType(Material.WARPED_STEM);
-                        case AIR, LAPIS_BLOCK -> {
+                    if (!DreamUtils.isDreamWorld(loc)) {
+                        switch (type) {
+                            case DIRT, GRASS_BLOCK, SAND, GRAVEL -> block.setType(Material.WARPED_NYLIUM);
+                            case OAK_LOG, BIRCH_LOG, SPRUCE_LOG, JUNGLE_LOG, DARK_OAK_LOG,
+                                 ACACIA_LOG, MANGROVE_LOG -> block.setType(Material.WARPED_STEM);
+                            case AIR, LAPIS_BLOCK -> {
+                            }
+                            default -> block.setType(Material.SCULK);
                         }
-                        default -> block.setType(Material.SCULK);
+                    } else {
+                        switch (type) {
+                            case MUD -> block.setType(Material.SAND);
+                            case AIR, LAPIS_BLOCK -> {
+                            }
+                            default -> block.setType(Material.GRASS_BLOCK);
+                        }
                     }
                 }
 

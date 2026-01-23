@@ -4,13 +4,13 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessagesManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -112,7 +112,7 @@ public class CityPlayerGestionMenu extends Menu {
 		        Component.text("§7Vous êtes en train de modifier son statut dans la §dville")
         );
 
-        inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
+        inventory.put(13, new ItemBuilder(this, SkullUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
             itemMeta.displayName(Component.text("§eJoueur " + playerTarget.getName()));
             itemMeta.lore(lorePlayerTarget);
         }));

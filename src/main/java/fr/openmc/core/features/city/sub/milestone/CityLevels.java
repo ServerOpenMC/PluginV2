@@ -575,6 +575,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.SCULK, 1028)
             ),
             List.of(
+                    FeaturesRewards.LEVEL_10,
                     PlayerBankLimitRewards.LEVEL_10,
                     InterestRewards.LEVEL_10,
                     MascotsLevelsRewards.LEVEL_10,

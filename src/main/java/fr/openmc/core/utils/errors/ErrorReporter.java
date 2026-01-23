@@ -27,7 +27,7 @@ public class ErrorReporter {
         originalErr = System.err;
 
         if (!OMCPlugin.getInstance().getConfig().isConfigurationSection("error")) {
-            OMCPlugin.getInstance().getLogger().info("\u001B[31m✘ ErrorHandler désactivé (pas de section error)\u001B[0m");
+            OMCPlugin.getInstance().getSLF4JLogger().info("\u001B[31m✘ ErrorHandler désactivé (pas de section error)\u001B[0m");
             return;
         }
 
@@ -35,11 +35,11 @@ public class ErrorReporter {
         notifIds = OMCPlugin.getInstance().getConfig().getStringList("error.notif");
 
         if (webhookUrl.isBlank()) {
-            OMCPlugin.getInstance().getLogger().info("\u001B[31m✘ ErrorHandler désactivé (pas de webhook)\u001B[0m");
+            OMCPlugin.getInstance().getSLF4JLogger().info("\u001B[31m✘ ErrorHandler désactivé (pas de webhook)\u001B[0m");
             return;
         }
 
-        OMCPlugin.getInstance().getLogger().info("\u001B[32m✔ ErrorHandler activé\u001B[0m");
+        OMCPlugin.getInstance().getSLF4JLogger().info("\u001B[32m✔ ErrorHandler activé\u001B[0m");
 
         System.setErr(new PrintStream(new OutputStream() {
             private final StringBuilder buffer = new StringBuilder();

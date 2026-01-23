@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class TransactionsManager {
     private static Dao<Transaction, String> transactionsDao;
@@ -33,7 +32,7 @@ public class TransactionsManager {
             query.where().eq("recipient", playerUUID.toString()).or().eq("sender", playerUUID.toString());
             return transactionsDao.query(query.prepare());
         } catch (SQLException err) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get transactions " + playerUUID, err);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get transactions {}", playerUUID, err);
             return List.of(new Transaction("CONSOLE", "CONSOLE", 0, "ERREUR"));
         }
     }
@@ -53,7 +52,7 @@ public class TransactionsManager {
             try {
                 transactionsDao.create(transaction);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to register transactions", e);
+                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to register transactions", e);
             }
         });
     }

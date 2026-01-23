@@ -20,9 +20,9 @@ public enum FeaturesRewards implements CityRewards {
     LEVEL_5(Feature.PERK_ECONOMY),
     LEVEL_6(),
     LEVEL_7(Feature.TYPE_WAR, Feature.WAR),
-    LEVEL_8(Feature.PERK_MILITARY),
-    LEVEL_9(Feature.PERK_STRATEGY),
-    LEVEL_10();
+    LEVEL_8(Feature.PERK_DREAM),
+    LEVEL_9(Feature.PERK_MILITARY),
+    LEVEL_10(Feature.PERK_STRATEGY);
 
     /**
      * Tableau des fonctionnalités débloquées à ce niveau.
@@ -118,6 +118,7 @@ public enum FeaturesRewards implements CityRewards {
 	    PERK_ECONOMY("§3les réformes d'économie"),
 	    TYPE_WAR("§cle type de ville de guerre"),
         WAR("§c/war"),
+        PERK_DREAM("§3les réformes oniriques"),
 	    PERK_MILITARY("§3les réformes militaires"),
 	    PERK_STRATEGY("§3les réformes de stratégies");
 
