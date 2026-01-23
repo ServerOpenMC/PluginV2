@@ -40,7 +40,8 @@ public class ListenersManager {
                 new AywenCapListener(),
                 new NoMoreRabbit(),
                 new ArmorListener(),
-                new SpawnerExtractorListener()
+                new SpawnerExtractorListener(),
+                new BlockBreakListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {
