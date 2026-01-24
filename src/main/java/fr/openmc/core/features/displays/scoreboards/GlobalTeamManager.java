@@ -78,7 +78,6 @@ public class GlobalTeamManager {
         int weight = group.getWeight().orElse(0);
         String teamName = "lp_%05d_%s".formatted(10000 - weight, group.getName());
         Team team = scoreboard.getTeam(teamName);
-        
         if (team == null) {
             team = scoreboard.registerNewTeam(teamName);
         }
