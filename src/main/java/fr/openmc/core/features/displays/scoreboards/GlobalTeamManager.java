@@ -3,8 +3,10 @@ package fr.openmc.core.features.displays.scoreboards;
 import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
+import fr.openmc.core.OMCPlugin;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
+import net.luckperms.api.event.group.GroupDataRecalculateEvent;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;
 import org.bukkit.entity.Player;
@@ -17,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlobalTeamManager {
     private LuckPerms luckPerms = null;
     private final ObjectCacheRepository<SternalBoard> boardCache;
-    private final Map<Group, Component> groupToPrefixCache = new ConcurrentHashMap<>();
+    private final Map<String, Component> groupToPrefixCache = new ConcurrentHashMap<>();
 
     public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache) {
         this.boardCache = boardCache;
@@ -25,6 +27,10 @@ public class GlobalTeamManager {
         if (LuckPermsHook.isHasLuckPerms()) {
             this.luckPerms = LuckPermsHook.getApi();
             initSortedGroups();
+
+            this.luckPerms.getEventBus().subscribe(OMCPlugin.getInstance(), GroupDataRecalculateEvent.class, e -> {
+                groupToPrefixCache.remove(e.getGroup().getName()); // Update les teams lors du recalcule des groupes
+            });
         }
     }
 
@@ -33,7 +39,7 @@ public class GlobalTeamManager {
         sortedGroups.sort(Comparator.comparing(g -> -g.getWeight().orElse(0)));
 
         for (Group group : sortedGroups) {
-            groupToPrefixCache.put(group, LuckPermsHook.getFormattedPAPIPrefix(group));
+            groupToPrefixCache.put(group.getName(), LuckPermsHook.getFormattedPAPIPrefix(group));
         }
     }
 
@@ -43,7 +49,7 @@ public class GlobalTeamManager {
         Group playerGroup = getPlayerHighestWeightGroup(player);
         if (playerGroup == null) return;
 
-        Component prefix = groupToPrefixCache.getOrDefault(playerGroup, Component.empty());
+        Component prefix = groupToPrefixCache.computeIfAbsent(playerGroup.getName(), k -> LuckPermsHook.getFormattedPAPIPrefix(playerGroup));
 
         updateScoreboardTeam(player, prefix);
         updateTabListTeam(player, prefix, playerGroup);
@@ -69,9 +75,9 @@ public class GlobalTeamManager {
     private void updateTabListTeam(Player player, Component prefix, Group group) {
         Scoreboard scoreboard = player.getScoreboard();
 
-        String teamName = "lp_" + group.getName();
+        int weight = group.getWeight().orElse(0);
+        String teamName = "lp_%05d_%s".formatted(10000 - weight, group.getName());
         Team team = scoreboard.getTeam(teamName);
-
         if (team == null) {
             team = scoreboard.registerNewTeam(teamName);
         }
