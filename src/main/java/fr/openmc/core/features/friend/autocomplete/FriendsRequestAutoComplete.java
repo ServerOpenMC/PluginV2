@@ -14,6 +14,8 @@ import static fr.openmc.core.features.friend.FriendManager.friendsRequests;
 
 public class FriendsRequestAutoComplete implements SuggestionProvider<BukkitCommandActor> {
 
+    public static final String VANISH_META_KEY = "omcstaff.vanished";
+
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         Player sender = context.actor().requirePlayer();
@@ -24,6 +26,7 @@ public class FriendsRequestAutoComplete implements SuggestionProvider<BukkitComm
                 .toList();
         return requestUUIDs.stream()
                 .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
+                .filter(name -> !sender.hasMetadata(VANISH_META_KEY))
                 .toList();
     }
 }

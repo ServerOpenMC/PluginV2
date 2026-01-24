@@ -46,7 +46,7 @@ public class JoinQuitMessageListener implements Listener {
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
-                if (friend != null && friend.isOnline()) {
+                if (friend != null && friend.isOnline() && !friend.hasMetadata(VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -105,7 +105,7 @@ public class JoinQuitMessageListener implements Listener {
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
-                if (friend != null && friend.isOnline()) {
+                if (friend != null && friend.isOnline() && !friend.hasMetadata(VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }

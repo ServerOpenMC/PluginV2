@@ -11,10 +11,13 @@ import java.util.List;
 
 public class OnlinePlayerAutoComplete implements SuggestionProvider<BukkitCommandActor> {
 
+    public static final String VANISH_META_KEY = "omcstaff.vanished";
+
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         return Bukkit.getOnlinePlayers().stream()
                 .map(Player::getName)
+                .filter(name -> !context.actor().requirePlayer().hasMetadata(VANISH_META_KEY))
                 .toList();
     }
 }
