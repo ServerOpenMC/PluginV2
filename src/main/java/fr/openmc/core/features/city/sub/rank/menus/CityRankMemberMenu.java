@@ -50,7 +50,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 		Set<UUID> members = city.getMembers();
 		for (UUID uuid : members) {
 			OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
-			if (player == null || !player.hasPlayedBefore()) {
+			if (player == null) {
 				continue;
 			}
 
