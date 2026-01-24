@@ -157,8 +157,8 @@ public class LeaderboardManager {
             int rank = entry.getKey();
             String cityName = entry.getValue().getKey();
             String money = entry.getValue().getValue();
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
+            Component line = Component.newline()
+                    .append(Component.text("#").color(getRankColor(rank)))
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(cityName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
@@ -188,8 +188,8 @@ public class LeaderboardManager {
             int rank = entry.getKey();
             String playerName = entry.getValue().getKey();
             String time = entry.getValue().getValue();
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
+            Component line = Component.newline()
+                    .append(Component.text("#").color(getRankColor(rank)))
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
@@ -214,8 +214,8 @@ public class LeaderboardManager {
             int rank = entry.getKey();
             String playerName = entry.getValue().getKey();
             String pumpkinCount = entry.getValue().getValue();
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
+            Component line = Component.newline()
+                    .append(Component.text("#").color(getRankColor(rank)))
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(playerName).color(TextColor.color(255, 107, 37))))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
