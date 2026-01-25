@@ -78,7 +78,7 @@ public class MetalDetectorLootTable extends DreamLootTable {
                         1
                 ),
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:crystalized_pickaxe"),
+                        DreamItemRegistry.getByName("omc_dream:crystallized_pickaxe"),
                         0.1,
                         1,
                         1
