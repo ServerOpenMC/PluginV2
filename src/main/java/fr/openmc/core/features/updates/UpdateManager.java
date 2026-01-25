@@ -4,6 +4,9 @@ import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,11 +19,16 @@ public class UpdateManager {
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
-        message = Component.text("§8§m                                                     §r\n\n§7 Vous jouez actuellement sur la version")
-            .append(Component.text("§d§l " + version).clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("§7 du plugin §d§lOpenMC.\n"))
-            .append(Component.text("§f§l Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("\n\n§8§m                                                     §r"));
+        message = Component.text("                                                     ", NamedTextColor.DARK_GRAY, TextDecoration.STRIKETHROUGH)
+        .appendNewline()
+        .appendNewline()
+        .append(Component.text("Vous jouez actuellement sur la version ", NamedTextColor.GRAY))
+        .append(Component.text(version, NamedTextColor.GREEN))
+        .append(Component.text(" du plugin OpenMC.\n", NamedTextColor.GRAY))
+        .append(Component.text("Cliquez ici pour voir les changements.", NamedTextColor.GREEN).clickEvent(ClickEvent.openUrl(milestoneUrl)))
+        .appendNewline()
+        .appendNewline()
+        .append(Component.text("                                                     ", NamedTextColor.DARK_GRAY, TextDecoration.STRIKETHROUGH));
 
         long period = 14400 * 20; // 4h
 

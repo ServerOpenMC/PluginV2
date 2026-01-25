@@ -6,6 +6,8 @@ import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,8 +23,16 @@ public enum Perks {
             0,
             "§e§lFou de Rage",
             List.of(
-                    Component.text("§7Donne §3un effet de force I §7dans une ville adverse"),
-                    Component.text("§7Et donne §3un effet de protection I§7 dans sa ville")
+                    Component.text("Donne", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("un effet de force I", NamedTextColor.DARK_AQUA)
+                        .appendSpace()
+                        .append(Component.text("dans une ville adverse", NamedTextColor.GRAY))),
+                    Component.text("Et donne", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("un effet de protection I", NamedTextColor.DARK_AQUA)
+                        .appendSpace()
+                        .append(Component.text("dans sa ville", NamedTextColor.GRAY)))
             ),
             ItemStack.of(Material.BLAZE_POWDER)
     ),
@@ -33,8 +43,16 @@ public enum Perks {
             3 * 24 * 60 * 60 * 1000L, // 3 jours
             "§e§lPrévélement d'Impot",
             List.of(
-		            Component.text("§7Possibilité de lancer un §3évènement §7pour prélever les impôts"),
-                    Component.text("§7Limite de perte d'argent :§3 5k §8(Cooldown : 3j)")
+                    Component.text("Possibilité de lancer un", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("évènement", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("pour prélever les impôts", NamedTextColor.GRAY)),
+                    Component.text("§7Limite de perte d'argent :")
+                        .appendSpace()
+                        .append(Component.text("5k", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("(§7Cooldown : 3j§8)"))
             ),
             ItemStack.of(Material.GOLD_BLOCK)
     ),
@@ -45,7 +63,11 @@ public enum Perks {
             0,
             "§e§lMineur Dévoué",
             List.of(
-                    Component.text("§7Donne §3Haste I §7aux membres de la ville")
+                    Component.text("Donne", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("Haste I", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("aux membres de la ville", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.GOLDEN_PICKAXE),
             DataComponentTypes.ATTRIBUTE_MODIFIERS
@@ -57,8 +79,16 @@ public enum Perks {
             0,
             "§e§lFruit du Démon",
             List.of(
-                    Component.text("§7Augmente §3la portée §7de tous les membres de la ville"),
-                    Component.text("§7de §31 §7bloc")
+                    Component.text("Augmente", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("la portée", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("de tous les membres de la ville", NamedTextColor.GRAY)),
+                    Component.text("de", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("1", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("bloc", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.CHORUS_FRUIT)
     ),
@@ -69,8 +99,13 @@ public enum Perks {
             0,
             "§e§lBuisness Man",
             List.of(
-                    Component.text("§7Ajout §32% à l'intérêt de la banque"),
-                    Component.text("§7de la ville et des joueurs!")
+                    Component.text("Ajout", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("2", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("à l'intérêt de la banque", NamedTextColor.GRAY))
+                        .appendNewline()
+                        .append(Component.text("de la ville et des joueurs!", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.DIAMOND)
     ),
@@ -81,8 +116,16 @@ public enum Perks {
             0,
             "§e§lFer dans le Sang",
             List.of(
-		            Component.text("§7Fait apparaître un §3golem de fer §7lorsque la mascotte"),
-                    Component.text("§7se fait taper par l'ennemi §8(Cooldown : 3 min)")
+                    Component.text("Fait apparaître", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("un", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("golem de fer", NamedTextColor.GRAY))
+                        .appendSpace()
+                        .append(Component.text("lorsque la mascotte")),
+                    Component.text("se fait taper par l'ennemi", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("(Cooldown : 3 min)", NamedTextColor.DARK_GRAY))
             ),
             ItemStack.of(Material.IRON_BLOCK)
     ),
@@ -93,8 +136,18 @@ public enum Perks {
             0,
             "§e§lChasseur Urbain",
             List.of(
-                    Component.text("§7Augmente de §320 % §7les dégâts infligés aux"),
-                    Component.text("§3monstres §7et §3joueurs §7dans sa propre ville.")
+                    Component.text("Augmente de", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("20 %", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("les dégâts infligés aux", NamedTextColor.GRAY)),
+                    Component.text("monstres", NamedTextColor.DARK_AQUA)
+                        .appendSpace()
+                        .append(Component.text("et"))
+                        .appendSpace()
+                        .append(Component.text("joueurs", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("dans sa propre ville.", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.BOW)
     ),
@@ -105,7 +158,11 @@ public enum Perks {
             0,
             "§e§lAyweniteur",
             List.of(
-                    Component.text("§7Casser une pierre donne 1% de chance d'avoir 2 d'Aywenites")
+                    Component.text("Casser", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("une pierre", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("donne 1% de chance d'avoir 2 d'Aywenites", NamedTextColor.GRAY))
             ),
             CustomItemRegistry.getByName("omc_items:aywenite").getBest()
     ),
@@ -116,8 +173,16 @@ public enum Perks {
             0,
             "§e§lTraceur GPS",
             List.of(
-                    Component.text("§7Lorsqu'un §3ennemi §7rentre dans votre ville,"),
-                    Component.text("§7un §3effet de glowing §7lui est donné.")
+                    Component.text("Lorsqu'un")
+                    .appendSpace()
+                    .append(Component.text("ennemi", NamedTextColor.DARK_AQUA))
+                    .appendSpace()
+                    .append(Component.text("rentre dans votre ville,", NamedTextColor.GRAY)),
+                    Component.text("un", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("effet de glowing", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("lui est donné.", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.COMPASS)
     ),
@@ -128,8 +193,12 @@ public enum Perks {
             0,
             "§e§lSymbiose",
             List.of(
-                    Component.text("§7Réduit les dégâts subis de §315%"),
-		            Component.text("§7lorsque vous êtes autour de votre §3mascotte")
+                    Component.text("Réduit les dégâts subis de", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("15%", NamedTextColor.DARK_AQUA)),
+		            Component.text("lorsque vous êtes autour de votre", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("mascotte", NamedTextColor.DARK_AQUA))
             ),
             ItemStack.of(Material.SCULK_CATALYST)
     ),
@@ -140,7 +209,13 @@ public enum Perks {
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lEssor Agricole",
             List.of(
-		            Component.text("§7La récolte est doublée pendant§3 30 min §7dans la ville §8(Cooldown : 1j)")
+                    Component.text("La récolte est doublée pendant", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("30 min", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("dans la ville", NamedTextColor.GRAY))
+                        .appendSpace()
+                        .append(Component.text("(Cooldown : 1j)", NamedTextColor.DARK_GRAY))
             ),
             ItemStack.of(Material.NETHERITE_HOE),
             DataComponentTypes.ATTRIBUTE_MODIFIERS
@@ -152,8 +227,13 @@ public enum Perks {
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lRuée Minière",
             List.of(
-                    Component.text("§7Tous les minerais extraits pendant§3 5 §7minutes"),
-		            Component.text("§7donnent le double de ressources §8(Cooldown : 1j)")
+                    Component.text("Tous les minerais extraits pendant", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("5 minutes", NamedTextColor.DARK_AQUA))
+                        .appendSpace(),
+                    Component.text("donnent le double de ressources", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("(Cooldown : 1j)", NamedTextColor.DARK_GRAY))
             ),
             ItemStack.of(Material.DIAMOND_PICKAXE),
             DataComponentTypes.ATTRIBUTE_MODIFIERS
@@ -165,8 +245,16 @@ public enum Perks {
             25 * 60 * 1000L, // 25 minutes
             "§e§lDissuasion Militaire",
             List.of(
-		            Component.text("§7Fait apparaître §310 golems de fer §7partout"),
-                    Component.text("§7dans votre ville qui disparaissent dans §310 min §8(Cooldown : 25 min)")
+		            Component.text("Fait apparaître", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("10 golems de fer", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("partout", NamedTextColor.GRAY)),
+                    Component.text("dans votre ville qui disparaissent dans", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("10 min", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("(Cooldown : 25 min)", NamedTextColor.DARK_GRAY))
             ),
             ItemStack.of(Material.IRON_GOLEM_SPAWN_EGG)
     ),
@@ -177,7 +265,11 @@ public enum Perks {
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lPluie idyllique",
             List.of(
-		            Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 1 §7min §8(Cooldown : 1j)")
+                Component.text("Fait apparaître de l'Aywenite dans votre ville pendant", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("1 min", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("(Cooldown : 1j)", NamedTextColor.DARK_GRAY))
             ),
             ItemStack.of(Material.GHAST_TEAR)
     ),
@@ -188,8 +280,16 @@ public enum Perks {
             0,
             "§e§lMascotte de Compagnie",
             List.of(
-		            Component.text("§7A partir du §clevel 4 §7de la mascotte, vous"),
-                    Component.text("§7aurez des §3effets bonus §7si la mascotte est en vie !")
+                    Component.text("§7A partir du §clevel 4 §7de la mascotte, vous")
+                    .appendSpace()
+                    .append(Component.text("level 4", NamedTextColor.RED))
+                    .appendSpace()
+                    .append(Component.text("de la mascotte, vous", NamedTextColor.GRAY)),
+                    Component.text("aurez des", NamedTextColor.GRAY)
+                    .appendSpace()
+                    .append(Component.text("effets bonus", NamedTextColor.DARK_AQUA))
+                    .appendSpace()
+                    .append(Component.text("si la mascotte est en vie !", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.SADDLE)
     ),
@@ -200,8 +300,16 @@ public enum Perks {
             0,
             "§e§lGrand Dormeur",
             List.of(
-                    Component.text("§7Augmente de §340% la probabilité"),
-                    Component.text("§7de faire un §3rêve.")
+                    Component.text("Augmente de", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("40%", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("la probabilité", NamedTextColor.GRAY)),
+                    Component.text("de faire un", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("rêve", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text(".", NamedTextColor.GRAY))
             ),
             ItemStack.of(Material.WHITE_BED)
     ),
@@ -212,8 +320,16 @@ public enum Perks {
             0,
             "§e§lGrand Rêveur",
             List.of(
-                    Component.text("§7Augmente de §360% le temps dans"),
-                    Component.text("§7les §3rêves.")
+                    Component.text("Augmente de", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("60%", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text("le temps dans", NamedTextColor.GRAY)),
+                    Component.text("les", NamedTextColor.GRAY)
+                        .appendSpace()
+                        .append(Component.text("rêves", NamedTextColor.DARK_AQUA))
+                        .appendSpace()
+                        .append(Component.text(".", NamedTextColor.GRAY))
             ),
             DreamItemRegistry.getByName("omc_dream:somnifere").getBest()
     ),
@@ -224,8 +340,10 @@ public enum Perks {
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lRêve Chaotique",
             List.of(
-                    Component.text("§7Envoie tout les membres connectés dans"),
-                    Component.text("§3les rêves §8(Cooldown : 1j)")
+                    Component.text("Envoie tout les membres connectés dans", NamedTextColor.GRAY),
+                    Component.text("les rêves", NamedTextColor.DARK_AQUA)
+                        .appendSpace()
+                        .append(Component.text("(Cooldown : 1j)", NamedTextColor.DARK_GRAY))
             ),
             DreamItemRegistry.getByName("omc_dream:singularity").getBest()
     )
