@@ -314,6 +314,17 @@ public class CityManager {
     public static boolean isChunkClaimed(int x, int z) {
         return getCityFromChunk(x, z) != null;
     }
+    
+    
+    /**
+     * Check if a chunk is claimed
+     *
+     * @param chunk The chunk
+     * @return true if the chunk is claimed, false otherwise
+     */
+    public static boolean isChunkClaimed(Chunk chunk) {
+        return getCityFromChunk(chunk) != null;
+    }
 
     /**
      * Check if a chunk is claimed in radius
