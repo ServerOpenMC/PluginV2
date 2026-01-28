@@ -15,10 +15,7 @@ import fr.openmc.core.features.dream.generation.structures.glacite.BaseCampStruc
 import fr.openmc.core.features.dream.generation.structures.soulforest.SoulAltarStructure;
 import fr.openmc.core.utils.structure.FeaturesPopulator;
 import fr.openmc.core.utils.structure.SchematicsUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -122,15 +119,15 @@ public class DreamDimensionManager {
         registeredFeatures.forEach(populator -> dream.getPopulators().add(populator));
 
         // ** SET GAMERULE FOR THE WORLD **
-        dream.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        dream.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        dream.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        dream.setGameRule(GameRule.DISABLE_RAIDS, true);
-        dream.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
-        dream.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
-        dream.setGameRule(GameRule.NATURAL_REGENERATION, false);
-        dream.setGameRule(GameRule.LOCATOR_BAR, false);
-        dream.setGameRule(GameRule.ALLOW_ENTERING_NETHER_USING_PORTALS, false);
+        dream.setGameRule(GameRules.ADVANCE_TIME, false);
+        dream.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+        dream.setGameRule(GameRules.ADVANCE_WEATHER, false);
+        dream.setGameRule(GameRules.RAIDS, true);
+        dream.setGameRule(GameRules.SPAWN_PATROLS, false);
+        dream.setGameRule(GameRules.SPAWN_WANDERING_TRADERS, false);
+        dream.setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, false);
+        dream.setGameRule(GameRules.LOCATOR_BAR, false);
+        dream.setGameRule(GameRules.ALLOW_ENTERING_NETHER_USING_PORTALS, false);
 
         dream.setTime(18000);
 
