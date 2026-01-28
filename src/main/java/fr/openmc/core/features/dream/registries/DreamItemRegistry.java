@@ -76,9 +76,9 @@ public class DreamItemRegistry {
         registerDreamItem(new ChipsAywen("omc_dream:chips_aywen"));
         registerDreamItem(new ChipsDihydrogene("omc_dream:chips_dihydrogene"));
         registerDreamItem(new ChipsJimmy("omc_dream:chips_jimmy"));
-        registerDreamItem(new ChipsLait2Margouta("omc_dream:lait_2_margouta"));
+        registerDreamItem(new ChipsLait2Margouta("omc_dream:chips_lait_2_margouta"));
         registerDreamItem(new ChipsNature("omc_dream:chips_nature"));
-        registerDreamItem(new ChipsSansPlomb("chips_sans_plomb"));
+        registerDreamItem(new ChipsSansPlomb("omc_dream:chips_sans_plomb"));
         registerDreamItem(new ChipsTerre("omc_dream:chips_terre"));
 
         // # FISHES
