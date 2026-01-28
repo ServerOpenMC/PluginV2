@@ -65,6 +65,8 @@ public class OMCPlugin extends JavaPlugin {
     @Getter
     static FileConfiguration configs;
 
+    public static final String VANISH_META_KEY = "omcstaff.vanished";
+
     public static void registerEvents(Listener... listeners) {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
