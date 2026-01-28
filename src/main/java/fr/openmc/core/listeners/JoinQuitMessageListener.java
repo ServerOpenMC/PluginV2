@@ -27,7 +27,6 @@ import java.util.UUID;
 public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
 
-    public static final String VANISH_META_KEY = "omcstaff.vanished";
     public static final String JOIN_MESSAGE = "§8[§a§l+§8] §r%s%s";
     public static final String QUIT_MESSAGE = "§8[§c§l-§8] §r%s%s";
 
@@ -46,7 +45,7 @@ public class JoinQuitMessageListener implements Listener {
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
-                if (friend != null && friend.isOnline() && !friend.hasMetadata(VANISH_META_KEY)) {
+                if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -74,7 +73,7 @@ public class JoinQuitMessageListener implements Listener {
             }
         });
 
-        if (!player.hasMetadata(VANISH_META_KEY))
+        if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
             event.joinMessage(Component.text(JOIN_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
 
         // Adjust player's spawn location
@@ -105,7 +104,7 @@ public class JoinQuitMessageListener implements Listener {
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
-                if (friend != null && friend.isOnline() && !friend.hasMetadata(VANISH_META_KEY)) {
+                if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -125,7 +124,7 @@ public class JoinQuitMessageListener implements Listener {
             }
         }
 
-        if (!player.hasMetadata(VANISH_META_KEY))
+        if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
             event.quitMessage(Component.text(QUIT_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
     }
 

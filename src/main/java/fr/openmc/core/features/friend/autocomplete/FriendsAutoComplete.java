@@ -1,5 +1,6 @@
 package fr.openmc.core.features.friend.autocomplete;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
@@ -13,14 +14,12 @@ import static fr.openmc.core.features.friend.FriendManager.getFriendsAsync;
 
 public class FriendsAutoComplete implements SuggestionProvider<BukkitCommandActor> {
 
-    public static final String VANISH_META_KEY = "omcstaff.vanished";
-
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         List<UUID> friendsUUIDs = getFriendsAsync(context.actor().requirePlayer().getUniqueId()).join();
         return friendsUUIDs.stream()
                 .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
-                .filter(name -> !context.actor().requirePlayer().hasMetadata(VANISH_META_KEY))
+                .filter(name -> !context.actor().requirePlayer().hasMetadata(OMCPlugin.VANISH_META_KEY))
                 .toList();
     }
 }
