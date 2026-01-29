@@ -29,25 +29,28 @@ public class AyweniterPerk implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (random.nextDouble() >= DROP_CHANCE) return;
+        
         Block block = event.getBlock();
         if (DreamUtils.isDreamWorld(block.getWorld())) return;
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) return;
+        
+        City blockCity = CityManager.getCityFromChunk(block.getChunk());
+	    if (blockCity != null)
+            if (blockCity != playerCity) return;
 
-        if (MayorManager.phaseMayor==2) {
+        if (MayorManager.phaseMayor == 2) {
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
-
-                if (random.nextDouble() < DROP_CHANCE) {
-                    ItemStack ayweniteItem = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-                    ayweniteItem.setAmount(2);
-                    player.getInventory().addItem(ayweniteItem);
-                    player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 10.0F, 0.6F);
-                    MessagesManager.sendMessage(player, Component.text("§8§o*la bénédiction!*"), Prefix.MAYOR, MessageType.INFO, false);
-                }
+                ItemStack ayweniteItem = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+                ayweniteItem.setAmount(2);
+                player.getInventory().addItem(ayweniteItem);
+                player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 10.0F, 0.6F);
+                MessagesManager.sendMessage(player, Component.text("§8§o*la bénédiction!*"), Prefix.MAYOR, MessageType.INFO, false);
             }
         }
     }
