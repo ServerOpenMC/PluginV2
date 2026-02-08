@@ -8,6 +8,8 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -23,7 +25,7 @@ public class AdminCityMilestoneCommands {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Ville inexistante", NamedTextColor.RED), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -42,7 +44,7 @@ public class AdminCityMilestoneCommands {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Ville inexistante", NamedTextColor.RED), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

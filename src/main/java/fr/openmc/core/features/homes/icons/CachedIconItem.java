@@ -12,6 +12,8 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -22,28 +24,41 @@ import java.util.List;
 
 public class CachedIconItem {
 
-    @Getter private final HomeIcon homeIcon;
+    @Getter
+    private final HomeIcon homeIcon;
     private final ItemStack normalItemWithBuilder, selectedItemWithBuilder;
     private final Component displayName, normalLore, selectedLore;
 
     /**
      * Constructs a CachedIconItem with the specified HomeIcon and base ItemStack.
      *
-     * @param homeIcon        The HomeIcon to be cached.
-     * @param baseItemStack   The base ItemStack to use for creating the normal and selected items.
+     * @param homeIcon      The HomeIcon to be cached.
+     * @param baseItemStack The base ItemStack to use for creating the normal and
+     *                      selected items.
      */
     public CachedIconItem(HomeIcon homeIcon, ItemStack baseItemStack) {
         this.homeIcon = homeIcon;
-        this.displayName = Component.text("§a" + homeIcon.getVanillaName());
-        this.normalLore = Component.text("§7■ §aClique §2gauche §apour changer l'icône");
-        this.selectedLore = Component.text("§8[§a✔§8] §7Icône actuelle");
+        this.displayName = Component.text(homeIcon.getVanillaName(), NamedTextColor.GREEN);
+        this.normalLore = Component.text("■", NamedTextColor.GRAY)
+                .appendSpace()
+                .append(Component.text("Clique", NamedTextColor.GREEN))
+                .appendSpace()
+                .append(Component.text("gauche", NamedTextColor.DARK_GREEN))
+                .appendSpace()
+                .append(Component.text("pour changer l'icône", NamedTextColor.GREEN));
+        this.selectedLore = Component.text("[", NamedTextColor.DARK_GRAY)
+                .append(Component.text("✔", NamedTextColor.GREEN))
+                .append(Component.text("]", NamedTextColor.DARK_GRAY))
+                .appendSpace()
+                .append(Component.text("Icône actuelle", NamedTextColor.GREEN));
 
         this.normalItemWithBuilder = createNormalItemWithBuilder(baseItemStack);
         this.selectedItemWithBuilder = createSelectedItemWithBuilder(baseItemStack);
     }
 
     /**
-     * Creates a normal item with the specified base ItemStack and applies the display name and lore.
+     * Creates a normal item with the specified base ItemStack and applies the
+     * display name and lore.
      *
      * @param baseItem The base ItemStack to clone and modify.
      * @return A new ItemStack with the display name and lore applied.
@@ -60,10 +75,12 @@ public class CachedIconItem {
     }
 
     /**
-     * Creates a selected item with the specified base ItemStack and applies the display name, lore, and enchantments.
+     * Creates a selected item with the specified base ItemStack and applies the
+     * display name, lore, and enchantments.
      *
      * @param baseItem The base ItemStack to clone and modify.
-     * @return A new ItemStack with the display name, lore, and enchantments applied.
+     * @return A new ItemStack with the display name, lore, and enchantments
+     *         applied.
      */
     @SuppressWarnings("UnstableApiUsage")
     private ItemStack createSelectedItemWithBuilder(ItemStack baseItem) {
@@ -72,7 +89,8 @@ public class CachedIconItem {
         if (meta != null) {
             meta.displayName(displayName);
             meta.addEnchant(Enchantment.SHARPNESS, 5, true);
-            item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.ENCHANTMENTS).build());
+            item.setData(DataComponentTypes.TOOLTIP_DISPLAY,
+                    TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.ENCHANTMENTS).build());
             meta.lore(List.of(selectedLore));
             item.setItemMeta(meta);
         }
@@ -80,7 +98,8 @@ public class CachedIconItem {
     }
 
     /**
-     * Creates an ItemStack for the HomeChangeIconMenu with the appropriate click handler.
+     * Creates an ItemStack for the HomeChangeIconMenu with the appropriate click
+     * handler.
      *
      * @param menu   The HomeChangeIconMenu where this item will be used.
      * @param home   The Home associated with this icon.
@@ -88,16 +107,18 @@ public class CachedIconItem {
      * @return An ItemStack that can be used in the menu.
      */
     public ItemStack createItemForMenu(HomeChangeIconMenu menu, Home home, Player player) {
-        ItemStack baseItem = home.getIcon().equals(homeIcon) ?
-                selectedItemWithBuilder : normalItemWithBuilder;
+        ItemStack baseItem = home.getIcon().equals(homeIcon) ? selectedItemWithBuilder : normalItemWithBuilder;
 
         return new ItemBuilder(menu, baseItem.clone())
                 .setOnClick(event -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         home.setIcon(homeIcon);
-                        MessagesManager.sendMessage(player,
-                                Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée en §2" + homeIcon.getVanillaName() + "§a !"),
-                                Prefix.HOME, MessageType.SUCCESS, true);
+                        Component message = Component.text("L'icône de votre home ", NamedTextColor.GREEN)
+                                .append(Component.text(home.getName(), NamedTextColor.DARK_GREEN))
+                                .append(Component.text(" a été changée en ", NamedTextColor.GREEN))
+                                .append(Component.text(homeIcon.getVanillaName(), NamedTextColor.DARK_GREEN))
+                                .append(Component.text(" !", NamedTextColor.GREEN));
+                        MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
 
                         HomeIconCacheManager.clearRenderedCache();
                     });

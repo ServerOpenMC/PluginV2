@@ -4,6 +4,8 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.block.Biome;
@@ -15,23 +17,23 @@ import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
 public enum DreamBiome {
 
     SCULK_PLAINS(
-            Component.text(textToSmall("§3Plaine de Sculk")),
+            Component.text(textToSmall("Plaine de Sculk"), NamedTextColor.DARK_AQUA),
             NamespacedKey.fromString("openmc:sculk_plains")
     ),
     SOUL_FOREST(
-            Component.text(textToSmall("§5Forêt des Âmes")),
+            Component.text(textToSmall("Forêt des Âmes"), NamedTextColor.DARK_PURPLE),
             NamespacedKey.fromString("openmc:soul_forest")
     ),
     MUD_BEACH(
-            Component.text(textToSmall("§8Plage de boue")),
+            Component.text(textToSmall("Plage de boue"), NamedTextColor.DARK_GRAY),
             NamespacedKey.fromString("openmc:mud_beach")
     ),
     CLOUD_LAND(
-            Component.text(textToSmall("§fVallée des Nuages")),
+            Component.text(textToSmall("§fVallée des Nuages"), NamedTextColor.WHITE),
             NamespacedKey.fromString("openmc:cloud_land")
     ),
     GLACITE_GROTTO(
-            Component.text(textToSmall("§bGrotte glacée")),
+            Component.text(textToSmall("§bGrotte glacée"), NamedTextColor.AQUA),
             NamespacedKey.fromString("openmc:glacite_grotto")
     );
 

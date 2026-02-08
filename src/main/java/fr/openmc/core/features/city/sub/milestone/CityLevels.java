@@ -16,6 +16,8 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -36,7 +38,8 @@ public enum CityLevels {
             ),
             List.of(
                     new TemplateRewards(
-                            Component.text("§6" + FREE_CLAIMS + " claims §7gratuits")
+                            Component.text("%s claims".formatted(FREE_CLAIMS), NamedTextColor.GOLD)
+                                    .append(Component.text("gratuits", NamedTextColor.GRAY))
                     ),
                     MascotsSkinUnlockRewards.LEVEL_1,
                     MascotsLevelsRewards.LEVEL_1,
