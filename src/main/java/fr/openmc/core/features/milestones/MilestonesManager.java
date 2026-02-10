@@ -7,7 +7,6 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
-import fr.openmc.core.features.milestones.tutorial.TutorialMilestone;
 import fr.openmc.core.features.milestones.tutorial.listeners.TutorialBossBarEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import org.bukkit.entity.Player;
@@ -22,11 +21,10 @@ public class MilestonesManager {
     private static Dao<MilestoneModel, String> millestoneDao;
 
     public static void init() {
-        registerMilestones(
-                new TutorialMilestone()
-        );
+		Arrays.stream(MilestoneType.values()).toList().forEach(milestoneType -> registerMilestone(milestoneType.getMilestone()));
 
         loadMilestonesData();
+		loadMilestonesProgress();
 
         registerMilestoneCommand();
 
@@ -80,6 +78,18 @@ public class MilestonesManager {
             throw new RuntimeException(e);
         }
     }
+	
+	/**
+	 * Load the quest progress for each player of each milestone
+	 */
+	public static void loadMilestonesProgress() {
+		for (Milestone milestone : milestones) {
+			// Pour tous les joueurs du milestone, la progression est chargée à l'étape actuelle
+			for (Map.Entry<UUID, MilestoneModel> playerData : milestone.getPlayerData().entrySet()) {
+				milestone.getSteps().get(playerData.getValue().getStep()).setProgress(playerData.getKey(), playerData.getValue().getProgress());
+			}
+		}
+	}
 
     /**
      * Get the player data for a specific milestone.
@@ -149,17 +159,16 @@ public class MilestonesManager {
     }
 
     /**
-     * Register one or more milestones.
-     * This method adds the provided milestones to the internal set and registers their quests.
-     * @param milestonesRegister the milestones to register
+     * Register a milestone.
+     * This method adds the provided milestone to the internal set and registers it quests.
+     * @param milestone the milestone to register
      */
-    public static void registerMilestones(Milestone... milestonesRegister) {
-        for (Milestone milestone : milestonesRegister) {
-            if (milestone == null) continue;
-            milestones.add(milestone);
-
-            registerQuestMilestone(milestone);
-        }
+    public static void registerMilestone(Milestone milestone) {
+		if (milestone == null) return;
+		milestones.add(milestone);
+		
+		registerQuestMilestone(milestone);
+    
     }
 
     /**

@@ -92,13 +92,13 @@ public class MainMilestonesMenu extends Menu {
                 new CityMilestoneMenu(player, playerCity).open();
             }
         }));
-
-        inventory.put(14, new ItemBuilder(this, Material.SCULK, itemMeta -> {
+	    
+	    inventory.put(14, new ItemBuilder(this, Material.DEAD_BUBBLE_CORAL_BLOCK, itemMeta -> {
+		    itemMeta.displayName(Component.text(" §ks §cComming soon §ke"));
+	    }));
+		
+        inventory.put(16, new ItemBuilder(this, Material.SCULK, itemMeta -> {
             itemMeta.displayName(Component.text(" §kd §r§cComming soon §kr"));
-        }));
-
-        inventory.put(16, new ItemBuilder(this, Material.DEAD_BUBBLE_CORAL_BLOCK, itemMeta -> {
-            itemMeta.displayName(Component.text(" §ks §cComming soon §ke"));
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
