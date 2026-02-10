@@ -81,8 +81,12 @@ public class MainMilestonesMenu extends Menu {
             loreMilestoneVille.add(Component.empty());
             loreMilestoneVille.add(Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A VOTRE MILESTONE"));
         }
-
-        inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
+	    
+	    inventory.put(12, new ItemBuilder(this, Material.SCULK, itemMeta -> {
+		    itemMeta.displayName(Component.text(" §kd §r§cComming soon §kr"));
+	    }));
+		
+        inventory.put(14, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
             itemMeta.displayName(Component.text("§3Milestone des villes"));
             itemMeta.lore(loreMilestoneVille);
         }).setOnClick(event -> {
@@ -93,13 +97,9 @@ public class MainMilestonesMenu extends Menu {
             }
         }));
 	    
-	    inventory.put(14, new ItemBuilder(this, Material.DEAD_BUBBLE_CORAL_BLOCK, itemMeta -> {
+	    inventory.put(16, new ItemBuilder(this, Material.DEAD_BUBBLE_CORAL_BLOCK, itemMeta -> {
 		    itemMeta.displayName(Component.text(" §ks §cComming soon §ke"));
 	    }));
-		
-        inventory.put(16, new ItemBuilder(this, Material.SCULK, itemMeta -> {
-            itemMeta.displayName(Component.text(" §kd §r§cComming soon §kr"));
-        }));
 
         inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
 
