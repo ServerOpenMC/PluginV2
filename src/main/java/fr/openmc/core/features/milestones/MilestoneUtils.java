@@ -18,7 +18,7 @@ public class MilestoneUtils {
 	    
 	    MilestonesManager.getMilestoneData(type).get(player.getUniqueId()).setProgress(0);
 
-		if (type != MilestoneType.TUTORIAL) return;
+		if (type != MilestoneType.TUTORIAL) return; //TODO Refaire les bossbars
 		
         int maxStep = TutorialStep.values().length;
 
