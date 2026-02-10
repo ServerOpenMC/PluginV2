@@ -18,7 +18,7 @@ public class MilestoneUtils {
 	    
 	    MilestonesManager.getMilestoneData(type).get(player.getUniqueId()).setProgress(0);
 
-		if (!type.isBoosBar()) return;
+		if (type != MilestoneType.TUTORIAL) return;
 		
         int maxStep = TutorialStep.values().length;
 
