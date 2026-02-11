@@ -66,6 +66,7 @@ public class Breezy extends DreamMob implements Listener {
             breeze.getNearbyEntities(15, 15, 15).stream()
                     .filter(e -> e instanceof Player)
                     .map(e -> (Player) e)
+		            .filter(p -> p.getGameMode().equals(GameMode.SURVIVAL))
                     .min(Comparator.comparingDouble(p -> p.getLocation().distanceSquared(breeze.getLocation())))
                     .ifPresent(target -> shootWindCharge(breeze, target));
 

@@ -22,8 +22,8 @@ public class MilestonesManager {
 
     public static void init() {
 		Arrays.stream(MilestoneType.values()).toList().forEach(milestoneType -> registerMilestone(milestoneType.getMilestone()));
-
-        loadMilestonesData();
+	    
+	    loadMilestonesData();
 		loadMilestonesProgress();
 
         registerMilestoneCommand();
@@ -51,12 +51,12 @@ public class MilestonesManager {
     public static void loadMilestonesData() {
         try {
             List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
-
             for (MilestoneModel data : milestoneData) {
-                MilestoneType type = MilestoneType.valueOf(data.getType());
+	            MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone milestone = type.getMilestone();
-                milestone.getPlayerData().put(data.getUUID(), data);
+	            milestone.getPlayerData().put(data.getUUID(), data);
             }
+			OMCPlugin.getInstance().getSLF4JLogger().info("Milestones loaded successfully from the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -74,6 +74,7 @@ public class MilestonesManager {
                     millestoneDao.createOrUpdate(model);
                 }
             }
+	        OMCPlugin.getInstance().getSLF4JLogger().info("Milestones saved successfully to the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -84,6 +85,7 @@ public class MilestonesManager {
 	 */
 	public static void loadMilestonesProgress() {
 		for (Milestone milestone : milestones) {
+			if (milestone.getPlayerData().isEmpty()) continue;
 			// Pour tous les joueurs du milestone, la progression est chargée à l'étape actuelle
 			for (Map.Entry<UUID, MilestoneModel> playerData : milestone.getPlayerData().entrySet()) {
 				milestone.getSteps().get(playerData.getValue().getStep()).setProgress(playerData.getKey(), playerData.getValue().getProgress());
@@ -168,7 +170,6 @@ public class MilestonesManager {
 		milestones.add(milestone);
 		
 		registerQuestMilestone(milestone);
-    
     }
 
     /**

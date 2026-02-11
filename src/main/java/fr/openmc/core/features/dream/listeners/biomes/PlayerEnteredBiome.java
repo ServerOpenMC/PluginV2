@@ -80,7 +80,7 @@ public class PlayerEnteredBiome implements Listener {
                             return;
                         }
 
-                        applyFog(player);
+                        applyEffects(player);
                         spawnParticles(player);
                     },
                     0L, 40L
@@ -96,8 +96,9 @@ public class PlayerEnteredBiome implements Listener {
         if (task != null) task.cancel();
     }
 
-    private void applyFog(Player player) {
+    private void applyEffects(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1, true, false));
+		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false));
     }
 
     private void spawnParticles(Player player) {

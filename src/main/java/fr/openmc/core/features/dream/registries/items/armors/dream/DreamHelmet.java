@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class DreamHelmet extends DreamEquipableItem {
     public DreamHelmet(String name) {
@@ -37,7 +38,7 @@ public class DreamHelmet extends DreamEquipableItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NETHERITE_HELMET);
 
         item.getItemMeta().itemName(Component.text("Casque Onirique"));

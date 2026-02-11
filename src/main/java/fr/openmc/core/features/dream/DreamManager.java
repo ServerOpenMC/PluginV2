@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.commands.AdminDreamCommands;
 import fr.openmc.core.features.dream.commands.DreamCommands;
+import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.generation.listeners.CloudStructureDispenserListener;
@@ -26,6 +27,8 @@ import fr.openmc.core.features.dream.listeners.others.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.others.PlayerEatSomnifere;
 import fr.openmc.core.features.dream.listeners.others.SingularityCraftListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
+import fr.openmc.core.features.dream.listeners.strctures.PlayerEnterStructureListener;
+import fr.openmc.core.features.dream.listeners.strctures.PlayerExitStructureListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -82,7 +85,9 @@ public class DreamManager {
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new DreamArmorImplListener(),
-                new SingularityCraftListener()
+                new SingularityCraftListener(),
+		        new PlayerEnterStructureListener(),
+		        new PlayerExitStructureListener()
         );
 
         // ** MANAGERS **
@@ -229,6 +234,7 @@ public class DreamManager {
         DreamPlayer newDreamPlayer = new DreamPlayer(player, oldInv, oldLocation, dreamPlayerInv);
         dreamPlayerData.put(player.getUniqueId(), newDreamPlayer);
         playerSaveData.put(player.getUniqueId(), newDreamPlayer.savePlayer());
+	    OMCPlugin.getInstance().getServer().getPluginManager().callEvent(new DreamEnterEvent(player));
     }
 
     public static void removeDreamPlayer(Player player, Location dreamLocation) {

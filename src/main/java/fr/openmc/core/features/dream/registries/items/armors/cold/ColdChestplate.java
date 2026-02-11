@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class ColdChestplate extends DreamEquipableItem {
     public ColdChestplate(String name) {
@@ -37,7 +38,7 @@ public class ColdChestplate extends DreamEquipableItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.DIAMOND_CHESTPLATE);
 
         item.getItemMeta().itemName(Component.text("Plastron Glacé"));
