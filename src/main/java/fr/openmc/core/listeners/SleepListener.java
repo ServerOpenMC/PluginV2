@@ -1,6 +1,7 @@
 package fr.openmc.core.listeners;
 
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,21 +39,21 @@ public class SleepListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		World world = event.getPlayer().getWorld();
-		world.setGameRule(GameRule.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers().size() + 1));
+		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers().size() + 1));
 	}
 	
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		World world = event.getPlayer().getWorld();
-		world.setGameRule(GameRule.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers().size() - 1));
+		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers().size() - 1));
 	}
 	
 	@EventHandler
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		World oldWorld = event.getFrom();
 		World newWorld = event.getPlayer().getWorld();
-		oldWorld.setGameRule(GameRule.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(oldWorld.getPlayers().size()));
-		newWorld.setGameRule(GameRule.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(newWorld.getPlayers().size()));
+		oldWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(oldWorld.getPlayers().size()));
+		newWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(newWorld.getPlayers().size()));
 	}
 	
 	/**
