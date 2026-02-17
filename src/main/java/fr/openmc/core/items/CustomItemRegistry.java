@@ -1,6 +1,7 @@
 package fr.openmc.core.items;
 
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,7 +17,7 @@ import java.util.HashSet;
 
 public class CustomItemRegistry {
     static final HashMap<String, CustomItem> items = new HashMap<>();
-    static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
+    public static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(OMCPlugin.getInstance(), "custom_item");
 
     public static void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
@@ -90,6 +91,11 @@ public class CustomItemRegistry {
         items.put(name, item);
     }
 
+    public static void registerItems(CustomItem... items) {
+        for (CustomItem ci : items) {
+            registerItem(ci);
+        }
+    }
     public static void registerItem(CustomItem item) {
         register(item.getName(), item);
     }
@@ -128,7 +134,7 @@ public class CustomItemRegistry {
     @Nullable
     public static CustomItem getByItemStack(ItemStack stack) {
         PersistentDataContainerView view = stack.getPersistentDataContainer();
-        String name = view.get(customNameKey, PersistentDataType.STRING);
+        String name = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
 
         return name == null ? null : getByName(name);
     }

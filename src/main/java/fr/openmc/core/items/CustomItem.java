@@ -2,6 +2,7 @@ package fr.openmc.core.items;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.hooks.ItemsAdderHook;
+import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,6 +49,15 @@ public abstract class CustomItem {
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
-        return !ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
+        ItemStack item;
+        if (!ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null) {
+            item = getVanilla();
+        } else {
+            item = getItemsAdder();
+        }
+
+        ItemUtils.setTag(item, CustomItemRegistry.CUSTOM_ITEM_KEY, this.getName());
+
+        return item;
     }
 }
