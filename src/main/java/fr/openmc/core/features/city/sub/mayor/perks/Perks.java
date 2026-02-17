@@ -215,7 +215,7 @@ public enum Perks {
                     Component.text("§7Augmente de §360% le temps dans"),
                     Component.text("§7les §3rêves.")
             ),
-            DreamItemRegistry.getByName("omc_dream:somnifere").getBest()
+            DreamItemRegistry.getByName("somnifere").getBest()
     ),
     CHAOS_DREAM(
             18,
@@ -227,7 +227,7 @@ public enum Perks {
                     Component.text("§7Envoie tout les membres connectés dans"),
                     Component.text("§3les rêves §8(Cooldown : 1j)")
             ),
-            DreamItemRegistry.getByName("omc_dream:singularity").getBest()
+            DreamItemRegistry.getByName("singularity").getBest()
     )
     ;
 

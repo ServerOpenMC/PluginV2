@@ -38,6 +38,7 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.usableitems.CustomUsableItemRegistry;
 import fr.openmc.core.utils.MotdUtils;
@@ -151,6 +152,8 @@ public class OMCPlugin extends JavaPlugin {
     public void loadWithItemsAdder() {
         CustomItemRegistry.init();
         CustomUsableItemRegistry.init();
+        CustomEnchantmentRegistry.postInit();
+
 	    MilestonesManager.init();
 	    QuestsManager.init();
         CityManager.init();

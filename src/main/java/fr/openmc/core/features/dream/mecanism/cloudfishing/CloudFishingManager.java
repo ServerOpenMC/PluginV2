@@ -25,7 +25,7 @@ public class CloudFishingManager {
     private static final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
 
     public static final double Y_CLOUD_FISHING = CloudChunkGenerator.MIN_HEIGHT_CLOUD - 5;
-    public static final DreamLootTable FISHING_LOOT_TABLE = DreamLootTableRegistry.getByKey(Key.key("dream:cloud_fishing"));
+    public static final DreamLootTable FISHING_LOOT_TABLE = DreamLootTableRegistry.getByKey(Key.key("omc_dream:cloud_fishing"));
 
     public static void init() {
         OMCPlugin.registerEvents(

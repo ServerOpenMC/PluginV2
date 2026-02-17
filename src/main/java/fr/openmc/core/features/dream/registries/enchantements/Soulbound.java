@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.registries.enchantements;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
-import fr.openmc.core.features.dream.registries.DreamEnchantementRegistry;
+import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -32,7 +32,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
 
     @Override
     public Key getKey() {
-        return Key.key("dream:soulbound");
+        return Key.key("omc_dream:soulbound");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        Enchantment enchant = DreamEnchantementRegistry.getEnchantment(getKey());
+        Enchantment enchant = CustomEnchantmentRegistry.getCustomEnchantmentByKey(this.getKey()).getEnchantment();
         if (enchant == null) return;
 
         int maxSoulboundLevel = 0;

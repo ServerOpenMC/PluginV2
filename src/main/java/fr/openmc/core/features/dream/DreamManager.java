@@ -86,7 +86,6 @@ public class DreamManager {
         );
 
         // ** MANAGERS **
-        DreamEnchantementRegistry.init();
         DreamDimensionManager.init();
         GlaciteNpcManager.init();
         DreamStructuresManager.init();

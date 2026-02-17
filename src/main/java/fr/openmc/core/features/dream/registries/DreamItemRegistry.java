@@ -150,10 +150,12 @@ public class DreamItemRegistry {
 
     @Nullable
     public static DreamItem getByName(String name) {
-        CustomItem ci = CustomItemRegistry.getByName(name);
+        if (!name.startsWith("omc_dream:")) name = "omc_dream:" + name;
 
+        CustomItem ci = CustomItemRegistry.getByName(name);
         if (ci == null) return null;
         if (!(ci instanceof DreamItem di)) return null;
+
         return di;
     }
 

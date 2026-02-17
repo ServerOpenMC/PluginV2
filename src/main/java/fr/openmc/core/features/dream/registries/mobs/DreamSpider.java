@@ -21,7 +21,7 @@ public class DreamSpider extends DreamMob {
                 RandomUtils.randomBetween(0.2, 0.3),
                 RandomUtils.randomBetween(1.5, 2.0),
                 List.of(new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:corrupted_string"),
+                        DreamItemRegistry.getByName("corrupted_string"),
                         0.80,
                         1,
                         3

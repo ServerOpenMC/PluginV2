@@ -34,7 +34,7 @@ public class AywenCapListener implements Listener {
 
             if (hasCapNow && !player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
-            } else if (!ItemUtils.isSimilar(DreamItemRegistry.getByName("omc_dream:dream_helmet").getBest(), helmetNow)) {
+            } else if (!ItemUtils.isSimilar(DreamItemRegistry.getByName("dream_helmet").getBest(), helmetNow)) {
                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
             }
 
@@ -73,7 +73,7 @@ public class AywenCapListener implements Listener {
 
         if (ItemUtils.isSimilar(aywenCap, equipped)) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
-        } else if (!ItemUtils.isSimilar(DreamItemRegistry.getByName("omc_dream:dream_helmet").getBest(), equipped)) {
+        } else if (!ItemUtils.isSimilar(DreamItemRegistry.getByName("dream_helmet").getBest(), equipped)) {
             player.removePotionEffect(PotionEffectType.NIGHT_VISION);
         }
     }

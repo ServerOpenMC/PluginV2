@@ -10,44 +10,44 @@ import java.util.Set;
 public class CloudFishingLootTable extends DreamLootTable {
     @Override
     public Key getKey() {
-        return Key.key("dream:cloud_fishing");
+        return Key.key("omc_dream:cloud_fishing");
     }
 
     @Override
     public Set<DreamLoot> getLoots() {
         return Set.of(
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:meteo_wand"),
+                        DreamItemRegistry.getByName("meteo_wand"),
                         0.1,
                         1,
                         1
                 ),
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:poissonion"),
+                        DreamItemRegistry.getByName("poissonion"),
                         0.5,
                         1,
                         2
                 ),
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:moon_fish"),
+                        DreamItemRegistry.getByName("moon_fish"),
                         0.5,
                         1,
                         2
                 ),
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:sun_fish"),
+                        DreamItemRegistry.getByName("sun_fish"),
                         0.5,
                         1,
                         2
                 ),
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:dockerfish"),
+                        DreamItemRegistry.getByName("dockerfish"),
                         0.2,
                         1,
                         1
                 ),
                 new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:somnifere"),
+                        DreamItemRegistry.getByName("somnifere"),
                         0.4,
                         1,
                         1

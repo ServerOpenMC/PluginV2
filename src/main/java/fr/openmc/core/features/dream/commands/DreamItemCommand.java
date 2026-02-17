@@ -25,7 +25,7 @@ public class DreamItemCommand {
             @SuggestWith(DreamItemAutoComplete.class) String name,
             @Optional Integer amount
     ) {
-        DreamItem item = DreamItemRegistry.getByName("omc_dream:" + name);
+        DreamItem item = DreamItemRegistry.getByName(name);
 
         if (item == null) {
             MessagesManager.sendMessage(player, Component.text("Cet item n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);

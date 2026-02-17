@@ -93,7 +93,7 @@ public class Soul extends DreamMob {
     }
 
     private final List<DreamLoot> loots = List.of(new DreamLoot(
-            DreamItemRegistry.getByName("omc_dream:soul"),
+            DreamItemRegistry.getByName("soul"),
             0.70,
             1,
             2
