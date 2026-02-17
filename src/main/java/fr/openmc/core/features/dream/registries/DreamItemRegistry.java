@@ -37,14 +37,11 @@ import fr.openmc.core.features.dream.registries.items.fishes.*;
 import fr.openmc.core.features.dream.registries.items.loots.*;
 import fr.openmc.core.features.dream.registries.items.orb.*;
 import fr.openmc.core.features.dream.registries.items.tools.*;
-import fr.openmc.core.items.CustomItem;
-import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
 
 public class DreamItemRegistry {
     public static void init() {

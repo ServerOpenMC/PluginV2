@@ -1,18 +1,13 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.hooks.ItemsAdderHook;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.items.CustomItem;
-import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 public abstract class DreamItem extends CustomItem {

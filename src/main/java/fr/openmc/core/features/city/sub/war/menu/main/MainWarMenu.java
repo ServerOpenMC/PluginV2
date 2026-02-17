@@ -17,7 +17,7 @@ import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import net.kyori.adventure.text.Component;

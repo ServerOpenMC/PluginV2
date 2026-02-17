@@ -1,7 +1,7 @@
-package fr.openmc.core.items.usable.tools;
+package fr.openmc.core.registry.usableitems.contents;
 
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.items.usable.CustomUsableItem;
+import fr.openmc.core.registry.usableitems.CustomUsableItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

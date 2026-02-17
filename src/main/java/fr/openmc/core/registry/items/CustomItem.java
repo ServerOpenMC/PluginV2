@@ -1,4 +1,4 @@
-package fr.openmc.core.items;
+package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.hooks.ItemsAdderHook;

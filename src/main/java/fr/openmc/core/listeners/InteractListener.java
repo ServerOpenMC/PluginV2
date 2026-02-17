@@ -1,7 +1,7 @@
 package fr.openmc.core.listeners;
 
-import fr.openmc.core.items.usable.CustomUsableItem;
-import fr.openmc.core.items.usable.CustomUsableItemRegistry;
+import fr.openmc.core.registry.usableitems.CustomUsableItem;
+import fr.openmc.core.registry.usableitems.CustomUsableItemRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;

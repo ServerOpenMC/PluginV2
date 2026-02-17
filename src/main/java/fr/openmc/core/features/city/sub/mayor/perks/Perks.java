@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.perks;
 
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;

@@ -1,7 +1,6 @@
 package fr.openmc.core.features.dream.commands.autocomplete;
 
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;

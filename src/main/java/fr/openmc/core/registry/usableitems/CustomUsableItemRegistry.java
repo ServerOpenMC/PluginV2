@@ -1,7 +1,7 @@
-package fr.openmc.core.items.usable;
+package fr.openmc.core.registry.usableitems;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.items.usable.tools.Hammer;
+import fr.openmc.core.registry.usableitems.contents.Hammer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

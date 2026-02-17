@@ -1,6 +1,6 @@
-package fr.openmc.core.items.usable;
+package fr.openmc.core.registry.usableitems;
 
-import fr.openmc.core.items.CustomItem;
+import fr.openmc.core.registry.items.CustomItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;

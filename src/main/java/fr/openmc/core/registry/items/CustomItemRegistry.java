@@ -1,4 +1,4 @@
-package fr.openmc.core.items;
+package fr.openmc.core.registry.items;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;

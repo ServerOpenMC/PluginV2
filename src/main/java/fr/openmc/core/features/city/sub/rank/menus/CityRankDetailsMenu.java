@@ -10,7 +10,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.events.ArmorEquipEvent;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.ArmorType;
 import fr.openmc.core.utils.ItemUtils;
 import org.bukkit.Bukkit;
