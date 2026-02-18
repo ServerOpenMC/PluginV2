@@ -3,7 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

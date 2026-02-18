@@ -1,6 +1,10 @@
-package fr.openmc.core.items;
+package fr.openmc.core.registry.items;
 
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.registry.items.contents.AywenCap;
+import fr.openmc.core.registry.items.contents.Hammer;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,7 +20,7 @@ import java.util.HashSet;
 
 public class CustomItemRegistry {
     static final HashMap<String, CustomItem> items = new HashMap<>();
-    static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
+    public static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(OMCPlugin.getInstance(), "custom_item");
 
     public static void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
@@ -80,6 +84,14 @@ public class CustomItemRegistry {
         registerSimpleItem("omc_homes:omc_homes_icon_sandblock", Material.CHEST);
         registerSimpleItem("omc_homes:omc_homes_icon_shop", Material.CHEST);
         registerSimpleItem("omc_homes:omc_homes_icon_xernas", Material.CHEST);
+
+        /* Equipable */
+        registerItem(new AywenCap("omc_items:aywen_cap"));
+
+        /* Hammer */
+        registerItem(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
+        registerItem(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
+        registerItem(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
     }
 
     public static void register(String name, CustomItem item) {
@@ -90,6 +102,11 @@ public class CustomItemRegistry {
         items.put(name, item);
     }
 
+    public static void registerItems(CustomItem... items) {
+        for (CustomItem ci : items) {
+            registerItem(ci);
+        }
+    }
     public static void registerItem(CustomItem item) {
         register(item.getName(), item);
     }
@@ -128,9 +145,17 @@ public class CustomItemRegistry {
     @Nullable
     public static CustomItem getByItemStack(ItemStack stack) {
         PersistentDataContainerView view = stack.getPersistentDataContainer();
-        String name = view.get(customNameKey, PersistentDataType.STRING);
+        String name = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
 
-        return name == null ? null : getByName(name);
+        if (name == null) {
+            CustomStack itemIa = CustomStack.byItemStack(stack);
+
+            if (itemIa == null) return null;
+
+            return getByName(itemIa.getNamespacedID());
+        } else {
+            return getByName(name);
+        }
     }
 
     public static HashSet<String> getNames() {

@@ -18,7 +18,6 @@ import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.generation.listeners.CloudStructureDispenserListener;
 import fr.openmc.core.features.dream.generation.listeners.ReplaceBlockListener;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
-import fr.openmc.core.features.dream.listeners.armors.DreamArmorImplListener;
 import fr.openmc.core.features.dream.listeners.biomes.PlayerEnteredBiome;
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.orb.PlayerObtainOrb;
@@ -81,12 +80,10 @@ public class DreamManager {
                 new CloudStructureDispenserListener(),
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
-                new DreamArmorImplListener(),
                 new SingularityCraftListener()
         );
 
         // ** MANAGERS **
-        DreamEnchantementRegistry.init();
         DreamDimensionManager.init();
         GlaciteNpcManager.init();
         DreamStructuresManager.init();
@@ -213,6 +210,8 @@ public class DreamManager {
     }
 
     public static void addDreamPlayer(Player player, Location oldLocation) throws IOException {
+        player.clearActivePotionEffects(); // supprime tout les effets (ex effets des armures dans l'overworld)
+
         PlayerInventory playerInv = player.getInventory();
 
         ItemStack[] oldInv = playerInv.getContents().clone();
@@ -232,6 +231,8 @@ public class DreamManager {
     }
 
     public static void removeDreamPlayer(Player player, Location dreamLocation) {
+        player.clearActivePotionEffects(); // supprime les effets des armures des reves
+
         DreamPlayer dreamPlayer = dreamPlayerData.remove(player.getUniqueId());
         playerSaveData.remove(player.getUniqueId());
 

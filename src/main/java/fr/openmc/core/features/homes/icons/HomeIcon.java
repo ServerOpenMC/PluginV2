@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.icons;
 
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

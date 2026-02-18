@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.registries.DreamEnchantementRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,9 +22,9 @@ public class CloudVault implements Listener {
         block.setType(Material.VAULT);
 
         if (block.getState() instanceof Vault vault) {
-            vault.setKeyItem(DreamItemRegistry.getByName("omc_dream:cloud_key").getBest());
+            vault.setKeyItem(DreamItemRegistry.getByName("cloud_key").getBest());
 
-            vault.setDisplayedItem(DreamItemRegistry.getByName("omc_dream:cloud_key").getBest());
+            vault.setDisplayedItem(DreamItemRegistry.getByName("cloud_key").getBest());
             vault.update();
         }
     }
@@ -39,20 +39,20 @@ public class CloudVault implements Listener {
 
             if (luck < 50) {
                 List<ItemStack> rolls = List.of(
-                        DreamItemRegistry.getByName("omc_dream:cloud_helmet").getBest(),
-                        DreamItemRegistry.getByName("omc_dream:cloud_chestplate").getBest(),
-                        DreamItemRegistry.getByName("omc_dream:cloud_leggings").getBest(),
-                        DreamItemRegistry.getByName("omc_dream:cloud_boots").getBest()
+                        DreamItemRegistry.getByName("cloud_helmet").getBest(),
+                        DreamItemRegistry.getByName("cloud_chestplate").getBest(),
+                        DreamItemRegistry.getByName("cloud_leggings").getBest(),
+                        DreamItemRegistry.getByName("cloud_boots").getBest()
                 );
 
                 loot.add(rolls.get(random.nextInt(rolls.size())));
             } else if (luck < 75) {
-                loot.add(DreamItemRegistry.getByName("omc_dream:somnifere").getBest());
+                loot.add(DreamItemRegistry.getByName("somnifere").getBest());
             } else if (luck < 90) {
-                loot.add(DreamItemRegistry.getByName("omc_dream:cloud_fishing_rod").getBest());
+                loot.add(DreamItemRegistry.getByName("cloud_fishing_rod").getBest());
             } else {
-                ItemStack bookEnchanted = DreamEnchantementRegistry.getDreamEnchantment(
-                        Key.key("dream:dream_sleeper")
+                ItemStack bookEnchanted = CustomEnchantmentRegistry.getCustomEnchantmentByKey(
+                        Key.key("omc_dream:dream_sleeper")
                 ).getEnchantedBookItem(2).getBest();
                 loot.add(bookEnchanted);
             }

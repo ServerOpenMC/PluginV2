@@ -2,10 +2,8 @@ package fr.openmc.core.utils;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -450,6 +448,23 @@ public class ItemUtils {
         NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
         meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, value);
         item.setItemMeta(meta);
+    }
+
+    public static void setTag(ItemStack item, NamespacedKey key, String value) {
+        if (item == null || item.getType().isAir()) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
+        item.setItemMeta(meta);
+    }
+
+    public static String getTag(ItemStack item, NamespacedKey key) {
+        if (item == null || item.getType().isAir()) return null;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return null;
+
+        return meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
     }
 
     public static String getTag(ItemStack item, String key) {

@@ -1,4 +1,4 @@
-package fr.openmc.core.items;
+package fr.openmc.core.registry.items;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -12,7 +12,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

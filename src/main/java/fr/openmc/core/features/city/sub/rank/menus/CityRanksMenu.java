@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;

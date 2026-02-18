@@ -84,7 +84,7 @@ public class GlaciteTradeMenu extends Menu {
                     meta.itemName(Component.text("1 min de Temps", NamedTextColor.GREEN));
                     meta.lore(loreTime);
                 }).setOnClick(event -> {
-                    ItemStack eweniteItem = DreamItemRegistry.getByName("omc_dream:ewenite").getBest();
+                    ItemStack eweniteItem = DreamItemRegistry.getByName("ewenite").getBest();
                     int ewenite = ItemUtils.countItems(player, eweniteItem);
 
                     if (ewenite < 1) {
@@ -115,8 +115,8 @@ public class GlaciteTradeMenu extends Menu {
     }
 
     private void handleTrade(Player player, GlaciteTrade trade) {
-        ItemStack glaciteItem = DreamItemRegistry.getByName("omc_dream:glacite").getBest();
-        ItemStack eweniteItem = DreamItemRegistry.getByName("omc_dream:ewenite").getBest();
+        ItemStack glaciteItem = DreamItemRegistry.getByName("glacite").getBest();
+        ItemStack eweniteItem = DreamItemRegistry.getByName("ewenite").getBest();
         int glacite = ItemUtils.countItems(player, glaciteItem);
         int ewenite = ItemUtils.countItems(player, eweniteItem);
 
