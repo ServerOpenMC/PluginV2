@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
+import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
@@ -264,9 +265,9 @@ public class CityChunkMenu extends Menu {
     }
 
     private ItemBuilder createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
-        return new ItemBuilder(this, material, itemMeta -> {
-            itemMeta.displayName(Component.text("§9Claim de votre ville"));
-            itemMeta.lore(List.of(
+        List<Component> lore;
+        if (city.getChunks().size() > CityCreateAction.FREE_CLAIMS+1) {
+            lore = List.of(
                     Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
                     Component.empty(),
@@ -275,7 +276,19 @@ public class CityChunkMenu extends Menu {
                     Component.text("§8- §d" + CityUnclaimAction.calculateAywenite(playerCity.getChunks().size()) + " d'Aywenite"),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ POUR UNCLAIM")
-            ));
+            );
+        } else {
+            lore = List.of(
+                    Component.text("§7Ville : §d" + city.getName()),
+                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                    Component.empty(),
+                    Component.text("§e§lCLIQUEZ POUR UNCLAIM")
+            );
+        }
+
+        return new ItemBuilder(this, material, itemMeta -> {
+            itemMeta.displayName(Component.text("§9Claim de votre ville"));
+            itemMeta.lore(lore);
         }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
