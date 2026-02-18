@@ -18,12 +18,11 @@ public class InteractListener implements Listener {
     void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.useInteractedBlock() == Event.Result.DENY) return;
-        if (event.getClickedBlock() == null) return;
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomItem item = CustomItemRegistry.getByItemStack(itemInHand);
 
-        if (item != null) return;
+        if (item == null) return;
 
         if (item instanceof UsableItem usable) {
             Action action = event.getAction();

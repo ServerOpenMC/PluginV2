@@ -17,12 +17,12 @@ public class BlockBreakListener implements Listener {
         Player player = event.getPlayer();
         if (event.isCancelled()) return;
         if (event.getBlock() == null) return;
+
         ProtectionsManager.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomItem item = CustomItemRegistry.getByItemStack(itemInHand);
-
-        if (item != null) return;
+        if (item == null) return;
 
         if (item instanceof BlockBreakableItem breakableItem) breakableItem.onBlockBreak(player, event);
     }
