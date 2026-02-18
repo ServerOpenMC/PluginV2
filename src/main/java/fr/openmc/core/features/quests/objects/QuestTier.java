@@ -84,4 +84,14 @@ public class QuestTier {
 		this.rewards.add(reward);
 		return new QuestTier(this.target, this.rewards, this.steps, this.requireStepsCompletion);
 	}
+	
+	/**
+	 * Add a reward for the quest, then return the quest
+	 * @param rewards the reward to add
+	 * @return the quest
+	 */
+	public QuestTier addRewards(QuestReward... rewards) {
+		this.rewards.addAll(List.of(rewards));
+		return new QuestTier(this.target, this.rewards, this.steps, this.requireStepsCompletion);
+	}
 }

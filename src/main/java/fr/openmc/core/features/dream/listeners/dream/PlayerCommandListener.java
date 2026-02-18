@@ -15,7 +15,8 @@ public class PlayerCommandListener implements Listener {
     private final Set<String> allowedCommands = Set.of(
             "/crafts",
             "/leave",
-            "/ia omc_dream"
+            "/ia omc_dream",
+		    "/milestone"
     );
 
     @EventHandler(priority = EventPriority.HIGHEST)

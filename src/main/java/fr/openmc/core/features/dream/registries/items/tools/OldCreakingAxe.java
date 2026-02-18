@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class OldCreakingAxe extends DreamItem {
     public OldCreakingAxe(String name) {
@@ -27,7 +28,7 @@ public class OldCreakingAxe extends DreamItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_AXE);
 
         item.getItemMeta().itemName(Component.text("Hache du Vieux Creaking"));

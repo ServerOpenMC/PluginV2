@@ -3,7 +3,12 @@ package fr.openmc.core.features.dream.listeners.dream;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,23 +33,24 @@ public class PlayerSleepListener implements Listener {
         if (!event.getBedEnterResult().equals(PlayerBedEnterEvent.BedEnterResult.OK)) return;
 
         if (playersDreaming.contains(player.getUniqueId())) return;
-
-        Random random = new Random();
-        double randomValue = random.nextDouble();
-
-        if (randomValue < DreamManager.calculateDreamProbability(player)) return;
-
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.NAUSEA,
-                20 * 10,
-                1,
-                false,
-                false,
-                false
-        ));
+		
+        if (player.getGameMode().equals(GameMode.CREATIVE)) {
+	        MessagesManager.sendMessage(player, Component.text("§fVous êtes en créatif, dormir vous fait obligatoirement passer dans la §ddimension des rêves"), Prefix.DREAM, MessageType.INFO, true);
+        } else {
+	        double randomValue = new Random().nextDouble();
+	        
+	        if (randomValue < DreamManager.calculateDreamProbability(player)) return;
+	        
+	        player.addPotionEffect(new PotionEffect(
+			        PotionEffectType.NAUSEA,
+			        20 * 10,
+			        1,
+			        false,
+			        false,
+			        false
+	        ));
+        }
         playersDreaming.add(player.getUniqueId());
-         
-
     }
 
     @EventHandler
@@ -53,6 +59,7 @@ public class PlayerSleepListener implements Listener {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+			long delay = player.getGameMode().equals(GameMode.CREATIVE) ? 0L : 20L * 5;
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -62,7 +69,7 @@ public class PlayerSleepListener implements Listener {
                         DreamManager.tpPlayerToLastDreamLocation(player);
                     }
                 }
-            }.runTaskLater(OMCPlugin.getInstance(), 20L * 5);
+            }.runTaskLater(OMCPlugin.getInstance(), delay);
         }
         playersDreaming.clear();
     }

@@ -26,6 +26,8 @@ import fr.openmc.core.features.dream.listeners.others.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.others.PlayerEatSomnifere;
 import fr.openmc.core.features.dream.listeners.others.SingularityCraftListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
+import fr.openmc.core.features.dream.listeners.strctures.PlayerEnterStructureListener;
+import fr.openmc.core.features.dream.listeners.strctures.PlayerExitStructureListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -49,6 +51,8 @@ import org.bukkit.inventory.PlayerInventory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class DreamManager {
@@ -59,6 +63,7 @@ public class DreamManager {
 
     private static final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
     public static final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
+	public static final Set<Player> dreamMilestoneDialogPlayer = new HashSet<>();
 
     private static Dao<DBDreamPlayer, String> dreamPlayerDao;
     private static Dao<DBPlayerSave, String> savePlayerDao;
@@ -82,7 +87,9 @@ public class DreamManager {
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new DreamArmorImplListener(),
-                new SingularityCraftListener()
+                new SingularityCraftListener(),
+		        new PlayerEnterStructureListener(),
+		        new PlayerExitStructureListener()
         );
 
         // ** MANAGERS **
@@ -318,6 +325,18 @@ public class DreamManager {
                 )
         );
     }
+	
+	public static void addMilestoneDialogPlayer(Player player) {
+		dreamMilestoneDialogPlayer.add(player);
+	}
+	
+	public static void removeMilestoneDialogPlayer(Player player) {
+		dreamMilestoneDialogPlayer.remove(player);
+	}
+	
+	public static boolean isPlayerInMilestoneDialog(Player player) {
+		return dreamMilestoneDialogPlayer.contains(player);
+	}
 
     public static void setMaxTime(Player player, long maxTime) {
         DBDreamPlayer cache = DreamManager.getCacheDreamPlayer(player);

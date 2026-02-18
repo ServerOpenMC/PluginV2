@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class ChipsAywen extends DreamItem {
     public ChipsAywen(String name) {
@@ -27,7 +28,7 @@ public class ChipsAywen extends DreamItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.DRIED_KELP);
 
         item.getItemMeta().itemName(Component.text("Chips goût Aywen"));

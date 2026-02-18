@@ -7,6 +7,8 @@ import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.Objects;
 
 @Getter
 public abstract class DreamItem {
-    public abstract ItemStack getVanilla();
+    public abstract @NotNull ItemStack getVanilla();
 
     private final String name;
 
@@ -33,7 +35,7 @@ public abstract class DreamItem {
 
     public abstract ItemStack getTransferableItem();
 
-    public ItemStack getItemsAdder() {
+    public @Nullable ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance(getName());
         return stack != null ? stack.getItemStack() : null;
     }
@@ -122,7 +124,7 @@ public abstract class DreamItem {
      *
      * @return Best ItemStack to use for the server
      */
-    public ItemStack getBestTransferable() {
+    public @NotNull ItemStack getBestTransferable() {
         ItemStack item;
         if (!ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null) {
             item = getVanilla();
@@ -143,7 +145,7 @@ public abstract class DreamItem {
      *
      * @return Best ItemStack to use for the server
      */
-    public ItemStack getBest() {
+    public @NotNull ItemStack getBest() {
         ItemStack item;
         if (!ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null) {
             item = getVanilla();

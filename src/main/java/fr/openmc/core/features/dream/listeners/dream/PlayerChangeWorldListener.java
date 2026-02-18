@@ -1,10 +1,12 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
+import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -44,6 +46,7 @@ public class PlayerChangeWorldListener implements Listener {
         AttributeInstance inst = player.getAttribute(Attribute.MAX_HEALTH);
         if (inst == null) return;
         player.setHealth(inst.getBaseValue());
+	    OMCPlugin.getInstance().getServer().getPluginManager().callEvent(new DreamEnterEvent(player));
     }
 
     @EventHandler

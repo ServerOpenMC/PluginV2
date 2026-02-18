@@ -7,6 +7,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -42,9 +43,9 @@ public class DreamUtils {
     public static void removeDreamTime(Player player, Long timeToRemove, boolean sendMessage) {
         DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
         if (dreamPlayer == null) return;
+		if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         dreamPlayer.removeTime(timeToRemove);
         if (sendMessage)
             MessagesManager.sendMessage(player, Component.text("Vous avez perdu §a" + DateUtils.convertSecondToTime(timeToRemove) + " §fcar vous avez pris des dégats !"), Prefix.DREAM, MessageType.WARNING, false);
-
     }
 }

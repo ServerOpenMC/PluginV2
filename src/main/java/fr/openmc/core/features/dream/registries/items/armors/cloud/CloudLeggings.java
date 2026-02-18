@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class CloudLeggings extends DreamEquipableItem {
     public CloudLeggings(String name) {
@@ -37,7 +38,7 @@ public class CloudLeggings extends DreamEquipableItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_LEGGINGS);
 
         item.getItemMeta().itemName(Component.text("Jambières des Nuages"));

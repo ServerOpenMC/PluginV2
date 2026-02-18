@@ -3,7 +3,6 @@ package fr.openmc.core.features.milestones;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import fr.openmc.core.features.milestones.tutorial.TutorialBossBar;
-import fr.openmc.core.features.milestones.tutorial.TutorialMilestone;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -18,7 +17,7 @@ public class MilestoneUtils {
 	    
 	    MilestonesManager.getMilestoneData(type).get(player.getUniqueId()).setProgress(0);
 
-		if (type != MilestoneType.TUTORIAL) return; //TODO Refaire les bossbars
+		if (type != MilestoneType.TUTORIAL) return; //TODO Refaire les boss bars
 		
         int maxStep = TutorialStep.values().length;
 
@@ -45,7 +44,7 @@ public class MilestoneUtils {
         if (step >= maxStep) return;
 		String progressStr = "";
 		if (step == 0) {
-			progressStr = " (" + TutorialMilestone.playerData.get(player.getUniqueId()).getProgress() + " / 30)";
+			progressStr = " (" + MilestoneType.TUTORIAL.getMilestone().getPlayerData().get(player.getUniqueId()).getProgress() + " / 30)";
 		}
 
         TutorialBossBar.addTutorialBossBarForPlayer(

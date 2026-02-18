@@ -284,6 +284,7 @@ public class Quest {
 
                     if (hasEnoughSpace) {
                         reward.giveReward(player);
+	                    System.out.println(reward);
                     } else {
                         addPendingRewards(uuid, tierIndex, tier.getRewards());
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour recevoir la récompense !"), Prefix.QUEST, MessageType.WARNING, false);
@@ -313,6 +314,7 @@ public class Quest {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.2F);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.1F);
                 MessagesManager.sendMessage(player, Component.text(message), Prefix.QUEST, MessageType.SUCCESS, true);
+	            System.out.println("title");
             } else {
                 addPendingRewards(uuid, tierIndex, tier.getRewards());
             }
@@ -482,8 +484,19 @@ public class Quest {
      * @param playerUUID The UUID of the player
      */
     public void incrementProgress(UUID playerUUID) {
-        incrementProgress(playerUUID, 1);
+        incrementProgress(playerUUID, 1, false);
     }
+	
+	/**
+	 * Increment the progress of the quest for a player by a specified amount.
+	 * <p>
+	 * This method will check if the quest is fully completed, and if not, it will increase the progress.
+	 * @param playerUUID The UUID of the player
+	 * @param amount The amount to increment the progress by
+	 */
+	public void incrementProgress(UUID playerUUID, int amount) {
+		incrementProgress(playerUUID, amount, false);
+	}
 
     /**
      * Increment the progress of the quest for a player by a specified amount.
@@ -491,8 +504,9 @@ public class Quest {
      * This method will check if the quest is fully completed, and if not, it will increase the progress.
      * @param playerUUID The UUID of the player
      * @param amount The amount to increment the progress by
+     * @param authorizeDream Set if you authorize to increment progress in Dream world
      */
-    public void incrementProgress(UUID playerUUID, int amount) {
+    public void incrementProgress(UUID playerUUID, int amount, boolean authorizeDream) {
         if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
 			
@@ -501,7 +515,7 @@ public class Quest {
 				if (onlinePlayer == null) return;
 				if (!onlinePlayer.isOnline()) return;
                 if ((!onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)
-                        || DreamUtils.isInDreamWorld(onlinePlayer))) return;
+                        || (DreamUtils.isInDreamWorld(onlinePlayer)) && !authorizeDream)) return;
 
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
