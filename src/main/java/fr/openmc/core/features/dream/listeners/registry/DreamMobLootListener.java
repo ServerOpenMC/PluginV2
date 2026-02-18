@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLoot;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.registry.loottable.CustomLoot;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,13 +29,13 @@ public class DreamMobLootListener implements Listener {
         DreamMob dreamMob = DreamMobsRegistry.getFromEntity(entity);
         if (dreamMob == null) return;
 
-        if (dreamMob.getDreamLoots() == null) return;
+        if (dreamMob.getLoots() == null) return;
 
-        for (DreamLoot loot : dreamMob.getDreamLoots()) {
-            if (Math.random() >= loot.chance()) return;
+        for (CustomLoot loot : dreamMob.getLoots()) {
+            if (Math.random() >= loot.getChance()) return;
 
-            int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
-            ItemStack drop = loot.item().getBest().asQuantity(amount);
+            int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
+            ItemStack drop = loot.getItem().asQuantity(amount);
             entity.getWorld().dropItemNaturally(entity.getLocation(), drop);
         }
     }

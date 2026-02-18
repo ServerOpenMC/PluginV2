@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.models.registry;
 
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLoot;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.registry.loottable.CustomLoot;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -23,9 +23,9 @@ public abstract class DreamMob {
     private final Long damageTime;
     private final double speed;
     private final double scale;
-    private final List<DreamLoot> dreamLoots;
+    private final List<CustomLoot> loots;
 
-    public DreamMob(String id, String name, EntityType type, double health, Long damageTime, double speed, double scale, List<DreamLoot> loots) {
+    public DreamMob(String id, String name, EntityType type, double health, Long damageTime, double speed, double scale, List<CustomLoot> loots) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -33,7 +33,7 @@ public abstract class DreamMob {
         this.damageTime = damageTime;
         this.speed = speed;
         this.scale = scale;
-        this.dreamLoots = loots;
+        this.loots = loots;
     }
 
     public abstract LivingEntity spawn(Location location);

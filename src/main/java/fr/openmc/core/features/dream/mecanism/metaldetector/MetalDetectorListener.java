@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLootTable;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -79,7 +79,7 @@ public class MetalDetectorListener implements Listener {
             if (LocationUtils.isSameLocation(clicked.getLocation(), chestLoc)) {
                 event.setCancelled(true);
                 clicked.setType(Material.MUD);
-                DreamLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
+                CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
                 if (lootTable == null) return;
                 List<ItemStack> rewards = lootTable.rollLoots();
 

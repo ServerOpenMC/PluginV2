@@ -2,9 +2,9 @@ package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLoot;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.SkullUtils;
 import net.kyori.adventure.text.Component;
@@ -92,7 +92,7 @@ public class Soul extends DreamMob {
         return vex;
     }
 
-    private final List<DreamLoot> loots = List.of(new DreamLoot(
+    private final List<CustomLoot> loots = List.of(new CustomLoot(
             DreamItemRegistry.getByName("soul"),
             0.70,
             1,
@@ -121,20 +121,20 @@ public class Soul extends DreamMob {
             Entity dead = e.getEntity();
             if (dead.equals(vex) && stand.isValid()) {
                 stand.remove();
-                for (DreamLoot loot : loots) {
-                    if (Math.random() >= loot.chance()) return;
+                for (CustomLoot loot : loots) {
+                    if (Math.random() >= loot.getChance()) return;
 
-                    int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
-                    ItemStack drop = loot.item().getBest().asQuantity(amount);
+                    int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
+                    ItemStack drop = loot.getItem().asQuantity(amount);
                     dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
                 }
             } else if (dead.equals(stand) && vex.isValid()) {
                 vex.remove();
-                for (DreamLoot loot : loots) {
-                    if (Math.random() >= loot.chance()) return;
+                for (CustomLoot loot : loots) {
+                    if (Math.random() >= loot.getChance()) return;
 
-                    int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
-                    ItemStack drop = loot.item().getBest().asQuantity(amount);
+                    int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
+                    ItemStack drop = loot.getItem().asQuantity(amount);
                     dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
                 }
             }

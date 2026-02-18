@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLoot;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -21,7 +21,7 @@ public class CrazyFrog extends DreamMob {
                 0L,
                 RandomUtils.randomBetween(0.2, 0.4),
                 RandomUtils.randomBetween(3, 2.3),
-                List.of(new DreamLoot(
+                List.of(new CustomLoot(
                         DreamItemRegistry.getByName("metal_detector"),
                         0.5,
                         1,
