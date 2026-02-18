@@ -19,22 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class DreamEnchantment extends CustomEnchantment {
-    public abstract Key getKey();
-
-    public abstract Component getName();
-
-    public abstract TagKey<ItemType> getSupportedItems();
-
-    public abstract int getMaxLevel();
-
-    public abstract int getWeight();
-
-    public abstract int getAnvilCost();
-
-    public abstract EnchantmentRegistryEntry.EnchantmentCost getMinimumCost();
-
-    public abstract EnchantmentRegistryEntry.EnchantmentCost getMaximalmCost();
-
     public DreamItem getEnchantedBookItem(int level) {
         return new DreamItem(getKey().asMinimalString() + level) {
             @Override

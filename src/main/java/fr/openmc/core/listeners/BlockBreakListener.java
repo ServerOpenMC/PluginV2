@@ -1,8 +1,9 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.registry.usableitems.CustomUsableItem;
-import fr.openmc.core.registry.usableitems.CustomUsableItemRegistry;
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,9 +20,11 @@ public class BlockBreakListener implements Listener {
         ProtectionsManager.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        CustomUsableItem usableItem = CustomUsableItemRegistry.getByItemStack(itemInHand);
+        CustomItem item = CustomItemRegistry.getByItemStack(itemInHand);
 
-        if (usableItem != null) usableItem.handleBlockBreak(player, event);
+        if (item != null) return;
+
+        if (item instanceof BlockBreakableItem breakableItem) breakableItem.onBlockBreak(player, event);
     }
 
 }

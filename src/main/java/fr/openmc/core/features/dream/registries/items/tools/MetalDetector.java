@@ -3,8 +3,9 @@ package fr.openmc.core.features.dream.registries.items.tools;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorTask;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import fr.openmc.core.features.dream.models.registry.items.DreamUsableItem;
+import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -21,7 +22,7 @@ import java.util.UUID;
 import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorListener.findRandomChestLocation;
 import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager.hiddenChests;
 
-public class MetalDetector extends DreamUsableItem {
+public class MetalDetector extends DreamItem implements UsableItem {
     public MetalDetector(String name) {
         super(name);
     }

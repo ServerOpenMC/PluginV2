@@ -2,8 +2,9 @@ package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import fr.openmc.core.features.dream.models.registry.items.DreamUsableItem;
+import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -17,7 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class MeteoWand extends DreamUsableItem {
+public class MeteoWand extends DreamItem implements UsableItem {
     private static final long COOLDOWN_METEO_WAND = 8 * 60 * 60 * 1000L; // 2 jours
     public MeteoWand(String name) {
         super(name);

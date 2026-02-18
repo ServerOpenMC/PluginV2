@@ -27,6 +27,11 @@ import java.util.Set;
 public class CustomEnchantmentRegistry {
     private final static HashMap<Key, CustomEnchantment> customEnchantments = new HashMap<>();
 
+    /**
+     * Initialize the registry by registering all custom enchantments in the customEnchantments map.
+     * <p>
+     * ONLY CALL THIS IN BOOTSTRAP LAUNCH !
+     */
     public static void init() {
         // ** REGISTER ENCHANTMENTS **
         register(
@@ -36,15 +41,28 @@ public class CustomEnchantmentRegistry {
         );
     }
 
+    /**
+     * Registers a custom enchantment in the registry.
+     * @param enchantment The custom enchantment to register.
+     */
     public static void register(CustomEnchantment enchantment) {
         customEnchantments.put(enchantment.getKey(), enchantment);
     }
+
+    /**
+     * Registers multiple custom enchantments at once.
+     * @param enchantments The custom enchantments to register.
+     */
     public static void register(CustomEnchantment... enchantments) {
         for (CustomEnchantment enchantment : enchantments) {
             register(enchantment);
         }
     }
 
+    /**
+     * Loads all custom enchantments from the customEnchantments map into the Minecraft registry.
+     * @param event The registry compose event for enchantments, used to register custom enchantments during the bootstrap phase.
+     */
     public static void loadEnchantmentInBootstrap(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.@NotNull Builder> event) {
         for (CustomEnchantment customEnchantment : customEnchantments.values()) {
             event.registry().register(
@@ -61,6 +79,9 @@ public class CustomEnchantmentRegistry {
         }
     }
 
+    /**
+     * Post-initialization method to register enchanted book items for each custom enchantment and to register event listeners if the enchantment implements Listener.
+     */
     public static void postInit() {
         for (CustomEnchantment customEnchantment : customEnchantments.values()) {
             Key key = customEnchantment.getKey();
@@ -76,10 +97,20 @@ public class CustomEnchantmentRegistry {
         }
     }
 
+    /**
+     * Gets a custom enchantment by its key.
+     * @param key The key of the custom enchantment to get.
+     * @return The custom enchantment associated with the given key, or null if not found.
+     */
     public static CustomEnchantment getCustomEnchantmentByKey(Key key) {
         return customEnchantments.get(key);
     }
 
+    /**
+     * Gets a custom enchantment by its name (namespaced ID).
+     * @param name The namespaced ID of the custom enchantment to get, e.g., "omc_dream:soulbound".
+     * @return The custom enchantment associated with the given name, or null if not found.
+     */
     public static CustomEnchantment getCustomEnchantmentByName(String name) {
         return customEnchantments.get(new NamespacedKey(OMCPlugin.getInstance(), name));
     }

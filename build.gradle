@@ -123,7 +123,7 @@ tasks.clean {
 }
 
 tasks.shadowJar {
-    destinationDirectory.set(file('./builds/'))
+    destinationDirectory.set(file('C:\\Users\\lethi\\OneDrive\\Bureau\\server\\plugins'))
     archiveFileName.set('OpenMC.jar')
 
     relocate("org.jetbrains.annotations", "fr.openmc.shaded.org.jetbrains.annotations")

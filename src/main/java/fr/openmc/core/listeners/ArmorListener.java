@@ -128,6 +128,16 @@ public class ArmorListener implements Listener {
                 case BOOTS -> player.getInventory().getBoots();
             };
 
+
+            // fix item instance bug
+            if (oldArmor != null) {
+                oldArmor = oldArmor.clone();
+            }
+
+            if (item != null) {
+                item = item.clone();
+            }
+
             ArmorEquipEvent armorEquipEvent = new ArmorEquipEvent(player, ArmorEquipEvent.EquipMethod.HOTBAR, newArmorType, oldArmor, item);
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(armorEquipEvent));

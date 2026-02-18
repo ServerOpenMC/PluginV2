@@ -5,7 +5,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.commands.DreamItemCommand;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemDropsListener;
-import fr.openmc.core.features.dream.listeners.registry.DreamItemInteractListener;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.items.armors.cloud.CloudBoots;
 import fr.openmc.core.features.dream.registries.items.armors.cloud.CloudChestplate;
@@ -143,7 +142,6 @@ public class DreamItemRegistry {
 
         OMCPlugin.registerEvents(
                 new DreamItemConvertorListener(),
-                new DreamItemInteractListener(),
                 new DreamItemDropsListener()
         );
     }

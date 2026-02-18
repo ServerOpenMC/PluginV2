@@ -37,7 +37,7 @@ public class ListenersManager {
                 new BossbarListener(),
                 new PlayerSettingsManager(),
                 new InteractListener(),
-                new AywenCapListener(),
+                new EquipableItemListener(),
                 new NoMoreRabbit(),
                 new ArmorListener(),
                 new SpawnerExtractorListener(),
