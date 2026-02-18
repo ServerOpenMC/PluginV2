@@ -12,27 +12,28 @@ import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerSleepListener implements Listener {
 
-    private final Set<UUID> playersDreaming = new HashSet<>();
+    private final Set<UUID> hasPlayerTried = new HashSet<>();
 
     @EventHandler
     public void onPlayerSleep(PlayerBedEnterEvent event) {
         Player player = event.getPlayer();
         if (!event.getBedEnterResult().equals(PlayerBedEnterEvent.BedEnterResult.OK)) return;
 
-        if (playersDreaming.contains(player.getUniqueId())) return;
+        if (hasPlayerTried.contains(player.getUniqueId())) return;
+        hasPlayerTried.add(player.getUniqueId());
 
-        Random random = new Random();
-        double randomValue = random.nextDouble();
 
-        if (randomValue < DreamManager.calculateDreamProbability(player)) return;
+        if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) return;
 
         player.addPotionEffect(new PotionEffect(
                 PotionEffectType.NAUSEA,
@@ -42,28 +43,23 @@ public class PlayerSleepListener implements Listener {
                 false,
                 false
         ));
-        playersDreaming.add(player.getUniqueId());
-         
 
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                event.setCancelled(true);
+                DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+                if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
+                    DreamManager.tpPlayerDream(player);
+                } else {
+                    DreamManager.tpPlayerToLastDreamLocation(player);
+                }
+            }
+            }.runTaskLater(OMCPlugin.getInstance(), 20 * 10);
     }
 
     @EventHandler
     public void onNightSkip(TimeSkipEvent event) {
-        for (UUID uuid : playersDreaming) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                        DreamManager.tpPlayerDream(player);
-                    } else {
-                        DreamManager.tpPlayerToLastDreamLocation(player);
-                    }
-                }
-            }.runTaskLater(OMCPlugin.getInstance(), 20L * 5);
-        }
-        playersDreaming.clear();
+        hasPlayerTried.clear();
     }
 }
