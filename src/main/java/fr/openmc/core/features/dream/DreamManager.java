@@ -43,6 +43,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -232,6 +233,8 @@ public class DreamManager {
     }
 
     public static void removeDreamPlayer(Player player, Location dreamLocation) {
+        player.closeInventory();
+
         DreamPlayer dreamPlayer = dreamPlayerData.remove(player.getUniqueId());
         playerSaveData.remove(player.getUniqueId());
 
