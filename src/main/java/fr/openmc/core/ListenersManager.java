@@ -5,7 +5,6 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
-import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
@@ -34,7 +33,6 @@ public class ListenersManager {
                 new SleepListener(),
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
-                new BossbarListener(),
                 new PlayerSettingsManager(),
                 new InteractListener(),
                 new AywenCapListener(),

@@ -19,6 +19,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.dream.DreamManager;
@@ -133,6 +134,7 @@ public class OMCPlugin extends JavaPlugin {
         QuestProgressSaveManager.init();
         TabList.init();
         AdminShopManager.init();
+        HelpConfigManager.init();
         BossbarManager.init();
         AnimationsManager.init();
         HalloweenManager.init();

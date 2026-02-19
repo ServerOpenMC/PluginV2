@@ -23,14 +23,6 @@ public class PlayerJoinListener implements Listener {
 
         if (!DreamUtils.isInDreamWorld(player)) return;
 
-        for (BossbarsType type : BossbarsType.values()) {
-            if (type.equals(BossbarsType.DREAM)) continue;
-
-            BossbarManager.addBossBar(type, BossbarManager.bossBarHelp, player);
-        }
-
-        BossbarManager.removeBossBar(BossbarsType.DREAM, player);
-
         try {
             DreamManager.preloadSavePlayer(player, player.getLocation());
         } catch (IOException e) {

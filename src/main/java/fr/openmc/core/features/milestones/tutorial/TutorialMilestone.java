@@ -1,10 +1,11 @@
 package fr.openmc.core.features.milestones.tutorial;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.features.milestones.Milestone;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.milestones.*;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 
-public class TutorialMilestone implements Milestone {
+public class TutorialMilestone implements Milestone<TutorialStep> {
     @Override
     public String getName() {
         return "§7Tutoriel d'OpenMC";
@@ -35,8 +36,8 @@ public class TutorialMilestone implements Milestone {
     }
 
     @Override
-    public List<MilestoneQuest> getSteps() {
-        return Arrays.stream(TutorialStep.values()).map(TutorialStep::getQuest).toList();
+    public Class<TutorialStep> getStepClass() {
+        return TutorialStep.class;
     }
 
     @Override
@@ -47,5 +48,18 @@ public class TutorialMilestone implements Milestone {
     @Override
     public Menu getMenu(Player player) {
         return new MilestoneMenu(player, this);
+    }
+
+    @Override
+    public MilestoneBossBarOptions getBossBarOptions() {
+        return new MilestoneBossBarOptions(
+                BossBar.Color.YELLOW,
+                BossBar.Overlay.PROGRESS
+        );
+    }
+
+    @Override
+    public boolean shouldDisplayBossBar(Player player) {
+        return !DreamUtils.isInDreamWorld(player) && !MilestoneUtils.hasFinishedMilestone(this.getType(), player);
     }
 }
