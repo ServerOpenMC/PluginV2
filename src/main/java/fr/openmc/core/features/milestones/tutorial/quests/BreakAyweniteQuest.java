@@ -3,10 +3,10 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.tutorial.TutorialBossBar;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
@@ -15,6 +15,7 @@ import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -64,19 +65,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
         ) {
             Player player = event.getPlayer();
             this.incrementProgress(player.getUniqueId());
-			getType().getMilestone().getPlayerData().get(player.getUniqueId()).incrementProgress();
-
-            int progress = this.getProgress(player.getUniqueId());
-			
-            if (progress >= 30) return;
-            TutorialBossBar.update(
-                    player,
-                    Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
-                            (step.ordinal() + 1),
-                            TutorialStep.values()[step.ordinal()].getQuest().getName(player.getUniqueId()) + " (" + progress + " / 30)"
-                    )),
-                    (float) this.getProgress(player.getUniqueId()) / 30
-            );
+			this.getType().getMilestone().getPlayerData().get(player.getUniqueId()).incrementProgress();
         }
     }
 }
