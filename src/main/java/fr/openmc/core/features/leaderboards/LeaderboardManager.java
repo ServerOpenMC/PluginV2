@@ -92,7 +92,7 @@ public class LeaderboardManager {
             String contributorName = entry.getValue().getKey();
             ContributorStats stats = entry.getValue().getValue();
 
-            if (contributorName == null && stats == null) continue;
+            if (contributorName == null || stats == null) continue;
 
             int addLines = stats.added();
             int removeLines = stats.removed();
@@ -130,7 +130,7 @@ public class LeaderboardManager {
             String playerName = entry.getValue().getKey();
             String money = entry.getValue().getValue();
 
-            if (playerName == null && money == null) continue;
+            if (playerName == null || money == null) continue;
 
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
@@ -164,7 +164,7 @@ public class LeaderboardManager {
             String cityName = entry.getValue().getKey();
             String money = entry.getValue().getValue();
 
-            if (cityName == null && money == null) continue;
+            if (cityName == null || money == null) continue;
 
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
@@ -198,7 +198,7 @@ public class LeaderboardManager {
             String playerName = entry.getValue().getKey();
             String time = entry.getValue().getValue();
 
-            if (playerName == null && time == null) continue;
+            if (playerName == null || time == null) continue;
 
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
@@ -227,7 +227,7 @@ public class LeaderboardManager {
             String playerName = entry.getValue().getKey();
             String pumpkinCount = entry.getValue().getValue();
 
-            if (playerName == null && pumpkinCount == null) continue;
+            if (playerName == null || pumpkinCount == null) continue;
 
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
