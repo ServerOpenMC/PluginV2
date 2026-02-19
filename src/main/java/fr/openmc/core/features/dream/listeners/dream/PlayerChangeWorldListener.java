@@ -26,10 +26,6 @@ public class PlayerChangeWorldListener implements Listener {
         if (!DreamUtils.isDreamWorld(event.getTo())) return;
         if (DreamUtils.isDreamWorld(event.getFrom())) return;
 
-        for (BossbarsType type : BossbarsType.values()) {
-            BossbarManager.removeBossBar(type, player);
-        }
-
         try {
             DreamManager.addDreamPlayer(player, event.getFrom());
         } catch (IOException e) {
@@ -38,8 +34,6 @@ public class PlayerChangeWorldListener implements Listener {
 
         DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
         if (dreamPlayer == null) return;
-
-        DreamBossBar.addDreamBossBarForPlayer(player, Math.min(1, (float) dreamPlayer.getDreamTime() / dreamPlayer.getMaxDreamTime()));
 
         player.setFoodLevel(20);
         player.setSaturation(10.0f);
@@ -55,14 +49,6 @@ public class PlayerChangeWorldListener implements Listener {
 
         if (!DreamUtils.isDreamWorld(event.getFrom())) return;
         if (DreamUtils.isDreamWorld(event.getTo())) return;
-
-        for (BossbarsType type : BossbarsType.values()) {
-            if (type.equals(BossbarsType.DREAM)) continue;
-
-            BossbarManager.addBossBar(type, BossbarManager.bossBarHelp, player);
-        }
-
-        BossbarManager.removeBossBar(BossbarsType.DREAM, player);
 
         DreamManager.removeDreamPlayer(player, event.getFrom());
     }

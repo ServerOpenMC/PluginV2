@@ -19,6 +19,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.dream.DreamManager;
@@ -174,6 +175,9 @@ public class OMCPlugin extends JavaPlugin {
                 .filter(f -> !(f instanceof LoadAfterItemsAdder))
                 .forEachOrdered(Feature::startInit);
 
+        HelpConfigManager
+        QuestProgressSaveManager.init();
+        BossbarManager.init();
         // * Si ItemsAdder est pas présent, alors on charge les dernieres features maintenant
         if (!ItemsAdderHook.isEnable()) {
             loadAfterItemsAdder();

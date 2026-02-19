@@ -5,12 +5,12 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public interface Milestone {
-	
+public interface Milestone<T extends Enum<T> & MilestoneStep> {
 	/**
 	 * Returns the player data for the milestone.
 	 * This is a static method that returns a HashMap containing player UUIDs and their corresponding MilestoneModel.
@@ -18,7 +18,7 @@ public interface Milestone {
 	 * @return A HashMap containing player UUIDs and their MilestoneModel.
 	 */
 	HashMap<UUID, MilestoneModel> getPlayerData();
-	
+
 	/**
 	 * Returns the name of the milestone.
 	 *
@@ -39,13 +39,18 @@ public interface Milestone {
 	 * @return The icon of the milestone.
 	 */
 	ItemStack getIcon();
-	
+
 	/**
-	 * Returns the steps of the milestone.
-	 *
-	 * @return A step list of the milestone.
+	 * @return The class of the steps for the milestone.
 	 */
-	List<MilestoneQuest> getSteps();
+	Class<T> getStepClass();
+
+	/**
+	 * @return The enum constants of the step class for the milestone.
+	 */
+	default T[] getStepEnum() {
+		return this.getStepClass().getEnumConstants();
+	}
 
 	/**
 	 * Returns the Type of the Milestone
@@ -61,4 +66,30 @@ public interface Milestone {
 	 * @return The menu for the milestone.
 	 */
 	Menu getMenu(Player player);
+
+	/**
+	 * Returns the boss bar options for the milestone.
+	 * If set to null, no boss bar will be displayed for the milestone.
+	 *
+	 * @return The boss bar options for the milestone.
+	 */
+	MilestoneBossBarOptions getBossBarOptions();
+
+	/**
+	 * Determines whether the boss bar should be displayed for the given player.
+	 *
+	 * @param player The player for whom to check if the boss bar should be displayed.
+	 * @return true if the boss bar should be displayed for the player, false otherwise.
+	 */
+	boolean shouldDisplayBossBar(Player player);
+	/**
+	 * Returns the steps of the milestone.
+	 *
+	 * @return A step list of the milestone.
+	 */
+	default List<MilestoneQuest> getSteps() {
+		T[] enumStep = this.getStepEnum();
+		return Arrays.stream(enumStep).map(MilestoneStep::getQuest).toList();
+	}
+
 }

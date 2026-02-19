@@ -95,7 +95,10 @@ public class DreamPlayer {
         this.timeTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
 			if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
 			if (DreamMilestoneDialog.isPlayerInMilestoneDialog(player)) return;
-			if (dreamTime <= 0) {
+
+            this.dreamTime -= 1;
+
+            if (dreamTime <= 0) {
 				Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
 						Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
 				);
@@ -103,7 +106,6 @@ public class DreamPlayer {
 				return;
 			}
 
-			this.dreamTime -= 1;
 			DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
         }, 0L, 20L);
     }
