@@ -9,6 +9,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,7 +27,7 @@ public class CityUnclaimAction {
 
     public static void startUnclaim(Player sender, int chunkX, int chunkZ) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        org.bukkit.World bWorld = sender.getWorld();
+        World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -42,14 +43,17 @@ public class CityUnclaimAction {
             return;
         }
 
-        int price = calculatePrice(city.getChunks().size());
-        int ayweniteNb = calculateAywenite(city.getChunks().size());
+        // si on unclaim des claims gratuits on ne rend rien, sinon on rend une partie de l'argent et d'aywenite
+        if (city.getChunks().size() > CityCreateAction.FREE_CLAIMS+1) {
+            int price = calculatePrice(city.getChunks().size());
+            int ayweniteNb = calculateAywenite(city.getChunks().size());
 
-        EconomyManager.addBalance(sender.getUniqueId(), price, "Unclaim de chunk de ville");
-        ItemStack aywenite = ayweniteItemStack.clone();
-        aywenite.setAmount(ayweniteNb);
-        for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {
-            sender.dropItem(item);
+            EconomyManager.addBalance(sender.getUniqueId(), price, "Unclaim de chunk de ville");
+            ItemStack aywenite = ayweniteItemStack.clone();
+            aywenite.setAmount(ayweniteNb);
+            for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {
+                sender.dropItem(item);
+            }
         }
 
         city.removeChunk(chunkX, chunkZ);
