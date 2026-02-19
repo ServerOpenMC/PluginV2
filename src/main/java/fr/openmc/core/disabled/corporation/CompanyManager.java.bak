@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation.manager;
+package fr.openmc.core.disabled.corporation;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -10,14 +10,18 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.disabled.corporation.CorpPermission;
 import fr.openmc.core.disabled.corporation.MethodState;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.disabled.corporation.commands.CompanyCommand;
-import fr.openmc.core.disabled.corporation.commands.ShopCommand;
+import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.disabled.corporation.company.Company;
 import fr.openmc.core.disabled.corporation.company.CompanyOwner;
-import fr.openmc.core.disabled.corporation.data.MerchantData;
-import fr.openmc.core.disabled.corporation.listener.CustomItemsCompanyListener;
-import fr.openmc.core.disabled.corporation.listener.ShopListener;
+import fr.openmc.core.features.corporation.data.MerchantData;
+import fr.openmc.core.features.corporation.listener.ShopListener;
 import fr.openmc.core.disabled.corporation.models.*;
+import fr.openmc.core.features.corporation.manager.PlayerShopManager;
+import fr.openmc.core.features.corporation.manager.ShopManager;
 import fr.openmc.core.disabled.corporation.shops.Shop;
 import fr.openmc.core.disabled.corporation.shops.ShopItem;
 import fr.openmc.core.disabled.corporation.shops.Supply;

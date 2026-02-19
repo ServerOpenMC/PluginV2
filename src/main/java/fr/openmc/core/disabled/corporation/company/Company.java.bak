@@ -2,17 +2,17 @@ package fr.openmc.core.disabled.corporation.company;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.disabled.corporation.CorpPermission;
-import fr.openmc.core.disabled.corporation.MethodState;
-import fr.openmc.core.disabled.corporation.data.MerchantData;
-import fr.openmc.core.disabled.corporation.data.TransactionData;
-import fr.openmc.core.disabled.corporation.manager.CompanyManager;
-import fr.openmc.core.disabled.corporation.manager.ShopBlocksManager;
+import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.data.MerchantData;
+import fr.openmc.core.features.corporation.data.TransactionData;
+import fr.openmc.core.disabled.corporation.CompanyManager;
+import fr.openmc.core.features.corporation.manager.ShopManager;
 import fr.openmc.core.disabled.corporation.models.DBCompany;
-import fr.openmc.core.disabled.corporation.shops.Shop;
-import fr.openmc.core.disabled.corporation.shops.ShopOwner;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.corporation.models.Shop;
+import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
 import fr.openmc.core.utils.SkullUtils;
@@ -62,7 +62,7 @@ public class Company {
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
         addMerchant(owner.getPlayer(), new MerchantData());
     }
-	
+
 	// à revoir, je l'utilisais pour les entreprises de ville
     public Company(String name, CompanyOwner owner, UUID company_uuid, boolean newMember) {
         this.name = name;
@@ -255,7 +255,7 @@ public class Company {
                 return false;
             }
 
-            Shop newShop = new Shop(new ShopOwner(this), shopCounter);
+            Shop newShop = new Shop(new ShopOwner(), shopCounter);
             EconomyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
 
             shops.add(newShop);
