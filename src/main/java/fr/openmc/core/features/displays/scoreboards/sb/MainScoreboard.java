@@ -3,6 +3,7 @@ package fr.openmc.core.features.displays.scoreboards.sb;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.scoreboard.SternalBoard;
@@ -61,9 +62,6 @@ public class MainScoreboard extends BaseScoreboard {
     }
 
     public static List<Component> getDefaultLines(Player player) {
-        NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
-        Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
-
         Component rank = LuckPermsHook.isHasLuckPerms()
                 ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
                 : Component.text(textToSmall("aucun")).color(TextColor.color(0xFF1FCC));
@@ -102,13 +100,18 @@ public class MainScoreboard extends BaseScoreboard {
                 .appendSpace()
                 .append(text(textToSmall(location)).color(TextColor.color(0xFF06DC)))
         );
-        if (halloweenNPC != null) {
-            String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
-            lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("citrouilles:"), NamedTextColor.GRAY))
-                    .appendSpace()
-                    .append(text(textToSmall(pumpkinCount)).color(TextColor.color(0xFF7518)))
-            );
+
+        if (FancyNpcsHook.isHasFancyNpc()) {
+            NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
+            Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
+            if (halloweenNPC != null) {
+                String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
+                lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                        .append(text(textToSmall("citrouilles:"), NamedTextColor.GRAY))
+                        .appendSpace()
+                        .append(text(textToSmall(pumpkinCount)).color(TextColor.color(0xFF7518)))
+                );
+            }
         }
 
         lines.add(newline());
