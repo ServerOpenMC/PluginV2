@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CustomItem {
     @Getter
@@ -13,7 +14,7 @@ public abstract class CustomItem {
         this.name = name;
     }
 
-    public abstract ItemStack getVanilla();
+    public abstract @NotNull ItemStack getVanilla();
 
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance(getName());
@@ -47,7 +48,7 @@ public abstract class CustomItem {
      *
      * @return Best ItemStack to use for the server
      */
-    public ItemStack getBest() {
+    public @NotNull ItemStack getBest() {
         return !ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
     }
 }

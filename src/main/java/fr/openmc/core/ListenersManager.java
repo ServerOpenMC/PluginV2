@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.corporation.listener.ShopListener;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
@@ -38,6 +39,7 @@ public class ListenersManager {
                 new PlayerSettingsManager(),
                 new InteractListener(),
                 new AywenCapListener(),
+		            new ShopListener(),
                 new NoMoreRabbit(),
                 new ArmorListener(),
                 new SpawnerExtractorListener(),
