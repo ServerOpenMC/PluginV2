@@ -15,8 +15,8 @@ public class TranslationLoader {
 
     /**
      * Initialize the translation system with the given supported languages.
-     * The translations should be in the "translations" package, in a file named "xx_XX.properties" where xx is the language code (ex. "fr_FR" for French).
-     * @param langsSuppoorted the supported languages (ex. Locale.FRENCH, Locale.ENGLISH, etc.)
+     * The translations should be in the "resources.translations" package, in a file named "lang_xx_XX.properties" where xx is the language code (ex. "fr_FR" for French).
+     * @param langsSuppoorted the supported languages (ex. Locale.FRANCE, Locale.ENGLISH, etc.)
      */
     public static void init(Locale... langsSuppoorted) {
         MiniMessageTranslationStore store = MiniMessageTranslationStore.create(Key.key("openmc:translations"));
