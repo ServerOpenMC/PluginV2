@@ -45,7 +45,7 @@ import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.errors.ErrorReporter;
-import fr.openmc.core.utils.translation.TranslationManager;
+import fr.openmc.core.utils.messages.TranslationLoader;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -58,6 +58,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.util.Locale;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter
@@ -114,6 +115,10 @@ public class OMCPlugin extends JavaPlugin {
         }
         new ErrorReporter();
 
+        TranslationLoader.init(
+                Locale.FRANCE
+        );
+
         /* MANAGERS */
         TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         DatabaseManager.init();
@@ -138,7 +143,6 @@ public class OMCPlugin extends JavaPlugin {
         HalloweenManager.init();
 
         MotdUtils.init();
-        TranslationManager.init(new File(this.getDataFolder(), "translations"), "fr");
         DynamicCooldownManager.init();
 
         MascotsManager.init();
