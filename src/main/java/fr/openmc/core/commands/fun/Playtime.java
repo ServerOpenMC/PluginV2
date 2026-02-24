@@ -17,6 +17,7 @@ public class Playtime {
     @Description("Donne votre temps de jeu")
     private void playtime(Player player) {
         long timePlayed = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
-        MessagesManager.sendMessage(player, Component.translatable("command.playtime.success", DateUtils.convertTime(timePlayed)), Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessage(player, Component.translatable("command.fun.playtime.success",
+                Component.text(DateUtils.convertTime(timePlayed))), Prefix.OPENMC, MessageType.INFO, true);
     }
 }

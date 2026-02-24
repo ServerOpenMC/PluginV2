@@ -1,11 +1,11 @@
 package fr.openmc.core.utils.messages;
 
 import fr.openmc.core.OMCPlugin;
-import me.clip.placeholderapi.libs.kyori.adventure.util.UTF8ResourceBundleControl;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationStore;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationStore;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -22,13 +22,9 @@ public class TranslationLoader {
         MiniMessageTranslationStore store = MiniMessageTranslationStore.create(Key.key("openmc:translations"));
 
         for (Locale locale : langsSuppoorted) {
-            try {
-                ResourceBundle bundle = ResourceBundle.getBundle("translations.lang", locale, UTF8ResourceBundleControl.get());
-                store.registerAll(locale, bundle, true);
-                OMCPlugin.getInstance().getSLF4JLogger().info("\u001B[32m✔ Chargement de la langue {} réussie\u001B[0m", locale.getDisplayName());
-            } catch (Exception e) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn("\u001B[31m✘ Chargement de la langue {} échoué: {}\u001B[0m", locale.getDisplayName(), e.getMessage());
-            }
+            ResourceBundle bundle = ResourceBundle.getBundle("translations.lang", locale, UTF8ResourceBundleControl.utf8ResourceBundleControl());
+            store.registerAll(locale, bundle, true);
+            OMCPlugin.getInstance().getSLF4JLogger().info("\u001B[32m✔ Chargement de la langue {} !\u001B[0m", locale.getDisplayName());
         }
 
         GlobalTranslator.translator().addSource(store);

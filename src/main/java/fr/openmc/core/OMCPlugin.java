@@ -116,7 +116,8 @@ public class OMCPlugin extends JavaPlugin {
         new ErrorReporter();
 
         TranslationLoader.init(
-                Locale.FRANCE
+                Locale.FRANCE,
+                Locale.ENGLISH
         );
 
         /* MANAGERS */

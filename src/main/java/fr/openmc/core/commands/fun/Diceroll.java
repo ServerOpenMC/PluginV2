@@ -18,6 +18,7 @@ public class Diceroll {
     private void diceroll(Player player) {
         int result = ThreadLocalRandom.current().nextInt(10) + 1;
 
-        MessagesManager.sendMessage(player, Component.text("🎲 Le résultat est: §6" + result + "§r 🎲"), Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessage(player, Component.translatable("command.fun.diceroll.success",
+                Component.text(result)), Prefix.OPENMC, MessageType.INFO, true);
     }
 }
