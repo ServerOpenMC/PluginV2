@@ -51,8 +51,8 @@ public class CityCreateAction {
                 getMascotStick(),
                 "mascot:stick",
                 300,
-		        "Vous avez reçu un bâton pour poser votre mascotte",
-                "§cCréation annulée",
+                Component.text("Vous avez reçu un bâton pour poser votre mascotte"),
+                Component.text("§cCréation annulée"),
                 location -> {
                     if (!isValidLocation(player, location)) return false;
 

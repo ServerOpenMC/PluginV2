@@ -51,7 +51,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet de donner un objet à une personne et de quand elle clique avec l'Item, la méthode renverra la positon ou il a cliqué
      */
-    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, String startMessage, String endMessage, Function<Location, Boolean> result, Runnable onFail) {
+    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, Component startMessage, Component endMessage, Function<Location, Boolean> result, Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire ! L'action a été annulée"), Prefix.OPENMC, MessageType.ERROR, false);
             return;

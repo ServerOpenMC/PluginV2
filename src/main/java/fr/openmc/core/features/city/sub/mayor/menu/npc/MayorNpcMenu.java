@@ -128,8 +128,8 @@ public class MayorNpcMenu extends Menu {
                             itemToGive,
                             "mayor:owner-npc-move",
                             300,
-		                    "§7Vous avez 300s pour sélectionner votre emplacement",
-                            "§7Vous n'avez pas eu le temps de déplacer votre NPC",
+                            Component.text("§7Vous avez 300s pour sélectionner votre emplacement"),
+                            Component.text("§7Vous n'avez pas eu le temps de déplacer votre NPC"),
                             locationClick -> {
                                 if (locationClick == null) return true;
 

@@ -44,8 +44,8 @@ public class MayorSetWarpAction {
                 getWarpWand(),
                 "mayor:wait-set-warp",
                 300,
-		        "§7Vous avez 300s pour sélectionner votre point de spawn",
-		        "§7Vous n'avez pas eu le temps de poser votre warp",
+                Component.text("§7Vous avez 300s pour sélectionner votre point de spawn"),
+                Component.text("§7Vous n'avez pas eu le temps de poser votre warp"),
                 locationClick -> {
                     if (locationClick == null) return true;
                     Chunk chunk = locationClick.getChunk();

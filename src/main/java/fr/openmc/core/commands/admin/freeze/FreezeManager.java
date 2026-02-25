@@ -37,7 +37,9 @@ public class FreezeManager {
 			if (FROZEN_PLAYERS.contains(target)) {
 				target.setInvulnerable(false);
 				FROZEN_PLAYERS.remove(target);
-				MessagesManager.sendMessage(player, Component.translatable("command.admin.freeze.player_unfreeze", target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
+				MessagesManager.sendMessage(player,
+						Component.translatable("command.admin.freeze.player_unfreeze",
+								Component.text(target.getName())), Prefix.OPENMC, MessageType.SUCCESS, false);
 				MessagesManager.sendMessage(target, Component.translatable("command.admin.freeze.target_unfreeze"), Prefix.OPENMC, MessageType.INFO, true);
 			} else {
 				target.setInvulnerable(true);
@@ -47,7 +49,9 @@ public class FreezeManager {
 				FROZEN_PLAYERS.add(target);
                 target.sendTitlePart(TitlePart.TITLE, Component.translatable("command.admin.freeze.title.1"));
                 target.sendTitlePart(TitlePart.SUBTITLE, Component.translatable("command.admin.freeze.title.2"));
-                MessagesManager.sendMessage(player, Component.translatable("command.admin.freeze.player_freeze", target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
+                MessagesManager.sendMessage(player,
+						Component.translatable("command.admin.freeze.player_freeze",
+								Component.text(target.getName())), Prefix.OPENMC, MessageType.SUCCESS, false);
 				MessagesManager.sendMessage(target, Component.translatable("command.admin.freeze.target_freeze"), Prefix.OPENMC, MessageType.WARNING, true);
 			}
 		}

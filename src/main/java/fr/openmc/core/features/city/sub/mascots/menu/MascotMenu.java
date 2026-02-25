@@ -173,8 +173,8 @@ public class MascotMenu extends Menu {
                                 mascotsMoveItem,
                                 "mascots:moveInteraction",
                                 120,
-		                        "Temps restant : %sec%s",
-		                        "§cDéplacement de la mascotte annulée",
+                                Component.text("Temps restant : %sec%s"),
+                                Component.text("§cDéplacement de la mascotte annulée"),
                                 mascotMove -> {
                                     if (mascotMove == null) return true;
                                     if (!movingMascots.contains(cityUUID)) return false;
