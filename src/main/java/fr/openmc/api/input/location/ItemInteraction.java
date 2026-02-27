@@ -128,7 +128,7 @@ public class ItemInteraction implements Listener {
 
                             ChronometerInfo chronoInfo = interactionInfo.chronometerInfo();
                             if (chronoInfo != null) {
-                                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");
+                                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
                             }
 
                             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(interactionId);
@@ -333,7 +333,7 @@ public class ItemInteraction implements Listener {
             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
 
             if (chronoInfo != null) {
-                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");
+                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
             }
 
             int slotOfItem = ItemUtils.getSlotOfItem(player, item);

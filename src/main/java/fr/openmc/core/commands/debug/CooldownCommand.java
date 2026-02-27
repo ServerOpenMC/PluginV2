@@ -15,7 +15,7 @@ public class CooldownCommand {
     @Command("debug cooldown")
     @CommandPermission("omc.debug.cooldown")
     @Description("Test de cooldown")
-    @DynamicCooldown(group="test", message = "§c%ms% (%sec%s)")
+    @DynamicCooldown(group="test", messageKey = "command.api.cooldown.debug.must_wait")
     public void cooldown(Player player, @Named("isSuccess") @Suggest({"success", "error"}) String isSuccess) {
         if (isSuccess.equals("success")) {
             player.sendMessage(Component.text("Succès, le cooldown est activé").color(NamedTextColor.GREEN));

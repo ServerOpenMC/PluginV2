@@ -53,7 +53,7 @@ public class RTPCommands {
     @CommandPermission("omc.commands.rtp")
     @DynamicCooldown(
             group="player:rtp",
-            message = "§cTu dois attendre avant de pouvoir te rtp (%formatTime%)")
+            messageKey = "command.utils.rtp.must_wait")
     @Cooldown(15)
     public void rtp(Player player) {
         if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
