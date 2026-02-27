@@ -25,12 +25,12 @@ public class DialogInput {
         body.add(DialogBody.plainMessage(lore));
 
         Dialog inputDialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Rentrer du Texte"))
+                .base(DialogBase.builder(Component.translatable("api.dialoginput.type_string"))
                         .body(body)
                         .inputs(List.of(
                                         io.papermc.paper.registry.data.dialog.input.DialogInput
                                                 .text("inputtextomc",
-                                                        Component.text("Rentrer du texte ici")
+                                                        Component.translatable("api.dialoginput.type_string.here")
                                                 )
                                                 .maxLength(maxLength)
                                                 .build()
@@ -41,14 +41,12 @@ public class DialogInput {
                 )
                 .type(DialogType.confirmation(
                                 ActionButton.builder(Component.text(ButtonType.CONFIRM.getLabel()))
-                                        .action(DialogAction.customClick((response, audience) -> {
-                                            callback.accept(response.getText("inputtextomc"));
-                                        }, ClickCallback.Options.builder().build()))
+                                        .action(DialogAction.customClick((response, audience) ->
+                                                callback.accept(response.getText("inputtextomc")), ClickCallback.Options.builder().build()))
                                         .build(),
                         ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
-                                .action(DialogAction.customClick((response, audience) -> {
-                                    callback.accept(null);
-                                }, ClickCallback.Options.builder().build()))
+                                .action(DialogAction.customClick((response, audience) ->
+                                        callback.accept(null), ClickCallback.Options.builder().build()))
                                 .build()
                         )
                 )
@@ -63,12 +61,12 @@ public class DialogInput {
         body.add(DialogBody.plainMessage(lore));
 
         Dialog inputDialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Rentrer un nombre"))
+                .base(DialogBase.builder(Component.translatable("api.dialoginput.type_float"))
                         .body(body)
                         .inputs(List.of(
                                         io.papermc.paper.registry.data.dialog.input.DialogInput
                                                 .numberRange("inputfloatomc",
-                                                        Component.text("Rentrer un nombre ici"),
+                                                        Component.translatable("api.dialoginput.type_float.here"),
                                                         minSize,
                                                         maxSize
                                                 )
@@ -82,14 +80,12 @@ public class DialogInput {
                 )
                 .type(DialogType.confirmation(
                                 ActionButton.builder(Component.text(ButtonType.CONFIRM.getLabel()))
-                                        .action(DialogAction.customClick((response, audience) -> {
-                                            callback.accept(response.getFloat("inputfloatomc"));
-                                        }, ClickCallback.Options.builder().build()))
+                                        .action(DialogAction.customClick((response, audience) ->
+                                                callback.accept(response.getFloat("inputfloatomc")), ClickCallback.Options.builder().build()))
                                         .build(),
                                 ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
-                                        .action(DialogAction.customClick((response, audience) -> {
-                                            callback.accept(null);
-                                        }, ClickCallback.Options.builder().build()))
+                                        .action(DialogAction.customClick((response, audience) ->
+                                                callback.accept(null), ClickCallback.Options.builder().build()))
                                         .build()
                         )
                 )
