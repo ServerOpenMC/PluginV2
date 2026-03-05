@@ -18,7 +18,6 @@ import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.generation.listeners.CloudStructureDispenserListener;
 import fr.openmc.core.features.dream.generation.listeners.ReplaceBlockListener;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
-import fr.openmc.core.features.dream.listeners.armors.DreamArmorImplListener;
 import fr.openmc.core.features.dream.listeners.biomes.PlayerEnteredBiome;
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.orb.PlayerObtainOrb;
@@ -45,6 +44,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -86,14 +86,12 @@ public class DreamManager {
                 new CloudStructureDispenserListener(),
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
-                new DreamArmorImplListener(),
                 new SingularityCraftListener(),
 		        new PlayerEnterStructureListener(),
 		        new PlayerExitStructureListener()
         );
 
         // ** MANAGERS **
-        DreamEnchantementRegistry.init();
         DreamDimensionManager.init();
         GlaciteNpcManager.init();
         DreamStructuresManager.init();
@@ -220,6 +218,8 @@ public class DreamManager {
     }
 
     public static void addDreamPlayer(Player player, Location oldLocation) throws IOException {
+        player.clearActivePotionEffects(); // supprime tout les effets (ex effets des armures dans l'overworld)
+
         PlayerInventory playerInv = player.getInventory();
 
         ItemStack[] oldInv = playerInv.getContents().clone();
@@ -239,6 +239,9 @@ public class DreamManager {
     }
 
     public static void removeDreamPlayer(Player player, Location dreamLocation) {
+        player.closeInventory();
+        player.clearActivePotionEffects(); // supprime les effets des armures des reves
+
         DreamPlayer dreamPlayer = dreamPlayerData.remove(player.getUniqueId());
         playerSaveData.remove(player.getUniqueId());
 

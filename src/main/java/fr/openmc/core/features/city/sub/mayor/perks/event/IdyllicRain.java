@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

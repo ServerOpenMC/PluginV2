@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.models.registry;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.registry.enchantments.CustomEnchantment;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
@@ -18,23 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class DreamEnchantment {
-    public abstract Key getKey();
-
-    public abstract Component getName();
-
-    public abstract TagKey<ItemType> getSupportedItems();
-
-    public abstract int getMaxLevel();
-
-    public abstract int getWeight();
-
-    public abstract int getAnvilCost();
-
-    public abstract EnchantmentRegistryEntry.EnchantmentCost getMinimumCost();
-
-    public abstract EnchantmentRegistryEntry.EnchantmentCost getMaximalmCost();
-
+public abstract class DreamEnchantment extends CustomEnchantment {
     public DreamItem getEnchantedBookItem(int level) {
         return new DreamItem(getKey().asMinimalString() + level) {
             @Override

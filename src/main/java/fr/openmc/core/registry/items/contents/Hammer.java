@@ -1,7 +1,8 @@
-package fr.openmc.core.items.usable.tools;
+package fr.openmc.core.registry.items.contents;
 
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.items.usable.CustomUsableItem;
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -11,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-public class Hammer extends CustomUsableItem {
+public class Hammer extends CustomItem implements BlockBreakableItem {
 
     private static final float MAX_HARDNESS = 41.0f;
 
