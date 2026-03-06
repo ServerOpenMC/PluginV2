@@ -61,10 +61,10 @@ public class Restart {
                 if (remainingTime == 0) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         Component kickMessage = Component.text()
-                                .append(Component.text("🔄 Redémarrage du serveur 🔄\n", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+                                .append(TranslationManager.translation("command.utils.restart.redem").color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
                                 .append(Component.text("\n"))
-                                .append(Component.text("Le serveur est en train de redémarrer.\n", NamedTextColor.WHITE))
-                                .append(Component.text("Merci de votre patience !", NamedTextColor.GRAY))
+                                .append(TranslationManager.translation("command.utils.restart.server_restarting").color(NamedTextColor.WHITE))
+                                .append(TranslationManager.translation("command.utils.restart.thanks").color(NamedTextColor.GRAY))
                                 .build();
                         player.kick(kickMessage, PlayerKickEvent.Cause.RESTART_COMMAND);
                     }
@@ -77,11 +77,16 @@ public class Restart {
                 }
 
                 MessagesManager.broadcastMessage(
-                        Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")),
+                        TranslationManager.translation("command.utils.restart.restarting_in",
+                                Component.text(remainingTime).color(NamedTextColor.LIGHT_PURPLE),
+                                Component.text(remainingTime == 1 ? "" : "s")),
                         Prefix.OPENMC, MessageType.WARNING);
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Title title = Title.title(Component.text("Redémarrage"), Component.text("§d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")));
+                    Title title = Title.title(TranslationManager.translation("command.utils.restart.restart"),
+                            TranslationManager.translation("command.utils.restart.in",
+                                    Component.text(remainingTime).color(NamedTextColor.LIGHT_PURPLE),
+                                    Component.text(remainingTime == 1 ? "" : "s")));
                     player.showTitle(title);
 
                     player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 0.4F);
