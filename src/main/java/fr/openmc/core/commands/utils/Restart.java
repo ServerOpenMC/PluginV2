@@ -3,7 +3,6 @@ package fr.openmc.core.commands.utils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -36,7 +35,7 @@ public class Restart {
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
         if (sender instanceof Player) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 

@@ -28,7 +28,7 @@ public class BossBarCommand {
     @CommandPlaceholder()
     public void mainCommand(CommandSender sender) {
         if (!(sender instanceof Player player)) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 

@@ -82,7 +82,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreRename = List.of(
-                    TranslationManager.translation("message.cannot_do_this")
+                    TranslationManager.translation("messages.cannot_do_this")
             );
         }
 
@@ -119,7 +119,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreTransfer = List.of(
-                    TranslationManager.translation("message.cannot_do_this")
+                    TranslationManager.translation("messages.cannot_do_this")
             );
         }
 
@@ -159,7 +159,7 @@ public class CityModifyMenu extends Menu {
                     }
                 } else {
                     loreDelete = List.of(
-                            TranslationManager.translation("message.cannot_do_this")
+                            TranslationManager.translation("messages.cannot_do_this")
                     );
                 }
                 return new ItemBuilder(this, Material.TNT, itemMeta -> {

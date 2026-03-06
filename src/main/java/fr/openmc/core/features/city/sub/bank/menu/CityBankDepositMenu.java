@@ -9,7 +9,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -77,7 +76,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositAll = List.of(
-                    TranslationManager.translation("message.cannot_do_this")
+                    TranslationManager.translation("messages.cannot_do_this")
             );
         }
 
@@ -102,7 +101,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositHalf = List.of(
-                    TranslationManager.translation("message.cannot_do_this")
+                    TranslationManager.translation("messages.cannot_do_this")
             );
         }
 
@@ -124,7 +123,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositInput = List.of(
-                    TranslationManager.translation("message.cannot_do_this")
+                    TranslationManager.translation("messages.cannot_do_this")
             );
         }
 

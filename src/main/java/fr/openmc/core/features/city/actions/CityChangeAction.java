@@ -73,7 +73,7 @@ public class CityChangeAction {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

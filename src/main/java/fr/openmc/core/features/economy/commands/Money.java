@@ -33,7 +33,7 @@ public class Money {
             if(!(sender instanceof Player player) || player.hasPermission("omc.admin.commands.money.others")) {
                 MessagesManager.sendMessage(sender, Component.text("§e" + target.getName() + "§a a §e" + EconomyManager.getFormattedBalance(target.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO, true);
             } else {
-                MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, TranslationManager.translation("messages.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }
