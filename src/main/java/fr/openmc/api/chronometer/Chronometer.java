@@ -4,8 +4,10 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -174,7 +176,8 @@ public class Chronometer{
         } else {
             if (entity instanceof Player player) {
                 MessagesManager.sendMessage(player,
-                        Component.translatable("api.chronometer.chronometer_not_found", Component.text(group)), Prefix.OPENMC, MessageType.INFO, false);
+                        TranslationManager.translation("api.chronometer.chronometer_not_found",
+                                Component.text(group).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.INFO, false);
             }
         }
     }
@@ -183,14 +186,12 @@ public class Chronometer{
         UUID entitytUUID = entity.getUniqueId();
 
         if (chronometer.containsKey(entitytUUID)) {
-            owner.sendMessage(Component.translatable("api.chronometer.chronometer_on"));
+            owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on"));
             chronometer.get(entitytUUID).forEach((group, time) ->
-                    owner.sendMessage(
-                            Component.translatable("api.chronometer.chronometer_on_list",
-                                    Component.text(group), Component.text(time)))
-            );
+                    owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on_list",
+                            Component.text(group), Component.text(time).color(NamedTextColor.GOLD)).color(NamedTextColor.YELLOW)));
         } else {
-            owner.sendMessage(Component.translatable("api.chronometer.none_chronometer_player"));
+            owner.sendMessage(TranslationManager.translation("api.chronometer.none_chronometer_player"));
         }
     }
 

@@ -55,8 +55,8 @@ public class MascotMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu de §cmascotte (niv. " + city.getMascot().getLevel() + ")";
+    public @NotNull Component getName() {
+	    return Component.text("Menu de §cmascotte (niv. " + city.getMascot().getLevel() + ")");
     }
 
     @Override

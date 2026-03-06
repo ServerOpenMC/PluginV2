@@ -3,6 +3,7 @@ package fr.openmc.core.commands.admin.freeze;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.entity.Entity;
@@ -42,9 +43,9 @@ public class FreezeListener implements Listener {
 		Player player = event.getPlayer();
 		if (FreezeManager.FROZEN_PLAYERS.contains(player)) {
 			player.setInvulnerable(true);
-			player.sendTitlePart(TitlePart.TITLE, Component.translatable("command.admin.freeze.title.1"));
-			player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable("command.admin.freeze.title.2"));
-			MessagesManager.sendMessage(player, Component.translatable("command.admin.freeze.player_freezed"), Prefix.OPENMC, MessageType.WARNING, true);
+			player.sendTitlePart(TitlePart.TITLE, TranslationManager.translation("command.admin.freeze.title.1"));
+			player.sendTitlePart(TitlePart.SUBTITLE, TranslationManager.translation("command.admin.freeze.title.2"));
+			MessagesManager.sendMessage(player, TranslationManager.translation("command.admin.freeze.player_freezed"), Prefix.OPENMC, MessageType.WARNING, true);
 		}
 	}
 

@@ -30,8 +30,8 @@ public class VoteMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Contests - Vote";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Contests - Vote");
     }
 
     @Override

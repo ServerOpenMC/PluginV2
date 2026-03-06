@@ -182,8 +182,8 @@ public class PerkChoiceMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Reformes";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Reformes");
     }
 
     @Override

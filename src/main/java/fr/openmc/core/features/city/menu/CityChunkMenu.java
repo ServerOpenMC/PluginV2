@@ -142,8 +142,8 @@ public class CityChunkMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - La carte";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - La carte");
     }
 
     @Override

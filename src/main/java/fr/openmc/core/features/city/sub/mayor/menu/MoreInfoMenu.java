@@ -24,8 +24,8 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Plus d'info";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Plus d'info");
     }
 
     @Override

@@ -1,7 +1,9 @@
 package fr.openmc.api.cooldown;
 
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -24,12 +26,12 @@ public class CooldownInterceptor implements CommandCondition<BukkitCommandActor>
 
             long remaining = DynamicCooldownManager.getRemaining(player.getUniqueId(), cooldown.group());
 
-            Component message = Component.translatable(
+            Component message = TranslationManager.translation(
                     cooldown.messageKey(),
                     Component.text(remaining / 1000),
                     Component.text(remaining),
                     Component.text(DateUtils.convertSecondToTime(remaining / 1000))
-            );
+            ).color(NamedTextColor.RED);
 
             player.sendMessage(message);
         }

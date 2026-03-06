@@ -23,8 +23,8 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Guerres - Plus d'info";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Guerres - Plus d'info");
     }
 
     @Override

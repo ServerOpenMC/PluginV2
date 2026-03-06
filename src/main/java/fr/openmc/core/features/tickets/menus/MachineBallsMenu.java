@@ -28,8 +28,8 @@ public class MachineBallsMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Machine à boules";
+    public @NotNull Component getName() {
+        return Component.text("Machine à boules");
     }
 
     @Override

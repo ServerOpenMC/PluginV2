@@ -1,6 +1,7 @@
 package fr.openmc.api.input;
 
 import fr.openmc.core.utils.dialog.ButtonType;
+import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
@@ -25,12 +26,12 @@ public class DialogInput {
         body.add(DialogBody.plainMessage(lore));
 
         Dialog inputDialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.translatable("api.dialoginput.type_string"))
+                .base(DialogBase.builder(TranslationManager.translation("api.dialoginput.type_string"))
                         .body(body)
                         .inputs(List.of(
                                         io.papermc.paper.registry.data.dialog.input.DialogInput
                                                 .text("inputtextomc",
-                                                        Component.translatable("api.dialoginput.type_string.here")
+                                                        TranslationManager.translation("api.dialoginput.type_string.here")
                                                 )
                                                 .maxLength(maxLength)
                                                 .build()
@@ -61,12 +62,12 @@ public class DialogInput {
         body.add(DialogBody.plainMessage(lore));
 
         Dialog inputDialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.translatable("api.dialoginput.type_float"))
+                .base(DialogBase.builder(TranslationManager.translation("api.dialoginput.type_float"))
                         .body(body)
                         .inputs(List.of(
                                         io.papermc.paper.registry.data.dialog.input.DialogInput
                                                 .numberRange("inputfloatomc",
-                                                        Component.translatable("api.dialoginput.type_float.here"),
+                                                        TranslationManager.translation("api.dialoginput.type_float.here"),
                                                         minSize,
                                                         maxSize
                                                 )

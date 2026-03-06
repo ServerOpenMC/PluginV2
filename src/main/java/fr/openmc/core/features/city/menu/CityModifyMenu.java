@@ -38,8 +38,8 @@ public class CityModifyMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Modifier";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Modifier");
     }
 
     @Override

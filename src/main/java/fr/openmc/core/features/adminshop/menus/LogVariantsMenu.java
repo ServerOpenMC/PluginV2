@@ -42,8 +42,8 @@ public class LogVariantsMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des variantes de feuilles";
+    public @NotNull Component getName() {
+        return Component.text("Menu des variantes de feuilles");
     }
 
     @Override

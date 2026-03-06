@@ -42,8 +42,8 @@ public class MayorElectionMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des élections";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des élections");
     }
 
     @Override

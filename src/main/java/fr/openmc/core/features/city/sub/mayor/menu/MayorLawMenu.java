@@ -50,8 +50,8 @@ public class MayorLawMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des lois";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des lois");
     }
 
     @Override

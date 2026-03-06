@@ -112,8 +112,8 @@ public class CityTransferMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Transférer";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Transférer");
     }
 
     @Override

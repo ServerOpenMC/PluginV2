@@ -32,8 +32,8 @@ public class AdminShopCategoryMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu d'une catégorie de l'adminshop";
+    public @NotNull Component getName() {
+        return Component.text("Menu d'une catégorie de l'adminshop");
     }
 
     @Override

@@ -101,8 +101,8 @@ public class WarChooseSizeMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Guerres - Séléction";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Guerres - Séléction");
     }
 
     @Override

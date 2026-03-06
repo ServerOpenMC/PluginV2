@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopCategory;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,8 +27,8 @@ public class AdminShopMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu Principal de l'AdminShop";
+    public @NotNull Component getName() {
+        return Component.text("Menu Principal de l'AdminShop");
     }
 
     @Override

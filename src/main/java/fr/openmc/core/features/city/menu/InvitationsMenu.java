@@ -27,8 +27,8 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Invitations";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Invitations");
     }
 
     @Override

@@ -26,8 +26,8 @@ public class MayorModifyMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Modification";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Modification");
     }
 
     @Override

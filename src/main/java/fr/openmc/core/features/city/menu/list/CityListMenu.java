@@ -137,8 +137,8 @@ public class CityListMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu de liste des villes";
+	public @NotNull Component getName() {
+		return Component.text("Menu de liste des villes");
 	}
 
 	@Override

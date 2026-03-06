@@ -34,8 +34,8 @@ public class CityPlayerGestionMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Modifier un joueur";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Modifier un joueur");
     }
 
     @Override

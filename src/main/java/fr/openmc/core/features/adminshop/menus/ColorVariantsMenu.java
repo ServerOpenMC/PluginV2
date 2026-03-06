@@ -72,8 +72,8 @@ public class ColorVariantsMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des variantes de couleur pour " + originalItem.getBaseType();
+    public @NotNull Component getName() {
+        return Component.text("Menu des variantes de couleur pour " + originalItem.getBaseType());
     }
 
     @Override

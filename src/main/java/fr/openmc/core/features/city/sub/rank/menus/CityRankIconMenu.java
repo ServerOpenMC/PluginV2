@@ -135,8 +135,8 @@ public class CityRankIconMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu de choix d'une icône - Page " + (page + 1);
+	public @NotNull Component getName() {
+		return Component.text("Menu de choix d'une icône - Page " + (page + 1));
 	}
 	
 	@Override

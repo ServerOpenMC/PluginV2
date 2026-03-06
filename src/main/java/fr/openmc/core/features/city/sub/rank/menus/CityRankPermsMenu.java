@@ -127,8 +127,8 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Permissions du grade " + this.newRank.getName();
+	public @NotNull Component getName() {
+		return Component.text("Permissions du grade " + this.newRank.getName());
 	}
 	
 	@Override

@@ -44,8 +44,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu de Confirmation de l'AdminShop";
+    public @NotNull Component getName() {
+        return Component.text("Menu de Confirmation de l'AdminShop");
     }
 
     @Override

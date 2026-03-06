@@ -31,8 +31,8 @@ public class GlaciteTradeMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Trades du Vagabond";
+    public @NotNull Component getName() {
+        return Component.text("Trades du Vagabond");
     }
 
     @Override

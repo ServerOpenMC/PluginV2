@@ -28,8 +28,8 @@ public class CityTypeMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des villes - Type";
+    public @NotNull Component getName() {
+        return Component.text("Menu des villes - Type");
     }
 
     @Override

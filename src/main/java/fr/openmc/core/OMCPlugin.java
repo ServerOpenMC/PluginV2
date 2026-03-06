@@ -45,9 +45,12 @@ import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.errors.ErrorReporter;
-import fr.openmc.core.utils.messages.TranslationLoader;
+import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -114,11 +117,6 @@ public class OMCPlugin extends JavaPlugin {
             }
         }
         new ErrorReporter();
-
-        TranslationLoader.init(
-                Locale.FRANCE,
-                Locale.ENGLISH
-        );
 
         /* MANAGERS */
         TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));

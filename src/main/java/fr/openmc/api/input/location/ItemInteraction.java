@@ -9,6 +9,7 @@ import fr.openmc.core.utils.MaterialUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,12 +54,14 @@ public class ItemInteraction implements Listener {
      */
     public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, Component startMessage, Component endMessage, Function<Location, Boolean> result, Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
-            MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.not_egnough_space"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.not_egnough_space"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
         if (Chronometer.containsChronometer(player.getUniqueId(), chronometerGroup)) {
-            MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.have_already_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.have_already_item"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -192,12 +195,14 @@ public class ItemInteraction implements Listener {
         if (clickedItem != null && MaterialUtils.isBundle(clickedItem)) {
             if (isItemInteraction(cursorItem)) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
             }
         } else if (MaterialUtils.isBundle(cursorItem)) {
             if (isItemInteraction(clickedItem)) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
             }
         }
     }
@@ -226,26 +231,30 @@ public class ItemInteraction implements Listener {
             if (invType != InventoryType.PLAYER &&
                     invType != InventoryType.CREATIVE &&
                     invType != InventoryType.CRAFTING) {
-                MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
                 event.setCancelled(true);
                 return;
             }
         }
 
         if (event.getSlotType() == InventoryType.SlotType.CRAFTING) {
-            MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
-            MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.isShiftClick()) {
-            MessagesManager.sendMessage(player, Component.translatable("api.iteminteraction.cant_move_item_by_shiftclick"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_move_item_by_shiftclick"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
         }
     }
@@ -259,7 +268,8 @@ public class ItemInteraction implements Listener {
 
         if (isItemInteraction(item)) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(event.getPlayer(), Component.translatable("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(event.getPlayer(),
+                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
         }
     }
 
@@ -278,7 +288,8 @@ public class ItemInteraction implements Listener {
             return;
 
         event.setCancelled(true);
-        MessagesManager.sendMessage(event.getPlayer(), Component.translatable("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+        MessagesManager.sendMessage(event.getPlayer(),
+                TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
     }
 
     /*

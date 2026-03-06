@@ -110,8 +110,8 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 
 	@Override
-	public @NotNull String getName() {
-		return "Menu du choix des membres - Grades";
+	public @NotNull Component getName() {
+		return Component.text("Menu du choix des membres - Grades");
 	}
 
 	@Override

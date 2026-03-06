@@ -155,8 +155,8 @@ public class MainWarMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Guerres";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Guerres");
     }
 
     @Override

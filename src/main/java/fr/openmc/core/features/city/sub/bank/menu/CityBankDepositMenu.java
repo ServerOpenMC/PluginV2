@@ -32,8 +32,8 @@ public class CityBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu de la banque de ville - Remplir";
+    public @NotNull Component getName() {
+	    return Component.text("Menu de la banque de ville - Remplir");
     }
 
     @Override

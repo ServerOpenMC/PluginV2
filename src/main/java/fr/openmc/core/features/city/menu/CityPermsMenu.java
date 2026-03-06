@@ -134,8 +134,8 @@ public class CityPermsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Permissions de " + CacheOfflinePlayer.getOfflinePlayer(memberUUID).getName();
+    public @NotNull Component getName() {
+        return Component.text("Permissions de " + CacheOfflinePlayer.getOfflinePlayer(memberUUID).getName());
     }
 
     @Override

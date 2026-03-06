@@ -3,6 +3,7 @@ package fr.openmc.api.input;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -36,7 +37,8 @@ public class ChatInput implements Listener {
             if (event.message() instanceof TextComponent textComponent) {
                 String string = textComponent.content();
                 if (string.contains("cancel")) {
-                    MessagesManager.sendMessage(player, Component.translatable("api.chatinput.cancel"), Prefix.OPENMC, MessageType.INFO, false);
+                    MessagesManager.sendMessage(player,
+                            TranslationManager.translation("api.chatinput.cancel"), Prefix.OPENMC, MessageType.INFO, false);
                     callback.accept(null);
                 }
                 callback.accept(string);
