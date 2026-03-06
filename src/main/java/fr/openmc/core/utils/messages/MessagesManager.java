@@ -131,9 +131,6 @@ public class MessagesManager {
 
     @Getter
     public enum Message {
-        // Command messages
-        MISSING_ARGUMENT(Component.text("§cVous devez spécifier un argument.")),
-
         // Player messages
         PLAYER_NOT_FOUND(Component.text("§cLe joueur n'a pas été trouvé.")),
 
