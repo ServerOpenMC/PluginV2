@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.sub.rank.menus.CityRankMemberMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -49,7 +50,7 @@ public class CityRankAction {
 		if (!CityRankCondition.canCreateRank(city, player)) return;
 		
 		if (city.isRankExists(rankName)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_ALREADY_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.already_exist"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
@@ -66,11 +67,11 @@ public class CityRankAction {
 	public static void renameRankFromMenu(Player player, DBCityRank oldRank, DBCityRank newRank) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		if (oldRank == null || newRank == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_exist"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		if (!CityRankCondition.canRenameRank(city, player, newRank.getName())) return;
@@ -104,7 +105,7 @@ public class CityRankAction {
 			
 			DBCityRank rank = city.getRankByName(oldName);
 			if (rank == null) {
-				MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+				MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_exist"), Prefix.CITY, MessageType.ERROR, false);
 				return;
 			}
 			
@@ -122,7 +123,7 @@ public class CityRankAction {
 	public static void deleteRank(Player player, String rankName) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
@@ -132,7 +133,7 @@ public class CityRankAction {
 		
 		DBCityRank rank = city.getRankByName(rankName);
 		if (rank == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_exist"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
@@ -165,7 +166,7 @@ public class CityRankAction {
 	public static void assignRank(Player player, String rankName, OfflinePlayer member) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
@@ -175,7 +176,7 @@ public class CityRankAction {
 		}
 		
 		if (!city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		DBCityRank rank = city.getRankByName(rankName);
@@ -183,10 +184,10 @@ public class CityRankAction {
 			new CityRankMemberMenu(player, city).open();
 			return;
 		} else if (member == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NOT_FOUND.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.player_not_found"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		} else if (rank == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_exist"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		if (!CityRankCondition.canModifyRankPermissions(city, player, rank.getPriority())) {

@@ -84,7 +84,7 @@ public class CityPlayerGestionMenu extends Menu {
             }
         } else {
             loreKick = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -126,7 +126,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         } else {
             lorePermission = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 

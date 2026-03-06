@@ -19,6 +19,7 @@ import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -335,12 +336,12 @@ public class CityChunkMenu extends Menu {
         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -371,12 +372,12 @@ public class CityChunkMenu extends Menu {
         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

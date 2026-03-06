@@ -14,6 +14,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -83,7 +84,7 @@ public class CityPermsMenu extends PaginatedMenu {
                 itemMeta.lore(edit ? lore : List.of());
             }).setOnClick(inventoryClickEvent -> {
                 if (!edit)
-                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, true);
                 else {
                     CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
                     new CityPermsMenu(player, memberUUID, true).open();

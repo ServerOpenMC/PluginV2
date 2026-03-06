@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -41,7 +42,7 @@ public class AdminMayorCommands {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             MessagesManager.sendMessage(sender, Component.text("/adminmayor changeelection cityUUID electionType<owner_choose/election>"), Prefix.STAFF, MessageType.INFO, false);
             return;
         }

@@ -76,7 +76,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositAll = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -101,7 +101,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositHalf = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -123,7 +123,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositInput = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 

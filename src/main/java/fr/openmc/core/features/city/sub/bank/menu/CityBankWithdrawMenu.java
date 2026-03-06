@@ -76,7 +76,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawAll = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -100,7 +100,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawHalf = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -122,7 +122,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawInput = List.of(
-                    TranslationManager.translation("messages.cannot_do_this")
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 

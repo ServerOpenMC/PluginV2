@@ -11,6 +11,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -67,7 +68,7 @@ public class CityRankAssignMenu extends Menu {
 				));
 			}).setOnClick(event -> {
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_ASSIGN.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.grade.cannot_assign"), Prefix.CITY, MessageType.ERROR, false);
 					return;
 				}
 

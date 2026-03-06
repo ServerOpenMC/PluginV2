@@ -29,7 +29,7 @@ public class QuestCommand {
             new QuestsMenu(sender).open();
         } else {
             if (sender.hasPermission("omc.quests.admin")) new QuestsMenu(target).open();
-            else MessagesManager.sendMessage(sender, TranslationManager.translation("messages.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
+            else MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
 
         }
     }

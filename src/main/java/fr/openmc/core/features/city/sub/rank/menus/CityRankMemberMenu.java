@@ -12,6 +12,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -67,12 +68,12 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				itemMeta.lore(lore);
 			}).setOnClick(event -> {
 				if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.player_is_owner"), Prefix.CITY, MessageType.ERROR, false);
 					return;
 				}
 
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
 					return;
 				}
