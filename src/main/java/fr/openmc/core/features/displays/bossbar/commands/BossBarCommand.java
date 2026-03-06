@@ -4,6 +4,7 @@ import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -27,7 +28,7 @@ public class BossBarCommand {
     @CommandPlaceholder()
     public void mainCommand(CommandSender sender) {
         if (!(sender instanceof Player player)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 

@@ -5,6 +5,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,7 @@ public class Money {
             if(!(sender instanceof Player player) || player.hasPermission("omc.admin.commands.money.others")) {
                 MessagesManager.sendMessage(sender, Component.text("§e" + target.getName() + "§a a §e" + EconomyManager.getFormattedBalance(target.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO, true);
             } else {
-                MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }

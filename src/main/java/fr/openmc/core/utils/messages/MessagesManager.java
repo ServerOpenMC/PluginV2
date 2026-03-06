@@ -132,8 +132,6 @@ public class MessagesManager {
     @Getter
     public enum Message {
         // Command messages
-        NO_PERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
-        NO_PERMISSION_2(Component.text("§cVous n'avez pas le droit de faire ceci.")),
         MISSING_ARGUMENT(Component.text("§cVous devez spécifier un argument.")),
 
         // Player messages

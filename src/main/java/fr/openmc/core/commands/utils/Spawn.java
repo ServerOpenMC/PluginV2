@@ -6,6 +6,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.MessagesManager.Message;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -34,7 +35,7 @@ public class Spawn {
                 MessagesManager.sendMessage(sender, Component.text("§aVous avez envoyé §e" + target.getName() + "§a au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
                 MessagesManager.sendMessage(target, Component.text("§aVous avez été envoyé au spawn par §e" + (sender instanceof Player player ? player.getName() : "Console") + "§a"), Prefix.OPENMC, MessageType.WARNING, true);
             } else {
-                MessagesManager.sendMessage(sender, Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }

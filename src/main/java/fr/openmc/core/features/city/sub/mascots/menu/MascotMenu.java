@@ -19,6 +19,7 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -100,7 +101,7 @@ public class MascotMenu extends Menu {
                 .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
                 .setOnClick(inventoryClickEvent -> {
                     if (!city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_SKIN)) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("message.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
                     }
@@ -135,7 +136,7 @@ public class MascotMenu extends Menu {
                             return;
                         }
                         if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.MASCOT_MOVE)) {
-                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(getOwner(), TranslationManager.translation("message.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                             return;
                         }
 
@@ -256,7 +257,7 @@ public class MascotMenu extends Menu {
                         MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
 
                     } else {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("message.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                     }
                     player.closeInventory();
                 }));

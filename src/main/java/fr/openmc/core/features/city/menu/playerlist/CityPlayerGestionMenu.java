@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -84,7 +85,7 @@ public class CityPlayerGestionMenu extends Menu {
             }
         } else {
             loreKick = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("message.cannot_do_this")
             );
         }
 
@@ -126,7 +127,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         } else {
             lorePermission = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("message.cannot_do_this")
             );
         }
 

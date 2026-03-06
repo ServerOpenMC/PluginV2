@@ -7,6 +7,7 @@ import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -35,7 +36,7 @@ public class Restart {
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
         if (sender instanceof Player) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("message.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -46,9 +47,12 @@ public class Restart {
         for (City city : CityManager.getCities()) {
             UUID watcherUUID = city.getChestWatcher();
             if (watcherUUID == null) continue;
+            Player player = Bukkit.getPlayer(watcherUUID);
+            if (player == null || !player.isOnline()) continue;
+
 	        
-	        MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un redémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
-            Bukkit.getPlayer(watcherUUID).closeInventory();
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("command.utils.restart.cannot_open_city_chest"), Prefix.OPENMC, MessageType.INFO, false);
+            player.closeInventory();
         }
 
         OMCPlugin plugin = OMCPlugin.getInstance();

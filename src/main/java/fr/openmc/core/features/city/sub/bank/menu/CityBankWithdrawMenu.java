@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -76,7 +77,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawAll = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("message.cannot_do_this")
             );
         }
 
@@ -100,7 +101,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawHalf = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("message.cannot_do_this")
             );
         }
 
@@ -122,7 +123,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawInput = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("message.cannot_do_this")
             );
         }
 
