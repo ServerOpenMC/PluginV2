@@ -13,7 +13,7 @@ import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;

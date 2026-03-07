@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLootTable;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -63,7 +63,7 @@ public class PlayerFishListener implements Listener {
                 if (CloudFishingManager.getHookedPlayers().containsKey(player.getUniqueId())) {
                     CloudFishingManager.getHookedPlayers().get(player.getUniqueId()).endBite();
 
-                    DreamLootTable lootTable = CloudFishingManager.FISHING_LOOT_TABLE;
+                    CustomLootTable lootTable = CloudFishingManager.FISHING_LOOT_TABLE;
                     if (lootTable == null) return;
 
                     List<ItemStack> rewards = lootTable.rollLoots();

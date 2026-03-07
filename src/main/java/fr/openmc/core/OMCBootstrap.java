@@ -1,7 +1,7 @@
 package fr.openmc.core;
 
-import fr.openmc.core.features.dream.registries.DreamEnchantementRegistry;
 import fr.openmc.core.utils.messages.TranslationManager;
+import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -21,6 +21,7 @@ public class OMCBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
+        // ** LOAD DATAPACK **
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
                 event -> {
                     try {
@@ -33,8 +34,10 @@ public class OMCBootstrap implements PluginBootstrap {
                 }
         ));
 
+        // ** ENCHANTMENT IMPL **
+        CustomEnchantmentRegistry.init();
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
-                .newHandler(DreamEnchantementRegistry::loadEnchantmentInBootstrap)
+                .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)
         );
 
         // ** LOAD TRANSLATION **

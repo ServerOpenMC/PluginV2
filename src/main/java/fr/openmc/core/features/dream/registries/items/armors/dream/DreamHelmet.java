@@ -1,12 +1,19 @@
 package fr.openmc.core.features.dream.registries.items.armors.dream;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.registry.items.options.EquipableItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-public class DreamHelmet extends DreamEquipableItem {
+import java.util.HashMap;
+import java.util.Set;
+
+public class DreamHelmet extends DreamItem implements DreamEquipableItem, EquipableItem {
     public DreamHelmet(String name) {
         super(name);
     }
@@ -42,5 +49,12 @@ public class DreamHelmet extends DreamEquipableItem {
 
         item.getItemMeta().itemName(Component.text("Casque Onirique"));
         return item;
+    }
+
+    @Override
+    public HashMap<PotionEffectType, Integer> getEffects() {
+        return new HashMap<>(){{
+            put(PotionEffectType.NIGHT_VISION, 1);
+        }};
     }
 }
