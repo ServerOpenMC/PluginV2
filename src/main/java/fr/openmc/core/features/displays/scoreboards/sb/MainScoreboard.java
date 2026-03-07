@@ -66,6 +66,7 @@ public class MainScoreboard extends BaseScoreboard {
                 ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
                 : Component.text(textToSmall("aucun")).color(TextColor.color(0xFF1FCC));
 
+
         City city = CityManager.getPlayerCity(player.getUniqueId());
         City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
         boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());

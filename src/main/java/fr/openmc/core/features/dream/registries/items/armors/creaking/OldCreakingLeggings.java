@@ -1,12 +1,13 @@
 package fr.openmc.core.features.dream.registries.items.armors.creaking;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class OldCreakingLeggings extends DreamEquipableItem {
+public class OldCreakingLeggings extends DreamItem implements DreamEquipableItem {
     public OldCreakingLeggings(String name) {
         super(name);
     }
