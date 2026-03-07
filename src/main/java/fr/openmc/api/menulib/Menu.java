@@ -178,6 +178,7 @@ public abstract class Menu implements InventoryHolder {
 		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
 			inventory.setItem(slot, new ItemBuilder(this, item, itemMeta -> {
 				itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
+				itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
 				itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : Component.text("Menu Précédent")));
 			}, true));
 			return;

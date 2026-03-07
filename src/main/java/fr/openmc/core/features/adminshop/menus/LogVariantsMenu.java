@@ -73,7 +73,9 @@ public class LogVariantsMenu extends Menu {
         int maxVariants = Math.min(LOGS_VARIANTS.size(), organizedSlots.length);
 
         content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
-                meta.displayName(TranslationManager.translation("feature.adminshop.menu.log_variants.log"))));
+                meta.displayName(TranslationManager.translation("feature.adminshop.menu.log_variants.log")
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false))));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = LOGS_VARIANTS.get(i);

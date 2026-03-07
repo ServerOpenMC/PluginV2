@@ -145,12 +145,14 @@ public class ConfirmMenu extends Menu {
      * @return The created item stack.
      */
     private ItemBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
+        boolean plus = text.contains("+");
         return new ItemBuilder(this, itemStack, meta ->
             meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
-                    text.contains("+") ?
+                    plus ?
                             TranslationManager.translation("feature.adminshop.menu.confirm.add") :
                     TranslationManager.translation("feature.adminshop.menu.confirm.remove"),
-                    Component.text(text.replace("+", "").replace("-", "")))))
+                    Component.text(text.replace("+", "").replace("-", "")))
+                    .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)))
             .setItemId("quantity_" + text.replace("+", "plus").replace("-", "minus"))
             .setOnClick(action);
     }

@@ -71,7 +71,7 @@ public class ColorVariantsMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.adminshop.menu.color_variants.name", Component.text(originalItem.getBaseType()));
+        return TranslationManager.translation("feature.adminshop.menu.color_variants.name", ItemUtils.getItemTranslation(originalItem.getMaterial()));
     }
 
     @Override
@@ -111,7 +111,9 @@ public class ColorVariantsMenu extends Menu {
         int maxVariants = Math.min(variants.size(), organizedSlots.length);
 
         content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
-                meta.displayName(ItemUtils.getItemTranslation(originalItem.getMaterial()))
+                meta.displayName(ItemUtils.getItemTranslation(originalItem.getMaterial())
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false))
         ));
 
         for (int i = 0; i < maxVariants; i++) {

@@ -73,11 +73,10 @@ public class LeavesVariantsMenu extends Menu {
 
         int maxVariants = Math.min(LEAVES_VARIANTS.size(), organizedSlots.length);
 
-        ItemStack baseItemStack = new ItemStack(originalItem.getMaterial());
-        ItemMeta baseMeta = baseItemStack.getItemMeta();
-        baseMeta.displayName(TranslationManager.translation("feature.adminshop.menu.leaves_variants.leaves"));
-        baseItemStack.setItemMeta(baseMeta);
-        content.put(4, new ItemBuilder(this, baseItemStack));
+        content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
+                meta.displayName(TranslationManager.translation("feature.adminshop.menu.leaves_variants.leaves")
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false))));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = LEAVES_VARIANTS.get(i);
