@@ -9,7 +9,9 @@ import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -27,23 +29,21 @@ import java.util.Map;
 public class LogVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
-    private final Menu previousMenu;
     private static final List<Material> LOGS_VARIANTS = List.of(
         Material.OAK_LOG, Material.SPRUCE_LOG, Material.BIRCH_LOG, Material.JUNGLE_LOG,
         Material.ACACIA_LOG, Material.DARK_OAK_LOG, Material.MANGROVE_LOG, Material.CHERRY_LOG,
         Material.PALE_OAK_LOG
     );
 
-    public LogVariantsMenu(Player owner, String categoryId, ShopItem originalItem, Menu previousMenu) {
+    public LogVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
         super(owner);
         this.categoryId = categoryId;
         this.originalItem = originalItem;
-        this.previousMenu = previousMenu;
     }
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des variantes de feuilles");
+        return TranslationManager.translation("feature.adminshop.menu.log_variants.name");
     }
 
     @Override
@@ -72,31 +72,23 @@ public class LogVariantsMenu extends Menu {
 
         int maxVariants = Math.min(LOGS_VARIANTS.size(), organizedSlots.length);
 
-        ItemStack baseItemStack = new ItemStack(originalItem.getMaterial());
-        ItemMeta baseMeta = baseItemStack.getItemMeta();
-        baseMeta.displayName(Component.text("Bûches", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-        baseItemStack.setItemMeta(baseMeta);
-        content.put(4, new ItemBuilder(this, baseItemStack));
+        content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
+                meta.displayName(TranslationManager.translation("feature.adminshop.menu.log_variants.log"))));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = LOGS_VARIANTS.get(i);
             int slot = organizedSlots[i];
 
-            ItemStack itemStack = new ItemStack(variant);
-            ItemMeta meta = itemStack.getItemMeta();
+            TranslatableComponent variantName = ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
 
-            meta.displayName(ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-
-            meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
-
-            itemStack.setItemMeta(meta);
-
-            ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
-            itemBuilder.setItemId(variant.name())
+            content.put(slot,  new ItemBuilder(this, variant, meta -> {
+                meta.displayName(variantName);
+                meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
+            }).setItemId(variant.name())
                     .setOnClick(event -> {
                         ShopItem colorVariant = new ShopItem(
                                 variant.name(),
-                                ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                variantName,
                                 variant,
                                 originalItem.getSlot(),
                                 originalItem.getInitialSellPrice(),
@@ -106,23 +98,19 @@ public class LogVariantsMenu extends Menu {
                         );
 
 
-                       if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
-                       } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
-                       }
-                    });
-
-            content.put(slot, itemBuilder);
+                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        }
+                    }));
         }
 
-        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
-            meta.displayName(Component.text("Retour à la catégorie", NamedTextColor.GREEN));
-        }, true);
-
-        content.put(49, backButton);
+        content.put(49, new ItemBuilder(this,
+                CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(),
+                true));
 
         return content;
     }
