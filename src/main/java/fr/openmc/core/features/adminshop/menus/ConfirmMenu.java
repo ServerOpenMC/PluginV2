@@ -152,7 +152,8 @@ public class ConfirmMenu extends Menu {
                             TranslationManager.translation("feature.adminshop.menu.confirm.add") :
                     TranslationManager.translation("feature.adminshop.menu.confirm.remove"),
                     Component.text(text.replace("+", "").replace("-", "")))
-                    .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)))
+                    .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false)))
             .setItemId("quantity_" + text.replace("+", "plus").replace("-", "minus"))
             .setOnClick(action);
     }
