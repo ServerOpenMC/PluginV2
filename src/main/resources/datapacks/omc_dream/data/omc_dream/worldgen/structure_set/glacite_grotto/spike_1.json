@@ -1,0 +1,18 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:glacite_grotto/spike"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 0,
+        "spacing": 1,
+        "salt": 1111,
+        "exclusion_zone": {
+            "chunk_count": 4,
+            "other_set": "omc_dream:glacite_grotto/base_camp"
+        }
+    }
+}

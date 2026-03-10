@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:glacite_grotto/base_camp"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 22,
+        "spacing": 30,
+        "salt": 23232454
+    }
+}

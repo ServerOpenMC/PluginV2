@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream;
 
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.dimension.DreamDimensionManager;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -35,7 +35,7 @@ public class DreamUtils {
         if (dreamPlayer == null) return;
         dreamPlayer.addTime(timeToAdd);
         if (sendMessage)
-            MessagesManager.sendMessage(player, Component.text("Vous avez perdu §a" + DateUtils.convertSecondToTime(timeToAdd) + " §fcar vous avez pris des dégats !"), Prefix.DREAM, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, Component.text("Vous avez gagné §a" + DateUtils.convertSecondToTime(timeToAdd)), Prefix.DREAM, MessageType.INFO, false);
 
     }
 

@@ -2,9 +2,9 @@ package fr.openmc.core.features.dream.mecanism.cold;
 
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
-import org.bukkit.Location;
+import fr.openmc.core.features.dream.models.registry.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiomesRegistry;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,9 +17,8 @@ public class ColdListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onGlaciteGrottoEntered(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        Location loc = player.getLocation();
 
-        if (loc.getBlock().getBiome().equals(DreamBiome.GLACITE_GROTTO.getBiome())) {
+        if (DreamBiomesRegistry.isInDreamBiome(player, DreamBiome.GLACITE_GROTTO)) {
             DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
             if (dreamPlayer == null) return;
 

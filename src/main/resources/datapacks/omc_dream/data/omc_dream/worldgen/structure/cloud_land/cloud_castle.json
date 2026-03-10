@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "omc_dream:cloud_land",
+  "step": "raw_generation",
+  "spawn_overrides": {},
+  "start_pool": "omc_dream:cloud_land/cloud_castle/part_1",
+  "size": 8,
+  "start_height": {
+    "type": "minecraft:uniform",
+    "max_inclusive": {
+        "absolute": 140
+    },
+    "min_inclusive": {
+        "absolute": 130
+    }
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}

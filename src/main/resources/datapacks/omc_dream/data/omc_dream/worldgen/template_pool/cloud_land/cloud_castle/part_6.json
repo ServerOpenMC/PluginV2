@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:cloud_land/cloud_castle/part_6",
+        "processors": []
+      }
+    }
+  ]
+}

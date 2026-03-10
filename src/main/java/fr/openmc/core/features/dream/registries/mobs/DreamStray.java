@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.dimension.DreamDimensionManager;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import org.bukkit.Bukkit;

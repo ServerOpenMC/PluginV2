@@ -5,17 +5,18 @@ import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
+import fr.openmc.core.features.dream.models.registry.DreamBiome;
+import fr.openmc.core.features.dream.models.registry.DreamStructure;
+import fr.openmc.core.features.dream.registries.DreamBiomesRegistry;
+import fr.openmc.core.features.dream.registries.DreamStructuresRegistry;
 import fr.openmc.core.utils.DateUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class DreamScoreboard extends BaseScoreboard {
 
     @Override
     public void update(Player player, SternalBoard board) {
-        DreamBiome dreamBiome = DreamDimensionManager.getDreamBiome(player);
+        DreamBiome dreamBiome = DreamBiomesRegistry.getDreamBiome(player);
         DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
 
         List<Component> lines = new ArrayList<>();
@@ -78,9 +79,9 @@ public class DreamScoreboard extends BaseScoreboard {
             );
         }
 
-        DreamStructure dreamStructure = DreamStructuresManager.getStructureAt(player.getLocation());
+        DreamStructure dreamStructure = DreamStructuresRegistry.getDreamStructure(player);
         if (dreamStructure != null) {
-            String nameLocation = dreamStructure.type().getName();
+            String nameLocation = PlainTextComponentSerializer.plainText().serialize(dreamStructure.getName());
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
                     .append(text(textToSmall("location:"), NamedTextColor.GRAY))
                     .appendSpace()
