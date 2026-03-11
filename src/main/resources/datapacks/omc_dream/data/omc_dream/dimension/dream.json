@@ -1,0 +1,93 @@
+{
+  "type": "minecraft:overworld",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "omc_dream:main_settings",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "omc_dream:cloud_land",
+          "parameters": {
+            "temperature": [-1, 1],
+            "humidity": 0,
+            "continentalness": [-1, 1],
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              -1.5,
+              0.0625
+            ],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "omc_dream:mud_beach",
+          "parameters": {
+            "temperature": [-1, 1],
+            "humidity": 0,
+            "continentalness": [-1, 0.1],
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              0.0626,
+              0.73
+            ],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "omc_dream:glacite_grotto",
+          "parameters": {
+            "temperature": [-1, 1],
+            "humidity": 0,
+            "continentalness": [-1, 1],
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              0.73,
+              1.5
+            ],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "omc_dream:sculk_plains",
+          "parameters": {
+            "temperature": [
+              0,
+              1
+            ],
+            "humidity": 0,
+            "continentalness": [0.1, 1],
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              0.0625,
+              0.57
+            ],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "omc_dream:soul_forest",
+          "parameters": {
+            "temperature": [
+              -1,
+              0
+            ],
+            "humidity": 0,
+            "continentalness": [0.1, 1],
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              0.0625,
+              0.57
+            ],
+            "offset": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package fr.openmc.core;
 
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.utils.bootstrap.DatapackRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -9,27 +10,14 @@ import io.papermc.paper.registry.event.RegistryEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Objects;
-
 @SuppressWarnings("UnstableApiUsage")
 public class OMCBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
-        // ** LOAD DATAPACK **
+        // ** LOAD DATAPACKS **
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
-                event -> {
-                    try {
-                        URI uri = Objects.requireNonNull(getClass().getResource("/datapack")).toURI();
-
-                        event.registrar().discoverPack(uri, "omc");
-                    } catch (URISyntaxException | IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                event -> DatapackRegistry.load(event, DatapackRegistry.extractDatapacks(context.getPluginSource()))
         ));
 
         // ** ENCHANTMENT IMPL **

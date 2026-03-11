@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:soul_forest/cube_temple"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 17,
+        "spacing": 20,
+        "salt": 783734
+    }
+}

@@ -3,7 +3,7 @@ package fr.openmc.core.features.cube.multiblocks;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.dimension.DreamDimensionManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

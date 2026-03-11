@@ -3,7 +3,8 @@ package fr.openmc.core.features.dream.mecanism.metaldetector;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.models.registry.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiomesRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -36,11 +37,10 @@ public class MetalDetectorListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        Location loc = player.getLocation();
 
-        if (loc.getBlock().getBiome().equals(DreamBiome.MUD_BEACH.getBiome())) {
+        if (DreamBiomesRegistry.isInDreamBiome(player, DreamBiome.MUD_BEACH)) {
             if (!hiddenChests.containsKey(player.getUniqueId())) {
-                Location chestLoc = findRandomChestLocation(loc);
+                Location chestLoc = findRandomChestLocation(player.getLocation());
                 MetalDetectorTask task = new MetalDetectorTask(player, chestLoc);
                 task.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L);
                 hiddenChests.put(player.getUniqueId(), task);
@@ -121,7 +121,7 @@ public class MetalDetectorListener implements Listener {
             int y = world.getHighestBlockYAt(tryLoc);
             tryLoc.setY(y);
 
-            if (world.getBiome(tryLoc).equals(DreamBiome.MUD_BEACH.getBiome())) {
+            if (DreamBiomesRegistry.isDreamBiome(tryLoc, DreamBiome.MUD_BEACH)) {
                 return tryLoc;
             }
         }

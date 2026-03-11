@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:soul_forest/cube_temple/part_5",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

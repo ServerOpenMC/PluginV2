@@ -22,7 +22,7 @@ public class PhantomCloudSpawner implements Listener {
 
             normal.setSpawnedEntity(new DreamPhantom().createSnapshot(block.getLocation()));
 
-            NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/mob_spawner");
+            NamespacedKey lootKey = new NamespacedKey("omc_dream", "cloud_castle/mob_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);
 
             if (lootTable != null) {

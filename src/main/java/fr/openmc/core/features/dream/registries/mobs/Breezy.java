@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.dimension.DreamDimensionManager;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.utils.ParticleUtils;
 import org.bukkit.*;
