@@ -28,8 +28,8 @@ public class HalloweenPumpkinDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Déposer vos citrouilles";
+    public @NotNull Component getName() {
+        return Component.text("Déposer vos citrouilles");
     }
 
     @Override

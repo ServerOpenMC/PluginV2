@@ -59,8 +59,8 @@ public class QuestsMenu extends Menu {
         this.target = target;
     }
 
-    public @NotNull String getName() {
-        return "Menu des quêtes";
+    public @NotNull Component getName() {
+        return Component.text("Menu des quêtes");
     }
 
     @Override

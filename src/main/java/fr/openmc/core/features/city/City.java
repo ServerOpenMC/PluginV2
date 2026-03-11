@@ -24,6 +24,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -787,7 +788,7 @@ public class City {
         }
         
         if (hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.player_is_owner"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         

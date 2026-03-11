@@ -151,8 +151,8 @@ public class CityTopMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des classement des villes";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des classement des villes");
     }
 
     @Override

@@ -9,9 +9,11 @@ import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -38,7 +40,7 @@ public class AdminCityCommands {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -137,7 +139,7 @@ public class AdminCityCommands {
 
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.rename(newName);
@@ -154,7 +156,7 @@ public class AdminCityCommands {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -170,7 +172,7 @@ public class AdminCityCommands {
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -186,7 +188,7 @@ public class AdminCityCommands {
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -202,7 +204,7 @@ public class AdminCityCommands {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -275,7 +277,7 @@ public class AdminCityCommands {
             @Named("claim") int claim) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.updateFreeClaims(claim);
@@ -290,7 +292,7 @@ public class AdminCityCommands {
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -305,7 +307,7 @@ public class AdminCityCommands {
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

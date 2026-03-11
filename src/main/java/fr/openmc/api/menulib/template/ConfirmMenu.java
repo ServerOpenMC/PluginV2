@@ -8,6 +8,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -72,8 +73,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu de Confirmation";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("api.menulib.menu.confirm.title");
     }
 
     @Override

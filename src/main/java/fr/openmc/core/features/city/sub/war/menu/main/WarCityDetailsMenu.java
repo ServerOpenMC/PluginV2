@@ -37,8 +37,8 @@ public class WarCityDetailsMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu de Guerre - Details de " + city.getName();
+    public @NotNull Component getName() {
+        return Component.text("Menu de Guerre - Details de " + city.getName());
     }
 
     @Override

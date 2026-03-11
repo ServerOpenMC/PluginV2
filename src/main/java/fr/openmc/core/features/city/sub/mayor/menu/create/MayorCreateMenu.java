@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -41,8 +42,8 @@ public class MayorCreateMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Creation";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Creation");
     }
 
     @Override

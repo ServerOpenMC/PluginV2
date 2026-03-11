@@ -15,6 +15,7 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -96,7 +97,7 @@ public class MascotsDamageListener implements Listener {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }

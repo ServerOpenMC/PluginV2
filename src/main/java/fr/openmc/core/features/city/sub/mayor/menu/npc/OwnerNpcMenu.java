@@ -43,8 +43,8 @@ public class OwnerNpcMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Mandat du propriétaire";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Mandat du propriétaire");
     }
 
     @Override
@@ -167,8 +167,8 @@ public class OwnerNpcMenu extends Menu {
                         itemToGive,
                         "mayor:owner-npc-move",
                         300,
-		                "§7Vous avez 300s pour sélectionner votre emplacement",
-                        "§7Vous n'avez pas eu le temps de déplacer votre NPC",
+                        Component.text("§7Vous avez 300s pour sélectionner votre emplacement"),
+                        Component.text("§7Vous n'avez pas eu le temps de déplacer votre NPC"),
                         locationClick -> {
                             if (locationClick == null) return true;
 

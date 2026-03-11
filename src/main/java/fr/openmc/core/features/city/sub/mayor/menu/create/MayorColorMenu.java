@@ -44,8 +44,8 @@ public class MayorColorMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Couleur";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Couleur");
     }
 
     @Override

@@ -10,6 +10,7 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -45,13 +46,12 @@ public class AdminShopManager {
      * @param player       The player who initiated the action.
      * @param categoryId   The ID of the category.
      * @param itemId       The ID of the item.
-     * @param previousMenu The previous menu to return to.
      */
-    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
+    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmMenu(player, item, true, previousMenu).open();
+        new ConfirmMenu(player, item, true).open();
     }
 
     /**
@@ -60,18 +60,17 @@ public class AdminShopManager {
      * @param player       The player who initiated the action.
      * @param categoryId   The ID of the category.
      * @param itemId       The ID of the item.
-     * @param previousMenu The previous menu to return to.
      */
-    public static void openSellConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
+    public static void openSellConfirmMenu(Player player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
         if (!ItemUtils.hasEnoughItems(player, item.getMaterial(), 1)) {
-            sendError(player, "Vous n'avez pas cet item dans votre inventaire !");
+            sendError(player, TranslationManager.translation("feature.adminshop.have_enough_item"));
             return;
         }
 
-        new ConfirmMenu(player, item, false, previousMenu).open();
+        new ConfirmMenu(player, item, false).open();
     }
 
     /**
@@ -86,12 +85,12 @@ public class AdminShopManager {
         if (item == null) return;
 
         if (!ItemUtils.hasEnoughSpace(player, item.getMaterial(), amount)) {
-            sendError(player, "Votre inventaire est plein !");
+            sendError(player, TranslationManager.translation("feature.adminshop.inventory_full"));
             return;
         }
 
         if (item.getInitialBuyPrice() <= 0) {
-            sendError(player, "Cet item n'est pas à vendre !");
+            sendError(player, TranslationManager.translation("feature.adminshop.item_not_sellable"));
             return;
         }
 
@@ -101,10 +100,12 @@ public class AdminShopManager {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
             });
-            sendInfo(player, Component.text("Vous avez acheté " + amount + " ").append(item.getName()).append(Component.text(" pour " + AdminShopUtils.formatPrice(totalPrice))));
+            sendInfo(player, TranslationManager.translation("feature.adminshop.player_buy_item",
+                    Component.text(amount), item.getName(), Component.text(AdminShopUtils.formatPrice(totalPrice))
+            ));
             adjustPrice(getPlayerCategory(player), itemId, amount, true);
         } else {
-            sendError(player, "Vous n'avez pas assez d'argent !");
+            sendError(player, TranslationManager.translation("feature.adminshop.have_enough_money"));
         }
     }
 
@@ -121,13 +122,13 @@ public class AdminShopManager {
 
         // Check if the initial sell price is valid
         if (item.getInitialSellPrice() <= 0) {
-            sendError(player, "Cet item n'est pas à l'achat !");
+            sendError(player, TranslationManager.translation("feature.adminshop.item_not_buyable"));
             return;
         }
 
         // Check if the player has enough items to sell
         if (!ItemUtils.hasEnoughItems(player, item.getMaterial(), amount)) {
-            sendError(player, "Vous n'avez pas assez de " + item.getName() + " à vendre !");
+            sendError(player, TranslationManager.translation("feature.adminshop.player_not_enough_item"));
             return;
         }
 
@@ -137,7 +138,8 @@ public class AdminShopManager {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
         });
-        sendInfo(player, Component.text("Vous avez vendu " + amount + " ").append(item.getName()).append(Component.text(" pour " + AdminShopUtils.formatPrice(totalPrice))));
+        sendInfo(player, TranslationManager.translation("feature.adminshop.player_sell_item",
+                Component.text(amount), item.getName(), Component.text(AdminShopUtils.formatPrice(totalPrice))));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction
     }
 
@@ -175,7 +177,7 @@ public class AdminShopManager {
      */
     private static ShopItem getItemSafe(Player player, String categoryId, String itemId) {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
-        if (item == null) sendError(player, "Item introuvable !");
+        if (item == null) sendError(player, TranslationManager.translation("feature.adminshop.item_not_found"));
         return item;
     }
 
@@ -189,7 +191,7 @@ public class AdminShopManager {
     private static ShopItem getCurrentItem(Player player, String itemId) {
         String categoryId = getPlayerCategory(player);
         if (categoryId == null) {
-            sendError(player, "Veuillez d'abord ouvrir une catégorie de boutique !");
+            sendError(player, TranslationManager.translation("feature.adminshop.isnt_in_category"));
             return null;
         }
         return getItemSafe(player, categoryId, itemId);
@@ -211,8 +213,8 @@ public class AdminShopManager {
      * @param player  The player.
      * @param message The error message.
      */
-    private static void sendError(Player player, String message) {
-        MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.ERROR, true);
+    private static void sendError(Player player, Component message) {
+        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.ERROR, true);
     }
 
     /**
@@ -240,10 +242,9 @@ public class AdminShopManager {
      * @param player       The player.
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
-     * @param previousMenu The previous menu to return to.
      */
-    public static void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
-        new ColorVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    public static void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+        new ColorVariantsMenu(player, categoryId, originalItem).open();
     }
 
     /**
@@ -252,10 +253,9 @@ public class AdminShopManager {
      * @param player       The player.
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
-     * @param previousMenu The previous menu to return to.
      */
-    public static void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
-        new LeavesVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    public static void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+        new LeavesVariantsMenu(player, categoryId, originalItem).open();
     }
 
     /**
@@ -264,10 +264,9 @@ public class AdminShopManager {
      * @param player       The player.
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
-     * @param previousMenu The previous menu to return to.
      */
-    public static void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
-        new LogVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    public static void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+        new LogVariantsMenu(player, categoryId, originalItem).open();
     }
 
     /**

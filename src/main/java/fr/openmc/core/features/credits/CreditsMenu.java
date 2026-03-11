@@ -85,8 +85,8 @@ public class CreditsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Crédits du serveur";
+    public @NotNull Component getName() {
+        return Component.text("Crédits du serveur");
     }
 
     @Override

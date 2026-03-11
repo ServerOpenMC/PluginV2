@@ -28,8 +28,8 @@ public class PersonalBankWithdrawMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Banques - Retirer";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Banques - Retirer");
     }
 
     @Override

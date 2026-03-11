@@ -7,6 +7,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -22,7 +23,7 @@ public class Cooldowns {
         if (DynamicCooldownManager.getCooldowns(sender.getUniqueId()) == null) {
             MessagesManager.sendMessage(
                     sender,
-                    Component.text("§cAucun cooldown actif"),
+                    TranslationManager.translation("command.utils.cooldowns.no_cooldown"),
                     Prefix.OPENMC,
                     MessageType.INFO,
                     true
@@ -32,29 +33,27 @@ public class Cooldowns {
 
         MessagesManager.sendMessage(
                 sender,
-                Component.text("Liste des cooldowns actifs :"),
+                TranslationManager.translation("command.utils.cooldowns.list_cooldowns"),
                 Prefix.OPENMC,
                 MessageType.INFO,
                 true
         );
 
         DynamicCooldownManager.getCooldowns(sender.getUniqueId()).forEach(
-                (group, cooldown) -> {
-                    sender.sendMessage(
-                            Component.text("§a- " + group + " : " + DateUtils.convertMillisToTime(cooldown.getRemaining()))
-                    );
-                }
+                (group, cooldown) -> sender.sendMessage(TranslationManager.translation("command.utils.cooldowns.list",
+                        Component.text(group),
+                        Component.text(DateUtils.convertMillisToTime(cooldown.getRemaining()))
+                ))
         );
 
         City playerCity = CityManager.getCity(sender.getUniqueId());
 
         if (playerCity != null) {
             DynamicCooldownManager.getCooldowns(playerCity.getUniqueId()).forEach(
-                    (group, cooldown) -> {
-                        sender.sendMessage(
-                                Component.text("§a- " + group + " : " + DateUtils.convertMillisToTime(cooldown.getRemaining()))
-                        );
-                    }
+                    (group, cooldown) -> sender.sendMessage(TranslationManager.translation("command.utils.cooldowns.list",
+                            Component.text(group),
+                            Component.text(DateUtils.convertMillisToTime(cooldown.getRemaining()))
+                    ))
             );
         }
     }

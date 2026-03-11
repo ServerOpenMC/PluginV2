@@ -215,8 +215,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Membres";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Membres");
     }
 
     @Override

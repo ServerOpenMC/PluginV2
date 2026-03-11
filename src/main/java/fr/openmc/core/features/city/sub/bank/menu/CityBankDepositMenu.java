@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -32,8 +32,8 @@ public class CityBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu de la banque de ville - Remplir";
+    public @NotNull Component getName() {
+	    return Component.text("Menu de la banque de ville - Remplir");
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositAll = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -101,7 +101,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositHalf = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -123,7 +123,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositInput = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 

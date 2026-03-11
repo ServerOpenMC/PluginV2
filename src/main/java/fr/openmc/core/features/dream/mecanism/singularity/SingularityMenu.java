@@ -7,6 +7,7 @@ import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -76,8 +77,8 @@ public class SingularityMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Votre Singularité";
+    public @NotNull Component getName() {
+        return Component.text("Votre Singularité");
     }
 
     @Override
@@ -85,7 +86,6 @@ public class SingularityMenu extends PaginatedMenu {
         return null;
     }
 
-    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 

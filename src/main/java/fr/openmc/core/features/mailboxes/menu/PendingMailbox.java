@@ -36,8 +36,8 @@ public class PendingMailbox extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Courriers en attente d'annulation";
+    public @NotNull Component getName() {
+        return Component.text("Courriers en attente d'annulation");
     }
 
     @Override

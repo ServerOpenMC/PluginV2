@@ -14,6 +14,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -73,7 +74,7 @@ public class CityRankPermsMenu extends PaginatedMenu {
 				itemMeta.lore(lore);
 			}).setOnClick(inventoryClickEvent -> {
 				if (!canEdit)
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_MODIFY_HIGHER.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.grade.cannot_modify_sup_role"), Prefix.CITY, MessageType.ERROR, true);
 				else {
 					CityRankCommands.swapPermission(getOwner(), newRank, permission);
 					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
@@ -127,8 +128,8 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Permissions du grade " + this.newRank.getName();
+	public @NotNull Component getName() {
+		return Component.text("Permissions du grade " + this.newRank.getName());
 	}
 	
 	@Override
