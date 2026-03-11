@@ -76,6 +76,7 @@ public class EconomyManagerTest {
     public void testAddBalanceWithReasonRegistersTransaction() {
         EconomyManager.addBalance(player1.getUniqueId(), 100.0, "Test Reason");
         server.getScheduler().performTicks(20L);
+        server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
         boolean found = transactions.stream().anyMatch(t -> 
@@ -92,10 +93,11 @@ public class EconomyManagerTest {
         EconomyManager.setBalance(player1.getUniqueId(), 200.0);
         EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0, "Withdrawal Reason");
         server.getScheduler().performTicks(20L);
+        server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
 
-        boolean found = transactions.stream().anyMatch(t -> 
+        boolean found = transactions.stream().anyMatch(t ->
             t.sender.equals(player1.getUniqueId().toString()) &&
             t.amount == 50.0 &&
             t.reason.equals("Withdrawal Reason")
@@ -109,9 +111,10 @@ public class EconomyManagerTest {
         EconomyManager.setBalance(player1.getUniqueId(), 200.0);
         EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0);
         server.getScheduler().performTicks(20L);
+        server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
-        boolean found = transactions.stream().anyMatch(t -> 
+        boolean found = transactions.stream().anyMatch(t ->
             t.sender.equals(player1.getUniqueId().toString()) &&
             t.amount == 50.0
         );
