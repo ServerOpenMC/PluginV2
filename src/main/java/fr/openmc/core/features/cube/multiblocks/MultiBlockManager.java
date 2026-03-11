@@ -103,6 +103,7 @@ public class MultiBlockManager {
             list.add(map);
         }
 
+        if (config == null) return;
         config.set("multiblocks", list);
         try {
             config.save(file);
