@@ -10,12 +10,6 @@ import io.papermc.paper.registry.event.RegistryEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.util.Objects;
-
 @SuppressWarnings("UnstableApiUsage")
 public class OMCBootstrap implements PluginBootstrap {
 
@@ -23,13 +17,7 @@ public class OMCBootstrap implements PluginBootstrap {
     public void bootstrap(@NotNull BootstrapContext context) {
         // ** LOAD DATAPACKS **
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
-                event -> {
-                    try {
-                        DatapackRegistry.load(event, context.getDataDirectory().resolve("datapacks"));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                event -> DatapackRegistry.load(event, DatapackRegistry.extractDatapacks(context.getPluginSource()))
         ));
 
         // ** ENCHANTMENT IMPL **
