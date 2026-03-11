@@ -43,8 +43,8 @@ public class FreezeListener implements Listener {
 		Player player = event.getPlayer();
 		if (FreezeManager.FROZEN_PLAYERS.contains(player)) {
 			player.setInvulnerable(true);
-			player.sendTitlePart(TitlePart.TITLE, TranslationManager.translation("command.admin.freeze.title.1"));
-			player.sendTitlePart(TitlePart.SUBTITLE, TranslationManager.translation("command.admin.freeze.title.2"));
+			player.sendTitlePart(TitlePart.TITLE, TranslationManager.translation("command.admin.freeze.title"));
+			player.sendTitlePart(TitlePart.SUBTITLE, TranslationManager.translation("command.admin.freeze.subtitle"));
 			MessagesManager.sendMessage(player, TranslationManager.translation("command.admin.freeze.player_freezed"), Prefix.OPENMC, MessageType.WARNING, true);
 		}
 	}
