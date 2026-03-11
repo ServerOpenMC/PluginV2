@@ -146,6 +146,7 @@ public class EconomyManagerTest {
         EconomyManager.setBalance(player1.getUniqueId(), 400.0);
         EconomyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 150.0, "Gift");
         server.getScheduler().performTicks(120L);
+        server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
 
