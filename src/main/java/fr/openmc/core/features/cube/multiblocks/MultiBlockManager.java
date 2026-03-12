@@ -81,6 +81,8 @@ public class MultiBlockManager {
     }
 
     public static void save() {
+        if (config == null) return;
+
         List<Map<String, Object>> list = new ArrayList<>();
         for (MultiBlock mb : multiBlocks) {
             Map<String, Object> map = new HashMap<>();
@@ -103,7 +105,6 @@ public class MultiBlockManager {
             list.add(map);
         }
 
-        if (config == null) return;
         config.set("multiblocks", list);
         try {
             config.save(file);
