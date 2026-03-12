@@ -39,7 +39,7 @@ public class DreamPlayer {
 
     @Setter
     private int cold;
-    private ColdTask coldTask;
+    private BukkitTask coldTask;
 
     private long dreamTime;
     private BukkitTask timeTask;
@@ -109,12 +109,14 @@ public class DreamPlayer {
     public void cancelColdTask() {
         if (coldTask != null) {
             coldTask.cancel();
+            cold = 0;
+            ColdManager.applyColdEffects(player, cold);
             coldTask = null;
         }
     }
 
     public void scheduleColdTask() {
-        this.coldTask = (ColdTask) new ColdTask(this).runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+        this.coldTask = new ColdTask(this).runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
     }
 
     public DBDreamPlayer save() {

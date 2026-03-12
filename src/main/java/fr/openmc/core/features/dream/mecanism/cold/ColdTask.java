@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ColdTask extends BukkitRunnable {
     private int counter = 0;
+    private int lastColdLevel = 0;
     private final DreamPlayer dreamPlayer;
     private final Player player;
 
@@ -20,6 +21,7 @@ public class ColdTask extends BukkitRunnable {
     @Override
     public void run() {
         counter += 20;
+        System.out.println("run counter " + counter);
         int cold = dreamPlayer.getCold();
         boolean nearHeat = ColdManager.isNearHeatSource(player);
         boolean isInBaseCamp = DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.BASE_CAMP);
@@ -51,12 +53,13 @@ public class ColdTask extends BukkitRunnable {
             return;
         }
 
-        ColdManager.applyColdEffects(player, cold);
-    }
+        int newLevel = ColdManager.getColdLevel(cold);
+        if (newLevel > lastColdLevel) {
+            ColdManager.sendColdLevelMessage(player, newLevel);
+        }
+        lastColdLevel = newLevel;
 
-    @Override
-    public void cancel() {
-        dreamPlayer.setCold(0);
-        ColdManager.applyColdEffects(player, dreamPlayer.getCold());
+        ColdManager.applyColdEffects(player, cold);
+        dreamPlayer.setCold(cold);
     }
 }
