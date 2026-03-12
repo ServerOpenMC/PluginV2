@@ -5,6 +5,12 @@ import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,6 +20,8 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Campfire;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +46,7 @@ public class ColdManager {
         ItemStack[] armorContents = equipement.getArmorContents();
 
         for (ItemStack item : armorContents) {
+            if (item == null || item.getType() == Material.AIR) continue;
             if (DreamItemRegistry.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
                 Integer coldResistance = dreamEquipableItem.getColdResistance();
 
@@ -55,7 +64,11 @@ public class ColdManager {
         PlayerUtils.showFreezeEffect(player, freezeTicks);
 
         int level = 0;
-        if (cold >= 75) {
+        if (cold >= 100) {
+            level = 5;
+        } else if (cold >= 85) {
+            level = 4;
+        } else if (cold >= 75) {
             level = 3;
         } else if (cold >= 50) {
             level = 2;
@@ -69,15 +82,25 @@ public class ColdManager {
             case 1 -> {
                 applySpeedModifier(player, -0.2);
                 applyMiningSpeedModifier(player, -0.3);
+                MessagesManager.sendMessage(player, Component.text("*Vous ressentez le froid vous ralentir...*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC), Prefix.DREAM, MessageType.INFO, false);
             }
             case 2 -> {
                 applySpeedModifier(player, -0.4);
                 applyMiningSpeedModifier(player, -0.5);
+                MessagesManager.sendMessage(player, Component.text("*Le froid se disperse dans tout votre corps*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC), Prefix.DREAM, MessageType.INFO, false);
             }
             case 3 -> {
                 applySpeedModifier(player, -0.7);
                 applyMiningSpeedModifier(player, -0.8);
+                MessagesManager.sendMessage(player, Component.text("*Vous tremblez de froid*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC), Prefix.DREAM, MessageType.INFO, false);
             }
+            case 4 -> {
+                applySpeedModifier(player, -0.8);
+                applyMiningSpeedModifier(player, -0.9);
+                player.damage(0.5, DamageSource.builder(DamageType.FREEZE).build());
+                MessagesManager.sendMessage(player, Component.text("*Vous êtes sur le point de mourrir de froid*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC), Prefix.DREAM, MessageType.INFO, false);
+            }
+            case 5 -> player.setHealth(0);
         }
 
         if (level > 0) {

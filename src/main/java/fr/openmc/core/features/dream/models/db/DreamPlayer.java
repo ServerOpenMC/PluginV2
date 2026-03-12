@@ -12,6 +12,7 @@ import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
+import fr.openmc.core.features.dream.mecanism.cold.ColdTask;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -38,7 +39,7 @@ public class DreamPlayer {
 
     @Setter
     private int cold;
-    private BukkitTask coldTask;
+    private ColdTask coldTask;
 
     private long dreamTime;
     private BukkitTask timeTask;
@@ -108,43 +109,12 @@ public class DreamPlayer {
     public void cancelColdTask() {
         if (coldTask != null) {
             coldTask.cancel();
-            cold = 0;
-            ColdManager.applyColdEffects(player, cold);
             coldTask = null;
         }
     }
 
     public void scheduleColdTask() {
-        final int[] tickCounter = {0};
-        this.coldTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
-            tickCounter[0] += 20;
-            boolean nearHeat = ColdManager.isNearHeatSource(player);
-            boolean isInBaseCamp = DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.BASE_CAMP);
-            double resistance = ColdManager.calculateColdResistance(player);
-            boolean inColdBiome = player.getLocation().getBlock().getBiome().equals(DreamBiome.GLACITE_GROTTO.getBiome());
-
-            if (isInBaseCamp) {
-                cold = Math.max(0, cold - 15);
-            } else if (nearHeat) {
-                if (tickCounter[0] % 40 == 0) {
-                    cold = Math.max(0, cold - 1);
-                }
-            }
-            if (!inColdBiome && tickCounter[0] % 40 == 0) {
-                cold = Math.max(0, cold - 1);
-            }
-
-            if (!nearHeat && !isInBaseCamp && inColdBiome && tickCounter[0] % (60 + (int) (resistance * 10)) == 0) {
-                cold = Math.min(100, cold + 1);
-            }
-
-            if (!inColdBiome && cold == 0) {
-                cancelColdTask();
-                return;
-            }
-
-            ColdManager.applyColdEffects(player, cold);
-        }, 0L, 20L);
+        this.coldTask = (ColdTask) new ColdTask(this).runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
     }
 
     public DBDreamPlayer save() {
