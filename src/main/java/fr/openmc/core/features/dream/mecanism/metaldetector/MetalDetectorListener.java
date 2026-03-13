@@ -115,8 +115,8 @@ public class MetalDetectorListener implements Listener {
         Random random = new Random();
 
         for (int i = 0; i < 30; i++) {
-            int dx = random.nextInt(20);
-            int dz = random.nextInt(20);
+            int dx = random.nextInt(41) - 20;
+            int dz = random.nextInt(41) - 20;
             Location tryLoc = origin.clone().add(dx, 0, dz);
             int y = world.getHighestBlockYAt(tryLoc);
             tryLoc.setY(y);
@@ -126,6 +126,6 @@ public class MetalDetectorListener implements Listener {
             }
         }
 
-        return origin.clone().add(5, 0, 5);
+        return origin.clone().add(random.nextInt(41) - 20, 0, random.nextInt(41) - 20);
     }
 }
