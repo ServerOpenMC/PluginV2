@@ -68,5 +68,6 @@ Les noms doivent être en anglais, peu importe la chose nommée.
 | Package | Toujours en miniscules et tous les mots sont collés sans caractère entre (pas d'`_`). Le nom doit être simple et sans caractères spéciaux (uniquement les caractères ASCII, donc pas d'accents). Le nom du package doit au possible rester un seul mot. | `fr.communaywen.commands` |
 | Classes, Interfaces, Enums, Records, Annotations | Toujours en PascalCase. Utilisez seulement des noms. Évitez les acronymes ou abréviations. | `class SpawnManager;` |
 | Methodes | Son nom commence par un verbe. En `camelCase` | `getInstance()` `clone()` |
+| Methodes de Tests | Son nom commence par test + une méthode testée. | `testFormat_avoid0()` `testGetNamedTextColor_success()`|
 | Variables | Toujours en `camelCase`, évitez les abréviations et les noms raccourcis comme `nbr`. Pas d'`_` ou de `$` au début. L'utilité de la variable devrait être compréhensible en regardant le nom. | `int numberOfPlayers` `String playerName` |
 | Constantes et membres d'enums | Les constantes dont la déclaration commence par `static final` sont nommées en UPPER_SNAKE_CASE, avec comme pour les variables, un nom qui décrit clairement leur utilité. | `static final int MIN_WIDTH = 4;` |
