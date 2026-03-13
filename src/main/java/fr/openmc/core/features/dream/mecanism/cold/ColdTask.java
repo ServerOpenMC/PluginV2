@@ -21,7 +21,6 @@ public class ColdTask extends BukkitRunnable {
     @Override
     public void run() {
         counter += 20;
-        System.out.println("run counter " + counter);
         int cold = dreamPlayer.getCold();
         boolean nearHeat = ColdManager.isNearHeatSource(player);
         boolean isInBaseCamp = DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.BASE_CAMP);
