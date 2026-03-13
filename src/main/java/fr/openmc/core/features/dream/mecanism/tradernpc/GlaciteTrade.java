@@ -35,7 +35,7 @@ public enum GlaciteTrade {
     ),
     EWENITE(
             DreamItemRegistry.getByName("ewenite"),
-            100,
+            80,
             0,
             Component.text("§bEwenite")
     );
