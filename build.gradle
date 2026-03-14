@@ -134,4 +134,10 @@ tasks.shadowJar {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+    }
 }

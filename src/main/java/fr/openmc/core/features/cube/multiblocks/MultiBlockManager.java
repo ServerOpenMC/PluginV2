@@ -81,6 +81,8 @@ public class MultiBlockManager {
     }
 
     public static void save() {
+        if (config == null) return;
+
         List<Map<String, Object>> list = new ArrayList<>();
         for (MultiBlock mb : multiBlocks) {
             Map<String, Object> map = new HashMap<>();
