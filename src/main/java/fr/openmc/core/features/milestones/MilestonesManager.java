@@ -88,7 +88,13 @@ public class MilestonesManager {
 			if (milestone.getPlayerData().isEmpty()) continue;
 			// Pour tous les joueurs du milestone, la progression est chargée à l'étape actuelle
 			for (Map.Entry<UUID, MilestoneModel> playerData : milestone.getPlayerData().entrySet()) {
-				milestone.getSteps().get(playerData.getValue().getStep()).setProgress(playerData.getKey(), playerData.getValue().getProgress());
+                int step = playerData.getValue().getStep();
+
+                if (step >= milestone.getSteps().size()) continue;
+
+                milestone.getSteps()
+                        .get(step)
+                        .setProgress(playerData.getKey(), playerData.getValue().getProgress());
 			}
 		}
 	}
