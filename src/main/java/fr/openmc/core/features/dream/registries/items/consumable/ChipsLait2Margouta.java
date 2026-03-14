@@ -10,9 +10,7 @@ public class ChipsLait2Margouta extends DreamItem {
     public ChipsLait2Margouta(String name) {
         super(name);
     }
-
-
-    //todo: changer tooltip a onirisime
+    
     @Override
     public DreamRarity getRarity() {
         return DreamRarity.ONIRISIME;
