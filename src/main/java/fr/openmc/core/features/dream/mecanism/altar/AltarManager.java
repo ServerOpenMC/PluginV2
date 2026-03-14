@@ -1,6 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.altar;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.events.AltarBindEvent;
+import fr.openmc.core.features.dream.events.AltarCraftingEvent;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
@@ -57,6 +59,7 @@ public class AltarManager {
         floatingItems.put(altarLoc, display);
         boundPlayers.put(altarLoc, player.getUniqueId());
 
+		Bukkit.getPluginManager().callEvent(new AltarBindEvent(player, dreamItem, recipe, altarLoc));
         MessagesManager.sendMessage(player, Component.text("§aVotre objet est lié à l'§5Altar"), Prefix.DREAM, MessageType.ERROR, false);
     }
 
@@ -104,7 +107,7 @@ public class AltarManager {
         player.getInventory().addItem(recipe.getOutput().getBest());
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                Bukkit.getServer().getPluginManager().callEvent(new AltarCraftingEvent(player, recipe.getOutput()))
+                Bukkit.getServer().getPluginManager().callEvent(new AltarCraftingEvent(player, recipe, recipe.getOutput()))
         );
 
         unbind(altarLoc);

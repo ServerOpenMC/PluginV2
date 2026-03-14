@@ -9,7 +9,10 @@ public enum ButtonType {
     CANCEL("Annuler"),
     BACK("Retour"),
     NEXT("Suivant"),
-    PREVIOUS("Précédent");
+    PREVIOUS("Précédent"),
+	FINISH("Terminer"),
+	IGNORE("Ignorer")
+	;
 
     private final String label;
 
