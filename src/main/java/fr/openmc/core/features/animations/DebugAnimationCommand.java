@@ -10,7 +10,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class DebugAnimationCommand {
     @Command("debug animation resetHead")
-    @CommandPermission("omc.debug.chronometer.start")
+    @CommandPermission("omc.debug.animation.resetHead")
     public void resetHead(Player player) {
         EmoteListener.sendCamera(player, player);
     }
