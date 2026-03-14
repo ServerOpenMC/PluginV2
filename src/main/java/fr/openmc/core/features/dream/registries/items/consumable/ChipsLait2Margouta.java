@@ -11,9 +11,11 @@ public class ChipsLait2Margouta extends DreamItem {
         super(name);
     }
 
+
+    //todo: changer tooltip a onirisime
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
+        return DreamRarity.ONIRISIME;
     }
 
     @Override
