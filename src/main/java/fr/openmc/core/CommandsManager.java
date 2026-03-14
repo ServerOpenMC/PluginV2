@@ -8,6 +8,7 @@ import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
+import fr.openmc.core.features.animations.DebugAnimationCommand;
 import fr.openmc.core.features.credits.CreditsCommand;
 import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.events.halloween.commands.HalloweenCommands;
@@ -59,7 +60,8 @@ public class CommandsManager {
                 new Cooldowns(),
                 new CreditsCommand(),
                 new CubeCommands(),
-                new HalloweenCommands()
+                new HalloweenCommands(),
+                new DebugAnimationCommand()
         );
     }
 }
