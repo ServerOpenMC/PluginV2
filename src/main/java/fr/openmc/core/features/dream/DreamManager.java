@@ -342,7 +342,7 @@ public class DreamManager {
     }
 
     public static double calculateDreamProbability(Player player) {
-        double base = 0.2;
+        double base = 0.15;
         PlayerInventory inv = player.getInventory();
 
         ItemStack[] armor = {

@@ -47,13 +47,26 @@ public class PlayerSleepListener implements Listener {
             }
             for (Player player : isPlayerSleeping) {
                 if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) {
-                    Random r = new Random();
-                    DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
-                    if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                        DreamManager.tpPlayerDream(player);
-                    } else {
-                        DreamManager.tpPlayerToLastDreamLocation(player);
-                    }
+                    player.addPotionEffect(new PotionEffect(
+                            PotionEffectType.NAUSEA,
+                            20 * 3,
+                            1,
+                            false,
+                            false,
+                            true
+                    ));
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+                            if(dbDreamPlayer ==null||(dbDreamPlayer.getDreamX()==null||dbDreamPlayer.getDreamY()==null||dbDreamPlayer.getDreamZ()==null)) {
+                                DreamManager.tpPlayerDream(player);
+                            } else {
+                                DreamManager.tpPlayerToLastDreamLocation(player);
+                            }
+                        }
+                    }.runTaskLater(OMCPlugin.getInstance(), 20 * 3);
                 }
             }
 
