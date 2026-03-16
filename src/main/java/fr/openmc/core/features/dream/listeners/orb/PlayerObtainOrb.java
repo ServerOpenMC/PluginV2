@@ -28,7 +28,7 @@ import org.bukkit.inventory.Recipe;
 
 public class PlayerObtainOrb implements Listener {
     private final int SCULK_PLAINS_ORB = 1;
-    private final int SOUL_FOREST_ORB = 2;
+    public static final int SOUL_FOREST_ORB = 2;
     private final int CLOUD_CASTLE_ORB = 3;
     private final int MUD_BEACH_ORB = 4;
     private final int GLACITE_GROTTO_ORB = 5;

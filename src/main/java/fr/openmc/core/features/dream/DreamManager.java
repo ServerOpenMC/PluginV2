@@ -81,7 +81,8 @@ public class DreamManager {
                 new CloudStructureDispenserListener(),
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
-                new SingularityCraftListener()
+                new SingularityCraftListener(),
+                new PlayerFoodChangeListener()
         );
 
         // ** MANAGERS **
