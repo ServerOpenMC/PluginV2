@@ -24,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PlayerSleepListener implements Listener {
 
     private final Set<Player> isPlayerSleeping = new HashSet<>();
+    private final int DREAM_TELEPORT_DELAY = 20 * 3;
 
     @EventHandler
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
@@ -49,7 +50,7 @@ public class PlayerSleepListener implements Listener {
                 if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) {
                     player.addPotionEffect(new PotionEffect(
                             PotionEffectType.NAUSEA,
-                            20 * 3,
+                            DREAM_TELEPORT_DELAY,
                             1,
                             false,
                             false,
@@ -66,7 +67,7 @@ public class PlayerSleepListener implements Listener {
                                 DreamManager.tpPlayerToLastDreamLocation(player);
                             }
                         }
-                    }.runTaskLater(OMCPlugin.getInstance(), 20 * 3);
+                    }.runTaskLater(OMCPlugin.getInstance(), DREAM_TELEPORT_DELAY);
                 }
             }
 
