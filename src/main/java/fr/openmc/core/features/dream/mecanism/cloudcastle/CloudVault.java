@@ -45,13 +45,10 @@ public class CloudVault implements Listener {
         if (!DreamUtils.isInDreamWorld(player)) return;
 
         if (!(event.getBlock().getState() instanceof Vault)) return;
-        System.out.println("CLOUD_VAULT_LOOT_TABLE == null " + CLOUD_VAULT_LOOT_TABLE == null);
         if (CLOUD_VAULT_LOOT_TABLE == null) return;
 
-        System.out.println("Generating loot for cloud vault");
 
         List<ItemStack> loot = CLOUD_VAULT_LOOT_TABLE.rollLootsWithAmount(3);
-        System.out.println("looot " + loot);
         event.setDispensedLoot(loot);
 
         for (ItemStack item : loot) {
