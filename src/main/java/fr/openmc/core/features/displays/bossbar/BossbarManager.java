@@ -68,7 +68,6 @@ public class BossbarManager {
         long now = System.currentTimeMillis();
 
         for (BaseBossbar base : registeredBossbar) {
-
             String id = base.id();
 
             if (toggled.contains(id)) {
