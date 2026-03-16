@@ -1,0 +1,77 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_normal_1",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_normal_2",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_normal_4",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_vertical_1",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_vertical_2",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_vertical_3",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_vertical_4",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:glacite_grotto/spike_vertical_5",
+        "processors": "omc_dream:glacite_grotto/spike_processor"
+      }
+    }
+  ]
+}

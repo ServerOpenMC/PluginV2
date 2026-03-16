@@ -21,7 +21,7 @@ public class StrayCloudSpawner {
 
             normal.setSpawnedEntity(new DreamStray().createSnapshot());
 
-            NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/mob_spawner");
+            NamespacedKey lootKey = new NamespacedKey("omc_dream", "cloud_castle/mob_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);
 
             if (lootTable != null) {

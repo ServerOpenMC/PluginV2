@@ -1,0 +1,50 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:sculk_plains/tree_1",
+        "processors": "omc_dream:sculk_plains/old_creaking_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:sculk_plains/tree_2",
+        "processors": "omc_dream:sculk_plains/old_creaking_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:sculk_plains/tree_3",
+        "processors":  "omc_dream:sculk_plains/old_creaking_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:sculk_plains/tree_4",
+        "processors":  "omc_dream:sculk_plains/old_creaking_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:sculk_plains/tree_5",
+        "processors": "omc_dream:sculk_plains/old_creaking_tree_processor"
+      }
+    }
+  ]
+}

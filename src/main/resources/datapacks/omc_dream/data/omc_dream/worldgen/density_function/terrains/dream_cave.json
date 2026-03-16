@@ -1,0 +1,14 @@
+{
+    "type": "mul",
+    "argument1": -1,
+    "argument2": {
+        "type": "add",
+        "argument1": {
+            "type": "noise",
+            "noise": "omc_dream:cave_noise",
+            "xz_scale": 1.2,
+            "y_scale": 2.5
+        },
+        "argument2": -0.5
+    }
+}

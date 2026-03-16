@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:range_choice",
+  "input": {
+    "type": "minecraft:y_clamped_gradient",
+    "from_y": -60,
+    "to_y": -65,
+    "from_value": 0,
+    "to_value": 1
+  },
+  "min_inclusive": 0.25,
+  "max_exclusive": 1,
+  "when_in_range": 1,
+  "when_out_of_range": 0
+}

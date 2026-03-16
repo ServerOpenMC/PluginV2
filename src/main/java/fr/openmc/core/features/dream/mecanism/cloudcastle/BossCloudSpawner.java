@@ -30,7 +30,7 @@ public class BossCloudSpawner implements Listener {
 
             normal.setSpawnedEntity(new Breezy().createSnapshot());
 
-            NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/boss_spawner");
+            NamespacedKey lootKey = new NamespacedKey("omc_dream", "cloud_castle/boss_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);
 
             if (lootTable != null) {

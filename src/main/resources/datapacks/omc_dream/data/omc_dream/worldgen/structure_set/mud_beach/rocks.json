@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:mud_beach/rocks"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 1,
+        "spacing": 2,
+        "salt": 9760983948
+    }
+}

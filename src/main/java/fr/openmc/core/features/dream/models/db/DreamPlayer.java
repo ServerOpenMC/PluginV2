@@ -8,10 +8,11 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
-import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
+import fr.openmc.core.features.dream.models.registry.DreamBiome;
+import fr.openmc.core.features.dream.models.registry.DreamStructure;
+import fr.openmc.core.features.dream.registries.DreamBiomesRegistry;
+import fr.openmc.core.features.dream.registries.DreamStructuresRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -119,9 +120,9 @@ public class DreamPlayer {
         this.coldTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
             tickCounter[0] += 20;
             boolean nearHeat = ColdManager.isNearHeatSource(player);
-            boolean isInBaseCamp = DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.BASE_CAMP);
+            boolean isInBaseCamp = DreamStructuresRegistry.isInDreamStructure(player, DreamStructure.BASE_CAMP);
             double resistance = ColdManager.calculateColdResistance(player);
-            boolean inColdBiome = player.getLocation().getBlock().getBiome().equals(DreamBiome.GLACITE_GROTTO.getBiome());
+            boolean inColdBiome = DreamBiomesRegistry.isInDreamBiome(player, DreamBiome.GLACITE_GROTTO);
 
             if (isInBaseCamp) {
                 cold = Math.max(0, cold - 15);
