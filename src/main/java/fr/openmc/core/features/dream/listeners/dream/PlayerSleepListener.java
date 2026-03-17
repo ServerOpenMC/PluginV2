@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -48,6 +49,8 @@ public class PlayerSleepListener implements Listener {
             for (Player player : isPlayerSleeping) {
                 if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) {
                     Random r = new Random();
+
+                    PlayerCloneNpc.createCloneNpc(player, player.getLocation());
                     DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
                     if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
                         DreamManager.tpPlayerDream(player);

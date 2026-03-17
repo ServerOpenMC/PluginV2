@@ -18,6 +18,9 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class ParticleUtils {
 
     private static final double MAX_PARTICLE_DISTANCE_SQR = 100 * 100;
@@ -230,6 +233,26 @@ public class ParticleUtils {
             Location loc = new Location(world, x, y, z);
 
             sendParticlePacket(player, particle, loc);
+        }
+    }
+
+    public static void spawnConvergingParticles(Location target, int count) {
+        Random random = ThreadLocalRandom.current();
+
+        for (int i = 0; i < count; i++) {
+            double angle = random.nextDouble() * 2 * Math.PI;
+            double radius = random.nextDouble() * 5;
+
+            double offsetX = Math.cos(angle) * radius;
+            double offsetY = 2 + random.nextDouble();
+            double offsetZ = Math.sin(angle) * radius;
+
+            Particle.ENCHANT.builder()
+                    .location(target)
+                    .offset(offsetX, offsetY, offsetZ)
+                    .count(0)
+                    .receivers(32, true)
+                    .spawn();
         }
     }
 }
