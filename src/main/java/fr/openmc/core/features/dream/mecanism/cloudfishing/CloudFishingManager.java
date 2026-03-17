@@ -6,8 +6,6 @@ import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.utils.ParticleUtils;
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
-import net.minecraft.network.chat.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -61,7 +59,7 @@ public class CloudFishingManager {
                 Location point = new Location(world, x, y, z);
                 ParticleUtils.sendParticlePacket(player, point.add(0, 1, 0), Particle.WITCH, 3, 0.1, 0.1, 0.1, 0.01, null);
 
-                ParticleUtils.spawnParticleCloud(player, point, Particle.CLOUD, 65, 5, 1.5);
+                ParticleUtils.spawnCloudParticles(player, point, Particle.CLOUD, 65, 5, 1.5);
 
                 counter[0]++;
 
@@ -78,17 +76,10 @@ public class CloudFishingManager {
 
         player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 0.6F, 1F);
 
-        ParticleUtils.sendParticlePacket(
-                player,
+        ParticleUtils.spawnDispersingParticles(player,
                 hook.getLocation().add(0, 1, 0),
                 Particle.DRAGON_BREATH,
-                35,
-                0.3D,
-                0.2D,
-                0.3D,
-                0.1D,
-                (Float) 1.0f
-        );
+                35);
 
         hookedPlayers.put(player.getUniqueId(), new FishBiteTask(player, hook, 30L));
     }

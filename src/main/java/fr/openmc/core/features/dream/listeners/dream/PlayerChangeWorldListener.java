@@ -6,6 +6,8 @@ import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
+import fr.openmc.core.utils.ParticleUtils;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -44,6 +46,9 @@ public class PlayerChangeWorldListener implements Listener {
         AttributeInstance inst = player.getAttribute(Attribute.MAX_HEALTH);
         if (inst == null) return;
         player.setHealth(inst.getBaseValue());
+
+        // * SFX
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ENCHANT, 20, 15);
     }
 
     @EventHandler
@@ -62,5 +67,8 @@ public class PlayerChangeWorldListener implements Listener {
         BossbarManager.removeBossBar(BossbarsType.DREAM, player);
 
         DreamManager.removeDreamPlayer(player, event.getFrom());
+
+        // * SFX
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ENCHANT, 20, 15);
     }
 }

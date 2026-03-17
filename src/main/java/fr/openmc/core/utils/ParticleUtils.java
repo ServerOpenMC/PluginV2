@@ -218,7 +218,13 @@ public class ParticleUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 1L);
     }
 
-    public static void spawnParticleCloud(Player player, Location center, Particle particle, int count, double radius, double height) {
+    public static void spawnCloudParticles(Location center, Particle particle, int count, double radius, double height) {
+        for (Player player : center.getNearbyEntitiesByType(Player.class, radius)) {
+            spawnCloudParticles(player, center, particle, count, radius, height);
+        }
+    }
+
+    public static void spawnCloudParticles(Player player, Location center, Particle particle, int count, double radius, double height) {
         World world = center.getWorld();
         if (world == null) return;
         double minY = center.getY() - Math.abs(height);
@@ -254,5 +260,25 @@ public class ParticleUtils {
                     .receivers(32, true)
                     .spawn();
         }
+    }
+
+    public static void spawnDispersingParticles(Location target, Particle particle, int count, int radius) {
+        for (Player player : target.getNearbyEntitiesByType(Player.class, radius)) {
+            spawnDispersingParticles(player, target, particle, count);
+        }
+    }
+
+    public static void spawnDispersingParticles(Player player, Location target, Particle particle, int count) {
+        ParticleUtils.sendParticlePacket(
+                player,
+                target,
+                particle,
+                count,
+                0.3D,
+                0.2D,
+                0.3D,
+                0.1D,
+                (Float) 1.0f
+        );
     }
 }
