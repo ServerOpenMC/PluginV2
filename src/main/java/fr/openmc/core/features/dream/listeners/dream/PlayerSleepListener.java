@@ -25,7 +25,7 @@ public class PlayerSleepListener implements Listener {
 
     private final Set<Player> isPlayerSleeping = new HashSet<>();
     private final int DREAM_TELEPORT_DELAY = 20 * 3;
-
+  
     @EventHandler
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
         Player player = event.getPlayer();
