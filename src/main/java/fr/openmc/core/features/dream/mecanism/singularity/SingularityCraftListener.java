@@ -4,6 +4,10 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -30,7 +34,10 @@ public class SingularityCraftListener implements Listener {
         // * SFX
         World world = player.getWorld();
         world.spawnEntity(player.getLocation(), EntityType.LIGHTNING_BOLT);
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 20, 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.OMINOUS_SPAWNING, 25, 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 5, 15);
         world.playSound(player.getLocation(), "minecraft:entity.wither.death", 1f, 0.1f);
+
+        MessagesManager.broadcastMessage(Component.text(player.getName() + " a crafté une Singularité !"), Prefix.DREAM, MessageType.INFO);
     }
 }
