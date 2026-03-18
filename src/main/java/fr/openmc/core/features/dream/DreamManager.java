@@ -83,6 +83,7 @@ public class DreamManager {
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new SingularityCraftListener(),
+                new PlayerFoodChangeListener(),
                 new DreamLootListener()
         );
 
