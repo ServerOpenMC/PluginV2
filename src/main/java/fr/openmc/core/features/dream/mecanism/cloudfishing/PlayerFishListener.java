@@ -2,11 +2,16 @@ package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.DreamEndEvent;
+import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.FishHook;
@@ -15,6 +20,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -70,9 +77,17 @@ public class PlayerFishListener implements Listener {
 
                     for (ItemStack item : rewards) {
                         player.getInventory().addItem(item);
+
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                                Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))
+                        );
+                    }
+                  
+                    if (event.getHand() != null && event.getPlayer().getEquipment() != null) {
+                        ItemStack rod = event.getPlayer().getEquipment().getItem(event.getHand());
+                        ItemUtils.reduceDurability(rod, 1);
                     }
 
-                    MessagesManager.sendMessage(player, Component.text("Tu as pêché §e" + rewards.size() + " §fobjet(s) dans tes rêves !"), Prefix.DREAM, MessageType.SUCCESS, false);
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
                 }
             }

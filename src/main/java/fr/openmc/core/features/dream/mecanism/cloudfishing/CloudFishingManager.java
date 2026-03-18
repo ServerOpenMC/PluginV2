@@ -90,6 +90,6 @@ public class CloudFishingManager {
                 (Float) 1.0f
         );
 
-        hookedPlayers.put(player.getUniqueId(), new FishBiteTask(player, hook, 30L));
+        hookedPlayers.put(player.getUniqueId(), new FishBiteTask(player, hook, 20L));
     }
 }
