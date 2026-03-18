@@ -476,6 +476,7 @@ public class ItemUtils {
         NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
         return meta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
     }
+
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
      * Deux items sont considérés similaires s'ils ont le même type
