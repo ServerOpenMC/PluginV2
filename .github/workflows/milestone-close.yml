@@ -63,6 +63,6 @@ jobs:
           panel-host: ${{ secrets.PANEL_HOST }}
           api-key: ${{ secrets.API_KEY }}
           server-id: ${{ secrets.SERVER_ID }}
-          source: OpenMC.jar
+          source: builds/OpenMC.jar
           target: "./plugins/update/OpenMC.jar"
           command: "omcrestart"
