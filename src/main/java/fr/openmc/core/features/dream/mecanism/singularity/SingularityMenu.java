@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -138,6 +139,11 @@ public class SingularityMenu extends PaginatedMenu {
                 return;
             }
 
+            if (clickInMenu && !hasEnchantments(cursor)) {
+                event.setCancelled(true);
+                return;
+            }
+
             if (!inDream) {
                 if (clickInMenu) {
                     event.setCancelled(true);
@@ -186,7 +192,7 @@ public class SingularityMenu extends PaginatedMenu {
 
             DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
 
-            if (dreamItem == null || !dreamItem.isTransferable()) {
+            if (dreamItem == null || !dreamItem.isTransferable() || hasEnchantments(item)) {
                 toReturnToPlayer.add(item);
             } else {
                 validContents[i] = item;
@@ -204,5 +210,14 @@ public class SingularityMenu extends PaginatedMenu {
         } else {
             contents.setContent(validContents);
         }
+    }
+
+    private boolean hasEnchantments(ItemStack item) {
+        if (!item.getEnchantments().isEmpty()) return true;
+        if (item.getType().equals(Material.ENCHANTED_BOOK)) return false;
+        if (item.getItemMeta() instanceof EnchantmentStorageMeta meta) {
+            return !meta.getStoredEnchants().isEmpty();
+        }
+        return false;
     }
 }
