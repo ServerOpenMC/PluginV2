@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.mecanism.sfx;
 
 import de.oliver.fancynpcs.api.*;
-import de.oliver.fancynpcs.api.actions.ActionTrigger;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.OMCPlugin;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -12,7 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.entity.Pose;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitTask;
@@ -33,6 +33,7 @@ public class PlayerCloneNpc {
      * and removes any NPCs that match the player clone prefix.
      */
     public static void init() {
+        System.out.println("JE SUIS LA BONNE VERSION AHAHAHHAHA");
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
@@ -57,7 +58,7 @@ public class PlayerCloneNpc {
      * @param player The player for whom to create the clone NPC.
      * @param sleepingLocation The location where the player is sleeping, which will be used to position the clone NPC.
      */
-    public static void createCloneNpc(Player player, Location sleepingLocation) {
+    public static void createCloneNpc(Player player, Location sleepingLocation, Pose pose) {
         if (!FancyNpcsHook.isHasFancyNpc()) return;
         Npc existingNpc = getCloneNpc(player);
         if (existingNpc != null) {
@@ -74,7 +75,7 @@ public class PlayerCloneNpc {
 
         // * Player clone specific attributes
         data.setSkin(player.getName());
-        data.addAttribute(FancyNpcsPlugin.get().getAttributeManager().getAttributeByName(EntityType.PLAYER, "pose"), "sleeping");
+        data.addAttribute(FancyNpcsPlugin.get().getAttributeManager().getAttributeByName(EntityType.PLAYER, "pose"), pose.name().toLowerCase());
 
         // * Set equipement
         Map<NpcEquipmentSlot, ItemStack> equipment = new HashMap<>();
