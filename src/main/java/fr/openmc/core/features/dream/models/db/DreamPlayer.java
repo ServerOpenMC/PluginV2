@@ -98,7 +98,10 @@ public class DreamPlayer {
                         Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
                 );
                 this.cancelTimeTask();
+                return;
             }
+
+            DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
         }, 0L, 20L);
     }
 
