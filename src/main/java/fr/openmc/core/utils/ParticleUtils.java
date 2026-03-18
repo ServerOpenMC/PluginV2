@@ -94,7 +94,7 @@ public class ParticleUtils {
         nmsPlayer.connection.send(packet);
     }
 
-    public static <T> void sendParticlePacket(Player player, Location location, Particle particle, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
+    public static <T> void sendParticlePacket(Player player, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
@@ -220,11 +220,11 @@ public class ParticleUtils {
 
     public static void spawnCloudParticles(Location center, Particle particle, int count, double radius, double height) {
         for (Player player : center.getNearbyEntitiesByType(Player.class, radius)) {
-            spawnCloudParticles(player, center, particle, count, radius, height);
+            spawnCloudParticles(player, particle, center, count, radius, height);
         }
     }
 
-    public static void spawnCloudParticles(Player player, Location center, Particle particle, int count, double radius, double height) {
+    public static void spawnCloudParticles(Player player, Particle particle, Location center, int count, double radius, double height) {
         World world = center.getWorld();
         if (world == null) return;
         double minY = center.getY() - Math.abs(height);
@@ -264,15 +264,15 @@ public class ParticleUtils {
 
     public static void spawnDispersingParticles(Location target, Particle particle, int count, int radius) {
         for (Player player : target.getNearbyEntitiesByType(Player.class, radius)) {
-            spawnDispersingParticles(player, target, particle, count);
+            spawnDispersingParticles(player, particle, target, count);
         }
     }
 
-    public static void spawnDispersingParticles(Player player, Location target, Particle particle, int count) {
+    public static void spawnDispersingParticles(Player player, Particle particle, Location target, int count) {
         ParticleUtils.sendParticlePacket(
                 player,
-                target,
                 particle,
+                target,
                 count,
                 0.3D,
                 0.2D,

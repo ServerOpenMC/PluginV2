@@ -1,8 +1,12 @@
-package fr.openmc.core.features.dream.listeners.others;
+package fr.openmc.core.features.dream.mecanism.singularity;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.utils.ParticleUtils;
+import org.bukkit.Particle;
+import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,5 +26,11 @@ public class SingularityCraftListener implements Listener {
         if (dreamItem.getName().equals("omc_dream:singularity")) {
             MailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
         }
+
+        // * SFX
+        World world = player.getWorld();
+        world.spawnEntity(player.getLocation(), EntityType.LIGHTNING_BOLT);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 20, 15);
+        world.playSound(player.getLocation(), "minecraft:entity.wither.death", 1f, 0.1f);
     }
 }

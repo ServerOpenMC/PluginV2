@@ -57,9 +57,9 @@ public class CloudFishingManager {
                 double z = start.getZ() + (hookLoc.getZ() - start.getZ()) * t;
 
                 Location point = new Location(world, x, y, z);
-                ParticleUtils.sendParticlePacket(player, point.add(0, 1, 0), Particle.WITCH, 3, 0.1, 0.1, 0.1, 0.01, null);
+                ParticleUtils.sendParticlePacket(player, Particle.WITCH, point.add(0, 1, 0), 3, 0.1, 0.1, 0.1, 0.01, null);
 
-                ParticleUtils.spawnCloudParticles(player, point, Particle.CLOUD, 65, 5, 1.5);
+                ParticleUtils.spawnCloudParticles(player, Particle.CLOUD, point, 65, 5, 1.5);
 
                 counter[0]++;
 
@@ -77,8 +77,8 @@ public class CloudFishingManager {
         player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 0.6F, 1F);
 
         ParticleUtils.spawnDispersingParticles(player,
-                hook.getLocation().add(0, 1, 0),
                 Particle.DRAGON_BREATH,
+                hook.getLocation().add(0, 1, 0),
                 35);
 
         hookedPlayers.put(player.getUniqueId(), new FishBiteTask(player, hook, 30L));

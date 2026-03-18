@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import fr.openmc.core.features.dream.DreamManager;
@@ -7,6 +8,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.utils.ParticleUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -48,7 +50,10 @@ public class PlayerChangeWorldListener implements Listener {
         player.setHealth(inst.getBaseValue());
 
         // * SFX
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ENCHANT, 20, 15);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            ParticleUtils.sendParticlePacket(player, Particle.FLASH, player.getLocation().add(0, 1, 0));
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15);
+        }, 20);
     }
 
     @EventHandler
@@ -69,6 +74,9 @@ public class PlayerChangeWorldListener implements Listener {
         DreamManager.removeDreamPlayer(player, event.getFrom());
 
         // * SFX
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ENCHANT, 20, 15);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            ParticleUtils.sendParticlePacket(player, Particle.FLASH, player.getLocation().add(0, 1, 0));
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15);
+        }, 20);
     }
 }

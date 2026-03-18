@@ -81,7 +81,7 @@ public class ColdManager {
         }
 
         if (level > 0) {
-            ParticleUtils.sendParticlePacket(player, player.getLocation().add(0, 1, 0), Particle.SPIT, 10, 0.3, 0.5, 0.3, 0.01, null);
+            ParticleUtils.sendParticlePacket(player, Particle.SPIT, player.getLocation().add(0, 1, 0), 10, 0.3, 0.5, 0.3, 0.01, null);
         }
     }
 
