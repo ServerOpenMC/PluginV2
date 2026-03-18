@@ -5,6 +5,12 @@ import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,6 +20,8 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Campfire;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +46,7 @@ public class ColdManager {
         ItemStack[] armorContents = equipement.getArmorContents();
 
         for (ItemStack item : armorContents) {
+            if (item == null || item.getType() == Material.AIR) continue;
             if (DreamItemRegistry.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
                 Integer coldResistance = dreamEquipableItem.getColdResistance();
 
@@ -50,18 +59,34 @@ public class ColdManager {
         return sommeColdResistance;
     }
 
+    public static int getColdLevel(int cold) {
+        if (cold >= 100) return 5;
+        if (cold >= 85)  return 4;
+        if (cold >= 75)  return 3;
+        if (cold >= 50)  return 2;
+        if (cold >= 25)  return 1;
+        return 0;
+    }
+
+    public static void sendColdLevelMessage(Player player, int level) {
+        Component message = switch (level) {
+            case 1 -> Component.text("*Vous ressentez le froid vous ralentir...*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
+            case 2 -> Component.text("*Le froid se disperse dans tout votre corps*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
+            case 3 -> Component.text("*Vous tremblez de froid*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
+            case 4 -> Component.text("*Vous êtes sur le point de mourir de froid*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
+            default -> null;
+        };
+
+        if (message != null) {
+            MessagesManager.sendMessage(player, message, Prefix.DREAM, MessageType.INFO, false);
+        }
+    }
+
     public static void applyColdEffects(Player player, int cold) {
-        int freezeTicks = (int) Math.min(140, (cold / 100.0) * 140);
+        int freezeTicks = (int) Math.min(140, (cold / 85.0) * 140);
         PlayerUtils.showFreezeEffect(player, freezeTicks);
 
-        int level = 0;
-        if (cold >= 75) {
-            level = 3;
-        } else if (cold >= 50) {
-            level = 2;
-        } else if (cold >= 25) {
-            level = 1;
-        }
+        int level = getColdLevel(cold);
 
         removeColdModifier(player);
 
@@ -78,6 +103,12 @@ public class ColdManager {
                 applySpeedModifier(player, -0.7);
                 applyMiningSpeedModifier(player, -0.8);
             }
+            case 4 -> {
+                applySpeedModifier(player, -0.8);
+                applyMiningSpeedModifier(player, -0.9);
+                player.damage(0.25, DamageSource.builder(DamageType.FREEZE).build());
+            }
+            case 5 -> player.setHealth(0);
         }
 
         if (level > 0) {

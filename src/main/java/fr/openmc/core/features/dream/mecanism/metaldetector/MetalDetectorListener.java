@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -85,12 +86,15 @@ public class MetalDetectorListener implements Listener {
 
                 for (ItemStack item : rewards) {
                     player.getInventory().addItem(item);
+
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                            Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))
+                    );
                 }
 
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                         Bukkit.getServer().getPluginManager().callEvent(new MetalDetectorLootEvent(player, rewards))
                 );
-                MessagesManager.sendMessage(player, Component.text("Vous avez découvert §e" + rewards.size() + " §fobjet(s) dans vos rêves !"), Prefix.DREAM, MessageType.SUCCESS, false);
             }
         }
     }
@@ -115,8 +119,8 @@ public class MetalDetectorListener implements Listener {
         Random random = new Random();
 
         for (int i = 0; i < 30; i++) {
-            int dx = random.nextInt(20);
-            int dz = random.nextInt(20);
+            int dx = random.nextInt(41) - 20;
+            int dz = random.nextInt(41) - 20;
             Location tryLoc = origin.clone().add(dx, 0, dz);
             int y = world.getHighestBlockYAt(tryLoc);
             tryLoc.setY(y);
@@ -126,6 +130,6 @@ public class MetalDetectorListener implements Listener {
             }
         }
 
-        return origin.clone().add(5, 0, 5);
+        return origin.clone().add(random.nextInt(41) - 20, 0, random.nextInt(41) - 20);
     }
 }

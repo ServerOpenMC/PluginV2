@@ -28,6 +28,7 @@ import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
+import fr.openmc.core.features.dream.mecanism.rng.DreamLootListener;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityManager;
 import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
@@ -82,7 +83,8 @@ public class DreamManager {
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new SingularityCraftListener(),
-                new PlayerFoodChangeListener()
+                new PlayerFoodChangeListener(),
+                new DreamLootListener()
         );
 
         // ** MANAGERS **
@@ -90,9 +92,9 @@ public class DreamManager {
         GlaciteNpcManager.init();
         DreamStructuresManager.init();
         DreamItemRegistry.init();
+        DreamLootTableRegistry.init();
         DreamBlocksRegistry.init();
         DreamMobsRegistry.init();
-        DreamLootTableRegistry.init();
         DreamBlocksDropsRegistry.init();
         CloudFishingManager.init();
         MetalDetectorManager.init();
@@ -343,7 +345,7 @@ public class DreamManager {
     }
 
     public static double calculateDreamProbability(Player player) {
-        double base = 0.2;
+        double base = 0.15;
         PlayerInventory inv = player.getInventory();
 
         ItemStack[] armor = {

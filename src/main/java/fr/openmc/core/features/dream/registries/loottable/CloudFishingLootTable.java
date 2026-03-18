@@ -16,7 +16,7 @@ public class CloudFishingLootTable extends CustomLootTable {
         return Set.of(
                 new CustomLoot(
                         DreamItemRegistry.getByName("meteo_wand"),
-                        0.1,
+                        0.05,
                         1,
                         1
                 ),
@@ -40,7 +40,7 @@ public class CloudFishingLootTable extends CustomLootTable {
                 ),
                 new CustomLoot(
                         DreamItemRegistry.getByName("dockerfish"),
-                        0.2,
+                        0.1,
                         1,
                         1
                 ),

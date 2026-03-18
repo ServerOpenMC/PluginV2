@@ -144,6 +144,7 @@ public class CustomItemRegistry {
 
     @Nullable
     public static CustomItem getByItemStack(ItemStack stack) {
+        if (stack == null) return null;
         PersistentDataContainerView view = stack.getPersistentDataContainer();
         String name = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
 
