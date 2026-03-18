@@ -51,7 +51,7 @@ public class PlayerObtainOrb implements Listener {
             setProgressionOrb(player, SCULK_PLAINS_ORB, DreamBiome.SOUL_FOREST);
 
             // * SFX
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.TRIAL_SPAWNER_DETECTION, 15, 15);
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.TRIAL_SPAWNER_DETECTION, 15, 15, 0.5);
         }
     }
 
@@ -67,7 +67,7 @@ public class PlayerObtainOrb implements Listener {
         setProgressionOrb(player, SOUL_FOREST_ORB, DreamBiome.CLOUD_LAND);
 
         // * SFX
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.SCULK_SOUL, 15, 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.SCULK_SOUL, 15, 15, 0.5);
     }
 
     @EventHandler
@@ -83,7 +83,7 @@ public class PlayerObtainOrb implements Listener {
         setProgressionOrb(player, CLOUD_CASTLE_ORB, DreamBiome.MUD_BEACH);
 
         // * SFX
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.GUST, 15, 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.GUST, 15, 15, 0.5);
     }
 
     @EventHandler
@@ -99,7 +99,7 @@ public class PlayerObtainOrb implements Listener {
             setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
 
             // * SFX
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15);
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5);
             break;
         }
     }
@@ -113,7 +113,7 @@ public class PlayerObtainOrb implements Listener {
         setProgressionOrb(player, GLACITE_GROTTO_ORB, null);
 
         // * SFX
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.SNOWFLAKE, 15, 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.SNOWFLAKE, 15, 15, 0.5);
     }
 
     public static void setProgressionOrb(Player player, int progressionOrb, DreamBiome unlocked) {

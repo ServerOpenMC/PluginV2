@@ -262,13 +262,13 @@ public class ParticleUtils {
         }
     }
 
-    public static void spawnDispersingParticles(Location target, Particle particle, int count, int radius) {
+    public static void spawnDispersingParticles(Location target, Particle particle, int count, int radius, double speed) {
         for (Player player : target.getNearbyEntitiesByType(Player.class, radius)) {
-            spawnDispersingParticles(player, particle, target, count);
+            spawnDispersingParticles(player, particle, target, count, speed);
         }
     }
 
-    public static void spawnDispersingParticles(Player player, Particle particle, Location target, int count) {
+    public static void spawnDispersingParticles(Player player, Particle particle, Location target, int count, double speed) {
         ParticleUtils.sendParticlePacket(
                 player,
                 particle,
@@ -277,7 +277,7 @@ public class ParticleUtils {
                 0.3D,
                 0.2D,
                 0.3D,
-                0.1D,
+                speed,
                 (Float) 1.0f
         );
     }

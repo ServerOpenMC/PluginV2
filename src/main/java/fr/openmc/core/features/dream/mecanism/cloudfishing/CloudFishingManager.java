@@ -79,7 +79,7 @@ public class CloudFishingManager {
         ParticleUtils.spawnDispersingParticles(player,
                 Particle.DRAGON_BREATH,
                 hook.getLocation().add(0, 1, 0),
-                35);
+                35, 0.1D);
 
         hookedPlayers.put(player.getUniqueId(), new FishBiteTask(player, hook, 30L));
     }

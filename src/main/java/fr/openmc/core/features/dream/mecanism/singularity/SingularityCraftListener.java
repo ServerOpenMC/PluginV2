@@ -10,7 +10,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,17 +26,19 @@ public class SingularityCraftListener implements Listener {
         if (dreamItem == null) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        if (dreamItem.getName().equals("omc_dream:singularity")) {
-            MailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
-        }
+        if (!dreamItem.getName().equals("omc_dream:singularity")) return;
+
+        MailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
 
         // * SFX
         World world = player.getWorld();
-        world.spawnEntity(player.getLocation(), EntityType.LIGHTNING_BOLT);
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.OMINOUS_SPAWNING, 25, 15);
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 5, 15);
+        world.strikeLightningEffect(player.getLocation());
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.OMINOUS_SPAWNING, 25, 15, 0.5);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 5, 15, 0.2);
         world.playSound(player.getLocation(), "minecraft:entity.wither.death", 1f, 0.1f);
 
         MessagesManager.broadcastMessage(Component.text(player.getName() + " a crafté une Singularité !"), Prefix.DREAM, MessageType.INFO);
+
+
     }
 }

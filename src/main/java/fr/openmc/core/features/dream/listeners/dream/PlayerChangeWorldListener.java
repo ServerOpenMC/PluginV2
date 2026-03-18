@@ -56,7 +56,7 @@ public class PlayerChangeWorldListener implements Listener {
             PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SITTING);
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             ParticleUtils.sendParticlePacket(player, Particle.FLASH, player.getLocation().add(0, 1, 0));
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15);
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15, 1);
         }, 20);
     }
 
@@ -80,7 +80,7 @@ public class PlayerChangeWorldListener implements Listener {
         // * SFX
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             ParticleUtils.sendParticlePacket(player, Particle.FLASH, player.getLocation().add(0, 1, 0));
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15);
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15, 1);
         }, 20);
     }
 }
