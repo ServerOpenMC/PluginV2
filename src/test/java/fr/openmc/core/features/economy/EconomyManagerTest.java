@@ -75,7 +75,6 @@ public class EconomyManagerTest {
     @Test
     public void testAddBalanceWithReasonRegistersTransaction() {
         EconomyManager.addBalance(player1.getUniqueId(), 100.0, "Test Reason");
-        server.getScheduler().performTicks(20L);
         server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
@@ -92,7 +91,6 @@ public class EconomyManagerTest {
     public void testWithdrawBalanceWithReasonRegistersTransaction() {
         EconomyManager.setBalance(player1.getUniqueId(), 200.0);
         EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0, "Withdrawal Reason");
-        server.getScheduler().performTicks(20L);
         server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
@@ -110,7 +108,6 @@ public class EconomyManagerTest {
     public void testWithdrawBalanceWithoutReasonDoesNotRegisterTransaction() {
         EconomyManager.setBalance(player1.getUniqueId(), 200.0);
         EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0);
-        server.getScheduler().performTicks(20L);
         server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
@@ -148,7 +145,6 @@ public class EconomyManagerTest {
     public void testTransferBalanceWithReasonRegistersTransaction() {
         EconomyManager.setBalance(player1.getUniqueId(), 400.0);
         EconomyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 150.0, "Gift");
-        server.getScheduler().performTicks(120L);
         server.getScheduler().waitAsyncTasksFinished();
 
         List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());

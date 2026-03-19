@@ -29,7 +29,7 @@ class InputUtilsTest {
 
     @ParameterizedTest
     @DisplayName("Conversion of input sign to -1")
-    @ValueSource(strings = {"-3", "-1", "489y", "4,5"})
+    @ValueSource(strings = {"-3", "-1", "489y", "4,5", "NaN", "Infinity", "-Infinity"})
     void testConvertSignInputToMoney_ShouldGiveAnError(String input) {
         Assertions.assertEquals(-1, InputUtils.convertToMoneyValue(input));
     }
@@ -50,7 +50,7 @@ class InputUtilsTest {
 
     @ParameterizedTest
     @DisplayName("Check is returned value is false")
-    @ValueSource(strings = {"0", "-3", "-1", "489y", "4,5"})
+    @ValueSource(strings = {"0", "-3", "-1", "489y", "4,5", "NaN", "Infinity", "-Infinity"})
     void testIsInputMoney_MustReturnFalse(String input) {
         Assertions.assertFalse(InputUtils.isInputMoney(input));
     }

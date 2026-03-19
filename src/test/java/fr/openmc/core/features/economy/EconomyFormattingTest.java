@@ -1,10 +1,18 @@
 package fr.openmc.core.features.economy;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
 class EconomyFormattingTest {
+
+    @BeforeAll
+    static void setUpLocale() {
+        Locale.setDefault(Locale.US);
+    }
 
     @Test
     @DisplayName("Format zero balance")
