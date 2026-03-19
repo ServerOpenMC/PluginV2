@@ -104,9 +104,13 @@ public class NotationDialog {
         Component base = Component.empty();
 
         if (notation != null) {
-            String activity = String.format("%.2f/" + NotationNote.NOTE_ACTIVITY.getMaxNote(), Math.round(notation.getNoteActivity() * 100.0) / 100.0);
-            String eco = String.format("%.2f/" + NotationNote.NOTE_PIB.getMaxNote(), Math.round(notation.getNoteEconomy() * 100.0) / 100.0);
-            String military = String.format("%.2f/" + NotationNote.NOTE_MILITARY.getMaxNote(), Math.round(notation.getNoteMilitary() * 100.0) / 100.0);
+            double noteActivity = notation.getNoteActivity() != null ? notation.getNoteActivity() : 0;
+            double noteEconomy = notation.getNoteEconomy() != null ? notation.getNoteEconomy() : 0;
+            double noteMilitary = notation.getNoteMilitary() != null ? notation.getNoteMilitary() : 0;
+
+            String activity = String.format("%.2f/" + NotationNote.NOTE_ACTIVITY.getMaxNote(), Math.round(noteActivity * 100.0) / 100.0);
+            String eco = String.format("%.2f/" + NotationNote.NOTE_PIB.getMaxNote(), Math.round(noteEconomy * 100.0) / 100.0);
+            String military = String.format("%.2f/" + NotationNote.NOTE_MILITARY.getMaxNote(), Math.round(noteMilitary * 100.0) / 100.0);
             String arch = String.format("%.2f/" + NotationNote.NOTE_ARCHITECTURAL.getMaxNote(), Math.round(notation.getNoteArchitectural() * 100.0) / 100.0);
             String coh = String.format("%.2f/" + NotationNote.NOTE_COHERENCE.getMaxNote(), Math.round(notation.getNoteCoherence() * 100.0) / 100.0);
             String total = String.format("%.2f/%.0f", Math.round(notation.getTotalNote() * 100.0) / 100.0, NotationNote.getMaxTotalNote());
@@ -150,13 +154,18 @@ public class NotationDialog {
             return Component.text("Aucun total pour vous");
         }
 
+
+        double noteActivity = notation.getNoteActivity() != null ? notation.getNoteActivity() : 0;
+        double noteEconomy = notation.getNoteEconomy() != null ? notation.getNoteEconomy() : 0;
+        double noteMilitary = notation.getNoteMilitary() != null ? notation.getNoteMilitary() : 0;
+
         return Component.text("§6§lDétails")
                 .appendNewline()
-                .append(Component.text("§8Activité " + notation.getNoteActivity()))
+                .append(Component.text("§8Activité " + noteActivity))
                 .appendNewline()
-                .append(Component.text("§8Économie " + notation.getNoteEconomy()))
+                .append(Component.text("§8Économie " + noteEconomy))
                 .appendNewline()
-                .append(Component.text("§8Militaire " + notation.getNoteMilitary()))
+                .append(Component.text("§8Militaire " + noteMilitary))
                 .appendNewline()
                 .append(Component.text("§8Architecture " + notation.getNoteArchitectural()))
                 .appendNewline()
