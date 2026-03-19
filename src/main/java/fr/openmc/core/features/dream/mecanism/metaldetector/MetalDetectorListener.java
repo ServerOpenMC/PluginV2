@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -85,12 +86,15 @@ public class MetalDetectorListener implements Listener {
 
                 for (ItemStack item : rewards) {
                     player.getInventory().addItem(item);
+
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                            Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))
+                    );
                 }
 
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                         Bukkit.getServer().getPluginManager().callEvent(new MetalDetectorLootEvent(player, rewards))
                 );
-                MessagesManager.sendMessage(player, Component.text("Vous avez découvert §e" + rewards.size() + " §fobjet(s) dans vos rêves !"), Prefix.DREAM, MessageType.SUCCESS, false);
             }
         }
     }

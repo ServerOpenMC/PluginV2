@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PlayerSleepListener implements Listener {
 
     private final Set<Player> isPlayerSleeping = new HashSet<>();
+    private final int DREAM_TELEPORT_DELAY = 20 * 3;
 
     @EventHandler
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
@@ -49,13 +50,27 @@ public class PlayerSleepListener implements Listener {
             }
             for (Player player : isPlayerSleeping) {
                 if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) {
-                    PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SLEEPING);
-                    DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
-                    if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                        DreamManager.tpPlayerDream(player);
-                    } else {
-                        DreamManager.tpPlayerToLastDreamLocation(player);
-                    }
+                    player.addPotionEffect(new PotionEffect(
+                            PotionEffectType.NAUSEA,
+                            DREAM_TELEPORT_DELAY,
+                            1,
+                            false,
+                            false,
+                            true
+                    ));
+
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SLEEPING);
+                            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+                            if(dbDreamPlayer ==null||(dbDreamPlayer.getDreamX()==null||dbDreamPlayer.getDreamY()==null||dbDreamPlayer.getDreamZ()==null)) {
+                                DreamManager.tpPlayerDream(player);
+                            } else {
+                                DreamManager.tpPlayerToLastDreamLocation(player);
+                            }
+                        }
+                    }.runTaskLater(OMCPlugin.getInstance(), DREAM_TELEPORT_DELAY);
                 }
             }
 

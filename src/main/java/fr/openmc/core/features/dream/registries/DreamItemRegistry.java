@@ -159,6 +159,7 @@ public class DreamItemRegistry {
 
     @Nullable
     public static DreamItem getByItemStack(ItemStack stack) {
+        if (stack == null) return null;
         CustomItem ci = CustomItemRegistry.getByItemStack(stack);
 
         if (ci == null) return null;

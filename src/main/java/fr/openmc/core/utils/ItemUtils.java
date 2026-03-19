@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -475,6 +476,7 @@ public class ItemUtils {
         NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
         return meta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
     }
+
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
      * Deux items sont considérés similaires s'ils ont le même type
@@ -534,5 +536,21 @@ public class ItemUtils {
             meta.setHideTooltip(true);
         });
         return item;
+    }
+
+    public static void reduceDurability(ItemStack item, int amount) {
+        if (item == null || item.getType().isAir()) return;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta instanceof Damageable d) {
+            int newDamage = d.getDamage() + amount;
+
+            if (newDamage >= d.getMaxDamage()) {
+                item.setAmount(0);
+            } else {
+                d.setDamage(newDamage);
+                item.setItemMeta(meta);
+            }
+        }
     }
 }

@@ -82,7 +82,9 @@ public class DreamManager {
                 new CloudStructureDispenserListener(),
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
-                new SingularityCraftListener()
+                new SingularityCraftListener(),
+                new PlayerFoodChangeListener(),
+                new DreamLootListener()
         );
 
         // ** MANAGERS **
@@ -91,9 +93,9 @@ public class DreamManager {
         PlayerCloneNpc.init();
         DreamStructuresManager.init();
         DreamItemRegistry.init();
+        DreamLootTableRegistry.init();
         DreamBlocksRegistry.init();
         DreamMobsRegistry.init();
-        DreamLootTableRegistry.init();
         DreamBlocksDropsRegistry.init();
         CloudFishingManager.init();
         MetalDetectorManager.init();
@@ -344,7 +346,7 @@ public class DreamManager {
     }
 
     public static double calculateDreamProbability(Player player) {
-        double base = 0.2;
+        double base = 0.15;
         PlayerInventory inv = player.getInventory();
 
         ItemStack[] armor = {
