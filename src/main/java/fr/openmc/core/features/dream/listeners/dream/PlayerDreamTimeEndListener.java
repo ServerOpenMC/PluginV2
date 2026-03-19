@@ -14,7 +14,7 @@ public class PlayerDreamTimeEndListener implements Listener {
     public void onTimeEnd(DreamEndEvent event) {
         Player player = event.getPlayer();
 
-        PlayerCloneNpc.deleteCloneNpc(PlayerCloneNpc.getCloneNpc(player));
+        PlayerCloneNpc.deleteCloneNpc(player);
         DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
 
         if (dreamPlayer == null) return;

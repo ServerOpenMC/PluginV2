@@ -1,10 +1,12 @@
 package fr.openmc.core.features.dream.mecanism.sfx;
 
-import de.oliver.fancynpcs.api.*;
+import de.oliver.fancynpcs.api.FancyNpcsPlugin;
+import de.oliver.fancynpcs.api.Npc;
+import de.oliver.fancynpcs.api.NpcData;
+import de.oliver.fancynpcs.api.NpcManager;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.OMCPlugin;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -33,7 +35,6 @@ public class PlayerCloneNpc {
      * and removes any NPCs that match the player clone prefix.
      */
     public static void init() {
-        System.out.println("JE SUIS LA BONNE VERSION AHAHAHHAHA");
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
@@ -67,7 +68,7 @@ public class PlayerCloneNpc {
         String npcUUID = prefixNpc + player.getUniqueId();
 
         sleepingLocation = getExactSleepingLocation(sleepingLocation);
-        NpcData data = new NpcData(npcUUID, player.getUniqueId(), sleepingLocation);
+        NpcData data = new NpcData(npcUUID, player.getUniqueId(), sleepingLocation.clone());
 
         // * Set Configure type
         data.setType(EntityType.PLAYER);
@@ -98,10 +99,21 @@ public class PlayerCloneNpc {
 
         // * SFX
         particlesTasks.put(player.getUniqueId(),
-                new CloneParticlesTask(sleepingLocation).runTaskTimer(OMCPlugin.getInstance(), 0L, 40L)
+                new CloneParticlesTask(sleepingLocation.add(0, 1, 0)).runTaskTimer(OMCPlugin.getInstance(), 0L, 40L)
         );
     }
 
+    /**
+     * Deletes the specified clone NPC, removing it from the world and unregistering it from the NPC manager.
+     * @param player The player whose clone NPC should be deleted. If the player does not have a clone NPC, this method will do nothing.
+     */
+    public static void deleteCloneNpc(Player player) {
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
+        Npc npc = getCloneNpc(player);
+        if (npc == null) return;
+
+        deleteCloneNpc(npc);
+    }
 
     /**
      * Deletes the specified clone NPC, removing it from the world and unregistering it from the NPC manager.

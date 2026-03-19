@@ -52,12 +52,11 @@ public class PlayerChangeWorldListener implements Listener {
         player.setHealth(inst.getBaseValue());
 
         // * SFX
+        sendSFX(player);
         if (PlayerCloneNpc.getCloneNpc(player) == null)
             PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SITTING);
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            ParticleUtils.sendParticlePacket(player, Particle.FLASH, player.getLocation().add(0, 1, 0));
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15, 1);
-        }, 20);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                sendSFX(player), 20);
     }
 
     @EventHandler
@@ -78,9 +77,14 @@ public class PlayerChangeWorldListener implements Listener {
         DreamManager.removeDreamPlayer(player, event.getFrom());
 
         // * SFX
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            ParticleUtils.sendParticlePacket(player, Particle.FLASH, player.getLocation().add(0, 1, 0));
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15, 1);
-        }, 20);
+        sendSFX(player);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+            sendSFX(player), 20);
+    }
+
+    private void sendSFX(Player player) {
+        // * SFX
+        ParticleUtils.sendParticlePacket(Particle.FLASH, player.getLocation().add(0, 1, 0), 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15, 1, null);
     }
 }

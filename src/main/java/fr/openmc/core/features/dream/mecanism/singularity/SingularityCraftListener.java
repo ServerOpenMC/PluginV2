@@ -33,12 +33,10 @@ public class SingularityCraftListener implements Listener {
         // * SFX
         World world = player.getWorld();
         world.strikeLightningEffect(player.getLocation());
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.OMINOUS_SPAWNING, 25, 15, 0.5);
-        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 5, 15, 0.2);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.OMINOUS_SPAWNING, 25, 15, 0.1,  null);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 5, 15, 0.05,  null);
         world.playSound(player.getLocation(), "minecraft:entity.wither.death", 1f, 0.1f);
 
         MessagesManager.broadcastMessage(Component.text(player.getName() + " a crafté une Singularité !"), Prefix.DREAM, MessageType.INFO);
-
-
     }
 }
