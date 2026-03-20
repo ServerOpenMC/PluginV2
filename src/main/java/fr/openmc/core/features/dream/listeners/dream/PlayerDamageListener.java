@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.features.dream.DreamUtils;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,9 +17,10 @@ public class PlayerDamageListener implements Listener {
             double fallDistance = player.getFallDistance();
             if (fallDistance < 5) return;
 
-            long secondsLost = (long) (fallDistance * 2);
+            long secondsLost = (long) (fallDistance * 1.5);
 
             DreamUtils.removeDreamTime(player, secondsLost, true);
+            player.playSound(player.getEyeLocation(), Sound.ENTITY_PLAYER_BIG_FALL, 1f, 1f);
 
             event.setCancelled(true);
         }
