@@ -131,7 +131,10 @@ public class CityCreateAction {
 
         // Feedback
 	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.create.free_claim", Component.text(FREE_CLAIMS)), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessage(player,
+                TranslationManager.translation("feature.city.create.free_claim",
+                        Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)),
+                Prefix.CITY, MessageType.INFO, false);
 
         DynamicCooldownManager.use(playerUUID, "city:big", 60000);
         DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);

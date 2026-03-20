@@ -36,22 +36,25 @@ public class CityInviteConditions {
 		}
 		
 		if (!(city.hasPermission(player.getUniqueId(), CityPermission.INVITE))) {
-			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'inviter des joueurs dans la ville"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.invite.no_permission"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 		
 		if (CityManager.getPlayerCity(target.getUniqueId()) != null) {
-			MessagesManager.sendMessage(player, Component.text("Cette personne est déjà dans une ville"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.invite.target_already_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 
 		if (!PlayerSettingsManager.canReceiveCityInvite(player.getUniqueId(), target.getUniqueId())) {
-			MessagesManager.sendMessage(player, Component.text("§cCette personne ne peut pas recevoir d'invitation"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.invite.target_cant_receive"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 
         if (city.getMembers().size() >= MemberLimitRewards.getMemberLimit(city.getLevel())) {
-	        MessagesManager.sendMessage(player, Component.text("§cVous avez atteint la limite de membre qui est de §3" + MemberLimitRewards.getMemberLimit(city.getLevel()) + "§f, Améliorez votre ville au niveau supérieur !"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.invite.member_limit_reached",
+                    Component.text(MemberLimitRewards.getMemberLimit(city.getLevel()))
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -68,12 +71,12 @@ public class CityInviteConditions {
 		List<Player> playerInvitations = CityInviteCommands.invitations.get(player);
 
 		if (playerInvitations == null) {
-			MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 
 		if (!playerInvitations.contains(inviter)) {
-			MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.not_invited", Component.text(inviter.getName())), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 		
@@ -90,12 +93,12 @@ public class CityInviteConditions {
 	 */
 	public static boolean canCityInviteAccept(City newCity, Player inviter, Player invitedPlayer) {
 		if (!CityInviteCommands.invitations.containsKey(invitedPlayer)) {
-			MessagesManager.sendMessage(invitedPlayer, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(invitedPlayer, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 		
 		if (newCity == null) {
-			MessagesManager.sendMessage(invitedPlayer, Component.text("L'invitation a expiré"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(invitedPlayer, TranslationManager.translation("feature.city.conditions.invite.expired"), Prefix.CITY, MessageType.ERROR, false);
 
 			List<Player> playerInvitations = CityInviteCommands.invitations.get(invitedPlayer);
 			playerInvitations.remove(inviter);
@@ -106,7 +109,7 @@ public class CityInviteConditions {
 		}
 
         if (newCity.getMembers().size() >= MemberLimitRewards.getMemberLimit(newCity.getLevel())) {
-            MessagesManager.sendMessage(invitedPlayer, Component.text("La ville a atteint sa limite de membre"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(invitedPlayer, TranslationManager.translation("feature.city.conditions.invite.city_member_limit_reached"), Prefix.CITY, MessageType.ERROR, false);
 
             List<Player> playerInvitations = CityInviteCommands.invitations.get(invitedPlayer);
             playerInvitations.remove(inviter);
