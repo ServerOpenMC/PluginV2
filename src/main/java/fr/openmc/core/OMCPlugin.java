@@ -132,7 +132,8 @@ public class OMCPlugin extends JavaPlugin {
         TPAQueue.initCommand();
         FreezeManager.init();
         QuestProgressSaveManager.init();
-        TabList.init();
+        if (!isUnitTestVersion())
+            TabList.init();
         AdminShopManager.init();
         BossbarManager.init();
         AnimationsManager.init();
