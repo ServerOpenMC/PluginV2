@@ -67,7 +67,7 @@ public class AdminCityCommands {
         List<City> sub = all.subList(start, end);
         MessagesManager.sendMessage(
                 player,
-                TranslationManager.translation("feature.city.admin.commands.list.header", Component.text(page), Component.text(maxPage)),
+                TranslationManager.translation("feature.city.admin.commands.list.header", Component.text(page), Component.text(maxPage)).color(NamedTextColor.GOLD),
                 Prefix.STAFF,
                 MessageType.SUCCESS,
                 false
