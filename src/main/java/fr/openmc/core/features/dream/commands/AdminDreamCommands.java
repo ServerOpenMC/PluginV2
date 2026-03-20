@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.commands;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.dream.listeners.orb.PlayerObtainOrb;
+import fr.openmc.core.features.dream.listeners.dream.PlayerObtainOrb;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import org.bukkit.entity.Player;

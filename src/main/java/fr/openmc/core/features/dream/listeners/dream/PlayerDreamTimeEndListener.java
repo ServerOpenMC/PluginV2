@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
+import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ public class PlayerDreamTimeEndListener implements Listener {
     public void onTimeEnd(DreamEndEvent event) {
         Player player = event.getPlayer();
 
+        PlayerCloneNpc.deleteCloneNpc(player);
         DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
 
         if (dreamPlayer == null) return;
