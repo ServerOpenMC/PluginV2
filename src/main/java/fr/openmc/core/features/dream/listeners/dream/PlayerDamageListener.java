@@ -20,7 +20,7 @@ public class PlayerDamageListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity victim = event.getEntity();
         Entity damager = event.getDamager();
