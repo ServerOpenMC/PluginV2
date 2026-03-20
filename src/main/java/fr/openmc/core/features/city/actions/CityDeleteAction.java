@@ -10,6 +10,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -40,18 +41,21 @@ public class CityDeleteAction {
                     }
 
                     CityManager.deleteCity(city);
-                    MessagesManager.sendMessage(player, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, MessageType.SUCCESS, false);
 
                     DynamicCooldownManager.use(uuid, "city:big", 60000); // 1 minute
                     player.closeInventory();
                 },
                 player::closeInventory,
                 List.of(
-                        Component.text("§7Voulez vous vraiment dissoudre la ville " + city.getName() + " ?"),
-                        Component.text("§cCette action est §4§lIRREVERSIBLE")
+                        TranslationManager.translation(
+                                "feature.city.delete.confirm.lore",
+                                Component.text(city.getName()).color(NamedTextColor.GRAY)
+                        ),
+                        TranslationManager.translation("feature.city.delete.confirm.warning")
                 ),
                 List.of(
-                        Component.text("§7Ne pas supprimer la ville")
+                        TranslationManager.translation("feature.city.delete.confirm.deny")
                 )
         );
         menu.open();
