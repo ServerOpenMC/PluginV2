@@ -14,6 +14,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -70,7 +71,7 @@ public class CityTransferMenu extends PaginatedMenu {
                     ));
                 }).setOnClick(inventoryClickEvent -> {
                     if (!hasPermissionOwner) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.CITY_ISNT_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_isnt_owner"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 
@@ -112,8 +113,8 @@ public class CityTransferMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Transférer";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Transférer");
     }
 
     @Override

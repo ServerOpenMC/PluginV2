@@ -17,6 +17,7 @@ import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,8 +39,8 @@ public class CityModifyMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Modifier";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Modifier");
     }
 
     @Override
@@ -81,7 +82,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreRename = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -118,7 +119,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreTransfer = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -158,7 +159,7 @@ public class CityModifyMenu extends Menu {
                     }
                 } else {
                     loreDelete = List.of(
-                            MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                            TranslationManager.translation("messages.global.cannot_do_this")
                     );
                 }
                 return new ItemBuilder(this, Material.TNT, itemMeta -> {

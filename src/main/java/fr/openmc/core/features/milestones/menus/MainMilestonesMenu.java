@@ -28,8 +28,8 @@ public class MainMilestonesMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des milestones - Plus d'info";
+    public @NotNull Component getName() {
+        return Component.text("Menu des milestones - Plus d'info");
     }
 
     @Override

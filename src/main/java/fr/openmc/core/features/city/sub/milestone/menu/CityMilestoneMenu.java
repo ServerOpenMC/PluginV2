@@ -36,8 +36,8 @@ public class CityMilestoneMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Villes - Levels";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Villes - Levels");
     }
 
     @Override

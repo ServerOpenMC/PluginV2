@@ -14,6 +14,7 @@ import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -57,7 +58,7 @@ public class CityBankManager {
 
         if (!EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
             MessagesManager.sendMessage(player,
-                    MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
+                    TranslationManager.translation("messages.global.player_missing_money"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }

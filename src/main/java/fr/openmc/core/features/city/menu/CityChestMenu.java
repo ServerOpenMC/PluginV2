@@ -102,12 +102,8 @@ public class CityChestMenu extends PaginatedMenu {
 
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
-        }, true).setOnClick(inventoryClickEvent -> {
-            exit(city, getInventory());
-        }));
+        map.put(45, new ItemBuilder(this, Material.ARROW, true).setOnClick(inventoryClickEvent ->
+                exit(city, getInventory())));
 
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
@@ -173,8 +169,8 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu du coffre de " + this.city.getName() + " - Page " + this.page;
+    public @NotNull Component getName() {
+	    return Component.text("Menu du coffre de " + this.city.getName() + " - Page " + this.page);
     }
 
     @Override

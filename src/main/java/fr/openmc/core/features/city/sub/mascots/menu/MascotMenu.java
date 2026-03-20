@@ -19,6 +19,7 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -55,8 +56,8 @@ public class MascotMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu de §cmascotte (niv. " + city.getMascot().getLevel() + ")";
+    public @NotNull Component getName() {
+	    return Component.text("Menu de §cmascotte (niv. " + city.getMascot().getLevel() + ")");
     }
 
     @Override
@@ -100,7 +101,7 @@ public class MascotMenu extends Menu {
                 .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
                 .setOnClick(inventoryClickEvent -> {
                     if (!city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_SKIN)) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
                     }
@@ -135,7 +136,7 @@ public class MascotMenu extends Menu {
                             return;
                         }
                         if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.MASCOT_MOVE)) {
-                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                             return;
                         }
 
@@ -146,7 +147,7 @@ public class MascotMenu extends Menu {
 
                         city = CityManager.getPlayerCity(getOwner().getUniqueId());
                         if (city == null) {
-                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                             getOwner().closeInventory();
                             return;
                         }
@@ -173,8 +174,8 @@ public class MascotMenu extends Menu {
                                 mascotsMoveItem,
                                 "mascots:moveInteraction",
                                 120,
-		                        "Temps restant : %sec%s",
-		                        "§cDéplacement de la mascotte annulée",
+                                Component.text("Temps restant : %sec%s"),
+                                Component.text("§cDéplacement de la mascotte annulée"),
                                 mascotMove -> {
                                     if (mascotMove == null) return true;
                                     if (!movingMascots.contains(cityUUID)) return false;
@@ -240,7 +241,7 @@ public class MascotMenu extends Menu {
                     if (currentMascotLevel >= maxMascotLevel) return;
 
                     if (city == null) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
                     }
@@ -256,7 +257,7 @@ public class MascotMenu extends Menu {
                         MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
 
                     } else {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                     }
                     player.closeInventory();
                 }));
@@ -282,7 +283,7 @@ public class MascotMenu extends Menu {
                     itemMeta.lore(lore);
                 }).setOnClick(inventoryClickEvent -> {
                     if (city == null) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
                     }

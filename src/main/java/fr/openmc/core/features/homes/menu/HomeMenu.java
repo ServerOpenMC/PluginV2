@@ -57,8 +57,8 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Homes";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Homes");
     }
 
     @Override

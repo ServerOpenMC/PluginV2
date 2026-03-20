@@ -32,8 +32,8 @@ public class CityRanksMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu de la Ville - Grades";
+	public @NotNull Component getName() {
+		return Component.text("Menu de la Ville - Grades");
 	}
 	
 	@Override

@@ -162,8 +162,8 @@ public class MayorVoteMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Votes";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des maires - Votes");
     }
 
     @Override

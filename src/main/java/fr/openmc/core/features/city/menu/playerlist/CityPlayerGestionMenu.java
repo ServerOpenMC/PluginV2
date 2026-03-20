@@ -11,7 +11,7 @@ import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.SkullUtils;
-import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -34,8 +34,8 @@ public class CityPlayerGestionMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Modifier un joueur";
+    public @NotNull Component getName() {
+	    return Component.text("Menu des villes - Modifier un joueur");
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CityPlayerGestionMenu extends Menu {
             }
         } else {
             loreKick = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 
@@ -126,7 +126,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         } else {
             lorePermission = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    TranslationManager.translation("messages.global.cannot_do_this")
             );
         }
 

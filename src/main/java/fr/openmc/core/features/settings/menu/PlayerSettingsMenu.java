@@ -93,8 +93,8 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des paramètres";
+    public @NotNull Component getName() {
+        return Component.text("Menu des paramètres");
     }
 
     @Override

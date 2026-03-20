@@ -226,7 +226,7 @@ public class ItemBuilder extends ItemStack {
 			setOnClick(clickEventConsumer);
 			return this;
 		} catch (Exception e) {
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
 			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the close button: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
 		}
@@ -255,7 +255,7 @@ public class ItemBuilder extends ItemStack {
 
 			return this;
 		} catch (Exception e) {
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
 			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the next page button: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
 		}
@@ -283,7 +283,7 @@ public class ItemBuilder extends ItemStack {
 			return this;
 		} catch (Exception e) {
 			itemMenu.getOwner().closeInventory();
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
 			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the previous page button: {}", e.getMessage(), e);
 		}
 		return this;
@@ -342,7 +342,7 @@ public class ItemBuilder extends ItemStack {
 			meta = itemMeta;
 			return super.setItemMeta(itemMeta);
 		} catch (Exception e) {
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
 			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the item meta: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
 		}

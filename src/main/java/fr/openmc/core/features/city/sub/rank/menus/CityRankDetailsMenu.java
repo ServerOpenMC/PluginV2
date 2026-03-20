@@ -50,8 +50,9 @@ public class CityRankDetailsMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return city.isRankExists(oldRank) ? "Menu des détails du grade " + oldRank.getName() : "Menu de création du grade  " + newRank.getName();
+	public @NotNull Component getName() {
+		return city.isRankExists(oldRank) ? Component.text("Menu des détails du grade " + oldRank.getName()) :
+				Component.text("Menu de création du grade  " + newRank.getName());
 	}
 	
 	@Override

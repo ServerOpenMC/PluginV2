@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -26,7 +27,7 @@ public class CityRankCondition {
      */
     public static boolean canCreateRank(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -36,11 +37,11 @@ public class CityRankCondition {
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.max_reach"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
@@ -55,7 +56,7 @@ public class CityRankCondition {
      */
     public static boolean canRenameRank(City city, Player player, String oldRankName) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -66,19 +67,19 @@ public class CityRankCondition {
 
         DBCityRank rank = city.getRankByName(oldRankName);
         if (rank == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_exist"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         if (!canModifyRankPermissions(city, player, rank.getPriority())) {
             return false;
         }
         if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.max_reach"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
@@ -98,18 +99,18 @@ public class CityRankCondition {
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         
         DBCityRank rank = city.getRankByName(rankName);
         if (rank == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_exist"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -120,7 +121,7 @@ public class CityRankCondition {
         if (city.getRankOfMember(player.getUniqueId()) == null) return true;
         
         if (city.getRankOfMember(player.getUniqueId()).getPriority() >= rankPriority) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_CANNOT_MODIFY_HIGHER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.cannot_modify_sup_role"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

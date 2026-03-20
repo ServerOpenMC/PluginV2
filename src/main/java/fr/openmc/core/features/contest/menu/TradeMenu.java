@@ -37,8 +37,8 @@ public class TradeMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Contests - Échanges";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Contests - Échanges");
     }
 
     @Override

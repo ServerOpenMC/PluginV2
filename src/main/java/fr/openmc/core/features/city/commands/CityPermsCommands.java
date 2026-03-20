@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -28,12 +29,12 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -60,12 +61,12 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -92,12 +93,12 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -129,12 +130,12 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
@@ -153,11 +154,11 @@ public class CityPermsCommands {
         
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
