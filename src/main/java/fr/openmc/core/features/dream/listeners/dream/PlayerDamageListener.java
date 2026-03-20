@@ -7,13 +7,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class PlayerDamageListener implements Listener {
-
     @EventHandler
     public void onFall(EntityDamageEvent event) {
         if (event.getCause() != EntityDamageEvent.DamageCause.FALL) return;
         if (!(event.getEntity() instanceof Player player)) return;
 
         if (DreamUtils.isInDream(player)) {
+            double fallDistance = player.getFallDistance();
+            if (fallDistance < 5) return;
+
+            long secondsLost = (long) (fallDistance * 2);
+
+            DreamUtils.removeDreamTime(player, secondsLost, true);
+
             event.setCancelled(true);
         }
     }
