@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class Singularity extends DreamItem implements UsableItem {
     public Singularity(String name) {
@@ -31,7 +32,7 @@ public class Singularity extends DreamItem implements UsableItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.HEART_OF_THE_SEA);
 
         item.getItemMeta().itemName(Component.text("Singularité"));
