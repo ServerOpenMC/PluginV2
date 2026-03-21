@@ -78,7 +78,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-        if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS)) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -105,7 +105,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+		if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS)) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -132,7 +132,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+		if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS)) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}

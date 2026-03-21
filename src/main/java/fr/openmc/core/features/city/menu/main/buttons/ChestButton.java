@@ -39,7 +39,7 @@ public class ChestButton {
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
-        boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CityPermission.CHEST);
+        boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CityPermission.ACCESS_CITY_CHEST);
         List<Component> lore;
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CHEST)) {
             lore = List.of(

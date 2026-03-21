@@ -33,13 +33,13 @@ public class CityTypeConditions {
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE))) {
 	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.type.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.getType().equals(toType)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.type.already_in_type", Component.text(toType.getName())), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.type.already_in_type", toType.getDisplayName()), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

@@ -113,7 +113,7 @@ public class WarCityDetailsMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> new WarPlayerListMenu(player, city).open()));
 
         map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
-                itemMeta -> itemMeta.displayName(Component.text("§7Type : " + city.getType().getName()))));
+                itemMeta -> itemMeta.displayName(Component.text("§7Type : " + city.getType().getDisplayName()))));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));

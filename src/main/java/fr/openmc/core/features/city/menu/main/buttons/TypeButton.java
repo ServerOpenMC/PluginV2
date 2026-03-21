@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.utils.DateUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -43,17 +44,17 @@ public class TypeButton {
             meta.lore(getDynamicLore(city, player));
             meta.setItemModel(NamespacedKey.minecraft("air"));
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) return;
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE))) return;
 
             new CityTypeMenu(player).open();
         });
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
-        boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.TYPE);
+        boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE);
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("§7Votre ville est en §5" + city.getType().getDisplayName().toLowerCase(Locale.ROOT)));
+        lore.add(Component.text("§7Votre ville est en §5" + PlainTextComponentSerializer.plainText().serialize(city.getType().getDisplayName()).toLowerCase(Locale.ROOT)));
 
         if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
             lore.add(Component.empty());

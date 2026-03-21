@@ -62,7 +62,7 @@ public class CityPlayerGestionMenu extends Menu {
         assert city != null;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
-        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.PERMS);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS);
 
         List<Component> loreKick;
 

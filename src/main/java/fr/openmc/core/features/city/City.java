@@ -28,6 +28,7 @@ import fr.openmc.core.utils.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -794,13 +795,17 @@ public class City {
         
         DBCityRank currentRank = getRankOfMember(playerUUID);
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
-        
+
         if (currentRank != null) {
             currentRank.removeMember(playerUUID);
             for (CityPermission permission : currentRank.getPermissionsSet()) {
                 removePermission(playerUUID, permission);
             }
-            MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(sender,
+                    TranslationManager.translation("feature.city.grade.remove_grade",
+                            Component.text(currentRank.getName()).color(NamedTextColor.YELLOW),
+                            Component.text(player.getName())).color(NamedTextColor.GOLD),
+                    Prefix.CITY, MessageType.SUCCESS, true);
         }
         
         if (currentRank != newRank) {
@@ -808,7 +813,12 @@ public class City {
             for (CityPermission permission : newRank.getPermissionsSet()) {
                 addPermission(playerUUID, permission);
             }
-            MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(sender,
+                    TranslationManager.translation("feature.city.grade.assign_grade",
+                            Component.text(newRank.getName()).color(NamedTextColor.YELLOW),
+                            Component.text(player.getName()).color(NamedTextColor.GOLD)
+                    ),
+                    Prefix.CITY, MessageType.SUCCESS, true);
         }
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

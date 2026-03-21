@@ -47,7 +47,7 @@ public class CityChestConditions {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CityPermission.CHEST)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.ACCESS_CITY_CHEST)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.chest.open.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -75,7 +75,7 @@ public class CityChestConditions {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CityPermission.CHEST_UPGRADE)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.UPGRADE_CHEST)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.chest.upgrade.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

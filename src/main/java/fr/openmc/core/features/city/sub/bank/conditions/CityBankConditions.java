@@ -54,7 +54,7 @@ public class CityBankConditions {
 
         if (!canOpenCityBank(city, player)) return false;
 
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -94,7 +94,7 @@ public class CityBankConditions {
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent de ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
