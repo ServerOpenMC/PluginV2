@@ -59,7 +59,7 @@ public class CityBankWithdrawMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE);
+        boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW);
 
         double moneyBankCity = city.getBalance();
         double halfMoneyBankCity = moneyBankCity / 2;

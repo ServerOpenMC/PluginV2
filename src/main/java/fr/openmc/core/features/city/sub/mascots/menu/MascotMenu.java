@@ -100,7 +100,7 @@ public class MascotMenu extends Menu {
         })
                 .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
                 .setOnClick(inventoryClickEvent -> {
-                    if (!city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_SKIN)) {
+                    if (!city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_CHANGE_SKIN)) {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;

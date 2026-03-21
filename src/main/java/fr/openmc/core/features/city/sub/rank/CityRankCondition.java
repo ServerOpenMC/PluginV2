@@ -98,7 +98,7 @@ public class CityRankCondition {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

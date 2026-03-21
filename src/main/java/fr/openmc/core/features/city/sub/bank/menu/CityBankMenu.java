@@ -63,7 +63,7 @@ public class CityBankMenu extends Menu {
 
         List<Component> loreBankDeposit;
 
-        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE)) {
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT)) {
             loreBankDeposit = List.of(
 		            Component.text("§7Votre argent sera placé dans la §6banque de la ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
@@ -78,7 +78,7 @@ public class CityBankMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer de l'§6Argent"));
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE))) {
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT))) {
                 MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -104,7 +104,7 @@ public class CityBankMenu extends Menu {
 
         List<Component> loreBankTake;
 
-        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE)) {
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW)) {
             loreBankTake = List.of(
 		            Component.text("§7L'argent sera pris dans la §6Banque de la ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
@@ -119,7 +119,7 @@ public class CityBankMenu extends Menu {
 	        itemMeta.itemName(Component.text("§7Retirer de l'§6argent"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE))) {
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW))) {
                 MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }

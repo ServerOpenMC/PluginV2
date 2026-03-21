@@ -95,7 +95,7 @@ public class NotationDialog {
 
         Component hoverCityName = Component.text("§7Niveau de la mascotte : §c" + city.getMascot().getLevel())
                 .append(Component.newline())
-                .append(Component.text("§7Statut : " + city.getType().getName()))
+                .append(Component.text("§7Statut : " + city.getType().getDisplayName()))
                 .append(Component.newline())
                 .append(Component.text("§7Membres : §2" + city.getMembers().size()))
                 .append(Component.newline())

@@ -59,7 +59,7 @@ public class CityBankDepositMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE);
+        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT);
 
         double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer / 2;
