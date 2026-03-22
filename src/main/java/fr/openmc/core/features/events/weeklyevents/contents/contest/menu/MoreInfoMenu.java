@@ -1,10 +1,12 @@
-package fr.openmc.core.features.contest.menu;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.events.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.ContestPhase;
+import fr.openmc.core.features.events.weeklyevents.models.WeeklyEventPhase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -68,10 +70,10 @@ public class MoreInfoMenu extends Menu {
         );
 
 
-            int phase = ContestManager.data.getPhase();
+        WeeklyEventPhase phase = WeeklyEventsManager.getCurrentPhase();
 
-        boolean ench0 = phase == 2;
-        boolean ench1 = phase == 3;
+        boolean ench0 = phase == ContestPhase.VOTE_CAMP.getPhase();
+        boolean ench1 = phase == ContestPhase.TRADE_PHASE.getPhase();
 
         inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(Component.text("§r§1Les votes - Vendredi"));

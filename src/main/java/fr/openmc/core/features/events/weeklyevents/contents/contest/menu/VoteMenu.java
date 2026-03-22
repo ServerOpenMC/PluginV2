@@ -1,12 +1,12 @@
-package fr.openmc.core.features.contest.menu;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.models.ContestPlayer;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.managers.ContestManager;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

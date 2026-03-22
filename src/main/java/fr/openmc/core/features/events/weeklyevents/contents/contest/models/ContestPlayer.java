@@ -1,4 +1,4 @@
-package fr.openmc.core.features.contest.models;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

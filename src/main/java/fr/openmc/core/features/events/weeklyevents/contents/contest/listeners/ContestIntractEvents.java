@@ -1,4 +1,4 @@
-package fr.openmc.core.features.contest.listeners;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.listeners;
 
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import org.bukkit.Bukkit;

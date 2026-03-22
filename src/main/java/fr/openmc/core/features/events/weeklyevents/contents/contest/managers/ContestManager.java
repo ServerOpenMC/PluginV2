@@ -1,4 +1,4 @@
-package fr.openmc.core.features.contest.managers;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.managers;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -8,21 +8,20 @@ import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.contest.ContestEndEvent;
-import fr.openmc.core.features.contest.commands.ContestCommand;
-import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
-import fr.openmc.core.features.contest.menu.ContributionMenu;
-import fr.openmc.core.features.contest.menu.MoreInfoMenu;
-import fr.openmc.core.features.contest.menu.TradeMenu;
-import fr.openmc.core.features.contest.menu.VoteMenu;
-import fr.openmc.core.features.contest.models.Contest;
-import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.commands.ContestCommand;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.events.ContestEndEvent;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.listeners.ContestIntractEvents;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.menu.ContributionMenu;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.menu.MoreInfoMenu;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.menu.TradeMenu;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.menu.VoteMenu;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.models.ContestData;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -42,7 +41,6 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -51,11 +49,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent
 
 public class ContestManager {
 
-    private static final DayOfWeek START_CONTEST_DAY = DayOfWeek.FRIDAY;
-    private static final DayOfWeek START_TRADE_CONTEST_DAY = DayOfWeek.SATURDAY;
-    private static final DayOfWeek END_CONTEST_DAY = DayOfWeek.MONDAY;
-
-    public static Contest data;
+    public static ContestData data;
     public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
     private static final List<String> colorContest = Arrays.asList(
@@ -94,19 +88,14 @@ public class ContestManager {
         );
 
         // ** MANAGER EXTERNE **
-        new TradeYMLManager();
+        TradeYMLManager.init();
 
         // ** LOAD DATAS **
         initContestData();
         loadContestPlayerData();
-
-        // ** SCHEDULE TASK **
-        scheduleStartContest();
-        scheduleStartTradeContest();
-        scheduleEndContest();
     }
 
-    private static Dao<Contest, Integer> contestDao;
+    private static Dao<ContestData, Integer> contestDao;
     private static Dao<ContestPlayer, UUID> playerDao;
 
     /**
@@ -114,8 +103,8 @@ public class ContestManager {
      * (création des tables si elles n’existent pas encore)
      */
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Contest.class);
-        contestDao = DaoManager.createDao(connectionSource, Contest.class);
+        TableUtils.createTableIfNotExists(connectionSource, ContestData.class);
+        contestDao = DaoManager.createDao(connectionSource, ContestData.class);
 
         TableUtils.createTableIfNotExists(connectionSource, ContestPlayer.class);
         playerDao = DaoManager.createDao(connectionSource, ContestPlayer.class);
@@ -129,7 +118,7 @@ public class ContestManager {
         try {
             data = contestDao.queryForFirst();
             if (data == null) {
-                data = new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0);
+                data = new ContestData("Mayonnaise", "Ketchup", "YELLOW", "RED", 0, 0);
                 contestDao.create(data);
             }
         } catch (SQLException e) {
@@ -180,7 +169,7 @@ public class ContestManager {
      */
     public static void clearDB() {
         try {
-            TableUtils.clearTable(DatabaseManager.getConnectionSource(), Contest.class);
+            TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestData.class);
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -194,7 +183,6 @@ public class ContestManager {
      * - Diffuse un message et joue un son aux joueurs connectés
      */
     public static void initPhase1() {
-        data.setPhase(2);
         ParticleUtils.color1 = null;
         ParticleUtils.color2 = null;
 
@@ -230,8 +218,6 @@ public class ContestManager {
             TradeYMLManager.updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
-        data.setPhase(3);
-
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
@@ -256,8 +242,6 @@ public class ContestManager {
      * - Réinitialise les données en DB pour le prochain contest
      */
     public static void initPhase3() {
-        data.setPhase(4);
-
         ParticleUtils.color1 = null;
         ParticleUtils.color2 = null;
 
@@ -571,60 +555,6 @@ public class ContestManager {
      * Insère un contest personnalisé dans la DB avec 2 camps et leurs couleurs.
      */
     public static void insertCustomContest(String camp1, String color1, String camp2, String color2) {
-        data = new Contest(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
-    }
-
-    /**
-     * Programme le lancement de la phase 1 (votes) chaque vendredi à minuit.
-     */
-    private static void scheduleStartContest() {
-        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_CONTEST_DAY) * 20;
-
-        if (data.getPhase() == 1 && DateUtils.getCurrentDayOfWeek().equals(START_CONTEST_DAY)) {
-            ContestManager.initPhase1();
-        }
-
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            if (data.getPhase() != 1) return;
-
-            ContestManager.initPhase1();
-            scheduleStartContest();
-        }, delayInTicks);
-    }
-
-    /**
-     * Programme le lancement de la phase 2 (contributions) chaque samedi à minuit.
-     */
-    private static void scheduleStartTradeContest() {
-        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_TRADE_CONTEST_DAY) * 20;
-
-        if (data.getPhase() == 2 && DateUtils.getCurrentDayOfWeek().equals(START_TRADE_CONTEST_DAY)) {
-            ContestManager.initPhase2();
-        }
-
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            if (data.getPhase() != 2) return;
-
-            ContestManager.initPhase2();
-            scheduleStartTradeContest();
-        }, delayInTicks);
-    }
-
-    /**
-     * Programme la fin du contest (phase 3) chaque lundi à minuit.
-     */
-    private static void scheduleEndContest() {
-        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(END_CONTEST_DAY) * 20;
-
-        if (data.getPhase() == 3 && DateUtils.getCurrentDayOfWeek().equals(END_CONTEST_DAY)) {
-            ContestManager.initPhase3();
-        }
-
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            if (data.getPhase() != 3) return;
-
-            ContestManager.initPhase3();
-            scheduleEndContest();
-        }, delayInTicks);
+        data = new ContestData(camp1, camp2, color1, color2, 0, 0);
     }
 }
