@@ -1,6 +1,6 @@
-package fr.openmc.core.features.contest;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.events;
 
-import fr.openmc.core.features.contest.models.Contest;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.models.ContestData;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -19,7 +19,7 @@ public class ContestEndEvent extends Event {
     /**
      * Les données associées au contest.
      */
-    private final Contest contestData;
+    private final ContestData contestData;
 
     /**
      * Liste statique des handlers pour l'événement.
@@ -43,7 +43,7 @@ public class ContestEndEvent extends Event {
      * @param winners     La liste des gagnants
      * @param losers      La liste des perdants
      */
-    public ContestEndEvent(Contest contestData, List<UUID> winners, List<UUID> losers) {
+    public ContestEndEvent(ContestData contestData, List<UUID> winners, List<UUID> losers) {
         this.contestData = contestData;
         this.winners = winners;
         this.losers = losers;

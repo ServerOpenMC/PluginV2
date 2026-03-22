@@ -1,7 +1,7 @@
-package fr.openmc.core.features.contest.managers;
+package fr.openmc.core.features.events.weeklyevents.contents.contest.managers;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.contest.models.Contest;
+import fr.openmc.core.features.events.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.utils.YmlUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,7 +33,7 @@ public class TradeYMLManager {
      * Constructeur de TradeYMLManager.
      * Initialise le fichier contest.yml et charge sa configuration.
      */
-    public TradeYMLManager() {
+    public static void init() {
         contestFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "contest.yml");
         loadContestConfig();
     }
@@ -197,13 +197,11 @@ public class TradeYMLManager {
         Random random = new Random();
         Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
 
-        ContestManager.data = new Contest(
+        ContestManager.data = new ContestData(
                 (String) selectedContest.get("camp1"),
                 (String) selectedContest.get("camp2"),
                 (String) selectedContest.get("color1"),
                 (String) selectedContest.get("color2"),
-                1,
-                "ven.",
                 0,
                 0
         );
