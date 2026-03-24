@@ -25,6 +25,7 @@ import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
@@ -161,6 +162,7 @@ public class OMCPlugin extends JavaPlugin {
 	    QuestsManager.init();
         CityManager.init();
         ContestManager.init();
+        WeeklyEventsManager.init();
         DreamManager.init();
         MultiBlockManager.init();
         if (WorldGuardHook.isHasWorldGuard()) {

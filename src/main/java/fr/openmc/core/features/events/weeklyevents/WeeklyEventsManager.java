@@ -32,10 +32,7 @@ public class WeeklyEventsManager {
      * Au restart : si on est déjà le bon jour pour la phase courante et que l'event
      * était actif, on relance l'action immédiatement.
      */
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
-        dao = DaoManager.createDao(connectionSource, WeeklyEventsData.class);
-        TableUtils.createTableIfNotExists(connectionSource, WeeklyEventsData.class);
-
+    public static void init() {
         data = load();
 
         WeeklyEventPhase currentPhase = getCurrentPhase();
@@ -45,6 +42,14 @@ public class WeeklyEventsManager {
         }
 
         scheduleNextPhase();
+    }
+
+    /**
+     * Initialise la BDD : crée la table si nécessaire, charge les données, gère le cas restart
+     */
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+        dao = DaoManager.createDao(connectionSource, WeeklyEventsData.class);
+        TableUtils.createTableIfNotExists(connectionSource, WeeklyEventsData.class);
     }
 
     /**
