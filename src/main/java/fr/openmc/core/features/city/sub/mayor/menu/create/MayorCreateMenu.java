@@ -15,6 +15,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -43,7 +44,7 @@ public class MayorCreateMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-	    return Component.text("Menu des maires - Creation");
+        return TranslationManager.translation("feature.city.mayor.menu.create.name");
     }
 
     @Override
@@ -81,15 +82,11 @@ public class MayorCreateMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk1;
             if (perk1 == null) {
-                lorePerk1 = List.of(
-		                Component.text("§7Choissiez §3votre réforme §7que vous voulez voir !"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                );
+                lorePerk1 = TranslationManager.translationLore("feature.city.mayor.menu.create.perk.choose.lore");
             } else {
                 lorePerk1 = new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey()));
                 lorePerk1.add(Component.empty());
-                lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
+                lorePerk1.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
             inventory.put(22, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(namePerk1);
@@ -101,11 +98,8 @@ public class MayorCreateMenu extends Menu {
                     }));
 
             inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(
-		                Component.text("§7Vous allez retourner au menu des élections"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
+                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
+                itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
             }, true));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
@@ -115,15 +109,11 @@ public class MayorCreateMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk2;
             if (perk2 == null) {
-                lorePerk2 = List.of(
-		                Component.text("§7Choissiez §3votre réforme §7que vous voulez voir !"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                );
+                lorePerk2 = TranslationManager.translationLore("feature.city.mayor.menu.create.perk.choose.lore");
             } else {
                 lorePerk2 = new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey()));
                 lorePerk2.add(Component.empty());
-                lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
+                lorePerk2.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
             inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(namePerk2);
@@ -139,15 +129,11 @@ public class MayorCreateMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk3;
             if (perk3 == null) {
-                lorePerk3 = List.of(
-		                Component.text("§7Choissiez §3votre réforme §7que vous voulez voir !"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                );
+                lorePerk3 = TranslationManager.translationLore("feature.city.mayor.menu.create.perk.choose.lore");
             } else {
                 lorePerk3 = new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey()));
                 lorePerk3.add(Component.empty());
-                lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
+                lorePerk3.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(namePerk3);
@@ -159,11 +145,8 @@ public class MayorCreateMenu extends Menu {
                     }));
 
             inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(
-		                Component.text("§7Vous allez retourner au menu des élections"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
+                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
+                itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
             }).setOnClick(inventoryClickEvent -> {
                 MayorElectionMenu menu = new MayorElectionMenu(player);
                 menu.open();
@@ -176,15 +159,11 @@ public class MayorCreateMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk1;
             if (perk1 == null) {
-                lorePerk1 = List.of(
-		                Component.text("§7Choissiez §3votre réforme §7que vous voulez voir !"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                );
+                lorePerk1 = TranslationManager.translationLore("feature.city.mayor.menu.create.perk.choose.lore");
             } else {
                 lorePerk1 = new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey()));
                 lorePerk1.add(Component.empty());
-                lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
+                lorePerk1.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
             inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(namePerk1);
@@ -200,15 +179,11 @@ public class MayorCreateMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk2;
             if (perk2 == null) {
-                lorePerk2 = List.of(
-		                Component.text("§7Choissiez §3votre réforme §7que vous voulez voir !"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                );
+                lorePerk2 = TranslationManager.translationLore("feature.city.mayor.menu.create.perk.choose.lore");
             } else {
                 lorePerk2 = new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey()));
                 lorePerk2.add(Component.empty());
-                lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
+                lorePerk2.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
             inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(namePerk2);
@@ -224,15 +199,11 @@ public class MayorCreateMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk3;
             if (perk3 == null) {
-                lorePerk3 = List.of(
-		                Component.text("§7Choissiez §3votre réforme §7que vous voulez voir !"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                );
+                lorePerk3 = TranslationManager.translationLore("feature.city.mayor.menu.create.perk.choose.lore");
             } else {
                 lorePerk3 = new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey()));
                 lorePerk3.add(Component.empty());
-                lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
+                lorePerk3.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.itemName(namePerk3);
@@ -244,11 +215,8 @@ public class MayorCreateMenu extends Menu {
                     }));
 
             inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(
-		                Component.text("§7Vous allez retourner au menu de votre ville"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
+                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
+                itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.city"));
             }).setOnClick(inventoryClickEvent -> {
                 CityMenu menu = new CityMenu(player);
                 menu.open();
@@ -258,32 +226,29 @@ public class MayorCreateMenu extends Menu {
         }
 
         Material matConfirm;
-        String nameConfirm;
+        Component nameConfirm;
         List<Component> loreConfirm;
         if (canConfirmPerk) {
             matConfirm = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest().getType();
-            nameConfirm = "§aConfirmer";
-            loreConfirm = List.of(
-		            Component.text("§7Vous avez choisit toutes §ales réformes §7nécessaires"),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONTINUER LA CANDIDATURE")
-            );
+            nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.ready").color(NamedTextColor.GREEN);
+            loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.ready");
         } else {
             matConfirm = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest().getType();
-            nameConfirm = "§cConfirmer";
-            loreConfirm = List.of(
-		            Component.text("§7Vous n'avez pas choisit toutes §cles réformes §7nécessaires")
-            );
+            nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.blocked").color(NamedTextColor.RED);
+            loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.blocked");
         }
 
         inventory.put(52, new ItemBuilder(this, matConfirm, itemMeta -> {
-            itemMeta.itemName(Component.text(nameConfirm));
+            itemMeta.itemName(nameConfirm);
             itemMeta.lore(loreConfirm);
         }).setOnClick(inventoryClickEvent -> {
             if (canConfirmPerk) {
                 if (type == MenuType.OWNER_1) {
                     MayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);
-                    MessagesManager.sendMessage(player, Component.text("Vous avez ajouté la Réforme : ").append(TranslationManager.translation(perk1.getNameKey())), Prefix.MAYOR, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, TranslationManager.translation(
+                            "feature.city.mayor.menu.create.confirm.owner.success",
+                            TranslationManager.translation(perk1.getNameKey())
+                    ), Prefix.MAYOR, MessageType.SUCCESS, false);
                     player.closeInventory();
                     return;
                 }

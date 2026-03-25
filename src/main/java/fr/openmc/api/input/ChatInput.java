@@ -20,7 +20,7 @@ public class ChatInput implements Listener {
 
     private static final Map<UUID, Consumer<String>> playerInputs = new HashMap<>();
 
-    public static void sendInput(Player player, String startMessage, Consumer<String> callback) {
+    public static void sendInput(Player player, Component startMessage, Consumer<String> callback) {
         playerInputs.put(player.getUniqueId(), callback);
         player.closeInventory();
         player.sendMessage(startMessage);

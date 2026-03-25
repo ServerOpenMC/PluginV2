@@ -20,6 +20,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,7 +45,7 @@ public class OwnerNpcMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-	    return Component.text("Menu des maires - Mandat du propriétaire");
+        return TranslationManager.translation("feature.city.mayor.menu.owner.name");
     }
 
     @Override
@@ -80,7 +81,10 @@ public class OwnerNpcMenu extends Menu {
         Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
         if (electionType == ElectionType.ELECTION) {
             List<Component> loreOwner = new ArrayList<>(List.of(
-                    Component.text("§8§oPropriétaire de " + city.getName())
+                    TranslationManager.translation(
+                            "feature.city.mayor.menu.owner.lore.header",
+                            Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                    )
             ));
             loreOwner.add(Component.empty());
 	        loreOwner.add(perk1 == null ? TranslationManager.translation("feature.city.menus.common.error") :
@@ -88,7 +92,7 @@ public class OwnerNpcMenu extends Menu {
             loreOwner.addAll(perk1 == null ? List.of() : TranslationManager.translationLore(perk1.getLoreKey()));
 
             inventory.put(4, new ItemBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
-                itemMeta.displayName(Component.text("§ePropriétaire " + nameOwner));
+                itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.owner.title", Component.text(nameOwner)).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreOwner);
             }));
 
@@ -105,7 +109,10 @@ public class OwnerNpcMenu extends Menu {
             Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
             List<Component> loreOwner = new ArrayList<>(List.of(
-                    Component.text("§8§oPropriétaire de " + city.getName())
+                    TranslationManager.translation(
+                            "feature.city.mayor.menu.owner.lore.header",
+                            Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                    )
             ));
             loreOwner.add(Component.empty());
 	        loreOwner.add(perk1 == null ? TranslationManager.translation("feature.city.menus.common.error") :
@@ -121,7 +128,7 @@ public class OwnerNpcMenu extends Menu {
             loreOwner.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
             inventory.put(4, new ItemBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
-                itemMeta.displayName(Component.text("§ePropriétaire " + nameOwner));
+                itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.owner.title", Component.text(nameOwner)).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreOwner);
             }));
 
@@ -155,19 +162,16 @@ public class OwnerNpcMenu extends Menu {
 
         if (mayor.getMayorUUID().equals(player.getUniqueId())) {
             inventory.put(46, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
-                itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
-                itemMeta.lore(List.of(
-                        Component.text("§7Vous allez pouvoir déplacer ce NPC"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONTINUER")
-                ));
+                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.npc.move.name").color(NamedTextColor.GREEN));
+                itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.npc.move.lore"));
             }).setOnClick(inventoryClickEvent -> {
                 List<Component> loreItemNPC = List.of(
-                        Component.text("§7Cliquez sur l'endroit où vous voulez déplacer le §9NPC")
+                        TranslationManager.translation("feature.city.mayor.npc.move.item.lore")
                 );
                 ItemStack itemToGive = new ItemStack(Material.STICK);
                 ItemMeta itemMeta = itemToGive.getItemMeta();
 
-                itemMeta.displayName(Component.text("§7Emplacement du §9NPC"));
+                itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                 itemMeta.lore(loreItemNPC);
                 itemToGive.setItemMeta(itemMeta);
                 ItemInteraction.runLocationInteraction(
@@ -175,8 +179,8 @@ public class OwnerNpcMenu extends Menu {
                         itemToGive,
                         "mayor:owner-npc-move",
                         300,
-                        Component.text("§7Vous avez 300s pour sélectionner votre emplacement"),
-                        Component.text("§7Vous n'avez pas eu le temps de déplacer votre NPC"),
+                        TranslationManager.translation("feature.city.mayor.npc.move.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                        TranslationManager.translation("feature.city.mayor.npc.move.interaction.timeout"),
                         locationClick -> {
                             if (locationClick == null) return true;
 
@@ -184,7 +188,7 @@ public class OwnerNpcMenu extends Menu {
 
                             City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
                             if (cityByChunk == null) {
-                                MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                 return false;
                             }
 
@@ -195,7 +199,7 @@ public class OwnerNpcMenu extends Menu {
                             }
 
                             if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
-                                MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                 return false;
                             }
 

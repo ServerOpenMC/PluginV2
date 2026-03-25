@@ -10,7 +10,6 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 
 import java.io.IOException;
@@ -25,6 +24,8 @@ public class TranslationManager {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .create();
+
+    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
 
     public static void init(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
         // * Generate resource pack
@@ -110,7 +111,7 @@ public class TranslationManager {
     }
 
     public static String translationString(String key, ComponentLike... args) {
-        return PlainTextComponentSerializer.plainText().serialize(translation(key, args));
+        return LEGACY_COMPONENT_SERIALIZER.serialize(translation(key, args));
     }
 
     public static List<Component> translationLore(String key, ComponentLike... componentsArgs) {
