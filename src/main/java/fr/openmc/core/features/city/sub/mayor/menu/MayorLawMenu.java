@@ -25,6 +25,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -247,8 +248,8 @@ public class MayorLawMenu extends Menu {
         if (PerkManager.getPerkEvent(mayor) != null) {
             Supplier<ItemBuilder> perkEventItemSupplier = () -> {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
-                String namePerkEvent = perkEvent.getName();
-                List<Component> lorePerkEvent = new ArrayList<>(perkEvent.getLore());
+                Component namePerkEvent = TranslationManager.translation(perkEvent.getNameKey());
+                List<Component> lorePerkEvent = new ArrayList<>(TranslationManager.translationLore(perkEvent.getLoreKey()));
                 if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                     lorePerkEvent.addAll(
                             List.of(
@@ -265,7 +266,7 @@ public class MayorLawMenu extends Menu {
                     );
                 }
                 return new ItemBuilder(this, iaPerkEvent, itemMeta -> {
-                    itemMeta.itemName(Component.text(namePerkEvent));
+                    itemMeta.itemName(namePerkEvent);
                     itemMeta.lore(lorePerkEvent);
                 })
                         .hide(perkEvent.getToHide())

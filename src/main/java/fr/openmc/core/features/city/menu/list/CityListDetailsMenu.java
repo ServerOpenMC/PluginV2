@@ -86,15 +86,18 @@ public class CityListDetailsMenu extends Menu {
 			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
 			loreOwner.add(Component.empty());
-			loreOwner.add(perk1 == null ? TranslationManager.translation("feature.city.menus.common.error") : Component.text(perk1.getName()));
-			loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
+			loreOwner.add(perk1 == null ? TranslationManager.translation("feature.city.menus.common.error") :
+					TranslationManager.translation(perk1.getNameKey()));
+			loreOwner.addAll(perk1 == null ? List.of() : TranslationManager.translationLore(perk1.getLoreKey()));
 			if (electionType == ElectionType.OWNER_CHOOSE) {
 				loreOwner.add(Component.empty());
-				loreOwner.add(perk2 == null ? TranslationManager.translation("feature.city.menus.common.error") : Component.text(perk2.getName()));
-				loreOwner.addAll(perk2 == null ? List.of() : perk2.getLore());
+				loreOwner.add(perk2 == null ? TranslationManager.translation("feature.city.menus.common.error") :
+						TranslationManager.translation(perk2.getNameKey()));
+				loreOwner.addAll(perk2 == null ? List.of() : TranslationManager.translationLore(perk2.getLoreKey()));
 				loreOwner.add(Component.empty());
-				loreOwner.add(perk3 == null ? TranslationManager.translation("feature.city.menus.common.error") : Component.text(perk3.getName()));
-				loreOwner.addAll(perk3 == null ? List.of() : perk3.getLore());
+				loreOwner.add(perk3 == null ? TranslationManager.translation("feature.city.menus.common.error") :
+						TranslationManager.translation(perk3.getNameKey()));
+				loreOwner.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 			}
 
 			UUID ownerUUID = this.city.getPlayerWithPermission(CityPermission.OWNER);
@@ -112,11 +115,13 @@ public class CityListDetailsMenu extends Menu {
 			if (electionType == ElectionType.ELECTION) {
 				List<Component> loreMayor = new ArrayList<>();
 				loreMayor.add(Component.empty());
-				loreMayor.add(perk2 == null ? TranslationManager.translation("feature.city.menus.common.error") : Component.text(perk2.getName()));
-				loreMayor.addAll(perk2 == null ? List.of() : perk2.getLore());
+				loreMayor.add(perk2 == null ? TranslationManager.translation("feature.city.menus.common.error") :
+						TranslationManager.translation(perk2.getNameKey()));
+				loreMayor.addAll(perk2 == null ? List.of() : TranslationManager.translationLore(perk2.getLoreKey()));
 				loreMayor.add(Component.empty());
-				loreMayor.add(perk3 == null ? TranslationManager.translation("feature.city.menus.common.error") : Component.text(perk3.getName()));
-				loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
+				loreMayor.add(perk3 == null ? TranslationManager.translation("feature.city.menus.common.error") :
+						TranslationManager.translation(perk3.getNameKey()));
+				loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
 				map.put(14, new ItemBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
 								itemMeta -> {

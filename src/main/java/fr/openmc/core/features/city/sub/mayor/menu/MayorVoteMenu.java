@@ -17,6 +17,7 @@ import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -75,15 +76,16 @@ public class MayorVoteMenu extends PaginatedMenu {
             List<Component> loreMayor = new ArrayList<>(List.of(
 		            Component.text("§8Candidat pour le maire de " + city.getName())
             ));
+            if (perk2 == null || perk3 == null) return List.of();
             loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
             loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
             loreMayor.add(Component.empty());
-            loreMayor.add(Component.text(perk2.getName()));
-            loreMayor.addAll(perk2.getLore());
+            loreMayor.add(TranslationManager.translation(perk2.getNameKey()));
+            loreMayor.addAll(TranslationManager.translationLore(perk2.getLoreKey()));
             loreMayor.add(Component.empty());
-            loreMayor.add(Component.text(perk3.getName()));
-            loreMayor.addAll(perk3.getLore());
+            loreMayor.add(TranslationManager.translation(perk3.getNameKey()));
+            loreMayor.addAll(TranslationManager.translationLore(perk3.getLoreKey()));
             loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 

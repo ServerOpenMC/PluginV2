@@ -4,15 +4,15 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.SkullUtils;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -71,11 +71,13 @@ public class MayorMandateMenu extends Menu {
                 Component.text("§8§oMaire de " + city.getName())
         ));
         loreMayor.add(Component.empty());
-	    loreMayor.add(Component.text(perk2 == null ? "§cErreur de la réforme" : perk2.getName()));
-        loreMayor.addAll(perk2 == null ? List.of() : perk2.getLore());
+	    loreMayor.add(perk2 == null ? Component.text("§cErreur de la réforme") :
+                TranslationManager.translation(perk2.getNameKey()));
+        loreMayor.addAll(perk2 == null ? List.of() : TranslationManager.translationLore(perk2.getLoreKey()));
         loreMayor.add(Component.empty());
-	    loreMayor.add(Component.text(perk3 == null ? "§cErreur de la réforme" : perk3.getName()));
-        loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
+	    loreMayor.add(perk3 == null ? Component.text("§cErreur de la réforme") :
+                TranslationManager.translation(perk3.getNameKey()));
+        loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
 
         inventory.put(3, new ItemBuilder(this, SkullUtils.getPlayerSkull(mayor.getMayorUUID()), itemMeta -> {
@@ -110,8 +112,9 @@ public class MayorMandateMenu extends Menu {
                 Component.text("§8§oPropriétaire de " + city.getName())
         ));
         loreOwner.add(Component.empty());
-	    loreOwner.add(Component.text(perk1 == null ? "§cErreur de la réforme" : perk1.getName()));
-        loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
+	    loreOwner.add(perk1 == null ? Component.text("§cErreur de la réforme") :
+                TranslationManager.translation(perk1.getNameKey()));
+        loreOwner.addAll(perk1 == null ? List.of() : TranslationManager.translationLore(perk1.getLoreKey()));
 
         inventory.put(5, new ItemBuilder(this, SkullUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
             itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName()));
@@ -119,26 +122,29 @@ public class MayorMandateMenu extends Menu {
         }));
 
         ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-	    String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme vide";
-        List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(perk1.getLore()) : null;
+	    Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
+                TranslationManager.translation("feature.city.mayor.perk.none.name");
+        List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
         inventory.put(29, new ItemBuilder(this, iaPerk1, itemMeta -> {
-            itemMeta.customName(Component.text(namePerk1));
+            itemMeta.customName(namePerk1);
             itemMeta.lore(lorePerk1);
         }).hide((perk1 != null) ? perk1.getToHide() : null));
 
         ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-	    String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme vide";
-        List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
+	    Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
+                TranslationManager.translation("feature.city.mayor.perk.none.name");
+        List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;
         inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
-            itemMeta.customName(Component.text(namePerk2));
+            itemMeta.customName(namePerk2);
             itemMeta.lore(lorePerk2);
         }).hide((perk2 != null) ? perk2.getToHide() : null));
 
         ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-	    String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme vide";
-        List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
+	    Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
+                TranslationManager.translation("feature.city.mayor.perk.none.name");
+        List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey())) : null;
         inventory.put(33, new ItemBuilder(this, iaPerk3, itemMeta -> {
-            itemMeta.customName(Component.text(namePerk3));
+            itemMeta.customName(namePerk3);
             itemMeta.lore(lorePerk3);
         }).hide((perk3 != null) ? perk3.getToHide() : null));
 

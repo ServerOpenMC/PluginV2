@@ -14,6 +14,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -70,9 +71,9 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
             if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
-            List<Component> perkLore = new ArrayList<>(newPerk.getLore());
+            List<Component> perkLore = new ArrayList<>(TranslationManager.translationLore(newPerk.getLoreKey()));
 
-            perkLore.add(Component.text(newPerk.getCategory().getName()));
+            perkLore.add(TranslationManager.translation(newPerk.getCategory().getNameKey()));
 
             switch (newPerk.getCategory()) {
                 case AGRICULTURAL -> {
@@ -104,7 +105,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
 
             ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
-                itemMeta.customName(Component.text(newPerk.getName()));
+                itemMeta.customName(TranslationManager.translation(newPerk.getNameKey()));
                 itemMeta.lore(perkLore);
             })
                     .hide((newPerk != null) ? newPerk.getToHide() : null)

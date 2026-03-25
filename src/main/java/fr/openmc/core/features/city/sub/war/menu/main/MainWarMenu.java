@@ -20,7 +20,9 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -102,9 +104,15 @@ public class MainWarMenu extends PaginatedMenu {
                 Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
                 loreCity.add(Component.text("§7Réformes : "));
-                if (perk1 != null) loreCity.add(Component.text("§8 - " + perk1.getName()));
-                if (perk2 != null) loreCity.add(Component.text("§8 - " + perk2.getName()));
-                if (perk3 != null) loreCity.add(Component.text("§8 - " + perk3.getName()));
+                if (perk1 != null) loreCity.add(Component.text(" - ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(perk1.getNameKey())));
+                if (perk2 != null) loreCity.add(Component.text("- ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(perk2.getNameKey())));
+                if (perk3 != null) loreCity.add(Component.text(" - ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(perk3.getNameKey())));
             }
 
             loreCity.add(Component.text("§7Richesses : §6" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));

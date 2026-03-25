@@ -4,7 +4,6 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -21,6 +20,7 @@ import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -137,12 +137,13 @@ public class MayorElectionMenu extends Menu {
             List<Component> lorePerkOwner;
             if (MayorManager.hasChoicePerkOwner(player)) {
                 Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
+                if (perk1 == null) return Map.of();
                 lorePerkOwner = new ArrayList<>(List.of(
 		                Component.text("§7Vous avez déjà choisis §3votre réforme §7!"),
                         Component.empty(),
-                        Component.text(perk1.getName())
+                        TranslationManager.translation(perk1.getNameKey())
                 ));
-                lorePerkOwner.addAll(perk1.getLore());
+                lorePerkOwner.addAll(TranslationManager.translationLore(perk1.getLoreKey()));
             } else {
                 lorePerkOwner = List.of(
 		                Component.text("§7Vous êtes le propriétaire de la §dville §7!"),

@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -68,26 +69,29 @@ public class WarCityDetailsMenu extends Menu {
             Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
             ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme Vide";
-            List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(perk1.getLore()) : null;
+            Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
+                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
             map.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
-                itemMeta.customName(Component.text(namePerk1));
+                itemMeta.customName(namePerk1);
                 itemMeta.lore(lorePerk1);
             }).hide((perk1 != null) ? perk1.getToHide() : null));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
-            List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
+            Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
+                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;
             map.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
-                itemMeta.customName(Component.text(namePerk2));
+                itemMeta.customName(namePerk2);
                 itemMeta.lore(lorePerk2);
             }).hide((perk2 != null) ? perk2.getToHide() : null));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
-            List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
+            Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
+                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey())) : null;
             map.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
-                itemMeta.customName(Component.text(namePerk3));
+                itemMeta.customName(namePerk3);
                 itemMeta.lore(lorePerk3);
             }).hide((perk3 != null) ? perk3.getToHide() : null));
         }

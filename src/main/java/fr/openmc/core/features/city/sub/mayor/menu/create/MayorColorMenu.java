@@ -16,6 +16,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -107,15 +108,15 @@ public class MayorColorMenu extends Menu {
                             Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
                     ));
                     if (perk1 != null) {
-                        loreAccept.add(Component.text(perk1.getName()));
-                        loreAccept.addAll(perk1.getLore());
+                        loreAccept.add(TranslationManager.translation(perk1.getNameKey()));
+                        loreAccept.addAll(TranslationManager.translationLore(perk1.getLoreKey()));
                         loreAccept.add(Component.empty());
                     }
-                    loreAccept.add(Component.text(perk2.getName()));
-                    loreAccept.addAll(perk2.getLore());
+                    loreAccept.add(TranslationManager.translation(perk2.getNameKey()));
+                    loreAccept.addAll(TranslationManager.translationLore(perk2.getLoreKey()));
                     loreAccept.add(Component.empty());
-                    loreAccept.add(Component.text(perk3.getName()));
-                    loreAccept.addAll(perk3.getLore());
+                    loreAccept.add(TranslationManager.translation(perk3.getNameKey()));
+                    loreAccept.addAll(TranslationManager.translationLore(perk3.getLoreKey()));
                     loreAccept.add(Component.empty());
                     loreAccept.add(Component.text("§c§lAUCUN RETOUR EN ARRIERE POSSIBLE!"));
 

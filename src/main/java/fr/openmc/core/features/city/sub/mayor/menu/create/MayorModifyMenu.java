@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -61,14 +62,14 @@ public class MayorModifyMenu extends Menu {
 
         assert perk2 != null;
         inventory.put(20, new ItemBuilder(this, perk2.getItemStack(), itemMeta -> {
-            itemMeta.customName(Component.text(perk2.getName()));
-            itemMeta.lore(perk2.getLore());
+            itemMeta.customName(TranslationManager.translation(perk2.getNameKey()));
+            itemMeta.lore(TranslationManager.translationLore(perk2.getLoreKey()));
         }));
 
         assert perk3 != null;
         inventory.put(22, new ItemBuilder(this, perk3.getItemStack(), itemMeta -> {
-            itemMeta.customName(Component.text(perk3.getName()));
-            itemMeta.lore(perk3.getLore());
+            itemMeta.customName(TranslationManager.translation(perk3.getNameKey()));
+            itemMeta.lore(TranslationManager.translationLore(perk3.getLoreKey()));
         }));
 
         List<Component> loreColor = List.of(
