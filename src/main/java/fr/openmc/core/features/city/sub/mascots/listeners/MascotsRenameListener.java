@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -55,6 +56,6 @@ public class MascotsRenameListener implements Listener {
             }
         }
 	    
-	    MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas renommer cette mascotte"), Prefix.CITY, MessageType.ERROR, false);
+	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.rename.error"), Prefix.CITY, MessageType.ERROR, false);
     }
 }

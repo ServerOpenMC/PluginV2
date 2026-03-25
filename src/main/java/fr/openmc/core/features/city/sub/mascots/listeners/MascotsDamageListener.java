@@ -103,7 +103,7 @@ public class MascotsDamageListener implements Listener {
         }
 
         if (cityEnemy == null) {
-	        MessagesManager.sendMessage(player, Component.text("§cErreur : La ville ennemie n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.enemy_city_unknown"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
@@ -113,43 +113,48 @@ public class MascotsDamageListener implements Listener {
         CityType cityEnemyType = cityEnemy.getType();
 
         if (cityType == null) {
-	        MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.city_type_unknown"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
 
         if (cityEnemyType == null) {
-	        MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville ennemie n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.enemy_city_type_unknown"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
 
         if (pdcCityUUID.equals(cityUUID)) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.self_mascot"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
         if (cityEnemyType.equals(CityType.PEACE)) {
-            MessagesManager.sendMessage(player, Component.text("§cCette ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.enemy_city_peace"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
         if (cityType.equals(CityType.PEACE)) {
-            MessagesManager.sendMessage(player, Component.text("§cVotre ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.city_peace"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
         if (cityEnemy.isImmune()) {
-            MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.immune"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
         if (!city.isInWar() || !cityEnemy.isInWar() || !city.getWar().equals(cityEnemy.getWar())) {
-            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas en guerre contre " + cityEnemy.getName()), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.city.mascots.damage.error.not_in_war",
+                            Component.text(cityEnemy.getName())
+                    ),
+                    Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
@@ -157,14 +162,14 @@ public class MascotsDamageListener implements Listener {
         War citiesWar = city.getWar();
 
         if (citiesWar.getPhase() != War.WarPhase.COMBAT) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez attaquer la mascotte que pendant la phase de combat"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.not_in_combat"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
         if (!citiesWar.getAttackers().contains(player.getUniqueId()) &&
                 !citiesWar.getDefenders().contains(player.getUniqueId())) {
-	        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer la mascotte car vous n'avez pas été sélectionné pour la guerre"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.damage.error.not_selected_for_war"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }

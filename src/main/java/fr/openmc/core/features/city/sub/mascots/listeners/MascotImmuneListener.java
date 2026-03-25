@@ -6,7 +6,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import net.kyori.adventure.text.Component;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
@@ -55,10 +54,10 @@ public class MascotImmuneListener implements Listener {
         AttributeInstance maxHealthInst = mascotMob.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealthInst == null) return;
 
-        entityMascot.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+        entityMascot.customName(MascotsManager.getAliveMascotName(
                 cityImmune.getName(),
                 mascotMob.getHealth(),
                 maxHealthInst.getValue()
-        )));
+        ));
     }
 }

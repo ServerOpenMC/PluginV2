@@ -126,11 +126,11 @@ public class CityChangeAction {
                 mob.setHealth(maxHealth);
             }
 
-            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+            mob.customName(MascotsManager.getAliveMascotName(
                     city.getName(),
                     mob.getHealth(),
                     maxHealth
-            )));
+            ));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
