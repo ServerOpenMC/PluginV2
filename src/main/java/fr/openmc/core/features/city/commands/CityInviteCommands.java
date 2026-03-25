@@ -46,7 +46,8 @@ public class CityInviteCommands {
             playerInvitations.add(sender);
         }
         MessagesManager.sendMessage(sender,
-                TranslationManager.translation("feature.city.invite.commands.invite.success", Component.text(target.getName())),
+                TranslationManager.translation("feature.city.invite.commands.invite.success",
+                        target.displayName()),
                 Prefix.CITY,
                 MessageType.SUCCESS,
                 false
@@ -54,7 +55,7 @@ public class CityInviteCommands {
         MessagesManager.sendMessage(target,
                 TranslationManager.translation(
                         "feature.city.invite.commands.invite.received",
-                        Component.text(sender.getName()),
+                        sender.displayName(),
                         Component.text(city.getName())
                 )
                         .append(Component.newline())
@@ -87,7 +88,7 @@ public class CityInviteCommands {
         if (!playerInvitations.contains(inviter)) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.invite.commands.accept.not_invited",
-                    Component.text(inviter.getName())
+                    inviter.displayName()
             ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -102,7 +103,7 @@ public class CityInviteCommands {
 
         MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.joined", Component.text(newCity.getName())), Prefix.CITY, MessageType.SUCCESS, false);
         if (inviter.isOnline()) {
-            MessagesManager.sendMessage(inviter, TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", Component.text(player.getName())), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(inviter, TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.displayName()), Prefix.CITY, MessageType.SUCCESS, true);
         }
     }
 

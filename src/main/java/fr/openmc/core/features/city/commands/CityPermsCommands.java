@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplet
 import fr.openmc.core.features.city.commands.autocomplete.CityPermissionsAutoComplete;
 import fr.openmc.core.features.city.conditions.CityPermsConditions;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -42,15 +43,15 @@ public class CityPermsCommands {
             city.removePermission(player.getUniqueId(), permission);
             MessagesManager.sendMessage(sender, TranslationManager.translation(
                     "feature.city.perms.commands.switch.removed",
-                    Component.text(String.valueOf(player.getName())),
+                    PlayerNameCache.name(player.getUniqueId()),
                     Component.text(permission.toString())
             ), Prefix.CITY, MessageType.SUCCESS, false);
         } else {
             city.addPermission(player.getUniqueId(), permission);
 	        MessagesManager.sendMessage(sender, TranslationManager.translation(
                     "feature.city.perms.commands.switch.added",
-                    Component.text(String.valueOf(player.getName())),
-                    Component.text(permission.toString())
+                    PlayerNameCache.name(player.getUniqueId()),
+                    permission.getDisplayName()
             ), Prefix.CITY, MessageType.SUCCESS, false);
         }
     }
@@ -81,7 +82,7 @@ public class CityPermsCommands {
         if (city.hasPermission(player.getUniqueId(), permission)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation(
                     "feature.city.perms.commands.add.already_has",
-                    Component.text(String.valueOf(player.getName()))
+                    PlayerNameCache.name(player.getUniqueId())
             ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -89,7 +90,7 @@ public class CityPermsCommands {
         city.addPermission(player.getUniqueId(), permission);
         MessagesManager.sendMessage(sender, TranslationManager.translation(
                 "feature.city.perms.commands.modified",
-                Component.text(String.valueOf(player.getName()))
+                PlayerNameCache.name(player.getUniqueId())
         ), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
@@ -119,7 +120,7 @@ public class CityPermsCommands {
         if (!city.hasPermission(player.getUniqueId(), permission)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation(
                     "feature.city.perms.commands.remove.does_not_have",
-                    Component.text(String.valueOf(player.getName()))
+                    PlayerNameCache.name(player.getUniqueId())
             ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -127,7 +128,7 @@ public class CityPermsCommands {
         city.removePermission(player.getUniqueId(), permission);
         MessagesManager.sendMessage(sender, TranslationManager.translation(
                 "feature.city.perms.commands.modified",
-                Component.text(String.valueOf(player.getName()))
+                PlayerNameCache.name(player.getUniqueId())
         ), Prefix.CITY, MessageType.SUCCESS, false);
     }
 

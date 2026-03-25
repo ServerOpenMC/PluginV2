@@ -21,6 +21,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -80,7 +81,6 @@ public class MainWarMenu extends PaginatedMenu {
             long onlineCount = city.getOnlineMembers().size();
 
             UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
-            String ownerName = PlayerNameCache.getName(ownerUUID);
 
             Mascot mascot = city.getMascot();
 
@@ -89,7 +89,7 @@ public class MainWarMenu extends PaginatedMenu {
 
             List<Component> loreCity = new ArrayList<>(List.of(
                     Component.empty(),
-                    Component.text("§7Propriétaire : §d" + ownerName),
+                    Component.text("§7Propriétaire : §d" + PlainTextComponentSerializer.plainText().serialize(PlayerNameCache.name(player.getUniqueId()))),
                     Component.text("§7Population (en ligne) : §a" + onlineCount),
                     Component.text("§7Mascotte  : §4niv. " + city.getMascot().getLevel()),
                     Component.text("§7Location : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())

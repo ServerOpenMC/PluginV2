@@ -1,12 +1,12 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -72,9 +72,9 @@ public class CityChatManager {
 		);
 		
 		for (UUID uuid : city.getMembers()) {
-			OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-			if (player.isOnline()) {
-				((Player) player).sendMessage(msg_component);
+			OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+			if (offlinePlayer.isOnline() && offlinePlayer instanceof Player player) {
+				player.sendMessage(msg_component);
 			}
 		}
 	}

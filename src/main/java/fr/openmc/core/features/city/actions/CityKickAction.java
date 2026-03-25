@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -20,12 +21,11 @@ public class CityKickAction {
 
         if (city == null) return;
 
-        String playerName = String.valueOf(playerKick.getName());
         city.removePlayer(playerKick.getUniqueId());
         MessagesManager.sendMessage(sender,
                 TranslationManager.translation(
                         "feature.city.kick.success",
-                        Component.text(playerName),
+                        PlayerNameCache.name(playerKick.getUniqueId()),
                         Component.text(city.getName())
                 ),
                 Prefix.CITY,

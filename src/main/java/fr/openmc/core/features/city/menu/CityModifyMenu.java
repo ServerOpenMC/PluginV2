@@ -19,6 +19,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,7 +41,7 @@ public class CityModifyMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-	    return Component.text("Menu des villes - Modifier");
+	    return TranslationManager.translation("feature.city.menus.modify.name");
     }
 
     @Override
@@ -73,12 +74,9 @@ public class CityModifyMenu extends Menu {
         List<Component> loreRename;
 
         if (hasPermissionRenameCity) {
-            loreRename = List.of(
-                    Component.text("§7Vous pouvez renommer votre §dville§7."),
-                    Component.empty(),
-                    Component.text("§7Nom actuel : §d" + city.getName()),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
+            loreRename = TranslationManager.translationLore(
+                    "feature.city.menus.modify.rename.lore",
+                    Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
             loreRename = List.of(
@@ -87,22 +85,22 @@ public class CityModifyMenu extends Menu {
         }
 
         inventory.put(11, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Renommer votre §dville"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.rename.title"));
             itemMeta.lore(loreRename);
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                 if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
                     City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
                     playerCity.rename(input);
-                    MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, MessageType.SUCCESS, false);
 
                 } else {
-                    MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.modify.rename.invalid"), Prefix.CITY, MessageType.ERROR, true);
                 }
             });
 
@@ -112,11 +110,7 @@ public class CityModifyMenu extends Menu {
         List<Component> loreTransfer;
 
         if (hasPermissionOwner) {
-            loreTransfer = List.of(
-		            Component.text("§dLa Ville §7sera transférer à §dla personne §7que vous sélectionnerez"),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
-            );
+            loreTransfer = TranslationManager.translationLore("feature.city.menus.modify.transfer.lore");
         } else {
             loreTransfer = List.of(
                     TranslationManager.translation("messages.global.cannot_do_this")
@@ -124,7 +118,7 @@ public class CityModifyMenu extends Menu {
         }
 
         inventory.put(13, new ItemBuilder(this, Material.TOTEM_OF_UNDYING, itemMeta -> {
-	        itemMeta.itemName(Component.text("§7Transférer la §dville"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.transfer.title"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
@@ -132,7 +126,7 @@ public class CityModifyMenu extends Menu {
             if (!CityManageConditions.canCityTransfer(cityCheck, player)) return;
 
             if (city.getMembers().size() - 1 == 0) {
-	            MessagesManager.sendMessage(player, Component.text("Il y a pas de membre a qui vous pouvez transférer la ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.modify.transfer.no_member"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -145,17 +139,12 @@ public class CityModifyMenu extends Menu {
                 List<Component> loreDelete;
                 if (hasPermissionOwner) {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                        loreDelete = List.of(
-                                Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                                Component.empty(),
-                                Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir delete votre ville")
+                        loreDelete = TranslationManager.translationLore(
+                                "feature.city.menus.modify.delete.lore.wait",
+                                Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
                         );
                     } else {
-                        loreDelete = List.of(
-                                Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                                Component.empty(),
-                                Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                        );
+                        loreDelete = TranslationManager.translationLore("feature.city.menus.modify.delete.lore.click");
                     }
                 } else {
                     loreDelete = List.of(
@@ -163,7 +152,7 @@ public class CityModifyMenu extends Menu {
                     );
                 }
                 return new ItemBuilder(this, Material.TNT, itemMeta -> {
-                    itemMeta.itemName(Component.text("§7Supprimer la ville"));
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
                     itemMeta.lore(loreDelete);
                 }).setOnClick(inventoryClickEvent -> {
                     CityDeleteAction.startDeleteCity(player);
@@ -178,8 +167,8 @@ public class CityModifyMenu extends Menu {
             }
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
         return inventory;

@@ -64,7 +64,7 @@ public class DreamScoreboard extends BaseScoreboard {
                 lines.add(text(" • ", NamedTextColor.DARK_GRAY)
                         .append(text(textToSmall("froid:"), NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(text(String.valueOf(dreamPlayer.getCold())).color(TextColor.color(0x44EBDA)))
+                        .append(text(dreamPlayer.getCold()).color(TextColor.color(0x44EBDA)))
                 );
 
             lines.add(empty());
