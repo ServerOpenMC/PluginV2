@@ -9,8 +9,11 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -79,10 +82,12 @@ public class CityPermsMenu extends PaginatedMenu {
                 );
                 itemMeta.lore(edit ? lore : List.of());
             }).setOnClick(inventoryClickEvent -> {
-                if (!edit) return;
-                CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
-                player.closeInventory();
-                this.open();
+                if (!edit)
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+                else {
+                    CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
+                    new CityPermsMenu(player, memberUUID, true).open();
+                }
             }).hide(ItemUtils.getDataComponentType());
 
             items.add(itemBuilder);
@@ -110,6 +115,21 @@ public class CityPermsMenu extends PaginatedMenu {
             itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page suivante")));
         }).setNextPageButton());
 
+        if (edit) {
+            map.put(53, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                itemMeta.displayName(Component.text("Gérer toutes les permissions du membre"));
+                itemMeta.lore(List.of(
+                        Component.text("§cClique-gauche pour tout retirer"),
+                        Component.text("§aClique-droit pour tout ajouter")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                if (inventoryClickEvent.isLeftClick()) CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                else if (inventoryClickEvent.isRightClick()) CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                
+	            new CityPermsMenu(getOwner(), memberUUID, true).open();
+            }));
+        }
+        
         return map;
     }
 

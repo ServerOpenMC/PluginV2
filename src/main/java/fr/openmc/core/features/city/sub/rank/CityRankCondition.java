@@ -36,7 +36,7 @@ public class CityRankCondition {
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
@@ -71,7 +71,10 @@ public class CityRankCondition {
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+        if (!canModifyRankPermissions(city, player, rank.getPriority())) {
             return false;
         }
         if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
@@ -90,14 +93,15 @@ public class CityRankCondition {
      */
     public static boolean canDeleteRank(City city, Player player, String rankName) {
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+        
         DBCityRank rank = city.getRankByName(rankName);
         if (rank == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -105,10 +109,20 @@ public class CityRankCondition {
         }
 
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
+        return canModifyRankPermissions(city, player, rank.getPriority());
+    }
+    
+    public static boolean canModifyRankPermissions(City city, Player player, int rankPriority) {
+        if (city.getRankOfMember(player.getUniqueId()) == null) return true;
+        
+        if (city.getRankOfMember(player.getUniqueId()).getPriority() >= rankPriority) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_CANNOT_MODIFY_HIGHER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
         return true;
     }
 }

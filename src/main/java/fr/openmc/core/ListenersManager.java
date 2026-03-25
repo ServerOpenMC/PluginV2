@@ -37,14 +37,15 @@ public class ListenersManager {
                 new BossbarListener(),
                 new PlayerSettingsManager(),
                 new InteractListener(),
-                new AywenCapListener(),
+                new EquipableItemListener(),
                 new NoMoreRabbit(),
                 new ArmorListener(),
-                new SpawnerExtractorListener()
+                new BlockBreakListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {
             registerEvents(
+                    new SpawnerExtractorListener(),
                     new ItemsAddersListener(),
                     new TicketListener()
             );

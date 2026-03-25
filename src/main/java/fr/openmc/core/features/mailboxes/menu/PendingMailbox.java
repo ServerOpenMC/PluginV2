@@ -114,29 +114,29 @@ public class PendingMailbox extends PaginatedMenu {
                     message,
                     Prefix.MAILBOX,
                     MessageType.ERROR,
-                    true
-            );
+                    true);
+            return;
         }
 
         int itemsCount = letter.getNumItems();
         ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-        Player receiver = CacheOfflinePlayer.getOfflinePlayer(letter.getReceiver()).getPlayer();
+        Player sender = CacheOfflinePlayer.getOfflinePlayer(letter.getSender()).getPlayer();
 
         if (MailboxManager.deleteLetter(id)) {
-            if (receiver != null)
-                MailboxManager.cancelLetter(receiver);
-            MailboxManager.givePlayerItems(player, items);
-            Component message = Component.text("Vous avez annulé la lettre et reçu ", NamedTextColor.DARK_GREEN)
+            if (sender != null)
+                MailboxManager.cancelLetter(sender);
+            MailboxManager.givePlayerItems(sender, items);
+            Component message = Component.text(player.getName(), NamedTextColor.DARK_GREEN)
+                    .append(Component.text(" a annulé la lettre. Vous avez reçu ", NamedTextColor.DARK_GREEN))
                     .append(Component.text(itemsCount, NamedTextColor.GREEN))
                     .append(Component.text(pluralize(" item", itemsCount), NamedTextColor.DARK_GREEN));
 
             MessagesManager.sendMessage(
-                    player,
+                    sender,
                     message,
                     Prefix.MAILBOX,
                     MessageType.SUCCESS,
-                    true
-            );
+                    true);
         }
     }
 }

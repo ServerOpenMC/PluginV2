@@ -1,13 +1,11 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.economy.events.BankDepositEvent;
+import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
-import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
-import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.messages.MessageType;
@@ -20,10 +18,7 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class SpareBankQuest extends Quest implements Listener {
-
-    private final TutorialStep step;
-    private final MilestoneType type;
+public class SpareBankQuest extends MilestoneQuest implements Listener {
 
     public SpareBankQuest() {
         super(
@@ -32,25 +27,20 @@ public class SpareBankQuest extends Quest implements Listener {
                         "§fTapez §d/bank §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                Material.DIAMOND_BLOCK
+                Material.DIAMOND_BLOCK,
+		        MilestoneType.TUTORIAL,
+		        TutorialStep.SPARE_BANK,
+		        new QuestTier(
+				        1,
+				        new QuestMoneyReward(500),
+				        new QuestTextReward(
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.SPARE_BANK.ordinal() + 1) + " §f! Les §bbanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
+								        "Personnalisons maintenant l'expérience de jeu grâce aux paramètres !",
+						        Prefix.MILLESTONE,
+						        MessageType.SUCCESS
+				        )
+		        )
         );
-
-        this.step = TutorialStep.SPARE_BANK;
-        this.type = MilestoneType.TUTORIAL;
-
-        this.addTier(new QuestTier(
-                1,
-                new QuestMoneyReward(500),
-                new QuestTextReward(
-                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §bbanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
-                                "Personnalisons maintenant l'expérience de jeu grâce aux paramètres !",
-                        Prefix.MILLESTONE,
-                        MessageType.SUCCESS
-                ),
-                new QuestMethodsReward(
-                        player -> TutorialUtils.completeStep(type, player, step)
-                )
-        ));
     }
 
     @EventHandler

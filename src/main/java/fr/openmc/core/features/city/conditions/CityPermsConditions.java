@@ -6,7 +6,6 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class CityPermsConditions {
         City senderCity = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (senderCity == null) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite aucune ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -28,17 +27,17 @@ public class CityPermsConditions {
         }
 
         if (!Objects.equals(senderCity.getUniqueId(), city.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.getMembers().contains(playerUUID)) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, Component.text("Le propriétaire a les pleins pouvoirs"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -54,12 +53,12 @@ public class CityPermsConditions {
         }
 
         if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de gérer les permissions"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CityPermission.PERMS) {
-            MessagesManager.sendMessage(sender, Component.text("Seul le propriétaire peut modifier cette permission"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_ONLY_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

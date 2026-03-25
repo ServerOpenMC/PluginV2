@@ -1,14 +1,12 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.api.menulib.events.OpenMenuEvent;
+import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
-import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
 import fr.openmc.core.features.quests.menus.QuestsMenu;
-import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.messages.MessageType;
@@ -20,10 +18,7 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class OpenQuestMenuQuest extends Quest implements Listener {
-
-    private final TutorialStep step;
-    private final MilestoneType type;
+public class OpenQuestMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenQuestMenuQuest() {
         super(
@@ -32,24 +27,19 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
                         "§fTapez §d/quests §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu et voir quelles quêtes vous pouvez accomplir",
                         "§8§oCela va pouvoir vous lancer dans l'aventure et vous donner des défis afin de vous diversifier !"
                 ),
-                Material.GOLDEN_AXE
+                Material.GOLDEN_AXE,
+		        MilestoneType.TUTORIAL,
+		        TutorialStep.OPEN_QUEST,
+		        new QuestTier(
+				        1,
+				        new QuestMoneyReward(500),
+				        new QuestTextReward(
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.OPEN_QUEST.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
+						        Prefix.MILLESTONE,
+						        MessageType.SUCCESS
+				        )
+		        )
         );
-
-        this.step = TutorialStep.OPEN_QUEST;
-        this.type = MilestoneType.TUTORIAL;
-
-        this.addTier(new QuestTier(
-                1,
-                new QuestMoneyReward(500),
-                new QuestTextReward(
-                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
-                        Prefix.MILLESTONE,
-                        MessageType.SUCCESS
-                ),
-                new QuestMethodsReward(
-                        player -> TutorialUtils.completeStep(type, player, step)
-                )
-        ));
     }
 
     @EventHandler

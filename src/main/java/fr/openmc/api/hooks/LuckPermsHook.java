@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
@@ -57,7 +58,8 @@ public class LuckPermsHook {
         if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
+        String finalPrefix = FontImageWrapper.replaceFontImages(formattedPrefix);
 
-        return Component.text(FontImageWrapper.replaceFontImages(formattedPrefix));
+        return LegacyComponentSerializer.legacySection().deserialize(finalPrefix);
     }
 }

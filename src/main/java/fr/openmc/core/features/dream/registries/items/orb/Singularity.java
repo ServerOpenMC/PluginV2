@@ -1,15 +1,16 @@
 package fr.openmc.core.features.dream.registries.items.orb;
 
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityMenu;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import fr.openmc.core.features.dream.models.registry.items.DreamUsableItem;
+import fr.openmc.core.registry.items.options.UsableItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class Singularity extends DreamUsableItem {
+public class Singularity extends DreamItem implements UsableItem {
     public Singularity(String name) {
         super(name);
     }

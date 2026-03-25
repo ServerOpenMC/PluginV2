@@ -2,9 +2,9 @@ package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.models.registry.loottable.DreamLoot;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.SkullUtils;
 import net.kyori.adventure.text.Component;
@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -33,12 +34,7 @@ public class Soul extends DreamMob {
                 3L,
                 RandomUtils.randomBetween(0.4, 0.5),
                 RandomUtils.randomBetween(0.7, 0.9),
-                List.of(new DreamLoot(
-                        DreamItemRegistry.getByName("omc_dream:soul"),
-                        0.70,
-                        2,
-                        3
-                ))
+                null
         );
     }
 
@@ -96,6 +92,13 @@ public class Soul extends DreamMob {
         return vex;
     }
 
+    private final List<CustomLoot> loots = List.of(new CustomLoot(
+            DreamItemRegistry.getByName("soul"),
+            0.70,
+            1,
+            2
+    ));
+
     private void registerSoulLink(Vex vex, ArmorStand stand) {
         Bukkit.getPluginManager().registerEvent(EntityDamageEvent.class, new Listener() {
         }, EventPriority.NORMAL, (listener, event) -> {
@@ -118,8 +121,22 @@ public class Soul extends DreamMob {
             Entity dead = e.getEntity();
             if (dead.equals(vex) && stand.isValid()) {
                 stand.remove();
+                for (CustomLoot loot : loots) {
+                    if (Math.random() >= loot.getChance()) return;
+
+                    int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
+                    ItemStack drop = loot.getItem().asQuantity(amount);
+                    dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
+                }
             } else if (dead.equals(stand) && vex.isValid()) {
                 vex.remove();
+                for (CustomLoot loot : loots) {
+                    if (Math.random() >= loot.getChance()) return;
+
+                    int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
+                    ItemStack drop = loot.getItem().asQuantity(amount);
+                    dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
+                }
             }
         }, OMCPlugin.getInstance());
 

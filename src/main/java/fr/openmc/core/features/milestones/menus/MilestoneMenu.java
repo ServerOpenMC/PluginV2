@@ -4,8 +4,8 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.milestones.Milestone;
+import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.quests.objects.Quest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class MilestoneMenu extends Menu {
 
     private final Milestone milestone;
-    private final List<Quest> steps;
+    private final List<MilestoneQuest> steps;
     private int offset = 0;
 
     private static final int START_ROW = 0;
@@ -80,7 +80,7 @@ public class MilestoneMenu extends Menu {
 
         for (int i = 0; i < visible; i++) {
             int stepIndex = offset + i;
-            Quest quest = steps.get(stepIndex);
+            MilestoneQuest quest = steps.get(stepIndex);
 
             boolean completed = stepIndex < currentStep;
             boolean active = stepIndex == currentStep;
@@ -158,6 +158,8 @@ public class MilestoneMenu extends Menu {
         return List.of();
     }
 
+	// ============================== SNAKE ============================== //
+	
     private record Snake(List<Integer> nodes, List<Integer> links) {
     }
 

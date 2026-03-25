@@ -1,5 +1,6 @@
 package fr.openmc.core.features.friend.autocomplete;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
@@ -18,6 +19,7 @@ public class FriendsAutoComplete implements SuggestionProvider<BukkitCommandActo
         List<UUID> friendsUUIDs = getFriendsAsync(context.actor().requirePlayer().getUniqueId()).join();
         return friendsUUIDs.stream()
                 .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
+                .filter(name -> !context.actor().requirePlayer().hasMetadata(OMCPlugin.VANISH_META_KEY))
                 .toList();
     }
 }

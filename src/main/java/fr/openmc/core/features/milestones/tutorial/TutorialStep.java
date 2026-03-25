@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial;
 
+import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.quests.*;
-import fr.openmc.core.features.quests.objects.Quest;
 import lombok.Getter;
 
 @Getter
@@ -22,9 +22,9 @@ public enum TutorialStep {
     CLAIM_LETTER(null),
     ;
 
-    private Quest quest;
+    private MilestoneQuest quest;
 
-    TutorialStep(Quest quest) {
+    TutorialStep(MilestoneQuest quest) {
         this.quest = quest;
     }
     

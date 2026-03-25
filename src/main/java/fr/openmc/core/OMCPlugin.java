@@ -38,8 +38,9 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.updates.UpdateManager;
-import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.items.usable.CustomUsableItemRegistry;
+import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
@@ -64,6 +65,8 @@ public class OMCPlugin extends JavaPlugin {
     static OMCPlugin instance;
     @Getter
     static FileConfiguration configs;
+
+    public static final String VANISH_META_KEY = "omcstaff.vanished";
 
     public static void registerEvents(Listener... listeners) {
         for (Listener listener : listeners) {
@@ -129,7 +132,8 @@ public class OMCPlugin extends JavaPlugin {
         TPAQueue.initCommand();
         FreezeManager.init();
         QuestProgressSaveManager.init();
-        TabList.init();
+        if (!isUnitTestVersion())
+            TabList.init();
         AdminShopManager.init();
         BossbarManager.init();
         AnimationsManager.init();
@@ -147,10 +151,14 @@ public class OMCPlugin extends JavaPlugin {
     }
 
     public void loadWithItemsAdder() {
+        // ** REGISTRIES **
         CustomItemRegistry.init();
-        CustomUsableItemRegistry.init();
-        MilestonesManager.init();
-        QuestsManager.init();
+        CustomEnchantmentRegistry.postInit();
+        CustomLootTableRegistry.init();
+
+        // ** FEATURES **
+	    MilestonesManager.init();
+	    QuestsManager.init();
         CityManager.init();
         ContestManager.init();
         DreamManager.init();

@@ -32,7 +32,7 @@ public class CityRankCommands {
 		}
 
 		if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
-			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 
@@ -54,10 +54,6 @@ public class CityRankCommands {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		DBCityRank rank = city.getRankByName(rankName);
@@ -82,15 +78,72 @@ public class CityRankCommands {
 			return;
 		}
         if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		if (rank == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
+		if (!CityRankCondition.canModifyRankPermissions(city, player, rank.getPriority())) {
+			return;
+		}
 		
 		rank.swapPermission(permission);
+	}
+	
+	/**
+	 * Add all permissions to a rank.
+	 *
+	 * @param player The player who is adding the permissions.
+	 * @param rank   The rank to add the permissions to.
+	 */
+	public static void addAllPermissions(Player player, DBCityRank rank) {
+		City city = CityManager.getPlayerCity(player.getUniqueId());
+		if (city == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (rank == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (!CityRankCondition.canModifyRankPermissions(city, player, rank.getPriority())) {
+			return;
+		}
+		
+		rank.addAllPermissions();
+	}
+	
+	/**
+	 * Remove all permissions from a rank.
+	 *
+	 * @param player The player who is removing the permissions.
+	 * @param rank   The rank to remove the permissions from.
+	 */
+	public static void removeAllPermissions(Player player, DBCityRank rank) {
+		City city = CityManager.getPlayerCity(player.getUniqueId());
+		if (city == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (rank == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (!CityRankCondition.canModifyRankPermissions(city, player, rank.getPriority())) {
+			return;
+		}
+		
+		rank.clearPermissions();
 	}
 	
 	@Subcommand("assign")

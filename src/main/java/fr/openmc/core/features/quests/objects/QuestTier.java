@@ -4,6 +4,7 @@ import fr.openmc.core.features.quests.rewards.QuestReward;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class QuestTier {
      * @param reward The reward for completing this tier
      */
     public QuestTier(int target, QuestReward reward) {
-        this(target, List.of(reward), new ArrayList<>(), false);
+        this(target, new ArrayList<>(Arrays.asList(reward)), new ArrayList<>(), false);
     }
 
     /**
@@ -35,7 +36,7 @@ public class QuestTier {
      * @param rewards The reward for completing this tier
      */
     public QuestTier(int target, QuestReward... rewards) {
-        this(target, List.of(rewards), new ArrayList<>(), false);
+        this(target, new ArrayList<>(Arrays.asList(rewards)), new ArrayList<>(), false);
     }
 
     /**
@@ -73,4 +74,14 @@ public class QuestTier {
 
         return steps.stream().allMatch(step -> step.isCompleted(playerUUID));
     }
+	
+	/**
+	 * Add a reward for the quest, then return the quest
+	 * @param reward the reward to add
+	 * @return the quest
+	 */
+	public QuestTier addReward(QuestReward reward) {
+		this.rewards.add(reward);
+		return new QuestTier(this.target, this.rewards, this.steps, this.requireStepsCompletion);
+	}
 }

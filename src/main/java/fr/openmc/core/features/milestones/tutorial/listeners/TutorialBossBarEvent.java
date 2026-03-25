@@ -2,7 +2,7 @@ package fr.openmc.core.features.milestones.tutorial.listeners;
 
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.BossbarsType;
-import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
+import fr.openmc.core.features.milestones.MilestoneUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +15,7 @@ public class TutorialBossBarEvent implements Listener {
     void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        TutorialUtils.setBossBar(player);
+        MilestoneUtils.setBossBar(player);
     }
 
     @EventHandler

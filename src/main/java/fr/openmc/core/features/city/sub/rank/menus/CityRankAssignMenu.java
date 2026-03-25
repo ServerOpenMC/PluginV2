@@ -8,6 +8,9 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -63,7 +66,10 @@ public class CityRankAssignMenu extends Menu {
 						Component.text("§7Permissions : " + (rank.getPermissionsSet().isEmpty() ? "§cAucune" : "§a" + rank.getPermissionsSet().size() + " permission(s)"))
 				));
 			}).setOnClick(event -> {
-				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) return;
+				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_ASSIGN.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					return;
+				}
 
 				CityRankAction.assignRank(getOwner(), rank.getName(), CacheOfflinePlayer.getOfflinePlayer(playerUUID));
 				getOwner().closeInventory();

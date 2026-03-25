@@ -33,7 +33,7 @@ public class CityPermsCommands {
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -65,7 +65,7 @@ public class CityPermsCommands {
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -97,7 +97,7 @@ public class CityPermsCommands {
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -117,5 +117,53 @@ public class CityPermsCommands {
     void get(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         new CityPermsMenu(sender, player.getUniqueId(), false).open();
+    }
+    
+    @Subcommand("removeall")
+    @CommandPermission("omc.commands.city.perm.removeall")
+    @Description("Retirer toutes les permissions d'un membre")
+    public static void removeAll(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player) {
+        if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
+        if (!CityPermsConditions.canModifyPerms(sender, null)) return;
+        
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        
+        if (city == null) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        
+        if (!city.getMembers().contains(player.getUniqueId())) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        
+        for (CityPermission permission : CityPermission.values()) {
+            if (permission == CityPermission.OWNER) continue;
+            city.removePermission(player.getUniqueId(), permission);
+        }
+    }
+    
+    @Subcommand("addall")
+    @CommandPermission("omc.commands.city.perm.addall")
+    @Description("Ajouter toutes les permissions à un membre")
+    public static void addAll(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player) {
+        if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
+        if (!CityPermsConditions.canModifyPerms(sender, null)) return;
+        
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        if (city == null) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        if (!city.getMembers().contains(player.getUniqueId())) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.TARGET_IN_OTHER_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        
+        for (CityPermission permission : CityPermission.values()) {
+            if (permission == CityPermission.OWNER) continue;
+            city.addPermission(player.getUniqueId(), permission);
+        }
     }
 }

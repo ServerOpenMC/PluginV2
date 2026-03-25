@@ -1,7 +1,6 @@
 package fr.openmc.core.features.milestones;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.features.quests.objects.Quest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -49,7 +48,7 @@ public interface Milestone {
 	 *
 	 * @return A step list of the milestone.
 	 */
-	List<Quest> getSteps();
+	List<MilestoneQuest> getSteps();
 
 	/**
 	 * Returns the Type of the Milestone

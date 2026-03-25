@@ -3,7 +3,7 @@ package fr.openmc.core.features.displays.bossbar;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
-import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
+import fr.openmc.core.features.milestones.MilestoneUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -179,7 +179,7 @@ public class BossbarManager {
                     }
 
                     case TUTORIAL -> {
-                        TutorialUtils.setBossBar(player);
+                        MilestoneUtils.setBossBar(player);
                         enabled = true;
                         playerPreferences.put(uuid, true);
                     }

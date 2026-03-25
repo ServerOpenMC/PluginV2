@@ -3,7 +3,7 @@ package fr.openmc.core.features.homes;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

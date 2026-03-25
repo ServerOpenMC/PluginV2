@@ -31,9 +31,9 @@ class MotdUtilsTest {
     @Test
     @DisplayName("MOTD switch")
     void testMOTD() {
+        server.motd(Component.text("default"));
         String motd = getComponentContent(server.motd());
 
-        new MotdUtils();
         server.getScheduler().performTicks(12001L);
 
         Assertions.assertNotEquals(getComponentContent(server.motd()), motd);

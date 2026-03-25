@@ -8,6 +8,7 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
@@ -150,6 +151,12 @@ public class Page2 implements Menu {
         }
 
         if (event.clickType() != ClickType.LEFT_CLICK) {
+            return;
+        }
+
+        if (DreamUtils.isInDreamWorld(player)) {
+            PacketMenuLib.closeMenu(player);
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas interagir avec le menu principal depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
