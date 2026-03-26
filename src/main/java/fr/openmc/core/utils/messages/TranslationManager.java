@@ -10,9 +10,11 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.util.UTF8ResourceBundleControl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -26,6 +28,55 @@ public class TranslationManager {
             .create();
 
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final ResourceBundle.Control UTF8_NO_FALLBACK_CONTROL = new ResourceBundle.Control() {
+        @Override
+        public Locale getFallbackLocale(String baseName, Locale locale) {
+            return null; // suppression du fallback (en_US, afin d'eviter d'avoir des clés fr écraser)
+        }
+
+        @Override
+        public List<String> getFormats(String baseName) {
+            return ResourceBundle.Control.FORMAT_PROPERTIES;
+        }
+
+        @Override
+        public ResourceBundle newBundle(
+                String baseName,
+                Locale locale,
+                String format,
+                ClassLoader loader,
+                boolean reload
+        ) throws IOException {
+            if (!"java.properties".equals(format)) {
+                return null;
+            }
+
+            String bundleName = toBundleName(baseName, locale);
+            String resourceName = toResourceName(bundleName, "properties");
+
+            InputStream stream = null;
+            if (reload) {
+                var url = loader.getResource(resourceName);
+                if (url != null) {
+                    var connection = url.openConnection();
+                    if (connection != null) {
+                        connection.setUseCaches(false);
+                        stream = connection.getInputStream();
+                    }
+                }
+            } else {
+                stream = loader.getResourceAsStream(resourceName);
+            }
+
+            if (stream == null) {
+                return null;
+            }
+
+            try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+                return new PropertyResourceBundle(reader);
+            }
+        }
+    };
 
     public static void init(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
         // * Generate resource pack
@@ -43,7 +94,7 @@ public class TranslationManager {
         ResourceBundle defaultBundle = ResourceBundle.getBundle(
                 "translations.lang",
                 defaultLang,
-                UTF8ResourceBundleControl.utf8ResourceBundleControl()
+                UTF8_NO_FALLBACK_CONTROL
         );
 
         fallbackTranslations = new HashMap<>();
@@ -60,7 +111,11 @@ public class TranslationManager {
 
         // * Load other supported langs
         for (Locale locale : langsSuppoorted) {
-            ResourceBundle bundle = ResourceBundle.getBundle("translations.lang", locale, UTF8ResourceBundleControl.utf8ResourceBundleControl());
+            ResourceBundle bundle = ResourceBundle.getBundle(
+                    "translations.lang",
+                    locale,
+                    UTF8_NO_FALLBACK_CONTROL
+            );
 
             Map<String, String> translations = new HashMap<>(fallbackTranslations);
 
