@@ -206,7 +206,7 @@ public class Cube extends MultiBlock {
     public void startCorruptedBubble() {
         Location center = this.getCenter();
 
-        int totalTicks = 20 * 3600;
+        int totalTicks = 20 * 1300;
 
         startBubbleParticles();
 
