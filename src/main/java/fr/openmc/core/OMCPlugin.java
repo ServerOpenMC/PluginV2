@@ -15,7 +15,6 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
@@ -25,7 +24,9 @@ import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
@@ -161,6 +162,7 @@ public class OMCPlugin extends JavaPlugin {
 	    QuestsManager.init();
         CityManager.init();
         ContestManager.init();
+        WeeklyEventsManager.init();
         DreamManager.init();
         MultiBlockManager.init();
         if (WorldGuardHook.isHasWorldGuard()) {
