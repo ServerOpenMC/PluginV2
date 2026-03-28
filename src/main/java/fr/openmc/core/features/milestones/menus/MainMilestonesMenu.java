@@ -7,6 +7,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
+import fr.openmc.core.features.milestones.Milestone;
+import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -50,16 +52,16 @@ public class MainMilestonesMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
-
-        MilestonesManager.getRegisteredMilestones().forEach(milestone -> {
-			inventory.put(10 + (milestone.getType().ordinal() * 2), new ItemBuilder(this, milestone.getIcon(), itemMeta -> {
-				itemMeta.displayName(Component.text(milestone.getName()));
-				itemMeta.lore(milestone.getDescription());
-				itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(milestone.getType(), player) + 1 >= milestone.getSteps().size());
-			}).setOnClick(event -> milestone.getMenu(player).open()));
-        });
-
-        List<Component> loreMilestoneVille = new ArrayList<>();
+        
+        Milestone tutoMilestone = MilestoneType.TUTORIAL.getMilestone();
+        
+        inventory.put(10, new ItemBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
+            itemMeta.displayName(Component.text(tutoMilestone.getName()));
+            itemMeta.lore(tutoMilestone.getDescription());
+            itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
+        }).setOnClick(_ -> tutoMilestone.getMenu(player).open()));
+        
+	    List<Component> loreMilestoneVille = new ArrayList<>();
         
         loreMilestoneVille.add(Component.text("§7Découvrez l'intégralité §3des villes"));
         loreMilestoneVille.add(Component.text("§7Via cette §3route de progression §7!"));
@@ -77,7 +79,7 @@ public class MainMilestonesMenu extends Menu {
             loreMilestoneVille.add(Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A VOTRE MILESTONE"));
         }
 
-        inventory.put(14, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
+        inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
             itemMeta.displayName(Component.text("§3Milestone des villes"));
             itemMeta.lore(loreMilestoneVille);
         }).setOnClick(event -> {
@@ -87,8 +89,16 @@ public class MainMilestonesMenu extends Menu {
                 new CityMilestoneMenu(player, playerCity).open();
             }
         }));
+        
+        Milestone dreamMilestone = MilestoneType.DREAM.getMilestone();
+        
+        inventory.put(14, new ItemBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
+            itemMeta.displayName(Component.text(dreamMilestone.getName()));
+            itemMeta.lore(dreamMilestone.getDescription());
+            itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
+        }).setOnClick(_ -> dreamMilestone.getMenu(player).open()));
 
-        inventory.put(16, new ItemBuilder(this, Material.DEAD_BUBBLE_CORAL_BLOCK, itemMeta -> {
+        inventory.put(16, new ItemBuilder(this, Material.BARREL, itemMeta -> {
             itemMeta.displayName(Component.text(" §ks §cComming soon §ke"));
         }));
 
