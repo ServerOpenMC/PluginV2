@@ -21,6 +21,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -38,11 +39,10 @@ public class MascotsDamageListener implements Listener {
             EntityDamageEvent.DamageCause.LIGHTNING,
             EntityDamageEvent.DamageCause.BLOCK_EXPLOSION,
             EntityDamageEvent.DamageCause.ENTITY_EXPLOSION,
-            EntityDamageEvent.DamageCause.FIRE_TICK,
-            EntityDamageEvent.DamageCause.ENTITY_ATTACK // Fix le fait de pouvoir attaquer sa propre mascotte
+            EntityDamageEvent.DamageCause.FIRE_TICK
     );
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     void onMascotDamageCaused(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof LivingEntity entity)) return;
         if (!MascotUtils.canBeAMascot(entity)) return;
