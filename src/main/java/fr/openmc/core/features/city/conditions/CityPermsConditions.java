@@ -53,13 +53,13 @@ public class CityPermsConditions {
             return false;
         }
 
-        if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
+        if (!(city.hasPermission(sender.getUniqueId(), CityPermission.MANAGE_PERMS))) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CityPermission.PERMS) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("feature_city.only_owner_can_do_this"), Prefix.CITY, MessageType.ERROR, false);
+        if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CityPermission.MANAGE_PERMS) {
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.only_owner_can_do_this"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

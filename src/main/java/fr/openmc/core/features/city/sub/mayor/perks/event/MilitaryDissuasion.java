@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -61,7 +62,10 @@ public class MilitaryDissuasion implements Listener {
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 IronGolem golem = (IronGolem) world.spawnEntity(spawnLocation, EntityType.IRON_GOLEM);
-                golem.customName(Component.text("Défendeur de " + city.getName()));
+                golem.customName(TranslationManager.translation(
+                        "feature.city.mayor.perk.event.military.golem.name",
+                        Component.text(city.getName())
+                ));
                 golem.setLootTable(null);
                 golem.setGlowing(true);
                 golem.setHealth(35);

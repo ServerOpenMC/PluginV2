@@ -16,6 +16,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -42,7 +43,7 @@ public class CityBankManager {
         if (!CityBankConditions.canCityDeposit(city, player)) return;
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"),
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
@@ -51,7 +52,7 @@ public class CityBankManager {
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(player,
-                    Component.text("Pour utiliser la banque de ville, votre ville doit être niveau 2 minimum !"),
+                    TranslationManager.translation("feature.city.bank.errors.min_level"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -66,7 +67,10 @@ public class CityBankManager {
         city.updateBalance(amount);
 
         MessagesManager.sendMessage(player,
-                Component.text("Tu as déposé " + EconomyManager.getFormattedNumber(amount) + " dans la banque de ta ville."),
+                TranslationManager.translation(
+                        "feature.city.bank.deposit.success",
+                        Component.text(EconomyManager.getFormattedNumber(amount))
+                ),
                 Prefix.CITY, MessageType.SUCCESS, false);
     }
 
@@ -80,7 +84,7 @@ public class CityBankManager {
         if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"),
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
@@ -89,7 +93,7 @@ public class CityBankManager {
 
         if (city.getBalance() < amount) {
             MessagesManager.sendMessage(player,
-                    Component.text("La banque de ta ville n'a pas assez d'argent."),
+                    TranslationManager.translation("feature.city.bank.errors.not_enough_city_money"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -98,8 +102,11 @@ public class CityBankManager {
         EconomyManager.addBalance(player.getUniqueId(), amount, "Retrait banque de ville");
 
         MessagesManager.sendMessage(player,
-                Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r"
-                        + EconomyManager.getEconomyIcon() + " ont été transférés à ton compte."),
+                TranslationManager.translation(
+                        "feature.city.bank.withdraw.success",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
+                ),
                 Prefix.CITY, MessageType.SUCCESS, false);
     }
 

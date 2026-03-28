@@ -16,6 +16,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -65,9 +66,9 @@ public class CityTransferMenu extends PaginatedMenu {
 
                 items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
                     itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                    itemMeta.lore(List.of(
-		                    Component.text("§7Voulez-vous transférer la ville à §d" + title + playerOffline.getName() + "§7 ?"),
-                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.city.menus.transfer.item.lore",
+                            Component.text(title + playerOffline.getName()).color(NamedTextColor.LIGHT_PURPLE)
                     ));
                 }).setOnClick(inventoryClickEvent -> {
                     if (!hasPermissionOwner) {
@@ -91,13 +92,13 @@ public class CityTransferMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Fermer"));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setCloseButton());
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cPage précédente"));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
         map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
         return map;
     }
@@ -114,7 +115,7 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-	    return Component.text("Menu des villes - Transférer");
+	    return TranslationManager.translation("feature.city.menus.transfer.name");
     }
 
     @Override
