@@ -17,6 +17,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public class MascotsDamageListener implements Listener {
             EntityDamageEvent.DamageCause.FIRE_TICK
     );
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     void onMascotDamageCaused(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof LivingEntity entity)) return;
         if (!MascotUtils.canBeAMascot(entity)) return;
@@ -152,7 +153,7 @@ public class MascotsDamageListener implements Listener {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.city.mascots.damage.error.not_in_war",
-                            Component.text(cityEnemy.getName())
+                            Component.text(cityEnemy.getName()).color(NamedTextColor.RED)
                     ),
                     Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
