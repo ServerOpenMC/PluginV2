@@ -61,6 +61,7 @@ public class MascotsManager {
         mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
 
         loadMascots();
+        restoreMascotsAfterRestart();
 
         OMCPlugin.registerEvents(
                 new MascotsInteractionListener(),
@@ -307,6 +308,39 @@ public class MascotsManager {
 
     public static Component getDeadMascotName() {
         return TranslationManager.translation("feature.city.mascots.name.dead");
+    }
+
+    private static void restoreMascotsAfterRestart() {
+        for (Mascot mascot : mascotsByCityUUID.values()) {
+            City city = CityManager.getCity(mascot.getCityUUID());
+            if (city == null) continue;
+
+            if (mascot.isAlive()) continue;
+            if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity") > 0) continue;
+
+            LivingEntity entity = (LivingEntity) mascot.getEntity();
+            if (entity != null) {
+                entity.setGlowing(false);
+                var maxHealth = entity.getAttribute(Attribute.MAX_HEALTH);
+                if (maxHealth != null) {
+                    entity.customName(getAliveMascotName(
+                            city.getName(),
+                            entity.getHealth(),
+                            maxHealth.getValue()
+                    ));
+                    entity.setCustomNameVisible(true);
+                }
+            }
+
+            mascot.setImmunity(false);
+            mascot.setAlive(true);
+
+            try {
+                mascotsDao.createOrUpdate(mascot);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }

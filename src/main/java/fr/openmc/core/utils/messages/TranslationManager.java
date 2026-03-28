@@ -8,6 +8,7 @@ import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
@@ -163,7 +164,7 @@ public class TranslationManager {
                 key,
                 fallback,
                 normalizedArgs
-        );
+        ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     public static String translationString(String key, ComponentLike... args) {
@@ -200,7 +201,7 @@ public class TranslationManager {
                 continue;
             }
             Component component = like.asComponent();
-            normalized[i] = component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+            normalized[i] = component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE).colorIfAbsent(NamedTextColor.WHITE);
         }
         return normalized;
     }
