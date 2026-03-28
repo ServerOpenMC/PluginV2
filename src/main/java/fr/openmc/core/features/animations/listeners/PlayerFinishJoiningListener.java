@@ -27,8 +27,15 @@ public class PlayerFinishJoiningListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!player.isOnline()) return;
+
                 player.playSound(player, "omc_sounds:ambient.join_rift", 1.0f, 1.0f);
-                CustomPlayer.playEmote(player, Animation.JOIN_RIFT.getNameAnimation());
+                try {
+                    CustomPlayer.playEmote(player, Animation.JOIN_RIFT.getNameAnimation());
+                } catch (Exception e) {
+                    playingAnimations.remove(player);
+                    EmoteListener.sendCamera(player, player);
+                }
             }
         }.runTaskLater(OMCPlugin.getInstance(), 11L);
     }
