@@ -157,11 +157,12 @@ public class TranslationManager {
 
     public static Component translation(String key, ComponentLike... args) {
         String fallback = getFallbackTranslation(key);
+        ComponentLike[] normalizedArgs = normalizeComponent(args);
 
         return Component.translatable(
                 key,
                 fallback,
-                args
+                normalizedArgs
         );
     }
 
@@ -172,7 +173,8 @@ public class TranslationManager {
     public static List<Component> translationLore(String key, ComponentLike... componentsArgs) {
         String fallback = fallbackTranslations.getOrDefault(key, key);
 
-        TranslatableComponent translatable = Component.translatable(key, componentsArgs).fallback(fallback);
+        ComponentLike[] normalizedArgs = normalizeComponent(componentsArgs);
+        TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
 
         String legacy = LegacyComponentSerializer.legacySection().serialize(translatable);
 
@@ -185,5 +187,21 @@ public class TranslationManager {
         }
 
         return lore;
+    }
+
+    private static ComponentLike[] normalizeComponent(ComponentLike... args) {
+        if (args == null || args.length == 0) return new ComponentLike[0];
+
+        ComponentLike[] normalized = new ComponentLike[args.length];
+        for (int i = 0; i < args.length; i++) {
+            ComponentLike like = args[i];
+            if (like == null) {
+                normalized[i] = Component.empty();
+                continue;
+            }
+            Component component = like.asComponent();
+            normalized[i] = component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        }
+        return normalized;
     }
 }
