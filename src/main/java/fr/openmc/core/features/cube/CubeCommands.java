@@ -47,6 +47,41 @@ public class CubeCommands {
         MessagesManager.sendMessage(player, Component.text("Bulle corrompue lancé"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
+    @Subcommand("stopShock")
+    @CommandPermission("omc.admins.commands.cube.shock")
+    public void stopShock(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
+        Cube cube = getInputCubes(player, cubeLoc);
+
+        if (cube == null) return;
+
+        MessagesManager.sendMessage(player, Component.text("Choc éléctro-magnétique arreté"), Prefix.STAFF, MessageType.SUCCESS, false);
+    }
+
+    @Subcommand("stopBubble")
+    @CommandPermission("omc.admins.commands.cube.bubble")
+    public void stopCorruptedBubble(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
+        Cube cube = getInputCubes(player, cubeLoc);
+
+        if (cube == null) return;
+
+        if (cube.particuleBubbleTask != null) {
+            cube.particuleBubbleTask.cancel();
+            cube.particuleBubbleTask = null;
+        }
+
+        if (cube.corruptedBubbleTask != null) {
+            cube.corruptedBubbleTask.cancel();
+            cube.corruptedBubbleTask = null;
+        }
+        MessagesManager.sendMessage(player, Component.text("Bulle corrompue arreté"), Prefix.STAFF, MessageType.SUCCESS, false);
+    }
+
     @Subcommand("reproduce")
     @CommandPermission("omc.admins.commands.cube.reproduce")
     public void reproduceCube(
