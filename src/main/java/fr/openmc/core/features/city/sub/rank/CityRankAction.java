@@ -31,7 +31,7 @@ public class CityRankAction {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (!CityRankCondition.canCreateRank(city, player)) return;
 		
-		DialogInput.send(player, Component.text("Entrez le nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
+		DialogInput.send(player, TranslationManager.translation("feature.city.rank.prompt.create"), MAX_LENGTH_RANK_NAME, input -> {
 					if (input == null) return;
 					
 					CityRankAction.afterCreateRank(player, input);
@@ -75,7 +75,7 @@ public class CityRankAction {
 			return;
 		}
 		if (!CityRankCondition.canRenameRank(city, player, newRank.getName())) return;
-		DialogInput.send(player, Component.text("Entrez le nouveau nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
+		DialogInput.send(player, TranslationManager.translation("feature.city.rank.prompt.rename"), MAX_LENGTH_RANK_NAME, input -> {
 			if (input == null) return;
 			
 			if (!CityRankCondition.canRenameRank(city, player, newRank.getName())) return;
@@ -96,7 +96,7 @@ public class CityRankAction {
 			return;
 		}
 		
-		DialogInput.send(player, Component.text("Entrez le nouveau nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
+		DialogInput.send(player, TranslationManager.translation("feature.city.rank.prompt.rename"), MAX_LENGTH_RANK_NAME, input -> {
 			if (input == null) return;
 			
 			if (!CityRankCondition.canRenameRank(city, player, oldName)) {
@@ -110,7 +110,11 @@ public class CityRankAction {
 			}
 			
 			city.updateRank(rank, new DBCityRank(rank.getRankUUID(), city.getUniqueId(), rank.getPriority(), input, rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet()));
-			MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + oldName + " → " + input), Prefix.CITY, MessageType.SUCCESS, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation(
+					"feature.city.rank.rename.success",
+					Component.text(oldName),
+					Component.text(input)
+			), Prefix.CITY, MessageType.SUCCESS, false);
 		});
 	}
 	
@@ -127,7 +131,7 @@ public class CityRankAction {
 			return;
 		}
 		
-		if ( CityRankCondition.canDeleteRank(city, player, rankName)) {
+		if (CityRankCondition.canDeleteRank(city, player, rankName)) {
 			return;
 		}
 		
@@ -145,15 +149,21 @@ public class CityRankAction {
 				
 				city.deleteRank(rank);
 				player.closeInventory();
-				MessagesManager.sendMessage(player, Component.text("Grade " + rank.getName() + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+				MessagesManager.sendMessage(player, TranslationManager.translation(
+						"feature.city.rank.delete.success",
+						Component.text(rank.getName())
+				), Prefix.CITY, MessageType.SUCCESS, false);
 			} catch (IllegalArgumentException e) {
-				MessagesManager.sendMessage(player, Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
+				MessagesManager.sendMessage(player, TranslationManager.translation(
+						"feature.city.rank.delete.error",
+						Component.text(e.getMessage())
+				), Prefix.CITY, MessageType.ERROR, false);
 			}
 		}, () -> {
 			if (!CityRankCondition.canDeleteRank(city, player, rankName)) return;
 			
 			new CityRankDetailsMenu(player, city, rank).open();
-		}, List.of(Component.text("§cCette action est irréversible")), List.of()).open();
+		}, List.of(TranslationManager.translation("feature.city.rank.delete.confirm.lore")), List.of()).open();
 	}
 	
 	/**
@@ -171,7 +181,10 @@ public class CityRankAction {
 		}
 		
 		if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
-			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation(
+					"messages.city.havent_unlocked_feature",
+					Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK))
+			), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
