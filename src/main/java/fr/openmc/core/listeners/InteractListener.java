@@ -17,8 +17,6 @@ public class InteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.useInteractedBlock() == Event.Result.DENY) return;
-
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomItem item = CustomItemRegistry.getByItemStack(itemInHand);
 
