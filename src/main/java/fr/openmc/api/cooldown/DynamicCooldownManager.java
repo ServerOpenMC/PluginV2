@@ -26,9 +26,11 @@ public class DynamicCooldownManager {
      */
     @DatabaseTable(tableName = "cooldowns")
     public static class Cooldown {
-        @DatabaseField(id = true)
+        @DatabaseField(generatedId = true)
+        private int id;
+        @DatabaseField(uniqueCombo = true, canBeNull = false)
         private UUID uniqueId;
-        @DatabaseField(canBeNull = false)
+        @DatabaseField(uniqueCombo = true, canBeNull = false)
         private String group;
         @DatabaseField(canBeNull = false)
         private long duration;
@@ -123,6 +125,12 @@ public class DynamicCooldownManager {
                 if (!cooldown.isReady()) {
                     try {
                         cooldownDao.createOrUpdate(cooldown);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        cooldownDao.delete(cooldown);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
