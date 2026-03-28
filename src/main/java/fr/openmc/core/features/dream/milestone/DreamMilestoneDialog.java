@@ -1,8 +1,7 @@
-package fr.openmc.core.features.milestones.menus;
+package fr.openmc.core.features.dream.milestone;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.utils.dialog.ButtonType;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -18,7 +17,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MilestoneDialog {
+public class DreamMilestoneDialog {
 	
 	public static void send(Player player, Enum step, List<String> dialogs) {
 		List<DialogBody> body = new ArrayList<>();
