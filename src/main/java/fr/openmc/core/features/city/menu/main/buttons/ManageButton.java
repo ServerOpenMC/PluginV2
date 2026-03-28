@@ -52,9 +52,9 @@ public class ManageButton {
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
-        String mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
+        Component mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
                 ? city.getMayor().getName()
-                : TranslationManager.translationString("messages.menus.none");
+                : TranslationManager.translation("messages.menus.none");
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
 
@@ -63,7 +63,7 @@ public class ManageButton {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.manage.lore.edit",
                     PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY),
-                    Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false),
+                    mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false),
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.LIGHT_PURPLE)
             );
@@ -71,7 +71,7 @@ public class ManageButton {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.manage.lore.view",
                     PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY),
-                    Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false),
+                    mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false),
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.LIGHT_PURPLE)
             );

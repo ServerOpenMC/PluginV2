@@ -95,13 +95,13 @@ public class CityTopMenu extends PaginatedMenu {
                 Component powerComponent = Component.text(city.getPowerPoints()).color(NamedTextColor.RED);
 
                 if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-                    String mayorCity = city.getMayor() == null
-                            ? TranslationManager.translationString("messages.menus.none")
+                    Component mayorName = city.getMayor() == null
+                            ? TranslationManager.translation("messages.menus.none")
                             : city.getMayor().getName();
                     NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null)
                             ? NamedTextColor.WHITE
                             : city.getMayor().getMayorColor();
-                    Component mayorComponent = Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false);
+                    Component mayorComponent = mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false);
                     cityLore.addAll(TranslationManager.translationLore(
                             "feature.city.menus.top.item.lore.with_mayor",
                             ownerComponent,

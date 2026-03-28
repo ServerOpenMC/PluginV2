@@ -87,7 +87,7 @@ public class MayorMandateMenu extends Menu {
         loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
         inventory.put(3, new ItemBuilder(this, SkullUtils.getPlayerSkull(mayor.getMayorUUID()), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.mandate.mayor.title", Component.text(mayor.getName()))
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.mandate.mayor.title", mayor.getName())
                     .color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(loreMayor);
         }));

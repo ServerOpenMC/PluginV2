@@ -71,7 +71,7 @@ public class MascotsDeadMenu extends Menu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.dead.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.mascots.menu.dead.lore",
-                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))),
+                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
                 ));
             }).setOnClick(inventoryClickEvent -> {

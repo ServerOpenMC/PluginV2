@@ -133,7 +133,10 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	
 	@Override
 	public @NotNull Component getName() {
-		return TranslationManager.translation("feature.city.rank.menu.perms.title", Component.text(this.newRank.getName()));
+		return TranslationManager.translation(
+				"feature.city.rank.menu.perms.title",
+				Component.text(this.newRank.getName()).color(NamedTextColor.YELLOW)
+		);
 	}
 	
 	@Override

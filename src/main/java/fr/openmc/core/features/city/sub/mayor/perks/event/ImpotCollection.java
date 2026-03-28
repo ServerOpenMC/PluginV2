@@ -50,7 +50,7 @@ public class ImpotCollection implements Listener {
             Zombie zombie = (Zombie) world.spawnEntity(spawnLoc, EntityType.ZOMBIE);
             zombie.customName(TranslationManager.translation(
                     "feature.city.mayor.perk.event.impot.zombie.name",
-                    Component.text(city.getMayor().getName())
+                    city.getMayor().getName()
             ).color(NamedTextColor.GRAY));
             zombie.setCustomNameVisible(true);
             zombie.setTarget(player);

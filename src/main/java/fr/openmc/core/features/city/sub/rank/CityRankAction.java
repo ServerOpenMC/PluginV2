@@ -14,6 +14,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -112,8 +113,8 @@ public class CityRankAction {
 			city.updateRank(rank, new DBCityRank(rank.getRankUUID(), city.getUniqueId(), rank.getPriority(), input, rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet()));
 			MessagesManager.sendMessage(player, TranslationManager.translation(
 					"feature.city.rank.rename.success",
-					Component.text(oldName),
-					Component.text(input)
+					Component.text(oldName).color(NamedTextColor.YELLOW),
+					Component.text(input).color(NamedTextColor.YELLOW)
 			), Prefix.CITY, MessageType.SUCCESS, false);
 		});
 	}
@@ -151,12 +152,12 @@ public class CityRankAction {
 				player.closeInventory();
 				MessagesManager.sendMessage(player, TranslationManager.translation(
 						"feature.city.rank.delete.success",
-						Component.text(rank.getName())
+						Component.text(rank.getName()).color(NamedTextColor.YELLOW)
 				), Prefix.CITY, MessageType.SUCCESS, false);
 			} catch (IllegalArgumentException e) {
 				MessagesManager.sendMessage(player, TranslationManager.translation(
 						"feature.city.rank.delete.error",
-						Component.text(e.getMessage())
+						Component.text(e.getMessage()).color(NamedTextColor.RED)
 				), Prefix.CITY, MessageType.ERROR, false);
 			}
 		}, () -> {

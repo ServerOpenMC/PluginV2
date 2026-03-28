@@ -12,6 +12,8 @@ import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -70,6 +72,7 @@ public class TypeButton {
             lore.add(TranslationManager.translation(
                     "feature.city.menus.main.type.lore.cooldown",
                     Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
+                            .decoration(TextDecoration.ITALIC, false).color(NamedTextColor.GRAY)
             ));
         }
 

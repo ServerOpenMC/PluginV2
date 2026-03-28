@@ -53,8 +53,14 @@ public class CityRankDetailsMenu extends Menu {
 	@Override
 	public @NotNull Component getName() {
 		return city.isRankExists(oldRank)
-				? TranslationManager.translation("feature.city.rank.menu.details.title.edit", Component.text(oldRank.getName()))
-				: TranslationManager.translation("feature.city.rank.menu.details.title.create", Component.text(newRank.getName()));
+				? TranslationManager.translation(
+						"feature.city.rank.menu.details.title.edit",
+						Component.text(oldRank.getName()).color(NamedTextColor.YELLOW)
+				)
+				: TranslationManager.translation(
+						"feature.city.rank.menu.details.title.create",
+						Component.text(newRank.getName()).color(NamedTextColor.YELLOW)
+				);
 	}
 	
 	@Override
@@ -158,7 +164,7 @@ public class CityRankDetailsMenu extends Menu {
 				getOwner().closeInventory();
 				MessagesManager.sendMessage(getOwner(), TranslationManager.translation(
 						"feature.city.rank.create.success",
-						Component.text(this.newRank.getName())
+						Component.text(this.newRank.getName()).color(NamedTextColor.YELLOW)
 				), Prefix.CITY, MessageType.SUCCESS, false);
 			}));
 		}
@@ -302,7 +308,7 @@ public class CityRankDetailsMenu extends Menu {
 				new CityRanksMenu(getOwner(), city).open();
 				MessagesManager.sendMessage(getOwner(), TranslationManager.translation(
 						"feature.city.rank.update.success",
-						Component.text(this.newRank.getName())
+						Component.text(this.newRank.getName()).color(NamedTextColor.YELLOW)
 				), Prefix.CITY, MessageType.SUCCESS, false);
 			}));
 		}

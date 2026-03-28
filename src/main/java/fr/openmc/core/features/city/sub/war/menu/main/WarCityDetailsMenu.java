@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,7 +40,10 @@ public class WarCityDetailsMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu de Guerre - Details de " + city.getName());
+        return TranslationManager.translation(
+                "feature.city.war.menu.details.title",
+                Component.text(city.getName()).color(NamedTextColor.YELLOW)
+        );
     }
 
     @Override
@@ -101,30 +105,55 @@ public class WarCityDetailsMenu extends Menu {
 
         map.put(8, new ItemBuilder(this, city.getMascot().getMascotEgg(),
                 itemMeta -> {
-                    itemMeta.displayName(Component.text("§7Niveau de la mascotte : §4" + mascot.getLevel()));
-                    itemMeta.lore(List.of(Component.text("§7Location de la mascotte : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())));
+                    itemMeta.displayName(TranslationManager.translation(
+                            "feature.city.war.menu.details.mascot.level",
+                            Component.text(mascot.getLevel()).color(NamedTextColor.DARK_RED)
+                    ).color(NamedTextColor.GRAY));
+                    itemMeta.lore(List.of(TranslationManager.translation(
+                            "feature.city.war.menu.details.mascot.location",
+                            Component.text(mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ()).color(NamedTextColor.RED)
+                    ).color(NamedTextColor.GRAY)));
                 }));
 
         map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
-                itemMeta -> itemMeta.displayName(Component.text("§7Taille : §6" + city.getChunks().size() + " chunks"))));
+                itemMeta -> itemMeta.displayName(TranslationManager.translation(
+                        "feature.city.war.menu.details.size",
+                        Component.text(city.getChunks().size()).color(NamedTextColor.GOLD)
+                ).color(NamedTextColor.GRAY))));
 
         map.put(22, new ItemBuilder(this, new ItemStack(Material.DIAMOND),
-                itemMeta -> itemMeta.displayName(Component.text("§7Richesses : §6" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon()))));
+                itemMeta -> itemMeta.displayName(TranslationManager.translation(
+                        "feature.city.war.menu.details.wealth",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
+                                .color(NamedTextColor.GOLD)
+                ).color(NamedTextColor.GRAY))));
 
         map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Population : §d" + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
-            itemMeta.lore(List.of(Component.text("§7Population connecté : §d" + city.getOnlineMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur"))));
+            itemMeta.displayName(TranslationManager.translation(
+                    "feature.city.war.menu.details.population",
+                    Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
+                    TranslationManager.translation(city.getMembers().size() > 1
+                            ? "feature.city.war.menu.details.population.players"
+                            : "feature.city.war.menu.details.population.player")
+            ).color(NamedTextColor.GRAY));
+            itemMeta.lore(List.of(TranslationManager.translation(
+                    "feature.city.war.menu.details.population_online",
+                    Component.text(city.getOnlineMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
+                    TranslationManager.translation(city.getOnlineMembers().size() > 1
+                            ? "feature.city.war.menu.details.population.players"
+                            : "feature.city.war.menu.details.population.player")
+            ).color(NamedTextColor.GRAY)));
         }).setOnClick(inventoryClickEvent -> new WarPlayerListMenu(player, city).open()));
 
         map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
-                itemMeta -> itemMeta.displayName(Component.text("§7Type : " + city.getType().getDisplayName()))));
+                itemMeta -> itemMeta.displayName(TranslationManager.translation(
+                        "feature.city.war.menu.details.type",
+                        city.getType().getDisplayName()
+                ).color(NamedTextColor.GRAY))));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu précédent"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
+            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
         }, true));
 
         return map;

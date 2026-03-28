@@ -92,7 +92,7 @@ public class MayorNpcMenu extends Menu {
         loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
         inventory.put(4, new ItemBuilder(this, SkullUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
-                itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.mayor.title", Component.text(city.getMayor().getName())).color(NamedTextColor.YELLOW));
+                itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.mayor.title", city.getMayor().getName()).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreMayor);
             }));
 

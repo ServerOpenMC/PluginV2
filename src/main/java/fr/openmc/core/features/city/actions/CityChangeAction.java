@@ -137,8 +137,8 @@ public class CityChangeAction {
 
         Component inPeace = TranslationManager.translation("feature.city.type.in_peace").color(NamedTextColor.GREEN);
         Component inWar = TranslationManager.translation("feature.city.type.in_war").color(NamedTextColor.RED);
-        Component cityTypeActuel = city.getType() == CityType.WAR ? inWar : inPeace;
-        Component cityTypeAfter = city.getType() == CityType.WAR ? inPeace : inWar;
+        Component cityTypeActuel = city.getType() == CityType.WAR ? inPeace : inWar;
+        Component cityTypeAfter = city.getType() == CityType.WAR ? inWar : inPeace;
 
         MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.change_type_success",
                         cityTypeActuel, cityTypeAfter),

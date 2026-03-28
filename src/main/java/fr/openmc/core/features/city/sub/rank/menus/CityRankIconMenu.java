@@ -12,6 +12,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -137,7 +138,10 @@ public class CityRankIconMenu extends PaginatedMenu {
 	
 	@Override
 	public @NotNull Component getName() {
-		return TranslationManager.translation("feature.city.rank.menu.icon.title", Component.text(page + 1));
+		return TranslationManager.translation(
+				"feature.city.rank.menu.icon.title",
+				Component.text(page + 1).color(NamedTextColor.YELLOW)
+		);
 	}
 	
 	@Override

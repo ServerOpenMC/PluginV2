@@ -128,7 +128,7 @@ public class CityListDetailsMenu extends Menu {
 									itemMeta.displayName(
 										TranslationManager.translation(
 												"feature.city.menus.list.details.mayor",
-												Component.text(mayor.getName()).color(this.city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false)
+												mayor.getName().color(this.city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false)
 										)
 									);
 									itemMeta.lore(loreMayor);

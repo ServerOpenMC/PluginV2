@@ -90,11 +90,11 @@ public class CityListMenu extends PaginatedMenu {
 			Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
 			Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
 			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-				String mayorCity = city.getMayor() == null
-						? TranslationManager.translationString("messages.menus.none")
+				Component mayorCity = city.getMayor() == null
+						? TranslationManager.translation("messages.menus.none")
 						: city.getMayor().getName();
 				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
-				Component mayorComponent = Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false);
+				Component mayorComponent = mayorCity.color(mayorColor).decoration(TextDecoration.ITALIC, false);
 				cityLore.addAll(TranslationManager.translationLore(
 						"feature.city.menus.list.item.lore.with_mayor",
 						ownerComponent,

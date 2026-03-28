@@ -221,7 +221,7 @@ public class MascotMenu extends Menu {
         } else if (currentMascotLevel >= maxMascotLevel) {
             requiredAmount.add(TranslationManager.translation(
                     "feature.city.mascots.menu.main.upgrade.level_required",
-                    Component.text(maxMascotLevel + 1).decoration(TextDecoration.ITALIC, false)
+                    Component.text(maxMascotLevel + 1).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.RED)
             ));
         } else {
             requiredAmount.add(TranslationManager.translation(

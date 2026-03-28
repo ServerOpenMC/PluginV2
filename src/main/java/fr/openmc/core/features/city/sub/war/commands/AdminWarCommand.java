@@ -8,7 +8,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
@@ -33,7 +32,7 @@ public class AdminWarCommand {
         }
 
         if (!city.isInWar() && city.getWar().getPhase() != War.WarPhase.PREPARATION) {
-            MessagesManager.sendMessage(player, Component.text("Cette ville n'est pas en préparation de guerre !"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.war.admin.not_in_preparation"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
