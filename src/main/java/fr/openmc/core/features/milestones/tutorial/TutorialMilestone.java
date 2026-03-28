@@ -2,6 +2,7 @@ package fr.openmc.core.features.milestones.tutorial;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.features.milestones.Milestone;
+import fr.openmc.core.features.milestones.MilestoneModel;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
@@ -11,10 +12,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class TutorialMilestone implements Milestone {
-    @Override
+	
+	private static HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
+	
+	@Override
+	public HashMap<UUID, MilestoneModel> getPlayerData() {
+		return playerData;
+	}
+	
+	@Override
     public String getName() {
         return "§7Tutoriel d'OpenMC";
     }

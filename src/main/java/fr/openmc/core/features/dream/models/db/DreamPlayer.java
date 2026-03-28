@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -91,17 +92,18 @@ public class DreamPlayer {
 
     public void scheduleTimeTask() {
         this.timeTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
-            this.dreamTime -= 1;
-
-            if (dreamTime <= 0) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                        Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
-                );
-                this.cancelTimeTask();
-                return;
-            }
-
-            DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
+			if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
+			if (DreamManager.isPlayerInMilestoneDialog(player)) return;
+			if (dreamTime <= 0) {
+				Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+						Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
+				);
+				this.cancelTimeTask();
+				return;
+			}
+			
+			this.dreamTime -= 1;
+			DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
         }, 0L, 20L);
     }
 
