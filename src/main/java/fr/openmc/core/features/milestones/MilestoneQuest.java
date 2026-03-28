@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones;
 
+import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
-import fr.openmc.core.features.milestones.menus.MilestoneDialog;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class MilestoneQuest extends Quest {
 	
 	protected final MilestoneType type;
-	protected final Enum step;
+	protected final Enum step; //TODO a fix dans #1209
 	
 	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum step, QuestTier quest) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest);
@@ -45,7 +45,7 @@ public class MilestoneQuest extends Quest {
 				new QuestMethodsReward(player -> MilestoneUtils.completeStep(type, player, step)),
 				new QuestMethodsReward(player -> {
 					player.closeInventory();
-					MilestoneDialog.send(player, step, dialogs);
+					DreamMilestoneDialog.send(player, step, dialogs);
 				})
 		));
 	}
