@@ -1,7 +1,5 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
@@ -18,14 +16,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
 	
 	public CrystallizedPickaxeQuest() {
-		MultiBlock multiblock = MultiBlockManager.getMultiblockAtDimension("world_dream");
-		if (multiblock == null) {
-			OMCPlugin.getInstance().getSLF4JLogger().error("Multiblock in dream dimension is null!");
-		}
 		super(
 				"Bonne pioche",
 				List.of(
@@ -42,8 +37,8 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 								"pour la dernière étape de cette quête.",
 						"§6Alors ne traînons pas, pastons en grotte.",
 						"§3Voyageur : Non ! Avant d'aller chercher le dernier orbe, fais un détour aux coordonnées " +
-								multiblock.origin.getBlockX() + " " +
-								multiblock.origin.getBlockZ() + ". Comme promis, je te dois des explications."
+								Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension("world_dream")).origin.getBlockX() + " " +
+								Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension("world_dream")).origin.getBlockZ() + ". Comme promis, je te dois des explications."
 				)
 		);
 	}
