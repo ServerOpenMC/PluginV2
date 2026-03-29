@@ -13,8 +13,10 @@ public abstract class Feature {
         try {
             init();
             initialize = true;
+            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
         } catch (Exception e) {
             initialize = false;
+            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " pas initialisée correctement.");
             throw e;
         }
     }

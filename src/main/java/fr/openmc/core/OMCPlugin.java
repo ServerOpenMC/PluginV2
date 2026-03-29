@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+
 import com.j256.ormlite.logger.LoggerFactory;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.hooks.*;
@@ -142,9 +143,9 @@ public class OMCPlugin extends JavaPlugin {
             Datapack pack = this.getServer().getDatapackManager().getPack(getPluginMeta().getName() + "/omc");
             if (pack != null) {
                 if (pack.isEnabled()) {
-                    getSLF4JLogger().info("\u001B[32m✔ Lancement du datapack réussi\u001B[0m");
+                    logSuccessMessage("Lancement du datapack réussi");
                 } else {
-                    getSLF4JLogger().warn("\u001B[31m✘ Lancement du datapack échoué\u001B[0m");
+                    logErrorMessage("Lancement du datapack échoué");
                 }
             }
         }
@@ -209,9 +210,16 @@ public class OMCPlugin extends JavaPlugin {
     }
 
     /* LOG MESSAGE */
+    public void logSuccessMessage(String message) {
+        this.getSLF4JLogger().info("\u001B[32m✔ {}\u001B[0m", message);
+    }
+
+    public void logErrorMessage(String message) {
+        this.getSLF4JLogger().info("\u001B[31m✔ {}\u001B[0m", message);
+    }
 
     private void logLoadMessage() {
-        Logger log = getSLF4JLogger();
+        Logger log = this.getSLF4JLogger();
 
         String pluginVersion = getPluginMeta().getVersion();
         String javaVersion = System.getProperty("java.version");

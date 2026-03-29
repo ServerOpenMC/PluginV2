@@ -85,6 +85,10 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder {
 
     @Override
     public void save() {
+        saveConfig();
+    }
+
+    public static void saveConfig() {
         if (config == null) return;
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -117,9 +121,9 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder {
         }
     }
 
-    public void register(MultiBlock multiBlock) {
+    public static void register(MultiBlock multiBlock) {
         multiBlocks.add(multiBlock);
 
-        save();
+        saveConfig();
     }
 }
