@@ -91,7 +91,7 @@ public class DynamicCooldownManager extends Feature implements DatabaseFeature {
 
     @Override
     public void save() {
-        DynamicCooldownManager.saveCooldowns()
+        DynamicCooldownManager.saveCooldowns();
     }
 
     // Map structure: UUID -> (Group -> Cooldown)
