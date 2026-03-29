@@ -16,6 +16,8 @@ import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -40,7 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class MascotsManager {
+public class MascotsManager extends Feature implements DatabaseFeature {
     public static final List<UUID> movingMascots = new ArrayList<>();
     public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
@@ -49,7 +51,8 @@ public class MascotsManager {
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
-    public static void init() {
+    @Override
+    public void init() {
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -90,7 +93,13 @@ public class MascotsManager {
         }
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void save() {
+        MascotsManager.saveMascots();
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Mascot.class);
         mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
     }

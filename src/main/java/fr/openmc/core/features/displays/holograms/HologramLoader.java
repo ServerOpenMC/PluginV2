@@ -5,6 +5,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
 import fr.openmc.core.utils.entities.TextDisplay;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
+import fr.openmc.core.utils.init.NotUnitTestFeature;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,14 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class HologramLoader {
+public class HologramLoader extends Feature implements NotUnitTestFeature, LoadAfterItemsAdder {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     private static BukkitTask taskTimer;
 
     public static final File hologramFolder = new File(OMCPlugin.getInstance().getDataFolder(), "data/holograms");
 
-    public static void init() {
+    @Override
+    public void init() {
         hologramFolder.mkdirs();
 
         CommandsManager.getHandler().register(
@@ -40,6 +44,11 @@ public class HologramLoader {
 
         updateHologramsViewers();
         HologramLoader.loadAllFromFolder(hologramFolder);
+    }
+
+    @Override
+    public void save() {
+        HologramLoader.unloadAll();
     }
 
     public static void updateHologramsViewers() {

@@ -12,6 +12,9 @@ import fr.openmc.core.features.events.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.entities.TextDisplay;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
+import fr.openmc.core.utils.init.NotUnitTestFeature;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -38,7 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.*;
 
-public class LeaderboardManager {
+public class LeaderboardManager extends Feature implements NotUnitTestFeature, LoadAfterItemsAdder {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter
@@ -68,10 +71,16 @@ public class LeaderboardManager {
     private static TextDisplay playTimeHologram;
     private static TextDisplay pumpkinCountHologram;
 
-    public static void init() {
+    @Override
+    public void init() {
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
         enable();
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     /**

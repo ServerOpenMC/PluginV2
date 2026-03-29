@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.translation;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.init.Feature;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -10,17 +11,25 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class TranslationManager {
+public class TranslationManager extends Feature {
 
     private static String defaultLanguage;
     private static File translationFolder;
     private static final Map<String, FileConfiguration> loadedLanguages = new HashMap<>();
-
-    public static void init(File inTranslationFolder, String inDefaultLanguage) {
+    public TranslationManager(File inTranslationFolder, String inDefaultLanguage) {
         defaultLanguage = inDefaultLanguage;
         translationFolder = inTranslationFolder;
+    }
 
+    @Override
+    public void init() {
         loadAllLanguages();
+    }
+
+
+    @Override
+    public void save() {
+
     }
 
     /**
