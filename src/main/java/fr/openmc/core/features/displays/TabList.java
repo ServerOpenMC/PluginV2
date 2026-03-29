@@ -11,6 +11,8 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.NotUnitTestFeature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -18,10 +20,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList {
+public class TabList extends Feature implements NotUnitTestFeature {
     private static ProtocolManager protocolManager = null;
 
-    public static void init() {
+    @Override
+    public void init() {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null)
             protocolManager = ProtocolLibrary.getProtocolManager();
 
@@ -62,6 +65,11 @@ public class TabList {
                 packet.getModifier().withType(List.class).write(0, filtered);
             }
         });
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     public static void updateHeaderFooter(Player player, String header, String footer) {

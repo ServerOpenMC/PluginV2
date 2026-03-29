@@ -3,6 +3,8 @@ package fr.openmc.core.features.quests;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -17,7 +19,7 @@ import java.util.UUID;
  * It handles the registration of quests, loading default quests,
  * and saving quest progress for players.
  */
-public class QuestsManager {
+public class QuestsManager extends Feature implements LoadAfterItemsAdder {
     static final Map<String, Quest> quests = new HashMap<>();
 
     /**
@@ -25,9 +27,17 @@ public class QuestsManager {
      * This constructor initializes the instance of QuestsManager,
      * loads default quests, and loads all quest progress.
      */
-    public static void init() {
+    @Override
+    public void init() {
+        QuestProgressSaveManager.init();
+
         loadDefaultQuests();
         QuestProgressSaveManager.loadAllQuestProgress();
+    }
+
+    @Override
+    public void save() {
+        QuestsManager.saveQuests();
     }
 
     /**

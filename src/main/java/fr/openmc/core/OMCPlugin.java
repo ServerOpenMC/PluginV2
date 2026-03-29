@@ -11,6 +11,7 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.animations.AnimationsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
@@ -27,13 +28,15 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
+import fr.openmc.core.features.economy.TransactionsManager;
+import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
@@ -47,6 +50,8 @@ import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.errors.ErrorReporter;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import fr.openmc.core.utils.translation.TranslationManager;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
@@ -60,6 +65,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter
@@ -69,15 +76,42 @@ public class OMCPlugin extends JavaPlugin {
 
     public static final String VANISH_META_KEY = "omcstaff.vanished";
 
-    public static void registerEvents(Listener... listeners) {
-        for (Listener listener : listeners) {
-            instance.getServer().getPluginManager().registerEvents(listener, instance);
-        }
-    }
-
-    public static boolean isUnitTestVersion() {
-        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
-    }
+    // ** Registry of OMC Features
+    public final List<Feature> REGISTRY_FEATURE = new ArrayList<>(List.of(
+            new TicketManager(new File(this.getDataFolder(), "data/stats")),
+            new SpawnManager(),
+            new UpdateManager(),
+            new EconomyManager(),
+            new BankManager(),
+            new ScoreboardManager(),
+            new HomesManager(),
+            new TPAQueue(),
+            new FreezeManager(),
+            new TransactionsManager(),
+            new AnalyticsManager(),
+            new FriendSQLManager(),
+            new TabList(),
+            new AdminShopManager(),
+            new BossbarManager(),
+            new AnimationsManager(),
+            new HalloweenManager(),
+            new MotdUtils(),
+            new TranslationManager(new File(this.getDataFolder(), "translations"), "fr"),
+            new DynamicCooldownManager(),
+            new MascotsManager(),
+            new PlayerSettingsManager(),
+            new MailboxManager(),
+            new MilestonesManager(),
+            new QuestsManager(),
+            new CityManager(),
+            new ContestManager(),
+            new DreamManager(),
+            new MultiBlockManager(),
+            new LeaderboardManager(),
+            new MainMenu(),
+            new HologramLoader(),
+            new HomeIconCacheManager()
+    ));
 
     @Override
     public void onLoad() {
@@ -117,38 +151,14 @@ public class OMCPlugin extends JavaPlugin {
         new ErrorReporter();
 
         /* MANAGERS */
-        TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         DatabaseManager.init();
         CommandsManager.init();
-        SpawnManager.init();
-        UpdateManager.init();
         ListenersManager.init();
-        EconomyManager.init();
-        BankManager.init();
 
-        if (!isUnitTestVersion())
-            ScoreboardManager.init();
-
-        HomesManager.init();
-        TPAQueue.initCommand();
-        FreezeManager.init();
-        QuestProgressSaveManager.init();
-        if (!isUnitTestVersion())
-            TabList.init();
-        AdminShopManager.init();
-        BossbarManager.init();
-        AnimationsManager.init();
-        HalloweenManager.init();
-
-        MotdUtils.init();
-        TranslationManager.init(new File(this.getDataFolder(), "translations"), "fr");
-        DynamicCooldownManager.init();
-
-        MascotsManager.init();
-
-        PlayerSettingsManager.loadAllPlayerSettings();
-
-        MailboxManager.loadLetters();
+        /* FEATURES */
+        REGISTRY_FEATURE.stream()
+                .filter(f -> !(f instanceof LoadAfterItemsAdder))
+                .forEachOrdered(Feature::startInit);
     }
 
     public void loadWithItemsAdder() {
@@ -158,78 +168,23 @@ public class OMCPlugin extends JavaPlugin {
         CustomLootTableRegistry.init();
 
         // ** FEATURES **
-	    MilestonesManager.init();
-	    QuestsManager.init();
-        CityManager.init();
-        ContestManager.init();
-        WeeklyEventsManager.init();
-        DreamManager.init();
-        MultiBlockManager.init();
+        REGISTRY_FEATURE.stream()
+                .filter(f -> f instanceof LoadAfterItemsAdder)
+                .forEachOrdered(Feature::startInit);
+
+        // todo: sera supprimé dans https://github.com/ServerOpenMC/PluginV2/pull/1168
+        DreamDimensionManager.postInit();
+
         if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
-            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
-
-        DreamDimensionManager.postInit();
-        if (!OMCPlugin.isUnitTestVersion()) {
-            LeaderboardManager.init();
-            MainMenu.init(this);
-            HologramLoader.init();
-        }
-        HomeIconCacheManager.initialize();
     }
 
     @Override
     public void onDisable() {
-        // SAUVEGARDE
-        // - Dimension des Reves
-        DreamManager.disable();
-
-        // - Mailboxes
-        MailboxManager.saveLetters();
-
-        // - MultiBlocks
-        MultiBlockManager.save();
-
-        // - War
-        WarManager.saveWarHistories();
-
-        // - CityStatistics
-        CityStatisticsManager.saveCityStatistics();
-
-        // - Settings
-        PlayerSettingsManager.saveAllSettings();
-
-        // - Notation des Villes
-        NotationManager.saveNotations();
-
-        // - Maires
-        MayorManager.saveMayorConstant();
-        MayorManager.savePlayersVote();
-        MayorManager.saveMayorCandidates();
-        MayorManager.saveCityMayors();
-        MayorManager.saveCityLaws();
-
-        HomesManager.saveHomesData();
-        HomeIconCacheManager.clearCache();
-
-        // - Milestones
-        MilestonesManager.saveMilestonesData();
-
-        // - Contest
-        ContestManager.saveContestData();
-        ContestManager.saveContestPlayerData();
-        QuestsManager.saveQuests();
-
-        // - Mascottes
-        MascotsManager.saveMascots();
-
-        // - Cooldowns
-        DynamicCooldownManager.saveCooldowns();
-
-
-        if (!OMCPlugin.isUnitTestVersion()) {
-            HologramLoader.unloadAll();
+        // ** SAVE **
+        for (Feature feature : REGISTRY_FEATURE) {
+            feature.startSave();
         }
 
         // - Close all inventories
@@ -242,6 +197,18 @@ public class OMCPlugin extends JavaPlugin {
             if (!Bukkit.isStopping())
                 Bukkit.shutdown();
     }
+
+    public static void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
+            instance.getServer().getPluginManager().registerEvents(listener, instance);
+        }
+    }
+
+    public static boolean isUnitTestVersion() {
+        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
+    }
+
+    /* LOG MESSAGE */
 
     private void logLoadMessage() {
         Logger log = getSLF4JLogger();

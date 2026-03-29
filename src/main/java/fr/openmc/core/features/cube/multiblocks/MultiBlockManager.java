@@ -4,6 +4,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,14 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MultiBlockManager {
+public class MultiBlockManager extends Feature implements LoadAfterItemsAdder {
     private static final OMCPlugin plugin = OMCPlugin.getInstance();
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;
     private static File file = null;
 
-    public static void init() {
+    @Override
+    public void init() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "multiblocks.yml");
         if (!file.exists()) {
             plugin.saveResource("data/multiblocks.yml", false);
@@ -80,7 +83,8 @@ public class MultiBlockManager {
         }
     }
 
-    public static void save() {
+    @Override
+    public void save() {
         if (config == null) return;
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -113,7 +117,7 @@ public class MultiBlockManager {
         }
     }
 
-    public static void register(MultiBlock multiBlock) {
+    public void register(MultiBlock multiBlock) {
         multiBlocks.add(multiBlock);
 
         save();

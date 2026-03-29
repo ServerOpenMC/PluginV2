@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.hooks.ItemsAdderHook;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -25,6 +26,9 @@ import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -47,7 +51,7 @@ import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
-public class ContestManager {
+public class ContestManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
 
     public static ContestData data;
     public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
@@ -74,7 +78,8 @@ public class ContestManager {
      * - Initialise les données globales et les joueurs
      * - Programme le lancement et la fin des différentes phases du contest
      */
-    public static void init() {
+    @Override
+    public void init() {
         // ** LISTENERS **
         if (ItemsAdderHook.isHasItemAdder()) {
             OMCPlugin.registerEvents(
@@ -93,6 +98,11 @@ public class ContestManager {
         // ** LOAD DATAS **
         initContestData();
         loadContestPlayerData();
+
+        // ** PARTICLE REGION **
+        if (WorldGuardHook.isHasWorldGuard()) {
+            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        }
     }
 
     private static Dao<ContestData, Integer> contestDao;
@@ -102,7 +112,8 @@ public class ContestManager {
      * Initialise la base de données pour les contests et les joueurs
      * (création des tables si elles n’existent pas encore)
      */
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, ContestData.class);
         contestDao = DaoManager.createDao(connectionSource, ContestData.class);
 

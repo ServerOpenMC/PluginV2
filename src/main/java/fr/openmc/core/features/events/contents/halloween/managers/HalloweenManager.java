@@ -15,6 +15,8 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DamageResistant;
 import io.papermc.paper.registry.keys.tags.DamageTypeTagKeys;
@@ -35,15 +37,20 @@ import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
-public class HalloweenManager {
+public class HalloweenManager extends Feature implements DatabaseFeature {
     private static Object2ObjectMap<UUID, HalloweenData> halloweenData;
     private static Dao<HalloweenData, String> halloweenDataDao;
 
-    public static void init() {
+    public void init() {
         if (FancyNpcsHook.isHasFancyNpc())
             Bukkit.getPluginManager().registerEvents(new HalloweenNPCListener(), OMCPlugin.getInstance());
 
         halloweenData = loadAllHalloweenDatas();
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     public static void depositPumpkins(UUID playerUUID, int amount) {
@@ -67,7 +74,8 @@ public class HalloweenManager {
         return halloweenData;
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
         halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
     }
