@@ -10,6 +10,8 @@ import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -35,11 +37,21 @@ import java.util.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 import static fr.openmc.core.utils.InputUtils.pluralize;
 
-public class MailboxManager {
+public class MailboxManager extends Feature implements DatabaseFeature {
     private static final int MAX_STACKS_PER_LETTER = 27;
     private static final List<Letter> letters = new ArrayList<>();
 
     private static int nextLetterId = 1;
+
+    @Override
+    public void init() {
+        MailboxManager.loadLetters();
+    }
+
+    @Override
+    public void save() {
+        MailboxManager.saveLetters();
+    }
 
     public static boolean sendItems(Player sender, OfflinePlayer receiver, ItemStack[] items) {
         if (!canSend(sender, receiver)) return false;
@@ -245,7 +257,8 @@ public class MailboxManager {
 
     private static Dao<Letter, Integer> letterDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Letter.class);
         letterDao = DaoManager.createDao(connectionSource, Letter.class);
     }

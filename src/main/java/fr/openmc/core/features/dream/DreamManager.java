@@ -36,13 +36,15 @@ import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.*;
 import fr.openmc.core.utils.LocationUtils;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -51,7 +53,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class DreamManager {
+public class DreamManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
@@ -63,7 +65,8 @@ public class DreamManager {
     private static Dao<DBDreamPlayer, String> dreamPlayerDao;
     private static Dao<DBPlayerSave, String> savePlayerDao;
 
-    public static void init() {
+    @Override
+    public void init() {
         // ** LISTENERS **
         OMCPlugin.registerEvents(
                 new PlayerChangeWorldListener(),
@@ -109,7 +112,16 @@ public class DreamManager {
         loadAllPlayerSaveData();
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void save() {
+        DreamManager.saveAllPlayerSaveData();
+        DreamManager.saveAllDreamPlayerData();
+
+        SingularityManager.disable();
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, DBDreamPlayer.class);
         dreamPlayerDao = DaoManager.createDao(connectionSource, DBDreamPlayer.class);
 
@@ -117,13 +129,6 @@ public class DreamManager {
         savePlayerDao = DaoManager.createDao(connectionSource, DBPlayerSave.class);
 
         SingularityManager.initDB(connectionSource);
-    }
-
-    public static void disable() {
-        DreamManager.saveAllPlayerSaveData();
-        DreamManager.saveAllDreamPlayerData();
-
-        SingularityManager.disable();
     }
 
     private static void loadAllPlayerSaveData() {

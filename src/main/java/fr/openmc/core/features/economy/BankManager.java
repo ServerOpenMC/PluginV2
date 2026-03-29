@@ -18,6 +18,8 @@ import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -37,19 +39,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class BankManager {
+public class BankManager extends Feature implements DatabaseFeature {
     @Getter
     private static Map<UUID, Bank> banks;
 
     private static Dao<Bank, String> banksDao;
 
-    public static void init() {
+    @Override
+    public void init() {
         banks = loadAllBanks();
         CommandsManager.getHandler().register(new BankCommands());
         updateInterestTimer();
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void save() {
+        // nothing to save
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
