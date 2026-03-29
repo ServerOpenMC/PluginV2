@@ -26,14 +26,17 @@ public class TransferableObjectQuest extends MilestoneQuest implements Listener 
 		super(
 				"Ce n'était qu'un rêve ?",
 				List.of(
-						"§fRécupérer un objet §dtransferable §fdans l'Overworld"
+						"§fRécupérer un objet §dtransferable §fdans l'Overworld",
+						"§8§oCe monde m'a l'aide tout de même réel. La singularité ne serait-elle pas " +
+								"un portail dimensionnel pour le loot ?"
 				),
 				Material.LAPIS_BLOCK,
 				MilestoneType.DREAM,
 				DreamSteps.TRANSFERABLE_OBJECT,
 				new QuestTier(
 						1,
-						new QuestTextReward("", Prefix.DREAM, MessageType.SUCCESS)
+						new QuestTextReward("Il y a bien un lien entre cette dimension et le monde réel. " +
+								"Et ce n'est que le début d'une nouvelle aventure !", Prefix.DREAM, MessageType.SUCCESS)
 				)
 		);
 	}

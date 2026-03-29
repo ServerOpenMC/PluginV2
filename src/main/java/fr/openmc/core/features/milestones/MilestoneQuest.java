@@ -7,16 +7,19 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Getter
 public class MilestoneQuest extends Quest {
 	
 	protected final MilestoneType type;
 	protected final Enum step; //TODO a fix dans #1209
+	protected final Consumer<Player> afterDialog;
 	
 	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum step, QuestTier quest) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest);
@@ -30,6 +33,7 @@ public class MilestoneQuest extends Quest {
 		this.addTier(quest.addReward(
 				new QuestMethodsReward(player -> MilestoneUtils.completeStep(type, player, step))
 		));
+		this.afterDialog = null;
 	}
 	
 	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs) {
@@ -38,6 +42,14 @@ public class MilestoneQuest extends Quest {
 	}
 	
 	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs) {
+		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs, null);
+	}
+	
+	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs, Consumer<Player> afterDialog) {
+		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs, afterDialog);
+	}
+	
+	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs, Consumer<Player> afterDialog) {
 		super(name, baseDescription, icon);
 		this.type = type;
 		this.step = step;
@@ -48,6 +60,7 @@ public class MilestoneQuest extends Quest {
 					DreamMilestoneDialog.send(player, step, dialogs);
 				})
 		));
+		this.afterDialog = afterDialog;
 	}
 	
 	/**

@@ -24,11 +24,11 @@ public enum DreamSteps {
 	METAL_DETECTOR(null),
 	MUD_ORB(null),
 	CRYSTALLIZED_PICKAXE(null),
+	FIND_CUBE(null),
 	ETERNAL_FIRE(null),
 	GROTTO_CAMP(null),
 	ILLUSIONIST(null),
 	EWENITE(null),
-	MECHANIC_PICKAXE(null),
 	GLACITE_ORB(null),
 	SINGULARITY(null),
 	TRANSFERABLE_OBJECT(null)
@@ -58,11 +58,11 @@ public enum DreamSteps {
 		METAL_DETECTOR.quest = new MetalDetectorQuest();
 		MUD_ORB.quest = new MudOrbQuest();
 		CRYSTALLIZED_PICKAXE.quest = new CrystallizedPickaxeQuest();
+		FIND_CUBE.quest = new FindCubeQuest();
 		ETERNAL_FIRE.quest = new CraftEternalFireQuest();
 		GROTTO_CAMP.quest = new GrottoCampQuest();
 		ILLUSIONIST.quest = new IllusionistQuest();
 		EWENITE.quest = new EweniteQuest();
-		MECHANIC_PICKAXE.quest = new CraftMechanicPickaxeQuest();
 		GLACITE_ORB.quest = new GlaciteOrbQuest();
 		SINGULARITY.quest = new CraftSingularityQuest();
 		TRANSFERABLE_OBJECT.quest = new TransferableObjectQuest();

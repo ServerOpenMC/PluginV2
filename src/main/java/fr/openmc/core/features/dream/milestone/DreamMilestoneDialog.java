@@ -16,10 +16,11 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DreamMilestoneDialog {
 	
-	public static void send(Player player, Enum step, List<String> dialogs) {
+	public static void send(Player player, DreamSteps step, List<String> dialogs) {
 		List<DialogBody> body = new ArrayList<>();
 		
 		for (int i = 0; i < 1; i++) {
@@ -30,16 +31,20 @@ public class DreamMilestoneDialog {
 		ButtonType btn = (dialogs.size() == 1) ? ButtonType.FINISH : ButtonType.NEXT;
 		
 		Dialog dialog = Dialog.create(builder -> builder.empty()
-				.base(DialogBase.builder(Component.text((step.ordinal() + 1) + "/" + DreamSteps.values().length))
+				.base(DialogBase.builder(Component.text(step.getQuest().getName()))
 						.body(body)
 						.canCloseWithEscape(true)
 						.build()
 				)
 				.type(DialogType.notice(
 						ActionButton.builder(Component.text(btn.getLabel()))
-								.action(DialogAction.customClick((response, audience) -> {
+								.action(DialogAction.customClick((_, _) -> {
 									player.closeInventory();
-									if (dialogs.size() == 1) return;
+									if (dialogs.size() == 1) {
+										Consumer<Player> runnable = step.getQuest().getAfterDialog();
+										if (runnable != null) runnable.accept(player);
+										return;
+									}
 									send(player, step, dialogs, 2);
 								}, ClickCallback.Options.builder().build()))
 								.build()
@@ -51,7 +56,7 @@ public class DreamMilestoneDialog {
 		}, 20);
 	}
 	
-	private static void send(Player player, Enum step, List<String> dialogs, int messageStep) {
+	private static void send(Player player, DreamSteps step, List<String> dialogs, int messageStep) {
 		List<DialogBody> body = new ArrayList<>();
 		
 		for (int i = 0; i < messageStep; i++) {
@@ -62,17 +67,19 @@ public class DreamMilestoneDialog {
 		ButtonType btn = (dialogs.size() <= messageStep) ? ButtonType.FINISH : ButtonType.NEXT;
 		
 		Dialog dialog = Dialog.create(builder -> builder.empty()
-				.base(DialogBase.builder(Component.text((step.ordinal() + 1) + "/" + DreamSteps.values().length))
+				.base(DialogBase.builder(Component.text(step.getQuest().getName()))
 						.body(body)
 						.canCloseWithEscape(true)
 						.build()
 				)
 				.type(DialogType.notice(
 						ActionButton.builder(Component.text(btn.getLabel()))
-								.action(DialogAction.customClick((response, audience) -> {
+								.action(DialogAction.customClick((_, _) -> {
 									player.closeInventory();
 									if (dialogs.size() <= messageStep) {
 										DreamManager.removeMilestoneDialogPlayer(player);
+										Consumer<Player> runnable = step.getQuest().getAfterDialog();
+										if (runnable != null) runnable.accept(player);
 										return;
 									}
 									send(player, step, dialogs, messageStep + 1);

@@ -8,9 +8,6 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,14 +20,20 @@ public class GlaciteOrbQuest extends MilestoneQuest implements Listener {
 		super(
 				"Enfin la dernière ?",
 				List.of(
-						"§fEchanger l'§dOrbe de Glace"
+						"§fEchanger l'§dOrbe de Glace",
+						"§8§oDernière ligne droite pour les collecter toutes."
 				),
 				DreamItemRegistry.getByName("omc_dream:glacite_orb").getBest(),
 				MilestoneType.DREAM,
 				DreamSteps.GLACITE_ORB,
-				new QuestTier(
-						1,
-						new QuestTextReward("", Prefix.DREAM, MessageType.SUCCESS)
+				new QuestTier(1),
+				List.of(
+						"§3Voyageur : Enfin, nous touchons au but. Bien plus qu'une seule étape pour enfin être libéré de cette situation.",
+						"§6Que dois-je faire ?",
+						"§3Voyageur : Il faut les combiner",
+						"§6Les combiner ? Pas d'incantation cette fois ?",
+						"§3Voyageur : Non, promis. Combine-les dans la table de craft que nous avons confectionné tous les deux au début de notre aventure. " +
+								"Nous pourrons ensuite utiliser le pouvoir de la singularité."
 				)
 		);
 	}

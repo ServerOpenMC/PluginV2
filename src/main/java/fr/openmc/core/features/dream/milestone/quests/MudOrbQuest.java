@@ -9,10 +9,6 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,22 +22,26 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 		super(
 				"Bip Biip Biiiiiiip",
 				List.of(
-						"Trouver l'Orbe de Boue"
+						"§gTrouver l'Orbe de Boue",
+						"§8§oBon, pas de sable, mais de la boue. Possible que les gens perdent tout de même " +
+								"des choses. Ah tiens, 6 blocks vers la droite."
 				),
 				DreamItemRegistry.getByName("omc_dream:mud_orb").getBest(),
 				MilestoneType.DREAM,
 				DreamSteps.MUD_ORB,
-				new QuestTier(
-						1,
-						new QuestTextReward("", Prefix.DREAM, MessageType.SUCCESS),
-						new QuestMethodsReward(
-								player -> {
-									if (player.getInventory().contains(DreamItemRegistry.getByName("omc_dream:crystallized_pickaxe").getBest())) {
-										DreamSteps.CRYSTALLIZED_PICKAXE.getQuest().incrementProgressInDream(player.getUniqueId());
-									}
-								}
-						)
-				)
+				new QuestTier(1),
+				List.of(
+						"§6Cela me rappelle mes vacances à chercher des trésors sur la plage. Même si là, c'est pour une meilleure cause. Et maintenant que le 4ème orbe est avec nous, que dois-je faire ?",
+						"§3Voyageur : Plus qu'un. Comme nous avons fait toute la surface, alors il ne nous reste plus qu'à chercher sous terre. Il faudra bien se préparer, et notamment un bon feu. " +
+								"Pour ce qui est du détecteur, tu as dû voir que l'on a obtenu plusieurs choses.",
+						"§6Oui, mon inventaire est bien rempli.",
+						"§3Voyageur : Tout comme la canne à pêche, tu peux y obtenir divers objets comme les chips, même si certaines sont très rares, des somnifères, " +
+								"un livre enchanté différent de celui des nuages, ou encore une pioche qui te sera utile pour la suite... Je vais d'ailleurs check si tu n'en as pas déjà une."
+				),
+				player -> {
+					if (player.getInventory().contains(DreamItemRegistry.getByName("omc_dream:crystallized_pickaxe").getBest()))
+						DreamSteps.CRYSTALLIZED_PICKAXE.getQuest().incrementProgressInDream(player.getUniqueId());
+				}
 		);
 	}
 	

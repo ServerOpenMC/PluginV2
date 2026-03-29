@@ -8,9 +8,6 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,9 +28,18 @@ public class MudBeachQuest extends MilestoneQuest implements Listener {
 				Material.MUD,
 				MilestoneType.DREAM,
 				DreamSteps.MUD_BEACH,
-				new QuestTier(
-						1,
-						new QuestTextReward("Bon, assez de repos, il serait temps que je cherche la prochaine orbe.", Prefix.DREAM, MessageType.SUCCESS)
+				new QuestTier(1),
+				List.of(
+						"§6Enfin sur la plage, et en effet, il n'y a ni sable chaud, ni soleil rayonnant, juste de la boue et... rien d'autre en fait.",
+						"§3Voyageur : Très bien, pose-toi là, je te dois des explications.",
+						"§3Voyageur : Ce monde, a subi une catastrophe, d'où son apparence. Auparavant, il était si... si seulement je pouvais le revoir.",
+						"§6Tu m'as parlé de 5 orbes. Ceux-ci permettraient-ils de faire revenir l'ancien monde, avec un pouvoir de terraformation ?",
+						"§3Voyageur : Non, c'est bien plus puissant que cela. Ils permettent de créer un trou de ver entre cette dimension et la tienne. Nous pourrons alors " +
+								"utiliser une partie de l'énergie de ta dimension pour remonter le temps dans celle-ci, et rétablir son équilibre.",
+						"§3Utiliser une partie de l'énergie ? Mais, cela est sans risque pour ma dimentsion ??",
+						"§6Voyageur : Oui, bien évidemment, sinon je n'en prendrais pas le risque. Chaque bloc de ton monde donnerait une petite perle de son énergie.",
+						"§3Quelle énergie ?",
+						"§6Voyageur : Nous devons avancer maintenant. Cherche des grenouilles, elles nous seront utiles."
 				)
 		);
 	}

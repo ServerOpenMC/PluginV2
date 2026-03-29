@@ -9,9 +9,6 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,14 +23,21 @@ public class CraftEternalFireQuest extends MilestoneQuest implements Listener {
 		super(
 				"L'ère glacière",
 				List.of(
-						""
+						"§fFabriquer le feu éternel",
+						"§8§oVa-t-on retrouver des dinosaures fossilisés ou Sid ?"
 				),
 				DreamItemRegistry.getByName("omc_dream:eternal_campfire").getBest(),
 				MilestoneType.DREAM,
 				DreamSteps.ETERNAL_FIRE,
-				new QuestTier(
-						1,
-						new QuestTextReward("", Prefix.OPENMC, MessageType.SUCCESS)
+				new QuestTier(1),
+				List.of(
+						"§3Voyageur : Bien ! Ce feu te sera utile.",
+						"§6Il s'agit d'un feu, ça va me permettre de cuire quelque chose ?",
+						"§3Voyageur : Dans ce monde, ce feu te servira à limiter les effets du froid des profondeurs. Tu vas rentrer dans un monde glacial, chaque seconde passée " +
+								"dans celui-ci te ralentira et finira par te tuer.",
+						"§3Voyageur : En posant ce feu au sol et en restant proche de lui, tu vas te réchauffer et éviter cela.",
+						"§6Comme lorsqu'on sort de la poudreuse.",
+						"§3Voyageur : Oui. Maintenant que tu as compris le principe, partons à la recherche des camps présents dans les grottes des profondeurs."
 				)
 		);
 	}

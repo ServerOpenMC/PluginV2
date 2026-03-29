@@ -30,9 +30,9 @@ public class CraftingTableQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§6Bon, maintenant que j'ai la table, cherchons de quoi faire des outils et... " +
 								"comment se fait-il qu'il y ait des Craqueurs ici !?",
-						"§3Voyageur : Tu as le bon oeil. Ce monde regorge de créatures étonnantes qui ont un point commun : " +
+						"§3Voyageur : Tu as le bon œil. Ce monde regorge de créatures étonnantes qui ont un point commun : " +
 								"elles se nourrissent de §dtemps§3, en te le §dvolant§3.",
-						"§6C'est donc cela cette barre là haut ?",
+						"§6C'est donc cela cette barre là-haut ?",
 						"§3Voyageur : Oui, et ce temps n'est pas infini, c'est pourquoi nous devons faire vite. " +
 								"Profitons d'être au milieu de ces créatures pour récupérer leurs §dcoeurs§3."
 				)

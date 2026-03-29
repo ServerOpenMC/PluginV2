@@ -7,9 +7,6 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,10 +26,16 @@ public class CubeTempleQuest extends MilestoneQuest implements Listener {
 				Material.POLISHED_BLACKSTONE_BRICKS,
 				MilestoneType.DREAM,
 				DreamSteps.CUBE_TEMPLE,
-				new QuestTier(
-						1,
-						new QuestTextReward("Wow, c'est grand ! Qui a pu construire une temple pareil ? Et pourquoi ? Je dois le découvrir. \n" +
-								"Tiens... il semble y avoir quelque chose en son centre...", Prefix.DREAM, MessageType.SUCCESS)
+				new QuestTier(1),
+				List.of(
+						"§3Voyageur : Sache qu'il s'agit d'un autel qui a été érigé pour...",
+						"§6Pour ?",
+						"§3Voyageur : ...",
+						"§6Voyageur : Passons, ce n'est pas le moment. Restons sur le fait qu'il s'agit du maître des lieux.",
+						"§6Comment ça le maitre des lieux ?",
+						"§3Voyageur : Peu importe, maintenant que tu as compris le principe de cette dimension, je vais pouvoir te " +
+								"parler de son but et de ce que l'on fait ici.",
+						"§3Voyageur : Commence déjà par aller au §dcentre du temple§3 et déposer l'orbe."
 				)
 		);
 	}

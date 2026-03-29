@@ -82,7 +82,7 @@ public class MainMilestonesMenu extends Menu {
         inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
             itemMeta.displayName(Component.text("§3Milestone des villes"));
             itemMeta.lore(loreMilestoneVille);
-        }).setOnClick(event -> {
+        }).setOnClick(_ -> {
             if (playerCity == null) {
                 new NoCityMenu(player).open();
             } else {
@@ -98,9 +98,7 @@ public class MainMilestonesMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
         }).setOnClick(_ -> dreamMilestone.getMenu(player).open()));
 
-        inventory.put(16, new ItemBuilder(this, Material.BARREL, itemMeta -> {
-            itemMeta.displayName(Component.text(" §ks §cComming soon §ke"));
-        }));
+        inventory.put(16, new ItemBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(Component.text(" §ks §cComming soon §ke"))));
 
         inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
 

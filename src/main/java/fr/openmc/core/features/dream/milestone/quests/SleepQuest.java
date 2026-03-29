@@ -31,7 +31,9 @@ public class SleepQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Que..? Comment est-ce possible ??! Je pensais être le seul ici. Et cela fait si longtemps que je n'ai vu personne ici...",
 						"§6Mais, qui es-tu ? Ou es-tu ? et pourquoi me parles-tu ??",
 						"§3Voyageur : Et bien, bienvenue. Mais chaque chose en son temps. Temps qui va d'ailleurs nous manquer, il faut faire vite, je t'expliquerai tout au fur et à mesure. " +
-								"Pour l'heure, il faut que tu comprennes cette dimension, apprends ses règles et ses §dcrafts§3."
+								"Pour l'heure, je te propose de découvrir ce dont tu vas avoir besoin pour découvrir ce monde.",
+						"§3Voyageur : Sache que si tu ne souhaites pas rester jusqu'à la fin du temps, tu peux te réveiller avec la commande §d/leave§3.\n" +
+								"A contrario, tu peux revenir ici plus fréquemment en te fabriquant un §dPyjama§3. Cela te permet d'augmenter tes chances de passer dans ce monde en dormant."
 				)
 		);
 	}

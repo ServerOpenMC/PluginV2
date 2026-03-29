@@ -3,21 +3,21 @@ package fr.openmc.core.features.dream.milestone.quests;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.AltarBindEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
+import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.DominationOrb;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AltarQuest extends MilestoneQuest implements Listener {
 	public AltarQuest() {
@@ -30,10 +30,18 @@ public class AltarQuest extends MilestoneQuest implements Listener {
 				Material.ENCHANTING_TABLE,
 				MilestoneType.DREAM,
 				DreamSteps.ALTAR,
-				new QuestTier(
-						1,
-						new QuestTextReward("Hmmm... avec cette table étrange, il est visiblement possible de transformer l'Orbe de Domination. Mais pour en faire quoi !? \n" +
-								"Ce qui est sur, c'est qui me manque quelque chose pour accomplir ce rituel jusqu'au bout.", Prefix.DREAM, MessageType.SUCCESS)
+				new QuestTier(1),
+				List.of(
+						"§3Voyageur : Pour obtenir de l'orbe des âmes, il te faudra...",
+						"§6Des âmes ?!",
+						"§3Voyageur : Oui ! C'est ça ! Il te faudra §d20§3 âmes pour obtenir celui-ci.",
+						"§3Voyageur : Mais fais attention à toi, elles adorent le temps encore plus que les creakings",
+						"§6Comment puis-je en trouver, et comment les reconnaître ?",
+						"§3Voyageur : Regarde autour de l'autel, vers les §darbres§3. Les âmes se baladent à l'extérieur du bâtiment.",
+						"§3Voyageur : Tout comme l'armure \"Creaking\", il est possible d'avoir l'armure des \"Âmes\". Celle-ci te confèrera " +
+								((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:soul_chestplate"))).getAdditionalMaxTime() +
+								" secondes supplémentaires par pièces d'armure équipées.",
+						"§3Voyageur : Tu peux également transformer ta hache à l'autel avec quelques âmes supplémentaires."
 				)
 		);
 	}

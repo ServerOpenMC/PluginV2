@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,5 +118,14 @@ public class MultiBlockManager {
         multiBlocks.add(multiBlock);
 
         save();
+    }
+    
+    public static @Nullable MultiBlock getMultiblockAtDimension(String worldName) {
+        for (MultiBlock multiBlock : multiBlocks) {
+            if (multiBlock.origin.getWorld().getName().equals(worldName)) {
+                return multiBlock;
+            }
+        }
+        return null;
     }
 }

@@ -9,9 +9,6 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,10 +28,13 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 				DreamItemRegistry.getByName("omc_dream:soul").getBest(),
 				MilestoneType.DREAM,
 				DreamSteps.SOULS,
-				new QuestTier(
-						20,
-						new QuestTextReward("Quelles sont ces créatures ? Des joueurs morts ?? \n" +
-								"A vrai dire, je n'ai pas vraiment envie d'y penser, il me faut cette nouvelle orbe.", Prefix.DREAM, MessageType.SUCCESS)
+				new QuestTier(20),
+				List.of(
+						"§6Et de 20 ! Que dois-je faire maintenant ? Il y a un craft spécifique de l'orbe à faire ?",
+						"§3Voyageur : Non, il faut simplement répéter l'incantation suivante 2 fois : §dAshkara no thari fu laq to !",
+						"§6Ashkara no thari fu laq to ! Ashkara no thari fu laq to !",
+						"§6...pas facile à dire...",
+						"§3Voyageur : Ahah, en réalité, il te faut simplement intéragir à nouveau avec l'Orbe de Domination sur l'§dAltar§3."
 				)
 		);
 	}

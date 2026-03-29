@@ -284,7 +284,6 @@ public class Quest {
 
                     if (hasEnoughSpace) {
                         reward.giveReward(player);
-	                    System.out.println(reward);
                     } else {
                         addPendingRewards(uuid, tierIndex, tier.getRewards());
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour recevoir la récompense !"), Prefix.QUEST, MessageType.WARNING, false);
@@ -314,7 +313,6 @@ public class Quest {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.2F);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.1F);
                 MessagesManager.sendMessage(player, Component.text(message), Prefix.QUEST, MessageType.SUCCESS, true);
-	            System.out.println("title");
             } else {
                 addPendingRewards(uuid, tierIndex, tier.getRewards());
             }

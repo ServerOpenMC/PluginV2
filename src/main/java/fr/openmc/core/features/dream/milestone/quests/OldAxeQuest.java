@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.milestone.DreamSteps;
+import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.OldCreakingAxe;
@@ -15,6 +16,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OldAxeQuest extends MilestoneQuest implements Listener {
 	
@@ -30,12 +32,13 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 				DreamSteps.OLD_AXE,
 				new QuestTier(1),
 				List.of(
-						"§3Voyageur : Une hâche, c'est déjà ça.",
-						"§6Et maintenant ?",
-						"§3Voyageur : Maintenant, il faut obtenir l'§dOrbe de Domination§3, puis je t'en expliquerai plus sur ce monde.",
-						"§6Mais comment obtenir cette Orbe ?",
-						"§3Voyageur : Ce n'est pas compliqué : elle se fabrique avec la §dtable de craft§3. Fais §d/crafts §3si tu as oublié comment. " +
-								"Elle te permettra de pouvoir explorer une nouvelle zone de ce rêve."
+						"§3Voyageur : Bien ! Cela va nous être utile. Le prochain objectif va être d'obtenir l'Orbe de Domination.",
+						"§6À quoi va-t-elle servir ?",
+						"§3Voyageur : Je t'expliquerai lorsque tu l'auras. Elle va être facile à récupérer avec la hache.",
+						"§6Ai-je besoin d'autre chose ?",
+						"§3Voyageur : Ce n'est pas obligatoire, mais elle te permettrait de rester plus longtemps dans ce monde. Il existe l'armure \"Creaking\" que tu peux fabriquer. " +
+								"Cela te confèrera " + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:old_creaking_chestplate"))).getAdditionalMaxTime() + " secondes supplémentaires " +
+								"par pièces d'armure équipées."
 				)
 		);
 	}

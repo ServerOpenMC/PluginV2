@@ -31,10 +31,10 @@ public class CraftDominationOrbQuest extends MilestoneQuest implements Listener 
 				new QuestTier(1),
 				List.of(
 						"§6Voilà l'orbe, que dois-je faire avec ?",
-						"§3Voyageur : Cette orbe est la première d'une série de §d5§3. Chacune d'elles permet de survivre dans la §dzone suivante§3, " +
-								"permettant de récupérer une nouvelle orbe et ainsi de suite pour ma euh... notre quête !",
-						"§6Je dois donc explorer un nouveau biome...",
-						"§3Voyageur : C'est exact ! Il va falloir trouver le §dTemple §3du maître des lieux. Tu ne devrais pas le louper je pense..."
+						"§3Voyageur : Cet orbe est la première d'une série de §d5§3 éparpillées dans ce monde. Chaque orbe est unique et possède la capacité de te " +
+								"faire avancer dans le monde et dans ma... notre quête !",
+						"§6Il nous faut donc explorer la nouvelle zone débloquée par l'orbe ?",
+						"§3Voyageur : C'est exact ! Il va falloir trouver le §dTemple §3du maître des lieux. Tu ne devrais pas le louper, je pense..."
 				)
 		);
 	}
