@@ -96,7 +96,7 @@ public class EmoteListener implements Listener {
         PlayerAnimationInfo info = playingAnimations.remove(player);
         if (info == null) return;
 
-        player.setInvulnerable(true);
+        player.setInvulnerable(false);
 
         sendCamera(player, player);
         if (info.getArmorStand() != null)
