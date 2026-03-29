@@ -38,7 +38,7 @@ public class DreamMilestoneDialog {
 				)
 				.type(DialogType.notice(
 						ActionButton.builder(Component.text(btn.getLabel()))
-								.action(DialogAction.customClick((_, _) -> {
+								.action(DialogAction.customClick((response, audience) -> {
 									player.closeInventory();
 									if (dialogs.size() == 1) {
 										Consumer<Player> runnable = step.getQuest().getAfterDialog();
@@ -74,7 +74,7 @@ public class DreamMilestoneDialog {
 				)
 				.type(DialogType.notice(
 						ActionButton.builder(Component.text(btn.getLabel()))
-								.action(DialogAction.customClick((_, _) -> {
+								.action(DialogAction.customClick((response, audience) -> {
 									player.closeInventory();
 									if (dialogs.size() <= messageStep) {
 										DreamManager.removeMilestoneDialogPlayer(player);

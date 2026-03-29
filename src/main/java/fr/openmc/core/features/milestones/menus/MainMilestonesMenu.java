@@ -59,7 +59,7 @@ public class MainMilestonesMenu extends Menu {
             itemMeta.displayName(Component.text(tutoMilestone.getName()));
             itemMeta.lore(tutoMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
-        }).setOnClick(_ -> tutoMilestone.getMenu(player).open()));
+        }).setOnClick(inventoryClickEvent -> tutoMilestone.getMenu(player).open()));
         
 	    List<Component> loreMilestoneVille = new ArrayList<>();
         
@@ -82,7 +82,7 @@ public class MainMilestonesMenu extends Menu {
         inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
             itemMeta.displayName(Component.text("§3Milestone des villes"));
             itemMeta.lore(loreMilestoneVille);
-        }).setOnClick(_ -> {
+        }).setOnClick(inventoryClickEvent -> {
             if (playerCity == null) {
                 new NoCityMenu(player).open();
             } else {
@@ -96,7 +96,7 @@ public class MainMilestonesMenu extends Menu {
             itemMeta.displayName(Component.text(dreamMilestone.getName()));
             itemMeta.lore(dreamMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
-        }).setOnClick(_ -> dreamMilestone.getMenu(player).open()));
+        }).setOnClick(inventoryClickEvent -> dreamMilestone.getMenu(player).open()));
 
         inventory.put(16, new ItemBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(Component.text(" §ks §cComming soon §ke"))));
 
