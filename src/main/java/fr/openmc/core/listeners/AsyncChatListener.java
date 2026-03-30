@@ -1,11 +1,12 @@
 package fr.openmc.core.listeners;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.api.hooks.LuckPermsHook;
+import fr.openmc.core.OMCPlugin;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import org.bukkit.Bukkit;
@@ -33,16 +34,17 @@ public class AsyncChatListener implements Listener {
         final Player player = event.getPlayer();
         final CachedMetaData metaData = this.luckperms.getPlayerAdapter(Player.class).getMetaData(player);
 
-        String message = ((TextComponent) event.message()).content();
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
         String rawMessage = plugin.getConfig().getString("chat.message", "{prefix}{name}§7: {message}")
                 .replace("{prefix}", LuckPermsHook.getFormattedPAPIPrefix(player))
                 .replace("{suffix}", metaData.getSuffix() != null ? metaData.getSuffix() : "")
                 .replace("{name}", player.getName())
                 .replace("{message}", message);
 
-        final String formattedMessage = colorize(translateHexColorCodes(rawMessage));
+        final Component formattedMessage = LegacyComponentSerializer.legacySection()
+                .deserialize(colorize(translateHexColorCodes(rawMessage)));
 
-        event.renderer((source, sourceDisplayName, component, viewer) -> Component.text(formattedMessage));
+        event.renderer((source, sourceDisplayName, component, viewer) -> formattedMessage);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (message.contains(p.getName()))
