@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class Ewenite extends DreamItem {
     public Ewenite(String name) {
@@ -27,7 +28,7 @@ public class Ewenite extends DreamItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.ANCIENT_DEBRIS);
 
         item.getItemMeta().itemName(Component.text("Ewenite"));

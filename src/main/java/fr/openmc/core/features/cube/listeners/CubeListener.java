@@ -1,8 +1,11 @@
 package fr.openmc.core.features.cube.listeners;
 
 import fr.openmc.core.features.cube.Cube;
+import fr.openmc.core.features.cube.events.EnterCubeZoneEvent;
+import fr.openmc.core.features.cube.events.ExitCubeZoneEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -53,17 +56,19 @@ public class CubeListener implements Listener {
         Player player = event.getPlayer();
 
         boolean insideAny = false;
+        Cube cube = null;
 
         for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
-            if (!(mb instanceof Cube cube)) continue;
-            if (cube.corruptedBubbleTask == null) continue;
+            if (!(mb instanceof Cube loopCube)) continue;
+            if (loopCube.corruptedBubbleTask == null) continue;
 
-            Location center = cube.getCenter();
-            double radius = cube.RADIUS_BUBBLE;
+            Location center = loopCube.getCenter();
+            double radius = loopCube.RADIUS_BUBBLE;
 
             if (!player.getWorld().equals(center.getWorld())) continue;
 
             if (player.getLocation().distance(center) <= radius) {
+                cube = loopCube;
                 insideAny = true;
                 break;
             }
@@ -78,10 +83,12 @@ public class CubeListener implements Listener {
             playersInBubble.add(uuid);
             attr.setBaseValue(0.04);
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, Integer.MAX_VALUE, 2, true, false, true));
+            Bukkit.getPluginManager().callEvent(new EnterCubeZoneEvent(player, cube));
         } else if (!insideAny && playersInBubble.contains(uuid)) {
             playersInBubble.remove(uuid);
             attr.setBaseValue(0.08);
             player.removePotionEffect(PotionEffectType.JUMP_BOOST);
+            Bukkit.getPluginManager().callEvent(new ExitCubeZoneEvent(player));
         }
     }
 

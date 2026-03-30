@@ -1,23 +1,22 @@
-package fr.openmc.core.features.dream.mecanism.altar;
+package fr.openmc.core.features.dream.events;
 
+import fr.openmc.core.features.dream.mecanism.altar.AltarRecipes;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import lombok.Getter;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class AltarCraftingEvent extends Event {
+public class AltarCraftingEvent extends PlayerEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Player player;
+	private final AltarRecipes recipe;
     private final DreamItem craftedItem;
-
-    /**
-     * @param player The player whose dream time has ended
-     */
-    public AltarCraftingEvent(Player player, DreamItem craftItem) {
-        this.player = player;
+	
+    public AltarCraftingEvent(Player player, AltarRecipes recipe, DreamItem craftItem) {
+	    super(player);
+		this.recipe = recipe;
         this.craftedItem = craftItem;
     }
 

@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.listeners.biomes;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.PlayerEnterBiomeEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.utils.ParticleUtils;
@@ -80,13 +81,14 @@ public class PlayerEnteredBiome implements Listener {
                             return;
                         }
 
-                        applyFog(player);
+                        applyEffects(player);
                         spawnParticles(player);
                     },
                     0L, 40L
             );
 
             activeTasks.put(player.getUniqueId(), task);
+			Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterBiomeEvent(player, biome));
             MessagesManager.sendMessage(player, Component.text("Attention, vous êtes dans un biome que vous avez pas encore débloqué, il vous faut l'§b" + ORB_UNLOCKER.get(index)), Prefix.DREAM, MessageType.WARNING, false);
         }
     }
@@ -96,8 +98,9 @@ public class PlayerEnteredBiome implements Listener {
         if (task != null) task.cancel();
     }
 
-    private void applyFog(Player player) {
+    private void applyEffects(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1, true, false));
+		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false));
     }
 
     private void spawnParticles(Player player) {

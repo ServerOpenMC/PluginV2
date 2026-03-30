@@ -5,8 +5,10 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.TakeFromSingularityEvent;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -111,9 +113,7 @@ public class SingularityMenu extends PaginatedMenu {
 
         // prendre
         if (current != null && current.getType() != Material.AIR) {
-            if (currentDream == null) {
-                return;
-            }
+            if (currentDream == null) return;
 
             if (inDream) return;
 
@@ -128,6 +128,7 @@ public class SingularityMenu extends PaginatedMenu {
 
             replacement.setAmount(current.getAmount());
             event.setCurrentItem(replacement);
+	        Bukkit.getServer().getPluginManager().callEvent(new TakeFromSingularityEvent(player, replacement));
             return;
         }
 
@@ -143,12 +144,9 @@ public class SingularityMenu extends PaginatedMenu {
                     event.setCancelled(true);
                     return;
                 }
-                if (clickInPlayerInv) return;
+                if (clickInPlayerInv) return; // Laisser
             } else if (inDream) {
-                if (!cursorDream.isTransferable()) {
-                    event.setCancelled(true);
-                    return;
-                }
+                if (!cursorDream.isTransferable()) event.setCancelled(true);
             }
         }
     }
