@@ -9,11 +9,14 @@ import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.utils.DateUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,19 +43,21 @@ public class MainScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>(getDefaultLines(player));
 
         // Contest
-        Contest data = ContestManager.data;
-        if (data.getPhase() != 1) {
-            lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FFB800:#F0DF49>%s</gradient>".formatted(textToSmall("contest"))).decoration(TextDecoration.BOLD, true));
-            lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall(data.getCamp1()), data.getColor1AsNamedTextColor()))
-                    .append(text(textToSmall(" VS "), NamedTextColor.GRAY))
-                    .append(text(textToSmall(data.getCamp2()), data.getColor2AsNamedTextColor()))
-            );
-            lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(Component.text(textToSmall("fin:"), NamedTextColor.GRAY))
-                    .appendSpace()
-                    .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF8F06)))
-            );
+        if (WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
+            ContestData data = ContestManager.data;
+            if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
+                lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FFB800:#F0DF49>%s</gradient>".formatted(textToSmall("contest"))).decoration(TextDecoration.BOLD, true));
+                lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                        .append(text(textToSmall(data.getCamp1()), data.getColor1AsNamedTextColor()))
+                        .append(text(textToSmall(" VS "), NamedTextColor.GRAY))
+                        .append(text(textToSmall(data.getCamp2()), data.getColor2AsNamedTextColor()))
+                );
+                lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
+                        .append(Component.text(textToSmall("fin:"), NamedTextColor.GRAY))
+                        .appendSpace()
+                        .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF8F06)))
+                );
+            }
         }
 
         lines.add(empty());
