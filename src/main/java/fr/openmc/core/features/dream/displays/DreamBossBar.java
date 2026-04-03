@@ -1,7 +1,11 @@
 package fr.openmc.core.features.dream.displays;
 
+import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.BossbarsType;
+import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -11,45 +15,45 @@ import org.bukkit.entity.Player;
  *
  * <p>Cette classe permet d'ajouter, mettre à jour et cacher la BossBar associée à un joueur.</p>
  */
-public class DreamBossBar {
-
-    private static final Component TEXTURE_BOSSBAR = Component.text("");
-
-    /**
-     * Ajoute une BossBar pour le joueur spécifié dans la Dimension des Rêves.
-     *
-     * @param player le joueur auquel ajouter la BossBar
-     * @param progress la progression de la BossBar
-     */
-    public static void addDreamBossBarForPlayer(Player player, float progress) {
-        BossBar bar = BossBar.bossBar(
-                TEXTURE_BOSSBAR,
-                progress,
-                BossBar.Color.BLUE,
-                BossBar.Overlay.PROGRESS
-        );
-        BossbarManager.addBossBar(BossbarsType.DREAM, bar, player);
+public class DreamBossBar extends BaseBossbar {
+    @Override
+    protected String id() {
+        return "omc:dream";
     }
 
-    /**
-     * Met à jour la progression de la BossBar pour le joueur spécifié.
-     *
-     * @param player le joueur dont la BossBar doit être mise à jour
-     * @param progress la nouvelle progression de la BossBar
-     */
-    public static void update(Player player, float progress) {
-        BossBar bar = BossbarManager.getBossBar(BossbarsType.DREAM, player);
-        if (bar != null) {
-            bar.progress(progress);
-        }
+    @Override
+    protected void update(Player player, BossBar bar) {
+        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+
+        if (dreamPlayer == null) return;
+
+        float progress = Math.min(1, (float) dreamPlayer.getDreamTime() / dreamPlayer.getMaxDreamTime());
+
+        bar.progress(progress);
     }
 
-    /**
-     * Cache (supprime) la BossBar du joueur spécifié.
-     *
-     * @param player le joueur dont la BossBar doit être supprimée
-     */
-    public static void hide(Player player) {
-        BossbarManager.removeBossBar(BossbarsType.DREAM, player);
+    @Override
+    protected BossBar.Color color(Player player) {
+        return BossBar.Color.BLUE;
+    }
+
+    @Override
+    protected BossBar.Overlay style(Player player) {
+        return BossBar.Overlay.PROGRESS;
+    }
+
+    @Override
+    protected boolean shouldDisplay(Player player) {
+        return DreamUtils.isInDreamWorld(player);
+    }
+
+    @Override
+    protected int weight() {
+        return 10;
+    }
+
+    @Override
+    protected Integer updateInterval() {
+        return 1;
     }
 }

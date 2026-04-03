@@ -13,9 +13,9 @@ import java.util.List;
 public class MilestoneQuest extends Quest {
 	
 	protected final MilestoneType type;
-	protected final Enum step;
+	protected final Enum<? extends MilestoneStep> step;
 	
-	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum step, QuestTier quest) {
+	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		super(name, baseDescription, icon);
 		this.type = type;
 		this.step = step;
@@ -24,7 +24,7 @@ public class MilestoneQuest extends Quest {
 		));
 	}
 	
-	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum step, QuestTier quest) {
+	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		this(name, baseDescription, icon.getType(), type, step, quest);
 	}
 }
