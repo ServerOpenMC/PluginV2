@@ -4,6 +4,7 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -110,6 +111,28 @@ public class MessagesManager {
                 );
 
         Bukkit.broadcast(messageComponent);
+    }
+
+    /**
+     *
+     * Broadcasts a formatted message to the entire server
+     *
+     * @param world   The world to broadcast the message in
+     * @param message The content of the message
+     * @param prefix  The prefix for the message
+     * @param type    The type of message (information, error, success, warning)
+     */
+    public static void broadcastMessage(World world, Component message, Prefix prefix, MessageType type) {
+        Component messageComponent =
+                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
+                        .append(prefix.getPrefix())
+                        .append(Component.text(" §7» ")
+                                .append(message)
+                        );
+
+        for (Player player : world.getPlayers()) {
+            player.sendMessage(messageComponent);
+        }
     }
 
     public static String textToSmall(String text) {

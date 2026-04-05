@@ -2,9 +2,11 @@ package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -25,7 +27,7 @@ public class PlayerSleepListener implements Listener {
 
     private final Set<Player> isPlayerSleeping = new HashSet<>();
     private final int DREAM_TELEPORT_DELAY = 20 * 3;
-  
+
     @EventHandler
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
         Player player = event.getPlayer();
@@ -60,6 +62,7 @@ public class PlayerSleepListener implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
+                            PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SLEEPING);
                             DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
                             if(dbDreamPlayer ==null||(dbDreamPlayer.getDreamX()==null||dbDreamPlayer.getDreamY()==null||dbDreamPlayer.getDreamZ()==null)) {
                                 DreamManager.tpPlayerDream(player);
