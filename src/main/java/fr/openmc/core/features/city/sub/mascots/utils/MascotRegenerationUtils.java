@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.sub.mascots.utils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import net.kyori.adventure.text.Component;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -68,11 +67,11 @@ public class MascotRegenerationUtils {
                 double maxHealth = mascots.getAttribute(Attribute.MAX_HEALTH).getValue();
                 if (mascots.getHealth() >= maxHealth) {
 
-                    mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                    mascots.customName(MascotsManager.getAliveMascotName(
                             mascot.getCity().getName(),
                             mascots.getHealth(),
                             maxHealth
-                    )));
+                    ));
                     regenTasks.remove(mascot.getMascotUUID());
                     this.cancel();
                     return;
@@ -80,11 +79,11 @@ public class MascotRegenerationUtils {
 
                 double newHealth = Math.min(mascots.getHealth() + 1, maxHealth);
                 mascots.setHealth(newHealth);
-                mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                mascots.customName(MascotsManager.getAliveMascotName(
                         mascot.getCity().getName(),
                         mascots.getHealth(),
                         maxHealth
-                )));
+                ));
             }
         };
 

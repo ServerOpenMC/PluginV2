@@ -9,7 +9,6 @@ import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -45,7 +44,7 @@ public class AdminCityCommands {
         }
 
         CityManager.deleteCity(city);
-        MessagesManager.sendMessage(player, Component.text("La ville a été supprimée"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.delete.success"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     private static final int PER_PAGE = 10;
@@ -68,8 +67,7 @@ public class AdminCityCommands {
         List<City> sub = all.subList(start, end);
         MessagesManager.sendMessage(
                 player,
-                Component.text("—— Villes (page " + page + " / " + maxPage + ") ——")
-                        .color(NamedTextColor.GOLD),
+                TranslationManager.translation("feature.city.admin.commands.list.header", Component.text(page), Component.text(maxPage)).color(NamedTextColor.GOLD),
                 Prefix.STAFF,
                 MessageType.SUCCESS,
                 false
@@ -83,10 +81,10 @@ public class AdminCityCommands {
                     .append(Component.text(cityUUID.toString()).color(NamedTextColor.GRAY))
                     .append(Component.text(" • "))
                     .append(Component.text(name).color(NamedTextColor.WHITE))
-                    .append(Component.text(" [copier]")
+                    .append(TranslationManager.translation("feature.city.admin.commands.list.copy_label")
                             .color(NamedTextColor.GREEN)
                             .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(
-                                    Component.text("Clique pour copier l’UUID"))
+                                    TranslationManager.translation("feature.city.admin.commands.list.copy_uuid_hover"))
                             )
                             .clickEvent(ClickEvent.copyToClipboard(cityUUID.toString()))
                     );
@@ -96,12 +94,12 @@ public class AdminCityCommands {
 
         Component nav = Component.empty()
                 .append(page > 1
-                        ? Component.text("« Prev").color(NamedTextColor.YELLOW)
+                        ? TranslationManager.translation("feature.city.admin.commands.list.nav.prev").color(NamedTextColor.YELLOW)
                         .clickEvent(ClickEvent.runCommand("/admcity list " + (page - 1)))
                         : Component.text("       "))
                 .append(Component.text("    "))
                 .append(page < maxPage
-                        ? Component.text("Next »").color(NamedTextColor.YELLOW)
+                        ? TranslationManager.translation("feature.city.admin.commands.list.nav.next").color(NamedTextColor.YELLOW)
                         .clickEvent(ClickEvent.runCommand("/admcity list " + (page + 1)))
                         : Component.text("      "));
 
@@ -117,7 +115,7 @@ public class AdminCityCommands {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("Cette ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.info.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -133,7 +131,7 @@ public class AdminCityCommands {
     ) {
         City newNameCity = CityManager.getCityByName(newName);
         if (newNameCity != null) {
-            MessagesManager.sendMessage(player, Component.text("Une ville a déjà le nom que vous voulez mettre"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.rename.name_already_used"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -144,7 +142,7 @@ public class AdminCityCommands {
         }
         city.rename(newName);
 
-        MessagesManager.sendMessage(player, Component.text("La ville a été renommée"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.rename.success"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setOwner")
@@ -177,7 +175,7 @@ public class AdminCityCommands {
         }
 
         city.setBalance(newBalance);
-	    MessagesManager.sendMessage(player, Component.text("Le solde de la ville a été modifié"), Prefix.STAFF, MessageType.SUCCESS, false);
+	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.balance.set_success"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getBalance")
@@ -192,7 +190,10 @@ public class AdminCityCommands {
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("Le solde de la ville est de "+ city.getBalance()+ EconomyManager.getEconomyIcon()), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.city.admin.commands.balance.get_success",
+                Component.text(city.getBalance() + EconomyManager.getEconomyIcon())
+        ), Prefix.STAFF, MessageType.INFO, false);
     }
 
     @Subcommand("addPlayer")
@@ -209,12 +210,12 @@ public class AdminCityCommands {
         }
 
         if (CityManager.getPlayerCity(newMember.getUniqueId()) != null) {
-	        MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.add_player.already_in_city"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.addPlayer(newMember.getUniqueId());
-        MessagesManager.sendMessage(player, Component.text("Le joueur a été ajouté"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.add_player.success"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("remove")
@@ -225,17 +226,17 @@ public class AdminCityCommands {
     ) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-	        MessagesManager.sendMessage(player, Component.text("Ce joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.remove_player.not_in_city"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (city.hasPermission(member.getUniqueId(), CityPermission.OWNER)) {
-	        MessagesManager.sendMessage(player, Component.text("Ce joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.remove_player.is_owner"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.removePlayer(member.getUniqueId());
-        MessagesManager.sendMessage(player, Component.text("Le joueur a été retiré"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.remove_player.success"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getcity")
@@ -246,11 +247,15 @@ public class AdminCityCommands {
     ) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.getcity.not_in_city"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville " + city.getName() + " (" + city.getUniqueId() + ")"), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.city.admin.commands.getcity.success",
+                Component.text(city.getName()),
+                Component.text(city.getUniqueId().toString())
+        ), Prefix.STAFF, MessageType.INFO, false);
     }
 
     @Subcommand("claim bypass")
@@ -261,10 +266,10 @@ public class AdminCityCommands {
 
         if (canBypass) {
             ProtectionsManager.canBypassPlayer.remove(uuid);
-            MessagesManager.sendMessage(player, Component.text("Vous avez désactivé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.claim_bypass.disabled"), Prefix.STAFF, MessageType.SUCCESS, false);
         } else {
             ProtectionsManager.canBypassPlayer.add(uuid);
-            MessagesManager.sendMessage(player, Component.text("Vous avez activé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.claim_bypass.enabled"), Prefix.STAFF, MessageType.SUCCESS, false);
 
         }
     }

@@ -6,7 +6,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -32,7 +31,7 @@ public class CityUnclaimCondition {
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.CLAIM))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de unclaim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.unclaim.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

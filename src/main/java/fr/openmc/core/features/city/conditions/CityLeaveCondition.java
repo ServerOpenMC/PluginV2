@@ -6,7 +6,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
@@ -29,7 +28,7 @@ public class CityLeaveCondition {
         }
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-	        MessagesManager.sendMessage(player, Component.text("Tu ne peux pas quitter la ville car tu en es le propriétaire, supprime la ville ou transfère la propriété"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.leave.owner_cant_leave"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

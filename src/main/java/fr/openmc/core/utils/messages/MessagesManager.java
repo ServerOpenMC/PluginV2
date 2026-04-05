@@ -1,7 +1,6 @@
 package fr.openmc.core.utils.messages;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -9,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.Normalizer;
+import java.util.List;
 import java.util.Map;
 
 public class MessagesManager {
@@ -64,7 +64,6 @@ public class MessagesManager {
         if (sender.isOnline() && sender instanceof Player player) {
             sendMessage(player, message, prefix, type, 1.0F, sound);
         }
-
     }
 
     /**
@@ -77,6 +76,21 @@ public class MessagesManager {
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix) {
         sendMessage(sender, message, prefix, MessageType.NONE, false);
+    }
+
+    /**
+     * Sends a message to the player.
+     * @param player The player to send the message
+     * @param messages The list of component which will be concatenated and sent to the player
+     */
+    public static void sendMessage(Player player, List<Component> messages) {
+        Component messageComponent = Component.empty();
+
+        for (Component component : messages) {
+            messageComponent = messageComponent.appendNewline().append(component);
+        }
+
+        player.sendMessage(messageComponent);
     }
 
     /**

@@ -12,7 +12,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.TranslationManager;
 import lombok.SneakyThrows;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,7 +52,7 @@ public class MascotsInteractionListener implements Listener {
         if (mascotsUUID.equals(cityUUID)) {
             Mascot mascot = city.getMascot();
             if (mascot == null) {
-                MessagesManager.sendMessage(player, Component.text("§cAucune mascotte trouvée - Veuillez contacter le staff"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.interaction.error.not_found"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             if (!mascot.isAlive()) {
@@ -62,7 +61,7 @@ public class MascotsInteractionListener implements Listener {
                 new MascotMenu(player, mascot).open();
             }
         } else {
-            MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.interaction.error.not_owner"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 

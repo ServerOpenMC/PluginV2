@@ -46,12 +46,8 @@ import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.errors.ErrorReporter;
-import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -62,7 +58,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.util.Locale;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter
@@ -143,8 +138,6 @@ public class OMCPlugin extends JavaPlugin {
         HalloweenManager.init();
 
         MotdUtils.init();
-        DynamicCooldownManager.init();
-
         MascotsManager.init();
 
         PlayerSettingsManager.loadAllPlayerSettings();
@@ -162,6 +155,7 @@ public class OMCPlugin extends JavaPlugin {
 	    MilestonesManager.init();
 	    QuestsManager.init();
         CityManager.init();
+        DynamicCooldownManager.init();
         ContestManager.init();
         DreamManager.init();
         MultiBlockManager.init();
