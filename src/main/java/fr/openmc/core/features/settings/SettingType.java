@@ -32,7 +32,9 @@ public enum SettingType {
             Material.NOTE_BLOCK, Material.GRAY_DYE, "Activer ou désactiver les sons des messages privés"),
     TELEPORT_TITLE_FADE(ValueType.BOOLEAN, true, "Fondu du titre lors des téléportations",
             Material.ENDER_PEARL, Material.GRAY_DYE, "Activer ou désactiver le fondu du titre lors des téléportations"),
-    
+    JOIN_ANIMATION(ValueType.BOOLEAN, true, "Animation de connexion",
+            Material.GLOW_INK_SAC, Material.INK_SAC, "Activer ou désactiver l'animation de connexion"),
+
     ;
 
     private final ValueType valueType;

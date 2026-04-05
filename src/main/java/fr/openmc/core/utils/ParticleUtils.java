@@ -6,7 +6,10 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
@@ -54,7 +57,8 @@ public class ParticleUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (ContestManager.data.getPhase() == 3) return;
+                if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
+                if (WeeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
@@ -123,7 +127,8 @@ public class ParticleUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (ContestManager.data.getPhase() != 3) return;
+                if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
+                if (WeeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
 
                 if (color1 == null || color2 == null) {
                     String camp1Color = ContestManager.data.getColor1();
