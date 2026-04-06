@@ -9,20 +9,23 @@ public abstract class Feature {
     protected boolean initialize = false;
 
     public void startInit() {
-        if (this instanceof NotUnitTestFeature && OMCPlugin.isUnitTestVersion()) return;
+        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
+            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
+            return;
+        }
         try {
             init();
             initialize = true;
             OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
         } catch (Exception e) {
             initialize = false;
-            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " pas initialisée correctement.");
+            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " non initialisée.");
             throw e;
         }
     }
 
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
-        if (this instanceof NotUnitTestFeature && OMCPlugin.isUnitTestVersion()) return;
+        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         if (this instanceof DatabaseFeature dbF) {
             dbF.initDB(connectionSource);
         }
@@ -30,6 +33,7 @@ public abstract class Feature {
 
     public final void startSave() {
         if (!initialize) return;
+        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         save();
     }
 

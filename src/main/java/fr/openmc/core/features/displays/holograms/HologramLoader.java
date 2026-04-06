@@ -7,7 +7,7 @@ import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
 import fr.openmc.core.utils.entities.TextDisplay;
 import fr.openmc.core.utils.init.Feature;
 import fr.openmc.core.utils.init.LoadAfterItemsAdder;
-import fr.openmc.core.utils.init.NotUnitTestFeature;
+import fr.openmc.core.utils.init.NotInUnitTest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,15 +23,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class HologramLoader extends Feature implements NotUnitTestFeature, LoadAfterItemsAdder {
+public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     private static BukkitTask taskTimer;
+    private static File hologramFolder;
 
-    public static final File hologramFolder = new File(OMCPlugin.getInstance().getDataFolder(), "data/holograms");
+    public static File getHologramFolder() {
+        if (hologramFolder == null) {
+            OMCPlugin plugin = OMCPlugin.getInstance();
+            if (plugin == null) {
+                throw new IllegalStateException("OMCPlugin instance not initialized");
+            }
+            hologramFolder = new File(plugin.getDataFolder(), "data/holograms");
+        }
+        return hologramFolder;
+    }
 
     @Override
     public void init() {
+        File hologramFolder = getHologramFolder();
         hologramFolder.mkdirs();
 
         CommandsManager.getHandler().register(
@@ -64,6 +75,7 @@ public class HologramLoader extends Feature implements NotUnitTestFeature, LoadA
     }
 
     public static void registerHolograms(Hologram... holograms) {
+        File hologramFolder = getHologramFolder();
         for (Hologram hologram : holograms) {
             if (hologram == null) continue;
 
@@ -143,6 +155,7 @@ public class HologramLoader extends Feature implements NotUnitTestFeature, LoadA
     }
 
     public static void setHologramLocation(String hologramName, Location location) throws IOException {
+        File hologramFolder = getHologramFolder();
         HologramInfo hologramInfo = displays.get(hologramName);
         FileConfiguration hologramConfig = YamlConfiguration.loadConfiguration(hologramInfo.file());
         hologramConfig.set("location", location);

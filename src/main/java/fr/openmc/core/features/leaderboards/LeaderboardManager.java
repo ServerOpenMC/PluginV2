@@ -14,7 +14,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.entities.TextDisplay;
 import fr.openmc.core.utils.init.Feature;
 import fr.openmc.core.utils.init.LoadAfterItemsAdder;
-import fr.openmc.core.utils.init.NotUnitTestFeature;
+import fr.openmc.core.utils.init.NotInUnitTest;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -41,7 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.*;
 
-public class LeaderboardManager extends Feature implements NotUnitTestFeature, LoadAfterItemsAdder {
+public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter
@@ -52,7 +52,7 @@ public class LeaderboardManager extends Feature implements NotUnitTestFeature, L
     private static final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
     @Getter
     private static final Map<Integer, Map.Entry<String, String>> pumpkinCountMap = new TreeMap<>();
-    private static final File leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
+    private static File leaderBoardFile;
     @Getter
     private static Location contributorsHologramLocation;
     @Getter
@@ -70,6 +70,17 @@ public class LeaderboardManager extends Feature implements NotUnitTestFeature, L
     private static TextDisplay villeMoneyHologram;
     private static TextDisplay playTimeHologram;
     private static TextDisplay pumpkinCountHologram;
+
+    private static File getLeaderBoardFile() {
+        if (leaderBoardFile == null) {
+            OMCPlugin plugin = OMCPlugin.getInstance();
+            if (plugin == null) {
+                throw new IllegalStateException("OMCPlugin instance not initialized");
+            }
+            leaderBoardFile = new File(plugin.getDataFolder(), "data/leaderboards.yml");
+        }
+        return leaderBoardFile;
+    }
 
     @Override
     public void init() {
@@ -328,6 +339,7 @@ public class LeaderboardManager extends Feature implements NotUnitTestFeature, L
      * @throws IOException If an error occurs while saving the configuration.
      */
     public static void setHologramLocation(String name, Location location) throws IOException {
+        File leaderBoardFile = getLeaderBoardFile();
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set(name + "-location", location);
         leaderBoardConfig.save(leaderBoardFile);
@@ -352,6 +364,7 @@ public class LeaderboardManager extends Feature implements NotUnitTestFeature, L
      * @throws IOException If an error occurs while saving the configuration.
      */
     public static void setScale(float scale) throws IOException {
+        File leaderBoardFile = getLeaderBoardFile();
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set("scale", scale);
         leaderBoardConfig.save(leaderBoardFile);
@@ -377,6 +390,7 @@ public class LeaderboardManager extends Feature implements NotUnitTestFeature, L
      * Loads the leaderboard configuration, including hologram locations.
      */
     private static void loadLeaderBoardConfig() {
+        File leaderBoardFile = getLeaderBoardFile();
         if (!leaderBoardFile.exists()) {
             leaderBoardFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/leaderboards.yml", false);

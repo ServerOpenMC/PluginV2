@@ -1,6 +1,5 @@
 package fr.openmc.core;
 
-
 import com.j256.ormlite.logger.LoggerFactory;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.hooks.*;
