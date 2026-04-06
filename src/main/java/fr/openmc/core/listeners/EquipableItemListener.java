@@ -3,12 +3,9 @@ package fr.openmc.core.listeners;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.events.ArmorEquipEvent;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.items.options.EquipableItem;
-import fr.openmc.core.utils.ArmorType;
-import fr.openmc.core.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,10 +17,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class EquipableItemListener implements Listener {
+
+    private final Map<UUID, Set<PotionEffectType>> appliedEffectsByPlayer = new HashMap<>();
 
     @EventHandler
     public void onEquip(ArmorEquipEvent event) {
@@ -57,6 +55,8 @@ public class EquipableItemListener implements Listener {
                 equipable.removeEffects(player);
             }
         }
+
+        appliedEffectsByPlayer.remove(player.getUniqueId());
     }
 
     @EventHandler
@@ -76,6 +76,15 @@ public class EquipableItemListener implements Listener {
     }
 
     private void recalc(Player player, ItemStack oldPiece) {
+        UUID playerId = player.getUniqueId();
+
+        Set<PotionEffectType> previouslyApplied = appliedEffectsByPlayer.get(playerId);
+        if (previouslyApplied != null) {
+            for (PotionEffectType type : previouslyApplied) {
+                player.removePotionEffect(type);
+            }
+        }
+
         if (oldPiece != null && !oldPiece.getType().isAir()) {
 
             CustomItem customItem = CustomItemRegistry.getByItemStack(oldPiece);
@@ -101,6 +110,8 @@ public class EquipableItemListener implements Listener {
             }
         }
 
+        Set<PotionEffectType> newApplied = new HashSet<>();
+
         for (var entry : effects.entrySet()) {
             PotionEffectType type = entry.getKey();
             int amplifier = entry.getValue();
@@ -115,6 +126,10 @@ public class EquipableItemListener implements Listener {
                             true
                     )
             );
+
+            newApplied.add(type);
         }
+
+        appliedEffectsByPlayer.put(playerId, newApplied);
     }
 }

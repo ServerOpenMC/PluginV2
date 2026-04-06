@@ -40,6 +40,10 @@ public class ReproductionTask extends BukkitRunnable {
             world.playSound(babyOrigin, Sound.ENTITY_ENDER_DRAGON_GROWL, 0.3f, 0.2f);
             world.spawnParticle(Particle.EXPLOSION_EMITTER, babyCube.getCenter(), 3, 1, 1, 1, 0);
 
+            for (int i = 0; i <= 10; i++) {
+                world.strikeLightningEffect(babyCube.getCenter());
+            }
+
             MultiBlockManager.register(babyCube);
             cancel();
             parent.reproductionTask = null;

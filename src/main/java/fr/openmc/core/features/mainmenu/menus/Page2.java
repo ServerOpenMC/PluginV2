@@ -102,7 +102,7 @@ public class Page2 implements Menu {
         leaderboardItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Leaderboard", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/leaderboard", NamedTextColor.DARK_GRAY), Component.text("En cours de développement", NamedTextColor.RED)));
+            meta.lore(List.of(Component.text("/leaderboard", NamedTextColor.DARK_GRAY)));
         });
         LEADERBOARD_SLOTS.forEach(slot -> content.put(slot, leaderboardItem));
 

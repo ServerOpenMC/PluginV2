@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public class HangingProtection implements Listener {
@@ -22,8 +23,18 @@ public class HangingProtection implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
-        if (event.getRemover() instanceof Player player) {
-            ProtectionsManager.verify(player, event, event.getEntity().getLocation());
+        Entity remover = event.getRemover();
+        if (remover != null) {
+            ProtectionsManager.verify(remover, event, event.getEntity().getLocation());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onHangingBreak(HangingBreakEvent event) {
+        if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION) {
+            if (!ProtectionsManager.canExplodeNaturally(event.getEntity().getLocation())) {
+                event.setCancelled(true);
+            }
         }
     }
 }

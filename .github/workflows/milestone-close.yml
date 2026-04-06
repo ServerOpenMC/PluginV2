@@ -44,7 +44,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.milestone.title }} 
+          token: ${{ secrets.RELEASE_TOKEN }}
+          tag_name: ${{ github.event.milestone.title }}
           name: Release milestone ${{ github.event.milestone.title }} 
           generate_release_notes: true
           fail_on_unmatched_files: true
@@ -54,8 +55,6 @@ jobs:
             
             ${{ github.event.milestone.description }}
           files: builds/**
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Deploy to server
         uses: blobles-dev/pterodactyl-upload-action@pterodactyl-file-upload-modification-allow-http-200-fileupload
@@ -65,3 +64,4 @@ jobs:
           server-id: ${{ secrets.SERVER_ID }}
           source: builds/OpenMC.jar
           target: "./plugins/update/"
+          command: omcrestart
