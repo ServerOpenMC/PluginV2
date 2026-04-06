@@ -13,8 +13,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
 
-import static fr.openmc.core.features.displays.holograms.HologramLoader.hologramFolder;
-
 @Command({"holograms", "holo", "hologram"})
 public class HologramCommand {
 
@@ -77,7 +75,7 @@ public class HologramCommand {
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
         HologramLoader.updateHologramsViewers();
-        HologramLoader.loadAllFromFolder(hologramFolder);
+        HologramLoader.loadAllFromFolder(HologramLoader.getHologramFolder());
         MessagesManager.sendMessage(
                 sender,
                 Component.text("§aHologrammes activés avec succès."),

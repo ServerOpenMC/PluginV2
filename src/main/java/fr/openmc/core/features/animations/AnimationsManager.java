@@ -8,6 +8,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
 import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.NotInUnitTest;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -18,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 
-public class AnimationsManager extends Feature {
+public class AnimationsManager extends Feature implements NotInUnitTest {
 
     @Override
     public void init() {

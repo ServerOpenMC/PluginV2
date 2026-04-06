@@ -12,7 +12,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.NotUnitTestFeature;
+import fr.openmc.core.utils.init.NotInUnitTest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -20,7 +20,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList extends Feature implements NotUnitTestFeature {
+public class TabList extends Feature implements NotInUnitTest {
     private static ProtocolManager protocolManager = null;
 
     @Override

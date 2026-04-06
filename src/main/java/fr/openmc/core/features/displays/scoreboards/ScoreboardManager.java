@@ -10,14 +10,14 @@ import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
 import fr.openmc.core.features.dream.displays.DreamScoreboard;
 import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.NotUnitTestFeature;
+import fr.openmc.core.utils.init.NotInUnitTest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.*;
 
-public class ScoreboardManager extends Feature implements Listener, NotUnitTestFeature {
+public class ScoreboardManager extends Feature implements Listener, NotInUnitTest {
     public static final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
     private static final List<BaseScoreboard> scoreboards = new ArrayList<>();
     private static GlobalTeamManager globalTeamManager;
