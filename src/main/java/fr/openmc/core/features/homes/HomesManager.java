@@ -24,8 +24,6 @@ import java.util.UUID;
 @Getter
 public class HomesManager extends Feature implements DatabaseFeature {
 
-    private static boolean isInitialized = false;
-
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
 
@@ -45,8 +43,6 @@ public class HomesManager extends Feature implements DatabaseFeature {
 
         loadHomeLimit();
         loadHomes();
-
-        isInitialized = true;
     }
 
     @Override
@@ -140,10 +136,6 @@ public class HomesManager extends Feature implements DatabaseFeature {
     }
 
     private static void saveHomeLimit() {
-        if (!isInitialized) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Tentative de sauvegarde des HomeLimits avant l'initialisation du manager, opération ignorée.");
-            return;
-        }
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
             limitsDao.create(homeLimits);
@@ -161,10 +153,6 @@ public class HomesManager extends Feature implements DatabaseFeature {
     }
 
     private static void saveHomes() {
-        if (!isInitialized) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Tentative de sauvegarde des Homes avant l'initialisation du manager, opération ignorée.");
-            return;
-        }
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Home.class);
             for (Home home : homes) {
