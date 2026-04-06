@@ -105,6 +105,12 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         }
     }
 
+    @Override
+    public void save() {
+        ContestManager.saveContestData();
+        ContestManager.saveContestPlayerData();
+    }
+
     private static Dao<ContestData, Integer> contestDao;
     private static Dao<ContestPlayer, UUID> playerDao;
 

@@ -10,6 +10,9 @@ import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.init.DatabaseFeature;
+import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,7 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.util.List;
 
-public class WeeklyEventsManager {
+public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
 
     private static final List<WeeklyEvent> EVENTS = List.of(
             new Contest()
@@ -32,7 +35,8 @@ public class WeeklyEventsManager {
      * Au restart : si on est déjà le bon jour pour la phase courante et que l'event
      * était actif, on relance l'action immédiatement.
      */
-    public static void init() {
+    @Override
+    public void init() {
         data = load();
 
         WeeklyEventPhase currentPhase = getCurrentPhase();
@@ -44,10 +48,16 @@ public class WeeklyEventsManager {
         scheduleNextPhase();
     }
 
+    @Override
+    public void save() {
+        // nothing to save
+    }
+
     /**
      * Initialise la BDD : crée la table si nécessaire, charge les données, gère le cas restart
      */
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         dao = DaoManager.createDao(connectionSource, WeeklyEventsData.class);
         TableUtils.createTableIfNotExists(connectionSource, WeeklyEventsData.class);
     }
