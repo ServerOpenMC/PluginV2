@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import lombok.Setter;
 

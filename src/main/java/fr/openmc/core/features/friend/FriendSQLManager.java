@@ -7,8 +7,8 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.init.DatabaseFeature;
-import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;

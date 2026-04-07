@@ -1,7 +1,7 @@
 package fr.openmc.core.features.updates;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;

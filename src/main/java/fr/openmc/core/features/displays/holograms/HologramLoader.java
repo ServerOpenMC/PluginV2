@@ -2,12 +2,12 @@ package fr.openmc.core.features.displays.holograms;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
-import fr.openmc.core.utils.entities.TextDisplay;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.LoadAfterItemsAdder;
-import fr.openmc.core.utils.init.NotInUnitTest;
+import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;

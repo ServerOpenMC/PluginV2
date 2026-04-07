@@ -1,10 +1,10 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

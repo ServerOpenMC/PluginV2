@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.features.displays.holograms.Hologram;
+import fr.openmc.core.utils.text.fonts.CustomFonts;
 
 public class TutorialHologram extends Hologram {
 
@@ -9,7 +9,7 @@ public class TutorialHologram extends Hologram {
         super("tutorial");
 
         this.setLines(
-                "§f" + new FontImageWrapper("omc_icons:openmc").getString(),
+                "§f" + CustomFonts.getBest("omc_icons:openmc", "§f"),
                 "§fBienvenue sur §dOpenMC V2§f!",
                 "§fCette version est basée sur les §2villes",
                 "§f",

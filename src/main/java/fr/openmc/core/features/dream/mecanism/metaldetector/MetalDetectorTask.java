@@ -3,7 +3,7 @@ package fr.openmc.core.features.dream.mecanism.metaldetector;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.utils.DirectionUtils;
+import fr.openmc.core.utils.text.DirectionUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;

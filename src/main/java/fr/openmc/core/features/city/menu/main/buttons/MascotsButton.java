@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.text.DateUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

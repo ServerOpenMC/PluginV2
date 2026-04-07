@@ -5,14 +5,13 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
-import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.init.DatabaseFeature;
-import fr.openmc.core.utils.init.Feature;
 import lombok.Getter;
 import org.bukkit.Location;
 

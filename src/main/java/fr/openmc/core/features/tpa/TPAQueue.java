@@ -1,14 +1,14 @@
 package fr.openmc.core.features.tpa;
 
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.features.tpa.commands.TPACancelCommand;
 import fr.openmc.core.features.tpa.commands.TPACommand;
 import fr.openmc.core.features.tpa.commands.TPADenyCommand;
 import fr.openmc.core.features.tpa.commands.TPAcceptCommand;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

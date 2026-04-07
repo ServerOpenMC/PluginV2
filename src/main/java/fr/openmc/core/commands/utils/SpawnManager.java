@@ -1,7 +1,7 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.init.Feature;
+import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;

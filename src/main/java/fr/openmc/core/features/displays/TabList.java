@@ -10,9 +10,9 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.NotInUnitTest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

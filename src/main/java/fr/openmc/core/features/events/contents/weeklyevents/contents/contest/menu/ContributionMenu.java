@@ -9,11 +9,11 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.ColorUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static fr.openmc.core.utils.ItemUtils.isSimilar;
+import static fr.openmc.core.utils.bukkit.ItemUtils.isSimilar;
 
 public class ContributionMenu extends Menu {
 

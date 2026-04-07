@@ -13,10 +13,10 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.ContributionMenu;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.VoteMenu;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

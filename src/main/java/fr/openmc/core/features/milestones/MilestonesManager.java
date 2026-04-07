@@ -6,12 +6,12 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
 import fr.openmc.core.features.milestones.tutorial.listeners.TutorialBossBarEvent;
 import fr.openmc.core.features.quests.objects.Quest;
-import fr.openmc.core.utils.init.DatabaseFeature;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 

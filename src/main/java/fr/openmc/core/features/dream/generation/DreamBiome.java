@@ -9,7 +9,7 @@ import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
-import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 
 @Getter
 public enum DreamBiome {

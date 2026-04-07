@@ -5,17 +5,17 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
-import fr.openmc.core.utils.init.DatabaseFeature;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.serializer.BukkitSerializer;
+import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
-import static fr.openmc.core.utils.InputUtils.pluralize;
+import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class MailboxManager extends Feature implements DatabaseFeature {
     private static final int MAX_STACKS_PER_LETTER = 27;

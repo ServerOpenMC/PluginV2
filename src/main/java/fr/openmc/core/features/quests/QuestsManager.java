@@ -1,10 +1,10 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.LoadAfterItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 

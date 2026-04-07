@@ -5,6 +5,10 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.hooks.*;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.DatabaseManager;
+import fr.openmc.core.bootstrap.integration.ErrorReporter;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
@@ -40,14 +44,9 @@ import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
-import fr.openmc.core.utils.MotdUtils;
-import fr.openmc.core.utils.ParticleUtils;
-import fr.openmc.core.utils.ShutUpOrmLite;
-import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.errors.ErrorReporter;
-import fr.openmc.core.utils.init.Feature;
-import fr.openmc.core.utils.init.LoadAfterItemsAdder;
-import fr.openmc.core.utils.translation.TranslationManager;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.MotdUtils;
+import fr.openmc.core.utils.text.TranslationManager;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -111,7 +110,7 @@ public class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        LoggerFactory.setLogBackendFactory(ShutUpOrmLite::new);
+        LoggerFactory.setLogBackendFactory(DatabaseManager.ShutUpOrmLite::new);
     }
 
     @Override
