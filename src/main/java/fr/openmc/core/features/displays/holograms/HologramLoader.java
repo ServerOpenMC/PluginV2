@@ -27,7 +27,7 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     private static BukkitTask taskTimer;
-    private static File hologramFolder;
+    public static File hologramFolder;
 
     public static File getHologramFolder() {
         if (hologramFolder == null) {
