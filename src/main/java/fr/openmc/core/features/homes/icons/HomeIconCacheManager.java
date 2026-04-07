@@ -1,6 +1,8 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.Bukkit;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class HomeIconCacheManager {
+public class HomeIconCacheManager extends Feature implements LoadAfterItemsAdder {
 
     private static final ConcurrentHashMap<HomeIcon.IconCategory, List<CachedIconItem>> CACHED_ITEMS = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, List<CachedIconItem>> CACHED_SEARCH_RESULTS = new ConcurrentHashMap<>();
@@ -19,6 +21,16 @@ public class HomeIconCacheManager {
     private static volatile boolean initialized = false;
 
     private static final Integer MAX_CACHE_SIZE = 50;
+
+    @Override
+    public void init() {
+        HomeIconCacheManager.initialize();
+    }
+
+    @Override
+    public void save() {
+        HomeIconCacheManager.clearCache();
+    }
 
     /**
      * Initializes the HomeIconCacheManager and preloads all icons into the cache.

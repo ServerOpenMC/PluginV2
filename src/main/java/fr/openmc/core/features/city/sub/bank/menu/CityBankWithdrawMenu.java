@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.bank.menu;
 
-import fr.openmc.api.input.DialogInput;
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.MessagesManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class CityBankWithdrawMenu extends Menu {
 

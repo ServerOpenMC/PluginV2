@@ -7,6 +7,8 @@ import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
@@ -14,24 +16,18 @@ import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import lombok.Getter;
 
+import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import javax.annotation.Nullable;
-
-public class EconomyManager {
+public class EconomyManager extends Feature implements DatabaseFeature {
     @Getter
     private static Map<UUID, EconomyPlayer> balances;
 
     private static Dao<EconomyPlayer, String> playersDao;
-
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
-        playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
-    }
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
@@ -42,7 +38,8 @@ public class EconomyManager {
             1_000_000_000_000_000L, "Qa",
             1_000_000_000_000_000_000L, "Qi"));
 
-    public static void init() {
+    @Override
+    public void init() {
         balances = loadAllBalances();
 
         CommandsManager.getHandler().register(
@@ -51,6 +48,17 @@ public class EconomyManager {
             new History(),
             new Money()
         );
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
+        playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }
 
     public static double getBalance(UUID playerUUID) {

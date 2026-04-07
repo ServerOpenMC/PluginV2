@@ -9,6 +9,8 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
@@ -35,15 +37,20 @@ import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
-public class HalloweenManager {
+public class HalloweenManager extends Feature implements DatabaseFeature {
     private static Object2ObjectMap<UUID, HalloweenData> halloweenData;
     private static Dao<HalloweenData, String> halloweenDataDao;
 
-    public static void init() {
+    public void init() {
         if (FancyNpcsHook.isHasFancyNpc())
             Bukkit.getPluginManager().registerEvents(new HalloweenNPCListener(), OMCPlugin.getInstance());
 
         halloweenData = loadAllHalloweenDatas();
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     public static void depositPumpkins(UUID playerUUID, int amount) {
@@ -67,7 +74,8 @@ public class HalloweenManager {
         return halloweenData;
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
         halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
     }

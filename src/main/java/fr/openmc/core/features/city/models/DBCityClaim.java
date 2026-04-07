@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.world.chunk.ChunkPos;
 import lombok.Getter;
 
 import java.util.UUID;

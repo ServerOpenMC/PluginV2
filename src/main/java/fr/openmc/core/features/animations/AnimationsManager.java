@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
 import org.bukkit.util.Vector;
@@ -17,9 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 
-public class AnimationsManager {
+public class AnimationsManager extends Feature implements NotInUnitTest {
 
-    public static void init() {
+    @Override
+    public void init() {
         OMCPlugin plugin = OMCPlugin.getInstance();
 
         saveAllAnimation(plugin);
@@ -32,6 +35,11 @@ public class AnimationsManager {
                     new PlayerFinishJoiningListener()
             );
         }
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     public static JsonObject loadAnimation(OMCPlugin plugin, String ressourcePath) {

@@ -13,8 +13,8 @@ import fr.openmc.core.features.dream.generation.populators.soulforest.SoulTreePo
 import fr.openmc.core.features.dream.generation.structures.cloud.CloudCastleStructure;
 import fr.openmc.core.features.dream.generation.structures.glacite.BaseCampStructure;
 import fr.openmc.core.features.dream.generation.structures.soulforest.SoulAltarStructure;
-import fr.openmc.core.utils.structure.FeaturesPopulator;
-import fr.openmc.core.utils.structure.SchematicsUtils;
+import fr.openmc.core.utils.world.structure.FeaturesPopulator;
+import fr.openmc.core.utils.world.structure.SchematicsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;

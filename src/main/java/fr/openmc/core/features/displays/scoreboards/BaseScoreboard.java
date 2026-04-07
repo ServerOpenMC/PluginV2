@@ -8,7 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
-import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 
 public abstract class BaseScoreboard {
     protected static final boolean canShowLogo = ItemsAdderHook.isHasItemAdder();

@@ -2,14 +2,15 @@ package fr.openmc.core.features.adminshop;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.*;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ import java.util.UUID;
 /**
  * Manages the admin shop system including items, categories, and player interactions.
  */
-public class AdminShopManager {
+public class AdminShopManager extends Feature {
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
     public static final Map<UUID, String> currentCategory = new HashMap<>();
@@ -34,9 +35,15 @@ public class AdminShopManager {
     /**
      * Initializes the AdminShopManager by loading the configuration.
      */
-    public static void init() {
+    @Override
+    public void init() {
         adminShopYAML = new AdminShopYAML();
         adminShopYAML.loadConfig();
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     /**

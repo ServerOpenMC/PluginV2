@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;

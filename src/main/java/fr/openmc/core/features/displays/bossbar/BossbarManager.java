@@ -2,11 +2,12 @@ package fr.openmc.core.features.displays.bossbar;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
 import fr.openmc.core.features.milestones.MilestoneUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -19,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.*;
 
-public class BossbarManager {
+public class BossbarManager extends Feature {
     @Getter
     private static final List<Component> helpMessages = new ArrayList<>();
     private static final HashMap<BossbarsType, Map<UUID, BossBar>> activeBossBars = new HashMap<>();
@@ -35,7 +36,8 @@ public class BossbarManager {
     /**
      * Initializes the BossbarManager
      */
-    public static void init() {
+    @Override
+    public void init() {
         configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "bossbars.yml");
         loadConfig();
         loadDefaultMessages();
@@ -48,6 +50,11 @@ public class BossbarManager {
                 BossBar.Color.RED,
                 BossBar.Overlay.PROGRESS
         );
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     /**

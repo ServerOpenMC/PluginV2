@@ -6,7 +6,7 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.utils.RandomUtils;
-import fr.openmc.core.utils.SkullUtils;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

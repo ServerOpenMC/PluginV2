@@ -17,7 +17,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Con
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
-import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.text.DateUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -29,7 +29,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 import static net.kyori.adventure.text.Component.*;
 
 public class MainScoreboard extends BaseScoreboard {

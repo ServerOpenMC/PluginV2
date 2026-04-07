@@ -1,9 +1,10 @@
 package fr.openmc.core.commands.admin.freeze;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,15 +14,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FreezeManager {
+public class FreezeManager extends Feature {
 	
 	public static final Set<Player> FROZEN_PLAYERS = new HashSet<>();
 	private static Player player;
 
-	public static void init() {
+	@Override
+	public void init() {
 		Bukkit.getServer().getPluginManager().registerEvents(new FreezeListener(), OMCPlugin.getInstance());
 	}
-	
+
+	@Override
+	public void save() {
+		// nothing to save
+	}
+
 	/**
 	 * Freeze or unfreeze a player
 	 *

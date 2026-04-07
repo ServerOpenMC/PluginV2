@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
