@@ -34,11 +34,7 @@ public class MailboxMenuManager {
     }
 
     public static ItemBuilder cancelBtn(Menu menu) {
-        ItemBuilder item = getBtn(menu, "✘", "Annuler", "omc_menus:mailbox_cancel_btn", NamedTextColor.DARK_RED, true);
-        item.editMeta(
-                meta -> meta.lore(List.of(Component.text("Si vous faites cela, les items seront supprimés", NamedTextColor.RED, TextDecoration.BOLD)))
-        );
-        return item;
+        return getBtn(menu, "✘", "Annuler", "omc_menus:mailbox_cancel_btn", NamedTextColor.DARK_RED, true);
     }
 
     public static ItemStack nextPageBtn() {
@@ -70,7 +66,11 @@ public class MailboxMenuManager {
     }
 
     public static ItemBuilder refuseBtn(Menu menu) {
-        return getBtn(menu, "✘", "Refuser", "omc_menus:mailbox_refuse_btn", NamedTextColor.DARK_RED, true);
+        ItemBuilder item = getBtn(menu, "✘", "Refuser", "omc_menus:mailbox_refuse_btn", NamedTextColor.DARK_RED, true);
+        item.editMeta(
+                meta -> meta.lore(List.of(Component.text("Si vous faites cela, les items seront supprimés", NamedTextColor.RED, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false)))
+        );
+        return item;
     }
 
     public static ItemBuilder homeBtn(Menu menu) {
