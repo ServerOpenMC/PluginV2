@@ -34,7 +34,11 @@ public class MailboxMenuManager {
     }
 
     public static ItemBuilder cancelBtn(Menu menu) {
-        return getBtn(menu, "✘", "Annuler", "omc_menus:mailbox_cancel_btn", NamedTextColor.DARK_RED, true);
+        ItemBuilder item = getBtn(menu, "✘", "Annuler", "omc_menus:mailbox_cancel_btn", NamedTextColor.DARK_RED, true);
+        item.editMeta(
+                meta -> meta.lore(List.of(Component.text("Si vous faites cela, les items seront supprimés", NamedTextColor.RED, TextDecoration.BOLD)))
+        );
+        return item;
     }
 
     public static ItemStack nextPageBtn() {
