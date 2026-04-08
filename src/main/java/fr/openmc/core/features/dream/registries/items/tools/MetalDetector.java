@@ -2,21 +2,28 @@ package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
+import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorTask;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
+import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.UUID;
 
 import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorListener.findRandomChestLocation;
@@ -48,6 +55,40 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         item.getItemMeta().itemName(Component.text("Détecteur à métaux"));
         return item;
+    }
+
+    @Override
+    public void onRightClick(Player player, PlayerInteractEvent event) {
+        Block clicked = event.getClickedBlock();
+        if (clicked == null) return;
+
+        if (!DreamUtils.isDreamWorld(event.getClickedBlock().getLocation())) return;
+        UUID uuid = player.getUniqueId();
+        if (!hiddenChests.containsKey(uuid)) return;
+
+        if (clicked.getType() == Material.CHEST) {
+            event.setCancelled(true);
+            MetalDetectorTask task = hiddenChests.remove(uuid);
+            task.cancel();
+            Location chestLoc = task.getChestLocation();
+
+            if (LocationUtils.isSameLocation(clicked.getLocation(), chestLoc)) {
+                event.setCancelled(true);
+                clicked.setType(Material.MUD);
+                CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
+                if (lootTable == null) return;
+                List<ItemStack> rewards = lootTable.rollLoots();
+
+                for (ItemStack item : rewards) {
+                    player.getInventory().addItem(item);
+                }
+
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        Bukkit.getServer().getPluginManager().callEvent(new MetalDetectorLootEvent(player, rewards))
+                );
+                MessagesManager.sendMessage(player, Component.text("Vous avez découvert §e" + rewards.size() + " §fobjet(s) dans vos rêves !"), Prefix.DREAM, MessageType.SUCCESS, false);
+            }
+        }
     }
 
     @Override
