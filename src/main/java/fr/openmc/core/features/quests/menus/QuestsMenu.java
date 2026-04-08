@@ -260,6 +260,7 @@ public class QuestsMenu extends Menu {
             quest.getDescription(playerUUID).forEach(string -> {
                 lore.add(Component.text("  §f" + string));
             });
+            lore.addAll(quest.getAdditionalLore());
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.empty());
                 lore.add(Component.text("§6◆ §eAvancement:"));

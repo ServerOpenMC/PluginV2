@@ -23,7 +23,8 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
         super(
                 "Améliorer votre limite de homes",
                 List.of(
-                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes) §fpour pouvoir améliorer votre limite de homes",
+                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes)",
+                        "§fpour pouvoir améliorer votre limite de homes",
                         "§8§oCela vous permettra d'avoir plus de homes !"
                 ),
                 CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(),

@@ -164,7 +164,7 @@ public class FriendCommand {
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
-                                    Component.text("§7Vile : §e" + (city != null ? city.getName() : "Aucune") +
+                                    Component.text("§7Ville : §e" + (city != null ? city.getName() : "Aucune") +
                                             "\n§7Argent : §e" + formattedMoney +
                                             "\n§7Statut : " + (isOnline ? "§aEn ligne" : "§cHors ligne")
                                     )))

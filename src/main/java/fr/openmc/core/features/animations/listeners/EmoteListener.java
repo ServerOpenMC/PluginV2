@@ -96,6 +96,8 @@ public class EmoteListener implements Listener {
         PlayerAnimationInfo info = playingAnimations.remove(player);
         if (info == null) return;
 
+        player.setInvulnerable(false);
+
         sendCamera(player, player);
         if (info.getArmorStand() != null)
             info.getArmorStand().remove();
@@ -112,7 +114,7 @@ public class EmoteListener implements Listener {
      * @param player The player to send the packet to.
      * @param entity The entity to set the camera to.
      */
-    private void sendCamera(Player player, Entity entity) {
+    public static void sendCamera(Player player, Entity entity) {
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.CAMERA);
         packet.getIntegers().write(0, entity.getEntityId());
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);

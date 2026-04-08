@@ -338,7 +338,7 @@ public class NotationManager {
      * Planifie l'exécution de la tâche de minuit qui calcule les scores et attribue les récompenses.
      */
     private static void scheduleMidnightTask() {
-        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(APPLY_NOTATION_DAY) * 20;
+        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekTime(APPLY_NOTATION_DAY, 0, 0, 0) * 20;
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (!isApplied) {
                 String weekStr = DateUtils.getWeekFormat();

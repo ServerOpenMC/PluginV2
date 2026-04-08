@@ -173,10 +173,10 @@ public class DateUtils {
         return String.format("%dd %dh %dm", days, hours, minutes);
     }
 
-    public static long getSecondsUntilDayOfWeekMidnight(DayOfWeek dayOfWeek) {
+    public static long getSecondsUntilDayOfWeekTime(DayOfWeek dayOfWeek, int hour, int minute, int second) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextDayOfWeekMidnight = now.with(TemporalAdjusters.nextOrSame(dayOfWeek))
-                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+                .withHour(hour).withMinute(minute).withSecond(second).withNano(0);
 
         if (!now.isBefore(nextDayOfWeekMidnight)) {
             nextDayOfWeekMidnight = nextDayOfWeekMidnight.plusWeeks(1);

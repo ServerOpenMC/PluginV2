@@ -36,9 +36,12 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
     private static Vector rotateOffset(int x, int y, int z, BlockFace face) {
         return switch (face) {
-            case NORTH, SOUTH -> new Vector(x, y, z);
-            case EAST, WEST -> new Vector(z, y, x);
-            case UP, DOWN -> new Vector(x, z, y);
+            case SOUTH -> new Vector(x, y, z);
+            case NORTH -> new Vector(x, y, -z);
+            case EAST -> new Vector(z, y, x);
+            case WEST -> new Vector(-z, y, x);
+            case UP -> new Vector(x, z, y);
+            case DOWN -> new Vector(x, -z, y);
             default -> new Vector(0, 0, 0);
         };
     }
@@ -51,7 +54,7 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = -radius; dy <= radius; dy++) {
-                for (int dz = -depth; dz <= depth; dz++) {
+                for (int dz = 0; dz <= depth; dz++) {
 
                     if (dx == 0 && dy == 0 && dz == 0) continue;
 

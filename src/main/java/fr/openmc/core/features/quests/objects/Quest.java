@@ -10,6 +10,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -31,6 +32,8 @@ public class Quest {
 
     private final String name;
     private final List<String> baseDescription;
+    @Setter
+    private List<Component> additionalLore;
     private final ItemStack icon;
     private final boolean isLargeActionBar;
     private final List<QuestTier> tiers = new ArrayList<>();
@@ -50,6 +53,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = icon;
         this.isLargeActionBar = false;
     }
@@ -64,6 +68,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, Material icon) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = new ItemStack(icon);
         this.isLargeActionBar = false;
     }
@@ -79,6 +84,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = icon;
         this.isLargeActionBar = isLargeActionBar;
     }
@@ -94,6 +100,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = new ItemStack(icon);
         this.isLargeActionBar = isLargeActionBar;
     }

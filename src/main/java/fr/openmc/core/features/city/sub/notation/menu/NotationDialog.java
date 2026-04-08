@@ -207,10 +207,7 @@ public class NotationDialog {
                         Component.text(notation.getNoteArchitectural()).color(NamedTextColor.DARK_AQUA)
                 ).color(NamedTextColor.DARK_GRAY))
                 .appendNewline()
-                .append(TranslationManager.translation(
-                        "feature.city.notation.hover.total.coherence",
-                        Component.text(notation.getNoteCoherence()).color(NamedTextColor.DARK_AQUA)
-                ).color(NamedTextColor.DARK_GRAY))
+                .append(Component.text("§8Cohérence " + notation.getNoteCoherence()))
                 .appendNewline()
                 .appendNewline()
                 .append(TranslationManager.translation("feature.city.notation.hover.total.justification")
