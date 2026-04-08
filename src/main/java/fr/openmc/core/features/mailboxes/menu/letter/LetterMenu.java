@@ -15,7 +15,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -35,6 +34,7 @@ import static fr.openmc.core.utils.InputUtils.pluralize;
 public class LetterMenu extends Menu {
     private final Letter letter;
     private final LetterHead letterHead;
+    private ItemStack[] letterItems;
 
     @Override
     public @NotNull String getName() {
@@ -82,7 +82,15 @@ public class LetterMenu extends Menu {
     }
 
     public void accept() {
+        ItemStack[] items = getLetterItems();
+
         if (MailboxManager.deleteLetter(letterHead.getLetterId())) {
+            HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(items);
+            World world = getOwner().getWorld();
+            for (ItemStack item : remainingItems.values()) {
+                world.dropItemNaturally(getOwner().getLocation(), item);
+            }
+
             MessagesManager.sendMessage(
                     getOwner(),
                     Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
@@ -94,14 +102,10 @@ public class LetterMenu extends Menu {
             );
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                    Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(getOwner(), MailboxManager.getById(getOwner(), letterHead.getLetterId())))
+                    Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(getOwner(), letter))
             );
 
-            HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(letter.getCachedItems());
-            World world = getOwner().getWorld();
-            for (ItemStack item : remainingItems.values()) {
-                world.dropItemNaturally(getOwner().getLocation(), item);
-            }
+
         } else {
             Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
                     .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
@@ -132,7 +136,7 @@ public class LetterMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
-        ItemStack[] items = letter.getCachedItems();
+        ItemStack[] items = getLetterItems();
 
         if (items == null || items.length == 0) {
             byte[] serializedItems = letter.getItems();
@@ -162,6 +166,17 @@ public class LetterMenu extends Menu {
                 MessageType.ERROR,
                 true
         );
+    }
+
+    private ItemStack[] getLetterItems() {
+        if (letterItems != null) return letterItems;
+        ItemStack[] items = letter.getCachedItems();
+        if (items == null || items.length == 0) {
+            byte[] serializedItems = letter.getItems();
+            items = serializedItems != null ? BukkitSerializer.deserializeItemStacks(serializedItems) : new ItemStack[0];
+        }
+        letterItems = items;
+        return items;
     }
 
     @Override
