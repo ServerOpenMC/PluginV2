@@ -144,7 +144,12 @@ public class MayorManager {
                 constantsDao.create(constant);
             }
 
-            phaseMayor = constant.getPhase();
+            if (constant.getPhase() != 1 && constant.getPhase() != 2) {
+                phaseMayor = 1;
+            } else {
+                phaseMayor = constant.getPhase();
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -152,6 +157,10 @@ public class MayorManager {
 
     public static void saveMayorConstant() {
         try {
+            if (phaseMayor != 1 && phaseMayor != 2) {
+                phaseMayor = 1;
+            }
+
             constantsDao.createOrUpdate(new MayorConstant(phaseMayor));
         } catch (SQLException e) {
             throw new RuntimeException(e);
