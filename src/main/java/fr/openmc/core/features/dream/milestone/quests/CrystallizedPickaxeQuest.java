@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
@@ -11,14 +12,20 @@ import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.DirectionUtils;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.Objects;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
+	
+	private static final Location cubeLoc = Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension("world_dream")).origin;
 	
 	public CrystallizedPickaxeQuest() {
 		super(
@@ -37,9 +44,27 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 								"§3pour la §ddernière étape §3de cette quête.",
 						"§6Alors ne traînons pas, partons en grotte.",
 						"§3Voyageur : Non ! Avant d'aller chercher le dernier orbe, fais un détour aux coordonnées §cX: " +
-								Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension("world_dream")).origin.getBlockX() + " §9Z: " +
-								Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension("world_dream")).origin.getBlockZ() + "§3. Comme promis, je te dois des explications."
-				)
+								CrystallizedPickaxeQuest.cubeLoc.getBlockX() + " §9Z: " +
+								CrystallizedPickaxeQuest.cubeLoc.getBlockZ() + "§3. Comme promis, je te dois des explications."
+				),
+				(player) -> new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (!player.isOnline() || !DreamUtils.isInDream(player)) {
+							this.cancel();
+							return;
+						}
+						
+						if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) > DreamSteps.FIND_CUBE.ordinal()) {
+							this.cancel();
+							return;
+						}
+						
+						int distance = (int) player.getLocation().distance(CrystallizedPickaxeQuest.cubeLoc);
+						String direction = DirectionUtils.getDirectionArrow(player, CrystallizedPickaxeQuest.cubeLoc);
+						player.sendActionBar(Component.text("§b【Cube】 §eDistance : §6" + distance + " blocs §7(" + direction + ")"));
+					}
+				}.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L)
 		);
 	}
 	
