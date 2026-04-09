@@ -52,44 +52,60 @@ public class CubeListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerEnterAndLeaveBubble(PlayerMoveEvent event) {
+    public void onPlayerEnterAndLeaveCubeZone(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (!player.getLocation().getWorld().getName().equals("world")
+                && !player.getLocation().getWorld().getName().equals("world_dream")) return;
 
         boolean insideAny = false;
         Cube cube = null;
 
         for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
             if (!(mb instanceof Cube loopCube)) continue;
-            if (loopCube.corruptedBubbleTask == null) continue;
 
             Location center = loopCube.getCenter();
             double radius = loopCube.RADIUS_BUBBLE;
 
             if (!player.getWorld().equals(center.getWorld())) continue;
+            cube = loopCube;
 
             if (player.getLocation().distance(center) <= radius) {
-                cube = loopCube;
                 insideAny = true;
                 break;
             }
         }
-
-        AttributeInstance attr = player.getAttribute(Attribute.GRAVITY);
-        if (attr == null) return;
+        
+        if (cube == null) {
+            throw new NullPointerException("No Cube found in world: " + player.getLocation().getWorld().getName());
+        }
 
         UUID uuid = player.getUniqueId();
 
         if (insideAny && !playersInBubble.contains(uuid)) {
             playersInBubble.add(uuid);
-            attr.setBaseValue(0.04);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, Integer.MAX_VALUE, 2, true, false, true));
             Bukkit.getPluginManager().callEvent(new EnterCubeZoneEvent(player, cube));
+            if (cube.corruptedBubbleTask != null) onPlayerEnterBubble(player);
         } else if (!insideAny && playersInBubble.contains(uuid)) {
             playersInBubble.remove(uuid);
-            attr.setBaseValue(0.08);
-            player.removePotionEffect(PotionEffectType.JUMP_BOOST);
+            if (cube.corruptedBubbleTask != null) onPlayerExitBubble(player);
             Bukkit.getPluginManager().callEvent(new ExitCubeZoneEvent(player));
         }
+    }
+    
+    public void onPlayerEnterBubble(Player player) {
+        AttributeInstance attr = player.getAttribute(Attribute.GRAVITY);
+        if (attr == null) return;
+        
+        attr.setBaseValue(0.04);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, Integer.MAX_VALUE, 2, true, false, true));
+    }
+    
+    public void onPlayerExitBubble(Player player) {
+        AttributeInstance attr = player.getAttribute(Attribute.GRAVITY);
+        if (attr == null) return;
+        
+        attr.setBaseValue(0.08);
+        player.removePotionEffect(PotionEffectType.JUMP_BOOST);
     }
 
     @EventHandler

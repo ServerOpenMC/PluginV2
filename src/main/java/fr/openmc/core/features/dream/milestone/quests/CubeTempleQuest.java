@@ -21,7 +21,7 @@ public class CubeTempleQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§fEntrer dans le §dTemple des Âmes",
 						"§8§oA la recherche du monument du Cube des Âmes...",
-						"on est malgré tout dans Minecraft, même dans un rêve !"
+						"§8§oon est malgré tout dans Minecraft, même dans un rêve !"
 				),
 				Material.POLISHED_BLACKSTONE_BRICKS,
 				MilestoneType.DREAM,
@@ -31,10 +31,10 @@ public class CubeTempleQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Sache qu'il s'agit d'un autel qui a été érigé pour...",
 						"§6Pour ?",
 						"§3Voyageur : ...",
-						"§6Voyageur : Passons, ce n'est pas le moment. Restons sur le fait qu'il s'agit du maître des lieux.",
+						"§3Voyageur : Passons, ce n'est pas le moment. Restons sur le fait qu'il s'agit du maître des lieux.",
 						"§6Comment ça le maitre des lieux ?",
 						"§3Voyageur : Peu importe, maintenant que tu as compris le principe de cette dimension, je vais pouvoir te " +
-								"parler de son but et de ce que l'on fait ici.",
+								"parler de son §dbut §3et de ce que l'on fait ici.",
 						"§3Voyageur : Commence déjà par aller au §dcentre du temple§3 et déposer l'orbe."
 				)
 		);
