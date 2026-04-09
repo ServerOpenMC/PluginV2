@@ -158,7 +158,6 @@ public class OMCPlugin extends JavaPlugin {
         CustomLootTableRegistry.init();
 
         // ** FEATURES **
-	    MilestonesManager.init();
 	    QuestsManager.init();
         CityManager.init();
         ContestManager.init();
