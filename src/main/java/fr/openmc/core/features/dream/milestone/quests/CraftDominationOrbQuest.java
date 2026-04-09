@@ -27,7 +27,7 @@ public class CraftDominationOrbQuest extends MilestoneQuest implements Listener 
 				),
 				DreamItemRegistry.getByName("omc_dream:domination_orb").getBest(),
 				MilestoneType.DREAM,
-				DreamSteps.DOMINATION_ORB,
+				DreamSteps.CRAFT_DOMINATION_ORB,
 				new QuestTier(1),
 				List.of(
 						"§6Voilà l'orbe, que dois-je faire avec ?",

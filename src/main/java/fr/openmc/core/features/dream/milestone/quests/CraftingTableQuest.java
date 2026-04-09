@@ -21,7 +21,8 @@ public class CraftingTableQuest extends MilestoneQuest implements Listener {
 				"Une nouvelle survie ?",
 				List.of(
 						"§fFabriquer une §dtable de craft",
-						"§8§oBizarre cette survie de nuit... on ne voit pas en dehors des pleines de sculks"
+						"§8§oBizarre cette survie de nuit...",
+						"§8§oon ne voit pas en dehors des pleines de sculks"
 				),
 				Material.CRAFTING_TABLE,
 				MilestoneType.DREAM,

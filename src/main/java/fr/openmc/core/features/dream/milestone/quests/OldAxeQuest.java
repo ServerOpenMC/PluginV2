@@ -32,12 +32,12 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 				DreamSteps.OLD_AXE,
 				new QuestTier(1),
 				List.of(
-						"§3Voyageur : Bien ! Cela va nous être utile. Le prochain objectif va être d'obtenir l'Orbe de Domination.",
+						"§3Voyageur : Bien ! Cela va nous être utile. Le prochain objectif va être d'obtenir l'§dOrbe de Domination§3.",
 						"§6À quoi va-t-elle servir ?",
 						"§3Voyageur : Je t'expliquerai lorsque tu l'auras. Elle va être facile à récupérer avec la hache.",
 						"§6Ai-je besoin d'autre chose ?",
-						"§3Voyageur : Ce n'est pas obligatoire, mais elle te permettrait de rester plus longtemps dans ce monde. Il existe l'armure \"Creaking\" que tu peux fabriquer. " +
-								"Cela te confèrera " + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:old_creaking_chestplate"))).getAdditionalMaxTime() + " secondes supplémentaires " +
+						"§3Voyageur : Ce n'est pas obligatoire, mais elle te permettrait de rester plus longtemps dans ce monde. Il existe l'armure §d\"Creaking\" §3que tu peux fabriquer. " +
+								"Cela te confèrera §d" + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:old_creaking_chestplate"))).getAdditionalMaxTime() + " secondes §3supplémentaires " +
 								"par pièces d'armure équipées."
 				)
 		);

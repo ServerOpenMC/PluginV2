@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
@@ -23,7 +24,8 @@ public class EweniteQuest extends MilestoneQuest implements Listener {
 				"Aywenite, Awyenito ou Ewenite ?",
 				List.of(
 						"§fObtenir de l'§dEwenite",
-						"§8§oUn nouveau minerai à exploiter. Bizarre, ce nom m'est familier."
+						"§8§oUn nouveau minerai à exploiter.",
+						"§8§oBizarre, ce nom m'est familier."
 				),
 				DreamItemRegistry.getByName("omc_dream:ewenite").getBest(),
 				MilestoneType.DREAM,
@@ -33,7 +35,7 @@ public class EweniteQuest extends MilestoneQuest implements Listener {
 						"§6Le début de la richesse. Qu'il s'agisse de miner ou de les échanger, j'ai l'impression que la recherche va être longue.",
 						"§3Voyageur : Le minerai n'est pas commun, mais tu peux en trouver plusieurs rapidement.",
 						"§6N'y a-t-il pas moyen d'aller plus vite ?",
-						"§3Voyageur : Tu peux te fabriquer la pioche mécanique si tu le souhaites, ça sera plus rapide."
+						"§3Voyageur : Tu peux te fabriquer la §dPioche mécanique §3si tu le souhaites, ça sera plus rapide."
 				)
 		);
 	}
@@ -49,6 +51,15 @@ public class EweniteQuest extends MilestoneQuest implements Listener {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 				this.incrementProgressInDream(player.getUniqueId());
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onTrade(GlaciteTradeEvent e) {
+		Player player = e.getPlayer();
+		if (e.getTrade().getResult() instanceof Ewenite) {
+			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			this.incrementProgressInDream(player.getUniqueId());
 		}
 	}
 }

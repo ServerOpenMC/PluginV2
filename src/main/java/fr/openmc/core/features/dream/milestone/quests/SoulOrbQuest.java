@@ -22,7 +22,8 @@ public class SoulOrbQuest extends MilestoneQuest implements Listener {
 				"Il faut un sacrifice !",
 				List.of(
 						"§fObtenir l'§dOrbe des Âmes",
-						"§8§oÂmes dans la poche, permettez-moi, par votre pouvoir, d'obtenir votre orbe avec le sacrifice de l'Orbe de Domination."
+						"§8§oÂmes dans la poche, permettez-moi, par votre pouvoir,",
+						"§8§od'obtenir votre orbe avec le sacrifice de l'Orbe de Domination."
 				),
 				DreamItemRegistry.getByName("omc_dream:ame_orb").getBest(),
 				MilestoneType.DREAM,
@@ -34,10 +35,10 @@ public class SoulOrbQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Maintenant que tu as l'Orbe des Âmes, tu vas pouvoir accéder à la §dnouvelle zone§3 qui, tu vas le voir, ne ressemble pas du tout au monde actuel...",
 						"§3Voyageur : Il faut monter dans le ciel, dans les §dnuages§3.",
 						"§6Peux-tu me parler un peu du but de cette quête ?",
-						"§3Voyageur : Les orbes sont au nombre de 5, et chacun d'eux renferme un pouvoir. Seuls, ils ne servent à rien. Mais ensemble, ils pourraient aider ce monde.",
+						"§3Voyageur : Les orbes sont au nombre de §d5§3, et chacun d'eux renferme un §dpouvoir§3. Seuls, ils ne servent à rien. Mais ensemble, ils pourraient aider ce monde.",
 						"§6Et... toi, tu es qui au fait ?",
 						"§3Voyageur : J'étais...",
-						"§3Voyageur : Je suis un joueur tout comme toi, mais un joueur de ce monde."
+						"§3Voyageur : Je suis un joueur tout comme toi, mais un joueur de §dce monde§3."
 				)
 		);
 	}

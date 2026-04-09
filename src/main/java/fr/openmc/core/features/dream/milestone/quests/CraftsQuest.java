@@ -20,7 +20,8 @@ public class CraftsQuest extends MilestoneQuest implements Listener {
 				"Apprendre de nouveaux crafts",
 				List.of(
 						"§fFaire §d/crafts §fpour voir les crafts disponibles",
-						"§8§oCette dimension a ses propres règles, je dois les apprendre pour y survivre"
+						"§8§oCette dimension a ses propres règles,",
+						"§8§oje dois les apprendre pour y survivre"
 				),
 				Material.BOOK,
 				MilestoneType.DREAM,

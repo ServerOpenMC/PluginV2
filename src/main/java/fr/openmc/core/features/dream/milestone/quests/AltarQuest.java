@@ -34,13 +34,13 @@ public class AltarQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§3Voyageur : Pour obtenir de l'orbe des âmes, il te faudra...",
 						"§6Des âmes ?!",
-						"§3Voyageur : Oui ! C'est ça ! Il te faudra §d20§3 âmes pour obtenir celui-ci.",
+						"§3Voyageur : Oui ! C'est ça ! Il t'en faudra §d20§3",
 						"§3Voyageur : Mais fais attention à toi, elles adorent le temps encore plus que les creakings",
 						"§6Comment puis-je en trouver, et comment les reconnaître ?",
 						"§3Voyageur : Regarde autour de l'autel, vers les §darbres§3. Les âmes se baladent à l'extérieur du bâtiment.",
-						"§3Voyageur : Tout comme l'armure \"Creaking\", il est possible d'avoir l'armure des \"Âmes\". Celle-ci te confèrera " +
+						"§3Voyageur : Tout comme l'armure \"Creaking\", il est possible d'avoir l'armure des §d\"Âmes\"§3. Celle-ci te confèrera §d" +
 								((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:soul_chestplate"))).getAdditionalMaxTime() +
-								" secondes supplémentaires par pièces d'armure équipées.",
+								" secondes §3supplémentaires par pièces d'armure équipées.",
 						"§3Voyageur : Tu peux également transformer ta hache à l'autel avec quelques âmes supplémentaires."
 				)
 		);

@@ -56,7 +56,9 @@ public class PlayerEnteredBiome implements Listener {
         Biome biome = player.getLocation().getBlock().getBiome();
         int index = BIOME_ORDER.indexOf(biome);
         if (index == -1) return;
-
+        
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterBiomeEvent(player, biome));
+        
         DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
         int unlocked = cacheData == null ? 0 : cacheData.getProgressionOrb();
 
@@ -88,7 +90,6 @@ public class PlayerEnteredBiome implements Listener {
             );
 
             activeTasks.put(player.getUniqueId(), task);
-			Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterBiomeEvent(player, biome));
             MessagesManager.sendMessage(player, Component.text("Attention, vous êtes dans un biome que vous avez pas encore débloqué, il vous faut l'§b" + ORB_UNLOCKER.get(index)), Prefix.DREAM, MessageType.WARNING, false);
         }
     }

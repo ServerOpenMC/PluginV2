@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
@@ -12,7 +13,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 
 import java.util.List;
 
@@ -22,9 +22,10 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 		super(
 				"Bip Biip Biiiiiiip",
 				List.of(
-						"§gTrouver l'Orbe de Boue",
-						"§8§oBon, pas de sable, mais de la boue. Possible que les gens perdent tout de même " +
-								"des choses. Ah tiens, 6 blocks vers la droite."
+						"§fTrouver l'§dOrbe de Boue",
+						"§8§oBon, pas de sable, mais de la boue.",
+						"§8§oPossible que les gens perdent tout de même",
+						"§8§odes choses. Ah tiens, 6 blocks vers la droite."
 				),
 				DreamItemRegistry.getByName("omc_dream:mud_orb").getBest(),
 				MilestoneType.DREAM,
@@ -32,11 +33,11 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 				new QuestTier(1),
 				List.of(
 						"§6Cela me rappelle mes vacances à chercher des trésors sur la plage. Même si là, c'est pour une meilleure cause. Et maintenant que le 4ème orbe est avec nous, que dois-je faire ?",
-						"§3Voyageur : Plus qu'un. Comme nous avons fait toute la surface, alors il ne nous reste plus qu'à chercher sous terre. Il faudra bien se préparer, et notamment un bon feu. " +
+						"§3Voyageur : Plus qu'un. Comme nous avons fait toute la surface et les nuages, alors il ne nous reste plus qu'à chercher §dsous terre§3. Il faudra bien se préparer, et notamment un §dbon feu§3. " +
 								"Pour ce qui est du détecteur, tu as dû voir que l'on a obtenu plusieurs choses.",
 						"§6Oui, mon inventaire est bien rempli.",
-						"§3Voyageur : Tout comme la canne à pêche, tu peux y obtenir divers objets comme les chips, même si certaines sont très rares, des somnifères, " +
-								"un livre enchanté différent de celui des nuages, ou encore une pioche qui te sera utile pour la suite... Je vais d'ailleurs check si tu n'en as pas déjà une."
+						"§3Voyageur : Tout comme la canne à pêche, tu peux y obtenir divers objets comme les §dchips§3, même si certaines sont très rares, des §dsomnifères§3, " +
+								"un autre §dlivre enchanté§3, ou encore une §dpioche §3qui te sera utile pour la suite... Je vais d'ailleurs check si tu n'en as pas déjà une."
 				),
 				player -> {
 					if (player.getInventory().contains(DreamItemRegistry.getByName("omc_dream:crystallized_pickaxe").getBest()))
@@ -46,16 +47,15 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 	}
 	
 	@EventHandler
-	public void onPickUp(EntityPickupItemEvent e) {
-		if (e.getEntity() instanceof Player player) {
-			if (!DreamUtils.isInDreamWorld(player)) return;
-			
-			DreamItem item = DreamItemRegistry.getByItemStack(e.getItem().getItemStack());
-			if (item == null) return;
-			if (item instanceof MudOrb) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
-				this.incrementProgressInDream(player.getUniqueId());
-			}
+	public void onGetOrb(MetalDetectorLootEvent e) {
+		Player player = e.getPlayer();
+		if (!DreamUtils.isInDreamWorld(player)) return;
+		
+		DreamItem item = DreamItemRegistry.getByItemStack(e.getLoot().getFirst());
+		if (item == null) return;
+		if (item instanceof MudOrb) {
+			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			this.incrementProgressInDream(player.getUniqueId());
 		}
 	}
 }

@@ -1,11 +1,14 @@
 package fr.openmc.core.features.milestones;
 
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +23,7 @@ public class MilestoneQuest extends Quest {
 	protected final MilestoneType type;
 	protected final Enum step; //TODO a fix dans #1209
 	protected final Consumer<Player> afterDialog;
+	protected List<String> dialogs;
 	
 	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum step, QuestTier quest) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest);
@@ -53,11 +57,15 @@ public class MilestoneQuest extends Quest {
 		super(name, baseDescription, icon);
 		this.type = type;
 		this.step = step;
+		this.dialogs = dialogs;
 		this.addTier(quest.addRewards(
 				new QuestMethodsReward(player -> MilestoneUtils.completeStep(type, player, step)),
 				new QuestMethodsReward(player -> {
-					player.closeInventory();
-					DreamMilestoneDialog.send(player, step, dialogs);
+					Bukkit.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+						player.closeInventory();
+						DreamManager.addMilestoneDialogPlayer(player);
+						DreamMilestoneDialog.send(player, step, dialogs, 1);
+					}, 20);
 				})
 		));
 		this.afterDialog = afterDialog;

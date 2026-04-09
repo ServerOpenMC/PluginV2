@@ -23,21 +23,21 @@ public class CraftEternalFireQuest extends MilestoneQuest implements Listener {
 		super(
 				"L'ère glacière",
 				List.of(
-						"§fFabriquer le feu éternel",
+						"§fFabriquer le §dfeu éternel",
 						"§8§oVa-t-on retrouver des dinosaures fossilisés ou Sid ?"
 				),
 				DreamItemRegistry.getByName("omc_dream:eternal_campfire").getBest(),
 				MilestoneType.DREAM,
-				DreamSteps.ETERNAL_FIRE,
+				DreamSteps.CRAFT_ETERNAL_FIRE,
 				new QuestTier(1),
 				List.of(
 						"§3Voyageur : Bien ! Ce feu te sera utile.",
 						"§6Il s'agit d'un feu, ça va me permettre de cuire quelque chose ?",
-						"§3Voyageur : Dans ce monde, ce feu te servira à limiter les effets du froid des profondeurs. Tu vas rentrer dans un monde glacial, chaque seconde passée " +
-								"dans celui-ci te ralentira et finira par te tuer.",
+						"§3Voyageur : Dans ce monde, ce feu te servira à limiter les §deffets du froid §3des profondeurs. Tu vas rentrer dans un monde glacial, chaque seconde passée " +
+								"dans celui-ci §dte ralentira §3et finira par §dte tuer§3.",
 						"§3Voyageur : En posant ce feu au sol et en restant proche de lui, tu vas te réchauffer et éviter cela.",
 						"§6Comme lorsqu'on sort de la poudreuse.",
-						"§3Voyageur : Oui. Maintenant que tu as compris le principe, partons à la recherche des camps présents dans les grottes des profondeurs."
+						"§3Voyageur : Oui. Maintenant que tu as compris le principe, partons à la recherche des §dcamps §3présents dans les §dgrottes des profondeurs§3."
 				)
 		);
 	}

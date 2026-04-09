@@ -22,7 +22,7 @@ public class MudBeachQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§fEntrer sur la §dPlage de Boue",
 						"§8§oProfitons de ce rêve pour aller se dorer la pilule au Soleil.",
-						"Tiens, pourquoi n'y a-t-il pas d'eau, mais que de la boue ?",
+						"§8§oTiens, pourquoi n'y a-t-il pas d'eau, mais que de la boue ?",
 						"§8§oEt toujours pas de Soleil !? Cet endroit n'est donc que de la nuit ?"
 				),
 				Material.MUD,
@@ -32,14 +32,14 @@ public class MudBeachQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§6Enfin sur la plage, et en effet, il n'y a ni sable chaud, ni soleil rayonnant, juste de la boue et... rien d'autre en fait.",
 						"§3Voyageur : Très bien, pose-toi là, je te dois des explications.",
-						"§3Voyageur : Ce monde, a subi une catastrophe, d'où son apparence. Auparavant, il était si... si seulement je pouvais le revoir.",
+						"§3Voyageur : Ce monde, a subi une §dcatastrophe§3, d'où son apparence. Auparavant, il était si... si seulement je pouvais le revoir.",
 						"§6Tu m'as parlé de 5 orbes. Ceux-ci permettraient-ils de faire revenir l'ancien monde, avec un pouvoir de terraformation ?",
-						"§3Voyageur : Non, c'est bien plus puissant que cela. Ils permettent de créer un trou de ver entre cette dimension et la tienne. Nous pourrons alors " +
-								"utiliser une partie de l'énergie de ta dimension pour remonter le temps dans celle-ci, et rétablir son équilibre.",
-						"§3Utiliser une partie de l'énergie ? Mais, cela est sans risque pour ma dimentsion ??",
-						"§6Voyageur : Oui, bien évidemment, sinon je n'en prendrais pas le risque. Chaque bloc de ton monde donnerait une petite perle de son énergie.",
-						"§3Quelle énergie ?",
-						"§6Voyageur : Nous devons avancer maintenant. Cherche des grenouilles, elles nous seront utiles."
+						"§3Voyageur : Non, c'est bien plus puissant que cela. Ils permettent de créer un §dtrou de ver §3entre cette §ddimension et la tienne§3. Nous pourrons alors " +
+								"utiliser une partie de l'§dénergie §3de ta dimension pour §dremonter le temps §3dans celle-ci, et rétablir son équilibre.",
+						"§6Utiliser une partie de l'énergie ? Mais, cela est sans risque pour ma dimentsion ??",
+						"§3Voyageur : Oui, bien évidemment, sinon je n'en prendrais pas le risque. Chaque bloc de ton monde donnerait une petite perle de son énergie.",
+						"§6Quelle énergie ?",
+						"§3Voyageur : Nous devons avancer maintenant. Cherche des §dgrenouilles§3, elles nous seront utiles."
 				)
 		);
 	}

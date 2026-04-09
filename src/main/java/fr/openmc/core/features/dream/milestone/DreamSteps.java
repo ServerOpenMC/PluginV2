@@ -10,9 +10,9 @@ public enum DreamSteps {
 	SLEEP(null),
 	CRAFTS(null),
 	CRAFTING_TABLE(null),
-	GET_HEART(null),
+	CREAKING_HEART(null),
 	OLD_AXE(null),
-	DOMINATION_ORB(null),
+	CRAFT_DOMINATION_ORB(null),
 	CUBE_TEMPLE(null),
 	ALTAR(null),
 	SOULS(null),
@@ -25,12 +25,12 @@ public enum DreamSteps {
 	MUD_ORB(null),
 	CRYSTALLIZED_PICKAXE(null),
 	FIND_CUBE(null),
-	ETERNAL_FIRE(null),
+	CRAFT_ETERNAL_FIRE(null),
 	GROTTO_CAMP(null),
 	ILLUSIONIST(null),
 	EWENITE(null),
 	GLACITE_ORB(null),
-	SINGULARITY(null),
+	CRAFT_SINGULARITY(null),
 	TRANSFERABLE_OBJECT(null)
 	;
 	
@@ -44,9 +44,9 @@ public enum DreamSteps {
 		SLEEP.quest = new SleepQuest();
 		CRAFTS.quest = new CraftsQuest();
 		CRAFTING_TABLE.quest = new CraftingTableQuest();
-		GET_HEART.quest = new CreakingHeartQuest();
+		CREAKING_HEART.quest = new CreakingHeartQuest();
 		OLD_AXE.quest = new OldAxeQuest();
-		DOMINATION_ORB.quest = new CraftDominationOrbQuest();
+		CRAFT_DOMINATION_ORB.quest = new CraftDominationOrbQuest();
 		CUBE_TEMPLE.quest = new CubeTempleQuest();
 		ALTAR.quest = new AltarQuest();
 		SOULS.quest = new SoulsQuest();
@@ -59,12 +59,12 @@ public enum DreamSteps {
 		MUD_ORB.quest = new MudOrbQuest();
 		CRYSTALLIZED_PICKAXE.quest = new CrystallizedPickaxeQuest();
 		FIND_CUBE.quest = new FindCubeQuest();
-		ETERNAL_FIRE.quest = new CraftEternalFireQuest();
+		CRAFT_ETERNAL_FIRE.quest = new CraftEternalFireQuest();
 		GROTTO_CAMP.quest = new GrottoCampQuest();
 		ILLUSIONIST.quest = new IllusionistQuest();
 		EWENITE.quest = new EweniteQuest();
 		GLACITE_ORB.quest = new GlaciteOrbQuest();
-		SINGULARITY.quest = new CraftSingularityQuest();
+		CRAFT_SINGULARITY.quest = new CraftSingularityQuest();
 		TRANSFERABLE_OBJECT.quest = new TransferableObjectQuest();
 	}
 }

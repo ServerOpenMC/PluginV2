@@ -30,7 +30,7 @@ public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 				),
 				DreamItemRegistry.getByName("omc_dream:singularity").getBest(),
 				MilestoneType.DREAM,
-				DreamSteps.SINGULARITY,
+				DreamSteps.CRAFT_SINGULARITY,
 				new QuestTier(1),
 				List.of(
 						"§6Voilà ! Que faut-il faire pour pouvoir maintenant remonter le temps ?",
@@ -45,11 +45,11 @@ public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 								"sans doute utiles dans ton monde.",
 						"§6...",
 						"§3Voyageur : Je n'ai pas réussi à sauver cette dimension, mais j'ai tout de même réussi à t'aider \"toi\" dans cette dimension.",
-						"§3Voyageur : Quoi qu'il en soit, tu vas pouvoir récupérer les enchantements de cette dimension grâce à la singularité et même l'armure si tu le souhaites.",
+						"§3Voyageur : Quoi qu'il en soit, tu vas pouvoir §drécupérer les enchantements §3de cette dimension grâce à la singularité et même l'§darmure §3si tu le souhaites.",
 						"§3Voyageur : La singularité n'est pas assez puissante pour moi, mais largement assez pour des nouvelles armes ou armures.",
 						"§3Voyageur : Tout comme les orbes précédents, tu as la possibilité de te fabriquer une nouvelle armure. Celle-ci en revanche va nécessiter de refaire " +
-								"l'ensemble des orbes, mais ça en vaut le coup, car elle rajoute " + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:dream_chestplate"))).getAdditionalMaxTime()
-								+ " secondes de plus par pièce portée, mais aussi des effets.",
+								"l'ensemble des orbes, mais ça en vaut le coup, car elle rajoute §d" + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:dream_chestplate"))).getAdditionalMaxTime()
+								+ " secondes §3de plus par pièce portée, mais aussi des effets.",
 						"§6... Merci !",
 						"§3Voyageur : Non ! C'est moi qui te remercie. Car un jour, quelqu'un que je respectais comme personne m'a dit : \"Remercie la personne que tu as aidé, " +
 								"car elle t'a permis de faire une bonne action\".",

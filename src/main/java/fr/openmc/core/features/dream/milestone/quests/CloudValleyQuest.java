@@ -27,7 +27,7 @@ public class CloudValleyQuest extends MilestoneQuest implements Listener {
 				DreamSteps.CLOUD_VALLEY,
 				new QuestTier(1),
 				List.of(
-						"§6Nous sommes dans une pleine... des nuages ???",
+						"§6Nous sommes dans une pleine... de nuages ???",
 						"§3Voyageur : Il s'agit d'une pleine d'un ancien peuple ayant dompté les forces du vent.",
 						"§3Voyageur : Tu devrais pouvoir y trouver des §drestes de leur civilisation§3.",
 						"§6C'est à dire ?",
@@ -38,9 +38,8 @@ public class CloudValleyQuest extends MilestoneQuest implements Listener {
 	
 	@EventHandler
 	public void onEnterBiome(PlayerEnterBiomeEvent e) {
+		if (e.getBiome() != DreamBiome.CLOUD_LAND.getBiome()) return;
 		Player player = e.getPlayer();
-		
-		if (!e.getBiome().equals(DreamBiome.CLOUD_LAND.getBiome())) return;
 		
 		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());

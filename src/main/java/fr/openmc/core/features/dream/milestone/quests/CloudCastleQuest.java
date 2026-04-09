@@ -10,10 +10,11 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class CloudCastleQuest extends MilestoneQuest {
+public class CloudCastleQuest extends MilestoneQuest implements Listener {
 	public CloudCastleQuest() {
 		super(
 				"Laputa",

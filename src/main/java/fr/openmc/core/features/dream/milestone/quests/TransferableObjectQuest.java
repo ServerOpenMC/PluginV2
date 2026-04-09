@@ -27,8 +27,9 @@ public class TransferableObjectQuest extends MilestoneQuest implements Listener 
 				"Ce n'était qu'un rêve ?",
 				List.of(
 						"§fRécupérer un objet §dtransferable §fdans l'Overworld",
-						"§8§oCe monde m'a l'aide tout de même réel. La singularité ne serait-elle pas " +
-								"un portail dimensionnel pour le loot ?"
+						"§8§oCe monde m'a l'aide tout de même réel.",
+						"§8§oLa singularité ne serait-elle pas un portail",
+						"§8§odimensionnel pour le loot ?"
 				),
 				Material.LAPIS_BLOCK,
 				MilestoneType.DREAM,

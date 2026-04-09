@@ -28,7 +28,7 @@ public class CreakingHeartQuest extends MilestoneQuest implements Listener {
 				),
 				Material.RESIN_CLUMP,
 				MilestoneType.DREAM,
-				DreamSteps.GET_HEART,
+				DreamSteps.CREAKING_HEART,
 				new QuestTier(1),
 				List.of(
 						"§6Ah ! Mais c'est vrai qu'ils protègent leurs cœurs.",

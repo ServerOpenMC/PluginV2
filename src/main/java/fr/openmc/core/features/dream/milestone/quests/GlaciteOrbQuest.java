@@ -30,10 +30,10 @@ public class GlaciteOrbQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§3Voyageur : Enfin, nous touchons au but. Bien plus qu'une seule étape pour enfin être libéré de cette situation.",
 						"§6Que dois-je faire ?",
-						"§3Voyageur : Il faut les combiner",
+						"§3Voyageur : Il faut les §dcombiner§3.",
 						"§6Les combiner ? Pas d'incantation cette fois ?",
-						"§3Voyageur : Non, promis. Combine-les dans la table de craft que nous avons confectionné tous les deux au début de notre aventure. " +
-								"Nous pourrons ensuite utiliser le pouvoir de la singularité."
+						"§3Voyageur : Non, promis. Combine-les dans la §dtable de craft §3que nous avons confectionné tous les deux au début de notre aventure. " +
+								"Nous pourrons ensuite utiliser le pouvoir de la §dsingularité§3."
 				)
 		);
 	}

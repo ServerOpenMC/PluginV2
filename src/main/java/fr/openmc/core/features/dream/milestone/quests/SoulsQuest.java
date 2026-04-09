@@ -23,7 +23,8 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 				"Mes amis viennent de l'au-delà",
 				List.of(
 						"§fRécuérer §d20 §fâmes",
-						"§8§oIl me semble avoir vu des créatures volantes rôder vers les grands arbres sombres."
+						"§8§oIl me semble avoir vu des créatures",
+						"§8§ovolantes rôder vers les grands arbres sombres."
 				),
 				DreamItemRegistry.getByName("omc_dream:soul").getBest(),
 				MilestoneType.DREAM,
@@ -31,10 +32,10 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 				new QuestTier(20),
 				List.of(
 						"§6Et de 20 ! Que dois-je faire maintenant ? Il y a un craft spécifique de l'orbe à faire ?",
-						"§3Voyageur : Non, il faut simplement répéter l'incantation suivante 2 fois : §dAshkara no thari fu laq to !",
+						"§3Voyageur : Non, il faut simplement répéter l'incantation suivante 2 fois : §dAshkara no thari fu laq to",
 						"§6Ashkara no thari fu laq to ! Ashkara no thari fu laq to !",
 						"§6...pas facile à dire...",
-						"§3Voyageur : Ahah, en réalité, il te faut simplement intéragir à nouveau avec l'Orbe de Domination sur l'§dAltar§3."
+						"§3Voyageur : Ahah, en réalité, il te faut simplement intéragir à nouveau avec l'§dOrbe de Domination sur l'§dAltar§3."
 				)
 		);
 	}
