@@ -15,8 +15,10 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ColdManager {
 
@@ -31,13 +33,12 @@ public class ColdManager {
 
     public static int calculateColdResistance(Player player) {
         int sommeColdResistance = 0;
-        EntityEquipment equipement = player.getEquipment();
 
-        if (equipement == null) return 0;
-
-        ItemStack[] armorContents = equipement.getArmorContents();
+        List<ItemStack> armorContents = Arrays.stream(player.getEquipment().getArmorContents()).toList();
+        if (armorContents.isEmpty()) return 0;
 
         for (ItemStack item : armorContents) {
+            if (item == null) continue;
             if (DreamItemRegistry.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
                 Integer coldResistance = dreamEquipableItem.getColdResistance();
 
