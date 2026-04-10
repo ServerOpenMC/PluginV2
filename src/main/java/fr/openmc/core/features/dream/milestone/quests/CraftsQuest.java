@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
@@ -30,7 +31,7 @@ public class CraftsQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§6Cela ressemble à une survie normale, non ?",
 						"§3Voyageur : En effet, ce monde a beau être sombre, nouveau et complexe, il n'est pas si différent de l'Overworld. Mais une dimension se rajoute : le §dtemps §3! " +
-								"Pour le moment, tu ne peux qu'accéder à la §dPleine de Sculk§3, mais les autres biomes seront bientôt accessibles.",
+								"Pour le moment, tu ne peux qu'accéder à la §d" + DreamBiome.SCULK_PLAINS.getName().substring(2) + "§3, mais les autres biomes seront bientôt accessibles.",
 						"§6Hmmm, cela m'intrigue. Mais tu as dit que l'on manque de temps, alors ne traînons pas. Il me faut une §dtable de craft§6."
 				)
 		);

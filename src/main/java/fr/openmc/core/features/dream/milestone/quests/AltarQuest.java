@@ -34,7 +34,7 @@ public class AltarQuest extends MilestoneQuest implements Listener {
 				List.of(
 						"§3Voyageur : Pour obtenir de l'orbe des âmes, il te faudra...",
 						"§6Des âmes ?!",
-						"§3Voyageur : Oui ! C'est ça ! Il t'en faudra §d20§3",
+						"§3Voyageur : Oui ! C'est ça ! Il t'en faudra §d" + SoulsQuest.SOULS + "§3",
 						"§3Voyageur : Mais fais attention à toi, elles adorent le temps encore plus que les creakings",
 						"§6Comment puis-je en trouver, et comment les reconnaître ?",
 						"§3Voyageur : Regarde autour de l'autel, vers les §darbres§3. Les âmes se baladent à l'extérieur du bâtiment.",

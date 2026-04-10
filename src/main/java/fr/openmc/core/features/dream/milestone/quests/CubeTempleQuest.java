@@ -19,7 +19,7 @@ public class CubeTempleQuest extends MilestoneQuest implements Listener {
 		super(
 				"Vénérer le Cube des Ämes",
 				List.of(
-						"§fEntrer dans le §dTemple des Âmes",
+						"§fEntrer dans le §d" + DreamStructure.DreamType.SOUL_ALTAR.getName().substring(2),
 						"§8§oA la recherche du monument du Cube des Âmes...",
 						"§8§oon est malgré tout dans Minecraft, même dans un rêve !"
 				),

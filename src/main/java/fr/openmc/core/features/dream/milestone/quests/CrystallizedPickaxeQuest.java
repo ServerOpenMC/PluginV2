@@ -3,7 +3,9 @@ package fr.openmc.core.features.dream.milestone.quests;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
+import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
@@ -25,7 +27,7 @@ import java.util.Objects;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
 	
-	private static final Location cubeLoc = Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension("world_dream")).origin;
+	private static final Location cubeLoc = Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension(DreamDimensionManager.DIMENSION_NAME)).origin;
 	
 	public CrystallizedPickaxeQuest() {
 		super(
@@ -78,6 +80,14 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 		if (item instanceof CrystalizedPickaxe) {
 			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 			this.incrementProgressInDream(player.getUniqueId());
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerReturnDim(DreamEnterEvent e) {
+		Player player = e.getPlayer();
+		if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) == DreamSteps.FIND_CUBE.ordinal()) {
+			this.afterDialog.accept(player);
 		}
 	}
 }

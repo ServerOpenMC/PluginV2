@@ -19,7 +19,7 @@ public class CloudCastleQuest extends MilestoneQuest implements Listener {
 		super(
 				"Laputa",
 				List.of(
-						"§fEntrer dans le §dChâteau des Nuages",
+						"§fEntrer dans le §d" + DreamStructure.DreamType.CLOUD_CASTLE.getName().substring(2),
 						"§8§oUn nouveau château à conquérir ?"
 				),
 				Material.QUARTZ_PILLAR,

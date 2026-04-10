@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.events.PlayerEnterBiomeEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
@@ -19,7 +20,7 @@ public class CloudValleyQuest extends MilestoneQuest implements Listener {
 		super(
 				"Montée au septième ciel",
 				List.of(
-						"§fDécouvrir la §dVallée des Nuages",
+						"§fDécouvrir la §d" + DreamBiome.CLOUD_LAND.getName().substring(2),
 						"§8§oCes nuages de ce rêve doivent bien cacher quelque chose..."
 				),
 				Material.SNOW_BLOCK,
@@ -31,7 +32,7 @@ public class CloudValleyQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Il s'agit d'une pleine d'un ancien peuple ayant dompté les forces du vent.",
 						"§3Voyageur : Tu devrais pouvoir y trouver des §drestes de leur civilisation§3.",
 						"§6C'est à dire ?",
-						"§3Voyageur : Tu as bien trouvé le Temple du Cube non ?"
+						"§3Voyageur : Tu as bien trouvé le " + DreamStructure.DreamType.SOUL_ALTAR.getName() + " non ?"
 				)
 		);
 	}

@@ -18,20 +18,23 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class SoulsQuest extends MilestoneQuest implements Listener {
+	
+	public static final int SOULS = 20;
+	
 	public SoulsQuest() {
 		super(
 				"Mes amis viennent de l'au-delà",
 				List.of(
-						"§fRécuérer §d20 §fâmes",
+						"§fRécuérer §d" + SOULS + " §fâmes",
 						"§8§oIl me semble avoir vu des créatures",
 						"§8§ovolantes rôder vers les grands arbres sombres."
 				),
 				DreamItemRegistry.getByName("omc_dream:soul").getBest(),
 				MilestoneType.DREAM,
 				DreamSteps.SOULS,
-				new QuestTier(20),
+				new QuestTier(SOULS),
 				List.of(
-						"§6Et de 20 ! Que dois-je faire maintenant ? Il y a un craft spécifique de l'orbe à faire ?",
+						"§6Et de " + SOULS + " ! Que dois-je faire maintenant ? Il y a un craft spécifique de l'orbe à faire ?",
 						"§3Voyageur : Non, il faut simplement répéter l'incantation suivante 2 fois : §dAshkara no thari fu laq to",
 						"§6Ashkara no thari fu laq to ! Ashkara no thari fu laq to !",
 						"§6...pas facile à dire...",
