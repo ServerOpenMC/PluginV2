@@ -32,7 +32,7 @@ public class CloudValleyQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Il s'agit d'une pleine d'un ancien peuple ayant dompté les forces du vent.",
 						"§3Voyageur : Tu devrais pouvoir y trouver des §drestes de leur civilisation§3.",
 						"§6C'est à dire ?",
-						"§3Voyageur : Tu as bien trouvé le " + DreamStructure.DreamType.SOUL_ALTAR.getName() + " non ?"
+						"§3Voyageur : Tu as bien trouvé le " + DreamStructure.DreamType.SOUL_ALTAR.getName().substring(2) + " non ?"
 				)
 		);
 	}
