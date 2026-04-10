@@ -1,9 +1,9 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.utils.ParticleUtils;
 import org.bukkit.*;
@@ -108,7 +108,7 @@ public class Breezy extends DreamMob implements Listener {
 
         for (Entity e : world.getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (e instanceof Player p) {
-	            if (DreamManager.isPlayerInMilestoneDialog(p)) continue;
+	            if (DreamMilestoneDialog.isPlayerInMilestoneDialog(p)) continue;
                 DreamUtils.removeDreamTime(p, this.getDamageTime(), true);
                 p.setVelocity(p.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(1.2).setY(0.6));
             }

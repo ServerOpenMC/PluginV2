@@ -144,7 +144,7 @@ public class SingularityMenu extends PaginatedMenu {
                     event.setCancelled(true);
                     return;
                 }
-                if (clickInPlayerInv) return; // Laisser
+                if (clickInPlayerInv) return;
             } else if (inDream) {
                 if (!cursorDream.isTransferable()) event.setCancelled(true);
             }

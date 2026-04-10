@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.milestone;
 
-import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.utils.dialog.ButtonType;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -13,10 +12,14 @@ import net.kyori.adventure.text.event.ClickCallback;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class DreamMilestoneDialog {
+	
+	public static final Set<Player> dreamMilestoneDialogPlayer = new HashSet<>();
 	
 	public static void send(Player player, DreamSteps step, List<String> dialogs, int messageStep) {
 		List<DialogBody> body = new ArrayList<>();
@@ -39,7 +42,7 @@ public class DreamMilestoneDialog {
 								.action(DialogAction.customClick((response, audience) -> {
 									player.closeInventory();
 									if (dialogs.size() <= messageStep) {
-										DreamManager.removeMilestoneDialogPlayer(player);
+										removeMilestoneDialogPlayer(player);
 										Consumer<Player> runnable = step.getQuest().getAfterDialog();
 										if (runnable != null) runnable.accept(player);
 										return;
@@ -51,4 +54,16 @@ public class DreamMilestoneDialog {
 		);
 		player.showDialog(dialog);
 	}
+	
+	public static void addMilestoneDialogPlayer(Player player) {
+		dreamMilestoneDialogPlayer.add(player);
+	}
+	
+	public static void removeMilestoneDialogPlayer(Player player) {
+			dreamMilestoneDialogPlayer.remove(player);
+		}
+	
+	public static boolean isPlayerInMilestoneDialog(Player player) {
+			return dreamMilestoneDialogPlayer.contains(player);
+		}
 }

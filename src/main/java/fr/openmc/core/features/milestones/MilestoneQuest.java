@@ -1,7 +1,6 @@
 package fr.openmc.core.features.milestones;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -63,7 +62,7 @@ public class MilestoneQuest extends Quest {
 				new QuestMethodsReward(player -> {
 					Bukkit.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
 						player.closeInventory();
-						DreamManager.addMilestoneDialogPlayer(player);
+						DreamMilestoneDialog.addMilestoneDialogPlayer(player);
 						DreamMilestoneDialog.send(player, step, dialogs, 1);
 					}, 20);
 				})

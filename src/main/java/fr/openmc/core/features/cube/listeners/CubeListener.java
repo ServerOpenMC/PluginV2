@@ -5,6 +5,7 @@ import fr.openmc.core.features.cube.events.EnterCubeZoneEvent;
 import fr.openmc.core.features.cube.events.ExitCubeZoneEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
+import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -55,7 +56,7 @@ public class CubeListener implements Listener {
     public void onPlayerEnterAndLeaveCubeZone(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (!player.getLocation().getWorld().getName().equals("world")
-                && !player.getLocation().getWorld().getName().equals("world_dream")) return;
+                && !player.getLocation().getWorld().getName().equals(DreamDimensionManager.DIMENSION_NAME)) return;
 
         boolean insideAny = false;
         Cube cube = null;

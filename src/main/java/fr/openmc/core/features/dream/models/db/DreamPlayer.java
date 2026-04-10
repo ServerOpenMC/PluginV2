@@ -12,6 +12,7 @@ import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
+import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -93,7 +94,7 @@ public class DreamPlayer {
     public void scheduleTimeTask() {
         this.timeTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
 			if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
-			if (DreamManager.isPlayerInMilestoneDialog(player)) return;
+			if (DreamMilestoneDialog.isPlayerInMilestoneDialog(player)) return;
 			if (dreamTime <= 0) {
 				Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
 						Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))

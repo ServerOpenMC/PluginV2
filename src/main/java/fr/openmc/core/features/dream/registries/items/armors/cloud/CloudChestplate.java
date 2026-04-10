@@ -3,10 +3,10 @@ package fr.openmc.core.features.dream.registries.items.armors.cloud;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import lombok.NonNull;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class CloudChestplate extends DreamItem implements DreamEquipableItem {
     public CloudChestplate(String name) {
