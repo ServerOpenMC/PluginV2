@@ -3,6 +3,7 @@ package fr.openmc.core.registry.items.contents;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,10 +15,12 @@ import org.bukkit.util.Vector;
 
 public class Hammer extends CustomItem implements BlockBreakableItem {
 
-    private static final float MAX_HARDNESS = 41.0f;
+    public static final float MAX_HARDNESS = 41.0f;
 
     private final Material vanillaMaterial;
+    @Getter
     private final int radius;
+    @Getter
     private final int depth;
 
     public Hammer(String namespacedId, Material vanillaMaterial, int radius, int depth) {
@@ -51,6 +54,7 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
         int ox = origin.getX();
         int oy = origin.getY();
         int oz = origin.getZ();
+        int blockBroken = 0;
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = -radius; dy <= radius; dy++) {
@@ -59,20 +63,24 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
 
                     Vector offset = rotateOffset(dx, dy, dz, face);
-                    breakBlock(world, player, tool, ox + offset.getBlockX(), oy + offset.getBlockY(), oz + offset.getBlockZ(), targetType);
+                    boolean isBroken = breakBlock(world, player, tool, ox + offset.getBlockX(), oy + offset.getBlockY(), oz + offset.getBlockZ(), targetType);
+                    if (isBroken) blockBroken++;
                 }
             }
         }
+
+        UseHammerEvent event = new UseHammerEvent(origin, this, player, blockBroken);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
-    private void breakBlock(World world, Player player, ItemStack tool, int x, int y, int z, Material targetType) {
+    private boolean breakBlock(World world, Player player, ItemStack tool, int x, int y, int z, Material targetType) {
         Block block = world.getBlockAt(x, y, z);
 
-        if (block.getType() != targetType) return;
-        if (!isBreakable(block.getType())) return;
-        if (!ProtectionsManager.canInteract(player, block.getLocation())) return;
+        if (block.getType() != targetType) return false;
+        if (!isBreakable(block.getType())) return false;
+        if (!ProtectionsManager.canInteract(player, block.getLocation())) return false;
 
-        block.breakNaturally(tool);
+        return block.breakNaturally(tool);
     }
 
     private boolean isBreakable(Material material) {
