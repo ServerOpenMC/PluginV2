@@ -44,10 +44,11 @@ public class ContestCommand {
         }
 
         WeeklyEventPhase activePhase = contest.getActivePhase();
+        System.out.println(activePhase);
 
-        if (activePhase == ContestPhase.VOTE_CAMP.getPhase()) {
+        if (activePhase.equals(ContestPhase.VOTE_CAMP.getPhase())) {
             new VoteMenu(player).open();
-        } else if (activePhase == ContestPhase.TRADE_PHASE.getPhase()) {
+        } else if (activePhase.equals(ContestPhase.TRADE_PHASE.getPhase())) {
             if (ContestManager.dataPlayer.get(player.getUniqueId()) != null) {
                 new ContributionMenu(player).open();
             } else {

@@ -17,6 +17,7 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -78,7 +79,8 @@ public class MascotsManager extends Feature implements DatabaseFeature {
                 new MascotsPotionListener()
         );
         if (!OMCPlugin.isUnitTestVersion()) {
-            new MascotsSoundListener();
+            if (ProtocolLibHook.isEnable())
+                new MascotsSoundListener();
             OMCPlugin.registerEvents(
                     new MascotsProtectionsListener()
             );

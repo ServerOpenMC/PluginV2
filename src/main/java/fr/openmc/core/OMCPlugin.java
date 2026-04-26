@@ -138,7 +138,7 @@ public class OMCPlugin extends JavaPlugin {
         /* HOOKS */
         REGISTRY_HOOKS.forEach(Hooks::startInit);
 
-        if (!OMCPlugin.isUnitTestVersion())
+        if (!OMCPlugin.isUnitTestVersion() && ProtocolLibHook.isEnable())
             PacketMenuLib.init(this);
 
         logLoadMessage();
