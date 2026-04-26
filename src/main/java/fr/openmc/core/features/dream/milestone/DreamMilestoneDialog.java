@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.milestone;
-
-import fr.openmc.core.utils.dialog.ButtonType;
+import fr.openmc.api.input.dialog.ButtonType;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
