@@ -16,6 +16,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class WorldGuardHook extends Hooks {
+    public static boolean isEnable() {
+        return Hooks.isEnabled(WorldGuardHook.class);
+    }
+
     @Override
     protected String getPluginName() {
         return "WorldGuard";

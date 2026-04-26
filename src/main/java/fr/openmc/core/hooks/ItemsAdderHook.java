@@ -1,11 +1,11 @@
 package fr.openmc.core.hooks;
 
 import fr.openmc.core.bootstrap.hooks.Hooks;
-import lombok.Getter;
 
 public class ItemsAdderHook extends Hooks {
-    @Getter
-    private static boolean enable;
+    public static boolean isEnable() {
+        return Hooks.isEnabled(ItemsAdderHook.class);
+    }
 
     @Override
     protected String getPluginName() {

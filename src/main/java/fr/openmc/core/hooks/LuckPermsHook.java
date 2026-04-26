@@ -19,6 +19,10 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     @Getter
     private static LuckPerms api;
 
+    public static boolean isEnable() {
+        return Hooks.isEnabled(LuckPermsHook.class);
+    }
+
     @Override
     protected String getPluginName() {
         return "LuckPerms";
