@@ -2,12 +2,12 @@ package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.me
 
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -109,7 +109,7 @@ public class ContributionMenu extends Menu {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
-            if (!ItemsAdderHook.isHasItemAdder()) {
+            if (!ItemsAdderHook.isEnable()) {
                 MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloquée. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }

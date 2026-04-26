@@ -5,7 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
@@ -14,6 +13,7 @@ import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import lombok.Getter;
 
 import javax.annotation.Nullable;
@@ -233,7 +233,7 @@ public class EconomyManager extends Feature implements DatabaseFeature {
     }
 
     public static String getEconomyIcon() {
-        if (ItemsAdderHook.isHasItemAdder()) {
+        if (ItemsAdderHook.isEnable()) {
             return FontImageWrapper.replaceFontImages("§f:aywenito:");
         } else {
             return "Ⓐ";

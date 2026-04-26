@@ -40,7 +40,7 @@ public class DatabaseManager {
                             .filter(f -> f instanceof DatabaseFeature)
                     .forEach(f -> {
                         try {
-                            ((DatabaseFeature) f).initDB(connectionSource);
+                            f.startDB(connectionSource);
                         } catch (SQLException e) {
                             OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
                             throw new RuntimeException(e);

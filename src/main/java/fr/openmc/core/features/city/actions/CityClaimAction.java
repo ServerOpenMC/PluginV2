@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

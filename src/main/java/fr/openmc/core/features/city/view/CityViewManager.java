@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.view;
 
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

@@ -2,11 +2,11 @@ package fr.openmc.core;
 
 import com.j256.ormlite.logger.LoggerFactory;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.hooks.*;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.hooks.Hooks;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.bootstrap.integration.ErrorReporter;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
@@ -41,6 +41,7 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.hooks.*;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
@@ -108,6 +109,15 @@ public class OMCPlugin extends JavaPlugin {
             new HomeIconCacheManager()
     ));
 
+    // ** Registry of OMC Plugin Hooks
+    public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
+            new LuckPermsHook(),
+            new PapiHook(),
+            new WorldGuardHook(),
+            new ItemsAdderHook(),
+            new FancyNpcsHook()
+    ));
+
     @Override
     public void onLoad() {
         LoggerFactory.setLogBackendFactory(DatabaseManager.ShutUpOrmLite::new);
@@ -124,11 +134,9 @@ public class OMCPlugin extends JavaPlugin {
         /* EXTERNALS */
         MenuLib.init(this);
 
-        LuckPermsHook.init();
-        PapiHook.init();
-        WorldGuardHook.init();
-        ItemsAdderHook.init();
-        FancyNpcsHook.init();
+        /* HOOKS */
+        REGISTRY_HOOKS.forEach(Hooks::startInit);
+
         if (!OMCPlugin.isUnitTestVersion())
             PacketMenuLib.init(this);
 
@@ -170,7 +178,7 @@ public class OMCPlugin extends JavaPlugin {
         // todo: sera supprimé dans https://github.com/ServerOpenMC/PluginV2/pull/1168
         DreamDimensionManager.postInit();
 
-        if (WorldGuardHook.isHasWorldGuard()) {
+        if (WorldGuardHook.isEnable()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
         }
     }

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public abstract class Feature {
     protected boolean initialize = false;
 
-    public void startInit() {
+    public final void startInit() {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
             OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
             return;

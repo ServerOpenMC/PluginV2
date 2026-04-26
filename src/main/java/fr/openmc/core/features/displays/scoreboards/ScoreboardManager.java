@@ -1,6 +1,5 @@
 package fr.openmc.core.features.displays.scoreboards;
 
-import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.api.scoreboard.repository.impl.ObjectCacheRepositoryImpl;
@@ -11,6 +10,7 @@ import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
 import fr.openmc.core.features.dream.displays.DreamScoreboard;
+import fr.openmc.core.hooks.LuckPermsHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -42,7 +42,7 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
                 20L // every second
         );
 
-        if (LuckPermsHook.isHasLuckPerms())
+        if (LuckPermsHook.isEnable())
             globalTeamManager = new GlobalTeamManager(boardCache);
     }
 
@@ -80,7 +80,7 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
             active.update(player, board);
             playerUpdates.put(active, now);
 
-            if (LuckPermsHook.isHasLuckPerms() && globalTeamManager != null) {
+            if (LuckPermsHook.isEnable() && globalTeamManager != null) {
                 globalTeamManager.updatePlayerTeam(player);
             }
         });
@@ -101,7 +101,7 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
             }
         }
 
-        if (LuckPermsHook.isHasLuckPerms() && globalTeamManager != null) {
+        if (LuckPermsHook.isEnable() && globalTeamManager != null) {
             globalTeamManager.updatePlayerTeam(player);
         }
     }

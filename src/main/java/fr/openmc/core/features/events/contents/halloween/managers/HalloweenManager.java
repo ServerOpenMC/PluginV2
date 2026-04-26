@@ -7,7 +7,6 @@ import com.j256.ormlite.table.TableUtils;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
-import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
@@ -16,6 +15,7 @@ import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCL
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DamageResistant;
@@ -42,7 +42,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature {
     private static Dao<HalloweenData, String> halloweenDataDao;
 
     public void init() {
-        if (FancyNpcsHook.isHasFancyNpc())
+        if (FancyNpcsHook.isEnable())
             Bukkit.getPluginManager().registerEvents(new HalloweenNPCListener(), OMCPlugin.getInstance());
 
         halloweenData = loadAllHalloweenDatas();

@@ -4,8 +4,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.api.hooks.ItemsAdderHook;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -25,6 +23,8 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.mod
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -81,7 +81,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
     @Override
     public void init() {
         // ** LISTENERS **
-        if (ItemsAdderHook.isHasItemAdder()) {
+        if (ItemsAdderHook.isEnable()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
@@ -100,7 +100,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         loadContestPlayerData();
 
         // ** PARTICLE REGION **
-        if (WorldGuardHook.isHasWorldGuard()) {
+        if (WorldGuardHook.isEnable()) {
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
     }

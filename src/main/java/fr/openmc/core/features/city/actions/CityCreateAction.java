@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -11,6 +10,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
