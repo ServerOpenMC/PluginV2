@@ -162,9 +162,14 @@ public class OMCPlugin extends JavaPlugin {
         REGISTRY_FEATURE.stream()
                 .filter(f -> !(f instanceof LoadAfterItemsAdder))
                 .forEachOrdered(Feature::startInit);
+
+        // * Si ItemsAdder est pas présent, alors on charge les dernieres features maintenant
+        if (!ItemsAdderHook.isEnable()) {
+            loadAfterItemsAdder();
+        }
     }
 
-    public void loadWithItemsAdder() {
+    public void loadAfterItemsAdder() {
         // ** REGISTRIES **
         CustomItemRegistry.init();
         CustomEnchantmentRegistry.postInit();
