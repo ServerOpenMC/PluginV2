@@ -11,7 +11,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class CityMilestoneCommands {
     @Command({"city milestone", "ville milestone"})
     @CommandPermission("omc.commands.city.milestone")
-    @Description("Ouvre le menu des maires")
+    @Description("Ouvre le menu du milestone de ville")
     void milestone(Player sender) {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
 

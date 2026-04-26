@@ -6,6 +6,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class SoulBoots extends DreamItem implements DreamEquipableItem {
     public SoulBoots(String name) {
@@ -38,7 +39,7 @@ public class SoulBoots extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_BOOTS);
 
         item.getItemMeta().itemName(Component.text("Bottes des Âmes"));

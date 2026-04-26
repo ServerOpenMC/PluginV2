@@ -74,7 +74,7 @@ public class DreamScoreboard extends BaseScoreboard {
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
                     .append(text(textToSmall("biome:"), NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(dreamBiome.getName())
+                    .append(Component.text(textToSmall(dreamBiome.getName())))
             );
         }
 
