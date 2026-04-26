@@ -475,6 +475,14 @@ public class ItemUtils {
         NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
         return meta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
     }
+    
+    public static ItemStack getTexturedItem(Material replacement) {
+        if (replacement == null) return null;
+        ItemStack item = new ItemStack(Material.PAPER);
+        item.editMeta(meta -> meta.setItemModel(replacement.getKey()));
+        return item;
+    }
+    
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
      * Deux items sont considérés similaires s'ils ont le même type

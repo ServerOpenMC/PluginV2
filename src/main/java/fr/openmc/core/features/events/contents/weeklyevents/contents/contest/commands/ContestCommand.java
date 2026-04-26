@@ -98,6 +98,7 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
+    @CommandPermission("omc.admin.commands.contest.settrade")
     public void setTrade(
             Player player,
             @Named("trade") @SuggestWith(TradeContestAutoComplete.class) String trade,

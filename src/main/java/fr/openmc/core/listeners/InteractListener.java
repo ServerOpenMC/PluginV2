@@ -4,7 +4,6 @@ import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.items.options.UsableItem;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -14,10 +13,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class InteractListener implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST)
     void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.useInteractedBlock() == Event.Result.DENY) return;
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomItem item = CustomItemRegistry.getByItemStack(itemInHand);

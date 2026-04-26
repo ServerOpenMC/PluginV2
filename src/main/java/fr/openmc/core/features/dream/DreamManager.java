@@ -28,6 +28,8 @@ import fr.openmc.core.features.dream.listeners.others.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.others.PlayerEatSomnifere;
 import fr.openmc.core.features.dream.listeners.others.SingularityCraftListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
+import fr.openmc.core.features.dream.listeners.strctures.PlayerEnterStructureListener;
+import fr.openmc.core.features.dream.listeners.strctures.PlayerExitStructureListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -61,7 +63,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
     private static final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
     public static final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
-
+    
     private static Dao<DBDreamPlayer, String> dreamPlayerDao;
     private static Dao<DBPlayerSave, String> savePlayerDao;
 
@@ -84,7 +86,9 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new CloudStructureDispenserListener(),
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
-                new SingularityCraftListener()
+                new SingularityCraftListener(),
+		        new PlayerEnterStructureListener(),
+		        new PlayerExitStructureListener()
         );
 
         // ** MANAGERS **
@@ -326,7 +330,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 )
         );
     }
-
+    
     public static void setMaxTime(Player player, long maxTime) {
         DBDreamPlayer cache = DreamManager.getCacheDreamPlayer(player);
 

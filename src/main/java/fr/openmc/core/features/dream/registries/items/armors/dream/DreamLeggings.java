@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
+import org.jspecify.annotations.NonNull;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -44,7 +44,7 @@ public class DreamLeggings extends DreamItem implements DreamEquipableItem, Equi
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NETHERITE_LEGGINGS);
 
         item.getItemMeta().itemName(Component.text("Jambières Oniriques"));

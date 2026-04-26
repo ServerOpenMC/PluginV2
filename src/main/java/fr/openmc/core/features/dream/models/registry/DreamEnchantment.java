@@ -16,13 +16,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class DreamEnchantment extends CustomEnchantment {
     public DreamItem getEnchantedBookItem(int level) {
         return new DreamItem(getKey().asMinimalString() + level) {
             @Override
-            public ItemStack getVanilla() {
+            public @NonNull ItemStack getVanilla() {
                 return getEnchantedBook(level);
             }
 
