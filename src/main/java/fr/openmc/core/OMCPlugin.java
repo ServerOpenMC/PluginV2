@@ -111,6 +111,7 @@ public class OMCPlugin extends JavaPlugin {
 
     // ** Registry of OMC Plugin Hooks
     public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
+            new ProtocolLibHook(),
             new LuckPermsHook(),
             new PapiHook(),
             new WorldGuardHook(),

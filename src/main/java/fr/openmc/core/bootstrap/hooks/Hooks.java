@@ -24,8 +24,4 @@ public abstract class Hooks {
 
     protected abstract String getPluginName();
     protected abstract void init();
-
-    public boolean isEnabled() {
-        return OMCPlugin.getInstance().getServer().getPluginManager().isPluginEnabled(pluginName);
-    }
 }

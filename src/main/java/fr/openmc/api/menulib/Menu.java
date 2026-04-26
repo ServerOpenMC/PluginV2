@@ -3,6 +3,7 @@ package fr.openmc.api.menulib;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -252,6 +253,10 @@ public abstract class Menu implements InventoryHolder {
 		String title = (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()
 				? getTexture()
 				: getName();
+
+		if (!ItemsAdderHook.isEnable())
+			title = getName();
+
 		return Bukkit.createInventory(this, getInventorySize().getSize(), Component.text(title));
 	}
 

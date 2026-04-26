@@ -3,6 +3,7 @@ package fr.openmc.core.bootstrap.features;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 
 import java.sql.SQLException;
@@ -14,7 +15,11 @@ public abstract class Feature {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
             OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
             return;
+        } else if (this instanceof LoadIfEnable<?> loadIfEnable && !loadIfEnable.shouldLoad()) {
+            OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
+            return;
         }
+
         try {
             init();
             initialize = true;

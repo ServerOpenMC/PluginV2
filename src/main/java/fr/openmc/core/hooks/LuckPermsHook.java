@@ -54,7 +54,10 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
         if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
 
-        return FontImageWrapper.replaceFontImages(formattedPrefix);
+        if (ItemsAdderHook.isEnable()) {
+            return FontImageWrapper.replaceFontImages(formattedPrefix);
+        }
+        return formattedPrefix;
     }
 
     public static @NotNull Component getFormattedPAPIPrefix(Group group) {
@@ -64,7 +67,8 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
         if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
-        String finalPrefix = FontImageWrapper.replaceFontImages(formattedPrefix);
+
+        String finalPrefix = ItemsAdderHook.isEnable() ? FontImageWrapper.replaceFontImages(formattedPrefix) : formattedPrefix;
 
         return LegacyComponentSerializer.legacySection().deserialize(finalPrefix);
     }

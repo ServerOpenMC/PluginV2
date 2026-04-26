@@ -6,9 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -19,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 
-public class AnimationsManager extends Feature implements NotInUnitTest {
+public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfEnable<ItemsAdderHook> {
 
     @Override
     public void init() {
