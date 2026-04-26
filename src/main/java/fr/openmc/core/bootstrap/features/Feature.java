@@ -12,7 +12,7 @@ public abstract class Feature {
 
     public final void startInit() {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
-            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
+            OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
             return;
         }
         try {
@@ -21,7 +21,7 @@ public abstract class Feature {
             OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
         } catch (Exception e) {
             initialize = false;
-            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " non initialisée.");
+            OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée.");
             throw e;
         }
     }

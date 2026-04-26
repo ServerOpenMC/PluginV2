@@ -222,7 +222,7 @@ public class OMCPlugin extends JavaPlugin {
     }
 
     public void logErrorMessage(String message) {
-        this.getSLF4JLogger().info("\u001B[31m✔ {}\u001B[0m", message);
+        this.getSLF4JLogger().info("\u001B[31m✘ {}\u001B[0m", message);
     }
 
     private void logLoadMessage() {
