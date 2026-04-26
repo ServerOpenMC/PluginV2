@@ -4,6 +4,7 @@ import fr.openmc.api.cooldown.CooldownInterceptor;
 import fr.openmc.core.commands.admin.freeze.FreezeCommand;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
+import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
@@ -63,7 +64,8 @@ public class CommandsManager {
                 new CubeCommands(),
                 new HalloweenCommands(),
                 new DebugAnimationCommand(),
-                new EventCommand()
+                new EventCommand(),
+                new CustomItemCommand()
         );
     }
 }
