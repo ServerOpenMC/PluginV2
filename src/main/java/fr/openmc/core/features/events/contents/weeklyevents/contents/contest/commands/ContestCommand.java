@@ -44,7 +44,6 @@ public class ContestCommand {
         }
 
         WeeklyEventPhase activePhase = contest.getActivePhase();
-        System.out.println(activePhase);
 
         if (activePhase.equals(ContestPhase.VOTE_CAMP.getPhase())) {
             new VoteMenu(player).open();
