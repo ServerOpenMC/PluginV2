@@ -2,6 +2,7 @@ package fr.openmc.api.menulib.utils;
 
 import fr.openmc.api.menulib.Menu;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -99,9 +100,45 @@ public class MenuUtils {
 	 *
 	 * @return A list of integers representing the inventory item slots
 	 */
-	public static List<Integer> getInventoryItemSlots() {
-		return IntStream.rangeClosed(54, 89)
-				.boxed()
-				.toList();
+	public static List<Integer> getInventoryItemSlots(Menu menu) {
+
+		switch (menu.getInventorySize()) {
+			case SMALLEST -> {
+				return IntStream.rangeClosed(9, 44)
+						.boxed()
+						.toList();
+			}
+			case SMALL -> {
+				return IntStream.rangeClosed(18, 53)
+						.boxed()
+						.toList();
+			}
+
+			case NORMAL -> {
+				return IntStream.rangeClosed(27, 62)
+						.boxed()
+						.toList();
+			}
+
+			case LARGE -> {
+				return IntStream.rangeClosed(36, 71)
+						.boxed()
+						.toList();
+			}
+
+			case LARGER -> {
+				return IntStream.rangeClosed(45, 80)
+						.boxed()
+						.toList();
+			}
+
+			case LARGEST -> {
+				return IntStream.rangeClosed(54, 89)
+						.boxed()
+						.toList();
+			}
+
+			default -> throw new IllegalStateException("Unexpected value: " + menu.getInventorySize());
+		}
 	}
 }
