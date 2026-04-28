@@ -8,9 +8,16 @@ import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 
 import java.sql.SQLException;
 
+/**
+ * Base des features OpenMC.
+ * Gere le cycle d'initialisation, l'initialisation DB optionnelle et la sauvegarde.
+ */
 public abstract class Feature {
     protected boolean initialize = false;
 
+    /**
+     * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)</Hook>
+     */
     public final void startInit() {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
             OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
@@ -31,6 +38,9 @@ public abstract class Feature {
         }
     }
 
+    /**
+     * Delegue l'initialisation base de donnees si la feature la supporte.
+     */
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         if (this instanceof DatabaseFeature dbF) {
@@ -38,16 +48,29 @@ public abstract class Feature {
         }
     }
 
+    /**
+     * Sauvegarde la feature si elle a ete initialisee.
+     */
     public final void startSave() {
         if (!initialize) return;
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         save();
     }
 
+    /**
+     * Indique si la feature a ete initialisee avec succes.
+     */
     public final boolean isInitialized() {
         return initialize;
     }
 
+    /**
+     * Initialise la feature.
+     */
     protected abstract void init();
+
+    /**
+     * Sauvegarde l'etat de la feature.
+     */
     protected abstract void save();
 }

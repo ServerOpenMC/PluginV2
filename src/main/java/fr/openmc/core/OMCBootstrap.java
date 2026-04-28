@@ -14,9 +14,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+/**
+ * Bootstrap Paper du plugin OpenMC.
+ * Enregistre le datapack et les registres avant la creation du plugin.
+ */
 @SuppressWarnings("UnstableApiUsage")
 public class OMCBootstrap implements PluginBootstrap {
 
+    /**
+     * Configure les handlers de cycle de vie necessaires avant l'activation du plugin.
+     */
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
         // ** LOAD DATAPACK **
@@ -39,6 +46,9 @@ public class OMCBootstrap implements PluginBootstrap {
         );
     }
 
+    /**
+     * Construit l'instance principale du plugin.
+     */
     @Override
     public @NotNull JavaPlugin createPlugin(@NotNull PluginProviderContext context) {
         return new OMCPlugin();

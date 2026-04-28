@@ -17,7 +17,13 @@ import org.bukkit.Server;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Centralise l'enregistrement des listeners Bukkit du plugin.
+ */
 public class ListenersManager {
+    /**
+     * Enregistre les listeners de base, puis ceux conditionnels (tests, hooks).
+     */
     public static void init() {
         registerEvents(
                 new HappyGhastListener(),
@@ -56,6 +62,9 @@ public class ListenersManager {
         }
     }
 
+    /**
+     * Enregistre une liste de listeners sur le plugin courant.
+     */
     private static void registerEvents(Listener... args) {
         Server server = Bukkit.getServer();
         JavaPlugin plugin = OMCPlugin.getInstance();

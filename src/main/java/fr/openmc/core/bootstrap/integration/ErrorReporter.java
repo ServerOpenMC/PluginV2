@@ -16,6 +16,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Intercepte les erreurs serveur et envoie un rapport via webhook.
+ */
 public class ErrorReporter {
     private final PrintStream originalErr;
     private static final Set<String> reportedErrors = new HashSet<>();
@@ -23,6 +26,9 @@ public class ErrorReporter {
     private static List<String> notifIds;
     private static String webhookUrl;
 
+    /**
+     * Initialise l'interception des erreurs.
+     */
     public ErrorReporter() {
         originalErr = System.err;
 

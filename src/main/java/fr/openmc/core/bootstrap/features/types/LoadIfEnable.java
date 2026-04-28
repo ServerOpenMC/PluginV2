@@ -7,9 +7,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Charge la feature si un hook est activé
+ * Charge la feature si un hook est active.
+ * Le hook est determine par le parametre generique de l'interface.
  */
 public interface LoadIfEnable <T extends Hooks> {
+    /**
+     * Indique si la feature doit etre chargee selon l'etat du hook cible.
+     */
     default boolean shouldLoad() {
         Class<? extends Hooks> hookClass = resolveHookClass();
         if (hookClass == null) {
@@ -31,6 +35,9 @@ public interface LoadIfEnable <T extends Hooks> {
         }
     }
 
+    /**
+     * Resolue la classe du hook a partir du parametre generique.
+     */
     private Class<? extends Hooks> resolveHookClass() {
         for (Type type : getClass().getGenericInterfaces()) {
             if (type instanceof ParameterizedType parameterizedType) {

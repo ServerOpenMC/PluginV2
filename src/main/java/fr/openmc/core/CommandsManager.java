@@ -26,10 +26,17 @@ import lombok.Getter;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
 
+/**
+ * Enregistrement des commandes globales du plugin.
+ * Initialise Lamp et ajoute l'ensemble des commandes exposees.
+ */
 public class CommandsManager {
     @Getter
     static Lamp handler;
 
+    /**
+     * Initialise le handler de commandes et enregistre les commandes.
+     */
     public static void init() {
         handler = BukkitLamp.builder(OMCPlugin.getInstance())
                 .commandCondition(new CooldownInterceptor())
@@ -38,6 +45,9 @@ public class CommandsManager {
         registerCommands();
     }
 
+    /**
+     * Enregistre toutes les commandes du plugin sur le handler.
+     */
     private static void registerCommands() {
         handler.register(
                 new Socials(),

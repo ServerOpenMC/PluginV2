@@ -12,10 +12,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.nio.channels.ConnectionPendingException;
 import java.sql.SQLException;
 
+/**
+ * Gere la connexion base de donnees et l'initialisation des features persistantes.
+ */
 public class DatabaseManager {
     @Getter
     private static ConnectionSource connectionSource;
 
+    /**
+     * Initialise le driver, la connexion pool et les features de type DB.
+     */
     public static void init() {
         try {
             if (OMCPlugin.isUnitTestVersion()) {
@@ -59,7 +65,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Désactive les loggers venant de OrmLite (création de table ect...)
+     * Filtre les logs OrmLite trop verbeux lors du demarrage.
      */
     public static class ShutUpOrmLite extends LocalLogBackend {
         private final String classLabel;
