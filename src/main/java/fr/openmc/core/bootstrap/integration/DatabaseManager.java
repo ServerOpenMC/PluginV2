@@ -21,6 +21,8 @@ public class DatabaseManager {
 
     /**
      * Initialise le driver, la connexion pool et les features de type DB.
+     *
+     * @throws RuntimeException Si le driver ou la connexion DB échoue
      */
     public static void init() {
         try {
@@ -70,16 +72,33 @@ public class DatabaseManager {
     public static class ShutUpOrmLite extends LocalLogBackend {
         private final String classLabel;
 
+        /**
+         * Crée un filtre de logs OrmLite pour une classe donnée.
+         *
+         * @param classLabel Label de classe ORMLite
+         */
         public ShutUpOrmLite(String classLabel) {
             super(classLabel);
             this.classLabel = classLabel;
         }
 
+        /**
+         * Indique si un niveau est autorisé.
+         *
+         * @param level Niveau ORMLite
+         * @return True si le niveau est autorisé
+         */
         @Override
         public boolean isLevelEnabled(Level level) {
             return Level.INFO.isEnabled(level);
         }
 
+        /**
+         * Log un message ORMLite si non filtré.
+         *
+         * @param level Niveau du log
+         * @param msg Message
+         */
         @Override
         public void log(Level level, String msg) {
             if (classLabel.contains("com.j256.ormlite.table.TableUtils") || msg.contains("DaoManager created dao for class class"))
@@ -88,6 +107,13 @@ public class DatabaseManager {
             super.log(level, msg);
         }
 
+        /**
+         * Log un message ORMLite avec exception si non filtré.
+         *
+         * @param level Niveau du log
+         * @param msg Message
+         * @param throwable Exception associée
+         */
         @Override
         public void log(Level level, String msg, Throwable throwable) {
             if (classLabel.contains("com.j256.ormlite.table.TableUtils") || msg.contains("DaoManager created dao for class class"))

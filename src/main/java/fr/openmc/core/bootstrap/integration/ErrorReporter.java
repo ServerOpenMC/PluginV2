@@ -126,6 +126,11 @@ public class ErrorReporter {
         });
     }
 
+    /**
+     * Traite une erreur capturée et envoie un rapport si necessaire.
+     *
+     * @param currentError Lignes de l'erreur capturée
+     */
     private void handleException(List<String> currentError) {
         if (handlingError.get()) return;
         handlingError.set(true);

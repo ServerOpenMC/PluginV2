@@ -33,6 +33,9 @@ public abstract class Hooks {
 
     /**
      * Retourne l'etat d'activation en cache pour un hook.
+     *
+     * @param hookClass Type de hook
+     * @return True si le hook est actif
      */
     public static boolean isEnabled(Class<? extends Hooks> hookClass) {
         return ENABLED.getOrDefault(hookClass, false);
@@ -40,6 +43,8 @@ public abstract class Hooks {
 
     /**
      * Nom du plugin externe a verifier.
+     *
+     * @return Nom du plugin cible
      */
     protected abstract String getPluginName();
 

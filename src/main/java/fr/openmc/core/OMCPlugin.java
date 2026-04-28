@@ -63,6 +63,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Plugin principal OpenMC.
+ * Gère le cycle de vie, les features et les hooks globaux.
+ */
 public class OMCPlugin extends JavaPlugin {
     @Getter
     static OMCPlugin instance;
@@ -119,11 +123,17 @@ public class OMCPlugin extends JavaPlugin {
             new FancyNpcsHook()
     ));
 
+    /**
+     * Désactive les logs de ORMLite venant de TableUtils
+     */
     @Override
     public void onLoad() {
         LoggerFactory.setLogBackendFactory(DatabaseManager.ShutUpOrmLite::new);
     }
 
+    /**
+     * Initialise la configuration, les hooks, les managers et les features.
+     */
     @Override
     public void onEnable() {
         instance = this;
@@ -170,6 +180,9 @@ public class OMCPlugin extends JavaPlugin {
         }
     }
 
+    /**
+     * Charge les registres et features qui doivent être lancé apres ItemsAdder
+     */
     public void loadAfterItemsAdder() {
         // ** REGISTRIES **
         CustomItemRegistry.init();
@@ -189,6 +202,9 @@ public class OMCPlugin extends JavaPlugin {
         }
     }
 
+    /**
+     * Sauvegarde l'état des features
+     */
     @Override
     public void onDisable() {
         // ** SAVE **
@@ -207,25 +223,48 @@ public class OMCPlugin extends JavaPlugin {
                 Bukkit.shutdown();
     }
 
+    /**
+     * Enregistre une liste de listeners Bukkit sur l'instance du plugin.
+     *
+     * @param listeners Listeners à enregistrer
+     */
     public static void registerEvents(Listener... listeners) {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }
     }
 
+    /**
+     * Indique si le plugin tourne dans les tests unitaires.
+     *
+     * @return True si l'instance serveur correspond à MockBukkit
+     */
     public static boolean isUnitTestVersion() {
         return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
     }
 
     /* LOG MESSAGE */
+    /**
+     * Log un message de succès formate.
+     *
+     * @param message Message à loguer
+     */
     public void logSuccessMessage(String message) {
         this.getSLF4JLogger().info("\u001B[32m✔ {}\u001B[0m", message);
     }
 
+    /**
+     * Log un message d'erreur formate.
+     *
+     * @param message Message à loguer
+     */
     public void logErrorMessage(String message) {
         this.getSLF4JLogger().info("\u001B[31m✘ {}\u001B[0m", message);
     }
 
+    /**
+     * Affiche la bannière de demarrage et l'état des dependances.
+     */
     private void logLoadMessage() {
         Logger log = this.getSLF4JLogger();
 
@@ -250,6 +289,12 @@ public class OMCPlugin extends JavaPlugin {
         }
     }
 
+    /**
+     * Log l'état d'une dépendance (requise ou optionnelle).
+     *
+     * @param name Nom du plugin dépendance
+     * @param optional True si la dépendance est optionnelle
+     */
     private void logPluginStatus(String name, boolean optional) {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
         boolean enabled = plugin != null && plugin.isEnabled();

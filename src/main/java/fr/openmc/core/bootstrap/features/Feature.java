@@ -40,6 +40,9 @@ public abstract class Feature {
 
     /**
      * Delegue l'initialisation base de donnees si la feature la supporte.
+     *
+     * @param connectionSource Source de connexion ORMLite
+     * @throws SQLException Si l'initialisation DB échoue
      */
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
@@ -59,6 +62,8 @@ public abstract class Feature {
 
     /**
      * Indique si la feature a ete initialisee avec succes.
+     *
+     * @return True si l'initialisation a reussi
      */
     public final boolean isInitialized() {
         return initialize;
@@ -70,7 +75,7 @@ public abstract class Feature {
     protected abstract void init();
 
     /**
-     * Sauvegarde l'etat de la feature.
+     * Sauvegarde l'état de la feature.
      */
     protected abstract void save();
 }

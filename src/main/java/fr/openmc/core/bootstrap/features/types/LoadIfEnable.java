@@ -13,6 +13,8 @@ import java.lang.reflect.Type;
 public interface LoadIfEnable <T extends Hooks> {
     /**
      * Indique si la feature doit etre chargee selon l'etat du hook cible.
+     *
+     * @return True si le hook est actif et la feature doit etre chargée
      */
     default boolean shouldLoad() {
         Class<? extends Hooks> hookClass = resolveHookClass();
@@ -37,6 +39,8 @@ public interface LoadIfEnable <T extends Hooks> {
 
     /**
      * Resolue la classe du hook a partir du parametre generique.
+     *
+     * @return Classe du hook cible, ou null si non resolu
      */
     private Class<? extends Hooks> resolveHookClass() {
         for (Type type : getClass().getGenericInterfaces()) {

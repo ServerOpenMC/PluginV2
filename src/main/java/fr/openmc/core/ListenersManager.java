@@ -64,6 +64,8 @@ public class ListenersManager {
 
     /**
      * Enregistre une liste de listeners sur le plugin courant.
+     *
+     * @param args Listeners a enregistrer
      */
     private static void registerEvents(Listener... args) {
         Server server = Bukkit.getServer();

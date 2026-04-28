@@ -10,6 +10,9 @@ import java.sql.SQLException;
 public interface DatabaseFeature {
     /**
      * Initialise les structures et acces DB de la feature.
+     *
+     * @param connectionSource Source de connexion ORMLite
+     * @throws SQLException Si l'initialisation DB échoue
      */
     void initDB(ConnectionSource connectionSource) throws SQLException;
 }

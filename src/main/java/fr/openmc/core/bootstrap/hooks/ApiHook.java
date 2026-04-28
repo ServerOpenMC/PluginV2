@@ -8,11 +8,15 @@ import fr.openmc.core.OMCPlugin;
 public interface ApiHook<T> {
     /**
      * Retourne la classe du service a recuperer via le ServicesManager.
+     *
+     * @return Classe du service exposé
      */
     Class<T> apiClass();
 
     /**
      * Charge le service expose par le plugin externe, ou null si indisponible.
+     *
+     * @return Instance du service, ou null si non disponible
      */
     default T api() {
         return OMCPlugin.getInstance()
