@@ -16,7 +16,7 @@ public abstract class Feature {
     protected boolean initialize = false;
 
     /**
-     * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)</Hook>
+     * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)
      */
     public final void startInit() {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
