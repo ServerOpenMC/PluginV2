@@ -3,9 +3,6 @@ package fr.openmc.core.features.displays.scoreboards.sb;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
-import fr.openmc.api.hooks.FancyNpcsHook;
-import fr.openmc.api.hooks.LuckPermsHook;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -17,7 +14,10 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Con
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
-import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.hooks.LuckPermsHook;
+import fr.openmc.core.hooks.WorldGuardHook;
+import fr.openmc.core.utils.text.DateUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -29,7 +29,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 import static net.kyori.adventure.text.Component.*;
 
 public class MainScoreboard extends BaseScoreboard {
@@ -67,7 +67,7 @@ public class MainScoreboard extends BaseScoreboard {
     }
 
     public static List<Component> getDefaultLines(Player player) {
-        Component rank = LuckPermsHook.isHasLuckPerms()
+        Component rank = LuckPermsHook.isEnable()
                 ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
                 : Component.text(textToSmall("aucun")).color(TextColor.color(0xFF1FCC));
 
@@ -107,7 +107,7 @@ public class MainScoreboard extends BaseScoreboard {
                 .append(text(textToSmall(location)).color(TextColor.color(0xFF06DC)))
         );
 
-        if (FancyNpcsHook.isHasFancyNpc()) {
+        if (FancyNpcsHook.isEnable()) {
             NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
             Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
             if (halloweenNPC != null) {

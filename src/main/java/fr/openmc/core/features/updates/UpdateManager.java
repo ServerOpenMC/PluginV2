@@ -1,6 +1,7 @@
 package fr.openmc.core.features.updates;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -8,11 +9,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class UpdateManager {
+public class UpdateManager extends Feature {
     @Getter
     static Component message;
 
-    public static void init() {
+    @Override
+    public void init() {
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
@@ -30,6 +32,11 @@ public class UpdateManager {
                 sendUpdateBroadcast();
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0, period);
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     public static void sendUpdateMessage(Player player) {

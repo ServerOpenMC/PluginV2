@@ -5,7 +5,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

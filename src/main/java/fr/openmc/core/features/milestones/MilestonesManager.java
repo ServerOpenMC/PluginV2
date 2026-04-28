@@ -6,6 +6,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
 import fr.openmc.core.features.milestones.tutorial.listeners.TutorialBossBarEvent;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -15,12 +18,13 @@ import org.bukkit.event.Listener;
 import java.sql.SQLException;
 import java.util.*;
 
-public class MilestonesManager {
+public class MilestonesManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
     private static final Set<Milestone> milestones = new HashSet<>();
 
     private static Dao<MilestoneModel, String> millestoneDao;
 
-    public static void init() {
+    @Override
+    public void init() {
 		Arrays.stream(MilestoneType.values()).toList().forEach(milestoneType -> registerMilestone(milestoneType.getMilestone()));
 	    
 	    loadMilestonesData();
@@ -34,12 +38,18 @@ public class MilestonesManager {
         );
     }
 
+    @Override
+    public void save() {
+        MilestonesManager.saveMilestonesData();
+    }
+
     /**
      * Initialize the database for milestones.
      *
      * @param connectionSource the connection source to the database
      */
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, MilestoneModel.class);
         millestoneDao = DaoManager.createDao(connectionSource, MilestoneModel.class);
     }

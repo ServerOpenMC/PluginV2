@@ -7,6 +7,8 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
@@ -15,10 +17,11 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.hooks.ProtocolLibHook;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -40,7 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class MascotsManager {
+public class MascotsManager extends Feature implements DatabaseFeature {
     public static final List<UUID> movingMascots = new ArrayList<>();
     public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
@@ -49,7 +52,8 @@ public class MascotsManager {
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
-    public static void init() {
+    @Override
+    public void init() {
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -75,7 +79,8 @@ public class MascotsManager {
                 new MascotsPotionListener()
         );
         if (!OMCPlugin.isUnitTestVersion()) {
-            new MascotsSoundListener();
+            if (ProtocolLibHook.isEnable())
+                new MascotsSoundListener();
             OMCPlugin.registerEvents(
                     new MascotsProtectionsListener()
             );
@@ -90,7 +95,13 @@ public class MascotsManager {
         }
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void save() {
+        MascotsManager.saveMascots();
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Mascot.class);
         mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
     }

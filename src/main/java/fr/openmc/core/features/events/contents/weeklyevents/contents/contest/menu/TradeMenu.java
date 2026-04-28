@@ -2,7 +2,6 @@ package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.me
 
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -10,11 +9,12 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -105,7 +105,7 @@ public class TradeMenu extends Menu {
 
             inventory.put(tradeSlots.get(i), new ItemBuilder(this, material, meta -> meta.lore(lore))
                     .setOnClick(event -> {
-                        if (!ItemsAdderHook.isHasItemAdder()) {
+                        if (!ItemsAdderHook.isEnable()) {
                             MessagesManager.sendMessage(player,
                                     Component.text("§cFonctionnalité bloquée. Contactez l'administration."),
                                     Prefix.CONTEST, MessageType.ERROR, true);

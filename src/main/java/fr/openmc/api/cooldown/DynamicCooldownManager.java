@@ -7,6 +7,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -20,7 +22,7 @@ import java.util.UUID;
 /**
  * Main class for managing cooldowns
  */
-public class DynamicCooldownManager {
+public class DynamicCooldownManager extends Feature implements DatabaseFeature {
     /**
      * Represents a single cooldown with duration and last use time
      */
@@ -82,8 +84,14 @@ public class DynamicCooldownManager {
         }
     }
 
-    public static void init() {
+    @Override
+    public void init() {
         loadCooldowns();
+    }
+
+    @Override
+    public void save() {
+        DynamicCooldownManager.saveCooldowns();
     }
 
     // Map structure: UUID -> (Group -> Cooldown)
@@ -91,7 +99,8 @@ public class DynamicCooldownManager {
 
     private static Dao<Cooldown, String> cooldownDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Cooldown.class);
         cooldownDao = DaoManager.createDao(connectionSource, Cooldown.class);
     }

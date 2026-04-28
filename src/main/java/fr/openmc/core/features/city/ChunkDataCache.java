@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city;
 
-import fr.openmc.core.utils.ChunkInfo;
-import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.world.chunk.ChunkInfo;
+import fr.openmc.core.utils.world.chunk.ChunkPos;
 
 import java.util.Map;
 

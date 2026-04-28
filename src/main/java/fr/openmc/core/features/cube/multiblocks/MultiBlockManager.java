@@ -1,6 +1,8 @@
 package fr.openmc.core.features.cube.multiblocks;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
@@ -20,14 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MultiBlockManager {
+public class MultiBlockManager extends Feature implements LoadAfterItemsAdder {
     private static final OMCPlugin plugin = OMCPlugin.getInstance();
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;
     private static File file = null;
 
-    public static void init() {
+    @Override
+    public void init() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "multiblocks.yml");
         if (!file.exists()) {
             plugin.saveResource("data/multiblocks.yml", false);
@@ -81,7 +84,12 @@ public class MultiBlockManager {
         }
     }
 
-    public static void save() {
+    @Override
+    public void save() {
+        saveConfig();
+    }
+
+    public static void saveConfig() {
         if (config == null) return;
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -117,7 +125,7 @@ public class MultiBlockManager {
     public static void register(MultiBlock multiBlock) {
         multiBlocks.add(multiBlock);
 
-        save();
+        saveConfig();
     }
     
     public static @Nullable MultiBlock getMultiblockAtDimension(String worldName) {

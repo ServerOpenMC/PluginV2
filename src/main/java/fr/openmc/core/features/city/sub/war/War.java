@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.war;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.utils.LocationUtils;
+import fr.openmc.core.utils.world.LocationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;

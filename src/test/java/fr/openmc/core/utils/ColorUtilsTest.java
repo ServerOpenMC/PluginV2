@@ -1,5 +1,6 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.utils.text.ColorUtils;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.junit.jupiter.api.Assertions;

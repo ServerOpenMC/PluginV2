@@ -1,9 +1,9 @@
 package fr.openmc.core.features.displays.scoreboards;
 
-import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.hooks.LuckPermsHook;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.group.GroupDataRecalculateEvent;
@@ -24,7 +24,7 @@ public class GlobalTeamManager {
     public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache) {
         this.boardCache = boardCache;
 
-        if (LuckPermsHook.isHasLuckPerms()) {
+        if (LuckPermsHook.isEnable()) {
             this.luckPerms = LuckPermsHook.getApi();
             initSortedGroups();
 

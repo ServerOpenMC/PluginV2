@@ -10,10 +10,10 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.serializer.BukkitSerializer;
+import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
-import static fr.openmc.core.utils.InputUtils.pluralize;
+import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
     private final Letter letter;

@@ -10,13 +10,20 @@ import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Centralise l'enregistrement des listeners Bukkit du plugin.
+ */
 public class ListenersManager {
+    /**
+     * Enregistre les listeners de base, puis ceux conditionnels (tests, hooks).
+     */
     public static void init() {
         registerEvents(
                 new HappyGhastListener(),
@@ -46,12 +53,20 @@ public class ListenersManager {
         if (!OMCPlugin.isUnitTestVersion()) {
             registerEvents(
                     new SpawnerExtractorListener(),
-                    new ItemsAddersListener(),
                     new TicketListener()
             );
         }
+
+        if (ItemsAdderHook.isEnable()) {
+            registerEvents(new ItemsAddersListener());
+        }
     }
 
+    /**
+     * Enregistre une liste de listeners sur le plugin courant.
+     *
+     * @param args Listeners a enregistrer
+     */
     private static void registerEvents(Listener... args) {
         Server server = Bukkit.getServer();
         JavaPlugin plugin = OMCPlugin.getInstance();

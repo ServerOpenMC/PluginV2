@@ -4,6 +4,7 @@ import fr.openmc.api.cooldown.CooldownInterceptor;
 import fr.openmc.core.commands.admin.freeze.FreezeCommand;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
+import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
@@ -25,10 +26,17 @@ import lombok.Getter;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
 
+/**
+ * Enregistrement des commandes globales du plugin.
+ * Initialise Lamp et ajoute l'ensemble des commandes exposees.
+ */
 public class CommandsManager {
     @Getter
     static Lamp handler;
 
+    /**
+     * Initialise le handler de commandes et enregistre les commandes.
+     */
     public static void init() {
         handler = BukkitLamp.builder(OMCPlugin.getInstance())
                 .commandCondition(new CooldownInterceptor())
@@ -37,6 +45,9 @@ public class CommandsManager {
         registerCommands();
     }
 
+    /**
+     * Enregistre toutes les commandes du plugin sur le handler.
+     */
     private static void registerCommands() {
         handler.register(
                 new Socials(),
@@ -63,7 +74,8 @@ public class CommandsManager {
                 new CubeCommands(),
                 new HalloweenCommands(),
                 new DebugAnimationCommand(),
-                new EventCommand()
+                new EventCommand(),
+                new CustomItemCommand()
         );
     }
 }

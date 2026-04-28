@@ -4,7 +4,6 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
-import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -13,10 +12,11 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
-import fr.openmc.core.utils.LocationUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.world.LocationUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -126,7 +126,7 @@ public class UrneListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
         Location urneLocation = event.getFurniture().getEntity().getLocation();
-        if (!FancyNpcsHook.isHasFancyNpc())
+        if (!FancyNpcsHook.isEnable())
             return;
 
         if (!"omc_blocks:urne".equals(event.getNamespacedID()))
@@ -165,7 +165,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!FancyNpcsHook.isHasFancyNpc()) return;
+        if (!FancyNpcsHook.isEnable()) return;
 
         NPCManager.removeNPCS(playerCity.getUniqueId());
     }

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
-import fr.openmc.api.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -31,7 +31,7 @@ public abstract class DreamItem extends CustomItem {
     private List<Component> getGeneratedLore() {
         ItemStack baseItem;
 
-        if (!ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null) {
+        if (!ItemsAdderHook.isEnable() || getItemsAdder() == null) {
             baseItem = getVanilla();
         } else {
             baseItem = getItemsAdder();
@@ -65,7 +65,7 @@ public abstract class DreamItem extends CustomItem {
     private List<Component> getGeneratedLoreTransferable() {
         ItemStack baseItem;
 
-        if (!ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null) {
+        if (!ItemsAdderHook.isEnable() || getItemsAdder() == null) {
             baseItem = getVanilla();
         } else {
             baseItem = getItemsAdder();

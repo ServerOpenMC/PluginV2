@@ -10,15 +10,14 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
-import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
-import static fr.openmc.core.utils.InputUtils.pluralize;
+import static fr.openmc.core.utils.text.DateUtils.formatRelativeDate;
+import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 @Getter
 @SuppressWarnings("UnstableApiUsage")

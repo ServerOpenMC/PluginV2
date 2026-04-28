@@ -2,7 +2,6 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.events.ArmorEquipEvent;
-import fr.openmc.core.utils.ArmorType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,7 +43,7 @@ public class ArmorListener implements Listener {
         if (!event.getInventory().getType().equals(InventoryType.CRAFTING)
                 && !event.getInventory().getType().equals(InventoryType.PLAYER)) return;
 
-        ArmorType newArmorType = ArmorType.match(shift ? event.getCurrentItem() : event.getCursor());
+        ArmorEquipEvent.ArmorType newArmorType = ArmorEquipEvent.ArmorType.match(shift ? event.getCurrentItem() : event.getCursor());
 
         if (!shift && newArmorType != null && event.getRawSlot() != newArmorType.getSlot()) return;
 
@@ -82,14 +81,14 @@ public class ArmorListener implements Listener {
             ItemStack hotbarItem = event.getClickedInventory().getItem(event.getHotbarButton());
 
             if (!isAirOrNull(hotbarItem)) {
-                newArmorType = ArmorType.match(hotbarItem);
+                newArmorType = ArmorEquipEvent.ArmorType.match(hotbarItem);
                 newArmorPiece = oldArmorPiece;
                 oldArmorPiece = event.getClickedInventory().getItem(event.getSlot());
             } else {
-                newArmorType = ArmorType.match(!isAirOrNull(oldArmorPiece) ? oldArmorPiece : newArmorPiece);
+                newArmorType = ArmorEquipEvent.ArmorType.match(!isAirOrNull(oldArmorPiece) ? oldArmorPiece : newArmorPiece);
             }
         } else if (isAirOrNull(newArmorPiece) && !isAirOrNull(oldArmorPiece)) {
-            newArmorType = ArmorType.match(oldArmorPiece);
+            newArmorType = ArmorEquipEvent.ArmorType.match(oldArmorPiece);
         }
 
         if (newArmorType == null || event.getRawSlot() != newArmorType.getSlot()) return;
@@ -118,7 +117,7 @@ public class ArmorListener implements Listener {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
 
-            ArmorType newArmorType = ArmorType.match(item);
+            ArmorEquipEvent.ArmorType newArmorType = ArmorEquipEvent.ArmorType.match(item);
             if (newArmorType == null) return;
 
             ItemStack oldArmor = switch (newArmorType) {
@@ -154,7 +153,7 @@ public class ArmorListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getRawSlots().isEmpty()) return;
 
-        ArmorType type = ArmorType.match(event.getOldCursor());
+        ArmorEquipEvent.ArmorType type = ArmorEquipEvent.ArmorType.match(event.getOldCursor());
         if (type == null) return;
 
         int slot = event.getRawSlots().stream().findFirst().orElse(-1);
@@ -178,7 +177,7 @@ public class ArmorListener implements Listener {
 
     @EventHandler
     public void itemBreakEvent(PlayerItemBreakEvent event) {
-        ArmorType type = ArmorType.match(event.getBrokenItem());
+        ArmorEquipEvent.ArmorType type = ArmorEquipEvent.ArmorType.match(event.getBrokenItem());
         if (type == null) return;
 
         Player player = event.getPlayer();
@@ -225,7 +224,7 @@ public class ArmorListener implements Listener {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(new ArmorEquipEvent(
                     player,
                     ArmorEquipEvent.EquipMethod.DEATH,
-                    ArmorType.match(item),
+                    ArmorEquipEvent.ArmorType.match(item),
                     item,
                     null
             )));
@@ -234,7 +233,7 @@ public class ArmorListener implements Listener {
 
     @EventHandler
     public void onDispenseArmorEvent(BlockDispenseArmorEvent event) {
-        ArmorType type = ArmorType.match(event.getItem());
+        ArmorEquipEvent.ArmorType type = ArmorEquipEvent.ArmorType.match(event.getItem());
         if (type == null) return;
         if (!(event.getTargetEntity() instanceof Player player)) return;
 
