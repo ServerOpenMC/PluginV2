@@ -7,19 +7,15 @@ import lombok.Getter;
 @Getter
 public enum MilestoneType {
     TUTORIAL(
-			new TutorialMilestone(),
-		    true
+            new TutorialMilestone()
     ),
 	DREAM(
-			new DreamMilestone(),
-			false
+			new DreamMilestone()
 	);
 
-    private final Milestone milestone;
-	private final boolean bossBar;
+    private final Milestone<?> milestone;
 
-    MilestoneType(Milestone milestone, boolean bossBar) {
+    MilestoneType(Milestone<?> milestone) {
         this.milestone = milestone;
-	    this.bossBar = bossBar;
     }
 }

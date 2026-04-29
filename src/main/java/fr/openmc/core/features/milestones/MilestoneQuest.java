@@ -20,16 +20,15 @@ import java.util.function.Consumer;
 public class MilestoneQuest extends Quest {
 	
 	protected final MilestoneType type;
-	protected final Enum step; //TODO a fix dans #1209
-	protected final Consumer<Player> afterDialog;
-	protected List<String> dialogs;
-	
-	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum step, QuestTier quest) {
+	protected final Enum<? extends MilestoneStep> step;
+    protected final Consumer<Player> afterDialog;
+    protected List<String> dialogs;
+
+	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest);
-		
 	}
-	
-	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum step, QuestTier quest) {
+
+	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		super(name, baseDescription, icon);
 		this.type = type;
 		this.step = step;
@@ -38,20 +37,20 @@ public class MilestoneQuest extends Quest {
 		));
 		this.afterDialog = null;
 	}
-	
+
 	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs);
-		
+
 	}
-	
+
 	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs, null);
 	}
-	
+
 	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs, Consumer<Player> afterDialog) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs, afterDialog);
 	}
-	
+
 	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, DreamSteps step, QuestTier quest, List<String> dialogs, Consumer<Player> afterDialog) {
 		super(name, baseDescription, icon);
 		this.type = type;
@@ -69,7 +68,7 @@ public class MilestoneQuest extends Quest {
 		));
 		this.afterDialog = afterDialog;
 	}
-	
+
 	/**
 	 * Increment the progress for the quest for a player authorizing Dream world
 	 *
@@ -78,8 +77,7 @@ public class MilestoneQuest extends Quest {
 	public void incrementProgressInDream(UUID playerUUID) {
 		incrementProgress(playerUUID, 1, true);
 	}
-	
-	
+
 	/**
 	 * Increment the progress of the quest for a player by a specified amount authorizing Dream world.
 	 * <p>

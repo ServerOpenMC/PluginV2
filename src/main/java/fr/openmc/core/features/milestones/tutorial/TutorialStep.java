@@ -1,11 +1,12 @@
 package fr.openmc.core.features.milestones.tutorial;
 
 import fr.openmc.core.features.milestones.MilestoneQuest;
+import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.tutorial.quests.*;
 import lombok.Getter;
 
 @Getter
-public enum TutorialStep {
+public enum TutorialStep implements MilestoneStep {
     BREAK_AYWENITE(null),
     CITY_CREATE(null),
     CITY_LEVEL_2(null),

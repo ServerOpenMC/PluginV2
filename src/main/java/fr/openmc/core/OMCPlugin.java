@@ -19,6 +19,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.dream.DreamManager;
@@ -36,6 +37,7 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
@@ -91,9 +93,11 @@ public class OMCPlugin extends JavaPlugin {
             new FriendSQLManager(),
             new TabList(),
             new AdminShopManager(),
+            new HelpConfigManager(),
             new BossbarManager(),
             new AnimationsManager(),
             new HalloweenManager(),
+            new QuestProgressSaveManager(),
             new MotdUtils(),
             new TranslationManager(new File(this.getDataFolder(), "translations"), "fr"),
             new DynamicCooldownManager(),
