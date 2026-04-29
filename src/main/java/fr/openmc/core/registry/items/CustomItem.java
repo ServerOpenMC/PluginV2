@@ -5,6 +5,7 @@ import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CustomItem {
     @Getter
@@ -14,7 +15,7 @@ public abstract class CustomItem {
         this.name = name;
     }
 
-    public abstract ItemStack getVanilla();
+    public abstract @NotNull ItemStack getVanilla();
 
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance(getName());

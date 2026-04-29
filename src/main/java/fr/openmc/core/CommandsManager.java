@@ -10,6 +10,8 @@ import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
 import fr.openmc.core.features.animations.DebugAnimationCommand;
+import fr.openmc.core.features.corporation.commands.ShopAdminCommand;
+import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.credits.CreditsCommand;
 import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.events.commands.EventCommand;
@@ -75,7 +77,9 @@ public class CommandsManager {
                 new HalloweenCommands(),
                 new DebugAnimationCommand(),
                 new EventCommand(),
-                new CustomItemCommand()
+                new CustomItemCommand(),
+                new ShopCommand(),
+                new ShopAdminCommand()
         );
     }
 }

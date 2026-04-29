@@ -52,7 +52,7 @@ public class CityCreateConditions {
         }
 
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
-	        MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir uniquement des caractères alphanumerique et doit faire moins de 24 caractères"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir uniquement des caractères alphanumériques et doit faire moins de 24 caractères"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

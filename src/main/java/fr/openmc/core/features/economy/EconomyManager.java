@@ -15,6 +15,7 @@ import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.hooks.ItemsAdderHook;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -238,5 +239,10 @@ public class EconomyManager extends Feature implements DatabaseFeature {
         } else {
             return "Ⓐ";
         }
+    }
+    
+    public static boolean hasEnoughMoney(@NotNull UUID uniqueId, int requiredAmount) {
+        double balance = EconomyManager.getBalance(uniqueId);
+        return balance >= requiredAmount;
     }
 }

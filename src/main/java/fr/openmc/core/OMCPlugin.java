@@ -16,6 +16,7 @@ import fr.openmc.core.features.analytics.AnalyticsManager;
 import fr.openmc.core.features.animations.AnimationsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.corporation.manager.ShopManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
@@ -110,7 +111,8 @@ public class OMCPlugin extends JavaPlugin {
             new LeaderboardManager(),
             new MainMenu(),
             new HologramLoader(),
-            new HomeIconCacheManager()
+            new HomeIconCacheManager(),
+            new ShopManager()
     ));
 
     // ** Registry of OMC Plugin Hooks
@@ -174,7 +176,7 @@ public class OMCPlugin extends JavaPlugin {
                 .filter(f -> !(f instanceof LoadAfterItemsAdder))
                 .forEachOrdered(Feature::startInit);
 
-        // * Si ItemsAdder est pas présent, alors on charge les dernieres features maintenant
+        // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
         if (!ItemsAdderHook.isEnable()) {
             loadAfterItemsAdder();
         }
