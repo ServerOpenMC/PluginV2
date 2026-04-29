@@ -29,6 +29,8 @@ public class BossbarManager extends Feature {
                 new MainBossbar(),
                 new DreamBossBar()
         );
+
+        start();
     }
 
     @Override
@@ -54,7 +56,6 @@ public class BossbarManager extends Feature {
 
 
     private static void updatePlayer(Player player) {
-
         UUID uuid = player.getUniqueId();
 
         activeBossbars.putIfAbsent(uuid, new HashMap<>());
@@ -67,6 +68,9 @@ public class BossbarManager extends Feature {
 
         long now = System.currentTimeMillis();
 
+        List<String> orderedIds = new ArrayList<>();
+
+        // * Determination des bossbar a afficher
         for (BaseBossbar base : registeredBossbar) {
             String id = base.id();
 
@@ -79,6 +83,7 @@ public class BossbarManager extends Feature {
             BossBar existing = playerBars.get(id);
 
             if (shouldDisplay) {
+                orderedIds.add(id);
 
                 if (existing == null) {
                     existing = BossBar.bossBar(
@@ -107,6 +112,23 @@ public class BossbarManager extends Feature {
             } else {
                 removeBossBar(player, id);
                 playerLastUpdate.remove(id);
+            }
+        }
+
+        // * Sécurité afin d'assurer que les bossbar qui ne sont plus dans la liste des bossbar à afficher soient supprimé
+        for (String id : new ArrayList<>(playerBars.keySet())) {
+            if (!orderedIds.contains(id)) {
+                removeBossBar(player, id);
+                playerLastUpdate.remove(id);
+            }
+        }
+
+        // * Tri des boss bar pour l'affichage
+        for (String id : orderedIds) {
+            BossBar bar = playerBars.get(id);
+            if (bar != null) {
+                player.hideBossBar(bar);
+                player.showBossBar(bar);
             }
         }
     }
