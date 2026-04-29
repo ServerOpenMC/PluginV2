@@ -29,7 +29,7 @@ public class DreamMilestone implements Milestone<DreamSteps>  {
 	
 	@Override
 	public String getName() {
-		return "Tutoriel de la Dimension des Rêves";
+		return "§1Tutoriel de la Dimension des Rêves";
 	}
 	
 	@Override
