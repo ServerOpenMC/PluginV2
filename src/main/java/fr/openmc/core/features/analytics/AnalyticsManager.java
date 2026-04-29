@@ -6,8 +6,6 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.analytics.models.Statistic;
 import org.bukkit.Bukkit;
 
@@ -15,21 +13,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-public class AnalyticsManager extends Feature implements DatabaseFeature {
+public class AnalyticsManager {
     static Dao<Statistic, String> statsDao;
 
-    @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Statistic.class);
         statsDao = DaoManager.createDao(connectionSource, Statistic.class);
     }

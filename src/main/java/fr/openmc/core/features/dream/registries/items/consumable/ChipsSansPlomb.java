@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class ChipsSansPlomb extends DreamItem {
     public ChipsSansPlomb(String name) {
@@ -28,7 +27,7 @@ public class ChipsSansPlomb extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.DRIED_KELP);
 
         item.getItemMeta().itemName(Component.text("Chips goût Sans Plomb 95"));

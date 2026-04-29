@@ -8,10 +8,10 @@ import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.utils.bukkit.ItemUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -84,7 +84,7 @@ public class GlaciteTradeMenu extends Menu {
                     meta.itemName(Component.text("1 min de Temps", NamedTextColor.GREEN));
                     meta.lore(loreTime);
                 }).setOnClick(event -> {
-                    ItemStack eweniteItem = DreamItemRegistry.getByName("ewenite").getBest();
+                    ItemStack eweniteItem = DreamItemRegistry.getByName("omc_dream:ewenite").getBest();
                     int ewenite = ItemUtils.countItems(player, eweniteItem);
 
                     if (ewenite < 1) {
@@ -115,8 +115,8 @@ public class GlaciteTradeMenu extends Menu {
     }
 
     private void handleTrade(Player player, GlaciteTrade trade) {
-        ItemStack glaciteItem = DreamItemRegistry.getByName("glacite").getBest();
-        ItemStack eweniteItem = DreamItemRegistry.getByName("ewenite").getBest();
+        ItemStack glaciteItem = DreamItemRegistry.getByName("omc_dream:glacite").getBest();
+        ItemStack eweniteItem = DreamItemRegistry.getByName("omc_dream:ewenite").getBest();
         int glacite = ItemUtils.countItems(player, glaciteItem);
         int ewenite = ItemUtils.countItems(player, eweniteItem);
 

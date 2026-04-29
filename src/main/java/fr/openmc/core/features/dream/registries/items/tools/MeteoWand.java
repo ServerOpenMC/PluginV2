@@ -2,13 +2,12 @@ package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import fr.openmc.core.registry.items.options.UsableItem;
-import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.features.dream.models.registry.items.DreamUsableItem;
+import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,9 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jspecify.annotations.NonNull;
 
-public class MeteoWand extends DreamItem implements UsableItem {
+public class MeteoWand extends DreamUsableItem {
     private static final long COOLDOWN_METEO_WAND = 8 * 60 * 60 * 1000L; // 2 jours
     public MeteoWand(String name) {
         super(name);
@@ -41,7 +39,7 @@ public class MeteoWand extends DreamItem implements UsableItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.STICK);
 
         item.getItemMeta().itemName(Component.text("Meteo Wand"));

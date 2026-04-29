@@ -1,23 +1,32 @@
 package fr.openmc.core.features.dream.mecanism.metaldetector;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.registry.loottable.CustomLootTable;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.world.LocationUtils;
+import fr.openmc.core.features.dream.models.registry.loottable.DreamLootTable;
+import fr.openmc.core.utils.LocationUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -49,6 +58,44 @@ public class MetalDetectorListener implements Listener {
     }
 
     @EventHandler
+    public void onChestClick(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        Block clicked = event.getClickedBlock();
+        if (clicked == null) return;
+
+        if (!DreamUtils.isDreamWorld(event.getClickedBlock().getLocation())) return;
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+        if (!hiddenChests.containsKey(uuid)) return;
+
+        if (clicked.getType() == Material.CHEST) {
+            event.setCancelled(true);
+            MetalDetectorTask task = hiddenChests.remove(uuid);
+            task.cancel();
+            Location chestLoc = task.getChestLocation();
+
+            if (LocationUtils.isSameLocation(clicked.getLocation(), chestLoc)) {
+                event.setCancelled(true);
+                clicked.setType(Material.MUD);
+                DreamLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
+                if (lootTable == null) return;
+                List<ItemStack> rewards = lootTable.rollLoots();
+
+                for (ItemStack item : rewards) {
+                    player.getInventory().addItem(item);
+                }
+
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        Bukkit.getServer().getPluginManager().callEvent(new MetalDetectorLootEvent(player, rewards))
+                );
+                MessagesManager.sendMessage(player, Component.text("Vous avez découvert §e" + rewards.size() + " §fobjet(s) dans vos rêves !"), Prefix.DREAM, MessageType.SUCCESS, false);
+            }
+        }
+    }
+
+    @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         UUID uuid = player.getUniqueId();
@@ -68,8 +115,8 @@ public class MetalDetectorListener implements Listener {
         Random random = new Random();
 
         for (int i = 0; i < 30; i++) {
-            int dx = random.nextInt(41) - 20;
-            int dz = random.nextInt(41) - 20;
+            int dx = random.nextInt(20);
+            int dz = random.nextInt(20);
             Location tryLoc = origin.clone().add(dx, 0, dz);
             int y = world.getHighestBlockYAt(tryLoc);
             tryLoc.setY(y);
@@ -79,6 +126,6 @@ public class MetalDetectorListener implements Listener {
             }
         }
 
-        return origin.clone().add(random.nextInt(41) - 20, 0, random.nextInt(41) - 20);
+        return origin.clone().add(5, 0, 5);
     }
 }

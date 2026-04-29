@@ -8,9 +8,9 @@ import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,8 +23,7 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
         super(
                 "Améliorer votre limite de homes",
                 List.of(
-                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes)",
-                        "§fpour pouvoir améliorer votre limite de homes",
+                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes) §fpour pouvoir améliorer votre limite de homes",
                         "§8§oCela vous permettra d'avoir plus de homes !"
                 ),
                 CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(),

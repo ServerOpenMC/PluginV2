@@ -1,14 +1,12 @@
 package fr.openmc.core.features.dream.registries.items.armors.soul;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
-public class SoulChestplate extends DreamItem implements DreamEquipableItem {
+public class SoulChestplate extends DreamEquipableItem {
     public SoulChestplate(String name) {
         super(name);
     }
@@ -39,7 +37,7 @@ public class SoulChestplate extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_CHESTPLATE);
 
         item.getItemMeta().itemName(Component.text("Plastron des Âmes"));

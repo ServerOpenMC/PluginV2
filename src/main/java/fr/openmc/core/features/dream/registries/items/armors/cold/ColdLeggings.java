@@ -1,14 +1,12 @@
 package fr.openmc.core.features.dream.registries.items.armors.cold;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
-public class ColdLeggings extends DreamItem implements DreamEquipableItem {
+public class ColdLeggings extends DreamEquipableItem {
     public ColdLeggings(String name) {
         super(name);
     }
@@ -39,7 +37,7 @@ public class ColdLeggings extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.DIAMOND_LEGGINGS);
 
         item.getItemMeta().itemName(Component.text("Jambières Glacées"));

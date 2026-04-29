@@ -5,13 +5,11 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
-import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
+import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import org.bukkit.Location;
 
@@ -21,13 +19,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class HomesManager extends Feature implements DatabaseFeature {
+public class HomesManager {
 
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
 
-    @Override
-    public void init() {
+    public static void init() {
         DisabledWorldHome.init();
 
         CommandsManager.getHandler().register(
@@ -44,8 +41,7 @@ public class HomesManager extends Feature implements DatabaseFeature {
         loadHomes();
     }
 
-    @Override
-    public void save() {
+    public static void saveHomesData() {
         saveHomes();
         saveHomeLimit();
     }
@@ -113,8 +109,7 @@ public class HomesManager extends Feature implements DatabaseFeature {
     private static Dao<Home, UUID> homesDao;
     private static Dao<HomeLimit, UUID> limitsDao;
 
-    @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Home.class);
         homesDao = DaoManager.createDao(connectionSource, Home.class);
 

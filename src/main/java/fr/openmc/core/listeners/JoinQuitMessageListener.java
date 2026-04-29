@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
@@ -8,10 +9,9 @@ import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.tpa.TPAQueue;
-import fr.openmc.core.hooks.LuckPermsHook;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;

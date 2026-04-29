@@ -25,8 +25,6 @@ import java.util.concurrent.ThreadLocalRandom;
 // - iambibi_
 public class Cube extends MultiBlock {
     public BukkitTask corruptedBubbleTask;
-    public BukkitTask particuleBubbleTask;
-
     public ReproductionTask reproductionTask;
     public BossBar cubeBossBar;
     public boolean showBossBar;
@@ -201,16 +199,14 @@ public class Cube extends MultiBlock {
         }
     }
 
-    public final int RADIUS_BUBBLE = this.radius * 4;
+    public final int RADIUS_BUBBLE = this.radius * 3;
 
     public void startCorruptedBubble() {
         Location center = this.getCenter();
 
-        int totalTicks = 20 * 1300;
+        int totalTicks = 20 * 3600;
 
         startBubbleParticles();
-
-        if (corruptedBubbleTask != null) corruptedBubbleTask.cancel();
 
         int intervalCorruption = 20 * 15;
         corruptedBubbleTask = new BukkitRunnable() {
@@ -268,36 +264,31 @@ public class Cube extends MultiBlock {
         Location center = this.getCenter();
         double radius = RADIUS_BUBBLE;
 
-        if (particuleBubbleTask != null) particuleBubbleTask.cancel();
+        Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+            for (int i = 0; i < 50; i++) {
+                double theta = Math.random() * 2 * Math.PI;
+                double phi = Math.random() * Math.PI;
+                double x = radius * Math.sin(phi) * Math.cos(theta);
+                double y = radius * Math.cos(phi);
+                double z = radius * Math.sin(phi) * Math.sin(theta);
 
-        particuleBubbleTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 50; i++) {
-                    double theta = Math.random() * 2 * Math.PI;
-                    double phi = Math.random() * Math.PI;
-                    double x = radius * Math.sin(phi) * Math.cos(theta);
-                    double y = radius * Math.cos(phi);
-                    double z = radius * Math.sin(phi) * Math.sin(theta);
+                Location particleLoc = center.clone().add(x, y, z);
+                world.spawnParticle(Particle.OMINOUS_SPAWNING, particleLoc, 1, 0.1, 0.1, 0.1, 0);
+            }
+
+            for (double theta = 0; theta < Math.PI; theta += Math.PI / 16) {
+                for (double phi = 0; phi < 2 * Math.PI; phi += Math.PI / 16) {
+                    double x = radius * Math.sin(theta) * Math.cos(phi);
+                    double y = radius * Math.cos(theta);
+                    double z = radius * Math.sin(theta) * Math.sin(phi);
 
                     Location particleLoc = center.clone().add(x, y, z);
-                    world.spawnParticle(Particle.OMINOUS_SPAWNING, particleLoc, 1, 0.1, 0.1, 0.1, 0);
-                }
 
-                for (double theta = 0; theta < Math.PI; theta += Math.PI / 16) {
-                    for (double phi = 0; phi < 2 * Math.PI; phi += Math.PI / 16) {
-                        double x = radius * Math.sin(theta) * Math.cos(phi);
-                        double y = radius * Math.cos(theta);
-                        double z = radius * Math.sin(theta) * Math.sin(phi);
-
-                        Location particleLoc = center.clone().add(x, y, z);
-
-                        Vector dir = center.clone().subtract(particleLoc).toVector().normalize();
-                        world.spawnParticle(Particle.SNEEZE, particleLoc, 1, dir.getX(), dir.getY(), dir.getZ(), 0.1);
-                    }
+                    Vector dir = center.clone().subtract(particleLoc).toVector().normalize();
+                    world.spawnParticle(Particle.SNEEZE, particleLoc, 1, dir.getX(), dir.getY(), dir.getZ(), 0.1);
                 }
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+        }, 0L, 20L);
     }
 
     public void startReproduction() {
@@ -354,13 +345,14 @@ public class Cube extends MultiBlock {
             public void run() {
                 double roll = ThreadLocalRandom.current().nextDouble();
 
-                if (roll < 0.7) {
+                if (roll < 0.5) {
                     startMagneticShock();
                 } else {
-                    startCorruptedBubble();
+                    if (corruptedBubbleTask == null)
+                        startCorruptedBubble();
                 }
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), 20L * 60 * 5, 20L * 60 * 10);
+        }.runTaskTimer(OMCPlugin.getInstance(), 20L * 60 * 5, 20L * 60 * 20);
     }
 
     public void startSoundCycle() {

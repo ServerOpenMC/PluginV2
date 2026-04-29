@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class Glacite extends DreamItem {
     public Glacite(String name) {
@@ -28,7 +27,7 @@ public class Glacite extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.BLUE_ICE);
 
         item.getItemMeta().itemName(Component.text("Glacite"));

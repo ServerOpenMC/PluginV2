@@ -3,14 +3,12 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.registry.items.contents.UseHammerEvent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -19,6 +17,7 @@ public class BreakStoneQuest extends Quest implements Listener {
 
     public BreakStoneQuest() {
         super("Casseur de pierres", List.of("Miner {target} blocs de pierre"), new ItemStack(Material.DIAMOND_PICKAXE));
+
 
         this.addTiers(
                 new QuestTier(10000, new QuestMoneyReward(500)),
@@ -29,24 +28,12 @@ public class BreakStoneQuest extends Quest implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerBreak(BlockDropItemEvent event) {
+    public void onPlayerBreak(BlockBreakEvent event) {
         ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
-        if (tool == null) return;
-
-        List<Item> items = event.getItems();
-        for (Item item : items) {
-            if (item.getItemStack().getType().equals(Material.COBBLESTONE)) {
-                this.incrementProgress(event.getPlayer().getUniqueId());
-                break;
-            }
+        Block block = event.getBlock();
+        if (block.getType().equals(Material.STONE)) {
+            this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerUseHammer(UseHammerEvent event) {
-        Block block = event.getBlock();
-        if (block == null) return;
-
-        this.incrementProgress(event.getPlayer().getUniqueId(), event.getCountBlockBroken());
-    }
 }

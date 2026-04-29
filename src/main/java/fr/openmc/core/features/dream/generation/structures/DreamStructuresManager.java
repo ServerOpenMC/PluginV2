@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,7 +78,7 @@ public class DreamStructuresManager {
         }
     }
 
-    public static @Nullable DreamStructure getStructureAt(Location loc) {
+    public static DreamStructure getStructureAt(Location loc) {
         for (DreamStructure s : structures) {
             if (s.isInside(loc)) return s;
         }

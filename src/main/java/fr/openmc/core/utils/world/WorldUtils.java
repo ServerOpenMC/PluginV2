@@ -1,7 +1,5 @@
 package fr.openmc.core.utils.world;
 
-import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class WorldUtils {
@@ -20,15 +18,4 @@ public class WorldUtils {
         }
     }
 
-	/**
-	 * Get the center of the chunk at Y coordinates
-	 *
-	 * @param chunk the chunk
-	 * @param y the Y location
-	 */
-	public static Location getChunkCenter(Chunk chunk, double y) {
-		double x = 16 * chunk.getX() + 8;
-		double z = 16 * chunk.getZ() + 8;
-		return new Location(chunk.getWorld(), x, y, z);
-	}
 }

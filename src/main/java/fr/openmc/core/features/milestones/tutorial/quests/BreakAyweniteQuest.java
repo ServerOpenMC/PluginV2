@@ -1,6 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.MilestoneQuest;
@@ -11,11 +12,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.hooks.ItemsAdderHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.bossbar.BossBar;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
@@ -60,7 +56,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
     public void onPlayerBreakBlock(BlockBreakEvent event) {
         if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
-        if (!ItemsAdderHook.isEnable()) return;
+        if (!ItemsAdderHook.isHasItemAdder()) return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
         if (customBlock != null && customBlock.getNamespacedID() != null &&

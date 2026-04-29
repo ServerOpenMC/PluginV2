@@ -1,51 +1,53 @@
 package fr.openmc.core.features.dream.registries.loottable;
 
+import fr.openmc.core.features.dream.models.registry.loottable.DreamLoot;
+import fr.openmc.core.features.dream.models.registry.loottable.DreamLootTable;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.registry.loottable.CustomLoot;
-import fr.openmc.core.registry.loottable.CustomLootTable;
 import net.kyori.adventure.key.Key;
 
 import java.util.Set;
 
-public class CloudFishingLootTable extends CustomLootTable {
+public class CloudFishingLootTable extends DreamLootTable {
     @Override
-    public String getName() { return "omc_dream:cloud_fishing"; }
+    public Key getKey() {
+        return Key.key("dream:cloud_fishing");
+    }
 
     @Override
-    public Set<CustomLoot> getLoots() {
+    public Set<DreamLoot> getLoots() {
         return Set.of(
-                new CustomLoot(
-                        DreamItemRegistry.getByName("meteo_wand"),
+                new DreamLoot(
+                        DreamItemRegistry.getByName("omc_dream:meteo_wand"),
                         0.1,
                         1,
                         1
                 ),
-                new CustomLoot(
-                        DreamItemRegistry.getByName("poissonion"),
+                new DreamLoot(
+                        DreamItemRegistry.getByName("omc_dream:poissonion"),
                         0.5,
                         1,
                         2
                 ),
-                new CustomLoot(
-                        DreamItemRegistry.getByName("moon_fish"),
+                new DreamLoot(
+                        DreamItemRegistry.getByName("omc_dream:moon_fish"),
                         0.5,
                         1,
                         2
                 ),
-                new CustomLoot(
-                        DreamItemRegistry.getByName("sun_fish"),
+                new DreamLoot(
+                        DreamItemRegistry.getByName("omc_dream:sun_fish"),
                         0.5,
                         1,
                         2
                 ),
-                new CustomLoot(
-                        DreamItemRegistry.getByName("dockerfish"),
+                new DreamLoot(
+                        DreamItemRegistry.getByName("omc_dream:dockerfish"),
                         0.2,
                         1,
                         1
                 ),
-                new CustomLoot(
-                        DreamItemRegistry.getByName("somnifere"),
+                new DreamLoot(
+                        DreamItemRegistry.getByName("omc_dream:somnifere"),
                         0.4,
                         1,
                         1

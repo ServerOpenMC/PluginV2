@@ -1,14 +1,12 @@
 package fr.openmc.core.features.dream.registries.items.armors.soul;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
-public class SoulHelmet extends DreamItem implements DreamEquipableItem {
+public class SoulHelmet extends DreamEquipableItem {
     public SoulHelmet(String name) {
         super(name);
     }
@@ -39,7 +37,7 @@ public class SoulHelmet extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_HELMET);
 
         item.getItemMeta().itemName(Component.text("Casque des Âmes"));

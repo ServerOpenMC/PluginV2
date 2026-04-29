@@ -2,6 +2,7 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.events.ArmorEquipEvent;
+import fr.openmc.core.utils.ArmorType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -43,7 +44,7 @@ public class ArmorListener implements Listener {
         if (!event.getInventory().getType().equals(InventoryType.CRAFTING)
                 && !event.getInventory().getType().equals(InventoryType.PLAYER)) return;
 
-        ArmorEquipEvent.ArmorType newArmorType = ArmorEquipEvent.ArmorType.match(shift ? event.getCurrentItem() : event.getCursor());
+        ArmorType newArmorType = ArmorType.match(shift ? event.getCurrentItem() : event.getCursor());
 
         if (!shift && newArmorType != null && event.getRawSlot() != newArmorType.getSlot()) return;
 
@@ -81,14 +82,14 @@ public class ArmorListener implements Listener {
             ItemStack hotbarItem = event.getClickedInventory().getItem(event.getHotbarButton());
 
             if (!isAirOrNull(hotbarItem)) {
-                newArmorType = ArmorEquipEvent.ArmorType.match(hotbarItem);
+                newArmorType = ArmorType.match(hotbarItem);
                 newArmorPiece = oldArmorPiece;
                 oldArmorPiece = event.getClickedInventory().getItem(event.getSlot());
             } else {
-                newArmorType = ArmorEquipEvent.ArmorType.match(!isAirOrNull(oldArmorPiece) ? oldArmorPiece : newArmorPiece);
+                newArmorType = ArmorType.match(!isAirOrNull(oldArmorPiece) ? oldArmorPiece : newArmorPiece);
             }
         } else if (isAirOrNull(newArmorPiece) && !isAirOrNull(oldArmorPiece)) {
-            newArmorType = ArmorEquipEvent.ArmorType.match(oldArmorPiece);
+            newArmorType = ArmorType.match(oldArmorPiece);
         }
 
         if (newArmorType == null || event.getRawSlot() != newArmorType.getSlot()) return;
@@ -117,7 +118,7 @@ public class ArmorListener implements Listener {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
 
-            ArmorEquipEvent.ArmorType newArmorType = ArmorEquipEvent.ArmorType.match(item);
+            ArmorType newArmorType = ArmorType.match(item);
             if (newArmorType == null) return;
 
             ItemStack oldArmor = switch (newArmorType) {
@@ -126,16 +127,6 @@ public class ArmorListener implements Listener {
                 case LEGGINGS -> player.getInventory().getLeggings();
                 case BOOTS -> player.getInventory().getBoots();
             };
-
-
-            // fix item instance bug
-            if (oldArmor != null) {
-                oldArmor = oldArmor.clone();
-            }
-
-            if (item != null) {
-                item = item.clone();
-            }
 
             ArmorEquipEvent armorEquipEvent = new ArmorEquipEvent(player, ArmorEquipEvent.EquipMethod.HOTBAR, newArmorType, oldArmor, item);
 
@@ -153,7 +144,7 @@ public class ArmorListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getRawSlots().isEmpty()) return;
 
-        ArmorEquipEvent.ArmorType type = ArmorEquipEvent.ArmorType.match(event.getOldCursor());
+        ArmorType type = ArmorType.match(event.getOldCursor());
         if (type == null) return;
 
         int slot = event.getRawSlots().stream().findFirst().orElse(-1);
@@ -177,7 +168,7 @@ public class ArmorListener implements Listener {
 
     @EventHandler
     public void itemBreakEvent(PlayerItemBreakEvent event) {
-        ArmorEquipEvent.ArmorType type = ArmorEquipEvent.ArmorType.match(event.getBrokenItem());
+        ArmorType type = ArmorType.match(event.getBrokenItem());
         if (type == null) return;
 
         Player player = event.getPlayer();
@@ -224,7 +215,7 @@ public class ArmorListener implements Listener {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> Bukkit.getPluginManager().callEvent(new ArmorEquipEvent(
                     player,
                     ArmorEquipEvent.EquipMethod.DEATH,
-                    ArmorEquipEvent.ArmorType.match(item),
+                    ArmorType.match(item),
                     item,
                     null
             )));
@@ -233,7 +224,7 @@ public class ArmorListener implements Listener {
 
     @EventHandler
     public void onDispenseArmorEvent(BlockDispenseArmorEvent event) {
-        ArmorEquipEvent.ArmorType type = ArmorEquipEvent.ArmorType.match(event.getItem());
+        ArmorType type = ArmorType.match(event.getItem());
         if (type == null) return;
         if (!(event.getTargetEntity() instanceof Player player)) return;
 

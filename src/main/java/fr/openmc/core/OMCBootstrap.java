@@ -1,6 +1,6 @@
 package fr.openmc.core;
 
-import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.features.dream.registries.DreamEnchantementRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -14,22 +14,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
-/**
- * Bootstrap Paper du plugin OpenMC.
- * Enregistre le datapack et les registres avant la creation du plugin.
- */
 @SuppressWarnings("UnstableApiUsage")
 public class OMCBootstrap implements PluginBootstrap {
 
-    /**
-     * Configure les handlers de cycle de vie necessaires avant l'activation du plugin.
-     *
-     * @param context Contexte de bootstrap Paper
-     * @throws RuntimeException Si le datapack ne peut pas etre chargé
-     */
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
-        // ** LOAD DATAPACK **
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
                 event -> {
                     try {
@@ -42,19 +31,11 @@ public class OMCBootstrap implements PluginBootstrap {
                 }
         ));
 
-        // ** ENCHANTMENT IMPL **
-        CustomEnchantmentRegistry.init();
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
-                .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)
+                .newHandler(DreamEnchantementRegistry::loadEnchantmentInBootstrap)
         );
     }
 
-    /**
-     * Construit l'instance principale du plugin.
-     *
-     * @param context Contexte du provider Paper
-     * @return Instance du plugin principal
-     */
     @Override
     public @NotNull JavaPlugin createPlugin(@NotNull PluginProviderContext context) {
         return new OMCPlugin();

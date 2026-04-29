@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.commands.autocomplete;
 
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -12,9 +12,8 @@ public class DreamItemAutoComplete implements SuggestionProvider<BukkitCommandAc
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return CustomItemRegistry.getNames()
+        return DreamItemRegistry.getNames()
                 .stream()
-                .filter(name -> name.startsWith("omc_dream:"))
                 .map(name -> name.replace("omc_dream:", ""))
                 .toList();
     }

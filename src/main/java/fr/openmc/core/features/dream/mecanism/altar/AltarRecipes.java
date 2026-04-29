@@ -9,33 +9,33 @@ import org.bukkit.inventory.ItemStack;
 public enum AltarRecipes {
 
     SOUL_ORB(
-            DreamItemRegistry.getByName("domination_orb"),
-            DreamItemRegistry.getByName("ame_orb"),
+            DreamItemRegistry.getByName("omc_dream:domination_orb"),
+            DreamItemRegistry.getByName("omc_dream:ame_orb"),
             20
     ),
     SOUL_HELMET(
-            DreamItemRegistry.getByName("old_creaking_helmet"),
-            DreamItemRegistry.getByName("soul_helmet"),
+            DreamItemRegistry.getByName("omc_dream:old_creaking_helmet"),
+            DreamItemRegistry.getByName("omc_dream:soul_helmet"),
             10
     ),
     SOUL_CHESTPLATE(
-            DreamItemRegistry.getByName("old_creaking_chestplate"),
-            DreamItemRegistry.getByName("soul_chestplate"),
+            DreamItemRegistry.getByName("omc_dream:old_creaking_chesplate"),
+            DreamItemRegistry.getByName("omc_dream:soul_chestplate"),
             10
     ),
     SOUL_LEGGINGS(
-            DreamItemRegistry.getByName("old_creaking_leggings"),
-            DreamItemRegistry.getByName("soul_leggings"),
+            DreamItemRegistry.getByName("omc_dream:old_creaking_leggings"),
+            DreamItemRegistry.getByName("omc_dream:soul_leggings"),
             10
     ),
     SOUL_BOOTS(
-            DreamItemRegistry.getByName("old_creaking_boots"),
-            DreamItemRegistry.getByName("soul_boots"),
+            DreamItemRegistry.getByName("omc_dream:old_creaking_boots"),
+            DreamItemRegistry.getByName("omc_dream:soul_boots"),
             10
     ),
     SOUL_AXE(
-            DreamItemRegistry.getByName("old_creaking_axe"),
-            DreamItemRegistry.getByName("soul_axe"),
+            DreamItemRegistry.getByName("omc_dream:old_creaking_axe"),
+            DreamItemRegistry.getByName("omc_dream:soul_axe"),
             15
     ),
     ;

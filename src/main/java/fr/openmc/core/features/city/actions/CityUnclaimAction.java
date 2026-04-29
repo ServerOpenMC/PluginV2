@@ -3,13 +3,12 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.bukkit.ItemUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,7 +26,7 @@ public class CityUnclaimAction {
 
     public static void startUnclaim(Player sender, int chunkX, int chunkZ) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        World bWorld = sender.getWorld();
+        org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -43,17 +42,14 @@ public class CityUnclaimAction {
             return;
         }
 
-        // si on unclaim des claims gratuits on ne rend rien, sinon on rend une partie de l'argent et d'aywenite
-        if (city.getChunks().size() > CityCreateAction.FREE_CLAIMS+1) {
-            int price = calculatePrice(city.getChunks().size());
-            int ayweniteNb = calculateAywenite(city.getChunks().size());
+        int price = calculatePrice(city.getChunks().size());
+        int ayweniteNb = calculateAywenite(city.getChunks().size());
 
-            EconomyManager.addBalance(sender.getUniqueId(), price, "Unclaim de chunk de ville");
-            ItemStack aywenite = ayweniteItemStack.clone();
-            aywenite.setAmount(ayweniteNb);
-            for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {
-                sender.dropItem(item);
-            }
+        EconomyManager.addBalance(sender.getUniqueId(), price, "Unclaim de chunk de ville");
+        ItemStack aywenite = ayweniteItemStack.clone();
+        aywenite.setAmount(ayweniteNb);
+        for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {
+            sender.dropItem(item);
         }
 
         city.removeChunk(chunkX, chunkZ);

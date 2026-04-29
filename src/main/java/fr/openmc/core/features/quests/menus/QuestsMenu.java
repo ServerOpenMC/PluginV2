@@ -12,7 +12,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.Component;
@@ -260,7 +260,6 @@ public class QuestsMenu extends Menu {
             quest.getDescription(playerUUID).forEach(string -> {
                 lore.add(Component.text("  §f" + string));
             });
-            lore.addAll(quest.getAdditionalLore());
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.empty());
                 lore.add(Component.text("§6◆ §eAvancement:"));

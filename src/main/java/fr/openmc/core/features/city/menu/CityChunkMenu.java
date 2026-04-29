@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -10,15 +11,13 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
-import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.world.chunk.ChunkInfo;
-import fr.openmc.core.utils.world.chunk.ChunkPos;
+import fr.openmc.core.utils.ChunkInfo;
+import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -265,9 +264,9 @@ public class CityChunkMenu extends Menu {
     }
 
     private ItemBuilder createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
-        List<Component> lore;
-        if (city.getChunks().size() > CityCreateAction.FREE_CLAIMS+1) {
-            lore = List.of(
+        return new ItemBuilder(this, material, itemMeta -> {
+            itemMeta.displayName(Component.text("§9Claim de votre ville"));
+            itemMeta.lore(List.of(
                     Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
                     Component.empty(),
@@ -276,19 +275,7 @@ public class CityChunkMenu extends Menu {
                     Component.text("§8- §d" + CityUnclaimAction.calculateAywenite(playerCity.getChunks().size()) + " d'Aywenite"),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ POUR UNCLAIM")
-            );
-        } else {
-            lore = List.of(
-                    Component.text("§7Ville : §d" + city.getName()),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ POUR UNCLAIM")
-            );
-        }
-
-        return new ItemBuilder(this, material, itemMeta -> {
-            itemMeta.displayName(Component.text("§9Claim de votre ville"));
-            itemMeta.lore(lore);
+            ));
         }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 

@@ -1,14 +1,13 @@
 package fr.openmc.core.features.tpa;
 
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.features.tpa.commands.TPACancelCommand;
 import fr.openmc.core.features.tpa.commands.TPACommand;
 import fr.openmc.core.features.tpa.commands.TPADenyCommand;
 import fr.openmc.core.features.tpa.commands.TPAcceptCommand;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TPAQueue extends Feature {
+public class TPAQueue {
 	
 	/**
 	 * Map to store teleport requests
@@ -27,8 +26,7 @@ public class TPAQueue extends Feature {
 	private static final ConcurrentHashMap<UUID, List<UUID>> tpaRequests = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<UUID, Long> tpaRequestTime = new ConcurrentHashMap<>();
 
-	@Override
-    public void init() {
+    public static void initCommand() {
         CommandsManager.getHandler().register(
                 new TPAcceptCommand(),
                 new TPACommand(),
@@ -36,11 +34,6 @@ public class TPAQueue extends Feature {
                 new TPACancelCommand()
         );
     }
-
-	@Override
-	public void save() {
-		// nothing to save
-	}
 
 	/**
 	 * Check if the player has a pending teleport request

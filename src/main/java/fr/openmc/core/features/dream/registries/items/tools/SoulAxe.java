@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class SoulAxe extends DreamItem {
     public SoulAxe(String name) {
@@ -14,7 +13,7 @@ public class SoulAxe extends DreamItem {
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.RARE;
+        return DreamRarity.COMMON;
     }
 
     @Override
@@ -28,7 +27,7 @@ public class SoulAxe extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_AXE);
 
         item.getItemMeta().itemName(Component.text("Hache des Âmes"));

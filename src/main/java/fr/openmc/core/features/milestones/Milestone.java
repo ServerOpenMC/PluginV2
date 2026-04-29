@@ -13,13 +13,17 @@ import java.util.List;
 import java.util.UUID;
 
 public interface Milestone<T extends Enum<T> & MilestoneStep> {
+	HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
+
 	/**
 	 * Returns the player data for the milestone.
 	 * This is a static method that returns a HashMap containing player UUIDs and their corresponding MilestoneModel.
 	 *
 	 * @return A HashMap containing player UUIDs and their MilestoneModel.
 	 */
-	HashMap<UUID, MilestoneModel> getPlayerData();
+	default HashMap<UUID, MilestoneModel> getPlayerData() {
+		return playerData;
+	}
 
 	/**
 	 * Returns the name of the milestone.
@@ -93,4 +97,5 @@ public interface Milestone<T extends Enum<T> & MilestoneStep> {
 		T[] enumStep = this.getStepEnum();
 		return Arrays.stream(enumStep).map(MilestoneStep::getQuest).toList();
 	}
+	
 }

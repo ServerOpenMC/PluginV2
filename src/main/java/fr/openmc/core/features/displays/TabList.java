@@ -10,12 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.hooks.ItemsAdderHook;
-import fr.openmc.core.hooks.ProtocolLibHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -23,12 +18,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<ProtocolLibHook> {
+public class TabList {
     private static ProtocolManager protocolManager = null;
 
-    @Override
-    public void init() {
-        protocolManager = ProtocolLibrary.getProtocolManager();
+    public static void init() {
+        if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null)
+            protocolManager = ProtocolLibrary.getProtocolManager();
 
         protocolManager.addPacketListener(new PacketAdapter(OMCPlugin.getInstance(),
                 ListenerPriority.NORMAL, PacketType.Play.Server.PLAYER_INFO) {
@@ -69,11 +64,6 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
         });
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     public static void updateHeaderFooter(Player player, String header, String footer) {
         try {
             if (protocolManager == null) return;
@@ -96,10 +86,10 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
 
         boolean isInDream = DreamUtils.isInDream(player);
         String logo;
-        if (ItemsAdderHook.isEnable()) {
-            logo = FontImageWrapper.replaceFontImages(isInDream ? ":dream_openmc:" : ":openmc:");
+        if (isInDream) {
+            logo = FontImageWrapper.replaceFontImages(":dream_openmc:");
         } else {
-            logo = "OPEN MC";
+            logo = FontImageWrapper.replaceFontImages(":openmc:");
         }
 
         String header = !isInDream ? "\n\n\n\n\n\n\n" + logo + "\n\n  §eJoueurs en ligne §7: §6" + visibleOnlinePlayers + "§7/§e" + Bukkit.getMaxPlayers() + "  \n" : "\n\n\n\n\n\n\n" + logo + "\n\n";

@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class OldPaleOakWood extends DreamItem {
     public OldPaleOakWood(String name) {
@@ -28,7 +27,7 @@ public class OldPaleOakWood extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.PALE_OAK_WOOD);
 
         item.getItemMeta().itemName(Component.text("Vieux Chêne Pale"));

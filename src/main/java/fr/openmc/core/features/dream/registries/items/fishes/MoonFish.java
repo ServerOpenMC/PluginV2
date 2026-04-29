@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class MoonFish extends DreamItem {
     public MoonFish(String name) {
@@ -28,7 +27,7 @@ public class MoonFish extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.SALMON);
 
         item.getItemMeta().itemName(Component.text("Poisson-lune"));

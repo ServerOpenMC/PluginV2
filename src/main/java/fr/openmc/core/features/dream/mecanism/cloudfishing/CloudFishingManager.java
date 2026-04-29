@@ -2,10 +2,11 @@ package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.generation.biomes.CloudChunkGenerator;
-import fr.openmc.core.registry.loottable.CustomLootTable;
-import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
-import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.features.dream.models.registry.loottable.DreamLootTable;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.utils.ParticleUtils;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -24,7 +25,7 @@ public class CloudFishingManager {
     private static final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
 
     public static final double Y_CLOUD_FISHING = CloudChunkGenerator.MIN_HEIGHT_CLOUD - 5;
-    public static final CustomLootTable FISHING_LOOT_TABLE = CustomLootTableRegistry.getByName("omc_dream:cloud_fishing");
+    public static final DreamLootTable FISHING_LOOT_TABLE = DreamLootTableRegistry.getByKey(Key.key("dream:cloud_fishing"));
 
     public static void init() {
         OMCPlugin.registerEvents(

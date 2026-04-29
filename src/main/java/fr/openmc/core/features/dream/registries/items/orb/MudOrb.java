@@ -4,7 +4,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class MudOrb extends DreamItem {
     /**
@@ -32,7 +31,7 @@ public class MudOrb extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         return ItemStack.of(Material.HEART_OF_THE_SEA);
     }
 }

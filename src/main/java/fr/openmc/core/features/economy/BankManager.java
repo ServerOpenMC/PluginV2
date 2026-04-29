@@ -6,8 +6,6 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
@@ -18,11 +16,11 @@ import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.text.InputUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -39,26 +37,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class BankManager extends Feature implements DatabaseFeature {
+public class BankManager {
     @Getter
     private static Map<UUID, Bank> banks;
 
     private static Dao<Bank, String> banksDao;
 
-    @Override
-    public void init() {
+    public static void init() {
         banks = loadAllBanks();
         CommandsManager.getHandler().register(new BankCommands());
         updateInterestTimer();
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
-    @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
@@ -207,8 +198,7 @@ public class BankManager extends Feature implements DatabaseFeature {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            City city = CityManager.getPlayerCity(playerUUID);
-            if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
+            if (PerkManager.hasPerk(CityManager.getPlayerCity(playerUUID).getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }
         }

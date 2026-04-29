@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class CrystalizedPickaxe extends DreamItem {
     public CrystalizedPickaxe(String name) {
@@ -28,7 +27,7 @@ public class CrystalizedPickaxe extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.DIAMOND_PICKAXE);
 
         item.getItemMeta().itemName(Component.text("Pioche Crystalisée"));

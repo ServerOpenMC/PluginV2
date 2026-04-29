@@ -5,7 +5,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class CokkedPoissonion extends DreamItem {
     public CokkedPoissonion(String name) {
@@ -28,7 +27,7 @@ public class CokkedPoissonion extends DreamItem {
     }
 
     @Override
-    public @NonNull ItemStack getVanilla() {
+    public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.PUFFERFISH);
 
         item.getItemMeta().itemName(Component.text("Poissonion Cuit"));

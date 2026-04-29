@@ -3,9 +3,9 @@ package fr.openmc.core.features.dream.commands;
 import fr.openmc.core.features.dream.commands.autocomplete.DreamItemAutoComplete;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +25,7 @@ public class DreamItemCommand {
             @SuggestWith(DreamItemAutoComplete.class) String name,
             @Optional Integer amount
     ) {
-        DreamItem item = DreamItemRegistry.getByName(name);
+        DreamItem item = DreamItemRegistry.getByName("omc_dream:" + name);
 
         if (item == null) {
             MessagesManager.sendMessage(player, Component.text("Cet item n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);

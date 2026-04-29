@@ -1,7 +1,6 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import org.bukkit.Sound;
@@ -43,7 +42,6 @@ public class DreamMobDamageListener implements Listener {
         if (dreamMob == null) return;
 
         event.setCancelled(true);
-	    if (DreamMilestoneDialog.isPlayerInMilestoneDialog(p)) return;
 
         Vector kb = p.getLocation().toVector()
                 .subtract(livingEntity.getLocation().toVector())

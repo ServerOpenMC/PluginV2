@@ -6,10 +6,11 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
-import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -66,11 +67,7 @@ public class MailboxMenuManager {
     }
 
     public static ItemBuilder refuseBtn(Menu menu) {
-        ItemBuilder item = getBtn(menu, "✘", "Refuser", "omc_menus:mailbox_refuse_btn", NamedTextColor.DARK_RED, true);
-        item.editMeta(
-                meta -> meta.lore(List.of(Component.text("Si vous faites cela, les items seront supprimés", NamedTextColor.RED, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false)))
-        );
-        return item;
+        return getBtn(menu, "✘", "Refuser", "omc_menus:mailbox_refuse_btn", NamedTextColor.DARK_RED, true);
     }
 
     public static ItemBuilder homeBtn(Menu menu) {

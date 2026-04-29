@@ -1,13 +1,13 @@
 package fr.openmc.core.features.city.sub.notation.menu;
 
-import fr.openmc.api.input.dialog.ButtonType;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
-import fr.openmc.core.utils.text.PaddingUtils;
+import fr.openmc.core.utils.PaddingUtils;
+import fr.openmc.core.utils.dialog.ButtonType;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NotationDialog {
@@ -104,13 +104,9 @@ public class NotationDialog {
         Component base = Component.empty();
 
         if (notation != null) {
-            double noteActivity = notation.getNoteActivity() != null ? notation.getNoteActivity() : 0;
-            double noteEconomy = notation.getNoteEconomy() != null ? notation.getNoteEconomy() : 0;
-            double noteMilitary = notation.getNoteMilitary() != null ? notation.getNoteMilitary() : 0;
-
-            String activity = String.format("%.2f/" + NotationNote.NOTE_ACTIVITY.getMaxNote(), Math.round(noteActivity * 100.0) / 100.0);
-            String eco = String.format("%.2f/" + NotationNote.NOTE_PIB.getMaxNote(), Math.round(noteEconomy * 100.0) / 100.0);
-            String military = String.format("%.2f/" + NotationNote.NOTE_MILITARY.getMaxNote(), Math.round(noteMilitary * 100.0) / 100.0);
+            String activity = String.format("%.2f/" + NotationNote.NOTE_ACTIVITY.getMaxNote(), Math.round(notation.getNoteActivity() * 100.0) / 100.0);
+            String eco = String.format("%.2f/" + NotationNote.NOTE_PIB.getMaxNote(), Math.round(notation.getNoteEconomy() * 100.0) / 100.0);
+            String military = String.format("%.2f/" + NotationNote.NOTE_MILITARY.getMaxNote(), Math.round(notation.getNoteMilitary() * 100.0) / 100.0);
             String arch = String.format("%.2f/" + NotationNote.NOTE_ARCHITECTURAL.getMaxNote(), Math.round(notation.getNoteArchitectural() * 100.0) / 100.0);
             String coh = String.format("%.2f/" + NotationNote.NOTE_COHERENCE.getMaxNote(), Math.round(notation.getNoteCoherence() * 100.0) / 100.0);
             String total = String.format("%.2f/%.0f", Math.round(notation.getTotalNote() * 100.0) / 100.0, NotationNote.getMaxTotalNote());
@@ -154,18 +150,13 @@ public class NotationDialog {
             return Component.text("Aucun total pour vous");
         }
 
-
-        double noteActivity = notation.getNoteActivity() != null ? notation.getNoteActivity() : 0;
-        double noteEconomy = notation.getNoteEconomy() != null ? notation.getNoteEconomy() : 0;
-        double noteMilitary = notation.getNoteMilitary() != null ? notation.getNoteMilitary() : 0;
-
         return Component.text("§6§lDétails")
                 .appendNewline()
-                .append(Component.text("§8Activité " + noteActivity))
+                .append(Component.text("§8Activité " + notation.getNoteActivity()))
                 .appendNewline()
-                .append(Component.text("§8Économie " + noteEconomy))
+                .append(Component.text("§8Économie " + notation.getNoteEconomy()))
                 .appendNewline()
-                .append(Component.text("§8Militaire " + noteMilitary))
+                .append(Component.text("§8Militaire " + notation.getNoteMilitary()))
                 .appendNewline()
                 .append(Component.text("§8Architecture " + notation.getNoteArchitectural()))
                 .appendNewline()

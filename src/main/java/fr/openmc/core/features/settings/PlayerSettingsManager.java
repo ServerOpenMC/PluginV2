@@ -7,8 +7,6 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.settings.models.PlayerSettingEntity;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -25,20 +23,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-public class PlayerSettingsManager extends Feature implements Listener, DatabaseFeature {
+public class PlayerSettingsManager implements Listener {
 
     private static final Map<UUID, PlayerSettings> playersSettings = new ConcurrentHashMap<>();
     private static Dao<PlayerSettingEntity, Long> playerSettingDao;
-
-    @Override
-    public void init() {
-        PlayerSettingsManager.loadAllPlayerSettings();
-    }
-
-    @Override
-    public void save() {
-        PlayerSettingsManager.saveAllSettings();
-    }
 
     /**
      * Initializes the database connection and creates tables if needed.
@@ -46,8 +34,7 @@ public class PlayerSettingsManager extends Feature implements Listener, Database
      * @param connectionSource the database connection source
      * @throws SQLException if database initialization fails
      */
-    @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         playerSettingDao = DaoManager.createDao(connectionSource, PlayerSettingEntity.class);
         try {
             TableUtils.createTableIfNotExists(connectionSource, PlayerSettingEntity.class);

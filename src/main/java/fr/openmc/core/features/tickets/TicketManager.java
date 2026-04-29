@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Getter
-public class TicketManager extends Feature {
+public class TicketManager {
 
     public static int hoursPerTicket = 8;
     public static final List<PlayerStats> timePlayed = new ArrayList<>();
@@ -24,26 +23,14 @@ public class TicketManager extends Feature {
     private static final Gson gson = new Gson();
     @Setter private static File statsDirectory;
 
-    public TicketManager(File statsDirectory) {
-        TicketManager.setStatsDirectory(statsDirectory);
-    }
-
-    @Override
-    public void init() {
-        TicketManager.loadPlayerStats(statsDirectory);
-    }
-
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     /**
      * Load player statistics from JSON files in the specified directory.
      *
      * @param statsDirectory The {@link File} directory containing player stats JSON files.
      */
     public static void loadPlayerStats(File statsDirectory) {
+        TicketManager.setStatsDirectory(statsDirectory);
+
         if (!statsDirectory.exists() || !statsDirectory.isDirectory()) {
             OMCPlugin.getInstance().getSLF4JLogger().info("Stats directory does not exist or is not a directory.");
             return;

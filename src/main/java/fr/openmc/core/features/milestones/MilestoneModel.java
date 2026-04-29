@@ -37,8 +37,4 @@ public class MilestoneModel {
 	public void incrementProgress() {
 		this.progress++;
 	}
-	
-	public void incrementProgress(int progress) {
-		this.progress += progress;
-	}
 }

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.credits;
 
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,8 +13,7 @@ public enum Credits {
     ANIMATIONS(Material.AMETHYST_BLOCK, "Les Animations", Set.of("iambibi_", "gab400"), Set.of("Tfloa")),
     CUBE(Material.LAPIS_BLOCK, "Le Cube", Set.of("iambibi_")),
     CITY(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_chateau").getBest(), "Les Villes", Set.of("iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"), Set.of("Tfloa", "Gexary")),
-    DREAM(Material.SCULK, "La Dimension des Rêves", Set.of("iambibi_", "gab400"), Set.of("Tfloa"), Set.of("Mcross_bow")),
-    DREAM_MILESTONE(CustomItemRegistry.getByName("omc_dream:singularity").getBest(), "Le Milestone des Rêves", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
+    DREAM(Material.SCULK, "La Dimension des Rêves", Set.of("iambibi_"), Set.of("Tfloa"), Set.of("Mcross_bow")),
     MASCOTS(Material.ZOMBIE_SPAWN_EGG, "Les Mascottes", Set.of("Nocolm")),
     MAYOR(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bank").getBest(), "Les Maires", Set.of("iambibi_"), Set.of("Gexary")),
     CITY_MILESTONE(Material.NETHER_STAR, "Le Milestone des Villes", Set.of("iambibi_")),
