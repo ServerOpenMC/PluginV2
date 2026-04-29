@@ -11,6 +11,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Charge et expose les messages d'aide affichés dans les boss bars.
+ */
 public class HelpConfigManager extends Feature {
 
     @Getter
@@ -19,7 +22,7 @@ public class HelpConfigManager extends Feature {
     private static File configFile;
 
     /**
-     * Initializes the HelpConfigManager by loading the configuration and default messages
+     * Initialise le gestionnaire en chargeant la configuration et les messages par défaut.
      */
     @Override
     public void init() {
@@ -34,8 +37,7 @@ public class HelpConfigManager extends Feature {
     }
 
     /**
-     * Loads configuration from bossbars.yml file
-     * Creates the file if it doesn't exist
+     * Charge la configuration depuis bossbars.yml et crée le fichier si nécessaire.
      */
     private static void loadConfig() {
         if (!configFile.exists()) {
@@ -46,7 +48,7 @@ public class HelpConfigManager extends Feature {
     }
 
     /**
-     * Loads messages from the configuration file
+     * Charge les messages depuis le fichier de configuration.
      */
     private static void loadDefaultMessages() {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
@@ -62,7 +64,7 @@ public class HelpConfigManager extends Feature {
     }
 
     /**
-     * Reloads messages from the configuration file
+     * Recharge les messages depuis le fichier de configuration.
      */
     public static void reloadMessages() {
         helpMessages.clear();

@@ -14,6 +14,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
+/**
+ * Gère l'enregistrement, l'affichage et la mise à jour des boss bars.
+ */
 public class BossbarManager extends Feature {
     private static final List<BaseBossbar> registeredBossbar = new ArrayList<>();
 
@@ -38,6 +41,11 @@ public class BossbarManager extends Feature {
         // nothing to save
     }
 
+    /**
+     * Enregistre une liste de boss bars et les trie par poids décroissant.
+     *
+     * @param bossbar Les boss bars à enregistrer
+     */
     public static void registerBossbars(BaseBossbar... bossbar) {
         registeredBossbar.addAll(Arrays.asList(bossbar));
         registeredBossbar.sort(Comparator.comparingInt(BaseBossbar::weight).reversed());
@@ -133,27 +141,12 @@ public class BossbarManager extends Feature {
         }
     }
 
-    public static void addBossBar(Player player, String id) {
-        BaseBossbar base = getRegistered(id);
-        if (base == null) return;
-
-        activeBossbars.putIfAbsent(player.getUniqueId(), new HashMap<>());
-
-        Map<String, BossBar> playerBars = activeBossbars.get(player.getUniqueId());
-
-        if (playerBars.containsKey(id)) return;
-
-        BossBar bar = BossBar.bossBar(
-                Component.text(),
-                1L,
-                base.color(player),
-                base.style(player)
-        );
-
-        player.showBossBar(bar);
-        playerBars.put(id, bar);
-    }
-
+    /**
+     * Retire une boss bar d'un joueur.
+     *
+     * @param player Le joueur
+     * @param id L'identifiant de la boss bar
+     */
     public static void removeBossBar(Player player, String id) {
         Map<String, BossBar> bars = activeBossbars.get(player.getUniqueId());
         if (bars == null) return;
@@ -165,12 +158,25 @@ public class BossbarManager extends Feature {
         }
     }
 
+    /**
+     * Retourne la boss bar active d'un joueur pour un identifiant donné.
+     *
+     * @param player Le joueur
+     * @param id L'identifiant de la boss bar
+     * @return La boss bar active, ou null si absente
+     */
     public static BossBar getBossBar(Player player, String id) {
         Map<String, BossBar> bars = activeBossbars.get(player.getUniqueId());
         if (bars == null) return null;
         return bars.get(id);
     }
 
+    /**
+     * Active ou désactive une boss bar pour un joueur.
+     *
+     * @param player Le joueur
+     * @param id L'identifiant de la boss bar
+     */
     public static void toggleBossBar(Player player, String id) {
         offBossbars.putIfAbsent(player.getUniqueId(), new HashSet<>());
 
@@ -184,16 +190,33 @@ public class BossbarManager extends Feature {
         }
     }
 
+    /**
+     * Active ou désactive toutes les boss bars pour un joueur.
+     *
+     * @param player Le joueur
+     */
     public static void toggleAllBossBar(Player player) {
         for (BaseBossbar baseBossbar : registeredBossbar) {
             toggleBossBar(player, baseBossbar.id());
         }
     }
 
+    /**
+     * Indique si une boss bar est désactivée pour un joueur.
+     *
+     * @param player Le joueur
+     * @param id L'identifiant de la boss bar
+     * @return true si la boss bar est désactivée, false sinon
+     */
     public static boolean isToggled(Player player, String id) {
         return offBossbars.getOrDefault(player.getUniqueId(), Set.of()).contains(id);
     }
 
+    /**
+     * Supprime toutes les boss bars et l'état de toggle pour un joueur.
+     *
+     * @param player Le joueur
+     */
     public static void removePlayer(Player player) {
         Map<String, BossBar> bars = activeBossbars.remove(player.getUniqueId());
         if (bars != null) {
