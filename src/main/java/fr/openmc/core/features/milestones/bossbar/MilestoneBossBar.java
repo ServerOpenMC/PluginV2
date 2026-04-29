@@ -16,8 +16,8 @@ public class MilestoneBossBar extends BaseBossbar {
     public MilestoneBossBar(Milestone<?> milestone) {
         this.milestone = milestone;
     }
-    public static final String PLACEHOLDER_MILESTONE_BOSSBAR = "§6Étape %s : %s";
-    public static final String PLACEHOLDER_MILESTONE_BOSSBAR_PROGRESS = "§6Étape %s : %s (%s/%s)";
+    public static final String PLACEHOLDER_MILESTONE_BOSSBAR = "Étape %s : %s";
+    public static final String PLACEHOLDER_MILESTONE_BOSSBAR_PROGRESS = "Étape %s : %s (%s/%s)";
 
     @Override
     protected String id() {
@@ -44,7 +44,7 @@ public class MilestoneBossBar extends BaseBossbar {
         if (goal <= 1) {
             bar.name(Component.text(
                     PLACEHOLDER_MILESTONE_BOSSBAR.formatted(currentStep + 1, questName)
-            ));
+            ).color(milestone.getBossBarOptions().textColor()));
 
             bar.progress((float) currentStep / maxStep);
         } else {
@@ -55,7 +55,7 @@ public class MilestoneBossBar extends BaseBossbar {
                             progress,
                             goal
                     )
-            ));
+            ).color(milestone.getBossBarOptions().textColor()));
 
             bar.progress((float) progress / goal);
         }

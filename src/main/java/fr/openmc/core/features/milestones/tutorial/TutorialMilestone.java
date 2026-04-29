@@ -10,6 +10,7 @@ import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -65,6 +66,7 @@ public class TutorialMilestone implements Milestone<TutorialStep> {
     @Override
     public MilestoneBossBarOptions getBossBarOptions() {
         return new MilestoneBossBarOptions(
+                NamedTextColor.GOLD,
                 BossBar.Color.YELLOW,
                 BossBar.Overlay.PROGRESS
         );
