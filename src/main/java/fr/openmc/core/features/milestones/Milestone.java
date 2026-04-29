@@ -1,6 +1,7 @@
 package fr.openmc.core.features.milestones;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

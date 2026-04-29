@@ -29,8 +29,6 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder {
      */
     @Override
     public void init() {
-        QuestProgressSaveManager.init();
-
         loadDefaultQuests();
         QuestProgressSaveManager.loadAllQuestProgress();
     }

@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class TutorialMilestone implements Milestone<TutorialStep> {
 
-    private static HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
+    private static final HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
 
     @Override
     public HashMap<UUID, MilestoneModel> getPlayerData() {
