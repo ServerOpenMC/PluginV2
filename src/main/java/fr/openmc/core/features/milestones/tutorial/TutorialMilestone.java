@@ -8,6 +8,9 @@ import fr.openmc.core.features.milestones.Milestone;
 import fr.openmc.core.features.milestones.MilestoneModel;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.milestones.*;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -21,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class TutorialMilestone implements Milestone<TutorialStep> {
-
     private static HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
 
     @Override

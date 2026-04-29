@@ -11,6 +11,9 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
+import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
+import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
+import fr.openmc.core.features.dream.displays.DreamBossBar;
 import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -23,7 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.*;
 
-public class BossbarManager {
+public class BossbarManager extends Feature {
     private static final List<BaseBossbar> registeredBossbar = new ArrayList<>();
 
     private static final Map<UUID, Map<String, BossBar>> activeBossbars = new HashMap<>();
@@ -45,8 +48,16 @@ public class BossbarManager {
         // nothing to save
     }
 
-        start();
-    }
+    /**
+     * Loads messages from the configuration file
+     */
+    private static void loadDefaultMessages() {
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        helpMessages.clear();
+
+        for (String rawMessage : config.getStringList("messages")) {
+            helpMessages.add(MiniMessage.miniMessage().deserialize(rawMessage));
+        }
 
     public static void registerBossbars(BaseBossbar... bossbar) {
         registeredBossbar.addAll(Arrays.asList(bossbar));

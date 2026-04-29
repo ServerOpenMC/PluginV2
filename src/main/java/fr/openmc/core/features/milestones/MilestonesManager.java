@@ -11,6 +11,8 @@ import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
 import fr.openmc.core.features.quests.objects.Quest;
 import org.bukkit.entity.Player;

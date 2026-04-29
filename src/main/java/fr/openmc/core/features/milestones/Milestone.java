@@ -1,6 +1,8 @@
 package fr.openmc.core.features.milestones;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
+import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -91,5 +93,4 @@ public interface Milestone<T extends Enum<T> & MilestoneStep> {
 		T[] enumStep = this.getStepEnum();
 		return Arrays.stream(enumStep).map(MilestoneStep::getQuest).toList();
 	}
-
 }
