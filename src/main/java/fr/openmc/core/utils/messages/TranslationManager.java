@@ -3,25 +3,27 @@ package fr.openmc.core.utils.messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import fr.openmc.core.utils.MultiResourceBundle;
 import fr.openmc.core.utils.ResourcePacksGenerator;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Gestionnaire des traductions du plugin pour plusieurs langues.
+ * Gère le chargement, conversion et injection des traductions via resource pack.
+ */
 @SuppressWarnings("UnstableApiUsage")
 public class TranslationManager {
+    /** Traductions de fallback (langue par défaut du serveur - Français) */
     public static Map<String, String> fallbackTranslations = new HashMap<>();
 
     private static final Gson GSON = new GsonBuilder()
@@ -29,56 +31,15 @@ public class TranslationManager {
             .create();
 
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
-    private static final ResourceBundle.Control UTF8_NO_FALLBACK_CONTROL = new ResourceBundle.Control() {
-        @Override
-        public Locale getFallbackLocale(String baseName, Locale locale) {
-            return null; // suppression du fallback (en_US, afin d'eviter d'avoir des clés fr écraser)
-        }
 
-        @Override
-        public List<String> getFormats(String baseName) {
-            return ResourceBundle.Control.FORMAT_PROPERTIES;
-        }
-
-        @Override
-        public ResourceBundle newBundle(
-                String baseName,
-                Locale locale,
-                String format,
-                ClassLoader loader,
-                boolean reload
-        ) throws IOException {
-            if (!"java.properties".equals(format)) {
-                return null;
-            }
-
-            String bundleName = toBundleName(baseName, locale);
-            String resourceName = toResourceName(bundleName, "properties");
-
-            InputStream stream = null;
-            if (reload) {
-                var url = loader.getResource(resourceName);
-                if (url != null) {
-                    var connection = url.openConnection();
-                    if (connection != null) {
-                        connection.setUseCaches(false);
-                        stream = connection.getInputStream();
-                    }
-                }
-            } else {
-                stream = loader.getResourceAsStream(resourceName);
-            }
-
-            if (stream == null) {
-                return null;
-            }
-
-            try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
-                return new PropertyResourceBundle(reader);
-            }
-        }
-    };
-
+    /**
+     * Initialise le gestionnaire de traductions et génère les ressource packs.
+     * Charge les traductions en MiniMessage et les convertit en format legacy pour Minecraft.
+     * 
+     * @param context Le contexte de bootstrap du plugin Paper
+     * @param defaultLang La langue par défaut du serveur (fallback)
+     * @param langsSuppoorted Les langues additionnelles à supporter
+     */
     public static void init(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
         // * Generate resource pack
         Path resourcePackFolder;
@@ -92,16 +53,12 @@ public class TranslationManager {
         }
 
         // * Load default lang
-        ResourceBundle defaultBundle = ResourceBundle.getBundle(
-                "translations.lang",
-                defaultLang,
-                UTF8_NO_FALLBACK_CONTROL
+        MultiResourceBundle defaultBundle = new MultiResourceBundle(
+                "translations",
+                defaultLang
         );
 
-        fallbackTranslations = new HashMap<>();
-        for (String key : defaultBundle.keySet()) {
-            fallbackTranslations.put(key, MessageConvertor.toLegacy(defaultBundle.getString(key)));
-        }
+        fallbackTranslations = toLegacyMap(defaultBundle.getAllTranslations());
         try {
             injectLangs(resourcePackFolder, fallbackTranslations, defaultLang);
         } catch (Exception e) {
@@ -112,17 +69,13 @@ public class TranslationManager {
 
         // * Load other supported langs
         for (Locale locale : langsSuppoorted) {
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "translations.lang",
-                    locale,
-                    UTF8_NO_FALLBACK_CONTROL
-            );
+            MultiResourceBundle bundle = new MultiResourceBundle("translations", locale);
 
             Map<String, String> translations = new HashMap<>(fallbackTranslations);
+            Map<String, String> localeTranslations = toLegacyMap(bundle.getAllTranslations());
 
-            for (String key : bundle.keySet()) {
-                translations.put(key, MessageConvertor.toLegacy(bundle.getString(key)));
-            }
+            translations.putAll(localeTranslations);
+
 
             try {
                 injectLangs(resourcePackFolder, translations, locale);
@@ -135,30 +88,17 @@ public class TranslationManager {
         }
     }
 
-    private static void injectLangs(Path resourcePackFolder, Map<String, String> translations, Locale locale) throws IOException {
-        Path langFolder = resourcePackFolder.resolve("assets/minecraft/lang");
-
-        String minecraftLocale = locale.toString().toLowerCase(); // fr_fr, en_us
-
-        JsonObject root = new JsonObject();
-
-        for (Map.Entry<String, String> entry : translations.entrySet()) {
-            root.addProperty(entry.getKey(), entry.getValue());
-        }
-
-        Files.writeString(
-                langFolder.resolve(minecraftLocale + ".json"),
-                GSON.toJson(root)
-        );
-    }
-
-    private static String getFallbackTranslation(String key) {
-        return fallbackTranslations.getOrDefault(key, key);
-    }
-
+    /**
+     * Crée un composant texte traduisible avec arguments.
+     * Le client Minecraft cherchera la traduction dans son resource pack.
+     * 
+     * @param key La clé de traduction (ex: "command.fun.playtime.success")
+     * @param args Les arguments à interpoler dans la traduction
+     * @return Un composant Paper Adventure traduisible (italique désactivé)
+     */
     public static Component translation(String key, ComponentLike... args) {
         String fallback = getFallbackTranslation(key);
-        ComponentLike[] normalizedArgs = normalizeComponent(args);
+        ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(args);
 
         return Component.translatable(
                 key,
@@ -167,14 +107,29 @@ public class TranslationManager {
         ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
+    /**
+     * Retourne une traduction sous forme de String au format legacy.
+     * 
+     * @param key La clé de traduction
+     * @param args Les arguments à interpoler
+     * @return Une chaîne au format legacy (codes §)
+     */
     public static String translationString(String key, ComponentLike... args) {
         return LEGACY_COMPONENT_SERIALIZER.serialize(translation(key, args));
     }
 
+    /**
+     * Crée une liste de lignes traduisibles pour une lore d'objet.
+     * Divise le texte en plusieurs lignes (séparées par \n).
+     * 
+     * @param key La clé de traduction
+     * @param componentsArgs Les arguments de composants à interpoler
+     * @return Une liste de composants, un par ligne (italique désactivé)
+     */
     public static List<Component> translationLore(String key, ComponentLike... componentsArgs) {
         String fallback = fallbackTranslations.getOrDefault(key, key);
 
-        ComponentLike[] normalizedArgs = normalizeComponent(componentsArgs);
+        ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(componentsArgs);
         TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
 
         String legacy = LegacyComponentSerializer.legacySection().serialize(translatable);
@@ -190,19 +145,53 @@ public class TranslationManager {
         return lore;
     }
 
-    private static ComponentLike[] normalizeComponent(ComponentLike... args) {
-        if (args == null || args.length == 0) return new ComponentLike[0];
-
-        ComponentLike[] normalized = new ComponentLike[args.length];
-        for (int i = 0; i < args.length; i++) {
-            ComponentLike like = args[i];
-            if (like == null) {
-                normalized[i] = Component.empty();
-                continue;
-            }
-            Component component = like.asComponent();
-            normalized[i] = component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE).colorIfAbsent(NamedTextColor.WHITE);
+    /**
+     * Convertit une carte de traductions du format MiniMessage au format legacy.
+     * 
+     * @param miniMessageMap La carte de traductions en format MiniMessage
+     * @return Une nouvelle carte avec les valeurs converties en format legacy (§)
+     */
+    private static Map<String, String> toLegacyMap(Map<String, String> miniMessageMap) {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, String> entry : miniMessageMap.entrySet()) {
+            result.put(entry.getKey(), MessageConvertor.toLegacy(entry.getValue()));
         }
-        return normalized;
+        return result;
+    }
+
+    /**
+     * Récupère la traduction de secours (fallback) pour une clé.
+     * 
+     * @param key La clé de traduction
+     * @return La traduction de fallback, ou la clé si elle n'existe pas
+     */
+    private static String getFallbackTranslation(String key) {
+        return fallbackTranslations.getOrDefault(key, key);
+    }
+
+    /**
+     * Génère le fichier JSON de traductions pour une locale donnée.
+     * Crée un fichier dans assets/minecraft/lang/{locale}.json du resource pack.
+     * 
+     * @param resourcePackFolder Le chemin racine du resource pack
+     * @param translations La carte des traductions à injecter
+     * @param locale La locale cible (ex: fr_FR, en_US)
+     * @throws IOException En cas d'erreur lors de l'écriture du fichier
+     */
+    private static void injectLangs(Path resourcePackFolder, Map<String, String> translations, Locale locale) throws IOException {
+        Path langFolder = resourcePackFolder.resolve("assets/minecraft/lang");
+
+        String minecraftLocale = locale.toString().toLowerCase(); // fr_fr, en_us
+
+        JsonObject root = new JsonObject();
+
+        for (Map.Entry<String, String> entry : translations.entrySet()) {
+            root.addProperty(entry.getKey(), entry.getValue());
+        }
+
+        Files.writeString(
+                langFolder.resolve(minecraftLocale + ".json"),
+                GSON.toJson(root)
+        );
     }
 }
