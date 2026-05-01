@@ -12,14 +12,16 @@ import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.serializer.BukkitSerializer;
+import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
+import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -91,17 +93,18 @@ public class DreamPlayer {
 
     public void scheduleTimeTask() {
         this.timeTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
-            this.dreamTime -= 1;
+			if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
+			if (DreamMilestoneDialog.isPlayerInMilestoneDialog(player)) return;
+			if (dreamTime <= 0) {
+				Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+						Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
+				);
+				this.cancelTimeTask();
+				return;
+			}
 
-            if (dreamTime <= 0) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                        Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
-                );
-                this.cancelTimeTask();
-                return;
-            }
-
-            DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
+			this.dreamTime -= 1;
+			DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
         }, 0L, 20L);
     }
 
@@ -122,6 +125,8 @@ public class DreamPlayer {
             boolean isInBaseCamp = DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.BASE_CAMP);
             double resistance = ColdManager.calculateColdResistance(player);
             boolean inColdBiome = player.getLocation().getBlock().getBiome().equals(DreamBiome.GLACITE_GROTTO.getBiome());
+
+            if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)) return;
 
             if (isInBaseCamp) {
                 cold = Math.max(0, cold - 15);

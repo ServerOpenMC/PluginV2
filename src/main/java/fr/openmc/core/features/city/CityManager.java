@@ -10,6 +10,9 @@ import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
@@ -26,8 +29,8 @@ import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.view.CityViewManager;
-import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -37,13 +40,14 @@ import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CityManager {
+public class CityManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
-    public static void init() {
+    @Override
+    public void init() {
         loadCities();
 
         CommandsManager.getHandler().register(
@@ -73,13 +77,33 @@ public class CityManager {
         CityMilestoneManager.init();
     }
 
+    @Override
+    public void save() {
+        // - War
+        WarManager.saveWarHistories();
+
+        // - CityStatistics
+        CityStatisticsManager.saveCityStatistics();
+
+        // - Notation des Villes
+        NotationManager.saveNotations();
+
+        // - Maires
+        MayorManager.saveMayorConstant();
+        MayorManager.savePlayersVote();
+        MayorManager.saveMayorCandidates();
+        MayorManager.saveCityMayors();
+        MayorManager.saveCityLaws();
+    }
+
     private static Dao<DBCity, String> citiesDao;
     private static Dao<DBCityMember, String> membersDao;
     private static Dao<DBCityPermission, String> permissionsDao;
     private static Dao<DBCityClaim, String> claimsDao;
     private static Dao<DBCityChest, String> chestsDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, DBCity.class);
         citiesDao = DaoManager.createDao(connectionSource, DBCity.class);
 
@@ -94,6 +118,12 @@ public class CityManager {
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityChest.class);
         chestsDao = DaoManager.createDao(connectionSource, DBCityChest.class);
+
+        WarManager.initDB(connectionSource);
+        NotationManager.initDB(connectionSource);
+        MayorManager.initDB(connectionSource);
+        CityRankManager.initDB(connectionSource);
+        CityStatisticsManager.initDB(connectionSource);
     }
 
     // ==================== Database Methods ====================

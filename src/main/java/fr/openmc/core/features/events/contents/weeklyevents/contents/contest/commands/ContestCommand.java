@@ -13,10 +13,10 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.ContributionMenu;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.VoteMenu;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -45,9 +45,9 @@ public class ContestCommand {
 
         WeeklyEventPhase activePhase = contest.getActivePhase();
 
-        if (activePhase == ContestPhase.VOTE_CAMP.getPhase()) {
+        if (activePhase.equals(ContestPhase.VOTE_CAMP.getPhase())) {
             new VoteMenu(player).open();
-        } else if (activePhase == ContestPhase.TRADE_PHASE.getPhase()) {
+        } else if (activePhase.equals(ContestPhase.TRADE_PHASE.getPhase())) {
             if (ContestManager.dataPlayer.get(player.getUniqueId()) != null) {
                 new ContributionMenu(player).open();
             } else {
@@ -97,6 +97,7 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
+    @CommandPermission("omc.admin.commands.contest.settrade")
     public void setTrade(
             Player player,
             @Named("trade") @SuggestWith(TradeContestAutoComplete.class) String trade,

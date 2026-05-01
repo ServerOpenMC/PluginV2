@@ -8,11 +8,11 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.serializer.BukkitSerializer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.utils.InputUtils.pluralize;
+import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class PendingMailbox extends PaginatedMenu {
     public PendingMailbox(Player player) {

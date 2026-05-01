@@ -5,12 +5,13 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
-import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import org.bukkit.Location;
 
@@ -20,14 +21,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class HomesManager {
-
-    private static boolean isInitialized = false;
+public class HomesManager extends Feature implements DatabaseFeature {
 
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
 
-    public static void init() {
+    @Override
+    public void init() {
         DisabledWorldHome.init();
 
         CommandsManager.getHandler().register(
@@ -42,11 +42,10 @@ public class HomesManager {
 
         loadHomeLimit();
         loadHomes();
-
-        isInitialized = true;
     }
 
-    public static void saveHomesData() {
+    @Override
+    public void save() {
         saveHomes();
         saveHomeLimit();
     }
@@ -114,7 +113,8 @@ public class HomesManager {
     private static Dao<Home, UUID> homesDao;
     private static Dao<HomeLimit, UUID> limitsDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Home.class);
         homesDao = DaoManager.createDao(connectionSource, Home.class);
 
@@ -135,10 +135,6 @@ public class HomesManager {
     }
 
     private static void saveHomeLimit() {
-        if (!isInitialized) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Tentative de sauvegarde des HomeLimits avant l'initialisation du manager, opération ignorée.");
-            return;
-        }
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
             limitsDao.create(homeLimits);
@@ -156,10 +152,6 @@ public class HomesManager {
     }
 
     private static void saveHomes() {
-        if (!isInitialized) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Tentative de sauvegarde des Homes avant l'initialisation du manager, opération ignorée.");
-            return;
-        }
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Home.class);
             for (Home home : homes) {

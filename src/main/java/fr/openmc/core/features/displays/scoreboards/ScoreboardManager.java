@@ -1,28 +1,32 @@
 package fr.openmc.core.features.displays.scoreboards;
 
-import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.api.scoreboard.repository.impl.ObjectCacheRepositoryImpl;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
 import fr.openmc.core.features.dream.displays.DreamScoreboard;
+import fr.openmc.core.hooks.LuckPermsHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.*;
 
-public class ScoreboardManager implements Listener {
+public class ScoreboardManager extends Feature implements Listener, NotInUnitTest, LoadIfEnable<LuckPermsHook> {
     public static final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
     private static final List<BaseScoreboard> scoreboards = new ArrayList<>();
     private static GlobalTeamManager globalTeamManager;
 
     private static final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
 
-    public static void init() {
+    @Override
+    public void init() {
         OMCPlugin.registerEvents(new ScoreboardListener());
 
         registerScoreboard(
@@ -39,8 +43,13 @@ public class ScoreboardManager implements Listener {
                 20L // every second
         );
 
-        if (LuckPermsHook.isHasLuckPerms())
+        if (LuckPermsHook.isEnable())
             globalTeamManager = new GlobalTeamManager(boardCache);
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     public static void updateAllBoards() {
@@ -72,7 +81,7 @@ public class ScoreboardManager implements Listener {
             active.update(player, board);
             playerUpdates.put(active, now);
 
-            if (LuckPermsHook.isHasLuckPerms() && globalTeamManager != null) {
+            if (LuckPermsHook.isEnable() && globalTeamManager != null) {
                 globalTeamManager.updatePlayerTeam(player);
             }
         });
@@ -93,7 +102,7 @@ public class ScoreboardManager implements Listener {
             }
         }
 
-        if (LuckPermsHook.isHasLuckPerms() && globalTeamManager != null) {
+        if (LuckPermsHook.isEnable() && globalTeamManager != null) {
             globalTeamManager.updatePlayerTeam(player);
         }
     }

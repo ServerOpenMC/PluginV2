@@ -6,6 +6,8 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.analytics.Stats;
 import org.bukkit.Bukkit;
 
@@ -14,10 +16,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TransactionsManager {
+public class TransactionsManager extends Feature implements DatabaseFeature {
     private static Dao<Transaction, String> transactionsDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    protected void init() {
+        // nothing to init
+    }
+
+    @Override
+    protected void save() {
+        // nothing to save
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Transaction.class);
         transactionsDao = DaoManager.createDao(connectionSource, Transaction.class);
     }

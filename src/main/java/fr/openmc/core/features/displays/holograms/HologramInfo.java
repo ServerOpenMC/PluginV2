@@ -1,6 +1,6 @@
 package fr.openmc.core.features.displays.holograms;
 
-import fr.openmc.core.utils.entities.TextDisplay;
+import fr.openmc.core.utils.world.entities.TextDisplay;
 
 import java.io.File;
 

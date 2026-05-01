@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.generation.populators.glacite;
 
-import fr.openmc.core.utils.structure.FeaturesPopulator;
+import fr.openmc.core.utils.world.structure.FeaturesPopulator;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;

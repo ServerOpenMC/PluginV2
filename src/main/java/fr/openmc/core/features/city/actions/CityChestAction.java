@@ -2,10 +2,10 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 

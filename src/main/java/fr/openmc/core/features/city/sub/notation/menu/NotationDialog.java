@@ -1,13 +1,13 @@
 package fr.openmc.core.features.city.sub.notation.menu;
 
+import fr.openmc.api.input.dialog.ButtonType;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
-import fr.openmc.core.utils.PaddingUtils;
-import fr.openmc.core.utils.dialog.ButtonType;
+import fr.openmc.core.utils.text.PaddingUtils;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
+import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NotationDialog {

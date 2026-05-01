@@ -7,9 +7,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.DirectionUtils;
 import fr.openmc.core.utils.MathUtils;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.DirectionUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 

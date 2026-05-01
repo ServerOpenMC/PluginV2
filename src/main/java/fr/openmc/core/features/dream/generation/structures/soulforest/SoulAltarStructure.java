@@ -4,7 +4,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.generation.structures.DreamStructurePopulator;
-import fr.openmc.core.utils.structure.SchematicsUtils;
+import fr.openmc.core.utils.world.structure.SchematicsUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;

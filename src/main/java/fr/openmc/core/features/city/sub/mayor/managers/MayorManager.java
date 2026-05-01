@@ -6,8 +6,6 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.hooks.FancyNpcsHook;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -24,6 +22,8 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -89,11 +89,11 @@ public class MayorManager {
                 new MilitaryDissuasion(),
                 new IdyllicRain());
 
-        if (ItemsAdderHook.isHasItemAdder()) {
+        if (ItemsAdderHook.isEnable()) {
             OMCPlugin.registerEvents(
                     new UrneListener());
         }
-        if (FancyNpcsHook.isHasFancyNpc()) {
+        if (FancyNpcsHook.isEnable()) {
             OMCPlugin.registerEvents(
                     new NPCManager());
         }
@@ -144,7 +144,12 @@ public class MayorManager {
                 constantsDao.create(constant);
             }
 
-            phaseMayor = constant.getPhase();
+            if (constant.getPhase() != 1 && constant.getPhase() != 2) {
+                phaseMayor = 1;
+            } else {
+                phaseMayor = constant.getPhase();
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -152,6 +157,10 @@ public class MayorManager {
 
     public static void saveMayorConstant() {
         try {
+            if (phaseMayor != 1 && phaseMayor != 2) {
+                phaseMayor = 1;
+            }
+
             constantsDao.createOrUpdate(new MayorConstant(phaseMayor));
         } catch (SQLException e) {
             throw new RuntimeException(e);

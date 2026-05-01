@@ -1,6 +1,7 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,15 +11,21 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class SpawnManager {
+public class SpawnManager extends Feature {
 
     private static File spawnFile;
     private static FileConfiguration spawnConfig;
     @Getter private static Location spawnLocation;
 
-    public static void init() {
+    @Override
+    public void init() {
         spawnFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "spawn.yml");
         loadSpawnConfig();
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     private static void loadSpawnConfig() {

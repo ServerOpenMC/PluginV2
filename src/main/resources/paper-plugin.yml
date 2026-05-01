@@ -14,13 +14,13 @@ dependencies:
       required: false
     LuckPerms:
       load: BEFORE
-      required: false
+      required: true
     ItemsAdder:
       load: BEFORE
       required: false
     ProtocolLib:
       load: BEFORE
-      required: false
+      required: true
     WorldGuard:
       load: BEFORE
       required: false

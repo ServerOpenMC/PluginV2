@@ -1,17 +1,17 @@
 package fr.openmc.core.features.displays.scoreboards;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.scoreboard.SternalBoard;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
-import static fr.openmc.core.utils.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 
 public abstract class BaseScoreboard {
-    protected static final boolean canShowLogo = ItemsAdderHook.isHasItemAdder();
+    protected static final boolean canShowLogo = ItemsAdderHook.isEnable();
 
     /**
      * Initialise le scoreboard pour un joueur

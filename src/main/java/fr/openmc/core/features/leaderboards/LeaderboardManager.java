@@ -2,6 +2,9 @@ package fr.openmc.core.features.leaderboards;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
@@ -10,8 +13,8 @@ import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.entities.TextDisplay;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.world.entities.TextDisplay;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -38,7 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.*;
 
-public class LeaderboardManager {
+public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter
@@ -49,7 +52,7 @@ public class LeaderboardManager {
     private static final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
     @Getter
     private static final Map<Integer, Map.Entry<String, String>> pumpkinCountMap = new TreeMap<>();
-    private static final File leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
+    private static File leaderBoardFile;
     @Getter
     private static Location contributorsHologramLocation;
     @Getter
@@ -68,10 +71,27 @@ public class LeaderboardManager {
     private static TextDisplay playTimeHologram;
     private static TextDisplay pumpkinCountHologram;
 
-    public static void init() {
+    private static File getLeaderBoardFile() {
+        if (leaderBoardFile == null) {
+            OMCPlugin plugin = OMCPlugin.getInstance();
+            if (plugin == null) {
+                throw new IllegalStateException("OMCPlugin instance not initialized");
+            }
+            leaderBoardFile = new File(plugin.getDataFolder(), "data/leaderboards.yml");
+        }
+        return leaderBoardFile;
+    }
+
+    @Override
+    public void init() {
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
         enable();
+    }
+
+    @Override
+    public void save() {
+        // nothing to save
     }
 
     /**
@@ -319,6 +339,7 @@ public class LeaderboardManager {
      * @throws IOException If an error occurs while saving the configuration.
      */
     public static void setHologramLocation(String name, Location location) throws IOException {
+        File leaderBoardFile = getLeaderBoardFile();
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set(name + "-location", location);
         leaderBoardConfig.save(leaderBoardFile);
@@ -343,6 +364,7 @@ public class LeaderboardManager {
      * @throws IOException If an error occurs while saving the configuration.
      */
     public static void setScale(float scale) throws IOException {
+        File leaderBoardFile = getLeaderBoardFile();
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set("scale", scale);
         leaderBoardConfig.save(leaderBoardFile);
@@ -368,6 +390,7 @@ public class LeaderboardManager {
      * Loads the leaderboard configuration, including hologram locations.
      */
     private static void loadLeaderBoardConfig() {
+        File leaderBoardFile = getLeaderBoardFile();
         if (!leaderBoardFile.exists()) {
             leaderBoardFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/leaderboards.yml", false);

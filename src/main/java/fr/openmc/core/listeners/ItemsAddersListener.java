@@ -10,7 +10,7 @@ public class ItemsAddersListener implements Listener {
     @EventHandler
     public void onItemsRegistry(ItemsAdderLoadDataEvent event) {
         if (event.getCause().equals(ItemsAdderLoadDataEvent.Cause.FIRST_LOAD))
-            OMCPlugin.getInstance().loadWithItemsAdder();
+            OMCPlugin.getInstance().loadAfterItemsAdder();
     }
 
 }
