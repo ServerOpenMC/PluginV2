@@ -19,7 +19,10 @@ import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DamageResistant;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.keys.tags.DamageTypeTagKeys;
+import io.papermc.paper.registry.tag.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -30,6 +33,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Registry;
+import org.bukkit.damage.DamageType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -124,7 +129,15 @@ public class HalloweenManager extends Feature implements DatabaseFeature {
                     customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
                     customPumpkin.unsetData(DataComponentTypes.FOOD);
 
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
+
+                    Registry<DamageType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE);
+                    Tag<DamageType> fireTag = registry.getTag(DamageTypeTagKeys.IS_FIRE);
+
+                    customPumpkin.setData(
+                            DataComponentTypes.DAMAGE_RESISTANT,
+                            DamageResistant.damageResistant(fireTag)
+                    );
+
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte de la Victoire (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
@@ -145,7 +158,14 @@ public class HalloweenManager extends Feature implements DatabaseFeature {
                     customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
                     customPumpkin.unsetData(DataComponentTypes.FOOD);
 
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
+                    Registry<DamageType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE);
+                    Tag<DamageType> fireTag = registry.getTag(DamageTypeTagKeys.IS_FIRE);
+
+                    customPumpkin.setData(
+                            DataComponentTypes.DAMAGE_RESISTANT,
+                            DamageResistant.damageResistant(fireTag)
+                    );
+
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte de l'Excellence (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
@@ -167,7 +187,14 @@ public class HalloweenManager extends Feature implements DatabaseFeature {
                     customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
                     customPumpkin.unsetData(DataComponentTypes.FOOD);
 
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
+                    Registry<DamageType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE);
+                    Tag<DamageType> fireTag = registry.getTag(DamageTypeTagKeys.IS_FIRE);
+
+                    customPumpkin.setData(
+                            DataComponentTypes.DAMAGE_RESISTANT,
+                            DamageResistant.damageResistant(fireTag)
+                    );
+
                     customPumpkin.editMeta(meta -> {
                         meta.itemName(Component.text("La Tarte du Mérite (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
                         meta.lore(List.of(
