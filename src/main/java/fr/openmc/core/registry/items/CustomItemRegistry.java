@@ -90,9 +90,9 @@ public class CustomItemRegistry {
         registerItem(new AywenCap("omc_items:aywen_cap"));
 
         /* Hammer */
-        registerItem(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
-        registerItem(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
-        registerItem(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
+        registerItem(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0, 1280)); // 20 stacks
+        registerItem(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1, 3200)); // 50 stacks
+        registerItem(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2, 12800)); // 200 stacks
     }
 
     public static void register(String name, CustomItem item) {

@@ -3,6 +3,11 @@ package fr.openmc.core.registry.items.contents;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -10,8 +15,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Hammer extends CustomItem implements BlockBreakableItem {
 
@@ -22,12 +32,16 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
     private final int radius;
     @Getter
     private final int depth;
+    private final int maxAywenite;
 
-    public Hammer(String namespacedId, Material vanillaMaterial, int radius, int depth) {
+    private static final NamespacedKey AYWENITE_HAMMER_KEY = new NamespacedKey("openmc", "aywenite_hammer_amount");
+
+    public Hammer(String namespacedId, Material vanillaMaterial, int radius, int depth, int maxAywenite) {
         super(namespacedId);
         this.vanillaMaterial = vanillaMaterial;
         this.radius = radius;
         this.depth = depth;
+        this.maxAywenite = maxAywenite;
     }
 
     private static BlockFace getTargetFace(Player player) {
@@ -99,12 +113,51 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
         ItemStack tool = player.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
 
+        int currentAywenite = getAywenite(tool);
+        if (currentAywenite < 1) {
+            MessagesManager.sendMessage(player, Component.text("§cVotre marteau est à court d'aywenite !"), Prefix.OPENMC, MessageType.ERROR, true);
+            event.setCancelled(true);
+            return;
+        }
+
         Block origin = event.getBlock();
         Material targetType = origin.getType();
-
         if (!isBreakable(targetType)) return;
+
+        setAywenite(tool, currentAywenite - 1);
 
         BlockFace face = getTargetFace(player).getOppositeFace();
         breakArea(player, origin, face, tool, targetType);
+    }
+
+    public int getAywenite(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return 0;
+        return meta.getPersistentDataContainer().getOrDefault(AYWENITE_HAMMER_KEY, PersistentDataType.INTEGER, 0);
+    }
+
+    public void setAywenite(ItemStack item, int value) {
+        item.editMeta(meta -> {
+            meta.getPersistentDataContainer().set(AYWENITE_HAMMER_KEY, PersistentDataType.INTEGER, value);
+
+            List<Component> lore = meta.lore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+
+            Component ayweniteLine = Component.text("§7Aywenite: §e" + value + "/" + maxAywenite)
+                    .decoration(TextDecoration.ITALIC, false);
+
+            if (lore.size() <= 1) {
+                if (lore.isEmpty()) {
+                    lore.add(Component.text("§8Marteau de minage zone"));
+                }
+                lore.add(ayweniteLine);
+            } else {
+                lore.set(1, ayweniteLine);
+            }
+
+            meta.lore(lore);
+        });
     }
 }
