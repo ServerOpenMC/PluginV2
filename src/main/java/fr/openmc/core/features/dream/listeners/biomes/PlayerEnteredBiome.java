@@ -3,12 +3,13 @@ package fr.openmc.core.features.dream.listeners.biomes;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.events.PlayerEnterBiomeEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
-import fr.openmc.core.utils.ParticleUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -55,7 +56,9 @@ public class PlayerEnteredBiome implements Listener {
         Biome biome = player.getLocation().getBlock().getBiome();
         int index = BIOME_ORDER.indexOf(biome);
         if (index == -1) return;
-
+        
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterBiomeEvent(player, biome));
+        
         DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
         int unlocked = cacheData == null ? 0 : cacheData.getProgressionOrb();
 
@@ -80,7 +83,7 @@ public class PlayerEnteredBiome implements Listener {
                             return;
                         }
 
-                        applyFog(player);
+                        applyEffects(player);
                         spawnParticles(player);
                     },
                     0L, 40L
@@ -96,8 +99,9 @@ public class PlayerEnteredBiome implements Listener {
         if (task != null) task.cancel();
     }
 
-    private void applyFog(Player player) {
+    private void applyEffects(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1, true, false));
+		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false));
     }
 
     private void spawnParticles(Player player) {

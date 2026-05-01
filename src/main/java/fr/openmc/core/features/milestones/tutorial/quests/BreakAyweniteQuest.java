@@ -1,7 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneType;
@@ -12,9 +11,10 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,7 +55,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
     public void onPlayerBreakBlock(BlockBreakEvent event) {
         if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
-        if (!ItemsAdderHook.isHasItemAdder()) return;
+        if (!ItemsAdderHook.isEnable()) return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
         if (customBlock != null && customBlock.getNamespacedID() != null &&

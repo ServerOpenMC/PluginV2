@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class GlaciteOrb extends DreamItem {
     /**
@@ -31,7 +32,7 @@ public class GlaciteOrb extends DreamItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         return ItemStack.of(Material.HEART_OF_THE_SEA);
     }
 }

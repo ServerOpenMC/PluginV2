@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;

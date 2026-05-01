@@ -1,13 +1,13 @@
 package fr.openmc.core.features.city.sub.notation.menu;
 
+import fr.openmc.api.input.dialog.ButtonType;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
-import fr.openmc.core.utils.dialog.ButtonType;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;

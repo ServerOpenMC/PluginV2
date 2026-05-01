@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.mascots.models;
 
-import fr.openmc.core.utils.EntityUtils;
 import fr.openmc.core.utils.EnumUtils;
+import fr.openmc.core.utils.world.EntityUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.adminshop.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.DialogInput;
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,7 +9,7 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;

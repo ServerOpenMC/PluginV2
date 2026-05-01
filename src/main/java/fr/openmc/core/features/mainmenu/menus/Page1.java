@@ -13,20 +13,23 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.contest.commands.ContestCommand;
-import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.homes.command.TpHomeCommand;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -107,9 +110,9 @@ public class Page1 implements Menu {
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));
 
         ItemStack contestItem = new ItemStack(Material.PAPER);
-        Contest data = ContestManager.data;
-        int phase = data.getPhase();
-        if (phase != 1) {
+        ContestData data = ContestManager.data;
+
+        if (WeeklyEventsManager.getCurrentEvent() instanceof Contest && WeeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase()) {
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
                 meta.itemName(data.getCampVSComponent());

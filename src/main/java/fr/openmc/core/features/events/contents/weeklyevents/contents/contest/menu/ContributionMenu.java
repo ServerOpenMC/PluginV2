@@ -1,0 +1,161 @@
+package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu;
+
+import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
+import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.ColorUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+
+import static fr.openmc.core.utils.bukkit.ItemUtils.isSimilar;
+
+public class ContributionMenu extends Menu {
+
+    public ContributionMenu(Player owner) {
+        super(owner);
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "Menu des Contests - Contributions";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGE;
+    }
+
+    @Override
+    public void onInventoryClick(InventoryClickEvent click) {
+        // empty
+    }
+
+    @Override
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Player player = getOwner();
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+
+        String campName = ContestPlayerManager.getPlayerCampName(player);
+        NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
+        Material m = ColorUtils.getMaterialFromColor(campColor);
+
+        List<Component> loreInfo = Arrays.asList(
+                Component.text("§7Apprenez en plus sur les contests !"),
+                Component.text("§7Le déroulement, Les résultats, ..."),
+                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+        );
+
+        List<Component> loreContribute = Arrays.asList(
+                Component.text("§7Donner vos §bcoquillages de contest"),
+                Component.text("§7Pour faire gagner ta ")
+                        .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
+                Component.text("§e§lCliquez pour verser tout vos coquillages")
+        );
+
+        List<Component> loreTrade = Arrays.asList(
+                Component.text("§7Faites des échanges contre des §bcoquillages de contest"),
+                Component.text("§7Utile pour faire gagner ta ")
+                        .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
+                Component.text("§e§lCliquez pour acceder au menu des échanges")
+        );
+
+        List<Component> loreRang = Arrays.asList(
+                Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
+                Component.text("§7Progression §8: ")
+                        .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
+                        .append(Component.text("§8/"))
+                        .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
+                Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
+        );
+
+        String namespaceShellContest = "omc_contest:contest_shell";
+        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
+
+        inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+            itemMeta.displayName(Component.text("§6§lVotre titre"));
+            itemMeta.lore(loreRang);
+        }));
+
+        inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
+            itemMeta.displayName(Component.text("§7Les échanges"));
+            itemMeta.lore(loreTrade);
+        }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
+
+        inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
+            itemMeta.lore(loreContribute);
+        }).setOnClick(inventoryClickEvent -> {
+            if (!ItemsAdderHook.isEnable()) {
+                MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloquée. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                return;
+            }
+
+            try {
+                ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
+                int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && isSimilar(shellContestItem, is)).mapToInt(ItemStack::getAmount).sum();
+
+                if (ItemUtils.hasEnoughItems(player, shellContestItem, shellCount)) {
+                    ItemUtils.removeItemsFromInventory(player, shellContestItem, shellCount);
+
+                    int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
+                    int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());
+
+                    ContestPlayerManager.setPointsPlayer(player.getUniqueId(), newPlayerPoints);
+                    String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
+                    if (Objects.equals(pointCamp, "points1")) {
+                        ContestManager.data.setPoints1(updatedCampPoints);
+                    } else if (Objects.equals(pointCamp, "points2")) {
+                        ContestManager.data.setPoints2(updatedCampPoints);
+                    }
+                    
+                    MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " coquillage(s) de contest§7 pour votre team !"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                } else {
+                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de coquillage de contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }));
+
+        inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.lore(loreInfo);
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
+
+        return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+}

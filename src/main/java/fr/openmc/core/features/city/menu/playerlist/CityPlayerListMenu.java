@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-import fr.openmc.api.input.DialogInput;
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -14,12 +14,12 @@ import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.SkullUtils;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.InputUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_PLAYERNAME;
+import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_PLAYERNAME;
 
 public class CityPlayerListMenu extends PaginatedMenu {
 

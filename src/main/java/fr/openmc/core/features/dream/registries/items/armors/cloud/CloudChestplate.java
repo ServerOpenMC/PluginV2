@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.registries.items.armors.cloud;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import lombok.NonNull;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +39,7 @@ public class CloudChestplate extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.IRON_CHESTPLATE);
 
         item.getItemMeta().itemName(Component.text("Plastron des Nuages"));

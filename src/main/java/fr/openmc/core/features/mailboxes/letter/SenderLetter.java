@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
-import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
-import static fr.openmc.core.utils.InputUtils.pluralize;
+import static fr.openmc.core.utils.text.DateUtils.formatRelativeDate;
+import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 @Getter
 public class SenderLetter extends ItemStack {

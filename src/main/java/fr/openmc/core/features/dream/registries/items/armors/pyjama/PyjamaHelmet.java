@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 public class PyjamaHelmet extends DreamItem {
     public PyjamaHelmet(String name) {
@@ -27,7 +28,7 @@ public class PyjamaHelmet extends DreamItem {
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.LEATHER_HELMET);
 
         item.getItemMeta().itemName(Component.text("Casque de Pyjama"));

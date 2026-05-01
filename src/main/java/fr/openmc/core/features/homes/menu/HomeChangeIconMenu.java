@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.DialogInput;
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -11,10 +11,10 @@ import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class HomeChangeIconMenu extends PaginatedMenu {
 

@@ -3,8 +3,8 @@ package fr.openmc.core.features.dream.mecanism.cold;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.utils.ParticleUtils;
-import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.bukkit.PlayerUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,8 +15,10 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ColdManager {
 
@@ -31,13 +33,12 @@ public class ColdManager {
 
     public static int calculateColdResistance(Player player) {
         int sommeColdResistance = 0;
-        EntityEquipment equipement = player.getEquipment();
 
-        if (equipement == null) return 0;
-
-        ItemStack[] armorContents = equipement.getArmorContents();
+        List<ItemStack> armorContents = Arrays.stream(player.getEquipment().getArmorContents()).toList();
+        if (armorContents.isEmpty()) return 0;
 
         for (ItemStack item : armorContents) {
+            if (item == null) continue;
             if (DreamItemRegistry.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
                 Integer coldResistance = dreamEquipableItem.getColdResistance();
 

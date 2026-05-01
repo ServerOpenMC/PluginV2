@@ -4,7 +4,7 @@ import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
-import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -218,6 +218,11 @@ public final class MenuLib implements Listener {
         if (!(e.getPlayer() instanceof  Player player)) return;
         if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu) {
             paginatedMenu.onClose(e);
+            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PaginatedMenu)) {
+                    MenuLib.clearHistory(player);
+                }
+            }, 1L);
             return;
         }
 

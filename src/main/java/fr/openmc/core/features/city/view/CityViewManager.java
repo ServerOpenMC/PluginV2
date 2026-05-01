@@ -1,14 +1,14 @@
 package fr.openmc.core.features.city.view;
 
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.utils.ChunkPos;
-import fr.openmc.core.utils.ParticleUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.hooks.WorldGuardHook;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.world.chunk.ChunkPos;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

@@ -7,6 +7,7 @@ import fr.openmc.core.registry.items.options.EquipableItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -44,7 +45,7 @@ public class DreamHelmet extends DreamItem implements DreamEquipableItem, Equipa
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NETHERITE_HELMET);
 
         item.getItemMeta().itemName(Component.text("Casque Onirique"));

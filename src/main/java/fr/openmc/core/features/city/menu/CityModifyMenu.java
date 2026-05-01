@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.DialogInput;
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,11 +12,11 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.InputUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
+import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 public class CityModifyMenu extends Menu {
 

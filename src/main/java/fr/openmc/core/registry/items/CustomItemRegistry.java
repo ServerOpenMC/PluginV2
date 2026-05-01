@@ -3,6 +3,7 @@ package fr.openmc.core.registry.items;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
 import io.papermc.paper.persistence.PersistentDataContainerView;
@@ -145,16 +146,16 @@ public class CustomItemRegistry {
     @Nullable
     public static CustomItem getByItemStack(ItemStack stack) {
         PersistentDataContainerView view = stack.getPersistentDataContainer();
-        String name = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+        String id = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
 
-        if (name == null) {
+        if (id == null && ItemsAdderHook.isEnable()) {
             CustomStack itemIa = CustomStack.byItemStack(stack);
 
             if (itemIa == null) return null;
 
             return getByName(itemIa.getNamespacedID());
         } else {
-            return getByName(name);
+            return getByName(id);
         }
     }
 

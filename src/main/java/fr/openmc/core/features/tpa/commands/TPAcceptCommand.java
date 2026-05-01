@@ -2,10 +2,10 @@ package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
-import fr.openmc.core.utils.PlayerUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.PlayerUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -1,5 +1,6 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.Assertions;

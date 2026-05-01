@@ -2,9 +2,9 @@ package fr.openmc.core.features.cube;
 
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -45,6 +45,41 @@ public class CubeCommands {
 
         cube.startCorruptedBubble();
         MessagesManager.sendMessage(player, Component.text("Bulle corrompue lancé"), Prefix.STAFF, MessageType.SUCCESS, false);
+    }
+
+    @Subcommand("stopShock")
+    @CommandPermission("omc.admins.commands.cube.shock")
+    public void stopShock(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
+        Cube cube = getInputCubes(player, cubeLoc);
+
+        if (cube == null) return;
+
+        MessagesManager.sendMessage(player, Component.text("Choc éléctro-magnétique arreté"), Prefix.STAFF, MessageType.SUCCESS, false);
+    }
+
+    @Subcommand("stopBubble")
+    @CommandPermission("omc.admins.commands.cube.bubble")
+    public void stopCorruptedBubble(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
+        Cube cube = getInputCubes(player, cubeLoc);
+
+        if (cube == null) return;
+
+        if (cube.particuleBubbleTask != null) {
+            cube.particuleBubbleTask.cancel();
+            cube.particuleBubbleTask = null;
+        }
+
+        if (cube.corruptedBubbleTask != null) {
+            cube.corruptedBubbleTask.cancel();
+            cube.corruptedBubbleTask = null;
+        }
+        MessagesManager.sendMessage(player, Component.text("Bulle corrompue arreté"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("reproduce")

@@ -13,9 +13,9 @@ import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
 import fr.openmc.core.features.settings.command.SettingsCommand;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
@@ -102,7 +102,7 @@ public class Page2 implements Menu {
         leaderboardItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Leaderboard", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/leaderboard", NamedTextColor.DARK_GRAY), Component.text("En cours de développement", NamedTextColor.RED)));
+            meta.lore(List.of(Component.text("/leaderboard", NamedTextColor.DARK_GRAY)));
         });
         LEADERBOARD_SLOTS.forEach(slot -> content.put(slot, leaderboardItem));
 

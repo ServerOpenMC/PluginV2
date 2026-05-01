@@ -15,8 +15,8 @@ import fr.openmc.core.features.city.sub.notation.models.ActivityTimePlayed;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
@@ -338,7 +338,7 @@ public class NotationManager {
      * Planifie l'exécution de la tâche de minuit qui calcule les scores et attribue les récompenses.
      */
     private static void scheduleMidnightTask() {
-        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(APPLY_NOTATION_DAY) * 20;
+        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekTime(APPLY_NOTATION_DAY, 0, 0, 0) * 20;
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (!isApplied) {
                 String weekStr = DateUtils.getWeekFormat();

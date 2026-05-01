@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.rank.menus;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.api.input.DialogInput;
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,7 +9,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static fr.openmc.api.menulib.utils.ItemUtils.getDataComponentType;
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class CityRankIconMenu extends PaginatedMenu {
 	

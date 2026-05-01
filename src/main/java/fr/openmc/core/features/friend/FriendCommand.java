@@ -8,9 +8,9 @@ import fr.openmc.core.features.friend.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.autocomplete.FriendsRequestAutoComplete;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -164,7 +164,7 @@ public class FriendCommand {
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
-                                    Component.text("§7Vile : §e" + (city != null ? city.getName() : "Aucune") +
+                                    Component.text("§7Ville : §e" + (city != null ? city.getName() : "Aucune") +
                                             "\n§7Argent : §e" + formattedMoney +
                                             "\n§7Statut : " + (isOnline ? "§aEn ligne" : "§cHors ligne")
                                     )))

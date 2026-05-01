@@ -7,6 +7,7 @@ import fr.openmc.core.registry.items.options.EquipableItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -45,7 +46,7 @@ public class DreamBoots extends DreamItem implements DreamEquipableItem, Equipab
     }
 
     @Override
-    public ItemStack getVanilla() {
+    public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NETHERITE_BOOTS);
 
         item.getItemMeta().itemName(Component.text("Bottes Oniriques"));

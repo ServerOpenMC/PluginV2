@@ -5,11 +5,12 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -31,6 +32,8 @@ public class Quest {
 
     private final String name;
     private final List<String> baseDescription;
+    @Setter
+    private List<Component> additionalLore;
     private final ItemStack icon;
     private final boolean isLargeActionBar;
     private final List<QuestTier> tiers = new ArrayList<>();
@@ -50,6 +53,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = icon;
         this.isLargeActionBar = false;
     }
@@ -64,6 +68,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, Material icon) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = new ItemStack(icon);
         this.isLargeActionBar = false;
     }
@@ -79,6 +84,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = icon;
         this.isLargeActionBar = isLargeActionBar;
     }
@@ -94,6 +100,7 @@ public class Quest {
     public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
         this.icon = new ItemStack(icon);
         this.isLargeActionBar = isLargeActionBar;
     }
@@ -482,8 +489,19 @@ public class Quest {
      * @param playerUUID The UUID of the player
      */
     public void incrementProgress(UUID playerUUID) {
-        incrementProgress(playerUUID, 1);
+        incrementProgress(playerUUID, 1, false);
     }
+	
+	/**
+	 * Increment the progress of the quest for a player by a specified amount.
+	 * <p>
+	 * This method will check if the quest is fully completed, and if not, it will increase the progress.
+	 * @param playerUUID The UUID of the player
+	 * @param amount The amount to increment the progress by
+	 */
+	public void incrementProgress(UUID playerUUID, int amount) {
+		incrementProgress(playerUUID, amount, false);
+	}
 
     /**
      * Increment the progress of the quest for a player by a specified amount.
@@ -491,8 +509,9 @@ public class Quest {
      * This method will check if the quest is fully completed, and if not, it will increase the progress.
      * @param playerUUID The UUID of the player
      * @param amount The amount to increment the progress by
+     * @param authorizeDream Set if you authorize to increment progress in Dream world
      */
-    public void incrementProgress(UUID playerUUID, int amount) {
+    public void incrementProgress(UUID playerUUID, int amount, boolean authorizeDream) {
         if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
 			
@@ -501,7 +520,7 @@ public class Quest {
 				if (onlinePlayer == null) return;
 				if (!onlinePlayer.isOnline()) return;
                 if ((!onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)
-                        || DreamUtils.isInDreamWorld(onlinePlayer))) return;
+                        || (DreamUtils.isInDreamWorld(onlinePlayer)) && !authorizeDream)) return;
 
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
