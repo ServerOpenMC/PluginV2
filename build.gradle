@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "com.gradleup.shadow" version "9.0.1"
+    id "com.gradleup.shadow" version "9.4.1"
     id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
-    id("xyz.jpenilla.run-paper") version "2.3.1" // Will use ${minecraftVersion} for the paper version
+    id("xyz.jpenilla.run-paper") version "3.0.2" // Will use ${minecraftVersion} for the paper version
 }
 
 def getLatestGitTag() {
@@ -49,18 +49,20 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle "${minecraftVersion}-R0.1-SNAPSHOT"
+    paperweight.paperDevBundle "26.1.2.build.+"
 
     compileOnly "com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}"
     compileOnly "dev.lone:api-itemsadder:${itemsAdderVersion}"
     compileOnly "net.luckperms:api:${luckpermsVersion}"
     compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
-    compileOnly "com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit"
+    compileOnly ("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:${fastAsyncWorldeditVersion}") {
+        exclude group: 'org.lz4', module: 'lz4-java'
+    }
     compileOnly "com.sk89q.worldedit:worldedit-bukkit:${worldeditVersion}"
     compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
-    implementation platform("com.intellectualsites.bom:bom-newest:1.55")
+    implementation platform("com.intellectualsites.bom:bom-newest:1.56")
     // Ref: https://github.com/IntellectualSites/bom
     implementation "com.flowpowered:flow-nbt:1.0.0"
     implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
@@ -76,12 +78,12 @@ dependencies {
     testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-    testImplementation paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
+    testImplementation paperweight.paperDevBundle("26.1.2.build.+")
     testImplementation "org.mockbukkit.mockbukkit:mockbukkit-v1.21:${mockbukkitVersion}"
     testImplementation "com.h2database:h2:${h2DatabaseVersion}"
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 java {
     sourceCompatibility = targetJavaVersion
     targetCompatibility = targetJavaVersion
