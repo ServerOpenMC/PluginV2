@@ -1,0 +1,1641 @@
+info:
+  namespace: omc_emoji
+font_images:
+  0:
+    path: font/emoji/0
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  1:
+    path: font/emoji/1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  2:
+    path: font/emoji/2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  3:
+    path: font/emoji/3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  4:
+    path: font/emoji/4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  5:
+    path: font/emoji/5
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  6:
+    path: font/emoji/6
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  7:
+    path: font/emoji/7
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  8:
+    path: font/emoji/8
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  9:
+    path: font/emoji/9
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  alarmclock:
+    path: font/emoji/alarmclock
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  alien:
+    path: font/emoji/alien
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  angry:
+    path: font/emoji/angry
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  angry1:
+    path: font/emoji/angry1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  angry2:
+    path: font/emoji/angry2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  angry3:
+    path: font/emoji/angry3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  anxious:
+    path: font/emoji/anxious
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  aquarius:
+    path: font/emoji/aquarius
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  aries:
+    path: font/emoji/aries
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  asterisk:
+    path: font/emoji/asterisk
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  atm:
+    path: font/emoji/atm
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  avocado:
+    path: font/emoji/avocado
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  bacon:
+    path: font/emoji/bacon
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  baguette:
+    path: font/emoji/baguette
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  bandage:
+    path: font/emoji/bandage
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  bat:
+    path: font/emoji/bat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  biceps:
+    path: font/emoji/biceps
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  biohazard:
+    path: font/emoji/biohazard
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  blocked:
+    path: font/emoji/blocked
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  blood:
+    path: font/emoji/blood
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  blush:
+    path: font/emoji/blush
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  bye:
+    path: font/emoji/bye
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  callme:
+    path: font/emoji/callme
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cancel:
+    path: font/emoji/cancel
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cancer:
+    path: font/emoji/cancer
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  capricorn:
+    path: font/emoji/capricorn
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  carrot:
+    path: font/emoji/carrot
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  chair:
+    path: font/emoji/chair
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  chick:
+    path: font/emoji/chick
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  chick1:
+    path: font/emoji/chick1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  chick2:
+    path: font/emoji/chick2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  clap:
+    path: font/emoji/clap
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  coffin:
+    path: font/emoji/coffin
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cold:
+    path: font/emoji/cold
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  confirm:
+    path: font/emoji/confirm
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  confused:
+    path: font/emoji/confused
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  confused1:
+    path: font/emoji/confused1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  couple:
+    path: font/emoji/couple
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cowboy:
+    path: font/emoji/cowboy
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  crab:
+    path: font/emoji/crab
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  croissant:
+    path: font/emoji/croissant
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  crossedfingers:
+    path: font/emoji/crossedfingers
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cry:
+    path: font/emoji/cry
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cry1:
+    path: font/emoji/cry1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  crycat:
+    path: font/emoji/crycat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  cucumber:
+    path: font/emoji/cucumber
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  dead:
+    path: font/emoji/dead
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  dead1:
+    path: font/emoji/dead1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  dollar:
+    path: font/emoji/dollar
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  doubleexclamation:
+    path: font/emoji/doubleexclamation
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  down:
+    path: font/emoji/down
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  drops:
+    path: font/emoji/drops
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  drumstick:
+    path: font/emoji/drumstick
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  duck:
+    path: font/emoji/duck
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  eagle:
+    path: font/emoji/eagle
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  eggplant:
+    path: font/emoji/eggplant
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  eject:
+    path: font/emoji/eject
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  evil:
+    path: font/emoji/evil
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  explodehead:
+    path: font/emoji/explodehead
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  eyes:
+    path: font/emoji/eyes
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  facemask:
+    path: font/emoji/facemask
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fastdown:
+    path: font/emoji/fastdown
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fastforward:
+    path: font/emoji/fastforward
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fastreverse:
+    path: font/emoji/fastreverse
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fastup:
+    path: font/emoji/fastup
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fbowing:
+    path: font/emoji/fbowing
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fear:
+    path: font/emoji/fear
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fear1:
+    path: font/emoji/fear1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fear3:
+    path: font/emoji/fear3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  featcat:
+    path: font/emoji/featcat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  ffacepalm:
+    path: font/emoji/ffacepalm
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fidk:
+    path: font/emoji/fidk
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  finger:
+    path: font/emoji/finger
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fire:
+    path: font/emoji/fire
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fish:
+    path: font/emoji/fish
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  flamingo:
+    path: font/emoji/flamingo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fmage:
+    path: font/emoji/fmage
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fno:
+    path: font/emoji/fno
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  fok:
+    path: font/emoji/fok
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  frown:
+    path: font/emoji/frown
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  frown2:
+    path: font/emoji/frown2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  frown3:
+    path: font/emoji/frown3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  frown4:
+    path: font/emoji/frown4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  frown5:
+    path: font/emoji/frown5
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  frown6:
+    path: font/emoji/frown6
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  gemini:
+    path: font/emoji/gemini
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  giraffe:
+    path: font/emoji/giraffe
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  halo:
+    path: font/emoji/halo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hamburger:
+    path: font/emoji/hamburger
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  handshake:
+    path: font/emoji/handshake
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hashtag:
+    path: font/emoji/hashtag
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart:
+    path: font/emoji/heart
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart1:
+    path: font/emoji/heart1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart2:
+    path: font/emoji/heart2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart3:
+    path: font/emoji/heart3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart4:
+    path: font/emoji/heart4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart5:
+    path: font/emoji/heart5
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  heart6:
+    path: font/emoji/heart6
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hot:
+    path: font/emoji/hot
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hourglass:
+    path: font/emoji/hourglass
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hourglass1:
+    path: font/emoji/hourglass1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hug:
+    path: font/emoji/hug
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  ice:
+    path: font/emoji/ice
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  ill:
+    path: font/emoji/ill
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  inlove:
+    path: font/emoji/inlove
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  inlove1:
+    path: font/emoji/inlove1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  inlovecat:
+    path: font/emoji/inlovecat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  jackolantern:
+    path: font/emoji/jackolantern
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  kebab:
+    path: font/emoji/kebab
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  kiss:
+    path: font/emoji/kiss
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  kiss1:
+    path: font/emoji/kiss1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  kiss2:
+    path: font/emoji/kiss2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  kiss3:
+    path: font/emoji/kiss3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  lasttrack:
+    path: font/emoji/lasttrack
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  laugh:
+    path: font/emoji/laugh
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  laugh2:
+    path: font/emoji/laugh2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  laugh3:
+    path: font/emoji/laugh3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  laugh4:
+    path: font/emoji/laugh4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  laughcat:
+    path: font/emoji/laughcat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  left:
+    path: font/emoji/left
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  leftcurve:
+    path: font/emoji/leftcurve
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  leo:
+    path: font/emoji/leo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  lion:
+    path: font/emoji/lion
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  lock:
+    path: font/emoji/lock
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  luck:
+    path: font/emoji/luck
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  lying:
+    path: font/emoji/lying
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  m:
+    path: font/emoji/m
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mad:
+    path: font/emoji/mad
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mbowing:
+    path: font/emoji/mbowing
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  medal:
+    path: font/emoji/medal
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mfacepalm:
+    path: font/emoji/mfacepalm
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  midk:
+    path: font/emoji/midk
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mmage:
+    path: font/emoji/mmage
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mmh:
+    path: font/emoji/mmh
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mno:
+    path: font/emoji/mno
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  mok:
+    path: font/emoji/mok
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  money:
+    path: font/emoji/money
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moneyface:
+    path: font/emoji/moneyface
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  monkey1:
+    path: font/emoji/monkey1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  monkey2:
+    path: font/emoji/monkey2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  monkey3:
+    path: font/emoji/monkey3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  monocle:
+    path: font/emoji/monocle
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moon:
+    path: font/emoji/moon
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moon1:
+    path: font/emoji/moon1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moon2:
+    path: font/emoji/moon2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moon3:
+    path: font/emoji/moon3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moon4:
+    path: font/emoji/moon4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  moon5:
+    path: font/emoji/moon5
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  nausea:
+    path: font/emoji/nausea
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  nerd:
+    path: font/emoji/nerd
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  neutral:
+    path: font/emoji/neutral
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  nexttrack:
+    path: font/emoji/nexttrack
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  no1:
+    path: font/emoji/no1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  noexpression:
+    path: font/emoji/noexpression
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  nomouth:
+    path: font/emoji/nomouth
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  ok:
+    path: font/emoji/ok
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  ok1:
+    path: font/emoji/ok1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  owl:
+    path: font/emoji/owl
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pan:
+    path: font/emoji/pan
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  party:
+    path: font/emoji/party
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  party1:
+    path: font/emoji/party1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pause:
+    path: font/emoji/pause
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  peace:
+    path: font/emoji/peace
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  peach:
+    path: font/emoji/peach
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pencil:
+    path: font/emoji/pencil
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  person:
+    path: font/emoji/person
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pick:
+    path: font/emoji/pick
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pig:
+    path: font/emoji/pig
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pisces:
+    path: font/emoji/pisces
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  pizza:
+    path: font/emoji/pizza
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  play:
+    path: font/emoji/play
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  playpause:
+    path: font/emoji/playpause
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  please:
+    path: font/emoji/please
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  poo:
+    path: font/emoji/poo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  potato:
+    path: font/emoji/potato
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  puke:
+    path: font/emoji/puke
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  punch:
+    path: font/emoji/punch
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  question:
+    path: font/emoji/question
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  radioactive:
+    path: font/emoji/radioactive
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  raisedfist:
+    path: font/emoji/raisedfist
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  raisedhand:
+    path: font/emoji/raisedhand
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  record:
+    path: font/emoji/record
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  redcircle:
+    path: font/emoji/redcircle
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  reverse:
+    path: font/emoji/reverse
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  riceball:
+    path: font/emoji/riceball
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  rightarrow:
+    path: font/emoji/rightarrow
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  rightcurve:
+    path: font/emoji/rightcurve
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  robot:
+    path: font/emoji/robot
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  rock:
+    path: font/emoji/rock
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  rolling:
+    path: font/emoji/rolling
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  rooster:
+    path: font/emoji/rooster
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sad:
+    path: font/emoji/sad
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sagittarius:
+    path: font/emoji/sagittarius
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  salad:
+    path: font/emoji/salad
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  salt:
+    path: font/emoji/salt
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  scorpio:
+    path: font/emoji/scorpio
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  scorpion:
+    path: font/emoji/scorpion
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  shark:
+    path: font/emoji/shark
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  shh:
+    path: font/emoji/shh
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  shrimp:
+    path: font/emoji/shrimp
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sleeping:
+    path: font/emoji/sleeping
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sleepy:
+    path: font/emoji/sleepy
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  small:
+    path: font/emoji/small
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smile:
+    path: font/emoji/smile
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smile2:
+    path: font/emoji/smile2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smile3:
+    path: font/emoji/smile3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smile4:
+    path: font/emoji/smile4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smile5:
+    path: font/emoji/smile5
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smile6:
+    path: font/emoji/smile6
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  smilecat:
+    path: font/emoji/smilecat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sneeze:
+    path: font/emoji/sneeze
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  soccerball:
+    path: font/emoji/soccerball
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sparkles:
+    path: font/emoji/sparkles
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  squid:
+    path: font/emoji/squid
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  star:
+    path: font/emoji/star
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  starcrescent:
+    path: font/emoji/starcrescent
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  stareyes:
+    path: font/emoji/stareyes
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  stop:
+    path: font/emoji/stop
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  stopsign:
+    path: font/emoji/stopsign
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sun:
+    path: font/emoji/sun
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sunglasses:
+    path: font/emoji/sunglasses
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  surprised:
+    path: font/emoji/surprised
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sushi:
+    path: font/emoji/sushi
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  sweat:
+    path: font/emoji/sweat
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  taurus:
+    path: font/emoji/taurus
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think:
+    path: font/emoji/think
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think1:
+    path: font/emoji/think1
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think2:
+    path: font/emoji/think2
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think3:
+    path: font/emoji/think3
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think4:
+    path: font/emoji/think4
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think5:
+    path: font/emoji/think5
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  think6:
+    path: font/emoji/think6
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  tongue:
+    path: font/emoji/tongue
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  tree:
+    path: font/emoji/tree
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  trex:
+    path: font/emoji/trex
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  turkey:
+    path: font/emoji/turkey
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  twofingers:
+    path: font/emoji/twofingers
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  unamused:
+    path: font/emoji/unamused
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  unicorn:
+    path: font/emoji/unicorn
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  unlock:
+    path: font/emoji/unlock
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  up:
+    path: font/emoji/up
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  upsidedown:
+    path: font/emoji/upsidedown
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  virgo:
+    path: font/emoji/virgo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  voltage:
+    path: font/emoji/voltage
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  warning:
+    path: font/emoji/warning
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  wc:
+    path: font/emoji/wc
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  what:
+    path: font/emoji/what
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  wink:
+    path: font/emoji/wink
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  woozy:
+    path: font/emoji/woozy
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  write:
+    path: font/emoji/write
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  xd:
+    path: font/emoji/xd
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  yawn:
+    path: font/emoji/yawn
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  yinyang:
+    path: font/emoji/yinyang
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  yum:
+    path: font/emoji/yum
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  zebra:
+    path: font/emoji/zebra
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  zip:
+    path: font/emoji/zip
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  beluclown:
+    path: font/emoji/beluclown
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  grocervo:
+    path: font/emoji/grocervo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  lul:
+    path: font/emoji/lul
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  doggo:
+    path: font/emoji/doggo
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hehe:
+    path: font/emoji/hehe
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  hmmm:
+    path: font/emoji/hmmm
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8
+  tools:
+    path: font/emoji/tools
+    permission: ayw.usemojis
+    scale_ratio: 9
+    show_in_gui: true
+    y_position: 8

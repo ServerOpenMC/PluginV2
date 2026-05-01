@@ -1,0 +1,25 @@
+info:
+  namespace: omc_populator
+worlds_populators:
+  deepslate_aywenite_ore:
+    block: omc_blocks:deepslate_aywenite_ore
+    worlds:
+      - world
+    replaceable_blocks:
+      - DEEPSLATE
+    chunk_chance: 75.0
+    max_height: 0
+    min_height: -60
+    vein_blocks: 4
+    chunk_veins: 9
+  aywenite_ore:
+    block: omc_blocks:aywenite_ore
+    worlds:
+      - world
+    replaceable_blocks:
+      - STONE
+    chunk_chance: 80.0
+    max_height: 30
+    min_height: 0
+    vein_blocks: 3
+    chunk_veins: 4

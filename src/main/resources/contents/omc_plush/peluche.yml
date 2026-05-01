@@ -1,0 +1,51 @@
+info:
+  namespace: omc_plush
+items:
+  peluche_awyen:
+    display_name: Aywen la peluche
+    resource: 
+      material: PAPER
+      model_path: peluche
+    behaviours:
+      furniture:
+        entity: armor_stand
+        generate: false
+        small: true
+        light_level: 13
+        solid: true
+        placeable_on:
+          floor: true
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          width_offset: 0
+          height_offset: 
+          placeable_on:
+          walls: false
+          ceilling: false
+          floor: true
+  peluche_seinyy:
+    display_name: Seinyy la peluche
+    resource:
+      material: PAPER
+      model_path: peluche_seiny
+    behaviours:
+      furniture:
+        entity: armor_stand
+        generate: false
+        small: true
+        light_level: 13
+        solid: true
+        placeable_on:
+          floor: true
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          width_offset: 0
+          height_offset: 0
+          placeable_on:
+          walls: false
+          ceilling: false
+          floor: true

@@ -1,0 +1,209 @@
+info:
+  namespace: omc_dream
+items:
+  moon_fish:
+    display_name: Poisson-lune
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: SALMON
+      generate: true
+      textures:
+        - fishes/moon_fish.png
+    consumable:
+      nutrition: 2
+      saturation: 0.4
+    tooltip_style: "omc_tooltips:tooltip/rare"
+
+  sun_fish:
+    display_name: Poisson-soleil
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: COOKED_SALMON
+      generate: true
+      textures:
+        - fishes/sun_fish.png
+    lore:
+      - '§7Attention! Vous risquez'
+      - '§7de vous brulez!'
+    consumable:
+      nutrition: 6
+      saturation: 9.6
+    tooltip_style: "omc_tooltips:tooltip/rare"
+
+  poissonion:
+    display_name: Poissonion
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: COD
+      generate: true
+      textures:
+        - fishes/poissonion.png
+    lore:
+      - '§7On dirait un onion...'
+    consumable:
+      nutrition: 2
+      saturation: 0.4
+    tooltip_style: "omc_tooltips:tooltip/rare"
+
+  cooked_poissonion:
+    display_name: Poissonion cuit
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: COOKED_COD
+      generate: true
+      textures:
+        - fishes/cooked_poissonion.png
+    lore:
+      - '§7Mot du dev:'
+      - '§7Il est plus beau cru'
+    consumable:
+      nutrition: 5
+      saturation: 6
+    tooltip_style: "omc_tooltips:tooltip/rare"
+
+  dockerfish:
+    display_name: Poisson Docker
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: COD
+      generate: true
+      textures:
+        - fishes/dockerfish.png
+    consumable:
+      nutrition: 2
+      saturation: 0.4
+    tooltip_style: "omc_tooltips:tooltip/rare"
+
+  chips_aywen:
+    display_name: Chips goût Aywen
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_aywen
+    lore:
+      - '§7Les joueurs aiment tellement Aywen'
+      - "§7malgré qu'il ait joué meme pas 1h30"
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/epic"
+
+  chips_dihydrogene:
+    display_name: Chips goût Dihydrogene
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_dihydrogene
+    lore:
+      - '§7Attention explosif!'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/epic"
+
+  chips_jimmy:
+    display_name: Chips goût Jimmy
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_jimmy
+    lore:
+      - '§7R.I.P Jimmy'
+      - '§7Root est son successeur'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/epic"
+
+  chips_lait_2_margouta:
+    display_name: Chips goût Lait de Margouta
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_lait_2_margouta
+    lore:
+      - '§7Miam'
+    consumable:
+      nutrition: 20
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/onirique"
+
+  chips_nature:
+    display_name: Chips goût Nature
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_nature
+    lore:
+      - '§7Basique, simple'
+    consumable:
+      nutrition: 10
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/epic"
+
+  chips_sans_plomb:
+    display_name: Chips goût Sans Plomb 95
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_sans_plomb
+    lore:
+      - '§7La hausse de prix....'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/epic"
+
+  chips_terre:
+    display_name: Chips goût Terre
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: consumable/chips_terre
+    lore:
+      - '§7pourquoi pas'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "omc_tooltips:tooltip/epic"
+recipes:
+  cooking:
+    sun_fish:
+      ingredient:
+        item: omc_dream:moon_fish
+      exp: 1
+      machines:
+        - FURNACE
+        - SMOKER
+      result:
+        item: omc_dream:sun_fish
+        amount: 1
+    poissonion:
+      ingredient:
+        item: omc_dream:poissonion
+      exp: 1
+      machines:
+        - FURNACE
+        - SMOKER
+      result:
+        item: omc_dream:cooked_poissonion
+        amount: 1
+  crafting_table:
+    kebab:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_foods:salade
+        B: omc_foods:tomate
+        C: omc_dream:cooked_poissonion
+        D: BREAD
+      result:
+        item: omc_foods:kebab
+        amount: 1

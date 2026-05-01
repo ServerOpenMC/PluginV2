@@ -1,0 +1,10 @@
+{
+	"parent": "omc_animations:entity/player/rocks",
+	"display": {
+		"head": {
+			"translation": [0, -6.3744, 0],
+			"scale": [0, 0.008, 0.008, 0.008],
+			"rotation": [0, 0, 0]
+		}
+	}
+}

@@ -1,0 +1,51 @@
+info:
+  namespace: omc_foods
+items:
+  courgette_seed:
+    display_name: Graine de Courgette
+    resource:
+      generate: true
+      material: WHEAT_SEEDS
+      textures:
+        - items/graine_de_courgette
+    specific_properties:
+      seed:
+        crop_block: POTATOES
+        results:
+          result_1:
+            item: omc_foods:courgette
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+  courgette:
+    display_name: Courgette
+    resource:
+      material: DRIED_KELP
+      generate: true
+      textures:
+        - items/courgette.png
+  gratin_courgette:
+    display_name: Gratin de Courgette
+    resource:
+      material: MELON_SLICE
+      generate: false
+      model_path: gratin_courgette
+    events:
+      eat:
+        feed:
+          amount: 3
+          saturation: 0.5
+recipes:
+  crafting_table:
+    gratin_courgette:
+      enabled: true
+      pattern:
+        - AAA
+        - AAA
+        - BBB
+      ingredients:
+        A: "omc_foods:courgette"
+        B: "GLASS"
+      result:
+        item: "omc_foods:gratin_courgette"
+        amount: 1

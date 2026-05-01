@@ -1,0 +1,19 @@
+{
+  "enchantment.tombstone.spectral_bite": "Mordedura Espectral ",
+  "enchantment.tombstone.spectral_bite.desc": "posibilidad de provocar un mordisco espectral en el atacante",
+  "enchantment.tombstone.soulbound": "§f\uCF03 §rUnión del alma",
+  "enchantment.tombstone.soulbound.desc": "mantén el objeto en tu personaje cuando muera",
+  "enchantment.tombstone.magic_siphon": "§f\uCF04 §rSifón Mágico",
+  "enchantment.tombstone.magic_siphon.desc": "posibilidad de absorber los efectos beneficiosos del objetivo",
+  "enchantment.tombstone.plague_bringer": "Puerta de la peste",
+  "enchantment.tombstone.plague_bringer.desc": "posibilidad de aplicar efectos negativos",
+  "enchantment.tombstone.curse_of_bones": "§f\uCF02 §rLa maldición de los huesos§r",
+  "enchantment.tombstone.curse_of_bones.desc": "posibilidad de aplicar Bone Shield cuando se golpea",
+  "enchantment.tombstone.blessing": "Bendición",
+  "enchantment.tombstone.blessing.desc": "oportunidad de recibir un pequeño bono cuando te golpean",
+  "enchantment.tombstone.fishing_bad_luck": "Pesca desafortunada",
+  "enchantment.tombstone.frostbite": "§f\uCF01 §rMordida Fría§r",
+  "enchantment.tombstone.frostbite.desc": "posibilidad de congelar a los enemigos golpeados",
+  "enchantment.tombstone.spectral_conjurer": "§f\uCF05 §rConjurador Espectral§r",
+  "enchantment.tombstone.spectral_conjurer.desc": "posibilidad de generar un Lobo Espectral al atacar"
+}

@@ -1,0 +1,9 @@
+info:
+  namespace: omc_main_menu
+items:
+  player_head:
+    enabled: true
+    resource:
+      generate: false
+      model_path: item/player_head
+      material: PLAYER_HEAD

@@ -1,0 +1,14 @@
+info:
+  namespace: omc_contest
+items:
+  contest_shell:
+    display_name: "§bCoquillage de Contest"
+    resource:
+      material: NAUTILUS_SHELL
+      model_path: items/shell
+    lore:
+      - "§7§oun mystérieux coquillage..."
+      - "§7Déposez le lors d'un Contest"
+      - "§7Utile si vous voulez faire gagner votre équipe"
+      - ""
+      - "§5§lEPIC ITEM"

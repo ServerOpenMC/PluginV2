@@ -1,0 +1,10 @@
+info:
+  namespace: omc_plush
+categories:
+  omc_plush:
+    enabled: true
+    skip_if_already: false
+    icon: omc_plush:peluche_awyen
+    name: "OpenMC Plush"
+    items:
+      - omc_plush:*

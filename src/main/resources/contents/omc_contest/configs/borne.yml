@@ -1,0 +1,28 @@
+info:
+  namespace: omc_contest
+items:
+  borne:
+    display_name: "Borne"
+    permission: contest.borne
+    resource:
+      material: PAPER
+      generate: false
+      model_path: items/borne
+    behaviours:
+      furniture:
+        entity: item_display
+        solid: true
+        fixed_rotation: true
+        hitbox:
+          length: 1
+          height: 2
+          width: 3
+        placeable_on:
+          walls: false
+          ceiling: false
+          floor: true
+        display_transformation:
+          translation:
+            x: 0
+            y: 0.49
+            z: 0

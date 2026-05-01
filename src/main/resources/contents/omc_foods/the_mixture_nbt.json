@@ -1,0 +1,34 @@
+{
+  "components": {
+    "minecraft:consumable": {
+      "on_consume_effects": [
+        {
+          "type": "apply_effects",
+          "effects": [
+            {
+              "id": "minecraft:nausea",
+              "duration": 500
+            },
+            {
+              "id": "minecraft:speed",
+              "duration": 2400,
+              "amplifier": 2
+            },
+            {
+              "id": "minecraft:haste",
+              "duration": 1200,
+              "amplifier": 2
+            }
+          ]
+        }
+      ],
+      "animation": "drink",
+      "sound": "minecraft:item.honey_bottle.drink"
+    },
+    "food": {
+      "saturation": 2,
+      "nutrition": 4,
+      "can_always_eat": true
+    }
+  }
+}

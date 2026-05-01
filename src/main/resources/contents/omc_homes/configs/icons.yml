@@ -1,0 +1,137 @@
+info:
+  namespace: omc_homes
+items:
+  omc_homes_icon_axenq:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/axenq
+  omc_homes_icon_bank:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/bank
+  omc_homes_icon_chateau:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/chateau
+  omc_homes_icon_chest:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/chest
+  omc_homes_icon_grass:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/grass
+  omc_homes_icon_maison:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/maison
+  omc_homes_icon_sandblock:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/sandblock
+  omc_homes_icon_shop:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/shop
+  omc_homes_icon_xernas:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/xernas
+  omc_homes_icon_zombie:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/zombie
+  omc_homes_icon_upgrade:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/upgrade
+  omc_homes_icon_information:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/information
+  omc_homes_icon_bin:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/bin
+  omc_homes_icon_bin_red:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - icons/bin_red
+  omc_homes_invisible:
+    enabled: true
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - items/invisible
+
+font_images:
+  bin:
+      permission: 0
+      show_in_gui: true
+      path: "icons/bin"
+      scale_ratio: 9
+      y_position: 8
+  bin_red:
+      permission: 0
+      show_in_gui: true
+      path: "icons/bin_red"
+      scale_ratio: 9
+      y_position: 8

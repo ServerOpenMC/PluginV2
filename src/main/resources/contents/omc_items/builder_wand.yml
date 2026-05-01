@@ -1,0 +1,32 @@
+info:
+  namespace: omc_items
+scripts:
+  builderwand:
+    enabled: true
+    path: iascript/builderwand
+items:
+  builder_wand:
+    permission: omc_items.builder_wand
+    display_name: Builder Wand
+    lore:
+      - "§7Permet de poser une large zone de blocs"
+    resource:
+      material: WOODEN_SHOVEL
+      generate: false
+      model_path: items/builder_wand
+    blocked_enchants:
+      - ALL
+    durability:
+      usages: 1024
+    events:
+      interact_mainhand:
+        right:
+          cancel: true
+          decrement_usages:
+            amount: 1
+          script:
+            name: builderwand
+    attribute_modifiers:
+      mainhand:
+        attackDamage: 1
+        attackSpeed: 1

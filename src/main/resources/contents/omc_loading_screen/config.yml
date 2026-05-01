@@ -1,0 +1,15 @@
+info:
+  namespace: omc_loading_screen
+minecraft_lang_overwrite:
+  loading_terrain:
+    entries:
+      "multiplayer.downloadingTerrain": ":openmc_loading_screen:"
+    languages:
+      - ALL
+font_images:
+  openmc_loading_screen:
+    permission: op
+    show_in_gui: false
+    path: "font/openmc.png"
+    scale_ratio: 255
+    y_position: 87.5
