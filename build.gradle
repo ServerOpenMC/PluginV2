@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "com.gradleup.shadow" version "9.0.1"
+    id "com.gradleup.shadow" version "9.4.1"
     id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
-    id("xyz.jpenilla.run-paper") version "2.3.1" // Will use ${minecraftVersion} for the paper version
+    id("xyz.jpenilla.run-paper") version "3.0.2" // Will use ${minecraftVersion} for the paper version
 }
 
 def getLatestGitTag() {
@@ -62,7 +62,7 @@ dependencies {
     compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
-    implementation platform("com.intellectualsites.bom:bom-newest:1.55")
+    implementation platform("com.intellectualsites.bom:bom-newest:1.56")
     // Ref: https://github.com/IntellectualSites/bom
     implementation "com.flowpowered:flow-nbt:1.0.0"
     implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
