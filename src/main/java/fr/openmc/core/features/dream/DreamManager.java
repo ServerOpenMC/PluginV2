@@ -4,10 +4,11 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.city.City;
@@ -47,15 +48,17 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
-public class DreamManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
+public class DreamManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasCommands, HasListeners {
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
@@ -69,8 +72,38 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
     @Override
     public void init() {
-        // ** LISTENERS **
-        OMCPlugin.registerEvents(
+        // ** MANAGERS **
+        DreamDimensionManager.init();
+        GlaciteNpcManager.init();
+        DreamStructuresManager.init();
+        DreamItemRegistry.init();
+        DreamBlocksRegistry.init();
+        DreamMobsRegistry.init();
+        DreamLootTableRegistry.init();
+        DreamBlocksDropsRegistry.init();
+        CloudFishingManager.init();
+        MetalDetectorManager.init();
+        ColdManager.init();
+        SingularityManager.init();
+
+        // ** LOAD DATAS **
+        loadAllDreamPlayerData();
+        loadAllPlayerSaveData();
+    }
+
+    // ** COMMANDS **
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new AdminDreamCommands(),
+                new DreamCommands()
+        );
+    }
+
+    // ** LISTENERS **
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
                 new PlayerChangeWorldListener(),
                 new PlayerJoinListener(),
                 new PlayerQuitListener(),
@@ -87,41 +120,9 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new SingularityCraftListener(),
-		        new PlayerEnterStructureListener(),
-		        new PlayerExitStructureListener()
+                new PlayerEnterStructureListener(),
+                new PlayerExitStructureListener()
         );
-
-        // ** MANAGERS **
-        DreamDimensionManager.init();
-        GlaciteNpcManager.init();
-        DreamStructuresManager.init();
-        DreamItemRegistry.init();
-        DreamBlocksRegistry.init();
-        DreamMobsRegistry.init();
-        DreamLootTableRegistry.init();
-        DreamBlocksDropsRegistry.init();
-        CloudFishingManager.init();
-        MetalDetectorManager.init();
-        ColdManager.init();
-        SingularityManager.init();
-
-        // ** COMMANDS **
-        CommandsManager.getHandler().register(
-                new AdminDreamCommands(),
-                new DreamCommands()
-        );
-
-        // ** LOAD DATAS **
-        loadAllDreamPlayerData();
-        loadAllPlayerSaveData();
-    }
-
-    @Override
-    public void save() {
-        DreamManager.saveAllPlayerSaveData();
-        DreamManager.saveAllDreamPlayerData();
-
-        SingularityManager.disable();
     }
 
     @Override
@@ -133,6 +134,14 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         savePlayerDao = DaoManager.createDao(connectionSource, DBPlayerSave.class);
 
         SingularityManager.initDB(connectionSource);
+    }
+
+    @Override
+    public void save() {
+        DreamManager.saveAllPlayerSaveData();
+        DreamManager.saveAllDreamPlayerData();
+
+        SingularityManager.disable();
     }
 
     private static void loadAllPlayerSaveData() {

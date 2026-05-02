@@ -1,7 +1,6 @@
 package fr.openmc.core.features.mailboxes.events;
 
 import fr.openmc.core.features.mailboxes.Letter;
-import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

@@ -2,9 +2,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;

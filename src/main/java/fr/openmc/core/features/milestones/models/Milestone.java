@@ -1,4 +1,4 @@
-package fr.openmc.core.features.milestones;
+package fr.openmc.core.features.milestones.models;
 
 import fr.openmc.api.menulib.Menu;
 import net.kyori.adventure.text.Component;

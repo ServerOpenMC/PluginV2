@@ -26,20 +26,23 @@ import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
+import fr.openmc.core.features.events.commands.calendar.CalendarManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
-import fr.openmc.core.features.friend.FriendSQLManager;
+import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.privatemessage.PrivateMessageManager;
+import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
-import fr.openmc.core.features.tpa.TPAQueue;
+import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
@@ -78,17 +81,19 @@ public class OMCPlugin extends JavaPlugin {
     // ** Registry of OMC Features
     public final List<Feature> REGISTRY_FEATURE = new ArrayList<>(List.of(
             new TicketManager(new File(this.getDataFolder(), "data/stats")),
+            new PrivateMessageManager(),
+            new SocialSpyManager(),
             new SpawnManager(),
             new UpdateManager(),
             new EconomyManager(),
             new BankManager(),
             new ScoreboardManager(),
             new HomesManager(),
-            new TPAQueue(),
+            new TPAManager(),
             new FreezeManager(),
             new TransactionsManager(),
             new AnalyticsManager(),
-            new FriendSQLManager(),
+            new FriendManager(),
             new TabList(),
             new AdminShopManager(),
             new BossbarManager(),
@@ -104,6 +109,7 @@ public class OMCPlugin extends JavaPlugin {
             new CityManager(),
             new ContestManager(),
             new WeeklyEventsManager(),
+            new CalendarManager(),
             new DreamManager(),
             new MultiBlockManager(),
             new MilestonesManager(),

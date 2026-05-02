@@ -1,5 +1,8 @@
 package fr.openmc.core.features.privatemessage;
 
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -11,8 +14,25 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class SocialSpyManager {
+public class SocialSpyManager extends Feature implements HasCommands  {
     private static final Set<UUID> socialSpyEnabled = new HashSet<>();
+
+    @Override
+    protected void init() {
+        // nothing to init
+    }
+
+    @Override
+    protected void save() {
+        // nothing to save
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new SocialSpyCommand()
+        );
+    }
 
     /**
      * Toggles the social spy feature for the player.

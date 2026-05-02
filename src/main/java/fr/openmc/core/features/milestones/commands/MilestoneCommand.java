@@ -1,8 +1,9 @@
-package fr.openmc.core.features.milestones;
+package fr.openmc.core.features.milestones.commands;
 
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;

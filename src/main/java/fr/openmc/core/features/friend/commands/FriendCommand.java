@@ -1,11 +1,12 @@
-package fr.openmc.core.features.friend;
+package fr.openmc.core.features.friend.commands;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.friend.autocomplete.FriendsAutoComplete;
-import fr.openmc.core.features.friend.autocomplete.FriendsRequestAutoComplete;
+import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
+import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;

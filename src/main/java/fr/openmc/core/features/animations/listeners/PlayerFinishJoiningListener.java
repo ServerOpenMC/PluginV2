@@ -2,6 +2,7 @@ package fr.openmc.core.features.animations.listeners;
 
 import dev.lone.itemsadder.api.CustomPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -15,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import static fr.openmc.core.features.animations.listeners.EmoteListener.playingAnimations;
 
-public class PlayerFinishJoiningListener implements Listener {
+public class PlayerFinishJoiningListener implements Listener, NotInUnitTest {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();

@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.menus;
+package fr.openmc.core.features.events.commands.calendar;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
-import fr.openmc.core.features.events.managers.CalendarManager;
 import fr.openmc.core.features.events.models.Event;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;

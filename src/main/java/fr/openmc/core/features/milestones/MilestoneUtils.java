@@ -2,6 +2,7 @@ package fr.openmc.core.features.milestones;
 
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.BossbarsType;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.tutorial.TutorialBossBar;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import net.kyori.adventure.text.Component;

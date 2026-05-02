@@ -4,12 +4,17 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.features.milestones.commands.MilestoneCommand;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
+import fr.openmc.core.features.milestones.models.Milestone;
+import fr.openmc.core.features.milestones.models.MilestoneModel;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.tutorial.listeners.TutorialBossBarEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import org.bukkit.entity.Player;
@@ -18,7 +23,7 @@ import org.bukkit.event.Listener;
 import java.sql.SQLException;
 import java.util.*;
 
-public class MilestonesManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
+public class MilestonesManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasListeners, HasCommands {
     private static final Set<Milestone> milestones = new HashSet<>();
 
     private static Dao<MilestoneModel, String> millestoneDao;
@@ -29,10 +34,18 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
 	    
 	    loadMilestonesData();
 		loadMilestonesProgress();
+    }
 
-        registerMilestoneCommand();
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new MilestoneCommand()
+        );
+    }
 
-        OMCPlugin.registerEvents(
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
                 new PlayerJoin(),
                 new TutorialBossBarEvent()
         );
@@ -186,14 +199,6 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
 		milestones.add(milestone);
 		
 		registerQuestMilestone(milestone);
-    }
-
-    /**
-     * Register the Milestone command.
-     * This method registers the MilestoneCommand with the CommandsManager.
-     */
-    public static void registerMilestoneCommand() {
-        CommandsManager.getHandler().register(new MilestoneCommand());
     }
 
     /**

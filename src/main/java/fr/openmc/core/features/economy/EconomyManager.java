@@ -5,9 +5,9 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
@@ -23,7 +23,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-public class EconomyManager extends Feature implements DatabaseFeature {
+public class EconomyManager extends Feature implements DatabaseFeature, HasCommands {
     @Getter
     private static Map<UUID, EconomyPlayer> balances;
 
@@ -41,12 +41,15 @@ public class EconomyManager extends Feature implements DatabaseFeature {
     @Override
     public void init() {
         balances = loadAllBalances();
+    }
 
-        CommandsManager.getHandler().register(
-            new Pay(),
-            new Baltop(),
-            new History(),
-            new Money()
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new Pay(),
+                new Baltop(),
+                new History(),
+                new Money()
         );
     }
 

@@ -2,14 +2,19 @@ package fr.openmc.core.features.updates;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class UpdateManager extends Feature {
+import java.util.Set;
+
+public class UpdateManager extends Feature implements HasCommands, HasListeners {
     @Getter
     static Component message;
 
@@ -35,6 +40,20 @@ public class UpdateManager extends Feature {
     }
 
     @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new UpdateCommand()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new UpdateListener()
+        );
+    }
+
+    @Override
     public void save() {
         // nothing to save
     }
@@ -46,4 +65,5 @@ public class UpdateManager extends Feature {
     public static void sendUpdateBroadcast() {
         Bukkit.broadcast(message);
     }
+
 }

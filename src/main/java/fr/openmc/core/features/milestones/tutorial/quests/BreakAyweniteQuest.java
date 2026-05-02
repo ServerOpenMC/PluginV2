@@ -2,9 +2,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.tutorial.TutorialBossBar;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.quests.objects.QuestTier;

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.displays.holograms;
 
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
@@ -18,12 +18,9 @@ import org.joml.Vector3f;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder {
+public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     private static BukkitTask taskTimer;
@@ -45,16 +42,19 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         File hologramFolder = getHologramFolder();
         hologramFolder.mkdirs();
 
-        CommandsManager.getHandler().register(
-                new HologramCommand()
-        );
-
         HologramLoader.registerHolograms(
                 new TutorialHologram()
         );
 
         updateHologramsViewers();
         HologramLoader.loadAllFromFolder(hologramFolder);
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new HologramCommand()
+        );
     }
 
     @Override

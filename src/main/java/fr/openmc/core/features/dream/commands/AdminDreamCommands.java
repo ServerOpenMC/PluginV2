@@ -8,7 +8,7 @@ import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
-import fr.openmc.core.features.milestones.MilestoneQuest;
+import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

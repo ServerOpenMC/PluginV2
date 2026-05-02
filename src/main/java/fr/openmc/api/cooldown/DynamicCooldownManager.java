@@ -9,20 +9,21 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.commands.debug.DebugCooldownCommand;
+import fr.openmc.core.commands.utils.CooldownCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Main class for managing cooldowns
  */
-public class DynamicCooldownManager extends Feature implements DatabaseFeature {
+public class DynamicCooldownManager extends Feature implements DatabaseFeature, HasCommands {
+
     /**
      * Represents a single cooldown with duration and last use time
      */
@@ -88,6 +89,15 @@ public class DynamicCooldownManager extends Feature implements DatabaseFeature {
     public void init() {
         loadCooldowns();
     }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new DebugCooldownCommand(),
+                new CooldownCommand()
+        );
+    }
+
 
     @Override
     public void save() {

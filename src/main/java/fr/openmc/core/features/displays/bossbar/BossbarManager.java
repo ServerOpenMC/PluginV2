@@ -1,9 +1,11 @@
 package fr.openmc.core.features.displays.bossbar;
 
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
+import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.milestones.MilestoneUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -15,12 +17,13 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
 
-public class BossbarManager extends Feature {
+public class BossbarManager extends Feature implements HasListeners, HasCommands {
     @Getter
     private static final List<Component> helpMessages = new ArrayList<>();
     private static final HashMap<BossbarsType, Map<UUID, BossBar>> activeBossBars = new HashMap<>();
@@ -42,13 +45,26 @@ public class BossbarManager extends Feature {
         loadConfig();
         loadDefaultMessages();
         startRotationTask();
-        CommandsManager.getHandler().register(new BossBarCommand());
 
         bossBarHelp = BossBar.bossBar(
                 helpMessages.getFirst(),
                 0f,
                 BossBar.Color.RED,
                 BossBar.Overlay.PROGRESS
+        );
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new BossBarCommand()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new BossbarListener()
         );
     }
 

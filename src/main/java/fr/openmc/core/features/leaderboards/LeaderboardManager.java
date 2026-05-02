@@ -1,8 +1,8 @@
 package fr.openmc.core.features.leaderboards;
 
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.city.City;
@@ -41,7 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.*;
 
-public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder {
+public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter
@@ -85,8 +85,14 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
     @Override
     public void init() {
         loadLeaderBoardConfig();
-        CommandsManager.getHandler().register(new LeaderboardCommands());
         enable();
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new LeaderboardCommands()
+        );
     }
 
     @Override
@@ -590,5 +596,4 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
             pumpkinCountHologram.updateText(createPumpkinCountTextLeaderboard());
         }
     }
-
 }

@@ -1,11 +1,11 @@
 package fr.openmc.core.features.dream.milestone;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.features.milestones.Milestone;
-import fr.openmc.core.features.milestones.MilestoneModel;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
+import fr.openmc.core.features.milestones.models.Milestone;
+import fr.openmc.core.features.milestones.models.MilestoneModel;
+import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

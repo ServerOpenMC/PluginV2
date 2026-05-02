@@ -1,4 +1,4 @@
-package fr.openmc.core.features.friend.autocomplete;
+package fr.openmc.core.features.friend.commands.autocomplete;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;

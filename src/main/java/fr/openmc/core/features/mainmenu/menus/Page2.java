@@ -10,7 +10,7 @@ import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.economy.commands.BankCommands;
-import fr.openmc.core.features.mailboxes.MailboxCommand;
+import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.utils.text.messages.MessageType;
