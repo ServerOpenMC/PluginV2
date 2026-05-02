@@ -11,10 +11,4 @@ public class PapiHook extends Hooks {
     protected String getPluginName() {
         return "PlaceholderAPI";
     }
-
-    @Override
-    protected void init() {
-        // not used
-    }
-
 }

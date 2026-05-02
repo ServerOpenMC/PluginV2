@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
@@ -41,6 +42,9 @@ public class OMCBootstrap implements PluginBootstrap {
                     }
                 }
         ));
+
+        // ** LOAD ITEMS ADDER NAMESPACES **
+        ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
 
         // ** ENCHANTMENT IMPL **
         CustomEnchantmentRegistry.init();
