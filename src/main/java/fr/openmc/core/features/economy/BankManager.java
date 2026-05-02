@@ -53,11 +53,6 @@ public class BankManager extends Feature implements DatabaseFeature {
     }
 
     @Override
-    public void save() {
-        // nothing to save
-    }
-
-    @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);

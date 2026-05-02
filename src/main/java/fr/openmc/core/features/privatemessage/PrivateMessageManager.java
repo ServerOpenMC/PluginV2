@@ -20,16 +20,6 @@ public class PrivateMessageManager extends Feature implements HasCommands {
     private static final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
 
     @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
     public Set<Object> getCommands() {
         return Set.of(
                 new PrivateMessageCommand()

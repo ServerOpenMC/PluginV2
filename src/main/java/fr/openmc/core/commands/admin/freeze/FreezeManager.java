@@ -21,11 +21,6 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 	private static Player player;
 
 	@Override
-	public void init() {
-		// nothign to init
-	}
-
-	@Override
 	public Set<Object> getCommands() {
 		return Set.of(
 				new FreezeCommand()
@@ -37,11 +32,6 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 		return Set.of(
 				new FreezeListener()
 		);
-	}
-
-	@Override
-	public void save() {
-		// nothing to save
 	}
 
 	/**

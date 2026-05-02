@@ -20,16 +20,6 @@ public class TransactionsManager extends Feature implements DatabaseFeature {
     private static Dao<Transaction, String> transactionsDao;
 
     @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Transaction.class);
         transactionsDao = DaoManager.createDao(connectionSource, Transaction.class);

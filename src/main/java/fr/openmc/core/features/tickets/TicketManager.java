@@ -42,11 +42,6 @@ public class TicketManager extends Feature implements HasListeners {
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     /**
      * Load player statistics from JSON files in the specified directory.
      *

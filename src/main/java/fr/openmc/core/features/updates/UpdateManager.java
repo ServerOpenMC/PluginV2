@@ -53,11 +53,6 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     public static void sendUpdateMessage(Player player) {
         player.sendMessage(message);
     }

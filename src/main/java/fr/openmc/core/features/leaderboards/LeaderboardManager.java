@@ -95,11 +95,6 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     /**
      * Creates the leaderboard text for GitHub contributors to be sent in chat or displayed as a hologram.
      *

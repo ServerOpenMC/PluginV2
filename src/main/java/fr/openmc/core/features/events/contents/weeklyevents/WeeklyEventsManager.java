@@ -48,11 +48,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         scheduleNextPhase();
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     /**
      * Initialise la BDD : crée la table si nécessaire, charge les données, gère le cas restart
      */

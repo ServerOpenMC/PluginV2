@@ -19,16 +19,6 @@ public class AnalyticsManager extends Feature implements DatabaseFeature {
     static Dao<Statistic, String> statsDao;
 
     @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Statistic.class);
         statsDao = DaoManager.createDao(connectionSource, Statistic.class);

@@ -20,16 +20,6 @@ import java.util.Set;
 
 public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasCommands {
     @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
     public Set<Object> getCommands() {
         return Set.of(
                 new CalendarCommand()

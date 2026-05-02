@@ -28,11 +28,6 @@ public class MainMenu extends Feature implements NotInUnitTest, LoadAfterItemsAd
         );
     }
 
-    @Override
-    public void save() {
-        //nothing to save
-    }
-
     public static void openMainMenu(Player player) {
         PacketMenuLib.openMenu(new Page1(player), player);
     }

@@ -53,11 +53,6 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     public static void updateAllBoards() {
         long now = System.currentTimeMillis();
 

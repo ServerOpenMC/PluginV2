@@ -68,11 +68,6 @@ public class BossbarManager extends Feature implements HasListeners, HasCommands
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     /**
      * Loads configuration from bossbars.yml file
      * Creates the file if it doesn't exist

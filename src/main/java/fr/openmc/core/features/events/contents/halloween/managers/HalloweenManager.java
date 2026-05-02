@@ -62,11 +62,6 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     public static void depositPumpkins(UUID playerUUID, int amount) {
         HalloweenData data = halloweenData.get(playerUUID);
         data.depositPumpkins(amount);

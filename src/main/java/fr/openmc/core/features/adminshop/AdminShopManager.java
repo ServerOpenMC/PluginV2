@@ -46,11 +46,6 @@ public class AdminShopManager extends Feature implements HasCommands {
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     /**
      * Opens the confirmation menu for buying an item.
      *

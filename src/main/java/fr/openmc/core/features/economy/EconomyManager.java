@@ -54,11 +54,6 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     @Override
-    public void save() {
-        // nothing to save
-    }
-
-    @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);

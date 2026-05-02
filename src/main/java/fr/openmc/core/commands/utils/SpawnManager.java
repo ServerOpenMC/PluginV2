@@ -43,11 +43,6 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         );
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     private static void loadSpawnConfig() {
         if(!spawnFile.exists()) {
             spawnFile.getParentFile().mkdirs();

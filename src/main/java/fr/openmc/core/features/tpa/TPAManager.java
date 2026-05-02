@@ -29,11 +29,6 @@ public class TPAManager extends Feature implements HasCommands {
 	private static final ConcurrentHashMap<UUID, Long> tpaRequestTime = new ConcurrentHashMap<>();
 
 	@Override
-    public void init() {
-        // nothing to init
-    }
-
-	@Override
 	public Set<Object> getCommands() {
 		return Set.of(
 				new TPAcceptCommand(),
@@ -41,11 +36,6 @@ public class TPAManager extends Feature implements HasCommands {
 				new TPADenyCommand(),
 				new TPACancelCommand()
 		);
-	}
-
-	@Override
-	public void save() {
-		// nothing to save
 	}
 
 	/**

@@ -69,11 +69,6 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
         });
     }
 
-    @Override
-    public void save() {
-        // nothing to save
-    }
-
     public static void updateHeaderFooter(Player player, String header, String footer) {
         try {
             if (protocolManager == null) return;

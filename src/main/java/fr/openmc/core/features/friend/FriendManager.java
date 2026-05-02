@@ -24,11 +24,6 @@ public class FriendManager extends Feature implements DatabaseFeature, HasComman
     public static final List<FriendRequest> friendsRequests = new ArrayList<>();
 
     @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
     public Set<Object> getCommands() {
         return Set.of(
                 new FriendCommand()
@@ -38,11 +33,6 @@ public class FriendManager extends Feature implements DatabaseFeature, HasComman
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         FriendSQLManager.initDB(connectionSource);
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
     }
 
     public static CompletableFuture<List<UUID>> getFriendsAsync(UUID playerUUID) {

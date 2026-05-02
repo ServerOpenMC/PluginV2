@@ -44,9 +44,4 @@ public class MotdUtils extends Feature {
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12 000 ticks = 10 minutes
     }
-
-    @Override
-    public void save() {
-        // nothing to save
-    }
 }
