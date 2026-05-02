@@ -2,6 +2,7 @@ package fr.openmc.core.features.mainmenu;
 
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
+@Credit(developers = {"miseur"}, graphist = {"Tfloa"})
 public class MainMenu extends Feature implements NotInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
     @Override
     public void init() {

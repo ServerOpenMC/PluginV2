@@ -1,5 +1,6 @@
 package fr.openmc.core.features.privatemessage;
 
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+@Credit(developers = {"Axeno"})
 public class PrivateMessageManager extends Feature implements HasCommands {
 
     private static final Map<UUID, UUID> lastMessageFrom = new HashMap<>();

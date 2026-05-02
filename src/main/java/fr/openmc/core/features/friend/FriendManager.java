@@ -1,6 +1,7 @@
 package fr.openmc.core.features.friend;
 
 import com.j256.ormlite.support.ConnectionSource;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@Credit(developers = {"Axeno"})
 public class FriendManager extends Feature implements DatabaseFeature, HasCommands {
 
     // TODO: Configuration pour activer/désactiver les demandes d'amis (par défaut activé) & les messages de connexion/déconnexion

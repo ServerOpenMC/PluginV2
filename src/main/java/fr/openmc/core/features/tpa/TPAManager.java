@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa;
 
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.tpa.commands.TPACancelCommand;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Credit(developers = {"gab400"})
 public class TPAManager extends Feature implements HasCommands {
 	
 	/**

@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -23,6 +24,7 @@ import org.bukkit.event.Listener;
 import java.sql.SQLException;
 import java.util.*;
 
+@Credit(developers = {"iambibi_", "gab400"})
 public class MilestonesManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasListeners, HasCommands {
     private static final Set<Milestone> milestones = new HashSet<>();
 

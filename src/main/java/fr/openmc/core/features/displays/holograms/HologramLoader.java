@@ -1,6 +1,7 @@
 package fr.openmc.core.features.displays.holograms;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Credit(developers = {"iambibi_", "miseur"})
 public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();

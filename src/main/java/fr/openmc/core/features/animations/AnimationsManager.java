@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -26,6 +27,7 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Set;
 
+@Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"})
 public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfEnable<ItemsAdderHook>, HasListeners, HasCommands {
 
     @Override

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
@@ -18,6 +19,7 @@ import java.util.*;
  * It handles the registration of quests, loading default quests,
  * and saving quest progress for players.
  */
+@Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCommands {
     static final Map<String, Quest> quests = new HashMap<>();
 

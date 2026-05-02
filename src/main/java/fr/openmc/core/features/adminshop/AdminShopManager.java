@@ -2,6 +2,7 @@ package fr.openmc.core.features.adminshop;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
@@ -23,6 +24,7 @@ import java.util.*;
 /**
  * Manages the admin shop system including items, categories, and player interactions.
  */
+@Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}

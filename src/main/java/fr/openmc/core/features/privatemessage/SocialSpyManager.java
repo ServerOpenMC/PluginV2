@@ -1,5 +1,6 @@
 package fr.openmc.core.features.privatemessage;
 
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Credit(developers = {"Axeno"})
 public class SocialSpyManager extends Feature implements HasCommands  {
     private static final Set<UUID> socialSpyEnabled = new HashSet<>();
 

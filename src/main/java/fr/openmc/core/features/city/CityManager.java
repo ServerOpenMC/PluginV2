@@ -9,6 +9,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -42,6 +43,7 @@ import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.*;
 
+@Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
 public class CityManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasListeners, HasCommands {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();

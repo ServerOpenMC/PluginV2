@@ -1,6 +1,7 @@
 package fr.openmc.core.features.leaderboards;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
@@ -41,6 +42,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.*;
 
+@Credit(developers = {"miseur"})
 public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();

@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -23,6 +24,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+@Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class EconomyManager extends Feature implements DatabaseFeature, HasCommands {
     @Getter
     private static Map<UUID, EconomyPlayer> balances;

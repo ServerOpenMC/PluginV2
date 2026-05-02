@@ -6,6 +6,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
+@Credit(developers = {"Nocolm"})
 public class MascotsManager extends Feature implements DatabaseFeature, HasCommands, HasListeners {
     public static final List<UUID> movingMascots = new ArrayList<>();
     public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
