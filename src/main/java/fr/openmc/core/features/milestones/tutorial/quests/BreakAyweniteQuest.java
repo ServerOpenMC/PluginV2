@@ -15,7 +15,6 @@ import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -64,19 +63,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
         ) {
             Player player = event.getPlayer();
             this.incrementProgress(player.getUniqueId());
-			getType().getMilestone().getPlayerData().get(player.getUniqueId()).incrementProgress();
-
-            int progress = this.getProgress(player.getUniqueId());
-			
-            if (progress >= 30) return;
-            TutorialBossBar.update(
-                    player,
-                    Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
-                            (step.ordinal() + 1),
-                            TutorialStep.values()[step.ordinal()].getQuest().getName(player.getUniqueId()) + " (" + progress + " / 30)"
-                    )),
-                    (float) this.getProgress(player.getUniqueId()) / 30
-            );
+			this.getType().getMilestone().getPlayerData().get(player.getUniqueId()).incrementProgress();
         }
     }
 }

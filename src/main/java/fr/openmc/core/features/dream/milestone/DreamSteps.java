@@ -1,11 +1,12 @@
 package fr.openmc.core.features.dream.milestone;
 
 import fr.openmc.core.features.dream.milestone.quests.*;
+import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import lombok.Getter;
 
 @Getter
-public enum DreamSteps {
+public enum DreamSteps implements MilestoneStep {
 	
 	SLEEP(null),
 	CRAFTS(null),

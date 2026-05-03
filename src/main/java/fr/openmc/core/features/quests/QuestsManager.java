@@ -30,8 +30,6 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCo
      */
     @Override
     public void init() {
-        QuestProgressSaveManager.init();
-
         loadDefaultQuests();
         QuestProgressSaveManager.loadAllQuestProgress();
     }

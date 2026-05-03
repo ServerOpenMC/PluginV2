@@ -1,31 +1,38 @@
 package fr.openmc.core.features.milestones.tutorial;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.milestones.Milestone;
+import fr.openmc.core.features.milestones.MilestoneModel;
+import fr.openmc.core.features.milestones.MilestoneType;
+import fr.openmc.core.features.milestones.MilestoneUtils;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class TutorialMilestone implements Milestone {
-	
-	private static HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
-	
-	@Override
-	public HashMap<UUID, MilestoneModel> getPlayerData() {
-		return playerData;
-	}
-	
-	@Override
+public class TutorialMilestone implements Milestone<TutorialStep> {
+
+    private static final HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
+
+    @Override
+    public HashMap<UUID, MilestoneModel> getPlayerData() {
+        return playerData;
+    }
+
+    @Override
     public String getName() {
         return "§7Tutoriel d'OpenMC";
     }
@@ -46,8 +53,8 @@ public class TutorialMilestone implements Milestone {
     }
 
     @Override
-    public List<MilestoneQuest> getSteps() {
-        return Arrays.stream(TutorialStep.values()).map(TutorialStep::getQuest).toList();
+    public Class<TutorialStep> getStepClass() {
+        return TutorialStep.class;
     }
 
     @Override
@@ -58,5 +65,19 @@ public class TutorialMilestone implements Milestone {
     @Override
     public Menu getMenu(Player player) {
         return new MilestoneMenu(player, this);
+    }
+
+    @Override
+    public MilestoneBossBarOptions getBossBarOptions() {
+        return new MilestoneBossBarOptions(
+                NamedTextColor.GOLD,
+                BossBar.Color.YELLOW,
+                BossBar.Overlay.PROGRESS
+        );
+    }
+
+    @Override
+    public boolean shouldDisplayBossBar(Player player) {
+        return !DreamUtils.isInDreamWorld(player) && !MilestoneUtils.hasFinishedMilestone(this.getType(), player);
     }
 }

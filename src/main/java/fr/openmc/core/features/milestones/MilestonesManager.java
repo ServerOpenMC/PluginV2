@@ -12,6 +12,8 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
@@ -26,14 +28,14 @@ import java.util.*;
 
 @Credit(developers = {"iambibi_", "gab400"})
 public class MilestonesManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasListeners, HasCommands {
-    private static final Set<Milestone> milestones = new HashSet<>();
+    private static final Set<Milestone<?>> milestones = new HashSet<>();
 
     private static Dao<MilestoneModel, String> millestoneDao;
 
     @Override
     public void init() {
 		Arrays.stream(MilestoneType.values()).toList().forEach(milestoneType -> registerMilestone(milestoneType.getMilestone()));
-	    
+
 	    loadMilestonesData();
 		loadMilestonesProgress();
     }
@@ -49,7 +51,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
     public Set<Listener> getListeners() {
         return Set.of(
                 new PlayerJoin(),
-                new TutorialBossBarEvent()
+                new TutorialBossBarEvent() //todo: a check
         );
     }
 
@@ -201,6 +203,14 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
 		milestones.add(milestone);
 		
 		registerQuestMilestone(milestone);
+    }
+
+    /**
+     * Register the Milestone command.
+     * This method registers the MilestoneCommand with the CommandsManager.
+     */
+    public static void registerMilestoneCommand() {
+        CommandsManager.getHandler().register(new MilestoneCommand());
     }
 
     /**

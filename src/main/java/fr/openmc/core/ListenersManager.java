@@ -2,6 +2,9 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.cube.listeners.CubeListener;
+import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
+import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.listeners.*;

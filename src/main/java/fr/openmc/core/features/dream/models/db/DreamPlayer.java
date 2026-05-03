@@ -6,7 +6,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
 import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
@@ -95,16 +94,15 @@ public class DreamPlayer {
         this.timeTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
 			if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
 			if (DreamMilestoneDialog.isPlayerInMilestoneDialog(player)) return;
-			if (dreamTime <= 0) {
+
+            this.dreamTime -= 1;
+
+            if (dreamTime <= 0) {
 				Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
 						Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(this.player))
 				);
 				this.cancelTimeTask();
-				return;
 			}
-
-			this.dreamTime -= 1;
-			DreamBossBar.update(player, Math.min(1, (float) this.getDreamTime() / this.getMaxDreamTime()));
         }, 0L, 20L);
     }
 
