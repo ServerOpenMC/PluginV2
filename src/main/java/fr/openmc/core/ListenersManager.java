@@ -10,7 +10,7 @@ import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
-import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;

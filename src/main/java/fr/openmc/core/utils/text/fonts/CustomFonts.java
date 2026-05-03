@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.text.fonts;
 
-import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 
 public abstract class CustomFonts {
     /**

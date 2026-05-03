@@ -42,6 +42,7 @@ import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;

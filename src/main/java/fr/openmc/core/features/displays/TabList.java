@@ -14,8 +14,8 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.hooks.ProtocolLibHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

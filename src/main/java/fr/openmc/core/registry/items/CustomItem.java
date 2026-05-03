@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;

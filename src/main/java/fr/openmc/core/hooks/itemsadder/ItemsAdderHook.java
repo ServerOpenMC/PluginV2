@@ -1,4 +1,4 @@
-package fr.openmc.core.hooks;
+package fr.openmc.core.hooks.itemsadder;
 
 import fr.openmc.core.OMCBootstrap;
 import fr.openmc.core.bootstrap.hooks.Hooks;
