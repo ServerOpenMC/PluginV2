@@ -1,0 +1,23 @@
+info:
+  namespace: omc_foods
+items:
+  kebab:
+    display_name: Kebab
+    resource:
+      material: COOKED_BEEF
+      generate: true
+      textures:
+      - items/kebab.png
+recipes:
+  crafting_table:
+    kebab:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_foods:salade
+        B: omc_foods:tomate
+        C: omc_foods:onion
+        D: BREAD
+      result:
+        item: omc_foods:kebab
+        amount: 1

@@ -11,9 +11,4 @@ public class FancyNpcsHook extends Hooks {
     protected String getPluginName() {
         return "FancyNpcs";
     }
-
-    @Override
-    protected void init() {
-        // not used
-    }
 }

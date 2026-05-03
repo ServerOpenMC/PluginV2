@@ -51,5 +51,7 @@ public abstract class Hooks {
     /**
      * Initialise le hook lorsqu'il est actif.
      */
-    protected abstract void init();
+    protected void init() {
+        // a @Override dans les classes si besoin
+    };
 }

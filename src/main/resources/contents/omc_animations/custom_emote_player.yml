@@ -1,0 +1,11 @@
+info:
+  namespace: omc_animations
+emotes:
+  join_rift:
+    cancel_conditions:
+      sneak: true
+      take_damage: true
+      deal_damage: true
+      in_air: true
+    id: join_rift
+    can_player_move: false

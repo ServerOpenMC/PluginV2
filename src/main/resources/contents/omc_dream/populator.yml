@@ -1,0 +1,14 @@
+info:
+  namespace: omc_dream
+worlds_populators:
+  deepslate_ewenite_ore:
+    block: omc_dream:deepslate_ewenite_ore
+    worlds:
+      - world_dream
+    replaceable_blocks:
+      - DEEPSLATE
+    chunk_chance: 70.0
+    max_height: 33
+    min_height: -64
+    vein_blocks: 3
+    chunk_veins: 7

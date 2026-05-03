@@ -1,0 +1,82 @@
+info:
+  namespace: omc_items
+items:
+  suit_helmet:
+    name: Suit Helmet
+    resource:
+      generate: true
+      texture: items/suit_armor/helmet
+      material: IRON_HELMET
+    durability:
+      max_durability: 165
+    equipment:
+      id: omc_items:suit_armor
+      slot_attribute_modifiers:
+        armor: 1
+  suit_chestplate:
+    name: Suit Chestplate
+    resource:
+      generate: true
+      texture: items/suit_armor/chestplate
+      material: IRON_CHESTPLATE
+    durability:
+      max_durability: 165
+    equipment:
+      id: omc_items:suit_armor
+      slot_attribute_modifiers:
+        armor: 1
+  suit_leggings:
+    name: Suit Leggings
+    resource:
+      generate: true
+      texture: items/suit_armor/leggings
+      material: IRON_LEGGINGS
+    durability:
+      max_durability: 165
+    equipment:
+      id: omc_items:suit_armor
+      slot_attribute_modifiers:
+        armor: 1
+  suit_boots:
+    name: Suit Boots
+    resource:
+      generate: true
+      texture: items/suit_armor/boots
+      material: IRON_BOOTS
+    durability:
+      max_durability: 165
+    equipment:
+      id: omc_items:suit_armor
+      slot_attribute_modifiers:
+        armor: 1
+  aywen_cap:
+    name: Aywen Cap
+    resource:
+      generate: false
+      model_path: armor/aywen_cap
+      material: IRON_HELMET
+    durability:
+      max_durability: 2010
+    equipment:
+      slot_attribute_modifiers:
+        armor: 6
+equipments:
+  suit_armor:
+    type: armor
+    layer_1: armor/suit_armor/layer1
+    layer_2: armor/suit_armor/layer2
+recipes:
+  crafting_table:
+    aywen_cap:
+      enabled: true
+      pattern:
+        - AAA
+        - AKC
+        - CXX
+      ingredients:
+        A: "omc_items:aywenite"
+        C: "DIAMOND"
+        K: "omc_foods:kebab"
+      result:
+        item: "omc_items:aywen_cap"
+        amount: 1

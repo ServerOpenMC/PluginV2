@@ -1,0 +1,50 @@
+{
+	"providers": [
+
+		{
+            "type": "bitmap",
+            "file": "tombstone:icons/enchantments/frostbite.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uCF01"
+            ]
+        },
+		{
+            "type": "bitmap",
+            "file": "tombstone:icons/enchantments/curse_of_bones.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uCF02"
+            ]
+        },
+		{
+            "type": "bitmap",
+            "file": "tombstone:icons/enchantments/soulbound.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uCF03"
+            ]
+        },
+		{
+            "type": "bitmap",
+            "file": "tombstone:icons/enchantments/magic_siphon.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uCF04"
+            ]
+        },
+		{
+            "type": "bitmap",
+            "file": "tombstone:icons/enchantments/spectral_conjurer.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uCF05"
+            ]
+        }
+	]
+}

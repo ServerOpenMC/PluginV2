@@ -1,0 +1,33 @@
+info:
+  namespace: omc_icons
+font_images:
+  openmc-armor-icon:
+    permission: openmc-armor-icon
+    show_in_gui: false
+    path: "openmc-armor-icon.png"
+    scale_ratio: 12
+    y_position: 10
+  openmc:
+    permission: server-icon
+    show_in_gui: false
+    path: "font/openmc.png"
+    scale_ratio: 60
+    y_position: 60
+  dream_openmc:
+    permission: server-icon
+    show_in_gui: false
+    path: "font/dream_openmc.png"
+    scale_ratio: 80
+    y_position: 60
+  openmc_logo:
+    permission: openmc_logo
+    show_in_gui: false
+    path: "font/openmc_logo.png"
+    scale_ratio: 80
+    y_position: 30
+  aywenito:
+    permission: aywenito
+    show_in_gui: true
+    path: "font/aywenito.png"
+    scale_ratio: 12
+    y_position: 9

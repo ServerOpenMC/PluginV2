@@ -1,0 +1,39 @@
+info:
+    namespace: omc_company
+font_images:
+    company_baltop_menu:
+        permission: company.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "company_baltop_menu.png"
+        y_position: 20
+    company_menu:
+        permission: company.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "company_menu.png"
+        y_position: 20
+    paginate_company_menu:
+        permission: company.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "paginate_company_menu.png"
+        y_position: 20
+    shop_menu:
+        permission: company.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "shop_menu.png"
+        y_position: 20
+    sell_shop_menu:
+        permission: company.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "sell_shop_menu.png"
+        y_position: 20
+    large_shop_menu:
+        permission: company.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "large_shop_menu.png"
+        y_position: 20

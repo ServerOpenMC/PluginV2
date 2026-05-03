@@ -1,0 +1,9 @@
+info:
+  namespace: "omc_effects"
+font_images:
+  tp_effect:
+    permission: op
+    show_in_gui: false
+    path: "font/tp_effect"
+    scale_ratio: 10000
+    y_position: 5000

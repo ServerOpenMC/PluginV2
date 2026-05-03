@@ -1,0 +1,13 @@
+info:
+  namespace: omc_entities
+entities:
+  babyfuze:
+    display_name: "Bébé Fuze"
+    type: ZOMBIE
+    model_folder: entity/fuzebebe
+    silent: true
+    can_sun_burn: false
+    speed:
+      movement: 0.3
+      flying: 0.1
+    max_health: 60

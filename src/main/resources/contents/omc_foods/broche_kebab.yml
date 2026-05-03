@@ -1,0 +1,27 @@
+info:
+  namespace: omc_foods
+items:
+  broche_kebab:
+    enabled: true
+    display_name: Broche à viande 
+    resource:
+      material: PAPER
+      generate: false
+      model_path: broche_kebab
+    behaviours:
+      furniture:
+        entity: armor_stand
+        solid: true
+        fixed_rotation: false
+        light_level: 13
+        opposite_direction: false
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          width_offset: 0
+          height_offset: 
+          placeable_on:
+          walls: false
+          ceilling: false
+          floor: true

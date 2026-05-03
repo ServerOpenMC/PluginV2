@@ -1,0 +1,9 @@
+info:
+    namespace: omc_contest
+font_images:
+    contest_menu:
+        permission: contest.menu
+        show_in_gui: true
+        suggest_in_command: false
+        path: "contest.png"
+        y_position: 16

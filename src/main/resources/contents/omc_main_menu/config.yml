@@ -1,0 +1,19 @@
+info:
+  namespace: omc_main_menu
+minecraft_lang_overwrite:
+font_images:
+  omc_main_menu_page_1:
+    permission: op
+    show_in_gui: false
+    path: "font/omc_main_menu_page_1.png"
+    y_position: 31
+  omc_main_menu_page_2:
+    permission: op
+    show_in_gui: true
+    path: "font/omc_main_menu_page_2.png"
+    y_position: 31
+  omc_main_menu_page_1_sans_ville:
+    permission: op
+    show_in_gui: false
+    path: "font/omc_main_menu_page_1_sans_ville.png"
+    y_position: 31

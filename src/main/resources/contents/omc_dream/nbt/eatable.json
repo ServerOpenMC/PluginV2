@@ -1,0 +1,11 @@
+{
+  "components": {
+    "minecraft:consumable": {
+      "animation": "eat",
+      "sound": "minecraft:entity.cat.eat"
+    },
+    "food": {
+      "can_always_eat": true
+    }
+  }
+}

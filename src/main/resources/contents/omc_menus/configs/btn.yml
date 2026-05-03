@@ -1,0 +1,96 @@
+info:
+  namespace: omc_menus
+items:
+  accept_btn:
+    display_name: accept
+    resource:
+      material: PAPER
+      generate: true
+      textures: 
+        - accept_btn
+  refuse_btn:
+    display_name: refuse
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - refuse_btn
+  1_btn:
+    display_name: 1
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - 1_btn
+  64_btn:
+    display_name: 10
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - 64_btn
+  plus_btn:
+    display_name: plus
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - plus_btn
+  minus_btn:
+    display_name: plus
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - minus_btn
+  mailbox_accept_btn:
+    display_name: accept
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - "items/mailbox/accept_btn"
+  mailbox_refuse_btn:
+    display_name: refuse
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - "items/mailbox/refuse_btn"
+  mailbox_cancel_btn:
+    display_name: accept
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - "items/mailbox/cancel_btn"
+  mailbox_arrow_left:
+      display_name: arrow left
+      resource:
+        material: PAPER
+        generate: true
+        textures:
+          - "items/mailbox/arrow_left"
+  mailbox_arrow_right:
+      display_name: arrow right
+      resource:
+        material: PAPER
+        generate: true
+        textures:
+          - "items/mailbox/arrow_right"
+  mailbox_send:
+    display_name: send
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - "items/mailbox/paper_plane"
+  mailbox_hourglass:
+      display_name: hourglass
+      resource:
+        material: PAPER
+        generate: true
+        textures:
+          - "items/mailbox/hourglass"
+    
+  

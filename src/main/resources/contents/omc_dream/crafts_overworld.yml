@@ -1,0 +1,54 @@
+info:
+  namespace: omc_dream_overworld
+recipes:
+  crafting_table:
+    pyjama_helmet:
+      enabled: true
+      pattern:
+        - BCB
+        - BXB
+      ingredients:
+        C: "light_gray_wool"
+        B: "white_wool"
+      result:
+        item: "omc_dream:pyjama_helmet"
+        amount: 1
+
+    pyjama_chestplate:
+      enabled: true
+      pattern:
+        - BXB
+        - BCB
+        - BCB
+      ingredients:
+        C: "light_gray_wool"
+        B: "white_wool"
+      result:
+        item: "omc_dream:pyjama_chestplate"
+        amount: 1
+
+    pyjama_leggings:
+      enabled: true
+      pattern:
+        - CBC
+        - CXC
+        - CXC
+      ingredients:
+        C: "light_gray_wool"
+        B: "white_wool"
+      result:
+        item: "omc_dream:pyjama_leggings"
+        amount: 1
+
+    pyjama_boots:
+      enabled: true
+      pattern:
+        - BXB
+        - BXB
+        - CXC
+      ingredients:
+        C: "light_gray_wool"
+        B: "white_wool"
+      result:
+        item: "omc_dream:pyjama_boots"
+        amount: 1

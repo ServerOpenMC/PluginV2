@@ -1,0 +1,10 @@
+{
+	"parent": "omc_animations:entity/player/oeuf",
+	"display": {
+		"head": {
+			"translation": [0, 0.7744, 0],
+			"scale": [2.852, 2.242, 2.842],
+			"rotation": [0, 0, 0]
+		}
+	}
+}

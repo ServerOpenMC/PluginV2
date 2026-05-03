@@ -1,0 +1,81 @@
+info:
+    namespace: omc_menus
+font_images:
+    confirm_menu:
+        permission: confirm.menu
+        show_in_gui: true
+        suggest_in_command: false
+        path: "confirm_menu.png"
+        y_position: 16
+    adminshop:
+        permission: adminshop.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "adminshop.png"
+        y_position: 17
+    adminshop_category:
+        permission: adminshop.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "adminshop_category.png"
+        y_position: 17
+    adminshop_items:
+        permission: adminshop.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "adminshop_items.png"
+        y_position: 20
+    settings:
+        permission: settings.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "settings.png"
+        y_position: 25
+    mayor:
+        permission: mayor.menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "mayor.png"
+        y_position: 60
+    city_mainmenu:
+        permission: city.mainmenu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "city_mainmenu.png"
+        y_position: 30
+    city_template3x9:
+        permission: city.template3x9
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "city_template3x9.png"
+        y_position: 59
+    city_template5x9:
+        permission: city.template5x9
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "city_template5x9.png"
+        y_position: 30
+    city_template6x9:
+        permission: city.template6x9
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "city_template6x9.png"
+        y_position: 30
+    home_mailbox:
+        permission: mailbox.home
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "home_mailbox.png"
+        y_position: 22
+    player_mailbox:
+        permission: mailbox.player
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "player_mailbox.png"
+        y_position: 22
+    letter_mailbox:
+        permission: mailbox.letter
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "letter_mailbox.png"
+        y_position: 22

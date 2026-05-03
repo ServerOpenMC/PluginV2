@@ -1,0 +1,10 @@
+info:
+  namespace: omc_dream
+categories:
+  omc_dream:
+    enabled: true
+    skip_if_already: false
+    icon: omc_dream:glacite_orb
+    name: "Dimension des Reves"
+    items:
+      - omc_dream:*

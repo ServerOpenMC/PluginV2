@@ -1,0 +1,10 @@
+info:
+  namespace: omc_foods
+items:
+  onion:
+    display_name: Onion
+    resource:
+      material: PORKCHOP
+      generate: true
+      textures:
+      - items/onion.png

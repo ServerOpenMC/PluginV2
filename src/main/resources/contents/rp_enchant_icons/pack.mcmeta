@@ -1,0 +1,7 @@
+{
+    "pack": {
+        "description": "§7By §eRenovatedStudios\n§dMinecraft 1.20.1",
+        "pack_format": 15,
+        "supported_formats": {"min_inclusive": 15, "max_inclusive": 99}
+    }
+}

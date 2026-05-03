@@ -1,0 +1,390 @@
+{
+	"providers": [
+        {
+			"type": "reference",
+			"id": "minecraft:corail_tombstone/corail_tombstone_icons"
+		},	
+
+
+        
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/fire_aspect.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC140"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/aquatic_affinity.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC141"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/bane_of_arthropods.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC142"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/blast_protection.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC143"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/wind_burst.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC144"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/fire_protection.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC145"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/lure.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC146"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/mending.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC147"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/protection.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC148"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/infinity.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC149"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/fortune.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC150"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/efficiency.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC151"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/flame.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC152"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/respiration.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC153"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/multishot.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC154"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/quick_charge.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC155"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/piercing.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC156"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/vanishing_curse.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC157"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/depth_strider.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC158"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/sharpness.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC159"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/sweeping_edge.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC160"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/soul_speed.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC161"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/binding_curse.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC162"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/riptide.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC163"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/impaling.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC164"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/looting.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC165"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/unbreaking.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC166"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/loyalty.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC167"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/projectile_protection.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC168"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/luck_of_the_sea.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC169"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/swift_sneak.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC170"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/breach.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC171"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/frost_walker.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC172"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/thorns.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC173"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/channeling.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC174"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/density.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC175"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/smite.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC176"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/feather_falling.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC177"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/power.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC178"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/knockback.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC179"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/knockback.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC180"
+            ]
+        },
+        {
+            "type": "bitmap",
+            "file": "minecraft:better_enchantments/silk_touch.png",
+            "ascent": 8,
+            "height": 9,
+            "chars": [
+                "\uC181"
+            ]
+        }
+
+	]
+}

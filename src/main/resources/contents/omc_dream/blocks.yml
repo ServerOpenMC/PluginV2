@@ -1,0 +1,132 @@
+info:
+  namespace: omc_dream
+items:
+  vegetation_1:
+    display_name: "Sculk Végétation 1"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: blocks/vegetation_1
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_WIRE
+          break_particles: BLOCK
+          rotx: 0
+          roty: 0
+        light_level: 6
+  ewenite_ore:
+    display_name: §dMinerais d'Ewenite
+    lore:
+      - "§7Une découverte pas surprenante"
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - blocks/ewenite_ore.png
+    specific_properties:
+      block:
+        drop_when_mined: false
+        drop_on_silk_touch: true
+        light_level: 12
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        break_tools_whitelist:
+          - IRON_PICKAXE
+          - DIAMOND_PICKAXE
+          - NETHERITE_PICKAXE
+        hardness: 2
+        no_explosion: false
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+    events:
+      placed_block:
+        break:
+          drop_item:
+            item: omc_dream:ewenite
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+          drop_exp:
+            chance: 0
+            min_amount: 1
+            max_amount: 3
+  deepslate_ewenite_ore:
+    display_name: §dMinerai d'Ewenite des Abimes
+    lore:
+      - "§7Une découverte pas surprenante"
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - blocks/deepslate_ewenite_ore.png
+    specific_properties:
+      block:
+        hardness: 3
+        no_explosion: false
+        drop_when_mined: false
+        drop_on_silk_touch: true
+        light_level: 12
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        break_tools_whitelist:
+          - IRON_PICKAXE
+          - DIAMOND_PICKAXE
+          - NETHERITE_PICKAXE
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+    events:
+      placed_block:
+        break:
+          drop_item:
+            item: omc_dream:ewenite
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+          drop_exp:
+            chance: 0
+            min_amount: 1
+            max_amount: 3
+  ewenite_block:
+    display_name: §dBloc d'Ewenite
+    lore:
+      - "§7Une fusion de débilité."
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - blocks/ewenite_block.png
+    specific_properties:
+      block:
+        hardness: 3
+        no_explosion: false
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        break_tools_whitelist:
+          - PICKAXE
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1

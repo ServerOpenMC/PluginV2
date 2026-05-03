@@ -1,0 +1,10 @@
+info:
+  namespace: omc_icons
+items:
+  openmc-armor-icon:
+    display_name: openmc-armor-icon
+    resource:
+      material: PAPER
+      generate: true
+      textures: 
+        - openmc-armor-icon
