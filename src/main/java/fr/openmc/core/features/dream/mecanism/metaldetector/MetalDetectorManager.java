@@ -3,7 +3,6 @@ package fr.openmc.core.features.dream.mecanism.metaldetector;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
-import net.kyori.adventure.key.Key;
 
 import java.util.HashMap;
 import java.util.Map;
