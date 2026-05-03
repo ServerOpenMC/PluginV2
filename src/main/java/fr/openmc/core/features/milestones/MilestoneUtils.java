@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones;
 
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import org.bukkit.entity.Player;
 
 public class MilestoneUtils {

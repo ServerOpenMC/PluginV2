@@ -3,21 +3,13 @@ package fr.openmc.core.features.displays.bossbar;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
-import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
-import fr.openmc.core.features.milestones.MilestoneUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
-import lombok.Getter;
 import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -25,7 +17,7 @@ import java.util.*;
 /**
  * Gère l'enregistrement, l'affichage et la mise à jour des boss bars.
  */
-public class BossbarManager extends Feature implements HasListeners, HasCommands {
+public class BossbarManager extends Feature implements HasCommands {
     private static final List<BaseBossbar> registeredBossbar = new ArrayList<>();
 
     private static final Map<UUID, Map<String, BossBar>> activeBossbars = new HashMap<>();
@@ -34,8 +26,6 @@ public class BossbarManager extends Feature implements HasListeners, HasCommands
 
     @Override
     public void init() {
-        CommandsManager.getHandler().register(new BossBarCommand());
-
         registerBossbars(
                 new MainBossbar(),
                 new DreamBossBar()
@@ -48,13 +38,6 @@ public class BossbarManager extends Feature implements HasListeners, HasCommands
     public Set<Object> getCommands() {
         return Set.of(
                 new BossBarCommand()
-        );
-    }
-
-    @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new BossbarListener()
         );
     }
 

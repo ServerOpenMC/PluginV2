@@ -12,13 +12,10 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
-import fr.openmc.core.features.displays.bossbar.BossbarManager;
-import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.listeners.PlayerJoin;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.listeners.TutorialBossBarEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -50,8 +47,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
     @Override
     public Set<Listener> getListeners() {
         return Set.of(
-                new PlayerJoin(),
-                new TutorialBossBarEvent() //todo: a check
+                new PlayerJoin()
         );
     }
 
@@ -80,7 +76,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
             List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
             for (MilestoneModel data : milestoneData) {
 	            MilestoneType type = MilestoneType.valueOf(data.getType());
-                Milestone milestone = type.getMilestone();
+                Milestone<?> milestone = type.getMilestone();
 	            milestone.getPlayerData().put(data.getUUID(), data);
             }
 			OMCPlugin.getInstance().getSLF4JLogger().info("Milestones loaded successfully from the database!");
@@ -95,7 +91,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
      */
     public static void saveMilestonesData() {
         try {
-            for (Milestone milestone : milestones) {
+            for (Milestone<?> milestone : milestones) {
                 for (Map.Entry<UUID, MilestoneModel> entry : milestone.getPlayerData().entrySet()) {
                     MilestoneModel model = entry.getValue();
                     millestoneDao.createOrUpdate(model);
@@ -111,7 +107,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
 	 * Load the quest progress for each player of each milestone
 	 */
 	public static void loadMilestonesProgress() {
-		for (Milestone milestone : milestones) {
+		for (Milestone<?> milestone : milestones) {
 			if (milestone.getPlayerData().isEmpty()) continue;
 			// Pour tous les joueurs du milestone, la progression est chargée à l'étape actuelle
 			for (Map.Entry<UUID, MilestoneModel> playerData : milestone.getPlayerData().entrySet()) {
@@ -131,7 +127,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
      * @param milestone the milestone to get data for
      * @return a map of player UUIDs to their MilestoneModel
      */
-    public static Map<UUID, MilestoneModel> getMilestoneData(Milestone milestone) {
+    public static Map<UUID, MilestoneModel> getMilestoneData(Milestone<?> milestone) {
         return milestone.getPlayerData();
     }
 
@@ -189,7 +185,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
      * Get all registered milestones.
      * @return a set of all registered milestones
      */
-    public static Set<Milestone> getRegisteredMilestones() {
+    public static Set<Milestone<?>> getRegisteredMilestones() {
         return milestones;
     }
 
@@ -198,7 +194,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
      * This method adds the provided milestone to the internal set and registers it quests.
      * @param milestone the milestone to register
      */
-    public static void registerMilestone(Milestone milestone) {
+    public static void registerMilestone(Milestone<?> milestone) {
 		if (milestone == null) return;
 		milestones.add(milestone);
 		
@@ -206,19 +202,11 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
     }
 
     /**
-     * Register the Milestone command.
-     * This method registers the MilestoneCommand with the CommandsManager.
-     */
-    public static void registerMilestoneCommand() {
-        CommandsManager.getHandler().register(new MilestoneCommand());
-    }
-
-    /**
      * Register quests associated with a milestone.
      * This method iterates through the steps of the milestone and registers any Listener instances.
      * @param milestone the milestone whose quests are to be registered
      */
-    public static void registerQuestMilestone(Milestone milestone) {
+    public static void registerQuestMilestone(Milestone<?> milestone) {
         for (Quest quest : milestone.getSteps()) {
             if (quest instanceof Listener listener) {
                 OMCPlugin.registerEvents(listener);

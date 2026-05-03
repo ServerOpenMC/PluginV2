@@ -1,6 +1,5 @@
 package fr.openmc.core.features.milestones.tutorial;
 
-import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.quests.*;
