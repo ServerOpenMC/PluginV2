@@ -5,7 +5,7 @@ import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.api.scoreboard.repository.impl.ObjectCacheRepositoryImpl;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
@@ -19,7 +19,7 @@ import org.bukkit.event.Listener;
 
 import java.util.*;
 
-public class ScoreboardManager extends Feature implements Listener, NotInUnitTest, LoadIfEnable<LuckPermsHook>, HasCommands {
+public class ScoreboardManager extends Feature implements Listener, NotInUnitTest, LoadIfEnable<LuckPermsHook>, HasListeners {
     public static final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
     private static final List<BaseScoreboard> scoreboards = new ArrayList<>();
     private static GlobalTeamManager globalTeamManager;
@@ -47,7 +47,7 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
     }
 
     @Override
-    public Set<Object> getCommands() {
+    public Set<Listener> getListeners() {
         return Set.of(
                 new ScoreboardListener()
         );
