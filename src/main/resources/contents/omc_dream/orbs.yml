@@ -10,7 +10,7 @@ items:
     lore:
       - "§7§ola boule de détermination..."
       - "§7Un des 5 Fragments de la §fSingularité"
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:domination_orb}"
   ame_orb:
     display_name: "§bOrbe des Ames"
     resource:
@@ -20,7 +20,7 @@ items:
     lore:
       - "§7§ola boule de la conscience..."
       - "§7Un des 5 Fragments de la §fSingularité"
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:ame_orb}"
   mud_orb:
     display_name: "§bOrbe de Boue"
     resource:
@@ -30,7 +30,7 @@ items:
     lore:
       - "§7§ola boule de l'espoir..."
       - "§7Un des 5 Fragments de la §fSingularité"
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:mud_orb}"
   cloud_orb:
     display_name: "§bOrbe des Nuages"
     resource:
@@ -40,7 +40,7 @@ items:
     lore:
       - "§7§ola boule du courage..."
       - "§7Un des 5 Fragments de la §fSingularité"
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:cloud_orb}"
   glacite_orb:
     display_name: "§bOrbe Glaciale"
     resource:
@@ -50,7 +50,7 @@ items:
     lore:
       - "§7§ola boule de la solitude..."
       - "§7Un des 5 Fragments de la §fSingularité"
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:glacite_orb}"
     
   singularity:
     display_name: "§bSingularité"
@@ -61,4 +61,4 @@ items:
     lore:
       - "§7§ol'acheminement d'un parcours chaotique dans le futur"
       - "§7La §fSingularité"
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:singularity}"

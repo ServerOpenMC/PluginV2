@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -17,6 +19,15 @@ import java.util.jar.JarFile;
  * Utilitaires pour la gestion des fichiers et dossiers
  */
 public class FileUtils {
+    private static final Set<String> TEXT_EXTENSIONS = Set.of(
+            "yml",
+            "yaml",
+            "json",
+            "txt",
+            "mcmeta",
+            "properties"
+    );
+
     /**
      * Supprime récursivement un répertoire
      *
@@ -120,6 +131,20 @@ public class FileUtils {
      * @throws IOException Si une erreur survient lors de la copie
      */
     public static void copyResourceFolder(Logger logger, String sourcePath, File destDir, Class<?> clazz) throws IOException {
+        copyResourceFolder(logger, sourcePath, destDir, clazz, null);
+    }
+
+    /**
+     * Copie un dossier depuis les ressources vers le système de fichiers.
+     *
+     * @param sourcePath Chemin dans les ressources (ex: "contents/omc_items").
+     * @param destDir Dossier destination.
+     * @param clazz Classe du plugin pour accéder au ClassLoader.
+     * @param textTransformer transformeur appliqué aux fichiers texte (peut être null).
+     * @throws IOException Si une erreur survient lors de la copie.
+     */
+    public static void copyResourceFolder(Logger logger, String sourcePath, File destDir, Class<?> clazz,
+                                          Function<String, String> textTransformer) throws IOException {
         ClassLoader classLoader = clazz.getClassLoader();
 
         try {
@@ -146,7 +171,11 @@ public class FileUtils {
                                                         logger.warn("Impossible de créer le dossier: {}", parentDir.getAbsolutePath());
                                                     }
                                                 }
+
                                                 Files.copy(sourceFile, destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                                if (textTransformer != null) {
+                                                    transformTextFile(logger, destFile, textTransformer);
+                                                }
                                             } catch (IOException e) {
                                                 logger.warn("Erreur lors de la copie du fichier: {}", e.getMessage());
                                             }
@@ -187,6 +216,9 @@ public class FileUtils {
                                     // * Copie le fichier
                                     try (InputStream in = jar.getInputStream(entry)) {
                                         Files.copy(in, destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                        if (textTransformer != null) {
+                                            transformTextFile(logger, destFile, textTransformer);
+                                        }
                                     }
                                 }
                             }
@@ -199,6 +231,60 @@ public class FileUtils {
         } catch (IOException e) {
             logger.error("Erreur lors de l'accès aux ressources: {}", e.getMessage(), e);
             throw new IOException("Erreur lors de la copie des ressources", e);
+        }
+    }
+
+    /**
+     * Dit si le fichier est compatible avec le systeme de transformation
+     * @param fileName le nom du fichier
+     * @param textTransformer le transformeur de texte à appliquer (peut être null)
+     * @return
+     */
+    private static boolean shouldTransform(String fileName, Function<String, String> textTransformer) {
+        if (textTransformer == null || fileName == null) {
+            return false;
+        }
+
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex < 0) {
+            return false;
+        }
+
+        String extension = fileName.substring(dotIndex + 1).toLowerCase(Locale.ROOT);
+        return TEXT_EXTENSIONS.contains(extension);
+    }
+
+    /**
+     * Transforme un fichier texte en appliquant un transformeur.
+     *
+     * @param logger logger pour les avertissements (peut être {@code null}).
+     * @param file fichier à transformer.
+     * @param textTransformer transformeur de contenu.
+     * @return {@code true} si un changement a été appliqué, sinon {@code false}.
+     */
+    public static boolean transformTextFile(Logger logger, File file, Function<String, String> textTransformer) {
+        if (file == null || textTransformer == null || !file.isFile()) {
+            return false;
+        }
+
+        if (!shouldTransform(file.getName(), textTransformer)) {
+            return false;
+        }
+
+        try {
+            String content = Files.readString(file.toPath(), StandardCharsets.UTF_8);
+            String transformed = textTransformer.apply(content);
+            if (transformed == null || transformed.equals(content)) {
+                return false;
+            }
+
+            Files.writeString(file.toPath(), transformed, StandardCharsets.UTF_8);
+            return true;
+        } catch (IOException e) {
+            if (logger != null) {
+                logger.warn("Erreur lors de la transformation du fichier: {}", file.getAbsolutePath(), e);
+            }
+            return false;
         }
     }
 

@@ -9,7 +9,7 @@ items:
       model_path: "minecraft:item/sculk"
     lore:
       - "§7§oDu sculk qui a vécu..."
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:corrupted_sculk}"
 
   old_pale_oak:
     display_name: "§fVieux chêne pale"
@@ -19,7 +19,7 @@ items:
       model_path: "minecraft:block/pale_oak_wood"
     lore:
       - "§7§o... et qui a subit des crises."
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:old_pale_oak}"
 
   corrupted_string:
     display_name: "§fFil Corrompu"
@@ -28,7 +28,7 @@ items:
       textures:
         - minecraft:item/string.png
       material: PAPER
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:corrupted_string}"
 
   creaking_heart:
     display_name: "§fCoeur de Creaking"
@@ -39,7 +39,7 @@ items:
       material: PAPER
     lore:
       - "§7§oun coeur frais."
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:creaking_heart}"
 
   old_creaking_axe:
     display_name: "Vieille Hache du Creaking"
@@ -53,7 +53,7 @@ items:
       mainhand:
         attackDamage: 4
         attackSpeed: 1.4
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:old_creaking_axe}"
 
   soul_axe:
     display_name: "Hache des Ames"
@@ -67,7 +67,7 @@ items:
       mainhand:
         attackDamage: 9
         attackSpeed: 1.1
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:soul_axe}"
 
   soul:
     display_name: "Ame"
@@ -76,7 +76,7 @@ items:
       textures:
         - others/soul
       material: PAPER
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:soul}"
 
   cloud_fishing_rod:
     name: Cloud Fishing Rod
@@ -89,14 +89,14 @@ items:
       max_durability: 32
       durability: 32
       disappear_when_broken: true
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:cloud_fishing_rod}"
 
   meteo_wand:
     display_name: Meteo Wand
     resource:
       material: STICK
       model_path: tools/meteo_wand
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:meteo_wand}"
 
   cloud_key:
     display_name: Cloud Key
@@ -105,7 +105,7 @@ items:
       generate: true
       textures:
         - others/cloud_key
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:cloud_key}"
 
   somnifere:
     display_name: Somnifère
@@ -117,7 +117,7 @@ items:
         - others/somnifere
       lore:
         - '§7Vous allez faire un gros dodo'
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:somnifere}"
 
   metal_detector:
     display_name: "Détecteur de Métaux"
@@ -125,7 +125,7 @@ items:
       generate: false
       material: STICK
       model_path: tools/metal_detector
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:metal_detector}"
 
   ewenite:
     display_name: Ewenite
@@ -137,7 +137,7 @@ items:
       textures:
         - others/ewenite.png
     nbt: '{"PublicBukkitValues":{"openmc:to_dream_item": "omc_dream:ewenite"}}'
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:ewenite}"
   crystallized_pickaxe:
     display_name: "Pioche Crysalisée"
     resource:
@@ -147,7 +147,7 @@ items:
         - tools/crystalized_pickaxe
     durability:
       unbreakable: true
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:crystallized_pickaxe}"
 
   mecanic_pickaxe:
     display_name: "Pioche Mécanisé"
@@ -157,7 +157,7 @@ items:
       model_path: tools/mecanic_pickaxe
     durability:
       unbreakable: true
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:mecanic_pickaxe}"
 
   glacite:
     display_name: "§fGlacite"
@@ -165,7 +165,7 @@ items:
       material: PAPER
       generate: false
       model_path: "minecraft:block/blue_ice"
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:glacite}"
 
   coal_burn:
     display_name: "§fCharbon brulé"
@@ -173,7 +173,7 @@ items:
       material: PAPER
       generate: false
       model_path: "minecraft:item/charcoal"
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:coal_burn}"
 
   hard_stone:
     display_name: "§fPierre dure"
@@ -181,7 +181,7 @@ items:
       material: DEEPSLATE
       generate: false
       model_path: "minecraft:item/deepslate"
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:hard_stone}"
 
   crafting_table:
     display_name: "§fTable de Craft"
@@ -189,7 +189,7 @@ items:
       material: CRAFTING_TABLE
       generate: false
       model_path: "minecraft:item/crafting_table"
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:crafting_table}"
 
   eternal_campfire:
     display_name: "§fFeu de Camp Eternel"
@@ -197,4 +197,4 @@ items:
       material: CAMPFIRE
       generate: false
       model_path: "minecraft:item/campfire"
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:eternal_campfire}"
