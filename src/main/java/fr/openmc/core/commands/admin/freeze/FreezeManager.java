@@ -1,32 +1,37 @@
 package fr.openmc.core.commands.admin.freeze;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class FreezeManager extends Feature {
+public class FreezeManager extends Feature implements HasCommands, HasListeners {
 	
 	public static final Set<Player> FROZEN_PLAYERS = new HashSet<>();
 	private static Player player;
 
 	@Override
-	public void init() {
-		Bukkit.getServer().getPluginManager().registerEvents(new FreezeListener(), OMCPlugin.getInstance());
+	public Set<Object> getCommands() {
+		return Set.of(
+				new FreezeCommand()
+		);
 	}
 
 	@Override
-	public void save() {
-		// nothing to save
+	public Set<Listener> getListeners() {
+		return Set.of(
+				new FreezeListener()
+		);
 	}
 
 	/**

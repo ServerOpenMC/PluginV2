@@ -1,5 +1,9 @@
 package fr.openmc.core.features.privatemessage;
 
+import fr.openmc.core.bootstrap.annotations.Credit;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -9,11 +13,20 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-public class PrivateMessageManager {
+@Credit(developers = {"Axeno"})
+public class PrivateMessageManager extends Feature implements HasCommands {
 
     private static final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new PrivateMessageCommand()
+        );
+    }
 
     /**
      * Send a private message from sender to receiver.

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
-import fr.openmc.core.features.tpa.TPAQueue;
+import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -18,19 +18,19 @@ public class TPACancelCommand {
 	@Command("tpacancel")
 	@CommandPermission("omc.commands.tpa")
 	public void tpaCancel(Player player) {
-		if (!TPAQueue.requesterHasPendingRequest(player)) {
+		if (!TPAManager.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		Player target = TPAQueue.getTargetByRequester(player);
+		Player target = TPAManager.getTargetByRequester(player);
 
 		if (target == null) {
 			MessagesManager.sendMessage(player, Component.text("§4Le joueur n'est pas en ligne ou n'existe pas"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
-		TPAQueue.removeRequest(player, target);
+		TPAManager.removeRequest(player, target);
 		MessagesManager.sendMessage(player, Component.text("§2Vous avez annulé votre demande de téléportation à §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
 		MessagesManager.sendMessage(target, Component.text("§3" + player.getName() + " §4a annulé sa demande de téléportation"), Prefix.OPENMC, MessageType.INFO, true);
 		

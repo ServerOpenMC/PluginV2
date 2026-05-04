@@ -1,4 +1,4 @@
-package fr.openmc.core.features.milestones;
+package fr.openmc.core.features.milestones.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

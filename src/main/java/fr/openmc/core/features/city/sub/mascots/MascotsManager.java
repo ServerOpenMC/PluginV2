@@ -5,10 +5,12 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
@@ -29,6 +31,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -38,12 +41,10 @@ import org.bukkit.potion.PotionEffectType;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class MascotsManager extends Feature implements DatabaseFeature {
+@Credit(developers = {"Nocolm"})
+public class MascotsManager extends Feature implements DatabaseFeature, HasCommands, HasListeners {
     public static final List<UUID> movingMascots = new ArrayList<>();
     public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
@@ -68,7 +69,24 @@ public class MascotsManager extends Feature implements DatabaseFeature {
 
         loadMascots();
 
-        OMCPlugin.registerEvents(
+        if (ProtocolLibHook.isEnable())
+            new MascotsSoundListener();
+
+        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
+            MascotRegenerationUtils.mascotsRegeneration(mascot);
+        }
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new AdminMascotsCommands()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
@@ -76,23 +94,9 @@ public class MascotsManager extends Feature implements DatabaseFeature {
                 new MascotImmuneListener(),
                 new MascotsTargetListener(),
                 new MascotsRenameListener(),
-                new MascotsPotionListener()
+                new MascotsPotionListener(),
+                new MascotsProtectionsListener()
         );
-        if (!OMCPlugin.isUnitTestVersion()) {
-            if (ProtocolLibHook.isEnable())
-                new MascotsSoundListener();
-            OMCPlugin.registerEvents(
-                    new MascotsProtectionsListener()
-            );
-        }
-
-        CommandsManager.getHandler().register(
-                new AdminMascotsCommands()
-        );
-
-        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
-            MascotRegenerationUtils.mascotsRegeneration(mascot);
-        }
     }
 
     @Override
@@ -302,5 +306,4 @@ public class MascotsManager extends Feature implements DatabaseFeature {
         equipment.setItemInMainHandDropChance(0f);
         equipment.setItemInOffHandDropChance(0f);
     }
-
 }

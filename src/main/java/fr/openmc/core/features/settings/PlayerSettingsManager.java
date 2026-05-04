@@ -7,25 +7,29 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.features.settings.command.SettingsCommand;
+import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
 import fr.openmc.core.features.settings.models.PlayerSettingEntity;
 import lombok.Getter;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
-public class PlayerSettingsManager extends Feature implements Listener, DatabaseFeature {
+public class PlayerSettingsManager extends Feature implements DatabaseFeature, HasListeners, HasCommands {
 
     private static final Map<UUID, PlayerSettings> playersSettings = new ConcurrentHashMap<>();
     private static Dao<PlayerSettingEntity, Long> playerSettingDao;
@@ -33,6 +37,20 @@ public class PlayerSettingsManager extends Feature implements Listener, Database
     @Override
     public void init() {
         PlayerSettingsManager.loadAllPlayerSettings();
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new SettingsCommand()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new PlayerSettingsListener()
+        );
     }
 
     @Override
@@ -269,17 +287,5 @@ public class PlayerSettingsManager extends Feature implements Listener, Database
     public static boolean canReceivePrivateMessage(UUID senderUUID, UUID receiverUUID) {
         PlayerSettings settings = getPlayerSettings(receiverUUID);
         return settings.canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, senderUUID);
-    }
-
-    // ============== Event Handlers ==============
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        loadPlayerSettings(event.getPlayer().getUniqueId());
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        unloadPlayerSettings(uuid);
     }
 }

@@ -1,4 +1,4 @@
-package fr.openmc.core.features.milestones;
+package fr.openmc.core.features.milestones.models;
 
 import java.util.ArrayList;
 import java.util.List;

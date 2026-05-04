@@ -7,6 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
+@Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
 public class ContestManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
 
     public static ContestData data;

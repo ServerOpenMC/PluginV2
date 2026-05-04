@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Location;
@@ -17,7 +18,7 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 
 import java.util.Collection;
 
-public class MascotsProtectionsListener implements Listener {
+public class MascotsProtectionsListener implements Listener, NotInUnitTest {
     @EventHandler
     public void onBlockPlace(CustomBlockPlaceEvent event) {
         Block block = event.getBlock();

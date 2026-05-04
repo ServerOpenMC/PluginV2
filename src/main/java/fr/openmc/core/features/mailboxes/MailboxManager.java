@@ -5,8 +5,11 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.settings.PlayerSettings;
@@ -37,7 +40,8 @@ import java.util.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
-public class MailboxManager extends Feature implements DatabaseFeature {
+@Credit(developers = {"Gexary", "Axeno"}, graphist = {"Gexary"})
+public class MailboxManager extends Feature implements DatabaseFeature, HasCommands {
     private static final int MAX_STACKS_PER_LETTER = 27;
     private static final List<Letter> letters = new ArrayList<>();
 
@@ -46,6 +50,13 @@ public class MailboxManager extends Feature implements DatabaseFeature {
     @Override
     public void init() {
         MailboxManager.loadLetters();
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new MailboxCommand()
+        );
     }
 
     @Override

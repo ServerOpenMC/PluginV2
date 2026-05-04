@@ -6,6 +6,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.features.analytics.Stats;
@@ -16,18 +17,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class TransactionsManager extends Feature implements DatabaseFeature {
     private static Dao<Transaction, String> transactionsDao;
-
-    @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {

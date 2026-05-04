@@ -5,12 +5,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.features.animations.commands.DebugAnimationCommand;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
 import fr.openmc.core.hooks.ItemsAdderHook;
+import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -20,8 +25,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Set;
 
-public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfEnable<ItemsAdderHook> {
+@Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"})
+public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfEnable<ItemsAdderHook>, HasListeners, HasCommands {
 
     @Override
     public void init() {
@@ -30,13 +37,21 @@ public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfE
         saveAllAnimation(plugin);
 
         loadAllAnimations(plugin);
+    }
 
-        if (!OMCPlugin.isUnitTestVersion()) {
-            OMCPlugin.registerEvents(
-                    new EmoteListener(),
-                    new PlayerFinishJoiningListener()
-            );
-        }
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new DebugAnimationCommand()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new EmoteListener(),
+                new PlayerFinishJoiningListener()
+        );
     }
 
     @Override

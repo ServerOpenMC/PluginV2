@@ -13,7 +13,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class Cooldowns {
+public class CooldownCommand {
 
     @Command("cooldowns")
     @Description("Permet d'avoir la liste des cooldowns")

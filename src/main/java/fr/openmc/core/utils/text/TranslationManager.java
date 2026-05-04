@@ -26,12 +26,6 @@ public class TranslationManager extends Feature {
         loadAllLanguages();
     }
 
-
-    @Override
-    public void save() {
-
-    }
-
     /**
      * Returns a string corresponding to the specified path and the language.
      *

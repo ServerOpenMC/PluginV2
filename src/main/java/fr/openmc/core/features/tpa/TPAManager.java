@@ -1,7 +1,8 @@
 package fr.openmc.core.features.tpa;
 
-import fr.openmc.core.CommandsManager;
+import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.tpa.commands.TPACancelCommand;
 import fr.openmc.core.features.tpa.commands.TPACommand;
 import fr.openmc.core.features.tpa.commands.TPADenyCommand;
@@ -15,10 +16,12 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TPAQueue extends Feature {
+@Credit(developers = {"gab400"})
+public class TPAManager extends Feature implements HasCommands {
 	
 	/**
 	 * Map to store teleport requests
@@ -28,18 +31,13 @@ public class TPAQueue extends Feature {
 	private static final ConcurrentHashMap<UUID, Long> tpaRequestTime = new ConcurrentHashMap<>();
 
 	@Override
-    public void init() {
-        CommandsManager.getHandler().register(
-                new TPAcceptCommand(),
-                new TPACommand(),
-                new TPADenyCommand(),
-                new TPACancelCommand()
-        );
-    }
-
-	@Override
-	public void save() {
-		// nothing to save
+	public Set<Object> getCommands() {
+		return Set.of(
+				new TPAcceptCommand(),
+				new TPACommand(),
+				new TPADenyCommand(),
+				new TPACancelCommand()
+		);
 	}
 
 	/**

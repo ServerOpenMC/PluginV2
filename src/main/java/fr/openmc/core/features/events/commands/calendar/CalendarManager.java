@@ -1,5 +1,8 @@
-package fr.openmc.core.features.events.managers;
+package fr.openmc.core.features.events.commands.calendar;
 
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -13,8 +16,15 @@ import org.bukkit.inventory.ItemStack;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public class CalendarManager {
+public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasCommands {
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new CalendarCommand()
+        );
+    }
 
     public static List<Event> getUpcomingEvents(int slots) {
         List<Event> events = new ArrayList<>(List.of(

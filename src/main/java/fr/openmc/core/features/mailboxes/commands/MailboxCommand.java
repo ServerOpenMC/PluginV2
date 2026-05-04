@@ -1,6 +1,8 @@
-package fr.openmc.core.features.mailboxes;
+package fr.openmc.core.features.mailboxes.commands;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
+import fr.openmc.core.features.mailboxes.Letter;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;

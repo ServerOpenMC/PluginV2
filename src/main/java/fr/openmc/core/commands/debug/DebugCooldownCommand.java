@@ -11,7 +11,7 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Suggest;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class CooldownCommand {
+public class DebugCooldownCommand {
     @Command("debug cooldown")
     @CommandPermission("omc.debug.cooldown")
     @Description("Test de cooldown")

@@ -1,7 +1,6 @@
 package fr.openmc.api.menulib.utils;
 
 import fr.openmc.api.menulib.MenuLib;
-import fr.openmc.core.utils.cache.CachePlayerProfile;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
