@@ -1,7 +1,7 @@
 package fr.openmc.core.features.credits;
 
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.animations.AnimationsManager;
 import fr.openmc.core.features.city.CityManager;

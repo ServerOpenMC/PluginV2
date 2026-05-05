@@ -1,19 +1,18 @@
 package fr.openmc.core.features.adminshop;
 
-import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.messages.TranslationManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

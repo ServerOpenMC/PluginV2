@@ -2,8 +2,8 @@ package fr.openmc.core.features.mainmenu;
 
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;

@@ -1,4 +1,4 @@
-package fr.openmc.core.bootstrap.annotations;
+package fr.openmc.core.bootstrap.features.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

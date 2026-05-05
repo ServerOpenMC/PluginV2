@@ -1,8 +1,8 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.quests.command.QuestCommand;

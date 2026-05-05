@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -26,6 +27,9 @@ public class ColdTask extends BukkitRunnable {
         boolean isInBaseCamp = DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.BASE_CAMP);
         double resistance = ColdManager.calculateColdResistance(player);
         boolean inColdBiome = player.getLocation().getBlock().getBiome().equals(DreamBiome.GLACITE_GROTTO.getBiome());
+
+        // Retrait du froid que si le joueur n'est pas en crea ou en spec
+        if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)) return;
 
         // Retrait du froid si dans une structure BASE_CAMP
         if (isInBaseCamp) {
