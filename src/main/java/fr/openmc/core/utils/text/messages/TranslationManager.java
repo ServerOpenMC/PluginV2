@@ -1,9 +1,10 @@
-package fr.openmc.core.utils.messages;
+package fr.openmc.core.utils.text.messages;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
+import fr.openmc.core.utils.text.ComponentUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.kyori.adventure.text.Component;

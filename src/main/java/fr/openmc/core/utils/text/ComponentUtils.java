@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.messages;
+package fr.openmc.core.utils.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
