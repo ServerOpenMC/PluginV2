@@ -1,9 +1,8 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.bootstrap.integration;
 
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.types;
 
 import java.io.IOException;
 import java.io.InputStream;
