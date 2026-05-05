@@ -6,8 +6,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 
 import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRADE_PER_AYWENITE;

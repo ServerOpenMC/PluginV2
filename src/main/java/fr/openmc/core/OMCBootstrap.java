@@ -1,7 +1,7 @@
 package fr.openmc.core;
 
-import fr.openmc.core.utils.messages.TranslationManager;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;

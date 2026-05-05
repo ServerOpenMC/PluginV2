@@ -1,11 +1,10 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.TranslationManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.List;

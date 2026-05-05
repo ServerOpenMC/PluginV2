@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.messages;
+package fr.openmc.core.utils.text.messages;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

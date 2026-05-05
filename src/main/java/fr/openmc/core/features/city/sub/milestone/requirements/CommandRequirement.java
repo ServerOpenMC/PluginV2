@@ -5,7 +5,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.EventCityRequirement;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
-import fr.openmc.core.utils.messages.TranslationManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

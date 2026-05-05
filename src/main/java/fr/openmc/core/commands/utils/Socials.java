@@ -1,7 +1,7 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.messages.TranslationManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;

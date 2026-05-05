@@ -8,10 +8,10 @@ import fr.openmc.core.features.city.commands.autocomplete.CityPermissionsAutoCom
 import fr.openmc.core.features.city.conditions.CityPermsConditions;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.cache.PlayerNameCache;
-import fr.openmc.core.utils.messages.TranslationManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

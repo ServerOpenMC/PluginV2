@@ -2,7 +2,7 @@ package fr.openmc.core.commands.debug;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.chronometer.ChronometerType;
-import fr.openmc.core.utils.messages.TranslationManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;

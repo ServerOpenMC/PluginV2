@@ -1,7 +1,7 @@
 package fr.openmc.api.cooldown;
 
 import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.messages.TranslationManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
