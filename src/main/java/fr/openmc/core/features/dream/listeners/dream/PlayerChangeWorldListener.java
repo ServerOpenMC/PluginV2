@@ -1,16 +1,12 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.displays.bossbar.BossbarManager;
-import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
-import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
-import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;

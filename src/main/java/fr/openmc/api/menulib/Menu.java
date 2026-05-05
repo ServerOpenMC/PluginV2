@@ -5,19 +5,14 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.messages.TranslationManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.messages.TranslationManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -259,7 +254,7 @@ public abstract class Menu implements InventoryHolder {
             title = Component.text(getTexture());
         }
 
-		return Bukkit.createInventory(this, getInventorySize().getSize(), Component.text(title));
+		return Bukkit.createInventory(this, getInventorySize().getSize(), title);
 	}
 
 }

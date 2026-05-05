@@ -1,6 +1,5 @@
 package fr.openmc.api.input.dialog;
 
-import fr.openmc.core.utils.dialog.ButtonType;
 import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;

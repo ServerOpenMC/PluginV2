@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.sfx;
 
-import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 

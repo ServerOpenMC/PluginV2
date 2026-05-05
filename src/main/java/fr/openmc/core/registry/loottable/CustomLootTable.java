@@ -1,9 +1,6 @@
 package fr.openmc.core.registry.loottable;
 
-import fr.openmc.core.registry.items.CustomItem;
-import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.utils.ItemUtils;
-import net.kyori.adventure.key.Key;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

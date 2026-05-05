@@ -5,8 +5,8 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.NpcManager;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
-import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.hooks.FancyNpcsHook;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -60,7 +60,7 @@ public class PlayerCloneNpc {
      * @param sleepingLocation The location where the player is sleeping, which will be used to position the clone NPC.
      */
     public static void createCloneNpc(Player player, Location sleepingLocation, Pose pose) {
-        if (!FancyNpcsHook.isHasFancyNpc()) return;
+        if (!FancyNpcsHook.isEnable()) return;
         Npc existingNpc = getCloneNpc(player);
         if (existingNpc != null) {
             deleteCloneNpc(existingNpc);
@@ -108,7 +108,7 @@ public class PlayerCloneNpc {
      * @param player The player whose clone NPC should be deleted. If the player does not have a clone NPC, this method will do nothing.
      */
     public static void deleteCloneNpc(Player player) {
-        if (!FancyNpcsHook.isHasFancyNpc()) return;
+        if (!FancyNpcsHook.isEnable()) return;
         Npc npc = getCloneNpc(player);
         if (npc == null) return;
 
@@ -120,7 +120,7 @@ public class PlayerCloneNpc {
      * @param npc The clone NPC to be deleted. If the NPC does not exist or is not a clone NPC, this method will do nothing.
      */
     public static void deleteCloneNpc(Npc npc) {
-        if (!FancyNpcsHook.isHasFancyNpc()) return;
+        if (!FancyNpcsHook.isEnable()) return;
         if (npc == null) return;
         if (NPC_MANAGER.getNpc(npc.getData().getName()) == null) return;
 

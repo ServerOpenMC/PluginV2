@@ -2,15 +2,10 @@ package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
+import fr.openmc.core.utils.messages.TranslationManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.MessagesManager.Message;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.PlayerUtils;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
