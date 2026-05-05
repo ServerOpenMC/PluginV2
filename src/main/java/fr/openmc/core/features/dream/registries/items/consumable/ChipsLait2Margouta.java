@@ -11,10 +11,10 @@ public class ChipsLait2Margouta extends DreamItem {
     public ChipsLait2Margouta(String name) {
         super(name);
     }
-
+    
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
+        return DreamRarity.ONIRISIME;
     }
 
     @Override

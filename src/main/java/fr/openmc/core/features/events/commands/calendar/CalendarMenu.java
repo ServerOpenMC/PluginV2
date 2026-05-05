@@ -110,8 +110,8 @@ public class CalendarMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Calendrier Evenementiel";
+    public @NotNull Component getName() {
+        return Component.text("Calendrier Evenementiel");
     }
 
     @Override

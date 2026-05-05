@@ -6,6 +6,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -24,7 +25,8 @@ public class CityChestAction {
 
         if (ItemUtils.takeAywenite(player, aywenite)) {
             city.saveChestContent(city.getChestPages() + 1, null);
-            MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.chest.upgraded"),
+                    Prefix.CITY, MessageType.SUCCESS, true);
         }
     }
 }

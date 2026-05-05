@@ -23,18 +23,17 @@ import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.generation.listeners.CloudStructureDispenserListener;
 import fr.openmc.core.features.dream.generation.listeners.ReplaceBlockListener;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
-import fr.openmc.core.features.dream.listeners.biomes.PlayerEnteredBiome;
 import fr.openmc.core.features.dream.listeners.dream.*;
-import fr.openmc.core.features.dream.listeners.orb.PlayerObtainOrb;
-import fr.openmc.core.features.dream.listeners.others.CraftingConvertorListener;
-import fr.openmc.core.features.dream.listeners.others.PlayerEatSomnifere;
-import fr.openmc.core.features.dream.listeners.others.SingularityCraftListener;
+import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
 import fr.openmc.core.features.dream.listeners.strctures.PlayerEnterStructureListener;
 import fr.openmc.core.features.dream.listeners.strctures.PlayerExitStructureListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
+import fr.openmc.core.features.dream.mecanism.rng.DreamLootListener;
+import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
+import fr.openmc.core.features.dream.mecanism.singularity.SingularityCraftListener;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityManager;
 import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
@@ -68,7 +67,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
     private static final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
     public static final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
-    
+
     private static Dao<DBDreamPlayer, String> dreamPlayerDao;
     private static Dao<DBPlayerSave, String> savePlayerDao;
 
@@ -77,11 +76,12 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         // ** MANAGERS **
         DreamDimensionManager.init();
         GlaciteNpcManager.init();
+        PlayerCloneNpc.init();
         DreamStructuresManager.init();
         DreamItemRegistry.init();
+        DreamLootTableRegistry.init();
         DreamBlocksRegistry.init();
         DreamMobsRegistry.init();
-        DreamLootTableRegistry.init();
         DreamBlocksDropsRegistry.init();
         CloudFishingManager.init();
         MetalDetectorManager.init();
@@ -123,7 +123,9 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new DreamItemEquipListener(),
                 new SingularityCraftListener(),
                 new PlayerEnterStructureListener(),
-                new PlayerExitStructureListener()
+                new PlayerExitStructureListener(),
+                new PlayerFoodChangeListener(),
+                new DreamLootListener()
         );
     }
 
@@ -341,7 +343,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 )
         );
     }
-    
+
     public static void setMaxTime(Player player, long maxTime) {
         DBDreamPlayer cache = DreamManager.getCacheDreamPlayer(player);
 
@@ -362,7 +364,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
     }
 
     public static double calculateDreamProbability(Player player) {
-        double base = 0.2;
+        double base = 0.15;
         PlayerInventory inv = player.getInventory();
 
         ItemStack[] armor = {

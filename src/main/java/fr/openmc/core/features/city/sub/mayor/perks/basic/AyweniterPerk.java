@@ -10,6 +10,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -50,7 +51,7 @@ public class AyweniterPerk implements Listener {
                 ayweniteItem.setAmount(2);
                 player.getInventory().addItem(ayweniteItem);
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 10.0F, 0.6F);
-                MessagesManager.sendMessage(player, Component.text("§8§o*la bénédiction!*"), Prefix.MAYOR, MessageType.INFO, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.perk.basic.ayweniter.blessing"), Prefix.MAYOR, MessageType.INFO, false);
             }
         }
     }

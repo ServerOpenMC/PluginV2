@@ -16,6 +16,8 @@ import java.util.Objects;
  * Utility class for performing operations on {@link ItemStack}.
  * Provides methods for creating items, checking item identifiers, and creating player skulls.
  */
+
+@SuppressWarnings("UnstableApiUsage")
 public class ItemUtils {
 	
 	/**

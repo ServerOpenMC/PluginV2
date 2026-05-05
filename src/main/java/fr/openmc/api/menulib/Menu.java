@@ -8,10 +8,16 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -53,10 +59,10 @@ public abstract class Menu implements InventoryHolder {
 	/**
 	 * Retrieves the name of the menu.
 	 *
-	 * @return A non-null {@link String} representing the name of the menu
+	 * @return A non-null {@link Component} representing the name of the menu
 	 */
 	@NotNull
-	public abstract String getName();
+	public abstract Component getName();
 
 	/**
 	 * Retrieves the textures of the menu.
@@ -78,7 +84,7 @@ public abstract class Menu implements InventoryHolder {
 	}
 	
 	public Component getNoPermissionMessage() {
-		return Component.text("§cVous n'avez pas la permission d'ouvrir ce menu.");
+		return TranslationManager.translation("api.menulib.no_permission");
 	}
 	
 	/**
@@ -154,7 +160,7 @@ public abstract class Menu implements InventoryHolder {
 
 			owner.openInventory(inventory);
 		} catch (Exception e) {
-			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(owner, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
 			owner.closeInventory();
 			throw new RuntimeException(e);
 		}
@@ -176,12 +182,9 @@ public abstract class Menu implements InventoryHolder {
 
 		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
 			inventory.setItem(slot, new ItemBuilder(this, item, itemMeta -> {
-				itemMeta.displayName(Component.text("§aRetour"));
-				itemMeta.lore(List.of(
-						Component.text("§7Vous allez retourner au §a" +
-								(MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : "Menu Précédent") + "§7."),
-						Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-				));
+				itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
+				itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
+				itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : Component.text("Menu Précédent")));
 			}, true));
 			return;
 		}
@@ -250,12 +253,11 @@ public abstract class Menu implements InventoryHolder {
 	@NotNull
 	@Override
 	public final Inventory getInventory() {
-		String title = (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()
-				? getTexture()
-				: getName();
+		Component title = getName();
 
-		if (!ItemsAdderHook.isEnable())
-			title = getName();
+        if (ItemsAdderHook.isEnable() && (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()) {
+            title = Component.text(getTexture());
+        }
 
 		return Bukkit.createInventory(this, getInventorySize().getSize(), Component.text(title));
 	}

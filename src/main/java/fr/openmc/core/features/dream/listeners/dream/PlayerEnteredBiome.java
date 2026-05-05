@@ -1,4 +1,4 @@
-package fr.openmc.core.features.dream.listeners.biomes;
+package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
@@ -107,8 +107,8 @@ public class PlayerEnteredBiome implements Listener {
     private void spawnParticles(Player player) {
         ParticleUtils.sendParticlePacket(
                 player,
-                player.getLocation(),
                 Particle.CLOUD,
+                player.getLocation(),
                 100, 1.0, 1.0, 1.0, 0.1, null
         );
     }

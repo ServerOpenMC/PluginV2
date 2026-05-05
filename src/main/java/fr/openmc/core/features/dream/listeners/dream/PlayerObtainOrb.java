@@ -1,4 +1,4 @@
-package fr.openmc.core.features.dream.listeners.orb;
+package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
@@ -15,39 +15,42 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 public class PlayerObtainOrb implements Listener {
     private final int SCULK_PLAINS_ORB = 1;
-    private final int SOUL_FOREST_ORB = 2;
+    public static final int SOUL_FOREST_ORB = 2;
     private final int CLOUD_CASTLE_ORB = 3;
     private final int MUD_BEACH_ORB = 4;
     private final int GLACITE_GROTTO_ORB = 5;
 
     @EventHandler
-    public void onCraft(PrepareItemCraftEvent event) {
-        Recipe recipe = event.getRecipe();
-        if (recipe == null) return;
-        if (event.getViewers().isEmpty()) return;
+    public void onCraft(CraftItemEvent event) {
+        ItemStack item = event.getCurrentItem();
+        if (item == null) return;
 
-        Player player = (Player) event.getViewers().getFirst();
+        DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+        if (dreamItem == null) return;
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        if (!DreamUtils.isInDream(player)) return;
-        if (!(recipe instanceof Keyed keyed)) return;
+        if (!dreamItem.getName().equals("omc_dream:domination_orb")) return;
 
-        NamespacedKey key = keyed.getKey();
-        if (key.toString().contains("omc_dream") && key.toString().contains("domination_orb")) { // contains beacuse key is ex zzzfake_omc_items:aywenite
-            setProgressionOrb(player, SCULK_PLAINS_ORB, DreamBiome.SOUL_FOREST);
-        }
+        setProgressionOrb(player, SCULK_PLAINS_ORB, DreamBiome.SOUL_FOREST);
+
+        // * SFX
+        player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.TRIAL_SPAWNER_DETECTION, 15, 15, 0.5,  null);
     }
 
     @EventHandler
@@ -60,6 +63,10 @@ public class PlayerObtainOrb implements Listener {
         Player player = event.getPlayer();
 
         setProgressionOrb(player, SOUL_FOREST_ORB, DreamBiome.CLOUD_LAND);
+
+        // * SFX
+        player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.SCULK_SOUL, 15, 15, 0.5,  null);
     }
 
     @EventHandler
@@ -73,6 +80,10 @@ public class PlayerObtainOrb implements Listener {
         if (!dreamItem.getName().equals("omc_dream:cloud_orb")) return;
 
         setProgressionOrb(player, CLOUD_CASTLE_ORB, DreamBiome.MUD_BEACH);
+
+        // * SFX
+        player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.GUST, 15, 15, 0.5,  null);
     }
 
     @EventHandler
@@ -86,6 +97,10 @@ public class PlayerObtainOrb implements Listener {
             if (!dreamItem.getName().equals("omc_dream:mud_orb")) continue;
 
             setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
+
+            // * SFX
+            player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5,  null);
             break;
         }
     }
@@ -97,6 +112,10 @@ public class PlayerObtainOrb implements Listener {
         if (!event.getTrade().equals(GlaciteTrade.ORB_GLACITE)) return;
 
         setProgressionOrb(player, GLACITE_GROTTO_ORB, null);
+
+        // * SFX
+        player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.SNOWFLAKE, 15, 15, 0.5,  null);
     }
 
     public static void setProgressionOrb(Player player, int progressionOrb, DreamBiome unlocked) {
@@ -122,6 +141,21 @@ public class PlayerObtainOrb implements Listener {
         DreamManager.saveDreamPlayerData(cache);
         if (unlocked != null)
             sendMessageProgression(player, unlocked);
+        sendBroadcastMessageOrb(player, progressionOrb);
+    }
+
+    private static void sendBroadcastMessageOrb(Player player, int progressionOrb) {
+        String strOrb;
+        switch (progressionOrb) {
+            case 1 -> strOrb = "l'Orbe de Domination";
+            case 2 -> strOrb = "l'Orbe des Ames";
+            case 3 -> strOrb = "l'Orbe des Nuages";
+            case 4 -> strOrb = "l'Orbe de Boue";
+            case 5 -> strOrb = "l'Orbe Glaciale";
+            default -> strOrb = "une Orbe Inconnu";
+        }
+
+        MessagesManager.broadcastMessage(player.getWorld(), Component.text(player.getName() + " a obtenu " + strOrb + " !"), Prefix.DREAM, MessageType.INFO);
     }
 
     private static void sendMessageProgression(Player player, DreamBiome biome) {

@@ -7,6 +7,11 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -19,7 +24,7 @@ public class NotationCommands {
     void notationTest(Player sender) {
         String weekStr = DateUtils.getWeekFormat();
         if (NotationManager.getSortedNotationForWeek(weekStr) == null) {
-	        MessagesManager.sendMessage(sender, Component.text("Aucune notation n'a été mise pour cette semaine !"), Prefix.CITY, MessageType.INFO, false);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.command.none"), Prefix.CITY, MessageType.INFO, false);
             return;
         }
 

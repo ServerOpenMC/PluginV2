@@ -6,6 +6,7 @@ import fr.openmc.core.features.dream.commands.autocomplete.DreamMilestoneStepsAu
 import fr.openmc.core.features.dream.listeners.orb.PlayerObtainOrb;
 import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
+import fr.openmc.core.features.dream.listeners.dream.PlayerObtainOrb;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.milestones.models.MilestoneQuest;
@@ -47,7 +48,7 @@ public class AdminDreamCommands {
         cache1.setProgressionOrb(orbProgression);
         DreamManager.saveDreamPlayerData(cache1);
     }
-    
+
     @Subcommand("showdialog")
     @CommandPermission("omc.admins.commands.admindream.showdialog")
     void showMilestoneDialog(Player player, @Named("milestone_step") @SuggestWith(DreamMilestoneStepsAutoComplete.class) String stepName) {
@@ -58,13 +59,13 @@ public class AdminDreamCommands {
             MessagesManager.sendMessage(player, Component.text("§cLe nom de l'étape n'est pas valide !"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
-        
+
         List<String> dialogs = quest.getDialogs();
         if (dialogs == null || dialogs.isEmpty()) {
             MessagesManager.sendMessage(player, Component.text("§cCette étape n'a pas de dialogs !"), Prefix.DREAM, MessageType.WARNING, false);
             return;
         }
-        
+
         DreamMilestoneDialog.send(player, (DreamSteps) quest.getStep(), dialogs, 1);
     }
 }

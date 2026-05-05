@@ -1,4 +1,4 @@
-package fr.openmc.core.features.dream.listeners.others;
+package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;

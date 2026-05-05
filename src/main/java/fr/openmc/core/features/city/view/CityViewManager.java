@@ -9,10 +9,15 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
+import fr.openmc.core.utils.ChunkPos;
+import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -48,7 +53,7 @@ public class CityViewManager {
         if (claimsToShow.isEmpty()) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Aucune ville n'a été trouvée dans les environs.", NamedTextColor.RED),
+                    TranslationManager.translation("feature.city.view.commands.no_city").color(NamedTextColor.RED),
                     Prefix.CITY,
                     MessageType.ERROR,
                     false
@@ -63,7 +68,7 @@ public class CityViewManager {
 
         MessagesManager.sendMessage(
                 player,
-                Component.text("Visualisation des claims des villes en cours pendant 30 secondes"),
+                TranslationManager.translation("feature.city.view.commands.visiualizing"),
                 Prefix.CITY
         );
     }
@@ -186,8 +191,8 @@ public class CityViewManager {
         particleLocations.forEach(location ->
                 ParticleUtils.sendParticlePacket(
                         player,
-                        location,
                         particle,
+                        location,
                         1,
                         0D, 0D, 0D,
                         0D,

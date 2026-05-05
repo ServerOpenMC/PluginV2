@@ -22,8 +22,8 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 public class HomeMailbox extends Menu {
 
     @Override
-    public @NotNull String getName() {
-        return "Boite aux lettres";
+    public @NotNull Component getName() {
+        return Component.text("Boite aux lettres");
     }
 
     @Override

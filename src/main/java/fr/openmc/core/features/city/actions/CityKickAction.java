@@ -6,6 +6,11 @@ import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -20,10 +25,27 @@ public class CityKickAction {
         if (city == null) return;
 
         city.removePlayer(playerKick.getUniqueId());
-        MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + playerKick.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender,
+                TranslationManager.translation(
+                        "feature.city.kick.success",
+                        PlayerNameCache.name(playerKick.getUniqueId()),
+                        Component.text(city.getName())
+                ),
+                Prefix.CITY,
+                MessageType.SUCCESS,
+                false
+        );
 
         if (playerKick.isOnline()) {
-            MessagesManager.sendMessage((Player) playerKick, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
+            MessagesManager.sendMessage((Player) playerKick,
+                    TranslationManager.translation(
+                            "feature.city.kick.info",
+                            Component.text(city.getName())
+                    ),
+                    Prefix.CITY,
+                    MessageType.INFO,
+                    true
+            );
         }
     }
 }

@@ -517,7 +517,7 @@ public class CityManager extends Feature implements DatabaseFeature, LoadAfterIt
 
             if (Chronometer.containsChronometer(memberId, "mascot:stick"))
                 if (Bukkit.getEntity(memberId) != null)
-                    Chronometer.stopChronometer(member, "mascot:stick", null, "%null%");
+                    Chronometer.stopChronometer(member, "mascot:stick", null, null);
 
             Mascot mascot = city.getMascot();
             if (mascot == null)

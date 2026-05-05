@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.utils.text.ColorUtils;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.UUID;
@@ -20,7 +21,6 @@ public class Mayor {
     @Setter
     private UUID mayorUUID;
     @DatabaseField
-    @Getter
     @Setter
     private String name;
     @DatabaseField
@@ -54,6 +54,10 @@ public class Mayor {
         this.idPerk2 = idPerk2;
         this.idPerk3 = idPerk3;
         setElectionType(electionType);
+    }
+
+    public Component getName() {
+        return Component.text(this.name);
     }
 
     public NamedTextColor getMayorColor() {

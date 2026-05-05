@@ -86,8 +86,8 @@ public class Breezy extends DreamMob implements Listener {
 
         ParticleUtils.sendParticlePacket(
                 target,
-                eye,
                 Particle.CLOUD,
+                eye,
                 20, 0.2, 0.2, 0.2, 0.01, null
         );
     }
