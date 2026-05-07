@@ -2,15 +2,22 @@ package fr.openmc.core.features.dream.registries.items.armors.cloud;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import lombok.NonNull;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class CloudHelmet extends DreamItem implements DreamEquipableItem {
-    public CloudHelmet(String name) {
-        super(name);
+    public CloudHelmet() {
+        super(new DreamItemMeta(
+                "omc_dream:cloud_helmet",
+                "Casques des Nuages",
+                DreamRarity.EPIC,
+                Material.LEATHER_HELMET,
+                true
+        ));
     }
 
     @Override
@@ -25,12 +32,12 @@ public class CloudHelmet extends DreamItem implements DreamEquipableItem {
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -40,9 +47,8 @@ public class CloudHelmet extends DreamItem implements DreamEquipableItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.IRON_HELMET);
-
-        item.getItemMeta().itemName(Component.text("Casque des Nuages"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

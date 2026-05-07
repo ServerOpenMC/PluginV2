@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.registries.items.tools;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.utils.text.DateUtils;
@@ -21,18 +22,25 @@ import org.jspecify.annotations.NonNull;
 
 public class MeteoWand extends DreamItem implements UsableItem {
     private static final long COOLDOWN_METEO_WAND = 8 * 60 * 60 * 1000L; // 2 jours
-    public MeteoWand(String name) {
-        super(name);
+
+    public MeteoWand() {
+        super(new DreamItemMeta(
+                "omc_dream:meteo_wand",
+                "Meteo Wand",
+                DreamRarity.LEGENDARY,
+                Material.STICK,
+                true
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.LEGENDARY;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -42,9 +50,8 @@ public class MeteoWand extends DreamItem implements UsableItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.STICK);
-
-        item.getItemMeta().itemName(Component.text("Meteo Wand"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 

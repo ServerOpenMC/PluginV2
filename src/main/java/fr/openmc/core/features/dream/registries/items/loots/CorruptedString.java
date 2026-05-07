@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.loots;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -8,18 +9,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class CorruptedString extends DreamItem {
-    public CorruptedString(String name) {
-        super(name);
+    public CorruptedString() {
+        super(new DreamItemMeta(
+                "omc_dream:corrupted_string",
+                "Fil corrompu",
+                DreamRarity.COMMON,
+                Material.STRING,
+                false
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.COMMON;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return false;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -29,9 +36,9 @@ public class CorruptedString extends DreamItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.STRING);
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
 
-        item.getItemMeta().itemName(Component.text("Fil corrompu"));
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

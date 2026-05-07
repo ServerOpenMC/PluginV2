@@ -1,6 +1,8 @@
 package fr.openmc.core.hooks.itemsadder.placeholders;
 
-import fr.openmc.core.features.dream.placeholders.DreamRarityPlaceholder;
+import fr.openmc.core.features.dream.placeholders.DreamItemMaterialPlaceholder;
+import fr.openmc.core.features.dream.placeholders.DreamItemNamePlaceholder;
+import fr.openmc.core.features.dream.placeholders.DreamItemTooltipPlaceholder;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -20,7 +22,11 @@ public class IAPlaceholderRegistry {
     public static IAPlaceholderRegistry loadDefault() {
         IAPlaceholderRegistry registry = new IAPlaceholderRegistry();
 
-        registry.register(new DreamRarityPlaceholder());
+        registry.register(
+                new DreamItemTooltipPlaceholder(),
+                new DreamItemMaterialPlaceholder(),
+                new DreamItemNamePlaceholder()
+        );
         return registry;
     }
 
@@ -88,8 +94,6 @@ public class IAPlaceholderRegistry {
             IAPlaceholder placeholder = placeholders.get(placeholderName);
 
             if (placeholder == null) {
-                logger.warn("Placeholder ItemsAdder inconnu: {}", placeholderName);
-
                 output.append(input, openIndex, closeIndex + 1);
                 cursor = closeIndex + 1;
                 continue;

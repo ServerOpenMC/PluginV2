@@ -55,7 +55,7 @@ public class PlayerObtainOrb implements Listener {
         DreamItem item = event.getCraftedItem();
 
         if (item == null) return;
-        if (!item.getName().equals("omc_dream:ame_orb")) return;
+        if (!item.getId().equals("omc_dream:ame_orb")) return;
 
         Player player = event.getPlayer();
 
@@ -70,7 +70,7 @@ public class PlayerObtainOrb implements Listener {
         DreamItem dreamItem = DreamItemRegistry.getByItemStack(dispensed);
 
         if (dreamItem == null) return;
-        if (!dreamItem.getName().equals("omc_dream:cloud_orb")) return;
+        if (!dreamItem.getId().equals("omc_dream:cloud_orb")) return;
 
         setProgressionOrb(player, CLOUD_CASTLE_ORB, DreamBiome.MUD_BEACH);
     }
@@ -83,7 +83,7 @@ public class PlayerObtainOrb implements Listener {
             DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
 
             if (dreamItem == null) continue;
-            if (!dreamItem.getName().equals("omc_dream:mud_orb")) continue;
+            if (!dreamItem.getId().equals("omc_dream:mud_orb")) continue;
 
             setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
             break;

@@ -6,12 +6,13 @@ import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorTask;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.world.LocationUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -31,18 +32,24 @@ import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetector
 import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager.hiddenChests;
 
 public class MetalDetector extends DreamItem implements UsableItem {
-    public MetalDetector(String name) {
-        super(name);
+    public MetalDetector() {
+        super(new DreamItemMeta(
+                "omc_dream:metal_detector",
+                "Détecteur à métaux",
+                DreamRarity.EPIC,
+                Material.STICK,
+                false
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return false;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -52,9 +59,8 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.STICK);
-
-        item.getItemMeta().itemName(Component.text("Détecteur à métaux"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 

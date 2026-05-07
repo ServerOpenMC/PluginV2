@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.registries.items.armors.creaking;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -9,8 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class OldCreakingChestplate extends DreamItem implements DreamEquipableItem {
-    public OldCreakingChestplate(String name) {
-        super(name);
+    public OldCreakingChestplate() {
+        super(new DreamItemMeta(
+                "omc_dream:old_creaking_chestplate",
+                "Vieux Plastron de Creaking",
+                DreamRarity.COMMON,
+                Material.LEATHER_CHESTPLATE,
+                true
+        ));
     }
 
     @Override
@@ -25,12 +32,12 @@ public class OldCreakingChestplate extends DreamItem implements DreamEquipableIt
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.COMMON;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -40,9 +47,9 @@ public class OldCreakingChestplate extends DreamItem implements DreamEquipableIt
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.IRON_CHESTPLATE);
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
 
-        item.getItemMeta().itemName(Component.text("Plastron du Vieux Creaking"));
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

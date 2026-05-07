@@ -38,7 +38,7 @@ public class CustomItemsDebugCommand {
         if (item == null) {
             player.sendMessage("§cL'item en main n'est pas un custom item.");
         } else {
-            player.sendMessage(item.getName());
+            player.sendMessage(item.getId());
         }
     }
 

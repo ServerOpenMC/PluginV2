@@ -108,8 +108,15 @@ public class CustomItemRegistry {
             registerItem(ci);
         }
     }
+
+    public static void registerItems(Iterable<CustomItem> items) {
+        for (CustomItem ci : items) {
+            registerItem(ci);
+        }
+    }
+
     public static void registerItem(CustomItem item) {
-        register(item.getName(), item);
+        register(item.getId(), item);
     }
 
     public static void registerSimpleItem(String name, ItemStack item) {

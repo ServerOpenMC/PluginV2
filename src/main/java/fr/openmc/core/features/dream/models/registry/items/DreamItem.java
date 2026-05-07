@@ -11,14 +11,17 @@ import java.util.List;
 
 @Getter
 public abstract class DreamItem extends CustomItem {
+    @Getter
+    private DreamItemMeta meta;
     /**
-     * Creates a new DreamItem with the specified name.
-     *
-     * @param name The namespaced ID of the item, e.g., "omc_dream:orb".
+     * Crée un DreamItem à partir d'un meta qui contiens comme clé id équivalent au namespace:item
+     * @param dreamItemMeta La méta de la classe (obligatoire afin de lire certaines infos a propos de l'item depuis le bootstrap)
      */
-    protected DreamItem(String name) {
-        super(name);
+    protected DreamItem(DreamItemMeta dreamItemMeta) {
+        super(dreamItemMeta);
+        meta = dreamItemMeta;
     }
+
 
     public abstract DreamRarity getRarity();
 

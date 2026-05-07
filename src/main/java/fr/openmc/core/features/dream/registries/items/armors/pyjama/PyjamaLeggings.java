@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.armors.pyjama;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -8,18 +9,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class PyjamaLeggings extends DreamItem {
-    public PyjamaLeggings(String name) {
-        super(name);
+    public PyjamaLeggings() {
+        super(new DreamItemMeta(
+                "omc_dream:pyjama_leggings",
+                "Jambières de Pyjama",
+                DreamRarity.RARE,
+                Material.LEATHER_LEGGINGS,
+                false
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.RARE;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return false;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -29,9 +36,8 @@ public class PyjamaLeggings extends DreamItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.LEATHER_LEGGINGS);
-
-        item.getItemMeta().itemName(Component.text("Jambières de Pyjama"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

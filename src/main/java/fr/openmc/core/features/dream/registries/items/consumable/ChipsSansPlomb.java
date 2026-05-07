@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.consumable;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -8,18 +9,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class ChipsSansPlomb extends DreamItem {
-    public ChipsSansPlomb(String name) {
-        super(name);
+    public ChipsSansPlomb() {
+        super(new DreamItemMeta(
+                "omc_dream:chips_sans_plomb",
+                "Chips goût Sans Plomb 95",
+                DreamRarity.EPIC,
+                Material.PAPER,
+                true
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -29,9 +36,8 @@ public class ChipsSansPlomb extends DreamItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.DRIED_KELP);
-
-        item.getItemMeta().itemName(Component.text("Chips goût Sans Plomb 95"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

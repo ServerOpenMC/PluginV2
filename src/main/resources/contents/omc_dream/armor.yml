@@ -52,12 +52,12 @@ legacy_armor_renderings:
     layer_2: armor/pyjama/pyjama_layer_2
 items:
   old_creaking_helmet:
-    display_name: "§fVieux Casque de Creaking"
+    display_name: "{dream_item_name:old_creaking_helmet}"
     resource:
       generate: true
       textures:
         - armor/old_creaking/creaking_helmet
-      material: LEATHER_HELMET
+      material: {dream_item_material:old_creaking_helmet}
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
     durability:
@@ -67,15 +67,15 @@ items:
       legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:old_creaking_helmet}"
 
   old_creaking_chestplate:
-    display_name: "§fVieux Plastron de Creaking"
+    display_name: "{dream_item_name:old_creaking_chestplate}"
     resource:
       generate: true
       textures:
         - armor/old_creaking/creaking_chestplate
-      material: LEATHER_CHESTPLATE
+      material: {dream_item_material:old_creaking_chestplate}
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
     durability:
@@ -85,15 +85,15 @@ items:
       legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:old_creaking_chestplate}"
 
   old_creaking_leggings:
-    display_name: "§fVieux Pantalon de Creaking"
+    display_name: "{dream_item_name:old_creaking_leggings}"
     resource:
       generate: true
       textures:
         - armor/old_creaking/creaking_leggings
-      material: LEATHER_LEGGINGS
+      material: {dream_item_material:old_creaking_leggings}
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
     durability:
@@ -103,15 +103,15 @@ items:
       legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:old_creaking_leggings}"
 
   old_creaking_boots:
-    display_name: "§fVieille Botte de Creaking"
+    display_name: "{dream_item_name:old_creaking_boots}"
     resource:
       generate: true
       textures:
          - armor/old_creaking/creaking_boots
-      material: LEATHER_BOOTS
+      material: {dream_item_material:old_creaking_boots}
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
     durability:
@@ -121,12 +121,12 @@ items:
       legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/common"
+    tooltip_style: "{dream_rarity:old_creaking_boots}"
 
   soul_helmet:
-    display_name: Casque des Ames
+    display_name: "{dream_item_name:soul_helmet}"
     resource:
-      material: LEATHER_HELMET
+      material: {dream_item_material:soul_helmet}
       generate: false
       model_path: armor/soul/soul_helmet
     durability:
@@ -134,15 +134,15 @@ items:
     equipment:
       slot_attribute_modifiers:
         armor: 2.5
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:soul_helmet}"
 
   soul_chestplate:
-    display_name: Plastron des Ames
+    display_name: "{dream_item_name:soul_chestplate}"
     resource:
       generate: true
       textures:
         - armor/soul/soul_chestplate
-      material: LEATHER_CHESTPLATE
+      material: {dream_item_material:soul_chestplate}
     durability:
       unbreakable: true
     equipment:
@@ -150,15 +150,15 @@ items:
       legacy_armor_rendering_id: omc_dream:soul_armor_shader
       slot_attribute_modifiers:
         armor: 2.5
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:soul_chestplate}"
 
   soul_leggings:
-    display_name: Jambière des Ames
+    display_name: "{dream_item_name:soul_leggings}"
     resource:
       generate: true
       textures:
         - armor/soul/soul_leggings
-      material: LEATHER_LEGGINGS
+      material: {dream_item_material:soul_leggings}
     durability:
       unbreakable: true
     equipment:
@@ -166,15 +166,15 @@ items:
       legacy_armor_rendering_id: omc_dream:soul_armor_shader
       slot_attribute_modifiers:
         armor: 2.5
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:soul_leggings}"
 
   soul_boots:
-    display_name: Bottes des Ames
+    display_name: "{dream_item_name:soul_boots}"
     resource:
       generate: true
       textures:
         - armor/soul/soul_boots
-      material: LEATHER_BOOTS
+      material: {dream_item_material:soul_boots}
     durability:
       unbreakable: true
     equipment:
@@ -182,12 +182,12 @@ items:
       legacy_armor_rendering_id: omc_dream:soul_armor_shader
       slot_attribute_modifiers:
         armor: 2.5
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:soul_boots}"
 
   cloud_helmet:
-    display_name: Casque des Nuages
+    display_name: "{dream_item_name:cloud_helmet}"
     resource:
-      material: LEATHER_HELMET
+      material: {dream_item_material:cloud_helmet}
       generate: true
       textures:
         - armor/cloud/cloud_helmet
@@ -198,15 +198,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cloud_armor_shader
       slot_attribute_modifiers:
         armor: 4
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:cloud_helmet}"
 
   cloud_chestplate:
-    display_name: Plastron des Nuages
+    display_name: "{dream_item_name:cloud_chestplate}"
     resource:
       generate: true
       textures:
         - armor/cloud/cloud_chestplate
-      material: LEATHER_CHESTPLATE
+      material: {dream_item_material:cloud_chestplate}
     durability:
       unbreakable: true
     equipment:
@@ -214,15 +214,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cloud_armor_shader
       slot_attribute_modifiers:
         armor: 4
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:cloud_chestplate}"
 
   cloud_leggings:
-    display_name: Jambière des Nuages
+    display_name: "{dream_item_name:cloud_leggings}"
     resource:
       generate: true
       textures:
         - armor/cloud/cloud_leggings
-      material: LEATHER_LEGGINGS
+      material: {dream_item_material:cloud_leggings}
     durability:
       unbreakable: true
     equipment:
@@ -230,15 +230,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cloud_armor_shader
       slot_attribute_modifiers:
         armor: 4
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:cloud_leggings}"
 
   cloud_boots:
-    display_name: Bottes des Nuages
+    display_name: "{dream_item_name:cloud_boots}"
     resource:
       generate: true
       textures:
         - armor/cloud/cloud_boots
-      material: LEATHER_BOOTS
+      material: {dream_item_material:cloud_boots}
     durability:
       unbreakable: true
     equipment:
@@ -246,12 +246,12 @@ items:
       legacy_armor_rendering_id: omc_dream:cloud_armor_shader
       slot_attribute_modifiers:
         armor: 4
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:cloud_boots}"
 
   cold_helmet:
-    display_name: Casque Glacé
+    display_name: "{dream_item_name:cold_helmet}"
     resource:
-      material: LEATHER_HELMET
+      material: {dream_item_material:cold_helmet}
       generate: true
       textures:
         - armor/cold/cold_helmet
@@ -262,15 +262,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cold_armor_shader
       slot_attribute_modifiers:
         armor: 5
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:cold_helmet}"
 
   cold_chestplate:
-    display_name: Plastron Glacé
+    display_name: "{dream_item_name:cold_chestplate}"
     resource:
       generate: true
       textures:
         - armor/cold/cold_chestplate
-      material: LEATHER_CHESTPLATE
+      material: {dream_item_material:cold_chestplate}
     durability:
       unbreakable: true
     equipment:
@@ -278,15 +278,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cold_armor_shader
       slot_attribute_modifiers:
         armor: 5
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:cold_chestplate}"
 
   cold_leggings:
-    display_name: Jambière Glacée
+    display_name: "{dream_item_name:cold_leggings}"
     resource:
       generate: true
       textures:
         - armor/cold/cold_leggings
-      material: LEATHER_LEGGINGS
+      material: {dream_item_material:cold_leggings}
     durability:
       unbreakable: true
     equipment:
@@ -294,15 +294,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cold_armor_shader
       slot_attribute_modifiers:
         armor: 5
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:cold_leggings}"
 
   cold_boots:
-    display_name: Bottes Glacées
+    display_name: "{dream_item_name:cold_boots}"
     resource:
       generate: true
       textures:
         - armor/cold/cold_boots
-      material: LEATHER_BOOTS
+      material: {dream_item_material:cold_boots}
     durability:
       unbreakable: true
     equipment:
@@ -310,15 +310,15 @@ items:
       legacy_armor_rendering_id: omc_dream:cold_armor_shader
       slot_attribute_modifiers:
         armor: 5
-    tooltip_style: "omc_tooltips:tooltip/legendary"
+    tooltip_style: "{dream_rarity:cold_boots}"
 
   dream_helmet:
-    display_name: Casque Onirique
+    display_name: "{dream_item_name:dream_helmet}"
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
       - "§7§oPeut-être est-elle liée aux rêves..."
     resource:
-      material: LEATHER_HELMET
+      material: {dream_item_material:dream_helmet}
       generate: true
       textures:
         - armor/dream/dream_helmet
@@ -329,10 +329,10 @@ items:
       legacy_armor_rendering_id: omc_dream:dream_armor_shader
       slot_attribute_modifiers:
         armor: 7
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:dream_helmet}"
 
   dream_chestplate:
-    display_name: Plastron Onirique
+    display_name: "{dream_item_name:dream_chestplate}"
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
       - "§7§o..., les rêves se réalisent ..."
@@ -340,7 +340,7 @@ items:
       generate: true
       textures:
         - armor/dream/dream_chestplate
-      material: LEATHER_CHESTPLATE
+      material: {dream_item_material:dream_chestplate}
     durability:
       unbreakable: true
     equipment:
@@ -348,10 +348,10 @@ items:
       legacy_armor_rendering_id: omc_dream:dream_armor_shader
       slot_attribute_modifiers:
         armor: 7
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:dream_chestplate}"
 
   dream_leggings:
-    display_name: Jambière Onirique
+    display_name: "{dream_item_name:dream_leggings}"
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
       - "§7§o... toujours, en espérant que ... "
@@ -359,7 +359,7 @@ items:
       generate: true
       textures:
         - armor/dream/dream_leggings
-      material: LEATHER_LEGGINGS
+      material: {dream_item_material:dream_leggings}
     durability:
       unbreakable: true
     equipment:
@@ -367,10 +367,10 @@ items:
       legacy_armor_rendering_id: omc_dream:dream_armor_shader
       slot_attribute_modifiers:
         armor: 7
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:dream_leggings}"
 
   dream_boots:
-    display_name: Bottes Onirique
+    display_name: "{dream_item_name:dream_boots}"
     lore:
       - "§7§oUne armure aussi étrange que cet environnement"
       - "§7§o... celui là ne se réalisera pas."
@@ -378,7 +378,7 @@ items:
       generate: true
       textures:
         - armor/dream/dream_boots
-      material: LEATHER_BOOTS
+      material: {dream_item_material:dream_boots}
     durability:
       unbreakable: true
     equipment:
@@ -386,12 +386,12 @@ items:
       legacy_armor_rendering_id: omc_dream:dream_armor_shader
       slot_attribute_modifiers:
         armor: 7
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:dream_boots}"
 
   pyjama_helmet:
-    display_name: Casque de Pyjama
+    display_name: "{dream_item_name:pyjama_helmet}"
     resource:
-      material: LEATHER_HELMET
+      material: {dream_item_material:pyjama_helmet}
       generate: true
     durability:
       unbreakable: true
@@ -400,13 +400,13 @@ items:
       legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:pyjama_helmet}"
 
   pyjama_chestplate:
-    display_name: Plastron de Pyjama
+    display_name: "{dream_item_name:pyjama_chestplate}"
     resource:
       generate: true
-      material: LEATHER_CHESTPLATE
+      material: {dream_item_material:pyjama_chestplate}
     durability:
       unbreakable: true
     equipment:
@@ -414,13 +414,13 @@ items:
       legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:pyjama_chestplate}"
 
   pyjama_leggings:
-    display_name: Jambière de Pyjama
+    display_name: "{dream_item_name:pyjama_leggings}"
     resource:
       generate: true
-      material: LEATHER_LEGGINGS
+      material: {dream_item_material:pyjama_leggings}
     durability:
       unbreakable: true
     equipment:
@@ -428,13 +428,13 @@ items:
       legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:pyjama_leggings}"
 
   pyjama_boots:
-    display_name: Bottes de Pyjama
+    display_name: "{dream_item_name:pyjama_boots}"
     resource:
       generate: true
-      material: LEATHER_BOOTS
+      material: {dream_item_material:pyjama_boots}
     durability:
       unbreakable: true
     equipment:
@@ -442,4 +442,4 @@ items:
       legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
       slot_attribute_modifiers:
         armor: 1
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:pyjama_boots}"

@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.registries.items.armors.cloud;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import lombok.NonNull;
 import net.kyori.adventure.text.Component;
@@ -9,8 +10,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class CloudChestplate extends DreamItem implements DreamEquipableItem {
-    public CloudChestplate(String name) {
-        super(name);
+    public CloudChestplate() {
+        super(new DreamItemMeta(
+                "omc_dream:cloud_chestplate",
+                "Plastron des Nuages",
+                DreamRarity.EPIC,
+                Material.LEATHER_CHESTPLATE,
+                true
+        ));
     }
 
     @Override
@@ -25,12 +32,12 @@ public class CloudChestplate extends DreamItem implements DreamEquipableItem {
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -40,9 +47,8 @@ public class CloudChestplate extends DreamItem implements DreamEquipableItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.IRON_CHESTPLATE);
-
-        item.getItemMeta().itemName(Component.text("Plastron des Nuages"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

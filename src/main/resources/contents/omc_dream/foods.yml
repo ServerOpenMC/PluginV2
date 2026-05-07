@@ -2,23 +2,23 @@ info:
   namespace: omc_dream
 items:
   moon_fish:
-    display_name: Poisson-lune
+    display_name: "{dream_item_name:moon_fish}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: SALMON
+      material: {dream_item_material:moon_fish}
       generate: true
       textures:
         - fishes/moon_fish.png
     consumable:
       nutrition: 2
       saturation: 0.4
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:moon_fish}"
 
   sun_fish:
-    display_name: Poisson-soleil
+    display_name: "{dream_item_name:sun_fish}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: COOKED_SALMON
+      material: {dream_item_material:sun_fish}
       generate: true
       textures:
         - fishes/sun_fish.png
@@ -28,13 +28,13 @@ items:
     consumable:
       nutrition: 6
       saturation: 9.6
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:sun_fish}"
 
   poissonion:
-    display_name: Poissonion
+    display_name: "{dream_item_name:poissonion}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: COD
+      material: {dream_item_material:poissonion}
       generate: true
       textures:
         - fishes/poissonion.png
@@ -43,13 +43,13 @@ items:
     consumable:
       nutrition: 2
       saturation: 0.4
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:poissonion}"
 
   cooked_poissonion:
-    display_name: Poissonion cuit
+    display_name: "{dream_item_name:cooked_poissonion}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: COOKED_COD
+      material: {dream_item_material:cooked_poissonion}
       generate: true
       textures:
         - fishes/cooked_poissonion.png
@@ -59,26 +59,26 @@ items:
     consumable:
       nutrition: 5
       saturation: 6
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:cooked_poissonion}"
 
   dockerfish:
-    display_name: Poisson Docker
+    display_name: "{dream_item_name:dockerfish}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: COD
+      material: {dream_item_material:dockerfish}
       generate: true
       textures:
         - fishes/dockerfish.png
     consumable:
       nutrition: 2
       saturation: 0.4
-    tooltip_style: "omc_tooltips:tooltip/rare"
+    tooltip_style: "{dream_rarity:dockerfish}"
 
   chips_aywen:
-    display_name: Chips goût Aywen
+    display_name: "{dream_item_name:chips_aywen}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_aywen}
       generate: false
       model_path: consumable/chips_aywen
     lore:
@@ -87,13 +87,13 @@ items:
     consumable:
       nutrition: 15
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:chips_aywen}"
 
   chips_dihydrogene:
-    display_name: Chips goût Dihydrogene
+    display_name: "{dream_item_name:chips_dihydrogene}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_dihydrogene}
       generate: false
       model_path: consumable/chips_dihydrogene
     lore:
@@ -101,13 +101,13 @@ items:
     consumable:
       nutrition: 15
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:chips_dihydrogene}"
 
   chips_jimmy:
-    display_name: Chips goût Jimmy
+    display_name: "{dream_item_name:chips_jimmy}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_jimmy}
       generate: false
       model_path: consumable/chips_jimmy
     lore:
@@ -116,13 +116,13 @@ items:
     consumable:
       nutrition: 15
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:chips_jimmy}"
 
   chips_lait_2_margouta:
-    display_name: Chips goût Lait de Margouta
+    display_name: "{dream_item_name:chips_lait_2_margouta}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_lait_2_margouta}
       generate: false
       model_path: consumable/chips_lait_2_margouta
     lore:
@@ -130,13 +130,13 @@ items:
     consumable:
       nutrition: 20
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/onirique"
+    tooltip_style: "{dream_rarity:chips_lait_2_margouta}"
 
   chips_nature:
-    display_name: Chips goût Nature
+    display_name: "{dream_item_name:chips_nature}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_nature}
       generate: false
       model_path: consumable/chips_nature
     lore:
@@ -144,13 +144,13 @@ items:
     consumable:
       nutrition: 10
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:chips_nature}"
 
   chips_sans_plomb:
-    display_name: Chips goût Sans Plomb 95
+    display_name: "{dream_item_name:chips_sans_plomb}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_sans_plomb}
       generate: false
       model_path: consumable/chips_sans_plomb
     lore:
@@ -158,13 +158,13 @@ items:
     consumable:
       nutrition: 15
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:chips_sans_plomb}"
 
   chips_terre:
-    display_name: Chips goût Terre
+    display_name: "{dream_item_name:chips_terre}"
     components_nbt_file: "nbt/eatable.json"
     resource:
-      material: PAPER
+      material: {dream_item_material:chips_terre}
       generate: false
       model_path: consumable/chips_terre
     lore:
@@ -172,7 +172,7 @@ items:
     consumable:
       nutrition: 15
       saturation: 3
-    tooltip_style: "omc_tooltips:tooltip/epic"
+    tooltip_style: "{dream_rarity:chips_terre}"
 recipes:
   cooking:
     sun_fish:

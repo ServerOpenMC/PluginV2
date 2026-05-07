@@ -41,100 +41,93 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.*;
 
 public class DreamItemRegistry {
+    // * Registre des DreamItems accessible durant le bootstrap
+    public static Set<CustomItem> DREAM_ITEM_REGISTRY = new HashSet<>(List.of(
+            new DominationOrb(),
+            new SoulOrb(),
+            new MudOrb(),
+            new CloudOrb(),
+            new GlaciteOrb(),
+            new Singularity(),
+
+            new CorruptedString(),
+            new CreakingHeart(),
+            new Soul(),
+            new CloudKey(),
+
+            new CorruptedSculk(),
+            new OldPaleOakWood(),
+            new Glacite(),
+            new BurnCoal(),
+            new HardStone(),
+            new CraftingTable(),
+            new EternalCampFire(),
+            new Ewenite(),
+
+            new Somnifere(),
+            new ChipsAywen(),
+            new ChipsDihydrogene(),
+            new ChipsJimmy(),
+            new ChipsLait2Margouta(),
+            new ChipsNature(),
+            new ChipsSansPlomb(),
+            new ChipsTerre(),
+            new CokkedPoissonion(),
+            new Poissonion(),
+            new MoonFish(),
+            new SunFish(),
+            new DockerFish(),
+
+            new OldCreakingHelmet(),
+            new OldCreakingChestplate(),
+            new OldCreakingLeggings(),
+            new OldCreakingBoots(),
+
+            new SoulHelmet(),
+            new SoulChestplate(),
+            new SoulLeggings(),
+            new SoulBoots(),
+
+            new CloudHelmet(),
+            new CloudChestplate(),
+            new CloudLeggings(),
+            new CloudBoots(),
+
+            new ColdHelmet(),
+            new ColdChestplate(),
+            new ColdLeggings(),
+            new ColdBoots(),
+
+            new DreamHelmet(),
+            new DreamChestplate(),
+            new DreamLeggings(),
+            new DreamBoots(),
+
+            new PyjamaHelmet(),
+            new PyjamaChestplate(),
+            new PyjamaLeggings(),
+            new PyjamaBoots(),
+
+            new OldCreakingAxe(),
+            new SoulAxe(),
+            new CloudFishingRod(),
+            new MeteoWand(),
+            new MetalDetector(),
+            new CrystalizedPickaxe(),
+            new MecanicPickaxe()
+    ));
+
+    // * Registre des DreamItems accesible via leur id, tres utilisé durant le bootstrap
+    private static Map<String, DreamItem> DREAM_ITEM_BY_NAME_REGISTRY;
+
+    /**
+     * Charge la classe durant le runtime
+     */
     public static void init() {
-        // # ORBES
-        CustomItemRegistry.registerItems(
-                new DominationOrb("omc_dream:domination_orb"),
-                new SoulOrb("omc_dream:ame_orb"),
-                new MudOrb("omc_dream:mud_orb"),
-                new CloudOrb("omc_dream:cloud_orb"),
-                new GlaciteOrb("omc_dream:glacite_orb"),
-                new Singularity("omc_dream:singularity")
-        );
-
-        // # DROPS
-        CustomItemRegistry.registerItems(
-                new CorruptedString("omc_dream:corrupted_string"),
-                new CreakingHeart("omc_dream:creaking_heart"),
-                new Soul("omc_dream:soul"),
-                new CloudOrb("omc_dream:cloud_orb"),
-                new CloudKey("omc_dream:cloud_key"),
-                new CorruptedSculk("omc_dream:corrupted_sculk"),
-                new OldPaleOakWood("omc_dream:old_pale_oak"),
-                new Glacite("omc_dream:glacite"),
-                new BurnCoal("omc_dream:coal_burn"),
-                new HardStone("omc_dream:hard_stone"),
-                new CraftingTable("omc_dream:crafting_table"),
-                new EternalCampFire("omc_dream:eternal_campfire"),
-                new Ewenite("omc_dream:ewenite")
-        );
-
-        // # CONSUMABLES
-        CustomItemRegistry.registerItems(
-                new Somnifere("omc_dream:somnifere"),
-                new ChipsAywen("omc_dream:chips_aywen"),
-                new ChipsDihydrogene("omc_dream:chips_dihydrogene"),
-                new ChipsJimmy("omc_dream:chips_jimmy"),
-                new ChipsLait2Margouta("omc_dream:chips_lait_2_margouta"),
-                new ChipsNature("omc_dream:chips_nature"),
-                new ChipsSansPlomb("omc_dream:chips_sans_plomb"),
-                new ChipsTerre("omc_dream:chips_terre")
-        );
-
-        // # FISHES
-        CustomItemRegistry.registerItems(
-                new CokkedPoissonion("omc_dream:cooked_poissonion"),
-                new Poissonion("omc_dream:poissonion"),
-                new MoonFish("omc_dream:moon_fish"),
-                new SunFish("omc_dream:sun_fish"),
-                new DockerFish("omc_dream:dockerfish")
-        );
-
-        // # ARMURES
-        CustomItemRegistry.registerItems(
-                new OldCreakingHelmet("omc_dream:old_creaking_helmet"),
-                new OldCreakingChestplate("omc_dream:old_creaking_chestplate"),
-                new OldCreakingLeggings("omc_dream:old_creaking_leggings"),
-                new OldCreakingBoots("omc_dream:old_creaking_boots"),
-
-                new SoulHelmet("omc_dream:soul_helmet"),
-                new SoulChestplate("omc_dream:soul_chestplate"),
-                new SoulLeggings("omc_dream:soul_leggings"),
-                new SoulBoots("omc_dream:soul_boots"),
-
-                new CloudHelmet("omc_dream:cloud_helmet"),
-                new CloudChestplate("omc_dream:cloud_chestplate"),
-                new CloudLeggings("omc_dream:cloud_leggings"),
-                new CloudBoots("omc_dream:cloud_boots"),
-
-                new ColdHelmet("omc_dream:cold_helmet"),
-                new ColdChestplate("omc_dream:cold_chestplate"),
-                new ColdLeggings("omc_dream:cold_leggings"),
-                new ColdBoots("omc_dream:cold_boots"),
-
-                new DreamHelmet("omc_dream:dream_helmet"),
-                new DreamChestplate("omc_dream:dream_chestplate"),
-                new DreamLeggings("omc_dream:dream_leggings"),
-                new DreamBoots("omc_dream:dream_boots"),
-
-                new PyjamaHelmet("omc_dream:pyjama_helmet"),
-                new PyjamaChestplate("omc_dream:pyjama_chestplate"),
-                new PyjamaLeggings("omc_dream:pyjama_leggings"),
-                new PyjamaBoots("omc_dream:pyjama_boots")
-        );
-
-        // # TOOLS
-        CustomItemRegistry.registerItems(
-                new OldCreakingAxe("omc_dream:old_creaking_axe"),
-                new SoulAxe("omc_dream:soul_axe"),
-                new CloudFishingRod("omc_dream:cloud_fishing_rod"),
-                new MeteoWand("omc_dream:meteo_wand"),
-                new MetalDetector("omc_dream:metal_detector"),
-                new CrystalizedPickaxe("omc_dream:crystallized_pickaxe"),
-                new MecanicPickaxe("omc_dream:mecanic_pickaxe")
-        );
+        CustomItemRegistry.registerItems(DREAM_ITEM_REGISTRY);
 
         CommandsManager.getHandler().register(
                 new DreamItemCommand()
@@ -144,6 +137,19 @@ public class DreamItemRegistry {
                 new DreamItemConvertorListener(),
                 new DreamItemDropsListener()
         );
+    }
+
+    public static Map<String, DreamItem> getBootstrapRegistry() {
+        if (DREAM_ITEM_BY_NAME_REGISTRY == null) {
+            Map<String, DreamItem> dreamItemByName = new HashMap<>();
+            for (CustomItem item : DREAM_ITEM_REGISTRY) {
+                if (!(item instanceof DreamItem d)) continue;
+
+                dreamItemByName.put(item.getId(), d);
+            }
+            DREAM_ITEM_BY_NAME_REGISTRY = dreamItemByName;
+        }
+        return DREAM_ITEM_BY_NAME_REGISTRY;
     }
 
     @Nullable

@@ -49,7 +49,7 @@ public class ItemsAdderHook extends Hooks {
 
             // * Charge les registres de nos placeholders
             IAPlaceholderRegistry placeholderRegistry = IAPlaceholderRegistry.loadDefault();
-            logger.info("{} placeholders ItemsAdder chargés", placeholderRegistry.getPlaceholdersCount());
+            logger.info("\u001B[32m{} placeholders ItemsAdder chargés\u001B[0m", placeholderRegistry.getPlaceholdersCount());
 
             // * Copie chaque dossier de contenu
             for (String folder : contentFolders) {

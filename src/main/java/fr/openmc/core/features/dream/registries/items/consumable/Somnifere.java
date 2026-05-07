@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.consumable;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -8,18 +9,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class Somnifere extends DreamItem {
-    public Somnifere(String name) {
-        super(name);
+    public Somnifere() {
+        super(new DreamItemMeta(
+                "omc_dream:somnifere",
+                "Somnifère",
+                DreamRarity.RARE,
+                Material.POTION,
+                true
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.RARE;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -29,9 +36,8 @@ public class Somnifere extends DreamItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.DRIED_KELP);
-
-        item.getItemMeta().itemName(Component.text("Somnifère"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

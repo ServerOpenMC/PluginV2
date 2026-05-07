@@ -364,7 +364,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         for (ItemStack item : armor) {
             DreamItem dream = DreamItemRegistry.getByItemStack(item);
 
-            if (dream != null && dream.getName().contains("omc_dream:pyjama")) {
+            if (dream != null && dream.getId().contains("omc_dream:pyjama")) {
                 base += 0.05;
             }
         }

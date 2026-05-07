@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -8,18 +9,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class CrystalizedPickaxe extends DreamItem {
-    public CrystalizedPickaxe(String name) {
-        super(name);
+    public CrystalizedPickaxe() {
+        super(new DreamItemMeta(
+                "omc_dream:crystallized_pickaxe",
+                "Pioche Crysalisée",
+                DreamRarity.LEGENDARY,
+                Material.DIAMOND_PICKAXE,
+                false
+        ));
     }
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.LEGENDARY;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return false;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -29,9 +36,9 @@ public class CrystalizedPickaxe extends DreamItem {
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.DIAMOND_PICKAXE);
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
 
-        item.getItemMeta().itemName(Component.text("Pioche Crystalisée"));
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 }

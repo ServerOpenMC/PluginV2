@@ -2,21 +2,26 @@ package fr.openmc.core.features.dream.registries.items.armors.dream;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.EquipableItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class DreamChestplate extends DreamItem implements DreamEquipableItem, EquipableItem {
-    public DreamChestplate(String name) {
-        super(name);
+    public DreamChestplate() {
+        super(new DreamItemMeta(
+                "omc_dream:dream_chestplate",
+                "Plastron Onirique",
+                DreamRarity.ONIRISIME,
+                Material.LEATHER_CHESTPLATE,
+                true
+        ));
     }
 
     @Override
@@ -31,12 +36,12 @@ public class DreamChestplate extends DreamItem implements DreamEquipableItem, Eq
 
     @Override
     public DreamRarity getRarity() {
-        return DreamRarity.ONIRISIME;
+        return getMeta().getRarity();
     }
 
     @Override
     public boolean isTransferable() {
-        return true;
+        return getMeta().getTransferable();
     }
 
     @Override
@@ -46,9 +51,8 @@ public class DreamChestplate extends DreamItem implements DreamEquipableItem, Eq
 
     @Override
     public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.NETHERITE_CHESTPLATE);
-
-        item.getItemMeta().itemName(Component.text("Plastron Onirique"));
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
         return item;
     }
 
