@@ -26,8 +26,8 @@ import fr.openmc.core.features.dream.generation.structures.DreamStructuresManage
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
-import fr.openmc.core.features.dream.listeners.strctures.PlayerEnterStructureListener;
-import fr.openmc.core.features.dream.listeners.strctures.PlayerExitStructureListener;
+import fr.openmc.core.features.dream.listeners.structures.PlayerEnterStructureListener;
+import fr.openmc.core.features.dream.listeners.structures.PlayerExitStructureListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;

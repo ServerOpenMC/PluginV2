@@ -26,7 +26,7 @@ public class SingularityCraftListener implements Listener {
         if (dreamItem == null) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        if (!dreamItem.getName().equals("omc_dream:singularity")) return;
+        if (!dreamItem.getId().equals("omc_dream:singularity")) return;
 
         MailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
 

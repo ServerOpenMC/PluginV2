@@ -1,7 +1,7 @@
-package fr.openmc.core.features.dream.listeners.strctures;
+package fr.openmc.core.features.dream.listeners.structures;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.events.PlayerExitStructureEvent;
+import fr.openmc.core.features.dream.events.PlayerEnterStructureEvent;
 import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -15,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class PlayerExitStructureListener implements Listener {
+public class PlayerEnterStructureListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e) {
@@ -29,9 +29,9 @@ public class PlayerExitStructureListener implements Listener {
 		DreamStructure oldStructure = DreamStructuresManager.getStructureAt(from);
 		DreamStructure newStructure = DreamStructuresManager.getStructureAt(to);
 		if (oldStructure == newStructure) return;
-		if (newStructure != null) return;
+		if (newStructure == null) return;
 		
-		MessagesManager.sendMessage(player, Component.text("§7Vous sortez de : " + oldStructure.type().getName()), Prefix.DREAM, MessageType.INFO, true);
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerExitStructureEvent(player, oldStructure));
+		MessagesManager.sendMessage(player, Component.text("§7Vous entrez dans : " + newStructure.type().getName()), Prefix.DREAM, MessageType.INFO, true);
+		Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterStructureEvent(player, newStructure));
 	}
 }

@@ -40,7 +40,7 @@ public class PlayerObtainOrb implements Listener {
         if (dreamItem == null) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        if (!dreamItem.getName().equals("omc_dream:domination_orb")) return;
+        if (!dreamItem.getId().equals("omc_dream:domination_orb")) return;
 
         setProgressionOrb(player, SCULK_PLAINS_ORB, DreamBiome.SOUL_FOREST);
 
