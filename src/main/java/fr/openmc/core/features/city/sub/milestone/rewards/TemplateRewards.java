@@ -1,7 +1,11 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+
+import java.util.Arrays;
 
 /**
  * Cette classe implémente l'interface CityRewards et
@@ -9,16 +13,19 @@ import net.kyori.adventure.text.Component;
  */
 public class TemplateRewards implements CityRewards {
 
-    // Composant de message affiché pour la récompense.
-    private final Component message;
+    // Clé de traduction et arguments pour le message de récompense.
+    private final String messageKey;
+    private final ComponentLike[] args;
 
     /**
      * Constructeur qui initialise le message de la récompense.
      *
-     * @param message le composant message à afficher
+     * @param messageKey la clé de traduction
+     * @param args       les arguments de traduction
      */
-    public TemplateRewards(Component message) {
-        this.message = message;
+    public TemplateRewards(String messageKey, ComponentLike... args) {
+        this.messageKey = messageKey;
+        this.args = Arrays.copyOf(args, args.length);
     }
 
     /**
@@ -28,6 +35,6 @@ public class TemplateRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        return message;
+        return TranslationManager.translation(messageKey, args);
     }
 }

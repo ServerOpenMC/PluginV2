@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.sub.milestone.CityRequirement;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
 import fr.openmc.core.features.city.sub.milestone.requirements.ItemDepositRequirement;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -38,8 +39,8 @@ public class LevelMilestoneMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Villes - Levels";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.levels.menu.title");
     }
 
     @Override
@@ -83,13 +84,16 @@ public class LevelMilestoneMenu extends PaginatedMenu {
             List<Component> loreRequirement = new ArrayList<>();
 
             if (requirement instanceof ItemDepositRequirement && !requirement.isDone(city, level)) {
-                loreRequirement.add(Component.text("§e§lCLIQUE POUR DÉPOSER UN"));
-                loreRequirement.add(Component.text("§e§lSHIFT-CLIQUE POUR TOUT DÉPOSER"));
+                loreRequirement.add(TranslationManager.translation("feature.city.levels.menu.deposit.click_one"));
+                loreRequirement.add(TranslationManager.translation("feature.city.levels.menu.deposit.click_all"));
             }
 
             items.add(new ItemBuilder(this, requirement.getIcon(city), meta -> {
-                meta.displayName(Component.text((requirement.isDone(city, level) ? "§l✔ " : "§l✖ "))
-                        .append(requirement.getName(city, level)).color(requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                Component prefix = Component.text(requirement.isDone(city, level) ? "✔ " : "✖ ")
+                        .decorate(TextDecoration.BOLD);
+                meta.displayName(prefix.append(requirement.getName(city, level))
+                        .color(requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED)
+                        .decoration(TextDecoration.ITALIC, false));
                 meta.lore(loreRequirement);
                 meta.setEnchantmentGlintOverride(requirement.isDone(city, level));
             }).setOnClick(inventoryClickEvent -> {
@@ -118,21 +122,21 @@ public class LevelMilestoneMenu extends PaginatedMenu {
         }
 
         buttons.put(31, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-            itemMeta.itemName(Component.text("§6Récompenses"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.levels.menu.rewards.item"));
             itemMeta.lore(loreRewards);
         }));
 
         buttons.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
         }, true));
 
         buttons.put(49, new ItemBuilder(this, Material.BARRIER, meta ->
-                meta.displayName(Component.text("§cFermer"))).setCloseButton());
+                meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
         buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cPage précédente"));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
         buttons.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
 
         return buttons;

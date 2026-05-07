@@ -13,7 +13,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,8 +42,8 @@ public class MascotsDeadMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des mascottes [DEAD]";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.mascots.menu.dead.name");
     }
 
     @Override
@@ -66,37 +68,38 @@ public class MascotsDeadMenu extends Menu {
 
         Supplier<ItemBuilder> reduceItemSupplier = () -> {
             return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
-	            itemMeta.displayName(Component.text("§7Votre §cmascotte §7est morte"));
-                itemMeta.lore(List.of(
-                        Component.text("§7Votre §cmascotte est morte§7, vous pouvez faire réduire le temps de réanimation"),
-                        Component.text("§7qui est actuellement de :"),
-		                Component.text("§8 - §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))),
-                        Component.text("§7Pour réduire le temps de 1 heure, vous devez posséder de :"),
-                        Component.text("§8- §d" + AYWENITE_REDUCE + " d'Aywenite"),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ ICI POUR REDUIRE LE TEMPS DE REANIMATION")
+                itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.dead.title"));
+                itemMeta.lore(TranslationManager.translationLore(
+                        "feature.city.mascots.menu.dead.lore",
+                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
+                        Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 City city = CityManager.getCity(cityUUID);
                 if (city == null) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                     player.closeInventory();
                     return;
                 }
 
                 if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
-                
+
                 DynamicCooldownManager.reduceCooldown(player, cityUUID, "city:immunity", COOLDOWN_REDUCE);
 
-                MessagesManager.sendMessage(player, Component.text("Vous venez de dépenser §d" + AYWENITE_REDUCE + " d'Aywenite §fpour §bréduire §fle cooldown d'une heure"), Prefix.CITY, MessageType.SUCCESS, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation(
+                                "feature.city.mascots.menu.dead.reduce.success",
+                                Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
+                        ),
+                        Prefix.CITY, MessageType.SUCCESS, false);
             });
         };
         MenuUtils.runDynamicItem(player, this, 13, reduceItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au Menu Précédent")));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
         }, true));
 
         return map;

@@ -15,6 +15,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -50,8 +51,16 @@ public class CityRankDetailsMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return city.isRankExists(oldRank) ? "Menu des détails du grade " + oldRank.getName() : "Menu de création du grade  " + newRank.getName();
+	public @NotNull Component getName() {
+		return city.isRankExists(oldRank)
+				? TranslationManager.translation(
+						"feature.city.rank.menu.details.title.edit",
+						Component.text(oldRank.getName()).color(NamedTextColor.YELLOW)
+				)
+				: TranslationManager.translation(
+						"feature.city.rank.menu.details.title.create",
+						Component.text(newRank.getName()).color(NamedTextColor.YELLOW)
+				);
 	}
 	
 	@Override
@@ -93,12 +102,10 @@ public class CityRankDetailsMenu extends Menu {
 		boolean canManageRanks = city.hasPermission(getOwner().getUniqueId(), CityPermission.MANAGE_RANKS);
 		
 		map.put(0, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-			itemMeta.displayName(Component.text("§dInsérer la priorité du grade"));
-			itemMeta.lore(List.of(
-					Component.text("§7La priorité détermine l'ordre des grades"),
-					Component.text("§6§lUne priorité plus basse signifie un grade plus élevé"),
-					Component.text("§7Modifiable plus tard"),
-					Component.text("§7Priorité actuelle : §d" + this.newRank.getPriority())
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.priority.title.create"));
+			itemMeta.lore(TranslationManager.translationLore(
+					"feature.city.rank.menu.details.priority.lore.create",
+					Component.text(this.newRank.getPriority()).color(NamedTextColor.LIGHT_PURPLE)
 			));
 		}).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) return;
@@ -115,49 +122,50 @@ public class CityRankDetailsMenu extends Menu {
 		}));
 		
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-			itemMeta.displayName(Component.text("§3Nom du grade"));
-			itemMeta.lore(List.of(
-					Component.text("§7Le nom du grade est donné lors de sa création"),
-					Component.text("§7Modifiable plus tard"),
-					Component.text("§7Nom actuel : §3" + (this.newRank.getName().isEmpty() ? "§oNon défini" : this.newRank.getName()))
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.name.title"));
+			Component nameValue = this.newRank.getName().isEmpty()
+					? TranslationManager.translation("feature.city.rank.menu.details.name.undefined")
+							.decoration(TextDecoration.ITALIC, true)
+					: Component.text(this.newRank.getName()).color(NamedTextColor.DARK_AQUA);
+			itemMeta.lore(TranslationManager.translationLore(
+					"feature.city.rank.menu.details.name.lore.create",
+					nameValue
 			));
 		}));
 		
 		map.put(8, new ItemBuilder(this, this.newRank.getIcon(), itemMeta -> {
-			itemMeta.displayName(Component.text("§9Changer l'icône du grade"));
-			itemMeta.lore(List.of(
-					Component.text("§7Cliquez pour changer une icône"),
-					Component.text("§7Modifiable plus tard")
-			));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.icon.title"));
+			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.icon.lore.create"));
 		}).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open())
 				.hide(getDataComponentType()));
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
-			itemMeta.displayName(Component.text("§bInsérer les permissions du grade"));
-			itemMeta.lore(List.of(
-					Component.text("§7Cliquez pour sélectionner les permissions"),
-					Component.text("§7Modifiables plus tard"),
-					Component.text("§7Permissions actuelles : §b" + (this.newRank.getPermissionsSet().isEmpty() ? "Aucune" : this.newRank.getPermissionsSet().size()))
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.perms.title"));
+			Component permValue = this.newRank.getPermissionsSet().isEmpty()
+					? TranslationManager.translation("feature.city.rank.menu.details.perms.none")
+					: Component.text(this.newRank.getPermissionsSet().size());
+			itemMeta.lore(TranslationManager.translationLore(
+					"feature.city.rank.menu.details.perms.lore.create",
+					permValue.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open()));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("§cAnnuler et supprimer"));
-			itemMeta.lore(List.of(
-					Component.text("§7Cliquez pour annuler la création du grade")
-			));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.cancel_create.title"));
+			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.cancel_create.lore"));
 		}).setOnClick(inventoryClickEvent -> getOwner().closeInventory()));
 		
 		if (canManageRanks) {
 			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
-				itemMeta.displayName(Component.text("§aCréer le grade"));
-				itemMeta.lore(List.of(
-						Component.text("§7Cliquez pour créer le grade avec les paramètres définis")
-				));
+				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.create.title"));
+				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.create.lore"));
 			}).setOnClick(inventoryClickEvent -> {
 				city.createRank(newRank.validate(getOwner()));
 				getOwner().closeInventory();
-				MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.newRank.getName() + " créé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+				MessagesManager.sendMessage(getOwner(), TranslationManager.translation(
+						"feature.city.rank.create.success",
+						Component.text(this.newRank.getName()).color(NamedTextColor.YELLOW)
+				), Prefix.CITY, MessageType.SUCCESS, false);
 			}));
 		}
 		return map;
@@ -175,15 +183,22 @@ public class CityRankDetailsMenu extends Menu {
 		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)
 				&& CityRankCondition.canModifyRankPermissions(city, player, oldRank.getPriority());
 		
-		List<Component> lorePriority = new ArrayList<>(List.of(Component.text("§7Priorité actuelle : §d" + this.newRank.getPriority())));
+		List<Component> lorePriority = new ArrayList<>(List.of(
+				TranslationManager.translation(
+						"feature.city.rank.menu.details.priority.lore.current",
+						Component.text(this.newRank.getPriority()).color(NamedTextColor.LIGHT_PURPLE)
+				).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+		));
 		if (canManageRanks) {
 			lorePriority.add(Component.empty());
-			lorePriority.add(Component.text("§e§lCLIQUEZ GAUCHE POUR AJOUTER 1"));
-			lorePriority.add(Component.text("§e§lCLIQUEZ DROIT POUR RETIRER 1"));
+			lorePriority.add(TranslationManager.translation("feature.city.rank.menu.details.priority.lore.add")
+					.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
+			lorePriority.add(TranslationManager.translation("feature.city.rank.menu.details.priority.lore.remove")
+					.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 		}
 		
 		map.put(0, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-			itemMeta.displayName(Component.text("§dPriorité"));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.priority.title.edit"));
 			itemMeta.lore(lorePriority);
 		}).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) return;
@@ -197,16 +212,19 @@ public class CityRankDetailsMenu extends Menu {
 		
 		List<Component> loreName = new ArrayList<>(
 				List.of(
-						Component.text("§7Nom actuel : §3" + this.newRank.getName()
-						)
+						TranslationManager.translation(
+								"feature.city.rank.menu.details.name.lore.current",
+								Component.text(this.newRank.getName()).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.DARK_AQUA)
+						).color(NamedTextColor.GRAY)
 				));
 		if (canManageRanks) {
 			loreName.add(Component.empty());
-			loreName.add(Component.text("§e§lCLIQUEZ POUR MODIFIER LE NOM"));
+			loreName.add(TranslationManager.translation("feature.city.rank.menu.details.name.lore.edit")
+					.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 		}
 		
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-			itemMeta.displayName(Component.text("§3Nom du grade"));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.name.title"));
 			itemMeta.lore(loreName);
 		}).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) return;
@@ -216,16 +234,20 @@ public class CityRankDetailsMenu extends Menu {
 		
 		List<Component> loreIcon = new ArrayList<>(
 				List.of(
-						Component.text("§7Voici votre icone actuelle : §9").append(ItemUtils.getItemTranslation(newRank.getIcon()).color(NamedTextColor.BLUE).decoration(TextDecoration.ITALIC, false))
+						TranslationManager.translation(
+								"feature.city.rank.menu.details.icon.lore.current",
+								ItemUtils.getItemTranslation(newRank.getIcon()).color(NamedTextColor.BLUE).decoration(TextDecoration.ITALIC, false)
+						).color(NamedTextColor.GRAY)
 				)
 		);
 		if (canManageRanks) {
 			loreIcon.add(Component.empty());
-			loreIcon.add(Component.text("§e§lCLIQUEZ POUR CHANGER l'ICONE"));
+			loreIcon.add(TranslationManager.translation("feature.city.rank.menu.details.icon.lore.edit")
+					.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 		}
 		
 		map.put(8, new ItemBuilder(this, this.newRank.getIcon(), itemMeta -> {
-			itemMeta.displayName(Component.text("§9Icône du grade"));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.icon.title"));
 			itemMeta.lore(loreIcon);
 		}).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) return;
@@ -233,20 +255,29 @@ public class CityRankDetailsMenu extends Menu {
 			new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open();
 		}).hide(getDataComponentType()));
 		
+		Component permValue = this.newRank.getPermissionsSet().isEmpty()
+				? TranslationManager.translation("feature.city.rank.menu.details.perms.none")
+						.decoration(TextDecoration.ITALIC, true)
+				: Component.text(this.newRank.getPermissionsSet().size()).color(NamedTextColor.AQUA);
 		List<Component> lorePerm = new ArrayList<>(
 				List.of(
-						Component.text("§7Permissions actuelles : §b" + (this.newRank.getPermissionsSet().isEmpty() ? "§oAucune" : this.newRank.getPermissionsSet().size())).decoration(TextDecoration.ITALIC, false)
+						TranslationManager.translation(
+								"feature.city.rank.menu.details.perms.lore.current",
+								permValue
+						).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
 				)
 		);
 		lorePerm.add(Component.empty());
 		if (canManageRanks) {
-			lorePerm.add(Component.text("§e§lCLIQUEZ POUR GÉRER LES PERMISSIONS"));
+			lorePerm.add(TranslationManager.translation("feature.city.rank.menu.details.perms.lore.edit_manage")
+					.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 		} else {
-			lorePerm.add(Component.text("§e§lCLIQUEZ POUR VOIR LES PERMISSIONS"));
+			lorePerm.add(TranslationManager.translation("feature.city.rank.menu.details.perms.lore.edit_view")
+					.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 		}
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
-			itemMeta.displayName(Component.text("§bLes permissions du grade"));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.perms.title"));
 			itemMeta.lore(lorePerm);
 		}).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) new CityRankPermsMenu(getOwner(), oldRank, newRank, false, 0).open();
@@ -254,36 +285,31 @@ public class CityRankDetailsMenu extends Menu {
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("§cAnnuler"));
-			itemMeta.lore(List.of(
-					Component.text("§7Cliquez pour annuler les modifications"),
-					Component.text("§4Aucune modification ne sera enregistrée")
-			));
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.cancel_edit.title"));
+			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.cancel_edit.lore"));
 		}).setOnClick(inventoryClickEvent -> {
 			new CityRanksMenu(getOwner(), city).open();
-			MessagesManager.sendMessage(getOwner(), Component.text("Modifications annulées, aucune modification n'a été enregistrée."), Prefix.CITY, MessageType.SUCCESS, false);
+			MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.rank.update.cancelled"), Prefix.CITY, MessageType.SUCCESS, false);
 		}));
 		
 		if (canManageRanks) {
 			map.put(22, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), itemMeta -> {
-				itemMeta.displayName(Component.text("§cSupprimer le grade"));
-				itemMeta.lore(List.of(
-						Component.text("§7Cliquez pour supprimer ce grade"),
-						Component.text("§4Cette action est irréversible")
-				));
+				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.delete.title"));
+				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.delete.lore"));
 			}).setOnClick(inventoryClickEvent ->
 					CityRankAction.deleteRank(getOwner(), oldRank.getName())
 			));
 			
 			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
-				itemMeta.displayName(Component.text("§aEnregistrer les modifications"));
-				itemMeta.lore(List.of(
-						Component.text("§7Cliquez pour enregistrer les modifications du grade")
-				));
+				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.save.title"));
+				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.save.lore"));
 			}).setOnClick(inventoryClickEvent -> {
 				city.updateRank(this.oldRank, newRank.validate(getOwner()));
 				new CityRanksMenu(getOwner(), city).open();
-				MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.newRank.getName() + " modifié avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+				MessagesManager.sendMessage(getOwner(), TranslationManager.translation(
+						"feature.city.rank.update.success",
+						Component.text(this.newRank.getName()).color(NamedTextColor.YELLOW)
+				), Prefix.CITY, MessageType.SUCCESS, false);
 			}));
 		}
 		return map;

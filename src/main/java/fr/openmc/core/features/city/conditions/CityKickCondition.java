@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -24,27 +25,27 @@ public class CityKickCondition {
      */
     public static boolean canCityKickPlayer(City city, Player player, OfflinePlayer playerToKick) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (player.getUniqueId().equals(playerToKick.getUniqueId())) {
-	        MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK_HIMSELF.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick_himself"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.KICK))) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.hasPermission(playerToKick.getUniqueId(), CityPermission.OWNER)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         
         if (city.getRankOfMember(player.getUniqueId()).getPriority() <= city.getRankOfMember(playerToKick.getUniqueId()).getPriority()) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_KICK.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

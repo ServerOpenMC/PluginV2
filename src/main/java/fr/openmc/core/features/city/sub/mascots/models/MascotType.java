@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.mascots.models;
 
 import fr.openmc.core.utils.EnumUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.EntityUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -10,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -63,14 +63,10 @@ public enum MascotType {
                             .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
             );
 
-            Component lore = Component.text()
-                    .append(Component.text("Nécéssite ").color(NamedTextColor.GRAY))
-                    .append(Component.text(price, NamedTextColor.LIGHT_PURPLE))
-                    .append(Component.text(" d'Aywenites"))
-                    .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-                    .build();
-
-            meta.lore(Collections.singletonList(lore));
+            meta.lore(TranslationManager.translationLore(
+                    "feature.city.mascots.skin.requirement",
+                    Component.text(price).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+            ));
 
             if (selected)
                 meta.setEnchantmentGlintOverride(true);

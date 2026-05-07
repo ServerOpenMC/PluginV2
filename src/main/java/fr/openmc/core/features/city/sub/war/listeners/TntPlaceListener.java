@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.listeners.protections.CityExplosionData;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,7 +46,12 @@ public class TntPlaceListener implements Listener {
         if (current >= MAX_TNT_PER_DAY && !sameCity) {
             MessagesManager.sendMessage(
                     player,
-		            Component.text("La ville §4" + cityAtLoc.getName() + " §fa atteint sa limite journalière de tnt ! §8(§c" + current + "§8/§c" + MAX_TNT_PER_DAY + " tnt journalière§8)"),
+		            TranslationManager.translation(
+                            "feature.city.war.tnt.limit_reached",
+                            Component.text(cityAtLoc.getName()),
+                            Component.text(current),
+                            Component.text(MAX_TNT_PER_DAY)
+                    ),
                     Prefix.CITY,
                     MessageType.WARNING,
                     false

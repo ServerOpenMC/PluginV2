@@ -24,7 +24,7 @@ public class MetalDetectorLootTable extends CustomLootTable {
                 ),
                 new CustomLoot(
                         DreamItemRegistry.getByName("chips_jimmy"),
-                        0.4,
+                        0.2,
                         1,
                         1
                 ),
@@ -48,13 +48,13 @@ public class MetalDetectorLootTable extends CustomLootTable {
                 ),
                 new CustomLoot(
                         DreamItemRegistry.getByName("chips_aywen"),
-                        0.3,
+                        0.1,
                         1,
                         1
                 ),
                 new CustomLoot(
                         DreamItemRegistry.getByName("chips_lait_2_margouta"),
-                        0.2,
+                        0.005,
                         1,
                         1
                 ),
@@ -66,13 +66,13 @@ public class MetalDetectorLootTable extends CustomLootTable {
                 ),
                 new CustomLoot(
                         DreamItemRegistry.getByName("mud_orb"),
-                        0.1,
+                        0.05,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        (DreamItem) CustomEnchantmentRegistry.getCustomEnchantmentByKey(Key.key("omc_dream:experientastic")).getEnchantedBookItem(1),
-                        0.1,
+                        CustomEnchantmentRegistry.getCustomEnchantmentByKey(Key.key("omc_dream:experientastic")).getEnchantedBookItem(1),
+                        0.03,
                         1,
                         1
                 ),

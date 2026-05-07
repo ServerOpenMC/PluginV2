@@ -20,7 +20,9 @@ import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -71,7 +73,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         assert city != null;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
-        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.PERMS);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         for (UUID uuid : city.getMembers()) {
@@ -81,44 +83,25 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
             List<Component> lorePlayer;
             if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
-                lorePlayer = List.of(
-		                Component.text("§7Le propriétaire de la ville.")
-                );
+                lorePlayer = TranslationManager.translationLore("feature.city.menus.members.owner.lore");
             } else if (hasPermissionPerms && hasPermissionKick) {
                 if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
-                    lorePlayer = List.of(
-		                    Component.text("§7Vous ne pouvez pas éditer le propriétaire")
-                    );
+                    lorePlayer = TranslationManager.translationLore("feature.city.menus.members.cant_edit_owner.lore");
                 } else {
-                    lorePlayer = List.of(
-                            Component.text("§7Vous pouvez gérer ce joueur comme l'§cexpulser §7ou bien modifier §ases permissions"),
-                            Component.text("§e§lCLIQUEZ ICI POUR GERER CE JOUEUR")
-                    );
+                    lorePlayer = TranslationManager.translationLore("feature.city.menus.members.manage.lore");
                 }
             } else if (hasPermissionPerms) {
-                lorePlayer = List.of(
-                        Component.text("§7Vous pouvez modifier les permissions de ce joueur"),
-                        Component.text("§e§lCLIQUEZ ICI POUR MODIFIER SES PERMISSIONS")
-                );
+                lorePlayer = TranslationManager.translationLore("feature.city.menus.members.perms.lore");
             } else if (hasPermissionKick) {
                 if (player.getUniqueId().equals(playerOffline.getUniqueId())) {
-                    lorePlayer = List.of(
-		                    Component.text("§7Vous ne pouvez pas vous §aexclure §7vous même")
-                    );
+                    lorePlayer = TranslationManager.translationLore("feature.city.menus.members.cant_self_kick.lore");
                 } else if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
-                    lorePlayer = List.of(
-		                    Component.text("§7Vous ne pouvez pas §aexclure §7le propriétaire")
-                    );
+                    lorePlayer = TranslationManager.translationLore("feature.city.menus.members.cant_kick_owner.lore");
                 } else {
-                    lorePlayer = List.of(
-                            Component.text("§7Vous pouvez exclure ce joueur"),
-                            Component.text("§e§lCLIQUEZ ICI POUR L'EXCLURE")
-                    );
+                    lorePlayer = TranslationManager.translationLore("feature.city.menus.members.kick.lore");
                 }
             } else {
-                lorePlayer = List.of(
-		                Component.text("§7Un membre comme vous")
-                );
+                lorePlayer = TranslationManager.translationLore("feature.city.menus.members.member.lore");
             }
 
             List<Component> finalLorePlayer = lorePlayer;
@@ -149,8 +132,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
                                 CityKickAction.startKick(player, playerOffline);
                             },
                             player::closeInventory,
-                            List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
-                            List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
+                            List.of(TranslationManager.translation("feature.city.menus.members.kick.confirm", Component.text(playerOffline.getName()).color(NamedTextColor.GRAY))),
+                            List.of(TranslationManager.translation("feature.city.menus.members.kick.deny", Component.text(playerOffline.getName()).color(NamedTextColor.GRAY))));
                     menu.open();
                 }
             }));
@@ -172,12 +155,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
         Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+          itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+          itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Fermer"));
+	        itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setOnClick(inventoryClickEvent ->
                 getOwner().closeInventory()
         ));
@@ -185,29 +168,30 @@ public class CityPlayerListMenu extends PaginatedMenu {
         map.put(48,
                 new ItemBuilder(this,
                         Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+	                    itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
         map.put(50,
                 new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+	                    itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 
 
         map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_search")).getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
+	        itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.invite.title"));
             itemMeta.lore(
-                    List.of(
-		                    Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir"),
-                            Component.text("§7Vous êtes à " + playerCity.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(playerCity.getLevel()))
+                    TranslationManager.translationLore(
+                            "feature.city.menus.members.invite.lore",
+                            Component.text(playerCity.getMembers().size()).color(NamedTextColor.GRAY),
+                            Component.text(MemberLimitRewards.getMemberLimit(playerCity.getLevel())).color(NamedTextColor.GRAY)
                     )
             );
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le nom du joueur"), MAX_LENGTH_PLAYERNAME, input -> {
+	        DialogInput.send(player, TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (input == null) return;
 
                 if (InputUtils.isInputPlayer(input)) {
                     Player playerToInvite = Bukkit.getPlayer(input);
                     CityInviteCommands.invite(player, playerToInvite);
                 } else {
-                    MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+	                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, MessageType.ERROR, true);
                 }
             });
         }));
@@ -215,8 +199,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Membres";
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.members.name");
     }
 
     @Override

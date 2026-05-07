@@ -20,9 +20,10 @@ public @interface DynamicCooldown {
      * 
      * @return message
      */
-    String message() default "§cVous devez attendre %sec%s";
+    String messageKey() default "api.cooldown.must_wait";
     /*
-     * %sec% | Le temps restant en secondes
-     * %ms% | Le temps restant en millisecondes
+     * <arg:0> | Le temps restant en secondes
+     * <arg:1> | Le temps restant en millisecondes
+     * <arg:2> | Le temps restant formaté (ex: 1m30s)
      */
 }

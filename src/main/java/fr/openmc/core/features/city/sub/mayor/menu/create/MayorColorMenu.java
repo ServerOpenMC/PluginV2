@@ -16,6 +16,7 @@ import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -44,8 +45,8 @@ public class MayorColorMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Couleur";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.mayor.menu.color.name");
     }
 
     @Override
@@ -91,33 +92,39 @@ public class MayorColorMenu extends Menu {
             colorSlot.put(NamedTextColor.DARK_GRAY, 49);
         }
         colorSlot.forEach((color, slot) -> {
-            List<Component> loreColor = List.of(
-                    Component.text("§7Votre nom sera affiché en " + ColorUtils.getNameFromColor(color)),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            List<Component> loreColor = TranslationManager.translationLore(
+                    "feature.city.mayor.menu.color.option.lore",
+                    Component.text(ColorUtils.getNameFromColor(color)).color(color)
             );
             inventory.put(slot, new ItemBuilder(this, ColorUtils.getMaterialFromColor(color), itemMeta -> {
-                itemMeta.displayName(Component.text("§7Mettez du " + ColorUtils.getNameFromColor(color)));
+                itemMeta.displayName(TranslationManager.translation(
+                        "feature.city.mayor.menu.color.option.name",
+                        Component.text(ColorUtils.getNameFromColor(color)).color(color)
+                ));
                 itemMeta.lore(loreColor);
             }).setOnClick(inventoryClickEvent -> {
                 if (type.equals("create")) {
                     List<Component> loreAccept = new ArrayList<>(List.of(
-		                    Component.text("§7Vous allez vous présenter en tant que §6maire de " + city.getName()),
-                            Component.empty(),
-                            Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
+                            TranslationManager.translation(
+                                    "feature.city.mayor.menu.color.confirm.lore",
+                                    Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                            )
                     ));
+                    loreAccept.add(Component.empty());
+                    loreAccept.add(TranslationManager.translation("feature.city.mayor.menu.vote.mayor.title", Component.text(player.getName()))
+                            .color(color).decoration(TextDecoration.ITALIC, false));
                     if (perk1 != null) {
-                        loreAccept.add(Component.text(perk1.getName()));
-                        loreAccept.addAll(perk1.getLore());
+                        loreAccept.add(TranslationManager.translation(perk1.getNameKey()));
+                        loreAccept.addAll(TranslationManager.translationLore(perk1.getLoreKey()));
                         loreAccept.add(Component.empty());
                     }
-                    loreAccept.add(Component.text(perk2.getName()));
-                    loreAccept.addAll(perk2.getLore());
+                    loreAccept.add(TranslationManager.translation(perk2.getNameKey()));
+                    loreAccept.addAll(TranslationManager.translationLore(perk2.getLoreKey()));
                     loreAccept.add(Component.empty());
-                    loreAccept.add(Component.text(perk3.getName()));
-                    loreAccept.addAll(perk3.getLore());
+                    loreAccept.add(TranslationManager.translation(perk3.getNameKey()));
+                    loreAccept.addAll(TranslationManager.translationLore(perk3.getLoreKey()));
                     loreAccept.add(Component.empty());
-                    loreAccept.add(Component.text("§c§lAUCUN RETOUR EN ARRIERE POSSIBLE!"));
+                    loreAccept.add(TranslationManager.translation("feature.city.mayor.menu.color.confirm.final"));
 
 
                     ConfirmMenu menu = new ConfirmMenu(player,
@@ -132,13 +139,16 @@ public class MayorColorMenu extends Menu {
                                             assert playerMember != null;
                                             if (playerMember == player) continue;
                                             if (playerMember.isOnline()) {
-	                                            MessagesManager.sendMessage(playerMember.getPlayer(), Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
+                                                MessagesManager.sendMessage(playerMember.getPlayer(), TranslationManager.translation(
+                                                        "feature.city.mayor.menu.color.candidate.announce",
+                                                        Component.text(player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
+                                                ), Prefix.MAYOR, MessageType.ERROR, false);
                                             }
                                         }
                                     } else { // donc si c MenuType.OWNER
                                         MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
                                     }
-                                    MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
+                                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.color.candidate.success"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
@@ -147,47 +157,66 @@ public class MayorColorMenu extends Menu {
                             player::closeInventory,
                             loreAccept,
                             List.of(
-                                    Component.text("§7Ne pas se présenter en tant que §6Maire de " + city.getName())
+                                    TranslationManager.translation(
+                                            "feature.city.mayor.menu.color.confirm.cancel",
+                                            Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                                    )
                             )
                     );
                     menu.open();
                 } else if (type.equals("change")) {
                     if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
                         if (city.getMayor() == null) {
-                            MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.color.error.no_mayor"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
                         }
                         NamedTextColor thisColor = city.getMayor().getMayorColor();
+                        Component fromColor = TranslationManager.translation("feature.city.mayor.label.color")
+                                .decoration(TextDecoration.ITALIC, false).color(thisColor);
+                        Component toColor = TranslationManager.translation("feature.city.mayor.label.this_one")
+                                .decoration(TextDecoration.ITALIC, false).color(color);
                         ConfirmMenu menu = new ConfirmMenu(player,
                                 () -> {
                                     city.getMayor().setMayorColor(color);
-                                    MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.MAYOR, MessageType.SUCCESS, false);
+                                    MessagesManager.sendMessage(player, TranslationManager.translation(
+                                            "feature.city.mayor.menu.color.change.success",
+                                            fromColor,
+                                            toColor
+                                    ), Prefix.MAYOR, MessageType.SUCCESS, false);
                                     player.closeInventory();
                                 },
                                 player::closeInventory,
                                 List.of(
-                                        Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                        TranslationManager.translation("feature.city.mayor.menu.color.change.confirm", fromColor, toColor)
                                 ),
                                 List.of(
-                                        Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                        TranslationManager.translation("feature.city.mayor.menu.color.change.cancel", fromColor, toColor)
                                 )
                         );
                         menu.open();
                     } else {
                         MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
                         NamedTextColor thisColor = mayorCandidate.getCandidateColor();
+                        Component fromColor = TranslationManager.translation("feature.city.mayor.label.color")
+                                .decoration(TextDecoration.ITALIC, false).color(thisColor);
+                        Component toColor = TranslationManager.translation("feature.city.mayor.label.this_one")
+                                .decoration(TextDecoration.ITALIC, false).color(color);
                         ConfirmMenu menu = new ConfirmMenu(player,
                                 () -> {
                                     mayorCandidate.setCandidateColor(color);
-                                    MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
+                                    MessagesManager.sendMessage(player, TranslationManager.translation(
+                                            "feature.city.mayor.menu.color.change.success",
+                                            fromColor,
+                                            toColor
+                                    ), Prefix.CITY, MessageType.SUCCESS, false);
                                     player.closeInventory();
                                 },
                                 player::closeInventory,
                                 List.of(
-                                        Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                        TranslationManager.translation("feature.city.mayor.menu.color.change.confirm", fromColor, toColor)
                                 ),
                                 List.of(
-                                        Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                        TranslationManager.translation("feature.city.mayor.menu.color.change.cancel", fromColor, toColor)
                                 )
                         );
                         menu.open();

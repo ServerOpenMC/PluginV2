@@ -1,20 +1,41 @@
 package fr.openmc.core.features.friend;
 
+import com.j256.ormlite.support.ConnectionSource;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.features.friend.commands.FriendCommand;
 import lombok.Getter;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class FriendManager {
+@Credit(developers = {"Axeno"})
+public class FriendManager extends Feature implements DatabaseFeature, HasCommands {
 
     // TODO: Configuration pour activer/désactiver les demandes d'amis (par défaut activé) & les messages de connexion/déconnexion
     // Config: accepter que les joueurs voient l'argent, la ville, le status (En ligne, Hors ligne), le temps de jeu, ou autre
 
     @Getter
     public static final List<FriendRequest> friendsRequests = new ArrayList<>();
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new FriendCommand()
+        );
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
+        FriendSQLManager.initDB(connectionSource);
+    }
 
     public static CompletableFuture<List<UUID>> getFriendsAsync(UUID playerUUID) {
         return FriendSQLManager.getAllFriendsAsync(playerUUID);

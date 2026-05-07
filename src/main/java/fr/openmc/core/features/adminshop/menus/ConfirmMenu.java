@@ -10,6 +10,7 @@ import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -31,21 +32,19 @@ public class ConfirmMenu extends Menu {
     private final ShopItem shopItem;
     private final boolean isBuying;
     private int quantity;
-    private final Menu previousMenu;
     private final int maxQuantity;
 
-    public ConfirmMenu(Player owner, ShopItem shopItem, boolean isBuying, Menu previousMenu) {
+    public ConfirmMenu(Player owner, ShopItem shopItem, boolean isBuying) {
         super(owner);
         this.shopItem = shopItem;
-        this.previousMenu = previousMenu;
         this.isBuying = isBuying;
         this.quantity = 1;
         this.maxQuantity = isBuying ? ItemUtils.getFreePlacesForItem(owner, shopItem.getMaterial()) : countPlayerItems(owner, shopItem.getMaterial());
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu de Confirmation de l'AdminShop";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.adminshop.menu.confirm.name");
     }
 
     @Override
@@ -68,19 +67,15 @@ public class ConfirmMenu extends Menu {
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
 
-        List<Component> lore = List.of(
-		        Component.text("§8■ §eQuantité : §f" + quantity + " §7(§f" + quantityToStack + "§7 stack" + (quantityToStack > 1 ? "s" : "") + ")"),
-		        Component.text("§8■ §ePrix unitaire : §a" + AdminShopManager.priceFormat.format(pricePerUnit) + EconomyManager.getEconomyIcon()),
-                Component.text("§8■ §ePrix total : §a" + AdminShopManager.priceFormat.format(totalPrice) + EconomyManager.getEconomyIcon()),
-		        Component.empty(),
-		        Component.text("§8■ §aClique molette pour §2définir §ala quantité manuellement")
+        List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
+                Component.text(quantity), Component.text(quantityToStack), (quantityToStack > 1 ? Component.text("s") : Component.empty()),
+                Component.text(AdminShopManager.priceFormat.format(pricePerUnit)), Component.text(EconomyManager.getEconomyIcon()),
+                Component.text(AdminShopManager.priceFormat.format(totalPrice)), Component.text(EconomyManager.getEconomyIcon())
         );
 
         content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
-            meta.displayName(Component.text("§cAnnuler"));
-        }).setOnClick(inventoryClickEvent -> {
-            previousMenu.open();
-        }));
+            meta.displayName(TranslationManager.translation("messages.global.cancel"));
+        }, true));
 
         content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
             if (quantity > 64) quantity -= 64;
@@ -107,7 +102,7 @@ public class ConfirmMenu extends Menu {
             if (event.getClick().equals(ClickType.MIDDLE)) {
                 DialogInput.sendFloat(
                         getOwner(),
-                        Component.text("§eVeuillez entrer la quantité souhaitée:"),
+                        TranslationManager.translation("feature.adminshop.menu.confirm.input"),
                         1,
                         maxQuantity,
                         quantity,
@@ -131,7 +126,7 @@ public class ConfirmMenu extends Menu {
         content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
 
         content.put(17, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), meta -> {
-            meta.displayName(Component.text("§aAccepter"));
+            meta.displayName(TranslationManager.translation("messages.global.accept"));
         }).setOnClick(event -> {
             getOwner().closeInventory();
             if (isBuying) AdminShopManager.buyItem(getOwner(), shopItem.getId(), quantity);
@@ -150,8 +145,15 @@ public class ConfirmMenu extends Menu {
      * @return The created item stack.
      */
     private ItemBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
+        boolean plus = text.contains("+");
         return new ItemBuilder(this, itemStack, meta ->
-            meta.displayName(Component.text((text.contains("+") ? "§aAjouter " : "§cRetirer ") + text.replace("+", "").replace("-", ""))))
+            meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
+                    plus ?
+                            TranslationManager.translation("feature.adminshop.menu.confirm.add") :
+                    TranslationManager.translation("feature.adminshop.menu.confirm.remove"),
+                    Component.text(text.replace("+", "").replace("-", "")))
+                    .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false)))
             .setItemId("quantity_" + text.replace("+", "plus").replace("-", "minus"))
             .setOnClick(action);
     }

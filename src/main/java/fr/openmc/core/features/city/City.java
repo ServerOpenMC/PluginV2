@@ -19,14 +19,17 @@ import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -787,19 +790,23 @@ public class City {
         }
         
         if (hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.player_is_owner"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
         DBCityRank currentRank = getRankOfMember(playerUUID);
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
-        
+
         if (currentRank != null) {
             currentRank.removeMember(playerUUID);
             for (CityPermission permission : currentRank.getPermissionsSet()) {
                 removePermission(playerUUID, permission);
             }
-            MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(sender,
+                    TranslationManager.translation("feature.city.grade.remove_grade",
+                            Component.text(currentRank.getName()).color(NamedTextColor.YELLOW),
+                            PlayerNameCache.name(playerUUID).color(NamedTextColor.GOLD)),
+                    Prefix.CITY, MessageType.SUCCESS, true);
         }
         
         if (currentRank != newRank) {
@@ -807,7 +814,12 @@ public class City {
             for (CityPermission permission : newRank.getPermissionsSet()) {
                 addPermission(playerUUID, permission);
             }
-            MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(sender,
+                    TranslationManager.translation("feature.city.grade.assign_grade",
+                            Component.text(newRank.getName()).color(NamedTextColor.YELLOW),
+                            PlayerNameCache.name(playerUUID).color(NamedTextColor.GOLD)
+                    ),
+                    Prefix.CITY, MessageType.SUCCESS, true);
         }
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

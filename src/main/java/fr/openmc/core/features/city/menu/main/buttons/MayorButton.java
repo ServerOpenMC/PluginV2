@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -36,7 +37,7 @@ public class MayorButton {
     private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Player player) {
         return () ->
                 new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.displayName(Component.text("§9Les élections"));
+                    itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.mayor.title"));
                     itemMeta.lore(getDynamicLore(city, player));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> MayorCommandAction.launchInteractionMenu(player));
@@ -44,95 +45,73 @@ public class MayorButton {
 
     private static List<Component> getDynamicLore(City city, Player player) {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
-        String mayorName = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getName() : "§7Aucun";
+        Component mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
+                ? city.getMayor().getName()
+                : TranslationManager.translation("messages.menus.none");
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
+        Component mayorComponent = mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false);
 
         List<Component> lore;
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
             lore = switch (MayorManager.phaseMayor) {
-                case 2 -> List.of(
-                        Component.text("§7En ce moment, les maires sont tous appliqués dans les villes !"),
-                        Component.text("§7Sauf la votre !"),
-                        Component.empty(),
-                        Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
+                case 2 -> TranslationManager.translationLore(
+                        "feature.city.menus.main.mayor.locked.phase2",
+                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
                 );
-                case 1 -> List.of(
-                        Component.text("§7Les élections sont actuellement §9ouverte"),
-                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text("§7Mais vous ne pouvez pas y accéder !"),
-                        Component.empty(),
-                        Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
+                case 1 -> TranslationManager.translationLore(
+                        "feature.city.menus.main.mayor.locked.phase1",
+                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED),
+                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
                 );
-                default -> List.of(
-                        Component.text("§cErreur"),
-                        Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
+                default -> TranslationManager.translationLore(
+                        "feature.city.menus.main.mayor.locked.error",
+                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
                 );
             };
         } else {
             if (city.getElectionType() == ElectionType.ELECTION) {
                 lore = switch (MayorManager.phaseMayor) {
-                    case 2 -> List.of(
-                            Component.text("§7Votre ville a un §9maire !"),
-                            Component.text("§7Maire : ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
+                    case 2 -> TranslationManager.translationLore(
+                            "feature.city.menus.main.mayor.election.phase2",
+                            mayorComponent
                     );
-                    case 1 -> List.of(
-                            Component.text("§7Les élections sont actuellement §9ouverte"),
-                            Component.empty(),
-                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX ELECTIONS")
+                    case 1 -> TranslationManager.translationLore(
+                            "feature.city.menus.main.mayor.election.phase1",
+                            Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
                     );
-                    default -> List.of(
-                            Component.text("§cErreur")
-                    );
+                    default -> TranslationManager.translationLore("feature.city.menus.main.mayor.election.error");
                 };
             } else {
                 switch (MayorManager.phaseMayor) {
-                    case 2 -> lore = List.of(
-                            Component.text("§7Votre ville a un §9maire !"),
-                            Component.text("§7Maire §7: ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
-                            Component.text("§cOuverture des élections dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
+                    case 2 -> lore = TranslationManager.translationLore(
+                            "feature.city.menus.main.mayor.owner.phase2",
+                            mayorComponent,
+                            Component.text(DateUtils.getTimeUntilNextDay(PHASE_1_DAY)).color(NamedTextColor.RED)
                     );
                     case 1 -> {
                         if (hasPermissionOwner) {
                             if (city.hasMayor()) {
-                                lore = List.of(
-                                        Component.text("§7Les élections sont §9désactivées"),
-                                        Component.text("§cIl vous faut au moins §9" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
-                                        Component.empty(),
-                                        Component.text("§7Vous avez déjà choisis vos §3réformes §7!"),
-                                        Component.text("§7Cependant vous pouvez changer votre couleur !"),
-                                        Component.empty(),
-                                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY))
+                                lore = TranslationManager.translationLore(
+                                        "feature.city.menus.main.mayor.owner.phase1.has_mayor",
+                                        Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.BLUE),
+                                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
                                 );
                             } else {
-                                lore = List.of(
-                                        Component.text("§7Les élections sont §9désactivées"),
-                                        Component.text("§cIl vous faut au moins §9" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
-                                        Component.empty(),
-                                        Component.text("§7Seul le propriétaire peut choisir §3les réformes §7qu'il veut."),
-                                        Component.empty(),
-                                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                                        Component.empty(),
-                                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR VOS REFORMES")
+                                lore = TranslationManager.translationLore(
+                                        "feature.city.menus.main.mayor.owner.phase1.no_mayor",
+                                        Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.BLUE),
+                                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
                                 );
                             }
                         } else {
-                            lore = List.of(
-                                    Component.text("§7Les élections sont §9désactivées"),
-                                    Component.text("§cIl vous faut au moins §9" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
-                                    Component.empty(),
-                                    Component.text("§7Seul le propriétaire peut choisir §3les réformes §7qu'il veut."),
-                                    Component.empty(),
-                                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY))
+                            lore = TranslationManager.translationLore(
+                                    "feature.city.menus.main.mayor.owner.phase1.viewer",
+                                    Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.BLUE),
+                                    Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
                             );
                         }
                     }
-                    default -> lore = List.of(Component.text("§cErreur"));
+                    default -> lore = TranslationManager.translationLore("feature.city.menus.main.mayor.owner.error");
                 }
             }
         }

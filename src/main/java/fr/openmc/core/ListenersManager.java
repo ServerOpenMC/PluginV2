@@ -5,7 +5,6 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
-import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
@@ -29,20 +28,13 @@ public class ListenersManager {
                 new HappyGhastListener(),
                 new SessionsListener(),
                 new JoinQuitMessageListener(),
-                new UpdateListener(),
                 new ClockInfos(),
                 new ChronometerListener(),
-                new CubeListener(),
-                new RepulseEffectListener(),
-                new MultiBlocksListeners(),
                 new ItemInteraction(),
                 new ChatInput(),
-                new RespawnListener(),
                 new SleepListener(),
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
-                new BossbarListener(),
-                new PlayerSettingsManager(),
                 new InteractListener(),
                 new EquipableItemListener(),
                 new NoMoreRabbit(),
@@ -52,8 +44,7 @@ public class ListenersManager {
 
         if (!OMCPlugin.isUnitTestVersion()) {
             registerEvents(
-                    new SpawnerExtractorListener(),
-                    new TicketListener()
+                    new SpawnerExtractorListener()
             );
         }
 

@@ -2,9 +2,9 @@ package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

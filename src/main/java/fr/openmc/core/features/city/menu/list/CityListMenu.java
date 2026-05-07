@@ -16,6 +16,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -32,9 +33,9 @@ import java.util.*;
 public class CityListMenu extends PaginatedMenu {
 	
 	// Constants for the menu
-	private static final Component SORT_HEADER = Component.text("§7Cliquez pour trier par");
-	private static final String SELECTED_PREFIX = "§6➢ ";
-	private static final String UNSELECTED_PREFIX = "§b  ";
+	private static final Component SORT_HEADER = TranslationManager.translation("feature.city.menus.list.sort.header");
+	private static final Component SELECTED_PREFIX = TranslationManager.translation("feature.city.menus.list.sort.selected_prefix");
+	private static final Component UNSELECTED_PREFIX = TranslationManager.translation("feature.city.menus.list.sort.unselected_prefix");
 	
 	private final List<City> cities;
 	private SortType sortType;
@@ -78,24 +79,54 @@ public class CityListMenu extends PaginatedMenu {
 
 			if (ownerUUID == null) continue;
 
-			String ownerName = PlayerNameCache.getName(ownerUUID);
-
 			List<Component> cityLore = new ArrayList<>();
 
-			cityLore.add(Component.text("§7Propriétaire : " + ownerName));
+			Component ownerComponent = PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY);
+			Component levelComponent = Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA);
+			Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
+			Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
+			Component membersSuffix = Component.text(city.getMembers().size() > 1 ? "s" : "");
+			Component typeComponent = city.getType().getDisplayName();
+			Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
+			Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
 			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-				String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
+				Component mayorCity = city.getMayor() == null
+						? TranslationManager.translation("messages.menus.none")
+						: city.getMayor().getName();
 				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
-				cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
+				Component mayorComponent = mayorCity.color(mayorColor).decoration(TextDecoration.ITALIC, false);
+				cityLore.addAll(TranslationManager.translationLore(
+						"feature.city.menus.list.item.lore.with_mayor",
+						ownerComponent,
+						mayorComponent,
+						levelComponent,
+						membersCurrent,
+						membersLimit,
+						membersSuffix,
+						typeComponent,
+						wealthComponent,
+						wealthIcon
+				));
+			} else {
+				cityLore.addAll(TranslationManager.translationLore(
+						"feature.city.menus.list.item.lore",
+						ownerComponent,
+						levelComponent,
+						membersCurrent,
+						membersLimit,
+						membersSuffix,
+						typeComponent,
+						wealthComponent,
+						wealthIcon
+				));
 			}
-			cityLore.add(Component.text("§7Niveau : §3" + city.getLevel()));
-			cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
-			cityLore.add(Component.text("§eType : " + city.getType().getDisplayName()));
-			cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
 
 
 			items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
-				itemMeta.displayName(Component.text("§a" + city.getName()));
+				itemMeta.displayName(TranslationManager.translation(
+						"feature.city.menus.list.item.title",
+						Component.text(city.getName()).color(NamedTextColor.GREEN)
+				));
 				itemMeta.lore(cityLore);
 			}).setOnClick(inventoryClickEvent ->
 					new CityListDetailsMenu(getOwner(), city).open()
@@ -123,22 +154,22 @@ public class CityListMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(49, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
-			itemMeta.displayName(Component.text("Trier"));
+			itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.sort.title"));
 			itemMeta.lore(generateSortLoreText());
 		}).setOnClick(inventoryClickEvent -> {
 			changeSortType();
 			new CityListMenu(getOwner(), sortType).open();
 		}));
 		map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
-				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+				.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
 		map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
-				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+				.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 		return map;
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu de liste des villes";
+	public @NotNull Component getName() {
+		return TranslationManager.translation("feature.city.menus.list.name");
 	}
 
 	@Override
@@ -164,10 +195,10 @@ public class CityListMenu extends PaginatedMenu {
 	private List<Component> generateSortLoreText() {
 		return List.of(
 				SORT_HEADER,
-				formatSortOption(SortType.NAME, "Nom"),
-				formatSortOption(SortType.WEALTH, "Richesses"),
-				formatSortOption(SortType.POPULATION, "Population"),
-				formatSortOption(SortType.PEACE_WAR, "Paix/Guerre")
+				formatSortOption(SortType.NAME, TranslationManager.translation("feature.city.menus.list.sort.name")),
+				formatSortOption(SortType.WEALTH, TranslationManager.translation("feature.city.menus.list.sort.wealth")),
+				formatSortOption(SortType.POPULATION, TranslationManager.translation("feature.city.menus.list.sort.population")),
+				formatSortOption(SortType.PEACE_WAR, TranslationManager.translation("feature.city.menus.list.sort.peace_war"))
 		);
 	}
 	
@@ -178,8 +209,9 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param label The label for the sorting option.
 	 * @return A formatted string representing the sorting option.
 	 */
-	private Component formatSortOption(SortType type, String label) {
-		return Component.text((sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX) + label);
+	private Component formatSortOption(SortType type, Component label) {
+		Component prefix = sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX;
+		return prefix.append(label);
 	}
 	
 	/**

@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -50,6 +52,15 @@ public class OMCBootstrap implements PluginBootstrap {
         CustomEnchantmentRegistry.init();
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
                 .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)
+        );
+
+        // ** LOAD TRANSLATION **
+        // this creates resource pack who is needed for item adder
+        TranslationManager.init(
+                context,
+                Locale.FRANCE,
+                Locale.US,
+                Locale.UK
         );
     }
 

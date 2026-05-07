@@ -32,8 +32,8 @@ public class HomeDeleteConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Homes - Confirmation";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Homes - Confirmation");
     }
 
     @Override

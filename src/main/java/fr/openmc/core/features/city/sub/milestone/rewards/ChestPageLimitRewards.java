@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  * Enumération représentant les récompenses de limite de pages de coffre pour une ville.
@@ -73,6 +75,9 @@ public enum ChestPageLimitRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        return Component.text("§a" + chestPageLimit + " pages de coffre §7maximum");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.chest_page_limit",
+                Component.text(chestPageLimit).color(NamedTextColor.GREEN)
+        ).color(NamedTextColor.GRAY);
     }
 }

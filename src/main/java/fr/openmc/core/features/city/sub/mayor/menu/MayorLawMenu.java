@@ -25,7 +25,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,8 +52,8 @@ public class MayorLawMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des lois";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.mayor.menu.law.name");
     }
 
     @Override
@@ -85,37 +87,51 @@ public class MayorLawMenu extends Menu {
         CityLaw law = city.getLaw();
 
         Supplier<ItemBuilder> pvpItemSupplier = () -> {
-            String nameLawPVP = law.isPvp() ? "§cDésactiver §7le PVP" : "§4Activer §7le PVP";
+            Component nameLawPVP = law.isPvp()
+                    ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.name.disable")
+                    : TranslationManager.translation("feature.city.mayor.menu.law.pvp.name.enable");
             List<Component> loreLawPVP = new ArrayList<>(List.of(
-		            Component.text("§7Cette §1loi " + (law.isPvp() ? "§4active" : "§cdésactive") + " §7le PVP dans toute la §dville"),
-                    Component.text("§7entre les membres !")
+                    law.isPvp()
+                            ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.active")
+                            : TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.inactive"),
+                    TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.members")
             ));
 
             if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
                 loreLawPVP.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-pvp")))
+                                TranslationManager.translation(
+                                        "feature.city.mayor.menu.law.cooldown",
+                                        Component.text(DateUtils.convertMillisToTime(
+                                                DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-pvp")))
+                                                .color(NamedTextColor.RED)
+                                )
                         )
                 );
             } else {
                 loreLawPVP.addAll(List.of(
                         Component.empty(),
-                                Component.text("§e§lCLIQUEZ ICI POUR " + (law.isPvp() ? "ACTIVER" : "DESACTIVER") + " LE PVP")
+                        TranslationManager.translation(law.isPvp()
+                                ? "feature.city.mayor.menu.law.pvp.click.enable"
+                                : "feature.city.mayor.menu.law.pvp.click.disable")
                         )
                 );
             }
 
             return new ItemBuilder(this, Material.IRON_SWORD, itemMeta -> {
-                itemMeta.itemName(Component.text(nameLawPVP));
+                itemMeta.itemName(nameLawPVP);
                 itemMeta.lore(loreLawPVP);
             }).setOnClick(inventoryClickEvent -> {
                 if (DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
                     DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
 
                     law.setPvp(!law.isPvp());
-                    String messageLawPVP = !law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
-                    MessagesManager.sendMessage(player, Component.text(messageLawPVP), Prefix.MAYOR, MessageType.SUCCESS, false);
+                    boolean pvpEnabled = law.isPvp();
+                    Component messageLawPVP = pvpEnabled
+                            ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.message.enable")
+                            : TranslationManager.translation("feature.city.mayor.menu.law.pvp.message.disable");
+                    MessagesManager.sendMessage(player, messageLawPVP, Prefix.MAYOR, MessageType.SUCCESS, false);
 
                     Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                         new MayorLawMenu(player).open();
@@ -137,18 +153,20 @@ public class MayorLawMenu extends Menu {
             List<Component> loreLawWarp;
 
             if (warpLoc == null) {
-                loreLawWarp = new ArrayList<>(List.of(
-		                Component.text("§7Cette §1loi §7n'est pas effective !"),
-                        Component.text("§7Vous devez choisir un endroit où les membres pourront"),
-                        Component.text("§7arriver")
-                ));
+                loreLawWarp = new ArrayList<>(TranslationManager.translationLore("feature.city.mayor.menu.law.warp.lore.unset"));
             } else {
-                loreLawWarp = new ArrayList<>(List.of(
-                        Component.text("§7Les membres peuvent se téléporter à votre §9warp§7!"),
-                        Component.text("§7Voici la position du §9warp §7: "),
-                        Component.text("§8- §7x=§6" + warpLoc.getX()),
-                        Component.text("§8- §7y=§6" + warpLoc.getY()),
-                        Component.text("§8- §7z=§6" + warpLoc.getZ())
+                loreLawWarp = new ArrayList<>(TranslationManager.translationLore("feature.city.mayor.menu.law.warp.lore.set"));
+                loreLawWarp.add(TranslationManager.translation(
+                        "feature.city.mayor.menu.law.warp.lore.x",
+                        Component.text(warpLoc.getX()).color(NamedTextColor.GOLD)
+                ));
+                loreLawWarp.add(TranslationManager.translation(
+                        "feature.city.mayor.menu.law.warp.lore.y",
+                        Component.text(warpLoc.getY()).color(NamedTextColor.GOLD)
+                ));
+                loreLawWarp.add(TranslationManager.translation(
+                        "feature.city.mayor.menu.law.warp.lore.z",
+                        Component.text(warpLoc.getZ()).color(NamedTextColor.GOLD)
                 ));
             }
 
@@ -156,21 +174,26 @@ public class MayorLawMenu extends Menu {
                 loreLawWarp.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "mayor:law-move-warp")))
+                                TranslationManager.translation(
+                                        "feature.city.mayor.menu.law.cooldown",
+                                        Component.text(DateUtils.convertMillisToTime(
+                                                DynamicCooldownManager.getRemaining(city.getUniqueId(), "mayor:law-move-warp")))
+                                                .color(NamedTextColor.RED)
+                                )
                         )
                 );
             } else {
                 loreLawWarp.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§e§lCLIQUEZ ICI POUR CHOISIR UN ENDROIT")
+                                TranslationManager.translation("feature.city.mayor.menu.law.warp.click")
                         )
                 );
             }
 
 
             return new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
-                itemMeta.itemName(Component.text("§7Changer son §9warp"));
+                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.law.warp.name"));
                 itemMeta.lore(loreLawWarp);
             }).setOnClick(inventoryClickEvent -> {
                 MayorSetWarpAction.setWarp(player);
@@ -186,34 +209,39 @@ public class MayorLawMenu extends Menu {
 
         Supplier<ItemBuilder> announceItemSupplier = () -> {
             List<Component> loreLawAnnounce = new ArrayList<>(List.of(
-                    Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
+                    TranslationManager.translation("feature.city.mayor.menu.law.announce.lore")
             ));
 
             if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
                 loreLawAnnounce.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-announce")))
+                                TranslationManager.translation(
+                                        "feature.city.mayor.menu.law.cooldown",
+                                        Component.text(DateUtils.convertMillisToTime(
+                                                DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-announce")))
+                                                .color(NamedTextColor.RED)
+                                )
                         )
                 );
             } else {
                 loreLawAnnounce.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§e§lCLIQUEZ ICI POUR ECRIRE LE MESSAGE")
+                                TranslationManager.translation("feature.city.mayor.menu.law.announce.click")
                         )
                 );
             }
 
             return new ItemBuilder(this, Material.BELL, itemMeta -> {
-                itemMeta.itemName(Component.text("§7Faire une annonce"));
+                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.law.announce.name"));
                 itemMeta.lore(loreLawAnnounce);
             }).setOnClick(inventoryClickEvent -> {
                 if (DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
 
                     ChatInput.sendInput(
                             player,
-                            "§eVous pouvez entrer votre message que vous voulez diffuser dans toute la ville ! Tapez cancel pour annuler l'action",
+                            TranslationManager.translation("feature.city.mayor.menu.law.announce.prompt"),
                             input -> {
                                 if (input == null)
                                     return;
@@ -225,12 +253,12 @@ public class MayorLawMenu extends Menu {
                                     if (playerMember == null) continue;
 
                                     if (playerMember.isOnline()) {
-                                        MessagesManager.sendMessage(playerMember, Component.text("§8-- §6Annonce du Maire §8--"), Prefix.MAYOR, MessageType.INFO, false);
+                                        MessagesManager.sendMessage(playerMember, TranslationManager.translation("feature.city.mayor.menu.law.announce.header"), Prefix.MAYOR, MessageType.INFO, false);
                                         MessagesManager.sendMessage(playerMember, Component.text(input), Prefix.MAYOR, MessageType.INFO, false);
                                     }
                                 }
 
-                                MessagesManager.sendMessage(player, Component.text("Vous avez bien envoyé le message a tous les membres de la villes"), Prefix.MAYOR, MessageType.SUCCESS, false);
+                                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.law.announce.success"), Prefix.MAYOR, MessageType.SUCCESS, false);
 
                             }
                     );
@@ -247,31 +275,36 @@ public class MayorLawMenu extends Menu {
         if (PerkManager.getPerkEvent(mayor) != null) {
             Supplier<ItemBuilder> perkEventItemSupplier = () -> {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
-                String namePerkEvent = perkEvent.getName();
-                List<Component> lorePerkEvent = new ArrayList<>(perkEvent.getLore());
+                Component namePerkEvent = TranslationManager.translation(perkEvent.getNameKey());
+                List<Component> lorePerkEvent = new ArrayList<>(TranslationManager.translationLore(perkEvent.getLoreKey()));
                 if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                     lorePerkEvent.addAll(
                             List.of(
                                     Component.empty(),
-                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-perk-event")))
+                                    TranslationManager.translation(
+                                            "feature.city.mayor.menu.law.cooldown",
+                                            Component.text(DateUtils.convertMillisToTime(
+                                                    DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-perk-event")))
+                                                    .color(NamedTextColor.RED)
+                                    )
                             )
                     );
                 } else {
                     lorePerkEvent.addAll(
                             List.of(
                                     Component.empty(),
-                                    Component.text("§e§lCLIQUEZ ICI POUR UTILISER LA REFORME")
+                                    TranslationManager.translation("feature.city.mayor.menu.law.perk_event.click")
                             )
                     );
                 }
                 return new ItemBuilder(this, iaPerkEvent, itemMeta -> {
-                    itemMeta.itemName(Component.text(namePerkEvent));
+                    itemMeta.itemName(namePerkEvent);
                     itemMeta.lore(lorePerkEvent);
                 })
                         .hide(perkEvent.getToHide())
                         .setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
-	                    MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3réforme"), Prefix.MAYOR, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.wait"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
                     }
 
@@ -287,7 +320,7 @@ public class MayorLawMenu extends Menu {
                             if (DreamUtils.isDreamWorld(member.getWorld())) continue;
 
                             ImpotCollection.spawnZombies(member, city);
-	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
+                            MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.impot.trigger"), Prefix.MAYOR, MessageType.INFO, false);
 
                         }
                         DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
@@ -298,7 +331,7 @@ public class MayorLawMenu extends Menu {
 
                             if (member == null || !member.isOnline()) continue;
 	                        
-	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.agricultural.trigger"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         DynamicCooldownManager.use(city.getUniqueId(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
@@ -310,7 +343,7 @@ public class MayorLawMenu extends Menu {
 
                             if (member == null || !member.isOnline()) continue;
 	                        
-	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §eRuée Minière §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.mineral.trigger"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         DynamicCooldownManager.use(city.getUniqueId(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
@@ -322,7 +355,7 @@ public class MayorLawMenu extends Menu {
 
                             if (member == null || !member.isOnline()) continue;
 	                        
-	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.military.trigger"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         MilitaryDissuasion.startEvent(city, 10);
@@ -345,7 +378,7 @@ public class MayorLawMenu extends Menu {
 
                             if (member == null || !member.isOnline()) continue;
 	                        
-	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §ePluie idyllique §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.idyllic.trigger"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         // spawn d'un total de 100 aywenite progressivement sur une minute
@@ -359,7 +392,7 @@ public class MayorLawMenu extends Menu {
 
                             if (member == null || !member.isOnline()) continue;
 
-                            MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §eRêve Chaotique §f!"), Prefix.MAYOR, MessageType.INFO, false);
+                            MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.dream.trigger"), Prefix.MAYOR, MessageType.INFO, false);
 
                             DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
 
@@ -379,21 +412,14 @@ public class MayorLawMenu extends Menu {
         }
 
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-		            Component.text("§7Vous allez retourner au menu précédent"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
+            itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
+            itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.common.back.lore"));
         }, true));
 
-        List<Component> loreInfo = Arrays.asList(
-		        Component.text("§7Apprenez en plus sur les maires !"),
-		        Component.text("§7Le déroulement..., les éléctions, ..."),
-                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
-        );
+        List<Component> loreInfo = TranslationManager.translationLore("feature.city.mayor.menu.common.more_info.lore");
 
         inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.more_info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 

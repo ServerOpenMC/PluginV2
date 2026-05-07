@@ -10,7 +10,9 @@ import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -46,7 +48,7 @@ public class MascotsButton {
 
     private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Mascot mascot, LivingEntity mob, Player player) {
         return () -> new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-            itemMeta.itemName(Component.text("§cVotre Mascotte"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.mascots.title"));
             itemMeta.lore(getDynamicLore(city, mascot, mob));
             itemMeta.setItemModel(NamespacedKey.minecraft("air"));
         }).setOnClick(inventoryClickEvent -> {
@@ -75,32 +77,26 @@ public class MascotsButton {
                 }
 
                 if (!mascot.isAlive()) {
-                    lore = List.of(
-                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
-                            Component.text("§7Statut : §cMorte"),
-                            Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
-                            Component.text("§7Niveau : §c" + mascot.getLevel()),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                    lore = TranslationManager.translationLore(
+                            "feature.city.menus.main.mascots.lore.dead",
+                            Component.text(Math.floor(mob.getHealth())).color(NamedTextColor.RED),
+                            Component.text(maxHealth).color(NamedTextColor.RED),
+                            Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
+                            Component.text(mascot.getLevel()).color(NamedTextColor.RED)
                     );
                 } else {
-                    lore = List.of(
-                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
-                            Component.text("§7Statut : §aEn Vie"),
-                            Component.text("§7Niveau : §c" + mascot.getLevel()),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                    lore = TranslationManager.translationLore(
+                            "feature.city.menus.main.mascots.lore.alive",
+                            Component.text(Math.floor(mob.getHealth())).color(NamedTextColor.RED),
+                            Component.text(maxHealth).color(NamedTextColor.RED),
+                            Component.text(mascot.getLevel()).color(NamedTextColor.RED)
                     );
                 }
             } else {
-                lore = List.of(
-                        Component.text("§cMascotte non trouvée")
-                );
+                lore = TranslationManager.translationLore("feature.city.menus.main.mascots.lore.not_found");
             }
         } else {
-            lore = List.of(
-                    Component.text("§cMascotte inexistante (contactez le staff)")
-            );
+            lore = TranslationManager.translationLore("feature.city.menus.main.mascots.lore.missing");
         }
 
         return lore;

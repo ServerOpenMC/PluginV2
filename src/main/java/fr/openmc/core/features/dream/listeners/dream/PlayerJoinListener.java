@@ -1,7 +1,5 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
-import fr.openmc.core.features.displays.bossbar.BossbarManager;
-import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.entity.Player;
@@ -22,14 +20,6 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
 
         if (!DreamUtils.isInDreamWorld(player)) return;
-
-        for (BossbarsType type : BossbarsType.values()) {
-            if (type.equals(BossbarsType.DREAM)) continue;
-
-            BossbarManager.addBossBar(type, BossbarManager.bossBarHelp, player);
-        }
-
-        BossbarManager.removeBossBar(BossbarsType.DREAM, player);
 
         try {
             DreamManager.preloadSavePlayer(player, player.getLocation());

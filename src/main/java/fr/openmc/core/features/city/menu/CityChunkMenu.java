@@ -17,10 +17,11 @@ import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.chunk.ChunkInfo;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -142,8 +143,8 @@ public class CityChunkMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - La carte";
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.chunks.name");
     }
 
     @Override
@@ -170,8 +171,8 @@ public class CityChunkMenu extends Menu {
 
         if (chunkInfoMap == null || chunkInfoMap.isEmpty()) {
             inventory.put(22, new ItemBuilder(this, Material.CLOCK, itemMeta -> {
-                itemMeta.displayName(Component.text("§eChargement..."));
-                itemMeta.lore(List.of(Component.text("§7Chargement des données de chunks en cours")));
+                itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.loading.title"));
+                itemMeta.lore(TranslationManager.translationLore("feature.city.menus.chunks.loading.lore"));
             }));
             return inventory;
         }
@@ -204,21 +205,24 @@ public class CityChunkMenu extends Menu {
     private void addNavigationButtons(Map<Integer, ItemBuilder> inventory) {
         if (playerCity != null) {
             inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.displayName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+                itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+                itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
             }, true));
 
             if (hasFreeClaimAvailable) {
                 inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-	                itemMeta.displayName(Component.text("§6Claim gratuit"));
-                    itemMeta.lore(List.of(Component.text("§7Vous avez §6" + freeClaims + " claim gratuit !")));
+	                itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.free_claim.title"));
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.city.menus.chunks.free_claim.lore",
+                            Component.text(freeClaims).color(NamedTextColor.GOLD)
+                    ));
                 }));
             }
         }
 
         inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {
-            itemMeta.displayName(Component.text("§6Rafraîchir la carte"));
-	        itemMeta.lore(List.of(Component.text("§7Mettre à jour §6les claims affichés§7")));
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.refresh.title"));
+	        itemMeta.lore(TranslationManager.translationLore("feature.city.menus.chunks.refresh.lore"));
         }).setOnClick(event -> {
             String refreshCacheKey = player.getWorld().getName() + ":" + startX + "," + startZ;
             CHUNK_CACHE.remove(refreshCacheKey);
@@ -256,77 +260,78 @@ public class CityChunkMenu extends Menu {
 
     private ItemBuilder createProtectedChunkItem(Material material, int chunkX, int chunkZ) {
         return new ItemBuilder(this, material, itemMeta -> {
-            itemMeta.displayName(Component.text("§cClaim dans une région protégée"));
-            itemMeta.lore(List.of(
-                    Component.text("§cCette zone est protégée par une région WorldGuard"),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.protected.title"));
+            itemMeta.lore(TranslationManager.translationLore(
+                    "feature.city.menus.chunks.protected.lore",
+                    Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE)
             ));
         });
     }
 
     private ItemBuilder createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
         List<Component> lore;
+        Component cityName = Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE);
+        Component position = Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE);
         if (city.getChunks().size() > CityCreateAction.FREE_CLAIMS+1) {
-            lore = List.of(
-                    Component.text("§7Ville : §d" + city.getName()),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.empty(),
-                    Component.text("§cVous rapporte :"),
-                    Component.text("§8- §6" + CityUnclaimAction.calculatePrice(playerCity.getChunks().size())).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
-                    Component.text("§8- §d" + CityUnclaimAction.calculateAywenite(playerCity.getChunks().size()) + " d'Aywenite"),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ POUR UNCLAIM")
+            Component moneyValue = Component.text(CityUnclaimAction.calculatePrice(playerCity.getChunks().size())).color(NamedTextColor.GOLD);
+            Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+            Component ayweniteValue = Component.text(CityUnclaimAction.calculateAywenite(playerCity.getChunks().size())).color(NamedTextColor.LIGHT_PURPLE);
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.chunks.player_claim.lore.reward",
+                    cityName,
+                    position,
+                    moneyValue,
+                    moneyIcon,
+                    ayweniteValue
             );
         } else {
-            lore = List.of(
-                    Component.text("§7Ville : §d" + city.getName()),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ POUR UNCLAIM")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.chunks.player_claim.lore.basic",
+                    cityName,
+                    position
             );
         }
 
         return new ItemBuilder(this, material, itemMeta -> {
-            itemMeta.displayName(Component.text("§9Claim de votre ville"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.player_claim.title"));
             itemMeta.lore(lore);
         }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
     private ItemBuilder createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
         return new ItemBuilder(this, material, itemMeta -> {
-            itemMeta.displayName(Component.text("§cClaim d'une ville adverse"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Ville : §d" + city.getName()),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.other_claim.title"));
+            itemMeta.lore(TranslationManager.translationLore(
+                    "feature.city.menus.chunks.other_claim.lore",
+                    Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE)
             ));
         });
     }
 
     private ItemBuilder createUnclaimedChunkItem(Material material, int chunkX, int chunkZ) {
         List<Component> lore;
+        Component position = Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE);
         if (hasFreeClaimAvailable) {
-            lore = List.of(
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.empty(),
-                    Component.text("§cCoûte :"),
-		            Component.text("§8- §6Claim gratuit"),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ POUR CLAIM")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.chunks.unclaimed.lore.free",
+                    position
             );
         } else {
-            lore = List.of(
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.empty(),
-                    Component.text("§cCoûte :"),
-                    Component.text("§8- §6" + price).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
-                    Component.text("§8- §d" + aywenite + " d'Aywenite"),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ POUR CLAIM")
+            Component moneyValue = Component.text(price).color(NamedTextColor.GOLD);
+            Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+            Component ayweniteValue = Component.text(aywenite).color(NamedTextColor.LIGHT_PURPLE);
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.chunks.unclaimed.lore.cost",
+                    position,
+                    moneyValue,
+                    moneyIcon,
+                    ayweniteValue
             );
         }
 
         return new ItemBuilder(this, material, itemMeta -> {
-            itemMeta.displayName(Component.text("§cClaim libre"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.unclaimed.title"));
             itemMeta.lore(lore);
         }).setOnClick(event -> handleChunkClaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
@@ -335,12 +340,12 @@ public class CityChunkMenu extends Menu {
         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -362,8 +367,8 @@ public class CityChunkMenu extends Menu {
                         new CityChunkMenu(player).open();
                     }, 2);
                 },
-                List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
-                List.of(Component.text("§7Annuler la procédure de claim")));
+                List.of(TranslationManager.translation("feature.city.menus.chunks.confirm_claim.accept")),
+                List.of(TranslationManager.translation("feature.city.menus.chunks.confirm_claim.deny")));
         menu.open();
     }
 
@@ -371,12 +376,12 @@ public class CityChunkMenu extends Menu {
         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_CANNOT_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -398,8 +403,8 @@ public class CityChunkMenu extends Menu {
                         new CityChunkMenu(player).open();
                     }, 2);
                 },
-                List.of(Component.text("§7Voulez vous vraiment unclaim ce chunk ?")),
-                List.of(Component.text("§7Annuler la procédure de unclaim")));
+                List.of(TranslationManager.translation("feature.city.menus.chunks.confirm_unclaim.accept")),
+                List.of(TranslationManager.translation("feature.city.menus.chunks.confirm_unclaim.deny")));
         menu.open();
     }
 }

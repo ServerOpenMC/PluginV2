@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -23,11 +24,11 @@ public class AdminCityMilestoneCommands {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        MessagesManager.sendMessage(sender, Component.text("Upgrade du level skip"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.levels.admin.skip_upgrade.success"), Prefix.STAFF, MessageType.SUCCESS, false);
         DynamicCooldownManager.clear(city.getUniqueId(), "city:upgrade-level", true);
     }
 
@@ -42,12 +43,15 @@ public class AdminCityMilestoneCommands {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.setLevel(level);
-        MessagesManager.sendMessage(sender, Component.text("Level " + level + " mis sur la ville"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, TranslationManager.translation(
+                "feature.city.levels.admin.set_level.success",
+                Component.text(level)
+        ), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
 }

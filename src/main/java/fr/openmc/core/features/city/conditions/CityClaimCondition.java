@@ -9,8 +9,8 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -31,12 +31,12 @@ public class CityClaimCondition {
         if (player.getWorld() != Bukkit.getWorld("world")) return false;
         
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.CLAIM))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.claim.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -46,7 +46,7 @@ public class CityClaimCondition {
         if (!ItemUtils.hasEnoughItems(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest(), amount)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas assez d'§dAywenite §f(" + amount + " nécessaires)"),
+                    TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(amount)),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     false
@@ -57,7 +57,10 @@ public class CityClaimCondition {
         double money = CityClaimAction.calculatePrice(city.getChunks().size());
 
         if (city.getBalance() < money) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'argent dans ta banque pour claim (" + money).append(Component.text(EconomyManager.getEconomyIcon() + " §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.claim.not_enough_city_money",
+                    Component.text(money + EconomyManager.getEconomyIcon())
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

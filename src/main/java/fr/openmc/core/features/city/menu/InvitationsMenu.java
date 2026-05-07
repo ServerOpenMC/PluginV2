@@ -9,7 +9,9 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,8 +29,8 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Invitations";
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.invitations.name");
     }
 
     @Override
@@ -57,8 +59,7 @@ public class InvitationsMenu extends PaginatedMenu {
         Player player = getOwner();
         List<Player> invitations = CityInviteCommands.invitations.get(player);
 
-        List<Component> invitationLore = List.of(
-                Component.text("§e§lCLIQUEZ ICI POUR REJOINDRE LA VILLE"));
+        List<Component> invitationLore = TranslationManager.translationLore("feature.city.menus.invitations.item.lore");
 
         for (Player inviter : invitations) {
             City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
@@ -71,8 +72,12 @@ public class InvitationsMenu extends PaginatedMenu {
                 return getItems();
             }
 
-            Component invitationName = Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName());
-            
+            Component invitationName = TranslationManager.translation(
+                    "feature.city.menus.invitations.item.name",
+                    Component.text(inviter.getName()).color(NamedTextColor.GRAY),
+                    Component.text(inviterCity.getName()).color(NamedTextColor.GRAY)
+            );
+
             items.add(new ItemBuilder(this, Material.PAPER, itemMeta -> {
                 itemMeta.itemName(invitationName);
                 itemMeta.lore(invitationLore);
@@ -86,8 +91,8 @@ public class InvitationsMenu extends PaginatedMenu {
                             CityInviteCommands.denyInvitation(player, inviter);
                             player.closeInventory();
                         },
-                        List.of(Component.text("§7Accepter")),
-                        List.of(Component.text("§7Refuser" + inviter.getName()))).open();
+                        List.of(TranslationManager.translation("messages.global.accept")),
+                        List.of(TranslationManager.translation("feature.city.menus.invitations.confirm.deny", Component.text(inviter.getName()).color(NamedTextColor.GRAY)))).open();
             }));
         }
 
@@ -113,12 +118,12 @@ public class InvitationsMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Fermer"));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setOnClick(inventoryClickEvent ->
                 getOwner().closeInventory()
         ));
@@ -126,10 +131,10 @@ public class InvitationsMenu extends PaginatedMenu {
         map.put(48,
                 new ItemBuilder(this,
                         Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+                        itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
         map.put(50,
                 new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+                        itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 
         return map;
     }

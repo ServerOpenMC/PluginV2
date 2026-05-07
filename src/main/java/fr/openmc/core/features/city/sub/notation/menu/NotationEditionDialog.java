@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
@@ -40,7 +41,7 @@ public class NotationEditionDialog {
         Integer finalCityEditIndex1 = cityEditIndex;
         body.add(DialogBody.item(
                 ItemStack.of(Material.ENDER_PEARL),
-                DialogBody.plainMessage(Component.text("Se téléporter a la ville en question.").clickEvent(
+                DialogBody.plainMessage(TranslationManager.translation("feature.city.notation.edit.teleport").clickEvent(
                         ClickEvent.callback((audience -> {
                             if (!(audience instanceof Player playerClicked)) {
                                 return;
@@ -48,7 +49,10 @@ public class NotationEditionDialog {
 
                             playerClicked.closeInventory();
 
-                            MessagesManager.sendMessage(player, Component.text("Vous avez été téléporté à la ville " + cityEdited.getName() + ". Cliquez sur le message pour continuer l'édition.")
+                            MessagesManager.sendMessage(player, TranslationManager.translation(
+                                            "feature.city.notation.edit.teleport.success",
+                                            Component.text(cityEdited.getName())
+                                    )
                                             .clickEvent(ClickEvent.callback((audience1) -> {
                                                 if (!(audience instanceof Player playerClicked1)) {
                                                     return;
@@ -79,9 +83,11 @@ public class NotationEditionDialog {
 
         inputs.add(DialogInput
                 .numberRange("input_note_architectural",
-                        Component.text("Note Architecturale").hoverEvent(
-                                Component.text("Note sur " + NotationNote.NOTE_ARCHITECTURAL.getMaxNote() + " points")
-                                        .append(Component.text("qui prend en compte, les bâtiments, les infrastructures et l'esthétique de la ville"))
+                        TranslationManager.translation("feature.city.notation.edit.input.architectural").hoverEvent(
+                                TranslationManager.translation(
+                                        "feature.city.notation.edit.input.architectural.hover",
+                                        Component.text(NotationNote.NOTE_ARCHITECTURAL.getMaxNote())
+                                )
                         ), 0, NotationNote.NOTE_ARCHITECTURAL.getMaxNote()
                 )
                 .initial(0f)
@@ -91,9 +97,11 @@ public class NotationEditionDialog {
 
         inputs.add(DialogInput
                 .numberRange("input_note_coherence",
-                        Component.text("Note Cohérence").hoverEvent(
-                                Component.text("Note sur " + NotationNote.NOTE_COHERENCE.getMaxNote() + " points")
-                                        .append(Component.text("qui prend en compte, la cohérence des builds et le changement progressif de thème."))
+                        TranslationManager.translation("feature.city.notation.edit.input.coherence").hoverEvent(
+                                TranslationManager.translation(
+                                        "feature.city.notation.edit.input.coherence.hover",
+                                        Component.text(NotationNote.NOTE_COHERENCE.getMaxNote())
+                                )
                         ), 0, NotationNote.NOTE_COHERENCE.getMaxNote()
                 )
                 .initial(0f)
@@ -104,8 +112,8 @@ public class NotationEditionDialog {
 
         inputs.add(DialogInput
                 .text("input_description",
-                        Component.text("Justification de la note").hoverEvent(
-                                Component.text("Une justification de la note est obligatoire")
+                        TranslationManager.translation("feature.city.notation.edit.input.justification").hoverEvent(
+                                TranslationManager.translation("feature.city.notation.edit.input.justification.hover")
                         )
                 )
                 .multiline(TextDialogInput.MultilineOptions.create(7, 40))
@@ -115,7 +123,13 @@ public class NotationEditionDialog {
 
         int finalCityEditIndex = cityEditIndex;
         Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Classement des notations semaine " + weekStr + " - Édition de la ville : " + cityEdited.getName() + " (" + (finalCityEditIndex + 1) + "/" + cities.size() + ")"))
+                .base(DialogBase.builder(TranslationManager.translation(
+                                "feature.city.notation.edit.title",
+                                Component.text(weekStr),
+                                Component.text(cityEdited.getName()),
+                                Component.text(finalCityEditIndex + 1),
+                                Component.text(cities.size())
+                        ))
                         .body(body)
                         .inputs(inputs)
                         .canCloseWithEscape(true)
@@ -149,7 +163,10 @@ public class NotationEditionDialog {
                                             if (finalCityEditIndex + 1 < cities.size()) {
                                                 NotationEditionDialog.send(player, weekStr, cities, finalCityEditIndex + 1);
                                             } else {
-                                                MessagesManager.sendMessage(player, Component.text("Les notations pour le " + weekStr + " ont été totalement faites"), Prefix.STAFF, MessageType.SUCCESS, false);
+                                                MessagesManager.sendMessage(player, TranslationManager.translation(
+                                                        "feature.city.notation.edit.completed",
+                                                        Component.text(weekStr)
+                                                ), Prefix.STAFF, MessageType.SUCCESS, false);
                                                 player.closeInventory();
                                             }
                                         },

@@ -16,8 +16,10 @@ import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -41,7 +43,7 @@ public class UrneListener implements Listener {
         City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
 
         if (playerCity == null) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*Mystérieux objet... Cela doit surement servir pour des éléctions...*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.mysterious"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
@@ -50,27 +52,30 @@ public class UrneListener implements Listener {
                 event.getFurniture().remove(false);
             }
 
-            MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.equals(city)) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*Mhh... Ce n'est pas votre urne*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.not_your_urne"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
         if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.mayor.urne.interact.need_members",
+                    Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.GOLD)
+            ), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
         if (MayorManager.phaseMayor != 1) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*Les éléctions ont déjà eu lieu !*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.election_already"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
         if (MayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*personne ne s'est présenté ! Présenter vous ! /city*"), Prefix.MAYOR, MessageType.INFO, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.no_candidate"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }
 
@@ -86,14 +91,14 @@ public class UrneListener implements Listener {
 
         if (!player.getWorld().getName().equals("world")) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous devez être dans l'overworld pour poser ceci !"), Prefix.MAYOR, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.must_be_overworld"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous devez avoir une ville pour poser ceci !"), Prefix.MAYOR, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.need_city"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
 
@@ -101,25 +106,28 @@ public class UrneListener implements Listener {
         City chunkCity = CityManager.getCityFromChunk(placedInChunk.getX(), placedInChunk.getZ());
         if (chunkCity == null) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous devez poser ceci dans votre ville!"), Prefix.MAYOR, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.must_be_in_city"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.MAYOR)) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous devez etre niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " de ville pour poser l'urne"), Prefix.MAYOR, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.mayor.urne.place.require_level",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.GOLD)
+            ), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.not_owner"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (NPCManager.hasNPCS(playerCity.getUniqueId())) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.already_has_npc"), Prefix.MAYOR, MessageType.ERROR, false);
         }
     }
 
@@ -160,7 +168,7 @@ public class UrneListener implements Listener {
         }
 
         if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le propriétaire"), Prefix.MAYOR, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.break.not_owner"), Prefix.MAYOR, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }

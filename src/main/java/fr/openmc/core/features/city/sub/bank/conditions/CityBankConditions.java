@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -26,12 +27,17 @@ public class CityBankConditions {
      */
     public static boolean canOpenCityBank(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CITY_BANK)) {
-	        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CITY_BANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.city.bank.errors.feature_locked",
+                            Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CITY_BANK))
+                    ),
+                    Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -47,14 +53,16 @@ public class CityBankConditions {
      */
     public static boolean canCityDeposit(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!canOpenCityBank(city, player)) return false;
 
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT))) {
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.city.bank.errors.no_permission_deposit"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -69,12 +77,14 @@ public class CityBankConditions {
      */
     public static boolean canCityBalance(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de consulter l'argent de la ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.city.bank.errors.no_permission_balance"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
@@ -89,17 +99,21 @@ public class CityBankConditions {
      */
     public static boolean canCityWithdraw(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent de ta ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW))) {
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.city.bank.errors.no_permission_withdraw"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.getType().equals(CityType.WAR)) {
-	        MessagesManager.sendMessage(player, Component.text("Votre ville est en situation de guerre, vous ne pouvez faire cela"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.city.bank.errors.war_blocked"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

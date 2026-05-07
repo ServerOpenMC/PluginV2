@@ -9,7 +9,9 @@ import fr.openmc.core.features.city.menu.CityChunkMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -28,12 +30,12 @@ public class MapButton {
                 contents,
                 slots,
                 new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.itemName(Component.text("§aTaille de votre ville"));
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.map.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> {
                     if (!hasPermissionChunkSee) {
-                        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions de voir les claims"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.main.map.no_permission"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 
@@ -45,14 +47,14 @@ public class MapButton {
     private static List<Component> getDynamicLore(City city) {
         List<Component> lore;
         if (hasPermissionChunkSee) {
-            lore = List.of(
-                    Component.text("§7Votre ville a une superficie de §a" + city.getChunks().size()),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA CARTE")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.main.map.lore.access",
+                    Component.text(city.getChunks().size()).color(NamedTextColor.GREEN)
             );
         } else {
-            lore = List.of(
-                    Component.text("§7Votre ville a une superficie de §a" + city.getChunks().size())
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.main.map.lore.view",
+                    Component.text(city.getChunks().size()).color(NamedTextColor.GREEN)
             );
         }
         return lore;

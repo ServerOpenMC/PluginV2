@@ -14,8 +14,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -34,8 +35,8 @@ public class CityBankMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Banque";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.bank.menu.name");
     }
 
     @Override
@@ -63,23 +64,20 @@ public class CityBankMenu extends Menu {
 
         List<Component> loreBankDeposit;
 
-        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE)) {
-            loreBankDeposit = List.of(
-		            Component.text("§7Votre argent sera placé dans la §6banque de la ville"),
-                    Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
-            );
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT)) {
+            loreBankDeposit = TranslationManager.translationLore("feature.city.bank.menu.deposit.lore");
         } else {
-            loreBankDeposit = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
-            );
+            loreBankDeposit = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
         inventory.put(11, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer de l'§6Argent"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.title"));
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE))) {
-                MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT))) {
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("feature.city.bank.errors.no_permission_deposit"),
+                        Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -90,12 +88,14 @@ public class CityBankMenu extends Menu {
         if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE)) {
 
             Supplier<ItemBuilder> interestItemSupplier = () -> new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-	            itemMeta.itemName(Component.text("§6L'argent de votre ville"));
-                itemMeta.lore(List.of(
-                                Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-		                Component.text("§7Votre prochain intérêt est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
-                        )
-                );
+                itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.balance.title"));
+                itemMeta.lore(TranslationManager.translationLore(
+                        "feature.city.bank.menu.balance.lore",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(city.calculateCityInterest() * 100).color(NamedTextColor.AQUA),
+                        Component.text(DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
+                ));
             });
 
             MenuUtils.runDynamicItem(player, this, 13, interestItemSupplier)
@@ -104,23 +104,20 @@ public class CityBankMenu extends Menu {
 
         List<Component> loreBankTake;
 
-        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE)) {
-            loreBankTake = List.of(
-		            Component.text("§7L'argent sera pris dans la §6Banque de la ville"),
-                    Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
-            );
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW)) {
+            loreBankTake = TranslationManager.translationLore("feature.city.bank.menu.withdraw.lore");
         } else {
-            loreBankTake = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
-            );
+            loreBankTake = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
         inventory.put(15, new ItemBuilder(this, Material.DISPENSER, itemMeta -> {
-	        itemMeta.itemName(Component.text("§7Retirer de l'§6argent"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.title"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE))) {
-                MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW))) {
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("feature.city.bank.errors.no_permission_withdraw"),
+                        Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -129,11 +126,8 @@ public class CityBankMenu extends Menu {
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-		            Component.text("§7Vous allez retourner au menu précédent"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
+            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(TranslationManager.translationLore("feature.city.bank.menu.back_lore"));
 
         }, true));
 

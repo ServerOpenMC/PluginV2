@@ -5,6 +5,7 @@ import fr.openmc.core.features.quests.menus.QuestsMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 
@@ -28,7 +29,7 @@ public class QuestCommand {
             new QuestsMenu(sender).open();
         } else {
             if (sender.hasPermission("omc.quests.admin")) new QuestsMenu(target).open();
-            else MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+            else MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
 
         }
     }

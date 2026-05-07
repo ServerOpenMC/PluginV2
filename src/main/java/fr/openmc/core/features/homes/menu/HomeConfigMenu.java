@@ -40,8 +40,8 @@ public class HomeConfigMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Homes - Configuration";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Homes - Configuration");
     }
 
     @Override

@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  * Enumération représentant les récompenses de niveaux pour la Mascotte.
@@ -54,6 +56,9 @@ public enum MascotsLevelsRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-	    return Component.text("§cNiveau " + mascotsLevelLimit + " §7maximum pour la mascotte");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.mascot_level_max",
+                Component.text(mascotsLevelLimit).color(NamedTextColor.RED)
+        ).color(NamedTextColor.GRAY);
     }
 }

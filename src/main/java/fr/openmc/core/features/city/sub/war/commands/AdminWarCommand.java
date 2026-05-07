@@ -7,7 +7,7 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
@@ -27,12 +27,12 @@ public class AdminWarCommand {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (!city.isInWar() && city.getWar().getPhase() != War.WarPhase.PREPARATION) {
-            MessagesManager.sendMessage(player, Component.text("Cette ville n'est pas en préparation de guerre !"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.war.admin.not_in_preparation"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

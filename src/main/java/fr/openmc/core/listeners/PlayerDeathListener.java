@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -21,9 +22,10 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDead(PlayerDeathEvent event) {
         if (event.isCancelled()) return;
         Player player = event.getPlayer();
+
         double balance = getBalance(player.getUniqueId());
 
-        if (balance>0) {
+        if (balance>0 && !DreamUtils.isInDreamWorld(player)) {
             withdrawBalance(player.getUniqueId(), balance * LOSS_MONEY);
             MessagesManager.sendMessage(player, Component.text("Vous venez de mourrir avec §6" + getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon() + "§f, vous avez perdu §6" + getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon() + "\n§8*pensez à mettre votre argent dans la banque*"), Prefix.OPENMC, MessageType.INFO, false);
         }

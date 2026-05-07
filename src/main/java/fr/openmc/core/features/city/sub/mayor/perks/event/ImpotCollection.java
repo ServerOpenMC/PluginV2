@@ -8,7 +8,9 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -46,7 +48,10 @@ public class ImpotCollection implements Listener {
             spawnLoc.setY(world.getHighestBlockYAt(spawnLoc));
 
             Zombie zombie = (Zombie) world.spawnEntity(spawnLoc, EntityType.ZOMBIE);
-            zombie.customName(Component.text("Serviteur de " + city.getMayor().getName()));
+            zombie.customName(TranslationManager.translation(
+                    "feature.city.mayor.perk.event.impot.zombie.name",
+                    city.getMayor().getName()
+            ).color(NamedTextColor.GRAY));
             zombie.setCustomNameVisible(true);
             zombie.setTarget(player);
 
@@ -82,7 +87,7 @@ public class ImpotCollection implements Listener {
 
         if (EconomyManager.getBalance(victim.getUniqueId()) < amount) {
             if (BankManager.getBankBalance(victim.getUniqueId()) < amount) {
-                MessagesManager.sendMessage(victim, Component.text("§8§o*grr vous avez de la chance !*"), Prefix.MAYOR, MessageType.INFO, false);
+                MessagesManager.sendMessage(victim, TranslationManager.translation("feature.city.mayor.perk.event.impot.victim.lucky"), Prefix.MAYOR, MessageType.INFO, false);
                 return;
             }
 
@@ -96,8 +101,17 @@ public class ImpotCollection implements Listener {
         double newTotal = playerWithdrawnAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
         playerWithdrawnAmount.put(victim.getUniqueId(), newTotal);
 	    
-	    MessagesManager.sendMessage(victim, Component.text("Tu as perdu §6" + amount + EconomyManager.getEconomyIcon() + "§f à cause du maire " + mayorPlayer.getName()), Prefix.MAYOR, MessageType.WARNING, false);
-        MessagesManager.sendMessage(mayorPlayer, Component.text("Vous venez de prélever §6" + amount + EconomyManager.getEconomyIcon() + "§f à " + victim.getName()), Prefix.MAYOR, MessageType.INFO, false);
+	    Component amountComponent = Component.text(amount + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+        MessagesManager.sendMessage(victim, TranslationManager.translation(
+                "feature.city.mayor.perk.event.impot.victim.lost",
+                amountComponent,
+                Component.text(mayorPlayer.getName()).color(NamedTextColor.WHITE)
+        ), Prefix.MAYOR, MessageType.WARNING, false);
+        MessagesManager.sendMessage(mayorPlayer, TranslationManager.translation(
+                "feature.city.mayor.perk.event.impot.mayor.collected",
+                amountComponent,
+                Component.text(victim.getName()).color(NamedTextColor.WHITE)
+        ), Prefix.MAYOR, MessageType.INFO, false);
 
         if (newTotal >= 5000) {
             for (Entity entity : victim.getWorld().getEntities()) {
@@ -112,7 +126,7 @@ public class ImpotCollection implements Listener {
                 }
             }
 
-            MessagesManager.sendMessage(victim, Component.text("§8§o*les zombies ont eu tout ce qu'ils voulaient*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(victim, TranslationManager.translation("feature.city.mayor.perk.event.impot.zombies.done"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 }
