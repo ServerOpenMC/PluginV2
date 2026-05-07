@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jspecify.annotations.NonNull;
 
 public class MeteoWand extends DreamItem implements UsableItem {
     private static final long COOLDOWN_METEO_WAND = 8 * 60 * 60 * 1000L; // 2 jours
@@ -34,25 +33,8 @@ public class MeteoWand extends DreamItem implements UsableItem {
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return getMeta().getRarity();
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return getMeta().getTransferable();
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return this.getBest();
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
-        item.getItemMeta().itemName(Component.text(getMeta().getName()));
-        return item;
     }
 
     @Override

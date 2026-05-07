@@ -5,11 +5,9 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.EquipableItem;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 
@@ -35,25 +33,8 @@ public class DreamChestplate extends DreamItem implements DreamEquipableItem, Eq
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return getMeta().getRarity();
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return getMeta().getTransferable();
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return this.getBestTransferable();
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
-        item.getItemMeta().itemName(Component.text(getMeta().getName()));
-        return item;
     }
 
     @Override

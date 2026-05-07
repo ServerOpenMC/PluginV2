@@ -24,7 +24,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,25 +43,8 @@ public class MetalDetector extends DreamItem implements UsableItem {
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return getMeta().getRarity();
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return getMeta().getTransferable();
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return null;
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
-        item.getItemMeta().itemName(Component.text(getMeta().getName()));
-        return item;
     }
 
     @Override

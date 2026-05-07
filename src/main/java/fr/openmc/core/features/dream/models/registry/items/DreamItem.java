@@ -5,6 +5,7 @@ import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,20 @@ public abstract class DreamItem extends CustomItem {
         meta = dreamItemMeta;
     }
 
+    @Override
+    public @NonNull ItemStack getVanilla() {
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
+        return item;
+    }
 
-    public abstract DreamRarity getRarity();
+    public DreamRarity getRarity() {
+        return getMeta().getRarity();
+    }
 
-    public abstract boolean isTransferable();
+    public boolean isTransferable() {
+        return getMeta().getTransferable();
+    };
 
     public abstract ItemStack getTransferableItem();
 
@@ -44,7 +55,7 @@ public abstract class DreamItem extends CustomItem {
         if (this instanceof DreamEquipableItem equipableItem) {
             lore.add(Component.empty());
 
-            lore.add(Component.text("§7§oTemps maximum: §r§a+" + equipableItem.getAdditionalMaxTime() + "s"));
+            lore.add(Component.text("§7§oTemps additionnel: §r§a+" + equipableItem.getAdditionalMaxTime() + "s"));
 
             Integer coldResistance = equipableItem.getColdResistance();
             if (coldResistance != null) {

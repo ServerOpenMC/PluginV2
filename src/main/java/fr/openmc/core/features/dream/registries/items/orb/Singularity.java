@@ -24,26 +24,8 @@ public class Singularity extends DreamItem implements UsableItem {
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return getMeta().getRarity();
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return getMeta().getTransferable();
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return null;
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
-
-        item.getItemMeta().itemName(Component.text(getMeta().getName()));
-        return item;
     }
 
     @Override
