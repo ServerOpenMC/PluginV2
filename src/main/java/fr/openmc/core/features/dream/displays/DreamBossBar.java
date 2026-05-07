@@ -19,14 +19,15 @@ public class DreamBossBar extends BaseBossbar {
     }
 
     @Override
-    protected void update(Player player, BossBar bar) {
+    protected void update(Player player, BossBar bar) {}
+
+    @Override
+    protected Float progress(Player player) {
         DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
 
-        if (dreamPlayer == null) return;
+        if (dreamPlayer == null) return null;
 
-        float progress = Math.min(1, (float) dreamPlayer.getDreamTime() / dreamPlayer.getMaxDreamTime());
-
-        bar.progress(progress);
+        return Math.min(1, (float) dreamPlayer.getDreamTime() / dreamPlayer.getMaxDreamTime());
     }
 
     @Override
