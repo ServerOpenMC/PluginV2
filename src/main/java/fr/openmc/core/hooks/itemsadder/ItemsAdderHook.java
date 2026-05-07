@@ -1,9 +1,8 @@
 package fr.openmc.core.hooks.itemsadder;
 
-import fr.openmc.core.OMCBootstrap;
 import fr.openmc.core.bootstrap.hooks.Hooks;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
-import fr.openmc.core.utils.FileUtils;
+import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
@@ -37,13 +36,13 @@ public class ItemsAdderHook extends Hooks {
             File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
             File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents
 
-            if (!FileUtils.createDirectoryIfNotExists(contentDir)) {
+            if (!FilesUtils.createDirectoryIfNotExists(contentDir)) {
                 logger.error("Impossible de créer le dossier {}", contentDir.getAbsolutePath());
                 return;
             }
 
             // * Recupere la liste des namespaces qu'il y a dans contents
-            List<String> contentFolders = FileUtils.listFolderNamesInResource(logger, contentsName, OMCBootstrap.class);
+            List<String> contentFolders = FilesUtils.listFolderNamesInResource(logger, contentsName);
 
             if (contentFolders.isEmpty()) return;
 
@@ -76,18 +75,19 @@ public class ItemsAdderHook extends Hooks {
 
             // * On supprime le dossier qui se trouve déjà ds contents
             if (destFolder.exists()) {
-                FileUtils.deleteDirectory(logger, destFolder);
+                FilesUtils.deleteDirectory(logger, destFolder);
             }
 
             // * On crée le dossier si il n'est pas fait
-            if (!FileUtils.createDirectoryIfNotExists(destFolder)) {
+            if (!FilesUtils.createDirectoryIfNotExists(destFolder)) {
                 logger.warn("Impossible de créer le dossier {}", destFolder.getAbsolutePath());
                 return;
             }
 
             // * On copie les resources contents vers la plugins/ItemAdder/contents
-            FileUtils.copyResourceFolder(logger, CONTENTS_FOLDER_NAME + "/" + folderName, destFolder,
-                    OMCBootstrap.class, content -> placeholderRegistry.applyPlaceholders(content, logger));
+            FilesUtils.copyResourceFolder(logger, CONTENTS_FOLDER_NAME + "/" + folderName, destFolder,
+                    content -> placeholderRegistry.applyPlaceholders(content, logger));
+
             logger.debug("Dossier {} copié avec succès", folderName);
         } catch (Exception e) {
             logger.warn("Erreur lors de la copie du dossier {}: {}", folderName, e.getMessage());

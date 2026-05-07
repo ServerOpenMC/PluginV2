@@ -1,17 +1,12 @@
 package fr.openmc.core.utils.types;
 
+import fr.openmc.core.utils.FilesUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.JarURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class MultiResourceBundle {
 
@@ -99,71 +94,15 @@ public class MultiResourceBundle {
         Set<String> result = new HashSet<>();
 
         for (String localePath : getLocaleHierarchy()) {
-            String basePath = folderName + "/" + localePath;
-            Enumeration<URL> resources;
-            try {
-                resources = classLoader.getResources(basePath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            while (resources.hasMoreElements()) {
-                URL url = resources.nextElement();
-                String protocol = url.getProtocol();
-
-                if (protocol.equals("file")) {
-                                try {
-                                    Path rootPath = Paths.get(url.toURI());
-                                    if (!Files.exists(rootPath)) {
-                                        continue;
-                        }
-                        try (var stream = Files.walk(rootPath)) {
-                            stream.filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".properties"))
-                                    .forEach(path -> result.add(toBundleName(rootPath, path)));
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                if (protocol.equals("jar")) {
-                    try {
-                        JarURLConnection connection = (JarURLConnection) url.openConnection();
-                        try (JarFile jar = connection.getJarFile()) {
-                            String prefix = connection.getEntryName();
-                            if (prefix == null) {
-                                prefix = basePath;
-                            }
-                            if (!prefix.endsWith("/")) {
-                                prefix += "/";
-                            }
-
-                            Enumeration<JarEntry> entries = jar.entries();
-                            while (entries.hasMoreElements()) {
-                                JarEntry entry = entries.nextElement();
-                                String name = entry.getName();
-                                if (!entry.isDirectory() && name.startsWith(prefix) && name.endsWith(".properties")) {
-                                    result.add(toBundleName(prefix, name));
-                                }
-                            }
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            for (String fileName : FilesUtils.listFileNamesInResource(null, folderName + "/" + localePath)) {
+                result.add(toBundleName(fileName));
             }
         }
 
         return result.stream().toList();
     }
 
-    private String toBundleName(Path rootPath, Path filePath) {
-        String relative = rootPath.relativize(filePath).toString().replace("\\", "/");
-        return relative.substring(0, relative.length() - ".properties".length());
-    }
-
-    private String toBundleName(String prefix, String entryName) {
-        String relative = entryName.substring(prefix.length());
-        return relative.substring(0, relative.length() - ".properties".length());
+    private String toBundleName(String entryName) {
+        return entryName.substring(0, entryName.length() - ".properties".length());
     }
 }
