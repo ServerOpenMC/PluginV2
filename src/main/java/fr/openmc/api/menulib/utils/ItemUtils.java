@@ -1,7 +1,6 @@
 package fr.openmc.api.menulib.utils;
 
 import fr.openmc.api.menulib.MenuLib;
-import fr.openmc.core.utils.cache.CachePlayerProfile;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
@@ -17,6 +16,8 @@ import java.util.Objects;
  * Utility class for performing operations on {@link ItemStack}.
  * Provides methods for creating items, checking item identifiers, and creating player skulls.
  */
+
+@SuppressWarnings("UnstableApiUsage")
 public class ItemUtils {
 	
 	/**

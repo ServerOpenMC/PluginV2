@@ -21,7 +21,15 @@ import org.bukkit.*;
 import org.bukkit.craftbukkit.CraftParticle;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 public class ParticleUtils {
 
@@ -29,6 +37,29 @@ public class ParticleUtils {
 
     public static Color color1;
     public static Color color2;
+
+    // based on org.bukkit.craftbukkit.CraftParticle
+    private static final Map<String, Supplier<Object>> PARTICLE_FALLBACKS;
+
+    static {
+        PARTICLE_FALLBACKS = new HashMap<>();
+        PARTICLE_FALLBACKS.put("dust", () -> new Particle.DustOptions(Color.RED, 1.0f));
+        PARTICLE_FALLBACKS.put("block", Material.STONE::createBlockData);
+        PARTICLE_FALLBACKS.put("falling_dust", Material.STONE::createBlockData);
+        PARTICLE_FALLBACKS.put("block_marker", Material.STONE::createBlockData);
+        PARTICLE_FALLBACKS.put("dust_pillar", Material.STONE::createBlockData);
+        PARTICLE_FALLBACKS.put("block_crumble", Material.STONE::createBlockData);
+        PARTICLE_FALLBACKS.put("item", () -> new ItemStack(Material.STONE));
+        PARTICLE_FALLBACKS.put("dust_color_transition", () -> new Particle.DustTransition(Color.RED, Color.BLUE, 1.0f));
+        PARTICLE_FALLBACKS.put("sculk_charge", () -> 0.0f);
+        PARTICLE_FALLBACKS.put("dragon_breath", () -> 0.0f);
+        PARTICLE_FALLBACKS.put("shriek",() -> 0);
+        PARTICLE_FALLBACKS.put("entity_effect", () -> Color.WHITE);
+        PARTICLE_FALLBACKS.put("tinted_leaves", () -> Color.WHITE);
+        PARTICLE_FALLBACKS.put("flash", () -> Color.WHITE);
+        PARTICLE_FALLBACKS.put("effect", () -> new Particle.Spell(Color.WHITE, 1.0f));
+        PARTICLE_FALLBACKS.put("instant_effect", () -> new Particle.Spell(Color.WHITE, 1.0f));
+    }
 
     public static void sendRandomCubeParticles(Player player, Particle particle, double radius, int amount) {
         Location center = player.getLocation();
@@ -81,27 +112,38 @@ public class ParticleUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
     }
 
-    public static void sendParticlePacket(Player player, Particle particle, Location loc) {
-        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+    public static void sendParticlePacket(Particle particle, Location loc, int radius) {
+        Collection<Player> players = loc.getNearbyEntitiesByType(Player.class, radius);
 
-        ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
-                CraftParticle.createParticleParam(particle, null),
-                false,
-                false,
-                loc.getX(), loc.getY(), loc.getZ(),
-                0.2f, 0.2f, 0.2f,
-                0.01f,
-                3
-        );
-
-        nmsPlayer.connection.send(packet);
+        for (Player player : players) {
+            sendParticlePacket(player, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, null);
+        }
     }
 
-    public static <T> void sendParticlePacket(Player player, Location location, Particle particle, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
+    public static void sendParticlePacket(Player player, Particle particle, Location loc) {
+        sendParticlePacket(player, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, null);
+    }
+
+    public static <T> void sendParticlePacket(Player player, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
+        // * Fallback pour les data de particule
+        Object resolvedData;
+        // Si data est une valeur qui est voulu par le dev
+        if (data != null) {
+            resolvedData = data;
+        } else {
+            // Si data est null, le dev ne veut rien mettre de spécial, on prend le fallback
+            Supplier<Object> fallback = PARTICLE_FALLBACKS.get(particle.getKey().getKey());
+            if (fallback != null) {
+                resolvedData = fallback.get();
+            } else {
+                resolvedData = null;
+            }
+        }
+
         ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
-                CraftParticle.createParticleParam(particle, data),
+                CraftParticle.createParticleParam(particle, resolvedData),
                 false,
                 false,
                 location.x(), location.y(), location.z(),
@@ -222,7 +264,13 @@ public class ParticleUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 1L);
     }
 
-    public static void spawnParticleCloud(Player player, Location center, Particle particle, int count, double radius, double height) {
+    public static void spawnCloudParticles(Location center, Particle particle, int count, double radius, double height) {
+        for (Player player : center.getNearbyEntitiesByType(Player.class, radius)) {
+            spawnCloudParticles(player, particle, center, count, radius, height);
+        }
+    }
+
+    public static void spawnCloudParticles(Player player, Particle particle, Location center, int count, double radius, double height) {
         World world = center.getWorld();
         if (world == null) return;
         double minY = center.getY() - Math.abs(height);
@@ -238,5 +286,47 @@ public class ParticleUtils {
 
             sendParticlePacket(player, particle, loc);
         }
+    }
+
+    public static void spawnConvergingParticles(Location target, int count) {
+        Random random = ThreadLocalRandom.current();
+
+        for (int i = 0; i < count; i++) {
+            double angle = random.nextDouble() * 2 * Math.PI;
+            double radius = random.nextDouble() * 5;
+
+            double offsetX = Math.cos(angle) * radius;
+            double offsetY = 2 + random.nextDouble();
+            double offsetZ = Math.sin(angle) * radius;
+
+            Particle.ENCHANT.builder()
+                    .location(target)
+                    .offset(offsetX, offsetY, offsetZ)
+                    .count(0)
+                    .receivers(32, true)
+                    .spawn();
+        }
+    }
+
+    public static <T> void spawnDispersingParticles(Location target, Particle particle, int count, int radius, double speed, T data) {
+        Collection<Player> players = target.getNearbyEntitiesByType(Player.class, radius);
+
+        for (Player player : players) {
+            spawnDispersingParticles(player, particle, target, count, speed, data);
+        }
+    }
+
+    public static <T> void spawnDispersingParticles(Player player, Particle particle, Location target, int count, double speed, T data) {
+        ParticleUtils.sendParticlePacket(
+                player,
+                particle,
+                target,
+                count,
+                0.3D,
+                0.2D,
+                0.3D,
+                speed,
+                data
+        );
     }
 }

@@ -1,7 +1,7 @@
 package fr.openmc.core.bootstrap.features.types;
 
 /**
- * Charge uniquement la feature hors des tests unitaires
+ * Charge uniquement la feature ou le listener hors des tests unitaires
  */
 public interface NotInUnitTest {}
 

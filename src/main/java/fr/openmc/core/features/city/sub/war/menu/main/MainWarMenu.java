@@ -20,7 +20,11 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -80,7 +84,6 @@ public class MainWarMenu extends PaginatedMenu {
             long onlineCount = city.getOnlineMembers().size();
 
             UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
-            String ownerName = PlayerNameCache.getName(ownerUUID);
 
             Mascot mascot = city.getMascot();
 
@@ -89,10 +92,23 @@ public class MainWarMenu extends PaginatedMenu {
 
             List<Component> loreCity = new ArrayList<>(List.of(
                     Component.empty(),
-                    Component.text("§7Propriétaire : §d" + ownerName),
-                    Component.text("§7Population (en ligne) : §a" + onlineCount),
-                    Component.text("§7Mascotte  : §4niv. " + city.getMascot().getLevel()),
-                    Component.text("§7Location : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())
+                    TranslationManager.translation(
+                            "feature.city.war.menu.main.owner",
+                            Component.text(PlainTextComponentSerializer.plainText().serialize(PlayerNameCache.name(player.getUniqueId())))
+                                    .color(NamedTextColor.LIGHT_PURPLE)
+                    ).color(NamedTextColor.GRAY),
+                    TranslationManager.translation(
+                            "feature.city.war.menu.main.population_online",
+                            Component.text(onlineCount).color(NamedTextColor.GREEN)
+                    ).color(NamedTextColor.GRAY),
+                    TranslationManager.translation(
+                            "feature.city.war.menu.main.mascot_level",
+                            Component.text(city.getMascot().getLevel()).color(NamedTextColor.DARK_RED)
+                    ).color(NamedTextColor.GRAY),
+                    TranslationManager.translation(
+                            "feature.city.war.menu.main.mascot_location",
+                            Component.text(mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ()).color(NamedTextColor.RED)
+                    ).color(NamedTextColor.GRAY)
             ));
 
             Mayor mayor = city.getMayor();
@@ -101,21 +117,33 @@ public class MainWarMenu extends PaginatedMenu {
                 Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
                 Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
-                loreCity.add(Component.text("§7Réformes : "));
-                if (perk1 != null) loreCity.add(Component.text("§8 - " + perk1.getName()));
-                if (perk2 != null) loreCity.add(Component.text("§8 - " + perk2.getName()));
-                if (perk3 != null) loreCity.add(Component.text("§8 - " + perk3.getName()));
+                loreCity.add(TranslationManager.translation("feature.city.war.menu.main.reforms").color(NamedTextColor.GRAY));
+                if (perk1 != null) loreCity.add(Component.text(" - ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(perk1.getNameKey())));
+                if (perk2 != null) loreCity.add(Component.text("- ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(perk2.getNameKey())));
+                if (perk3 != null) loreCity.add(Component.text(" - ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(perk3.getNameKey())));
             }
 
-            loreCity.add(Component.text("§7Richesses : §6" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
+            loreCity.add(TranslationManager.translation(
+                    "feature.city.war.menu.main.wealth",
+                    Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
+                            .color(NamedTextColor.GOLD)
+            ).color(NamedTextColor.GRAY));
 
             loreCity.add(Component.empty());
-            loreCity.add(Component.text("§e§lCLIQUE DROIT POUR PLUS D'INFORMATIONS SUR LA VILLE"));
-            loreCity.add(Component.text("§e§lCLIQUE GAUCHE POUR LANCER UNE GUERRE"));
+            loreCity.add(TranslationManager.translation("feature.city.war.menu.main.click_details")
+                    .color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
+            loreCity.add(TranslationManager.translation("feature.city.war.menu.main.click_launch")
+                    .color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 
 
             items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
-                itemMeta.displayName(Component.text("§c" + city.getName()));
+                itemMeta.displayName(Component.text(city.getName()).color(NamedTextColor.RED));
                 itemMeta.lore(loreCity);
             }).setOnClick(inventoryClickEvent -> {
                 if (inventoryClickEvent.getClick() == ClickType.LEFT) {
@@ -136,18 +164,14 @@ public class MainWarMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
+        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
+        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 
-        List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Guerres !"),
-                Component.text("§7La préparation, le combat, ..."),
-                Component.text("§e§lCLIQUEZ ICI POUR EN SAVOIR PLUS!")
-        );
+        List<Component> loreInfo = TranslationManager.translationLore("feature.city.war.menu.more_info.lore");
 
         map.put(53, new ItemBuilder(this, Material.BOOK, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.war.menu.more_info.title"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
@@ -155,8 +179,8 @@ public class MainWarMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Guerres";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.war.menu.main.title");
     }
 
     @Override

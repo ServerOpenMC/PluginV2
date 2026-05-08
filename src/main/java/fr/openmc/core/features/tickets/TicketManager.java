@@ -6,8 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,8 +18,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+@Credit(developers = {"Axeno"}, graphist = {"Tfloa"})
 @Getter
-public class TicketManager extends Feature {
+public class TicketManager extends Feature implements HasListeners {
 
     public static int hoursPerTicket = 8;
     public static final List<PlayerStats> timePlayed = new ArrayList<>();
@@ -34,8 +38,10 @@ public class TicketManager extends Feature {
     }
 
     @Override
-    public void save() {
-        // nothing to save
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new TicketListener()
+        );
     }
 
     /**

@@ -2,10 +2,12 @@ package fr.openmc.core.features.city.sub.war;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -62,24 +64,20 @@ public class War {
         this.startTime = System.currentTimeMillis();
         this.phase = WarPhase.PREPARATION;
 
-        String message = String.format("""
-                        §8§m                                                     §r
-                        §7
-                        §c§lGUERRE !§r §7La préparation de la guerre commence§7
-                        §8§oPréparez vous pour le combat contre %s
-                        §8§oVous avez §c§l%d minutes §8pour vous équiper.
-                        §8§oVous serez en §4%d §8VS §4%d
-                        §8§oLorsque le combat commencera vous serez §4téléporter §8a votre §cmascotte.
-                        §7
-                        §8§m                                                     §r""",
-                cityAttacker.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
+        Component message = TranslationManager.translation(
+                "feature.city.war.preparation.message",
+                Component.text(cityAttacker.getName()).color(NamedTextColor.RED),
+                Component.text(TIME_PREPARATION).color(NamedTextColor.GOLD),
+                Component.text(attackers.size()).color(NamedTextColor.DARK_RED),
+                Component.text(defenders.size()).color(NamedTextColor.DARK_RED)
+        );
 
         for (UUID uuid : attackers) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             if (!player.isOnline()) continue;
 
-            player.sendMessage(Component.text(message));
+            player.sendMessage(message);
         }
 
         for (UUID uuid : defenders) {
@@ -87,7 +85,7 @@ public class War {
             if (player == null) continue;
             if (!player.isOnline()) continue;
 
-            player.sendMessage(Component.text(message));
+            player.sendMessage(message);
         }
 
         LivingEntity mascotAttacker = (LivingEntity) cityAttacker.getMascot().getEntity();
@@ -117,15 +115,11 @@ public class War {
     public void startCombat() {
         this.phase = WarPhase.COMBAT;
 
-        String message = """
-                §8§m                                                     §r
-                §7
-                §c§lGUERRE !§r §7Le comabat est imminent!§7
-                §8§oBattez vous contre §c%s!
-                §8§oVous avez §c§l%d minutes §8§ode combat.
-                §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
-                §7
-                §8§m                                                     §r""";
+        Component message = TranslationManager.translation(
+                "feature.city.war.combat.message",
+                Component.text(cityDefender.getName()).color(NamedTextColor.RED),
+                Component.text(TIME_FIGHT).color(NamedTextColor.GOLD)
+        );
 
         Location mascotLocDefender = cityDefender.getMascot().getEntity().getLocation();
         Location mascotLocAttacker = cityAttacker.getMascot().getEntity().getLocation();
@@ -134,7 +128,7 @@ public class War {
             if (player == null) continue;
 
             if (player.isOnline()) {
-                player.sendMessage(Component.text(String.format(message, cityDefender.getName(), TIME_FIGHT)));
+                player.sendMessage(message);
                 player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocAttacker,3));
             }
         }
@@ -144,7 +138,11 @@ public class War {
             if (player == null) continue;
 
             if (player.isOnline()) {
-                player.sendMessage(Component.text(String.format(message, cityAttacker.getName(), TIME_FIGHT)));
+                player.sendMessage(TranslationManager.translation(
+                        "feature.city.war.combat.message",
+                        Component.text(cityAttacker.getName()).color(NamedTextColor.RED),
+                        Component.text(TIME_FIGHT).color(NamedTextColor.GOLD)
+                ));
                 player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocDefender,3));
             }
         }

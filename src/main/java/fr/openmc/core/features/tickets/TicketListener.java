@@ -3,6 +3,7 @@ package fr.openmc.core.features.tickets;
 import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TicketListener implements Listener {
+public class TicketListener implements Listener, NotInUnitTest {
 
     private final Map<Location, String> machineHolograms = new ConcurrentHashMap<>();
 

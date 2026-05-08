@@ -11,7 +11,9 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -32,8 +34,8 @@ public class CityRankAssignMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu des Villes - Assigner un grade";
+	public @NotNull Component getName() {
+		return TranslationManager.translation("feature.city.rank.menu.assign.title");
 	}
 
 	@Override
@@ -63,11 +65,18 @@ public class CityRankAssignMenu extends Menu {
 			map.put(map.size(), new ItemBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
 				itemMeta.displayName(Component.text(rank.getName()));
 				itemMeta.lore(List.of(
-						Component.text("§7Permissions : " + (rank.getPermissionsSet().isEmpty() ? "§cAucune" : "§a" + rank.getPermissionsSet().size() + " permission(s)"))
+						TranslationManager.translation(
+								"feature.city.rank.menu.assign.item.lore.count",
+								rank.getPermissionsSet().isEmpty()
+										? TranslationManager.translation("feature.city.rank.menu.assign.item.lore.none")
+												.color(NamedTextColor.RED)
+										: Component.text(rank.getPermissionsSet().size())
+												.color(NamedTextColor.GREEN)
+						).color(NamedTextColor.GRAY)
 				));
 			}).setOnClick(event -> {
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_ASSIGN.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.grade.cannot_assign"), Prefix.CITY, MessageType.ERROR, false);
 					return;
 				}
 

@@ -15,8 +15,12 @@ import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -292,98 +296,116 @@ public class WarManager {
         int killsLoser = war.getCityAttacker().equals(loser) ? war.getAttackersKill() : war.getDefendersKill();
 
         if (reason == WinReason.DRAW) {
-            String message = String.format("""
-                            §8§m                                                     §r
-                            §7
-                            §c§lGUERRE !§r §7C'est la fin des combats!§7
-                            §8§oIl y a eu égalité !
-                            §7
-                            §7Statistiques globales:
-                            §7 - §cKills de %s : §f%d
-                            §7 - §9Kills de %s : §f%d
-                            §7
-                                    §8§m                                                     §r""",
-                    war.getCityAttacker().getName(), killsWinner, war.getCityDefender().getName(), killsLoser);
+            List<Component> message = TranslationManager.translationLore(
+                    "feature.city.war.result.draw",
+                    Component.text(war.getCityAttacker().getName()).color(NamedTextColor.RED),
+                    Component.text(killsWinner).color(NamedTextColor.WHITE),
+                    Component.text(war.getCityDefender().getName()).color(NamedTextColor.BLUE),
+                    Component.text(killsLoser).color(NamedTextColor.WHITE)
+            );
 
 
             for (UUID uuid : winner.getMembers()) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null) continue;
 
-                if (player.isOnline()) player.sendMessage(Component.text(message));
+                if (player.isOnline()) MessagesManager.sendMessage(player, message);
             }
 
             for (UUID uuid : loser.getMembers()) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null) continue;
 
-                if (player.isOnline()) player.sendMessage(Component.text(message));
+                if (player.isOnline()) MessagesManager.sendMessage(player, message);
             }
             return;
         }
+        Component winnerReason = TranslationManager.translation(switch (reason) {
+            case MASCOT_DEATH -> "feature.city.war.result.reason.win.mascot_death";
+            case MASCOT_HP -> "feature.city.war.result.reason.win.mascot_hp";
+            case KILLS -> "feature.city.war.result.reason.win.kills";
+            case DRAW -> "feature.city.war.result.reason.win.draw";
+        });
 
-        String message = """
-                §8§m                                                     §r
-                §7
-                §c§lGUERRE !§r §7C'est la fin des combats!§7
-                §8§oVous avez %s contre %s!
-                §8§o%s
-                §7
-                §7Statistiques globales:
-                §7 - §cKills de %s : §f%d
-                §7 - §9Kills de %s : §f%d
-                §7
-                %s:
-                §7 %s
-                §7 %s
-                §7 %s
-                §7
-                §8§m                                                     §r""";
+        Component rewardPower = TranslationManager.translation(
+                "feature.city.war.result.reward.power",
+                Component.text(powerChange).color(NamedTextColor.GREEN)
+        );
+        Component rewardMoney = bonusMoney > 0
+                ? TranslationManager.translation(
+                        "feature.city.war.result.reward.money_bonus",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                                .color(NamedTextColor.GOLD),
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(bonusMoney) + EconomyManager.getEconomyIcon())
+                                .color(NamedTextColor.GOLD)
+                )
+                : TranslationManager.translation(
+                        "feature.city.war.result.reward.money",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                                .color(NamedTextColor.GOLD)
+                );
+        Component rewardClaims = TranslationManager.translation(
+                "feature.city.war.result.reward.claims",
+                Component.text(claimNumber).color(NamedTextColor.GREEN)
+        );
 
-
-        String winnerMessage = String.format(
-                message,
-                "gagné",
-                loser.getName(),
-                switch (reason) {
-                    case MASCOT_DEATH -> "Vous avez tué la mascotte adverse!";
-                    case MASCOT_HP -> "Votre mascotte a eu le plus de points de vie!";
-                    case KILLS -> "Votre ville a tué le plus d'adversaires!";
-                    case DRAW -> "C'est une égalité!";
-                }, winner.getName(), killsWinner, loser.getName(), killsLoser,
-                "§6§lRécompenses",
-                "+ " + powerChange + " points de puissance",
-                "+ " + EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon() + " volés à l'adversaire" + ((bonusMoney > 0) ? " + " + EconomyManager.getFormattedSimplifiedNumber(bonusMoney) + EconomyManager.getEconomyIcon() + " bonus" : ""),
-                "+ " + claimNumber + " territoire(s) conquis"
+        List<Component> winnerMessage = TranslationManager.translationLore(
+                "feature.city.war.result.winner",
+                Component.text(loser.getName()).color(NamedTextColor.RED),
+                winnerReason.color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC),
+                Component.text(winner.getName()).color(NamedTextColor.RED),
+                Component.text(killsWinner).color(NamedTextColor.WHITE),
+                Component.text(loser.getName()).color(NamedTextColor.BLUE),
+                Component.text(killsLoser).color(NamedTextColor.WHITE),
+                rewardPower.color(NamedTextColor.GRAY),
+                rewardMoney.color(NamedTextColor.GRAY),
+                rewardClaims.color(NamedTextColor.GRAY)
         );
         for (UUID uuid : winner.getMembers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (player.isOnline()) player.sendMessage(Component.text(winnerMessage));
+            if (player.isOnline()) MessagesManager.sendMessage(player, winnerMessage);
         }
+        Component loserReason = TranslationManager.translation(switch (reason) {
+            case MASCOT_DEATH -> "feature.city.war.result.reason.lose.mascot_death";
+            case MASCOT_HP -> "feature.city.war.result.reason.lose.mascot_hp";
+            case KILLS -> "feature.city.war.result.reason.lose.kills";
+            case DRAW -> "feature.city.war.result.reason.lose.draw";
+        });
 
-        String loserMessage = String.format(
-                message,
-                "perdu",
-                loser.getName(),
-                switch (reason) {
-                    case MASCOT_DEATH -> "Votre mascotte a été tuée!";
-                    case MASCOT_HP -> "Votre mascotte a eu le moins de points de vie!";
-                    case KILLS -> "L'adversaire a tué le plus de monde!";
-                    case DRAW -> "C'est une égalité!";
-                }, winner.getName(), killsWinner, loser.getName(), killsLoser,
-                "§c§lPertes",
-                "- " + powerChange + " points de puissance",
-                "- " + EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon() + " perdu",
-                "- " + claimNumber + " territoire(s) perdus"
+        Component lossPower = TranslationManager.translation(
+                "feature.city.war.result.loss.power",
+                Component.text(powerChange).color(NamedTextColor.RED)
+        );
+        Component lossMoney = TranslationManager.translation(
+                "feature.city.war.result.loss.money",
+                Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                        .color(NamedTextColor.RED)
+        );
+        Component lossClaims = TranslationManager.translation(
+                "feature.city.war.result.loss.claims",
+                Component.text(claimNumber).color(NamedTextColor.RED)
+        );
+
+        List<Component> loserMessage = TranslationManager.translationLore(
+                "feature.city.war.result.loser",
+                Component.text(loser.getName()).color(NamedTextColor.RED),
+                loserReason.color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC),
+                Component.text(winner.getName()).color(NamedTextColor.RED),
+                Component.text(killsWinner).color(NamedTextColor.WHITE),
+                Component.text(loser.getName()).color(NamedTextColor.BLUE),
+                Component.text(killsLoser).color(NamedTextColor.WHITE),
+                lossPower.color(NamedTextColor.GRAY),
+                lossMoney.color(NamedTextColor.GRAY),
+                lossClaims.color(NamedTextColor.GRAY)
         );
 
         for (UUID uuid : loser.getMembers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (player.isOnline()) player.sendMessage(Component.text(loserMessage));
+            if (player.isOnline()) MessagesManager.sendMessage(player, loserMessage);
         }
     }
 

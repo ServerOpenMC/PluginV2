@@ -15,8 +15,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -38,8 +39,8 @@ public class NoCityMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Aucune";
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.no_city.name");
     }
 
     @Override
@@ -66,19 +67,22 @@ public class NoCityMenu extends Menu {
             Component nameNotif;
             List<Component> loreNotif = new ArrayList<>();
         if (!CityInviteCommands.invitations.containsKey(player)) {
-                nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
-	            loreNotif.add(Component.text("§7Un habitant d'une ville doit vous §6inviter"));
-                loreNotif.add(Component.text("§6via /city invite"));
+                nameNotif = TranslationManager.translation("feature.city.menus.no_city.invitations.none.title");
+	            loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.none.lore"));
 
             inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
-            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
+            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false)));
         } else {
             List<Player> invitations = CityInviteCommands.invitations.get(player);
-            nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
+            nameNotif = TranslationManager.translation(
+                    "feature.city.menus.no_city.invitations.count.title",
+                    Component.text(invitations.size()),
+                    Component.text(invitations.size() > 1 ? "s" : "")
+            );
 
-            loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
+            loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.count.lore"));
 
             inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
@@ -91,32 +95,26 @@ public class NoCityMenu extends Menu {
         Supplier<ItemBuilder> createItemSupplier = () -> {
                 List<Component> loreCreate;
                 if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                    loreCreate = List.of(
-                            Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
-                            Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                            Component.empty(),
-		                    Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir créer une ville")
+                    loreCreate = TranslationManager.translationLore(
+                            "feature.city.menus.no_city.create.lore.cooldown",
+                            Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
                     );
                 } else {
-                    loreCreate = List.of(
-                            Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
-                            Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                            Component.empty(),
-                            Component.text("§cCoûte :"),
-                            Component.text("§8- §6" + CityCreateConditions.MONEY_CREATE + EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                            Component.text("§8- §d" + CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
+                    loreCreate = TranslationManager.translationLore(
+                            "feature.city.menus.no_city.create.lore.ready",
+                            Component.text(CityCreateConditions.MONEY_CREATE).color(NamedTextColor.GOLD),
+                            Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                            Component.text(CityCreateConditions.AYWENITE_CREATE).color(NamedTextColor.LIGHT_PURPLE)
                     );
                 }
 
                 return new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
-                    itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.no_city.create.title"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) return;
 
-                    DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+                    DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                                 if (input == null) return;
                                 CityCreateAction.beginCreateCity(player, input);
                             }

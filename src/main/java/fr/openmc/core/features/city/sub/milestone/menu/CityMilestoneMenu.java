@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.CityRequirement;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -36,8 +37,8 @@ public class CityMilestoneMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Villes - Levels";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.levels.menu.title");
     }
 
     @Override
@@ -115,10 +116,12 @@ public class CityMilestoneMenu extends Menu {
             }
         }
 
-        inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.itemName(Component.text("§aRetour")), true));
+        inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.itemName(
+                TranslationManager.translation("messages.menus.back")
+        ), true));
 
         inventory.put(49, new ItemBuilder(this, Material.BARRIER, meta ->
-                meta.displayName(Component.text("§cFermer"))).setCloseButton());
+                meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
 
         return inventory;
     }
@@ -159,17 +162,25 @@ public class CityMilestoneMenu extends Menu {
         List<Component> lore = new ArrayList<>();
         lore.add(level.getDescription().color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC));
         lore.add(Component.empty());
-        lore.add(Component.text("§3§lRequis :"));
+        lore.add(TranslationManager.translation("feature.city.levels.menu.requirements.header"));
 
         for (CityRequirement requirement : level.getRequirements()) {
-            lore.add(Component.text((city.getLevel() < level.ordinal() ? "§l¤ " : requirement.isDone(city, level) ? "§l✔ " : "§l✖ "))
-                    .append(requirement.getName(city, level))
+            Component prefix;
+            if (city.getLevel() < level.ordinal()) {
+                prefix = Component.text("¤ ");
+            } else if (requirement.isDone(city, level)) {
+                prefix = Component.text("✔ ");
+            } else {
+                prefix = Component.text("✖ ");
+            }
+
+            lore.add(prefix.append(requirement.getName(city, level))
                     .color(city.getLevel() < level.ordinal() ? NamedTextColor.DARK_GRAY : requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }
 
         lore.add(Component.empty());
-        lore.add(Component.text("§6§lRécompenses :"));
+        lore.add(TranslationManager.translation("feature.city.levels.menu.rewards.header"));
 
         for (CityRewards reward : level.getRewards()) {
             lore.add(Component.text(" ").append(reward.getName()).decoration(TextDecoration.ITALIC, false));
@@ -177,24 +188,28 @@ public class CityMilestoneMenu extends Menu {
 
         lore.add(Component.empty());
         if (completed) {
-            lore.add(Component.text("§a§lDÉBLOQUÉ"));
+            lore.add(TranslationManager.translation("feature.city.levels.menu.status.unlocked"));
         } else {
             lore.add(Component.empty());
             if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") != 0 && city.getLevel() + 1 == level.ordinal() + 1) {
-                lore.add(Component.text("§fIl reste §3" +
-                        DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level")) +
-		                " §fde déblocage"));
+                lore.addAll(TranslationManager.translationLore(
+                        "feature.city.levels.menu.unlock.remaining",
+                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level")))
+                                .color(NamedTextColor.DARK_AQUA)
+                ));
             } else {
-                lore.add(Component.text("§3" +
-                        DateUtils.convertSecondToTime(level.getUpgradeTime()) +
-		                " §fde déblocage"));
+                lore.addAll(TranslationManager.translationLore(
+                        "feature.city.levels.menu.unlock.duration",
+                        Component.text(DateUtils.convertSecondToTime(level.getUpgradeTime()))
+                                .color(NamedTextColor.DARK_AQUA)
+                ));
             }
         }
 
         if (active && DynamicCooldownManager.isReady(city.getUniqueId(), "city:upgrade-level") && level.isCompleted(city)) {
-            lore.add(Component.text("§e§lCLIQUEZ ICI POUR LANCER l'AMÉLIORATION"));
+            lore.add(TranslationManager.translation("feature.city.levels.menu.click.start_upgrade"));
         } else if (active && DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") == 0) {
-            lore.add(Component.text("§e§lCLIQUEZ ICI POUR CONTRIBUER"));
+            lore.add(TranslationManager.translation("feature.city.levels.menu.click.contribute"));
         }
 
         itemBuilder.lore(lore);

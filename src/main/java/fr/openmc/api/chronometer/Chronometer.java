@@ -4,8 +4,11 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -15,7 +18,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -64,7 +66,15 @@ public class Chronometer{
      * @param finishMessageType display type
      * @param finishMessage message display when the chronometer ends normally
      */
-    public static void startChronometer(Entity entity, String group, int time, ChronometerType messageType, String message, ChronometerType finishMessageType, String finishMessage) {
+    public static void startChronometer(
+            Entity entity,
+            String group,
+            int time,
+            ChronometerType messageType,
+            Component message,
+            ChronometerType finishMessageType,
+            Component finishMessage
+    ) {
         UUID entityUUID = entity.getUniqueId();
         chronometer.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, time);
 
@@ -81,33 +91,25 @@ public class Chronometer{
                 }
 
                 int remainingTime = chronometer.get(entityUUID).get(group);
-                String timerMessage = "Il reste : " + remainingTime + "s";
-                if (message!=null){
-                    if (!message.contains("%null%")){
-                        if (message.contains("%sec%")) {
-                            timerMessage = message.replace("%sec%", String.valueOf(remainingTime));
-                        }
-                        if (entity instanceof Player player){
-                            sendMessage(player, messageType, Component.text(timerMessage));
-                        }
-                    }
-                } else {
-                    if (entity instanceof Player player){
-                        sendMessage(player, messageType, Component.text(timerMessage));
-                    }
+
+                if (message != null && entity instanceof Player player) {
+                    String timerMessage = PlainTextComponentSerializer.plainText().serialize(message)
+                            .replace("%sec%", String.valueOf(remainingTime));
+
+                    sendMessage(player, messageType, Component.text(timerMessage));
                 }
 
-
                 if (timerEnd(entityUUID, group)) {
-                    if (entity instanceof Player player){
-                        sendMessage(player, finishMessageType, Component.text(finishMessage != null ? finishMessage : "Le chronomètre est terminé !"));
+
+                    if (entity instanceof Player player && finishMessage != null) {
+                        sendMessage(player, finishMessageType, finishMessage);
                     }
 
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
 
                     if (chronometer.containsKey(entityUUID)) {
                         chronometer.get(entityUUID).remove(group);
-                        if (chronometer.get(entityUUID).isEmpty()){
+                        if (chronometer.get(entityUUID).isEmpty()) {
                             chronometer.remove(entityUUID);
                         }
                     }
@@ -119,7 +121,6 @@ public class Chronometer{
             }
         };
         task.runTaskTimer(OMCPlugin.getInstance(), 0, 20);
-
         activeTasks.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, task);
     }
 
@@ -128,26 +129,20 @@ public class Chronometer{
      * @param messageType display type
      * @param message message display when the chronometer is stopped
      */
-    public static void stopAllChronometer(Entity entity, ChronometerType messageType, String message) {
+    public static void stopAllChronometer(Entity entity, ChronometerType messageType, Component message) {
         UUID entityUUID = entity.getUniqueId();
+
         if (chronometer.containsKey(entityUUID)) {
             chronometer.remove(entityUUID);
-            if (message!=null){
-                if (!message.contains("%null%")){
-                    if (entity instanceof Player player){
-                        sendMessage(player, messageType, Component.text(message));
-                    }
-                }
-            } else {
-                if (entity instanceof Player player){
-                    sendMessage(player, messageType, Component.text("Chronomètre arrêté"));
-                }
+
+            if (entity instanceof Player player && message != null) {
+                sendMessage(player, messageType, message);
             }
         }
 
         if (activeTasks.containsKey(entityUUID)) {
-            for (Map.Entry<String, BukkitRunnable> entry : activeTasks.get(entityUUID).entrySet()) {
-                entry.getValue().cancel();
+            for (BukkitRunnable runnable : activeTasks.get(entityUUID).values()) {
+                runnable.cancel();
             }
             activeTasks.remove(entityUUID);
         }
@@ -159,7 +154,7 @@ public class Chronometer{
      * @param messageType display type
      * @param message message display when the chronometer is stopped
      */
-     public static void stopChronometer(Entity entity, String group, ChronometerType messageType, String message) {
+    public static void stopChronometer(Entity entity, String group, ChronometerType messageType, Component message) {
         UUID entityUUID = entity.getUniqueId();
 
         if (chronometer.containsKey(entityUUID) && chronometer.get(entityUUID).containsKey(group)) {
@@ -170,24 +165,18 @@ public class Chronometer{
                 activeTasks.get(entityUUID).remove(group);
             }
 
-            if (message!=null){
-                if (!message.contains("%null%")){
-                    if (entity instanceof Player player){
-                        sendMessage(player, messageType, Component.text(message));
-                    }
-                }
-            } else {
-                if (entity instanceof Player player){
-                    sendMessage(player, messageType, Component.text("Chronomètre du " + group + " arrêté"));
-                }
+            if (entity instanceof Player player && message != null) {
+                sendMessage(player, messageType, message);
             }
 
             if (chronometer.get(entityUUID).isEmpty()) {
                 chronometer.remove(entityUUID);
             }
         } else {
-            if (entity instanceof Player player){
-                player.sendMessage("§cAucun chronomètre trouvé pour le groupe §e" + group + ".");
+            if (entity instanceof Player player) {
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.chronometer.chronometer_not_found",
+                                Component.text(group).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.INFO, false);
             }
         }
     }
@@ -196,12 +185,12 @@ public class Chronometer{
         UUID entitytUUID = entity.getUniqueId();
 
         if (chronometer.containsKey(entitytUUID)) {
-            owner.sendMessage("§aChronomètres actifs :");
+            owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on"));
             chronometer.get(entitytUUID).forEach((group, time) ->
-                    owner.sendMessage(" §e- " + group + ": §6" + time + "s")
-            );
+                    owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on_list",
+                            Component.text(group), Component.text(time).color(NamedTextColor.GOLD)).color(NamedTextColor.YELLOW)));
         } else {
-            owner.sendMessage("§cCe joueur n'a aucun chronomètre actif.");
+            owner.sendMessage(TranslationManager.translation("api.chronometer.none_chronometer_player"));
         }
     }
 

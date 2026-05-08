@@ -21,7 +21,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.com
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.homes.command.TpHomeCommand;
-import fr.openmc.core.features.mailboxes.MailboxCommand;
+import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;

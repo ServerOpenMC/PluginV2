@@ -6,6 +6,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
@@ -20,6 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.util.List;
 
+@Credit(developers = {"iambibi_"})
 public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
 
     private static final List<WeeklyEvent> EVENTS = List.of(
@@ -46,11 +48,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         }
 
         scheduleNextPhase();
-    }
-
-    @Override
-    public void save() {
-        // nothing to save
     }
 
     /**

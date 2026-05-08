@@ -51,8 +51,8 @@ public class MachineBallsOpenMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "§6§lMachine à boules";
+    public @NotNull Component getName() {
+        return Component.text("§6§lMachine à boules");
     }
 
     @Override

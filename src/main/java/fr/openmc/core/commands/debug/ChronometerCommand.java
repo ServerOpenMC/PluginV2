@@ -2,6 +2,7 @@ package fr.openmc.core.commands.debug;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.chronometer.ChronometerType;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -14,7 +15,7 @@ public class ChronometerCommand {
     @Description("Test du chronometre")
     private void chronometerStart(Player target, @Named("time") int time) {
         if (time > 90) {
-            target.sendMessage("§4Ne pas dépasser plus de 90s pour le débogage");
+            target.sendMessage(TranslationManager.translation("command.debug.chronometer.cant_90s_chronometer"));
             return;
         }
         Chronometer.startChronometer(target, "debug", time, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, null);

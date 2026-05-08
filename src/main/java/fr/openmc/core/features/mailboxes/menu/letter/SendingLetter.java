@@ -83,8 +83,8 @@ public class SendingLetter extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Envoyer une lettre à " + receiver.getName();
+    public @NotNull Component getName() {
+        return Component.text("Envoyer une lettre à " + receiver.getName());
     }
 
     @Override

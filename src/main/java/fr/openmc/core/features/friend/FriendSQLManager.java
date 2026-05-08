@@ -7,8 +7,6 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -18,22 +16,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class FriendSQLManager extends Feature implements DatabaseFeature {
+public class FriendSQLManager {
 
     private static Dao<Friend, UUID> friendsDao;
 
-    @Override
-    protected void init() {
-        // nothing to init
-    }
 
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Friend.class);
         friendsDao = DaoManager.createDao(connectionSource, Friend.class);
     }

@@ -1,6 +1,7 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -24,11 +25,11 @@ public class Socials {
     }
 
 
-    private Component parseText(String message, String link) {
-        return Component.text(message).append(
+    private Component parseText(String messageKey, String link) {
+        return TranslationManager.translation(messageKey).append(
                 Component.text(removeProtocol(link))
                         .clickEvent(ClickEvent.openUrl(link))
-                        .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour accéder")))
+                        .hoverEvent(HoverEvent.showText(TranslationManager.translation("command.utils.socials.hover_access")))
         );
     }
 
@@ -37,19 +38,19 @@ public class Socials {
     @Description("Donne les liens des réseaux sociaux")
     private void socials(CommandSender sender) {
         sender.sendMessage(parseText(
-                "§9Discord §8: §f",
+                "command.utils.socials.discord",
                 OMCPlugin.getConfigs().getString("discord", "INVALID CONFIG")
         ));
         sender.sendMessage(parseText(
-                "§dSite §8: §f",
+                "command.utils.socials.site",
                 OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG")
         ));
         sender.sendMessage(parseText(
-                "§5Wiki §8: §f",
+                "command.utils.socials.wiki",
                 OMCPlugin.getConfigs().getString("wiki", "INVALID CONFIG")
         ));
         sender.sendMessage(parseText(
-                "§0Github §8: §f",
+                "command.utils.socials.github",
                 OMCPlugin.getConfigs().getString("repoV2", "INVALID CONFIG")
         ));
     }
@@ -59,7 +60,7 @@ public class Socials {
     @Description("Donne le lien du serveur Discord")
     private void discord(CommandSender sender) {
         sender.sendMessage(parseText(
-                "Venez discutez sur §9",
+                "command.utils.socials.discord",
                 OMCPlugin.getConfigs().getString("discord", "INVALID CONFIG")
         ));
     }
@@ -69,7 +70,7 @@ public class Socials {
     @Description("Donne le lien du site")
     private void website(CommandSender sender) {
         sender.sendMessage(parseText(
-                "Découvrez nous sur §d",
+                "command.utils.socials.site",
                 OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG")
         ));
     }
@@ -79,7 +80,7 @@ public class Socials {
     @Description("Donne le lien du blog")
     private void blog(CommandSender sender) {
         sender.sendMessage(parseText(
-                "Lisez des articles sur §3",
+                "command.utils.socials.blog",
                 OMCPlugin.getConfigs().getString("blog", "INVALID CONFIG")
         ));
     }
@@ -89,7 +90,7 @@ public class Socials {
     @Description("Donne le lien du wiki")
     private void wiki(CommandSender sender) {
         sender.sendMessage(parseText(
-                "Lisez des articles sur §5",
+                "command.utils.socials.wiki",
                 OMCPlugin.getConfigs().getString("wiki", "INVALID CONFIG")
         ));
     }

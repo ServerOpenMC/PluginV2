@@ -25,8 +25,8 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -311,15 +311,7 @@ public class MayorManager {
 
         NPCManager.updateAllNPCS();
 
-        Bukkit.broadcast(Component.text("""
-                §8§m                                                     §r
-                §7
-                §3§lMAIRE !§r §7Les élections sont ouvertes !§7
-                §8§oPrésentez vous, votez pour des maires, ...
-                §8§oRegardez si vous avez assez de membres !
-                §7
-                §8§m                                                     §r"""
-        ));
+        Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase1"));
     }
 
     public static void initPhase2() {
@@ -335,13 +327,7 @@ public class MayorManager {
 
         NPCManager.updateAllNPCS();
 
-        Bukkit.broadcast(Component.text("""
-                §8§m                                                     §r
-                §7
-                §3§lMAIRE !§r §7Vos réformes sont actives !§7
-                §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
-                §7
-                §8§m                                                     §r"""));
+        Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase2"));
     }
 
     public static void initCityPhase1(City city, Map<UUID, Mayor> copyCityMayor) {

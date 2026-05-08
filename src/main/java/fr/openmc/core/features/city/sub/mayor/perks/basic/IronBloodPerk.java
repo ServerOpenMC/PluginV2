@@ -7,8 +7,8 @@ import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -68,7 +68,7 @@ public class IronBloodPerk implements Listener {
         }, 0L, 20L);
         scheduleGolemDespawn(golem, mobMascot.getUniqueId());
 
-        MessagesManager.sendMessage(player, Component.text("§8§o*tremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.perk.basic.iron_blood.tremor"), Prefix.MAYOR, MessageType.INFO, false);
 
     }
 

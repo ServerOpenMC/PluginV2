@@ -24,8 +24,8 @@ public class HomeUpgradeMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Homes - Amélioration";
+    public @NotNull Component getName() {
+        return Component.text("Menu des Homes - Amélioration");
     }
 
     @Override

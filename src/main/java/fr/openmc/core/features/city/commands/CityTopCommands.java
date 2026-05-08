@@ -6,7 +6,7 @@ import fr.openmc.core.features.city.menu.CityTopMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -22,7 +22,7 @@ public class CityTopCommands {
     void notationTest(Player sender) {
         List<City> cities = new ArrayList<>(CityManager.getCities());
         if (cities.isEmpty()) {
-	        MessagesManager.sendMessage(sender, Component.text("Aucune ville n'est créée pour le moment"), Prefix.CITY, MessageType.ERROR, true);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.commands.top.empty"), Prefix.CITY, MessageType.ERROR, true);
             return;
         }
         new CityTopMenu(sender).open();

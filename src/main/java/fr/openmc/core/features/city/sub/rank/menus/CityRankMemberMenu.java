@@ -12,7 +12,9 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -57,22 +59,30 @@ public class CityRankMemberMenu extends PaginatedMenu {
 			String rankName = city.getRankName(uuid);
 
 			List<Component> lore = new ArrayList<>();
-			lore.add(Component.text("§7Grade : §e" + rankName).decoration(TextDecoration.ITALIC, false));
+			lore.add(TranslationManager.translation(
+					"feature.city.rank.menu.members.item.rank",
+					Component.text(rankName).color(NamedTextColor.YELLOW)
+			).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			if (!city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
 				lore.add(Component.empty());
-				lore.add(Component.text("§e§lCLIQUEZ ICI POUR ASSIGNER UN GRADE"));
+				lore.add(TranslationManager.translation("feature.city.rank.menu.members.item.click_assign")
+						.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 			}
             items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
-				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu").decoration(TextDecoration.ITALIC, false));
+				Component displayName = player.getName() != null
+						? Component.text(player.getName())
+						: TranslationManager.translation("feature.city.rank.menu.members.item.name_unknown")
+								.color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, true);
+				itemMeta.displayName(displayName.decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(lore);
 			}).setOnClick(event -> {
 				if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.player_is_owner"), Prefix.CITY, MessageType.ERROR, false);
 					return;
 				}
 
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
 					return;
 				}
@@ -93,9 +103,9 @@ public class CityRankMemberMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
-				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+				.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
 		map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
-				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+				.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 		return map;
 	}
 
@@ -110,8 +120,8 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 
 	@Override
-	public @NotNull String getName() {
-		return "Menu du choix des membres - Grades";
+	public @NotNull Component getName() {
+		return TranslationManager.translation("feature.city.rank.menu.members.title");
 	}
 
 	@Override

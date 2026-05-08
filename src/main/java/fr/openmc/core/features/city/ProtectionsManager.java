@@ -6,7 +6,7 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -123,7 +123,7 @@ public class ProtectionsManager {
 			lastErrorMessageTime.put(player.getUniqueId(), now);
 			MessagesManager.sendMessage(
 					player,
-					Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
+					TranslationManager.translation("feature.city.cant_do_this"),
 					Prefix.CITY,
 					MessageType.ERROR,
 					0.6F,

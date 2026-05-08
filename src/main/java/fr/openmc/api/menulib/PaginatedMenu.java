@@ -23,12 +23,11 @@ import java.util.Map;
  * PaginatedMenu is designed to manage a collection of items across multiple
  * pages and offers methods to retrieve, update, and navigate through these pages.
  */
+@Getter
 public abstract class PaginatedMenu extends Menu {
 
-    @Getter
     @Setter
     private int page = 0;
-    @Getter
     private int numberOfPages;
 
     /**

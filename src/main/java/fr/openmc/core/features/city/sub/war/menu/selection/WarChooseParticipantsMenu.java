@@ -14,7 +14,9 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -86,19 +88,31 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                     && cityLaunch.getMayor() != null
                     && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 
-            String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
+            String prefix = isOwner
+                    ? TranslationManager.translationString("feature.city.war.menu.players.role.owner")
+                    : isMayor
+                    ? TranslationManager.translationString("feature.city.war.menu.players.role.mayor")
+                    : TranslationManager.translationString("feature.city.war.menu.players.role.member");
 
             ItemBuilder item = new ItemBuilder(this, SkullUtils.getPlayerSkull(memberUUID), meta -> {
-                meta.displayName(Component.text((isSelected ? "§a✔ " : "") + prefix + offline.getName())
+                Component prefixComponent = isSelected
+                        ? TranslationManager.translation("feature.city.war.menu.participants.selected_prefix")
+                        : Component.empty();
+                meta.displayName(prefixComponent.append(Component.text(prefix + offline.getName()))
                         .decoration(TextDecoration.ITALIC, false));
-                meta.lore(List.of(Component.text(isSelected ? "§c§lCLIQUEZ POUR RETIRER" : "§a§lCLIQUEZ POUR SÉLECTIONNER")));
+                meta.lore(List.of(TranslationManager.translation(
+                        isSelected ? "feature.city.war.menu.participants.click_remove" : "feature.city.war.menu.participants.click_select"
+                ).color(isSelected ? NamedTextColor.RED : NamedTextColor.GREEN).decorate(TextDecoration.BOLD)));
             }).setOnClick(event -> {
                 if (isSelected) {
                     selected.remove(memberUUID);
                 } else {
                     if (selected.size() >= count) {
                         MessagesManager.sendMessage(player,
-                                Component.text("Vous avez déjà sélectionné " + count + " joueur(s)."),
+                                TranslationManager.translation(
+                                        "feature.city.war.menu.participants.already_selected",
+                                        Component.text(count)
+                                ),
                                 Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
@@ -124,26 +138,32 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         Player player = getOwner();
 
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), meta -> {
-            meta.displayName(Component.text("§cPage précédente"));
+            meta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
 
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), meta -> {
-            meta.displayName(Component.text("§7Fermer"));
+            meta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setCloseButton());
 
         map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), meta -> {
-            meta.displayName(Component.text("§aPage suivante"));
+            meta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
 
         map.put(53, new ItemBuilder(this, selected.size() == count ? Material.LIME_CONCRETE : Material.RED_CONCRETE, itemMeta -> {
-            itemMeta.displayName(Component.text((selected.size() == count ? "§a" : "§c") + "Valider la sélection"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Participants sélectionnés : §a" + selected.size() + "/" + count)
-            ));
+            itemMeta.displayName(TranslationManager.translation("feature.city.war.menu.participants.confirm.title")
+                    .color(selected.size() == count ? NamedTextColor.GREEN : NamedTextColor.RED));
+            itemMeta.lore(List.of(TranslationManager.translation(
+                    "feature.city.war.menu.participants.confirm.lore",
+                    Component.text(selected.size()).color(NamedTextColor.GREEN),
+                    Component.text(count).color(NamedTextColor.RED)
+            ).color(NamedTextColor.GRAY)));
         }).setOnClick(e -> {
             if (selected.size() != count) {
                 MessagesManager.sendMessage(player,
-                        Component.text("Vous devez sélectionner " + count + " joueur(s)."),
+                        TranslationManager.translation(
+                                "feature.city.war.menu.participants.must_select",
+                                Component.text(count).color(NamedTextColor.RED)
+                        ),
                         Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -158,8 +178,8 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Guerre - Participants";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.war.menu.participants.title");
     }
 
     @Override

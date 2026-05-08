@@ -30,8 +30,8 @@ public class TransactionsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des transactions de " + CacheOfflinePlayer.getOfflinePlayer(target).getName();
+    public @NotNull Component getName() {
+        return Component.text("Menu des transactions de " + CacheOfflinePlayer.getOfflinePlayer(target).getName());
     }
 
     @Override

@@ -9,7 +9,9 @@ import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -25,13 +27,13 @@ public class MilestoneButton {
                 contents,
                 slots,
                 new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.itemName(Component.text("§3Milestone de votre ville"));
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.milestone.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> {
                     City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
                     if (cityCheck == null) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 
@@ -41,13 +43,9 @@ public class MilestoneButton {
     }
 
     private static List<Component> getDynamicLore(City city) {
-        return List.of(
-                Component.text("§8§oAccéder à la route de progression de la ville !"),
-                Component.text("§8§oImportant pour débloquer les différentes features des villes !"),
-                Component.empty(),
-                Component.text("§7Level : §3" + city.getLevel()),
-                Component.empty(),
-                Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MILESTONE")
+        return TranslationManager.translationLore(
+                "feature.city.menus.main.milestone.lore",
+                Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA)
         );
     }
 }

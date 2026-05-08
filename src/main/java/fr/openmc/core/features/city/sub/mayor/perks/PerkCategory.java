@@ -4,16 +4,16 @@ import lombok.Getter;
 
 @Getter
 public enum PerkCategory {
-	MILITARY("§8§oRéformes militaires"),
-	STRATEGY("§8§oRéformes de stratégie"),
-	AGRICULTURAL("§8§oRéformes d'agriculture"),
-	ECONOMIC("§8§oRéformes économiques"),
-    DREAM("§8§oRéformes Oniriques"),
+	MILITARY("feature.city.mayor.perk.category.military"),
+	STRATEGY("feature.city.mayor.perk.category.strategy"),
+	AGRICULTURAL("feature.city.mayor.perk.category.agricultural"),
+	ECONOMIC("feature.city.mayor.perk.category.economic"),
+    DREAM("feature.city.mayor.perk.category.onirique"),
     ;
 
-    private final String name;
+    private final String nameKey;
 
-    PerkCategory(String name) {
-        this.name = name;
+    PerkCategory(String nameKey) {
+        this.nameKey = nameKey;
     }
 }

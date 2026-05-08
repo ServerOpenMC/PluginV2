@@ -28,7 +28,7 @@ public class GlaciteNpcManager implements Listener {
                         npc.removeForAll();
                     }
                 });
-            }, 20L * 30);
+            }, FancyNpcsHook.FANCY_INIT_DELAY);
         }
     }
 

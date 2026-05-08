@@ -13,10 +13,10 @@ import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -28,7 +28,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fr.openmc.api.menulib.utils.StaticSlots.combine;
 
@@ -73,32 +76,46 @@ public class MayorVoteMenu extends PaginatedMenu {
             int vote = candidate.getVote();
 
             List<Component> loreMayor = new ArrayList<>(List.of(
-		            Component.text("§8Candidat pour le maire de " + city.getName())
+                    TranslationManager.translation(
+                            "feature.city.mayor.menu.vote.lore.header",
+                            Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                    )
+            ));
+            if (perk2 == null || perk3 == null) return List.of();
+            loreMayor.add(Component.empty());
+            loreMayor.add(TranslationManager.translation(
+                    "feature.city.mayor.menu.vote.lore.votes",
+                    Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)
+            ));
+            loreMayor.add(TranslationManager.translation(
+                    "feature.city.mayor.menu.vote.lore.progress",
+                    getProgressBarComponent(vote, totalVotes, color),
+                    Component.text(getVotePercentage(vote, totalVotes)).color(NamedTextColor.GRAY)
             ));
             loreMayor.add(Component.empty());
-            loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
-            loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
+            loreMayor.add(TranslationManager.translation(perk2.getNameKey()));
+            loreMayor.addAll(TranslationManager.translationLore(perk2.getLoreKey()));
             loreMayor.add(Component.empty());
-            loreMayor.add(Component.text(perk2.getName()));
-            loreMayor.addAll(perk2.getLore());
+            loreMayor.add(TranslationManager.translation(perk3.getNameKey()));
+            loreMayor.addAll(TranslationManager.translationLore(perk3.getLoreKey()));
             loreMayor.add(Component.empty());
-            loreMayor.add(Component.text(perk3.getName()));
-            loreMayor.addAll(perk3.getLore());
-            loreMayor.add(Component.empty());
-            loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
+            loreMayor.add(TranslationManager.translation("feature.city.mayor.menu.vote.lore.click"));
 
             MayorCandidate playerVote = MayorManager.getPlayerVote(player);
             boolean ench = playerVote != null && candidate == playerVote;
 
 
             ItemStack mayorItem = new ItemBuilder(this, SkullUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
-                    itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.displayName(TranslationManager.translation(
+                            "feature.city.mayor.menu.vote.mayor.title",
+                            Component.text(candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false)
+                    ).color(color).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(loreMayor);
                     itemMeta.setEnchantmentGlintOverride(ench);
                 }).setOnClick(inventoryClickEvent -> {
                     if (MayorManager.hasVoted(player) && playerVote != null) {
                         if (candidate.getCandidateUUID().equals(playerVote.getCandidateUUID())) {
-                            MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6maire"), Prefix.MAYOR, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.vote.message.already_voted"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
                         }
 
@@ -108,7 +125,13 @@ public class MayorVoteMenu extends PaginatedMenu {
                 } else {
                     MayorManager.voteCandidate(city, player, candidate);
                 }
-	            MessagesManager.sendMessage(player, Component.text("§7Vous avez voté pour le ").append(Component.text("maire " + candidate.getName()).color(color)), Prefix.MAYOR, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation(
+                        "feature.city.mayor.menu.vote.message.voted",
+                        TranslationManager.translation(
+                                "feature.city.mayor.menu.vote.mayor.title",
+                                Component.text(candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false)
+                        ).color(color).decoration(TextDecoration.ITALIC, false)
+                ), Prefix.MAYOR, MessageType.SUCCESS, true);
 
                 new MayorVoteMenu(player).open();
             });
@@ -120,14 +143,18 @@ public class MayorVoteMenu extends PaginatedMenu {
         return items;
     }
 
-    private String getProgressBar(int vote, int totalVotes, NamedTextColor color) {
+    private Component getProgressBarComponent(int vote, int totalVotes, NamedTextColor color) {
         int progressBars = 20;
         int barFill = (int) (((double) vote / totalVotes) * progressBars);
 
-        return ColorUtils.getColorCode(color) +
-                "|".repeat(Math.max(0, barFill)) +
-                "§7" +
-                "|".repeat(Math.max(0, progressBars - barFill));
+        Component filled = Component.text("|".repeat(Math.max(0, barFill)))
+                .color(color)
+                .decoration(TextDecoration.ITALIC, false);
+        Component empty = Component.text("|".repeat(Math.max(0, progressBars - barFill)))
+                .color(NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false);
+
+        return Component.empty().append(filled).append(empty);
     }
 
     private int getVotePercentage(int vote, int totalVotes) {
@@ -139,31 +166,27 @@ public class MayorVoteMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cFermer"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.vote.button.close"));
         }).setCloseButton());
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cPage précédente"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.vote.button.prev"));
         }).setPreviousPageButton());
         map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.vote.button.next"));
         }).setNextPageButton());
 
-        List<Component> loreInfo = Arrays.asList(
-		        Component.text("§7Apprenez en plus sur les maires !"),
-		        Component.text("§7Le déroulement..., les éléctions, ..."),
-                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
-        );
+        List<Component> loreInfo = TranslationManager.translationLore("feature.city.mayor.menu.common.more_info.lore");
 
         map.put(54, new ItemBuilder(this, Material.BOOK, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.more_info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
         return map;
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Votes";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.mayor.menu.vote.name");
     }
 
     @Override

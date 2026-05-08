@@ -22,9 +22,11 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -77,7 +79,8 @@ public class NPCManager implements Listener {
         if (city.getMayor().getMayorUUID() != null && city.getElectionType() == ElectionType.ELECTION) {
             String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getMayor().getMayorUUID()).getName();
             dataMayor.setSkin(mayorName);
-            dataMayor.setDisplayName("§6Maire " + mayorName);
+            String mayorDisplayName = "<gold>" + TranslationManager.translationString("feature.city.mayor.npc.display.mayor", Component.text(mayorName)) + "</gold>";
+            dataMayor.setDisplayName(mayorDisplayName);
 
             dataMayor.addEquipment(NpcEquipmentSlot.HEAD, CustomItemRegistry.getByName("omc_items:suit_helmet").getBest());
             dataMayor.addEquipment(NpcEquipmentSlot.CHEST, CustomItemRegistry.getByName("omc_items:suit_chestplate").getBest());
@@ -85,7 +88,8 @@ public class NPCManager implements Listener {
             dataMayor.addEquipment(NpcEquipmentSlot.FEET, CustomItemRegistry.getByName("omc_items:suit_boots").getBest());
         } else {
             dataMayor.setSkin("https://s.namemc.com/i/1971f3c39cb8e3ef.png");
-            dataMayor.setDisplayName("§8Inconnu");
+            String unknownDisplayName = "<dark_gray>" + TranslationManager.translationString("feature.city.mayor.npc.display.unknown") + "</dark_gray>";
+            dataMayor.setDisplayName(unknownDisplayName);
         }
 
         Npc npcMayor = FancyNpcsPlugin.get().getNpcAdapter().apply(dataMayor);
@@ -93,7 +97,8 @@ public class NPCManager implements Listener {
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
-        dataOwner.setDisplayName("<yellow>Propriétaire " + ownerName + "</yellow>");
+        String ownerDisplayName = TranslationManager.translationString("feature.city.mayor.npc.display.owner", Component.text(ownerName));
+        dataOwner.setDisplayName("<yellow>" + ownerDisplayName + "</yellow>");
 
         Npc npcOwner = FancyNpcsPlugin.get().getNpcAdapter().apply(dataOwner);
 
@@ -194,13 +199,16 @@ public class NPCManager implements Listener {
             UUID cityUUID = UUID.fromString(npc.getData().getName().replace("mayor-", ""));
             City city = CityManager.getCity(cityUUID);
             if (city == null) {
-                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
             }
 
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	            MessagesManager.sendMessage(player, TranslationManager.translation(
+                        "feature.city.mayor.npc.error.feature_locked",
+                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR))
+                ), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -209,26 +217,26 @@ public class NPCManager implements Listener {
             int chunkZ = chunkTest.getZ();
 
             if (!city.hasChunk(chunkX, chunkZ)) {
-                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
             }
 
             if (MayorManager.phaseMayor == 1) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
-                    MessagesManager.sendMessage(player, Component.text("§8§o*mhh cette ville n'a pas encore élu un maire*"), Prefix.MAYOR, MessageType.INFO, true);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_mayor_yet"), Prefix.MAYOR, MessageType.INFO, true);
                     return;
                 }
 
-                Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
+                Component message = TranslationManager.translation("feature.city.mayor.npc.move.prompt")
                         .clickEvent(ClickEvent.callback(audience -> {
                             List<Component> loreItemNPC = List.of(
-                                    Component.text("§7Cliquez sur l'endroit où vous voulez déplacer le §9NPC")
+                                    TranslationManager.translation("feature.city.mayor.npc.move.item.lore")
                             );
                             ItemStack itemToGive = new ItemStack(Material.STICK);
                             ItemMeta itemMeta = itemToGive.getItemMeta();
 
-                            itemMeta.displayName(Component.text("§7Emplacement du §9NPC"));
+                            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                             itemMeta.lore(loreItemNPC);
                             itemToGive.setItemMeta(itemMeta);
                             ItemInteraction.runLocationInteraction(
@@ -236,8 +244,8 @@ public class NPCManager implements Listener {
                                     itemToGive,
                                     "mayor:mayor-npc-move",
                                     300,
-		                            "§7Vous avez 300s pour sélectionner votre emplacement",
-                                    "§7Vous n'avez pas eu le temps de déplacer votre NPC",
+                                    TranslationManager.translation("feature.city.mayor.npc.move.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                                    TranslationManager.translation("feature.city.mayor.npc.move.interaction.timeout"),
                                     locationClick -> {
                                         if (locationClick == null) return true;
 
@@ -245,7 +253,7 @@ public class NPCManager implements Listener {
 
                                         City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
                                         if (cityByChunk == null) {
-                                            MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                             return false;
                                         }
 
@@ -256,7 +264,7 @@ public class NPCManager implements Listener {
                                         }
 
                                         if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
-                                            MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                             return false;
                                         }
 
@@ -267,7 +275,7 @@ public class NPCManager implements Listener {
                                     null
                             );
                         }))
-                        .hoverEvent(HoverEvent.showText(Component.text("Déplacer ce NPC")));
+                        .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.mayor.npc.move.hover")));
 
                 MessagesManager.sendMessage(player, message, Prefix.MAYOR, MessageType.INFO, false);
 
@@ -276,7 +284,7 @@ public class NPCManager implements Listener {
             }
 
             if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
-                MessagesManager.sendMessage(player, Component.text("§8§o*mhh cette ville n'a pas encore débloquée les éléctions*"), Prefix.MAYOR, MessageType.INFO, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_election_unlocked"), Prefix.MAYOR, MessageType.INFO, true);
                 return;
             }
 
@@ -285,20 +293,23 @@ public class NPCManager implements Listener {
             UUID cityUUID = UUID.fromString(npc.getData().getName().replace("owner-", ""));
             City city = CityManager.getCity(cityUUID);
             if (city == null) {
-                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
             }
 
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	            MessagesManager.sendMessage(player, TranslationManager.translation(
+                        "feature.city.mayor.npc.error.feature_locked",
+                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.GOLD)
+                ), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
             Chunk npcChuck = event.getNpc().getData().getLocation().getChunk();
 
             if (!city.hasChunk(npcChuck.getX(), npcChuck.getZ())) {
-                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
             }
@@ -306,15 +317,15 @@ public class NPCManager implements Listener {
             if (MayorManager.phaseMayor == 1) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) return;
 
-                Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
+                Component message = TranslationManager.translation("feature.city.mayor.npc.move.prompt")
                         .clickEvent(ClickEvent.callback(audience -> {
                             List<Component> loreItemNPC = List.of(
-                                    Component.text("§7Cliquez sur l'endroit où vous voulez déplacer le §9NPC")
+                                    TranslationManager.translation("feature.city.mayor.npc.move.item.lore")
                             );
                             ItemStack itemToGive = new ItemStack(Material.STICK);
                             ItemMeta itemMeta = itemToGive.getItemMeta();
 
-                            itemMeta.displayName(Component.text("§7Emplacement du §9NPC"));
+                            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                             itemMeta.lore(loreItemNPC);
                             itemToGive.setItemMeta(itemMeta);
                             ItemInteraction.runLocationInteraction(
@@ -322,8 +333,8 @@ public class NPCManager implements Listener {
                                     itemToGive,
                                     "mayor:owner-npc-move",
                                     300,
-		                            "§7Vous avez 300s pour sélectionner votre emplacement",
-                                    "§7Vous n'avez pas eu le temps de déplacer votre NPC",
+                                    TranslationManager.translation("feature.city.mayor.npc.move.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                                    TranslationManager.translation("feature.city.mayor.npc.move.interaction.timeout"),
                                     locationClick -> {
                                         if (locationClick == null) return true;
 
@@ -331,7 +342,7 @@ public class NPCManager implements Listener {
 
                                         City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
                                         if (cityByChunk == null) {
-                                            MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                             return false;
                                         }
 
@@ -342,7 +353,7 @@ public class NPCManager implements Listener {
                                         }
 
                                         if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
-                                            MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                             return false;
                                         }
 
@@ -353,7 +364,7 @@ public class NPCManager implements Listener {
                                     null
                             );
                         }))
-                        .hoverEvent(HoverEvent.showText(Component.text("Déplacer ce NPC")));
+                        .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.mayor.npc.move.hover")));
 
                 MessagesManager.sendMessage(player, message, Prefix.MAYOR, MessageType.INFO, false);
 

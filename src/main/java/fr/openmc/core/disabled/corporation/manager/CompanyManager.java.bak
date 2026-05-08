@@ -23,7 +23,7 @@ import fr.openmc.core.disabled.corporation.shops.ShopItem;
 import fr.openmc.core.disabled.corporation.shops.Supply;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.utils.Queue;
+import fr.openmc.core.utils.types.Queue;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;

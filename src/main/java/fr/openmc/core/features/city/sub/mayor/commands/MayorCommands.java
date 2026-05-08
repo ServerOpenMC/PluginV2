@@ -10,7 +10,7 @@ import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -37,10 +37,10 @@ public class MayorCommands {
 
         if (warp == null) {
             if (MayorManager.phaseMayor == 2) {
-	            MessagesManager.sendMessage(player, Component.text("Le warp de lavVille n'est pas encore défini ! Demandez au §6maire §factuel d'en mettre un ! §8§o*via /city setwarp ou avec le menu des lois*"), Prefix.CITY, MessageType.INFO, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }
-	        MessagesManager.sendMessage(player, Component.text("Le warp de la ville n'est pas encore défini ! Vous devez attendre que un maire soit élu pour mettre un warp"), Prefix.CITY, MessageType.INFO, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.no_mayor"), Prefix.CITY, MessageType.INFO, true);
             return;
         }
 

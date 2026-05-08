@@ -9,9 +9,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,8 +32,8 @@ public class CityBankWithdrawMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu de la banque de ville - Retirer";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.bank.menu.withdraw.name");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CityBankWithdrawMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE);
+        boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW);
 
         double moneyBankCity = city.getBalance();
         double halfMoneyBankCity = moneyBankCity / 2;
@@ -67,21 +67,17 @@ public class CityBankWithdrawMenu extends Menu {
         List<Component> loreBankWithdrawAll;
 
         if (hasPermissionMoneyTake) {
-            loreBankWithdrawAll = List.of(
-		            Component.text("§7Tout l'argent placé dans la §6banque de la ville §7vous sera donné"),
-                    Component.empty(),
-                    Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
+            loreBankWithdrawAll = TranslationManager.translationLore(
+                    "feature.city.bank.menu.withdraw.all.lore",
+                    Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
-            loreBankWithdrawAll = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
-            );
+            loreBankWithdrawAll = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
-	        itemMeta.itemName(Component.text("§7Prendre l'§6argent de votre ville"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.all.title"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             city.withdrawCityBank(player, String.valueOf(moneyBankCity));
@@ -91,21 +87,17 @@ public class CityBankWithdrawMenu extends Menu {
         List<Component> loreBankWithdrawHalf;
 
         if (hasPermissionMoneyTake) {
-            loreBankWithdrawHalf = List.of(
-		            Component.text("§7La moitié de l'argent sera pris de la §6banque de votre ville §7pour vous le donner"),
-                    Component.empty(),
-                    Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+            loreBankWithdrawHalf = TranslationManager.translationLore(
+                    "feature.city.bank.menu.withdraw.half.lore",
+                    Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
-            loreBankWithdrawHalf = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
-            );
+            loreBankWithdrawHalf = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
         inventory.put(13, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 32), itemMeta -> {
-	        itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6argent de la ville"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.half.title"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             city.withdrawCityBank(player, String.valueOf(halfMoneyBankCity));
@@ -116,23 +108,18 @@ public class CityBankWithdrawMenu extends Menu {
         List<Component> loreBankWithdrawInput;
 
         if (hasPermissionMoneyTake) {
-            loreBankWithdrawInput = List.of(
-		            Component.text("§7L'argent demandé sera pris dans la §6banque de la ville §7pour vous le donner"),
-                    Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
-            );
+            loreBankWithdrawInput = TranslationManager.translationLore("feature.city.bank.menu.withdraw.input.lore");
         } else {
-            loreBankWithdrawInput = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
-            );
+            loreBankWithdrawInput = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
         inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.input.title"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.withdraw.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
                         city.withdrawCityBank(player, input);
                     }
@@ -141,11 +128,8 @@ public class CityBankWithdrawMenu extends Menu {
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-		            Component.text("§7Vous allez retourner au menu précédent"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
+            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(TranslationManager.translationLore("feature.city.bank.menu.back_lore"));
         }, true));
 
         return inventory;

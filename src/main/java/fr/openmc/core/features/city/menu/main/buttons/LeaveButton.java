@@ -9,7 +9,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -28,7 +30,7 @@ public class LeaveButton {
                 contents,
                 slots,
                 new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.itemName(Component.text("§cPartir de la ville"));
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.leave.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> {
@@ -43,8 +45,8 @@ public class LeaveButton {
                                 player.closeInventory();
                             },
                             player::closeInventory,
-                            List.of(Component.text("§7Voulez vous vraiment partir de " + city.getName() + " ?")),
-                            List.of(Component.text("§7Rester dans la ville " + city.getName()))
+                            List.of(TranslationManager.translation("feature.city.menus.main.leave.confirm.accept", Component.text(city.getName()).color(NamedTextColor.GRAY))),
+                            List.of(TranslationManager.translation("feature.city.menus.main.leave.confirm.deny", Component.text(city.getName()).color(NamedTextColor.GRAY)))
                     ).open();
                 })
         );
@@ -53,14 +55,14 @@ public class LeaveButton {
     private static List<Component> getDynamicLore(City city) {
         List<Component> lore;
         if (!hasPermissionOwner) {
-            lore = List.of(
-                    Component.text("§7Vous allez §cquitter §7" + city.getName()),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.main.leave.lore.leave",
+                    Component.text(city.getName()).color(NamedTextColor.GRAY)
             );
         } else {
-            lore = List.of(
-                    Component.text("§7Vous ne pouvez pas §cquitter §7" + city.getName() + " car vous êtes §cpropriétaire")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.main.leave.lore.owner_cant",
+                    Component.text(city.getName()).color(NamedTextColor.GRAY)
             );
         }
         return lore;

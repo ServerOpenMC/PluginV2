@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
@@ -88,19 +89,34 @@ public enum FeaturesRewards implements CityRewards {
     @Override
     public Component getName() {
         if (features == null || features.length == 0) {
-            return Component.text("Aucun");
+            return TranslationManager.translation("feature.city.levels.rewards.none");
         }
         if (features.length == 1) {
-            return Component.text("§7Débloque " + features[0].getName());
+            return TranslationManager.translation(
+                    "feature.city.levels.rewards.unlock",
+                    features[0].getName()
+            );
         }
 
-        StringBuilder sb = new StringBuilder("§7Débloque ");
-        for (int i = 0; i < features.length; i++) {
-            sb.append(features[i].getName());
-            if (i < features.length - 2) sb.append("§7, ");
-            else if (i == features.length - 2) sb.append(" §7et ");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.unlock",
+                buildFeatureList()
+        );
+    }
+
+    private Component buildFeatureList() {
+        Component separator = TranslationManager.translation("feature.city.levels.rewards.list.separator")
+                .appendSpace();
+        Component lastSeparator = Component.space()
+                .append(TranslationManager.translation("feature.city.levels.rewards.list.last_separator"))
+                .appendSpace();
+
+        Component list = features[0].getName();
+        for (int i = 1; i < features.length; i++) {
+            Component currentSeparator = (i == features.length - 1) ? lastSeparator : separator;
+            list = list.append(currentSeparator).append(features[i].getName());
         }
-        return Component.text(sb.toString());
+        return list;
     }
 
     /**
@@ -108,32 +124,28 @@ public enum FeaturesRewards implements CityRewards {
      */
     @Getter
     public enum Feature {
-        CHEST("§a/city chest"),
-        CITY_BANK("§6/city bank"),
-        PLAYER_BANK("§b/bank"),
-        NOTATION("§3/city notation"),
-        RANK("§6/city ranks"),
-        MAYOR("§6/city mayor"),
-	    PERK_AGRICULTURAL("§3les réformes d'agriculture"),
-	    PERK_ECONOMY("§3les réformes d'économie"),
-	    TYPE_WAR("§cle type de ville de guerre"),
-        WAR("§c/war"),
-        PERK_DREAM("§3les réformes oniriques"),
-	    PERK_MILITARY("§3les réformes militaires"),
-	    PERK_STRATEGY("§3les réformes de stratégies");
+        CHEST("feature.city.levels.rewards.feature.chest"),
+        CITY_BANK("feature.city.levels.rewards.feature.city_bank"),
+        PLAYER_BANK("feature.city.levels.rewards.feature.player_bank"),
+        NOTATION("feature.city.levels.rewards.feature.notation"),
+        RANK("feature.city.levels.rewards.feature.rank"),
+        MAYOR("feature.city.levels.rewards.feature.mayor"),
+        PERK_AGRICULTURAL("feature.city.levels.rewards.feature.perk_agricultural"),
+        PERK_ECONOMY("feature.city.levels.rewards.feature.perk_economy"),
+        TYPE_WAR("feature.city.levels.rewards.feature.type_war"),
+        WAR("feature.city.levels.rewards.feature.war"),
+        PERK_DREAM("feature.city.levels.rewards.feature.perk_dream"),
+        PERK_MILITARY("feature.city.levels.rewards.feature.perk_military"),
+        PERK_STRATEGY("feature.city.levels.rewards.feature.perk_strategy");
 
-        /**
-         * Nom de la fonctionnalité.
-         */
-        private final String name;
+        private final String nameKey;
 
-        /**
-         * Constructeur de la fonctionnalité.
-         *
-         * @param name le nom associé à la fonctionnalité
-         */
-        Feature(String name) {
-            this.name = name;
+        Feature(String nameKey) {
+            this.nameKey = nameKey;
+        }
+
+        public Component getName() {
+            return TranslationManager.translation(nameKey);
         }
     }
 }

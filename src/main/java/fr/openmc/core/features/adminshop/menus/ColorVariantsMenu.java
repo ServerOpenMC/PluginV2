@@ -9,15 +9,15 @@ import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -25,14 +25,12 @@ import java.util.*;
 public class ColorVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
-    private final Menu previousMenu;
     private static final Map<String, List<Material>> COLOR_VARIANTS = initColorVariants();
 
-    public ColorVariantsMenu(Player owner, String categoryId, ShopItem originalItem, Menu previousMenu) {
+    public ColorVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
         super(owner);
         this.categoryId = categoryId;
         this.originalItem = originalItem;
-        this.previousMenu = previousMenu;
     }
 
     private static Map<String, List<Material>> initColorVariants() {
@@ -72,8 +70,8 @@ public class ColorVariantsMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des variantes de couleur pour " + originalItem.getBaseType();
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.adminshop.menu.color_variants.name", ItemUtils.getItemTranslation(originalItem.getMaterial()));
     }
 
     @Override
@@ -112,34 +110,28 @@ public class ColorVariantsMenu extends Menu {
 
         int maxVariants = Math.min(variants.size(), organizedSlots.length);
 
-        ItemStack baseItemStack = new ItemStack(originalItem.getMaterial());
-        ItemMeta baseMeta = baseItemStack.getItemMeta();
-        baseMeta.displayName(Component.text("§7" + getFormattedTypeName(baseType)));
-        baseItemStack.setItemMeta(baseMeta);
-        content.put(4, new ItemBuilder(this, baseItemStack));
+        content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
+                meta.displayName(ItemUtils.getItemTranslation(originalItem.getMaterial())
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false))
+        ));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = variants.get(i);
             int slot = organizedSlots[i];
 
-            ItemStack itemStack = new ItemStack(variant);
-            ItemMeta meta = itemStack.getItemMeta();
-            String colorName = AdminShopUtils.getColorNameFromMaterial(variant);
+            TranslatableComponent variantName = ItemUtils.getItemTranslation(variant)
+                    .color(NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false);
 
-            colorName = colorName.substring(0, 1).toUpperCase() + colorName.substring(1);
-
-            meta.displayName(Component.text("§7" + colorName + " " + getFormattedTypeName(baseType)));
-
-            meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
-
-            itemStack.setItemMeta(meta);
-
-            ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
-            itemBuilder.setItemId(variant.name())
+            content.put(slot, new ItemBuilder(this, variant, meta -> {
+                meta.displayName(variantName);
+                meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
+            }).setItemId(variant.name())
                     .setOnClick(event -> {
                         ShopItem colorVariant = new ShopItem(
                                 variant.name(),
-                                ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                variantName,
                                 variant,
                                 originalItem.getSlot(),
                                 originalItem.getInitialSellPrice(),
@@ -149,52 +141,21 @@ public class ColorVariantsMenu extends Menu {
                         );
 
 
-                       if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
-                       } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
-                       }
-                    });
-
-            content.put(slot, itemBuilder);
+                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        }
+                    }));
         }
 
-        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
-            meta.displayName(Component.text("§aRetour à la catégorie"));
-        }, true);
-
-        content.put(49, backButton);
+        content.put(49, new ItemBuilder(this,
+                CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(),
+                true));
 
         return content;
-    }
-
-    /**
-     * Returns a formatted type name based on the base type.
-     * This is used to display the item type in a user-friendly way.
-     *
-     * @param baseType The base type of the item (e.g., WOOL, CONCRETE).
-     * @return A formatted string representing the type name.
-     */
-    private String getFormattedTypeName(String baseType) {
-        return switch (baseType) {
-            case "WOOL" -> "Laine";
-            case "CONCRETE" -> "Béton";
-            case "CONCRETE_POWDER" -> "Béton en poudre";
-            case "TERRACOTTA" -> "Terre cuite";
-            case "GLASS" -> "Verre";
-            case "GLASS_PANE" -> "Vitre";
-            case "CARPET" -> "Tapis";
-            case "BED" -> "Lit";
-            case "SHULKER_BOX" -> "Boîte de Shulker";
-            case "GLAZED_TERRACOTTA" -> "Terre cuite émaillée";
-            case "BANNER" -> "Bannière";
-            case "STAINED_GLASS" -> "Verre teinté";
-            case "STAINED_GLASS_PANE" -> "Vitre teintée";
-            case "CANDLE" -> "Bougie";
-            default -> baseType.toLowerCase();
-        };
     }
 
     @Override

@@ -15,6 +15,7 @@ import lombok.Getter;
  * - {@code LARGER}: 45 slots<br>
  * - {@code LARGEST}: 54 slots<br>
  */
+@Getter
 public enum InventorySize {
 	
 	SMALLEST(9),
@@ -24,7 +25,6 @@ public enum InventorySize {
 	LARGER(45),
 	LARGEST(54);
 	
-	@Getter
 	private final int size;
 	
 	/**
