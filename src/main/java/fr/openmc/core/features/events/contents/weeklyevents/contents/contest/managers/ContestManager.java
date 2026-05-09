@@ -172,15 +172,15 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
      * Sauvegarde les données des joueurs (points, camp, etc.) dans la DB.
      */
     public static void saveContestPlayerData() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving contest player data...");
+        OMCLogger.info("Saving contest player data...");
         dataPlayer.forEach((player, data) -> {
             try {
                 playerDao.createOrUpdate(data);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
+                OMCLogger.warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
             }
         });
-        OMCPlugin.getInstance().getSLF4JLogger().info("Contest player data saved successfully.");
+        OMCLogger.info("Contest player data saved successfully.");
     }
 
     /**

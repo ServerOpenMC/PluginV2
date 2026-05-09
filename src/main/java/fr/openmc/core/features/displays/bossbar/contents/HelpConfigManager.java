@@ -59,7 +59,7 @@ public class HelpConfigManager extends Feature {
         }
 
         if (helpMessages.isEmpty()) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("No messages found in bossbars.yml.");
+            OMCLogger.warn("No messages found in bossbars.yml.");
         }
     }
 

@@ -68,7 +68,7 @@ public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfE
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
             return JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load Animation {}", ressourcePath, e);
+            OMCLogger.error("Failed to load Animation {}", ressourcePath, e);
             return null;
         }
     }

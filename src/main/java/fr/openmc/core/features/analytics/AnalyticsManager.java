@@ -50,7 +50,7 @@ public class AnalyticsManager extends Feature implements DatabaseFeature {
 
             return stats.getFirst().getValue();
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Statistics of {}", playerUUID, e);
+            OMCLogger.error("Failed to get Statistics of {}", playerUUID, e);
             return defaultValue;
         }
     }

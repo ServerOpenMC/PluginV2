@@ -3,6 +3,7 @@ package fr.openmc.core.utils.text.messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
 import fr.openmc.core.utils.text.ComponentUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
@@ -47,9 +48,9 @@ public class TranslationManager {
         try {
             resourcePackFolder=ResourcePacksGenerator.generateBase(context, "generated-rp-langs");
             Files.createDirectories(resourcePackFolder.resolve("assets/minecraft/lang"));
-            context.getLogger().info("\u001B[32m✔ Génération du resource pack de langues !\u001B[0m");
+            OMCLogger.successFormatted("Génération du resource pack de langues !");
         } catch (Exception e) {
-            context.getLogger().error("\u001B[31m✘ Erreur lors de la génération du resource pack de langues !\u001B[0m", e);
+            OMCLogger.errorFormatted("Erreur lors de la génération du resource pack de langues !", e);
             return;
         }
 
@@ -63,10 +64,10 @@ public class TranslationManager {
         try {
             injectLangs(resourcePackFolder, fallbackTranslations, defaultLang);
         } catch (Exception e) {
-            context.getLogger().error("\u001B[31m✘ Erreur lors de l'injection de la langue par défaut !\u001B[0m", e);
+            OMCLogger.errorFormatted("Erreur lors de l'injection de la langue par défaut !", e);
             return;
         }
-        context.getLogger().info("\u001B[32m✔ Chargement de la langue {} (par défaut) !\u001B[0m", defaultLang.getDisplayName());
+        OMCLogger.successFormatted("Chargement de la langue {} (par défaut) !", defaultLang.getDisplayName());
 
         // * Load other supported langs
         for (Locale locale : langsSuppoorted) {
@@ -81,11 +82,11 @@ public class TranslationManager {
             try {
                 injectLangs(resourcePackFolder, translations, locale);
             } catch (Exception e) {
-                context.getLogger().error("\u001B[31m✘ Erreur lors de l'injection des langues !\u001B[0m", e);
+                OMCLogger.errorFormatted("Erreur lors de l'injection des langues !", e);
                 return;
             }
 
-            context.getLogger().info("\u001B[32m✔ Chargement de la langue {} !\u001B[0m", locale.getDisplayName());
+            OMCLogger.successFormatted("Chargement de la langue {} !", locale.getDisplayName());
         }
     }
 

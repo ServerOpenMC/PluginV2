@@ -13,6 +13,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,11 +48,11 @@ public class SchematicsUtils {
 
         try (InputStream in = plugin.getResource("schem/" + nameSchem + ".schem")) {
             if (in == null) {
-                plugin.getSLF4JLogger().warn("Le fichier '" + nameSchem + ".schem' est introuvable dans les ressources.");
+                OMCLogger.warn("Le fichier '{}.schem' est introuvable dans les ressources.", nameSchem);
                 return;
             }
             Files.copy(in, outFile.toPath());
-            plugin.getSLF4JLogger().info("Fichier '" + nameSchem + ".schem' extrait dans plugins/OpenMC/schem/.");
+            OMCLogger.info("Fichier '{}.schem' extrait dans plugins/OpenMC/schem/.", nameSchem);
         } catch (IOException e) {
             e.printStackTrace();
         }

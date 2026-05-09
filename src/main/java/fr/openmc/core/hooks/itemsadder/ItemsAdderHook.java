@@ -1,6 +1,7 @@
 package fr.openmc.core.hooks.itemsadder;
 
 import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -30,19 +31,18 @@ public class ItemsAdderHook extends Hooks {
      * vers plugins/ItemsAdder/CONTENTS_FOLDER_NAME
      */
     public static void copyContentsToItemsAdder(BootstrapContext context, String contentsName) {
-        ComponentLogger logger = context.getLogger();
         try {
             File pluginsDir = context.getDataDirectory().toFile().getParentFile(); // * root/pluigns
             File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
             File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents
 
             if (!FilesUtils.createDirectoryIfNotExists(contentDir)) {
-                logger.error("Impossible de créer le dossier {}", contentDir.getAbsolutePath());
+                OMCLogger.error("Impossible de créer le dossier {}", contentDir.getAbsolutePath());
                 return;
             }
 
             // * Recupere la liste des namespaces qu'il y a dans contents
-            List<String> contentFolders = FilesUtils.listFolderNamesInResource(logger, contentsName);
+            List<String> contentFolders = FilesUtils.listFolderNamesInResource(contentsName);
 
             if (contentFolders.isEmpty()) return;
 

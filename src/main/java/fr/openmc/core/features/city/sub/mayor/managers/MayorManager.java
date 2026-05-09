@@ -315,7 +315,7 @@ public class MayorManager {
     }
 
     public static void initPhase2() {
-        OMCPlugin.getInstance().getSLF4JLogger().debug("MAYOR - INIT PHASE 2");
+        OMCLogger.debug("MAYOR - INIT PHASE 2");
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
@@ -373,7 +373,7 @@ public class MayorManager {
     }
 
     public static void initCityPhase2(City city) {
-        OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
+        OMCLogger.debug("- City : {}", city.getName());
         runSetupMayor(city);
 
         for (UUID uuid : city.getMembers()) {
@@ -421,7 +421,7 @@ public class MayorManager {
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksAll(city);
                 if (perks.size() < 3) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                    OMCLogger.warn(
                             "No unlocked mayor perks combination found for city {} (OWNER_CHOOSE)",
                             city.getName()
                     );
@@ -466,7 +466,7 @@ public class MayorManager {
                   }
 
                 if (perk1 == null || perks.size() < 2) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                    OMCLogger.warn(
                             "Unable to select unlocked mayor perks for city {} (ELECTION)",
                             city.getName()
                     );

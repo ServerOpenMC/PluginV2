@@ -50,7 +50,7 @@ public class JoinQuitMessageListener implements Listener {
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
@@ -109,7 +109,7 @@ public class JoinQuitMessageListener implements Listener {
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 

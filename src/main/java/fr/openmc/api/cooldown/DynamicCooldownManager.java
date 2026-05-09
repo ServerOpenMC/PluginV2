@@ -138,7 +138,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
     }
 
     public static void saveCooldowns() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving cooldowns...");
+        OMCLogger.info("Saving cooldowns...");
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
@@ -158,7 +158,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
             });
         });
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Cooldowns saved successfully.");
+        OMCLogger.info("Cooldowns saved successfully.");
     }
 
     /**

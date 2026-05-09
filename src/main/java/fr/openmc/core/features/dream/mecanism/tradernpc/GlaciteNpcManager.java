@@ -19,7 +19,7 @@ public class GlaciteNpcManager implements Listener {
                 new GlaciteTraderInteractListener()
         );
         if (DreamDimensionManager.hasSeedChanged()) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");
+            OMCLogger.info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");
             // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {

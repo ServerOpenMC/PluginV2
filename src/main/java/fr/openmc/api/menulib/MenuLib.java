@@ -196,7 +196,7 @@ public final class MenuLib implements Listener {
                 }
             }
         } catch (Exception ex) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while handling a click event in a menu: {}", ex.getMessage(), ex);
+            OMCLogger.error("An error occurred while handling a click event in a menu: {}", ex.getMessage(), ex);
         }
     }
 

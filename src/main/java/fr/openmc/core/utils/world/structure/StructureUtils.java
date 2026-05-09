@@ -41,7 +41,7 @@ public class StructureUtils {
                     CachedStructure cached = buildCache(nbt);
                     STRUCTURE_CACHE.put(group + "/" + name.replace(".nbt", ""), cached);
                 } catch (IOException e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().error("Impossible de précharger la structure {}/{}", group, name);
+                    OMCLogger.error("Impossible de précharger la structure {}/{}", group, name);
                 }
             }
         }

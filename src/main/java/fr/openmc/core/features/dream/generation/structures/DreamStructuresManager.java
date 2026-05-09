@@ -31,14 +31,14 @@ public class DreamStructuresManager {
 
     public static void load() {
         if (!file.exists()) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("[DreamStructures] Fichier manquant, il sera créé au save().");
+            OMCLogger.info("[DreamStructures] Fichier manquant, il sera créé au save().");
         }
 
         config = YamlConfiguration.loadConfiguration(file);
 
         World dream = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
         if (dream == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("[DreamStructures] Le monde world_dream est introuvable !");
+            OMCLogger.warn("[DreamStructures] Le monde world_dream est introuvable !");
             return;
         }
 
@@ -46,7 +46,7 @@ public class DreamStructuresManager {
         if (DreamDimensionManager.hasSeedChanged()) {
             config.set("structures", new ArrayList<>());
             save();
-            OMCPlugin.getInstance().getSLF4JLogger().info("[DreamStructures] Seed changée, reset du fichier structures.yml !");
+            OMCLogger.info("[DreamStructures] Seed changée, reset du fichier structures.yml !");
             return;
         }
 
@@ -58,7 +58,7 @@ public class DreamStructuresManager {
             }
         }
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("[DreamStructures] Chargé {} structures.", structures.size());
+        OMCLogger.info("[DreamStructures] Chargé {} structures.", structures.size());
     }
 
     public static void save() {

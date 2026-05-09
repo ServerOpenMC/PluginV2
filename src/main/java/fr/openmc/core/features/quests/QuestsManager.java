@@ -59,7 +59,7 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCo
                 Bukkit.getPluginManager().registerEvents(questL, OMCPlugin.getInstance());
             }
         } else {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Quest {} is already registered.", quest.getName(), new Exception());
+            OMCLogger.warn("Quest {} is already registered.", quest.getName(), new Exception());
         }
     }
 

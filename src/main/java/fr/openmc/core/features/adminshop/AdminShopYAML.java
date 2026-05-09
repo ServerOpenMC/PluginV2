@@ -119,7 +119,7 @@ public class AdminShopYAML {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save admin shop configuration file: {}", e.getMessage(), e);
+            OMCLogger.warn("Failed to save admin shop configuration file: {}", e.getMessage(), e);
         }
     }
 

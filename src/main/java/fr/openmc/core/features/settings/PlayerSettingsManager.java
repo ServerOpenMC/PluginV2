@@ -6,7 +6,6 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
@@ -71,9 +70,9 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
             TableUtils.createTableIfNotExists(connectionSource, PlayerSettingEntity.class);
         } catch (SQLException e) {
             if (!e.getMessage().contains("Duplicate key")) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to create PlayerSettingEntity table", e);
+                OMCLogger.error("Failed to create PlayerSettingEntity table", e);
             }
-            OMCPlugin.getInstance().getSLF4JLogger().error("Table for PlayerSettingEntity already exists, skipping creation.");
+            OMCLogger.error("Table for PlayerSettingEntity already exists, skipping creation.");
         }
     }
 
@@ -115,7 +114,7 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
                 PlayerSettings settings = playersSettings.computeIfAbsent(playerUUID, PlayerSettings::new);
                 loadPlayerSettingsFromDatabase(playerUUID, settings);
             } catch (Exception e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load player settings for UUID: {}", playerUUID, e);
+                OMCLogger.error("Failed to load player settings for UUID: {}", playerUUID, e);
             }
         });
     }
@@ -136,11 +135,11 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
                         Object value = settingType.parseValue(entity.getSettingValue());
                         settings.setSetting(settingType, value);
                     } catch (Exception e) {
-                        OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to parse setting {} for player {}", entity.getSettingType(), playerUUID, e);
+                        OMCLogger.warn("Failed to parse setting {} for player {}", entity.getSettingType(), playerUUID, e);
                     }
                 }
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load all player settings from database", e);
+                OMCLogger.error("Failed to load all player settings from database", e);
             }
         });
     }
@@ -153,7 +152,7 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
      */
     public static void loadPlayerSettingsFromDatabase(UUID playerUUID, PlayerSettings settings) {
         if (playerSettingDao == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Player settings DAO is not initialized", new Exception());
+            OMCLogger.warn("Player settings DAO is not initialized", new Exception());
             return;
         }
 
@@ -169,11 +168,11 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
                     Object value = settingType.parseValue(entity.getSettingValue());
                     settings.setSetting(settingType, value);
                 } catch (Exception e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to parse setting {} for player {}", entity.getSettingType(), playerUUID, e);
+                    OMCLogger.warn("Failed to parse setting {} for player {}", entity.getSettingType(), playerUUID, e);
                 }
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load settings from database for player {}", playerUUID, e);
+            OMCLogger.error("Failed to load settings from database for player {}", playerUUID, e);
         }
     }
 
@@ -186,7 +185,7 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
      */
     public static void saveSetting(UUID playerUUID, SettingType settingType, Object value) {
         if (playerSettingDao == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Player settings DAO is not initialized", new Exception());
+            OMCLogger.warn("Player settings DAO is not initialized", new Exception());
             return;
         }
 
@@ -208,7 +207,7 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
                     playerSettingDao.create(newEntity);
                 }
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to save setting {} for player {}", settingType, playerUUID, e);
+                OMCLogger.error("Failed to save setting {} for player {}", settingType, playerUUID, e);
             }
         });
     }

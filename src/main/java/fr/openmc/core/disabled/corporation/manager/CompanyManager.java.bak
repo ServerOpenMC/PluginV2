@@ -113,7 +113,7 @@ public class CompanyManager {
     }
 
     public static List<Company> getAllCompany() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Loading companies...");
+        OMCLogger.info("Loading companies...");
         List<Company> companies = new ArrayList<>();
 
         try {
@@ -136,9 +136,9 @@ public class CompanyManager {
                 }
                 companies.add(company);
             }
-            OMCPlugin.getInstance().getSLF4JLogger().info("Companies loaded successfully.");
+            OMCLogger.info("Companies loaded successfully.");
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading companies from database: {}", e.getMessage());
+            OMCLogger.error("Error loading companies from database: {}", e.getMessage());
             throw new RuntimeException(e);
         }
 
@@ -146,7 +146,7 @@ public class CompanyManager {
     }
 
     public static List<Shop> loadAllShops() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Loading shops...");
+        OMCLogger.info("Loading shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         Map<UUID, List<ShopItem>> shopSales = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
@@ -162,7 +162,7 @@ public class CompanyManager {
                 shopItems.computeIfAbsent(dbShopItem.getShop(), k -> new ArrayList<>()).add(dbShopItem.deserialize());
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shop items from database: {}", e.getMessage(), e);
+            OMCLogger.error("Error loading shop items from database: {}", e.getMessage(), e);
         }
 
         try {
@@ -176,7 +176,7 @@ public class CompanyManager {
                 shopSales.computeIfAbsent(dbShopSale.getShop(), k -> new ArrayList<>()).add(dbShopSale.deserialize());
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shop sales from database: {}", e.getMessage(), e);
+            OMCLogger.error("Error loading shop sales from database: {}", e.getMessage(), e);
         }
 
         try {
@@ -229,7 +229,7 @@ public class CompanyManager {
                 allShop.add(shop);
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shops from database: {}", e.getMessage(), e);
+            OMCLogger.error("Error loading shops from database: {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
@@ -245,17 +245,17 @@ public class CompanyManager {
                 }
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shop suppliers from database: {}", e.getMessage(), e);
+            OMCLogger.error("Error loading shop suppliers from database: {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        OMCPlugin.getInstance().getSLF4JLogger().info("Shops loaded successfully.");
+        OMCLogger.info("Shops loaded successfully.");
 
         return allShop;
     }
 
     @SneakyThrows
     public static void saveAllCompanies() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving company data...");
+        OMCLogger.info("Saving company data...");
 
         try {
             ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
@@ -263,7 +263,7 @@ public class CompanyManager {
             TableUtils.clearTable(connectionSource, CompanyMerchant.class);
             TableUtils.clearTable(connectionSource, Merchant.class);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing company tables: {}", e.getMessage(), e);
+            OMCLogger.error("Error clearing company tables: {}", e.getMessage(), e);
         }
 
         List<DBCompany> dbCompanies = new ArrayList<>();
@@ -288,14 +288,14 @@ public class CompanyManager {
             companyMerchantsDao.create(dbCompanyMerchants);
             merchantsDao.create(dbMerchants);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving company data: {}", e.getMessage(), e);
+            OMCLogger.error("Error saving company data: {}", e.getMessage(), e);
         }
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Company data saved successfully.");
+        OMCLogger.info("Company data saved successfully.");
     }
 
     public static void saveAllShop() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving shop data...");
+        OMCLogger.info("Saving shop data...");
 
         try {
             ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
@@ -304,7 +304,7 @@ public class CompanyManager {
             TableUtils.clearTable(connectionSource, DBShopSale.class);
             TableUtils.clearTable(connectionSource, ShopSupplier.class);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing shop tables: {}", e.getMessage(), e);
+            OMCLogger.error("Error clearing shop tables: {}", e.getMessage(), e);
         }
 
         List<DBShop> dbShops = new ArrayList<>();
@@ -390,10 +390,10 @@ public class CompanyManager {
                 }
             });
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving shop data: {}", e.getMessage(), e);
+            OMCLogger.error("Error saving shop data: {}", e.getMessage(), e);
         }
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Shop data saved successfully.");
+        OMCLogger.info("Shop data saved successfully.");
     }
 
     public static Set<CorpPermission> getPermissions(Company company, UUID player) {

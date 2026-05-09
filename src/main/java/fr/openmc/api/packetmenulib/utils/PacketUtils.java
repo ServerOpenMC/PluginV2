@@ -4,7 +4,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import fr.openmc.core.OMCPlugin;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
@@ -27,7 +26,7 @@ public class PacketUtils {
             packet.getStructures().withType(Component.class).write(0, PaperAdventure.asVanilla(title));
             manager.sendServerPacket(player, packet);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while sending the open inventory packet to {}: {}", player.getName(), e.getMessage(), e);
+            OMCLogger.warn("An error occurred while sending the open inventory packet to {}: {}", player.getName(), e.getMessage(), e);
         }
 
     }
@@ -50,7 +49,7 @@ public class PacketUtils {
 
             manager.sendServerPacket(player, packet);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while sending the container content packet to {}: {}", player.getName(), e.getMessage(), e);
+            OMCLogger.warn("An error occurred while sending the container content packet to {}: {}", player.getName(), e.getMessage(), e);
         }
     }
 
@@ -62,7 +61,7 @@ public class PacketUtils {
 
             manager.sendServerPacket(player, packet);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while sending the close inventory packet to {}: {}", player.getName(), e.getMessage(), e);
+            OMCLogger.warn("An error occurred while sending the close inventory packet to {}: {}", player.getName(), e.getMessage(), e);
         }
     }
 }

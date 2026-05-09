@@ -126,7 +126,7 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         String hologramName = file.getName().replace(".yml", "");
         Location hologramLocation = hologramConfig.getLocation("location");
         if (hologramLocation == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Hologram {} has no location set in its config file, skipping.", hologramName);
+            OMCLogger.warn("Hologram {} has no location set in its config file, skipping.", hologramName);
             return;
         }
 

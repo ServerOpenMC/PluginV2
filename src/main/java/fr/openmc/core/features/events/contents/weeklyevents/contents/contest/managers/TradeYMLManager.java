@@ -58,7 +58,7 @@ public class TradeYMLManager {
         try {
             contestConfig.save(contestFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save contest configuration file: {}", e.getMessage(), e);
+            OMCLogger.warn("Failed to save contest configuration file: {}", e.getMessage(), e);
         }
     }
 
@@ -143,7 +143,7 @@ public class TradeYMLManager {
                 } else if (selectedObj instanceof String s && s.matches("\\d+")) {
                     selected = Integer.parseInt(s);
                 } else {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn("⚠️ Valeur inattendue pour 'selected' dans TradeYMLManager : {} (réinitialisation à 0)", selectedObj);
+                    OMCLogger.warn("⚠️ Valeur inattendue pour 'selected' dans TradeYMLManager : {} (réinitialisation à 0)", selectedObj);
                 }
 
                 fusionContestList.put("selected", selected + 1);

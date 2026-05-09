@@ -445,7 +445,7 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
             }
             con.disconnect();
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Could not fetch contributors: {}", e.getMessage(), e);
+            OMCLogger.warn("Could not fetch contributors: {}", e.getMessage(), e);
         }
 
         return contributors;
@@ -500,7 +500,7 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
             }
             con.disconnect();
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Could not fetch contributor stats: {}", e.getMessage(), e);
+            OMCLogger.warn("Could not fetch contributor stats: {}", e.getMessage(), e);
         }
     }
 

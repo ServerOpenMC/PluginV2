@@ -85,7 +85,7 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         try {
             spawnConfig.save(spawnFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
+            OMCLogger.warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
         }
     }
 }

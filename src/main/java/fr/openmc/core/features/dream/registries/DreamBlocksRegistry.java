@@ -42,14 +42,14 @@ public class DreamBlocksRegistry {
 
     public static void load() {
         if (!file.exists()) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("[DreamBlocks] Fichier manquant, il sera créé au save().");
+            OMCLogger.info("[DreamBlocks] Fichier manquant, il sera créé au save().");
         }
 
         config = YamlConfiguration.loadConfiguration(file);
 
         World dream = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
         if (dream == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("[DreamBlocks] Le monde " + DreamDimensionManager.DIMENSION_NAME + " est introuvable !");
+            OMCLogger.error("[DreamBlocks] Le monde " + DreamDimensionManager.DIMENSION_NAME + " est introuvable !");
             return;
         }
 

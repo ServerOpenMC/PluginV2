@@ -94,7 +94,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
             halloweenDataDao.createOrUpdate(data);
             return true;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to save halloween data {}", data.getPlayerUUID(), e);
+            OMCLogger.error("Failed to save halloween data {}", data.getPlayerUUID(), e);
             return false;
         }
     }
@@ -107,7 +107,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                 newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load halloween datas from database", e);
+            OMCLogger.error("Failed to load halloween datas from database", e);
         }
 
         return newHalloweenDatas;

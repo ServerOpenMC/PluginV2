@@ -4,7 +4,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
@@ -156,11 +155,11 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 try {
                     savePlayerDao.delete(playerData);
                 } catch (SQLException e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().error("Cannot load player save data", e);
+                    OMCLogger.error("Cannot load player save data", e);
                 }
             });
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Cannot load player save data", e);
+            OMCLogger.error("Cannot load player save data", e);
         }
     }
 
@@ -169,7 +168,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
             try {
                 savePlayerDao.createOrUpdate(playerSave);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Cannot save player save data for player {}", uuid, e);
+                OMCLogger.error("Cannot save player save data for player {}", uuid, e);
             }
         });
     }
@@ -182,7 +181,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                     cacheDreamPlayer.put(playerData.getPlayerUUID(), playerData)
             );
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Cannot load dream player data", e);
+            OMCLogger.error("Cannot load dream player data", e);
         }
     }
 
@@ -191,7 +190,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
             try {
                 dreamPlayerDao.createOrUpdate(dbDreamPlayer);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Cannot save dream player data", e);
+                OMCLogger.error("Cannot save dream player data", e);
             }
         });
     }
@@ -210,7 +209,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
             }
 
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Cannot save player save data", e);
+            OMCLogger.error("Cannot save player save data", e);
         }
     }
 
@@ -261,7 +260,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         playerSaveData.remove(player.getUniqueId());
 
         if (dreamPlayer == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Cannot remove player {}({}) from Dream", player.getName(), player.getUniqueId());
+            OMCLogger.warn("Cannot remove player {}({}) from Dream", player.getName(), player.getUniqueId());
             return;
         }
 
@@ -300,7 +299,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
         if (playerSave == null) {
             player.teleportAsync(SpawnManager.getSpawnLocation());
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Nothing to load from {}({})", player.getName(), player.getUniqueId());
+            OMCLogger.warn("Nothing to load from {}({})", player.getName(), player.getUniqueId());
             return;
         }
         PlayerInventory dreamInventory = player.getInventory();
@@ -354,7 +353,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
             DreamManager.saveDreamPlayerData(dreamPlayer);
             cache = DreamManager.getCacheDreamPlayer(player);
             if (cache == null) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn("player ({}) had no cache even after saving it. [DreamManager#setMaxTime]", player.getUniqueId());
+                OMCLogger.warn("player ({}) had no cache even after saving it. [DreamManager#setMaxTime]", player.getUniqueId());
                 return;
             }
         }

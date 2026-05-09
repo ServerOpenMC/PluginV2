@@ -79,7 +79,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
                 Milestone<?> milestone = type.getMilestone();
 	            milestone.getPlayerData().put(data.getUUID(), data);
             }
-			OMCPlugin.getInstance().getSLF4JLogger().info("Milestones loaded successfully from the database!");
+			OMCLogger.info("Milestones loaded successfully from the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +97,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
                     millestoneDao.createOrUpdate(model);
                 }
             }
-	        OMCPlugin.getInstance().getSLF4JLogger().info("Milestones saved successfully to the database!");
+	        OMCLogger.info("Milestones saved successfully to the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
