@@ -1,6 +1,7 @@
 package fr.openmc.core.bootstrap.hooks;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.Map;
@@ -25,10 +26,10 @@ public abstract class Hooks {
         ENABLED.put(getClass(), enabled);
         if (enabled) {
             init();
-            OMCPlugin.getInstance().logSuccessMessage("Hook " + pluginName + " activé.");
+            OMCLogger.successFormatted("Hook " + pluginName + " activé.");
             return;
         }
-        OMCPlugin.getInstance().logErrorMessage("Hook " + pluginName + " non activé.");
+        OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
     }
 
     /**

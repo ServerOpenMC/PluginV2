@@ -1,7 +1,7 @@
 package fr.openmc.core.utils;
 
 import fr.openmc.core.OMCBootstrap;
-import org.slf4j.Logger;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,6 @@ import java.util.jar.JarFile;
  * Utilitaires pour la gestion des fichiers et dossiers
  */
 public class FilesUtils {
-    //todo: enelver les Logger et faire une classe OMCLogger en static qui est initialisé dans le bootstrap et dans le runtime (tout en changeant de logger)
     private static final Set<String> TEXT_EXTENSIONS = Set.of(
             "yml",
             "yaml",
@@ -38,7 +37,7 @@ public class FilesUtils {
      * @param dir Répertoire à supprimer
      * @throws IOException Si une erreur survient lors de la suppression
      */
-    public static void deleteDirectory(Logger logger, File dir) throws IOException {
+    public static void deleteDirectory(File dir) throws IOException {
         if (!dir.exists()) return;
 
         Files.walk(Paths.get(dir.getAbsolutePath()))
@@ -47,30 +46,18 @@ public class FilesUtils {
                     try {
                         Files.delete(path);
                     } catch (IOException e) {
-                        if (logger != null)
-                            logger.warn("Impossible de supprimer: {}", path, e);
+                        OMCLogger.warn("Impossible de supprimer: {}", path, e);
                     }
                 });
     }
 
     /**
-     * Supprime récursivement un répertoire
-     *
-     * @param dir Répertoire à supprimer
-     * @throws IOException Si une erreur survient lors de la suppression
-     */
-    public static void deleteDirectory(File dir) throws IOException {
-        deleteDirectory(null, dir);
-    }
-
-    /**
      * Retourne la liste de tous les dossiers présents
      *
-     * @param logger Le logger
      * @param pathName Chemin
      * @return Liste des noms des dossiers
      */
-    public static List<String> listFolderNames(Logger logger, String pathName) {
+    public static List<String> listFolderNames(String pathName) {
         Set<String> folderNames = new HashSet<>();
 
         try {
@@ -83,7 +70,7 @@ public class FilesUtils {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Erreur lors de la lecture: {}", e.getMessage());
+            OMCLogger.warn("Erreur lors de la lecture: {}", e.getMessage());
         }
 
         return folderNames.stream().sorted().toList();
@@ -92,11 +79,10 @@ public class FilesUtils {
     /**
      * Retourne la liste de tous les fichiers présents
      *
-     * @param logger Le logger
      * @param pathName Chemin
      * @return Liste des noms des dossiers
      */
-    public static List<String> listFileNames(Logger logger, String pathName) {
+    public static List<String> listFileNames(String pathName) {
         Set<String> result = new HashSet<>();
 
         try {
@@ -108,7 +94,7 @@ public class FilesUtils {
                         .forEach(path -> result.add(toFileName(rootPath, path)));
             }
         } catch (Exception e) {
-            logger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
+            OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
         }
 
         return result.stream().sorted().toList();
@@ -117,11 +103,10 @@ public class FilesUtils {
     /**
      * Retourne la liste de tous les dossiers présents dans une ressource du JAR
      *
-     * @param logger Le logger
      * @param resourcePath Chemin dans les ressources (ex: "contents")
      * @return Liste des noms des dossiers dans la ressource
      */
-    public static List<String> listFolderNamesInResource(Logger logger, String resourcePath) {
+    public static List<String> listFolderNamesInResource(String resourcePath) {
         Set<String> folderNames = new HashSet<>();
 
         try {
@@ -134,9 +119,9 @@ public class FilesUtils {
                 if (protocol.equals("file")) {
                     // * méthode de parcours d'un fichier
                     try {
-                        folderNames.addAll(listFolderNames(logger, url.getPath()));
+                        folderNames.addAll(listFolderNames(url.getPath()));
                     } catch (Exception e) {
-                        logger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
+                        OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
                     }
 
                 } else if (protocol.equals("jar")) {
@@ -169,12 +154,12 @@ public class FilesUtils {
                             }
                         }
                     } catch (IOException e) {
-                        logger.warn("Erreur lors de la lecture des ressources en mode JAR: {}", e.getMessage());
+                        OMCLogger.warn("Erreur lors de la lecture des ressources en mode JAR: {}", e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
-            logger.warn("Erreur lors de l'accès aux ressources: {}", e.getMessage());
+            OMCLogger.warn("Erreur lors de l'accès aux ressources: {}", e.getMessage());
         }
 
         return folderNames.stream().sorted().toList();
@@ -183,11 +168,10 @@ public class FilesUtils {
     /**
      * Retourne la liste de tous les fichiers présents dans une ressource du JAR
      *
-     * @param logger Le logger
      * @param resourcePath Chemin dans les ressources (ex: "contents")
      * @return Liste des noms des fichiers dans la ressource
      */
-    public static List<String> listFileNamesInResource(Logger logger, String resourcePath) {
+    public static List<String> listFileNamesInResource(String resourcePath) {
         Set<String> result = new HashSet<>();
 
         try {
@@ -202,9 +186,9 @@ public class FilesUtils {
                         Path rootPath = Paths.get(url.toURI());
                         if (!Files.exists(rootPath)) continue;
 
-                        result.addAll(listFileNames(logger, rootPath.toString()));
+                        result.addAll(listFileNames(rootPath.toString()));
                     } catch (Exception e) {
-                        logger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
+                        OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
                     }
                 }
 
@@ -230,12 +214,12 @@ public class FilesUtils {
                             }
                         }
                     } catch (IOException e) {
-                        logger.warn("Erreur lors de la lecture des ressources en mode JAR: {}", e.getMessage());
+                        OMCLogger.warn("Erreur lors de la lecture des ressources en mode JAR: {}", e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
-            logger.warn("Erreur lors de l'accès aux ressources: {}", e.getMessage());
+            OMCLogger.warn("Erreur lors de l'accès aux ressources: {}", e.getMessage());
         }
         return result.stream().sorted().toList();
     }
@@ -247,8 +231,8 @@ public class FilesUtils {
      * @param destDir Dossier destination
      * @throws IOException Si une erreur survient lors de la copie
      */
-    public static void copyResourceFolder(Logger logger, String sourcePath, File destDir) throws IOException {
-        copyResourceFolder(logger, sourcePath, destDir, null);
+    public static void copyResourceFolder(String sourcePath, File destDir) throws IOException {
+        copyResourceFolder(sourcePath, destDir, null);
     }
 
     /**
@@ -259,7 +243,7 @@ public class FilesUtils {
      * @param textTransformer transformeur appliqué aux fichiers texte (peut être null).
      * @throws IOException Si une erreur survient lors de la copie.
      */
-    public static void copyResourceFolder(Logger logger, String sourcePath, File destDir,
+    public static void copyResourceFolder(String sourcePath, File destDir,
                                           Function<String, String> textTransformer) throws IOException {
         try {
             Enumeration<URL> resources = CLASS_LOADER.getResources(sourcePath);
@@ -282,22 +266,22 @@ public class FilesUtils {
                                                 File parentDir = destFile.getParentFile();
                                                 if (parentDir != null && !parentDir.exists()) {
                                                     if (!parentDir.mkdirs()) {
-                                                        logger.warn("Impossible de créer le dossier: {}", parentDir.getAbsolutePath());
+                                                        OMCLogger.warn("Impossible de créer le dossier: {}", parentDir.getAbsolutePath());
                                                     }
                                                 }
 
                                                 Files.copy(sourceFile, destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                                                 if (textTransformer != null) {
-                                                    transformTextFile(logger, destFile, textTransformer);
+                                                    transformTextFile(destFile, textTransformer);
                                                 }
                                             } catch (IOException e) {
-                                                logger.warn("Erreur lors de la copie du fichier: {}", e.getMessage());
+                                                OMCLogger.warn("Erreur lors de la copie du fichier: {}", e.getMessage());
                                             }
                                         });
                             }
                         }
                     } catch (Exception e) {
-                        logger.warn("Erreur lors de la copie en mode fichier: {}", e.getMessage());
+                        OMCLogger.warn("Erreur lors de la copie en mode fichier: {}", e.getMessage());
                     }
                 } else if (protocol.equals("jar")) {
                     // * méthode de parcours d'un jar
@@ -323,7 +307,7 @@ public class FilesUtils {
                                     File parentDir = destFile.getParentFile();
                                     if (parentDir != null && !parentDir.exists()) {
                                         if (!parentDir.mkdirs()) {
-                                            logger.warn("Impossible de créer le dossier: {}", parentDir.getAbsolutePath());
+                                            OMCLogger.warn("Impossible de créer le dossier: {}", parentDir.getAbsolutePath());
                                         }
                                     }
 
@@ -331,19 +315,19 @@ public class FilesUtils {
                                     try (InputStream in = jar.getInputStream(entry)) {
                                         Files.copy(in, destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                                         if (textTransformer != null) {
-                                            transformTextFile(logger, destFile, textTransformer);
+                                            transformTextFile(destFile, textTransformer);
                                         }
                                     }
                                 }
                             }
                         }
                     } catch (IOException e) {
-                        logger.warn("Erreur lors de la copie en mode JAR: {}", e.getMessage());
+                        OMCLogger.warn("Erreur lors de la copie en mode JAR: {}", e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
-            logger.error("Erreur lors de l'accès aux ressources: {}", e.getMessage(), e);
+            OMCLogger.error("Erreur lors de l'accès aux ressources: {}", e.getMessage(), e);
             throw new IOException("Erreur lors de la copie des ressources", e);
         }
     }
@@ -352,7 +336,7 @@ public class FilesUtils {
      * Dit si le fichier est compatible avec le systeme de transformation
      * @param fileName le nom du fichier
      * @param textTransformer le transformeur de texte à appliquer (peut être null)
-     * @return
+     * @return Dit si le fichier est compatible avec le systeme de transformation
      */
     private static boolean shouldTransform(String fileName, Function<String, String> textTransformer) {
         if (textTransformer == null || fileName == null) {
@@ -371,12 +355,11 @@ public class FilesUtils {
     /**
      * Transforme un fichier texte en appliquant un transformeur.
      *
-     * @param logger logger pour les avertissements (peut être {@code null}).
      * @param file fichier à transformer.
      * @param textTransformer transformeur de contenu.
      * @return {@code true} si un changement a été appliqué, sinon {@code false}.
      */
-    public static boolean transformTextFile(Logger logger, File file, Function<String, String> textTransformer) {
+    public static boolean transformTextFile(File file, Function<String, String> textTransformer) {
         if (file == null || textTransformer == null || !file.isFile()) {
             return false;
         }
@@ -395,9 +378,7 @@ public class FilesUtils {
             Files.writeString(file.toPath(), transformed, StandardCharsets.UTF_8);
             return true;
         } catch (IOException e) {
-            if (logger != null) {
-                logger.warn("Erreur lors de la transformation du fichier: {}", file.getAbsolutePath(), e);
-            }
+            OMCLogger.warn("Erreur lors de la transformation du fichier: {}", file.getAbsolutePath(), e);
             return false;
         }
     }

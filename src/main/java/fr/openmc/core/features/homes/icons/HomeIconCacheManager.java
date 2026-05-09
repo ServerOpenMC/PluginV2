@@ -3,6 +3,7 @@ package fr.openmc.core.features.homes.icons;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.Bukkit;
@@ -46,7 +47,7 @@ public class HomeIconCacheManager extends Feature implements LoadAfterItemsAdder
                     initializeCategoryCache(category);
 
                 initialized = true;
-                OMCPlugin.getInstance().getSLF4JLogger().info("Initialized icon cache manager");
+                OMCLogger.info("Initialized icon cache manager");
             } catch (Exception e) {
                 throw new RuntimeException("Failed to initialize icon cache manager", e);
             }
@@ -67,7 +68,7 @@ public class HomeIconCacheManager extends Feature implements LoadAfterItemsAdder
                 ItemStack baseItem = icon.getItemStack().clone();
                 cachedItems.add(new CachedIconItem(icon, baseItem));
             } catch (Exception e) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to create base item for icon: {} - {}", icon.id(), e.getMessage(), e);
+                OMCLogger.warn("Failed to create base item for icon: {} - {}", icon.id(), e.getMessage(), e);
             }
         }
 
@@ -138,7 +139,7 @@ public class HomeIconCacheManager extends Feature implements LoadAfterItemsAdder
                     ItemStack baseItem = icon.getItemStack().clone();
                     cachedItems.add(new CachedIconItem(icon, baseItem));
                 } catch (Exception e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to create base item for icon: {} - {}", icon.id(), e.getMessage(), e);
+                    OMCLogger.warn("Failed to create base item for icon: {} - {}", icon.id(), e.getMessage(), e);
                 }
             }
 

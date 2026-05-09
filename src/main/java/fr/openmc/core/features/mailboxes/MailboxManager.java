@@ -4,11 +4,11 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
@@ -98,7 +98,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
             sendSuccessSendingMessage(sender, receiverName, numItems);
             return true;
         } catch (Exception ex) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline player: {}", ex.getMessage(), ex);
+            OMCLogger.warn("Error while sending items to offline player: {}", ex.getMessage(), ex);
             MessagesManager.sendMessage(
                     sender,
                     Component.text("Une erreur est apparue lors de l'envoie des items à ", NamedTextColor.DARK_RED)
@@ -126,7 +126,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
                 letters.add(letter);
             }
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline players: {}", e.getMessage(), e);
+            OMCLogger.warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }
     }
 
@@ -283,7 +283,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
                     .max()
                     .orElse(0) + 1;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading letters from database: {}", e.getMessage(), e);
+            OMCLogger.error("Error loading letters from database: {}", e.getMessage(), e);
         }
     }
 
@@ -294,7 +294,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
                 letterDao.create(letter);
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving letters to database: {}", e.getMessage(), e);
+            OMCLogger.error("Error saving letters to database: {}", e.getMessage(), e);
         }
     }
 }

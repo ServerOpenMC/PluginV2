@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.debug.DebugCooldownCommand;
 import fr.openmc.core.commands.utils.CooldownCommand;
 import org.bukkit.Bukkit;
@@ -138,7 +139,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
     }
 
     public static void saveCooldowns() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving cooldowns...");
+        OMCLogger.info("Saving cooldowns...");
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
@@ -158,7 +159,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
             });
         });
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Cooldowns saved successfully.");
+        OMCLogger.info("Cooldowns saved successfully.");
     }
 
     /**

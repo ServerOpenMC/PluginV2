@@ -3,7 +3,7 @@ package fr.openmc.api.menulib.utils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -208,7 +208,7 @@ public class ItemBuilder extends ItemStack {
 		try {
 			MenuLib.setItemClickEvent(itemMenu, this, e);
 		} catch (Exception ex) {
-			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the click event: {}", ex.getMessage(), ex);
+			OMCLogger.error("An error occurred while setting the click event: {}", ex.getMessage(), ex);
 		}
 		return this;
 	}
@@ -227,7 +227,7 @@ public class ItemBuilder extends ItemStack {
 			return this;
 		} catch (Exception e) {
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
-			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the close button: {}", e.getMessage(), e);
+			OMCLogger.error("An error occurred while setting the close button: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
 		}
 		return this;
@@ -256,7 +256,7 @@ public class ItemBuilder extends ItemStack {
 			return this;
 		} catch (Exception e) {
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
-			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the next page button: {}", e.getMessage(), e);
+			OMCLogger.error("An error occurred while setting the next page button: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
 		}
 		return this;
@@ -284,7 +284,7 @@ public class ItemBuilder extends ItemStack {
 		} catch (Exception e) {
 			itemMenu.getOwner().closeInventory();
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
-			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the previous page button: {}", e.getMessage(), e);
+			OMCLogger.error("An error occurred while setting the previous page button: {}", e.getMessage(), e);
 		}
 		return this;
 	}
@@ -343,7 +343,7 @@ public class ItemBuilder extends ItemStack {
 			return super.setItemMeta(itemMeta);
 		} catch (Exception e) {
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
-			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the item meta: {}", e.getMessage(), e);
+			OMCLogger.error("An error occurred while setting the item meta: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
 		}
 		return false;

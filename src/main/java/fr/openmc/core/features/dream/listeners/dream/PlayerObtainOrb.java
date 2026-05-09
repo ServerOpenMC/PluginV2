@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.AltarCraftingEvent;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
@@ -124,7 +124,7 @@ public class PlayerObtainOrb implements Listener {
             DreamManager.saveDreamPlayerData(dreamPlayer);
             cache = DreamManager.getCacheDreamPlayer(player);
             if (cache == null) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn("player ({}) had no cache even after saving it. [PlayerObtainOrb#setProgressionOrb]", player.getUniqueId());
+                OMCLogger.warn("player ({}) had no cache even after saving it. [PlayerObtainOrb#setProgressionOrb]", player.getUniqueId());
                 return;
             }
         }

@@ -6,7 +6,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -43,7 +43,7 @@ public class FriendSQLManager {
             }
 
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Friends Object 1={} 2={}", first, second, e);
+            OMCLogger.error("Failed to get Friends Object 1={} 2={}", first, second, e);
             return null;
         }
     }
@@ -52,7 +52,7 @@ public class FriendSQLManager {
         try {
             return friendsDao.create(new Friend(first, second, Timestamp.valueOf(LocalDateTime.now()))) != 0;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to add Friends in database", e);
+            OMCLogger.error("Failed to add Friends in database", e);
             return false;
         }
     }
@@ -61,7 +61,7 @@ public class FriendSQLManager {
         try {
             return friendsDao.delete(getFriendObject(first, second)) != 0;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to remove Friends in database", e);
+            OMCLogger.error("Failed to remove Friends in database", e);
             return false;
         }
     }
@@ -80,7 +80,7 @@ public class FriendSQLManager {
         try {
             return friendsDao.update(friend) != 0;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to set Best Friends in database", e);
+            OMCLogger.error("Failed to set Best Friends in database", e);
             return false;
         }
     }
@@ -98,7 +98,7 @@ public class FriendSQLManager {
                 query.where().eq("first", playerUUID).or().eq("second", playerUUID);
                 friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get a friends async", e);
+                OMCLogger.error("Failed to get a friends async", e);
             }
             return friends;
         });
@@ -115,7 +115,7 @@ public class FriendSQLManager {
                         query.where().eq("best_friend", true));
                 friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Best Friends async", e);
+                OMCLogger.error("Failed to get Best Friends async", e);
             }
             return friends;
         });
