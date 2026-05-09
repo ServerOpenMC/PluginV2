@@ -1,10 +1,19 @@
 package fr.openmc.core.hooks.itemsadder;
 
+import dev.lone.itemsadder.api.ItemsAdder;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.hooks.ApiHook;
 import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
+import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import lombok.Getter;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.List;
@@ -13,7 +22,10 @@ import java.util.List;
  * Gère toutes les actions spéciales avec items adder (injecteur de namespaces)
  */
 @SuppressWarnings("UnstableApiUsage")
-public class ItemsAdderHook extends Hooks {
+public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
+    @Getter
+    private static ItemsAdder api;
+
     private static final String CONTENTS_FOLDER_NAME = "contents";
 
     public static boolean isEnable() {
@@ -23,6 +35,50 @@ public class ItemsAdderHook extends Hooks {
     @Override
     protected String getPluginName() {
         return "ItemsAdder";
+    }
+
+    @Override
+    public void init() {
+        api = ApiHook.super.api();
+
+        OMCPlugin.registerEvents(
+                new BehaviourUpBlock()
+        );
+    }
+
+    /**
+     * Charge les contents qui sont chargé dans ItemsAdder
+     * Appelle {@code IAItemLoadEvent} et donne en meme temps le Yaml de l'item.
+     * DOIT ETRE LANCE APRES QUE ITEMS ADDER SOIT COMPLETEMENT CHARGE
+     */
+    public static void loadContents() {
+        File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/pluigns
+        File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
+        File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents
+
+        List<String> contentFoldersName = FilesUtils.listFolderNames(OMCPlugin.getInstance().getSLF4JLogger(), contentDir.getAbsolutePath());
+
+        for (String content : contentFoldersName) {
+            File inContentDir = new File(contentDir, content);
+
+            List<File> ymlFiles = FilesUtils.getAllFiles(inContentDir, "yml");
+
+            for (File ymlFile : ymlFiles) {
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(ymlFile);
+
+                String namespace = config.getString("info.namespace");
+                ConfigurationSection itemsSection = config.getConfigurationSection("items");
+
+                if (itemsSection == null) continue;
+
+                for (String itemId : itemsSection.getKeys(false)) {
+                    ConfigurationSection itemSection = itemsSection.getConfigurationSection(itemId);
+
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(),
+                            () -> Bukkit.getPluginManager().callEvent(new IAItemLoadEvent(namespace, itemId, itemSection)));
+                }
+            }
+        }
     }
 
     /**
@@ -92,5 +148,10 @@ public class ItemsAdderHook extends Hooks {
         } catch (Exception e) {
             logger.warn("Erreur lors de la copie du dossier {}: {}", folderName, e.getMessage());
         }
+    }
+
+    @Override
+    public Class<ItemsAdder> apiClass() {
+        return ItemsAdder.class;
     }
 }

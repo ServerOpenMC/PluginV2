@@ -16,6 +16,7 @@ items:
         placed_model:
           type: REAL_NOTE
           break_particles: ITEM
+        up_block: omc_daily_events:obese_potato_stem
 
   obese_potato_stem:
     display_name: Tige de patate obèse
