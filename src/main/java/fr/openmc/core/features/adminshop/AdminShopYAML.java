@@ -1,6 +1,7 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

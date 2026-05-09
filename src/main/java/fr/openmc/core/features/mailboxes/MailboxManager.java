@@ -8,6 +8,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;

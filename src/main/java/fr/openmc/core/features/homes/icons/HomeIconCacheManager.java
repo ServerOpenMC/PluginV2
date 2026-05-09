@@ -3,6 +3,7 @@ package fr.openmc.core.features.homes.icons;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.Bukkit;

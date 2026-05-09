@@ -1,6 +1,7 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.economy.EconomyManager;

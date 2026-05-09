@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.listeners.registry.DreamBlocksListeners;
 import fr.openmc.core.features.dream.mecanism.altar.AltarManager;

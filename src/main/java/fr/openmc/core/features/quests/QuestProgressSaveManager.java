@@ -2,6 +2,7 @@ package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;

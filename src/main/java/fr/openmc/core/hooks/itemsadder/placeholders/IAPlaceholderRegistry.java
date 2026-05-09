@@ -1,9 +1,9 @@
 package fr.openmc.core.hooks.itemsadder.placeholders;
 
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.placeholders.DreamItemMaterialPlaceholder;
 import fr.openmc.core.features.dream.placeholders.DreamItemNamePlaceholder;
 import fr.openmc.core.features.dream.placeholders.DreamItemTooltipPlaceholder;
-import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,10 +55,9 @@ public class IAPlaceholderRegistry {
      * Remplace les placeholders dans une chaîne.
      *
      * @param input chaîne d'entrée.
-     * @param logger logger pour avertir en cas de placeholder inconnu.
      * @return chaîne avec placeholders remplacés.
      */
-    public String applyPlaceholders(String input, Logger logger) {
+    public String applyPlaceholders(String input) {
         if (input == null || input.isEmpty()) {
             return input;
         }
@@ -102,7 +101,7 @@ public class IAPlaceholderRegistry {
             String resolved = placeholder.resolve(argument);
             if (resolved == null) {
                 String key = placeholderName + ":" + argument;
-                logger.warn("Placeholder ItemsAdder introuvable: {}", key);
+                OMCLogger.warnFormatted("Placeholder ItemsAdder introuvable: {}", key);
 
                 output.append(formatPlaceholder(placeholderName, argument));
                 cursor = closeIndex + 1;

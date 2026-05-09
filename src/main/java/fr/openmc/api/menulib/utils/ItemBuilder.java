@@ -3,6 +3,7 @@ package fr.openmc.api.menulib.utils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

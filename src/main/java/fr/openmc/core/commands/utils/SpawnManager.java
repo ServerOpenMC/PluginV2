@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.listeners.RespawnListener;
 import lombok.Getter;
 import org.bukkit.Location;

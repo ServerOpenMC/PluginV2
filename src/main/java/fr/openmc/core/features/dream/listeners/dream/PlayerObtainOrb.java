@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.AltarCraftingEvent;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;

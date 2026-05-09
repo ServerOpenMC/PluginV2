@@ -8,6 +8,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;

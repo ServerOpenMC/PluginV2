@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
 import fr.openmc.core.features.settings.models.PlayerSettingEntity;

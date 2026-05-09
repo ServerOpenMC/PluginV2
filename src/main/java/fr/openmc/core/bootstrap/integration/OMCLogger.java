@@ -45,6 +45,15 @@ public class OMCLogger {
     }
 
     /**
+     * Affiche un message de level DEBUG
+     * @param message le message
+     * @param args les arguments
+     */
+    public static void debug(String message, Object... args) {
+        logDebug(message, args);
+    }
+
+    /**
      * Affiche un message formatté de succès (avec l'icone ✔)
      * @param message le message
      * @param args les arguments
@@ -146,6 +155,14 @@ public class OMCLogger {
             runtimeLogger.warn(message, args);
         } else if (bootstrapLogger != null) {
             bootstrapLogger.warn(message, args);
+        }
+    }
+
+    private static void logDebug(String message, Object... args) {
+        if (runtimeLogger != null) {
+            runtimeLogger.debug(message, args);
+        } else if (bootstrapLogger != null) {
+            bootstrapLogger.debug(message, args);
         }
     }
 }

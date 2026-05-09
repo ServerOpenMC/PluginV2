@@ -8,6 +8,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;

@@ -10,6 +10,7 @@ import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;

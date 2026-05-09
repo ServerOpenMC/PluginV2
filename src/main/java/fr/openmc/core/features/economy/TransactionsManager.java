@@ -9,6 +9,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.Stats;
 import org.bukkit.Bukkit;
 

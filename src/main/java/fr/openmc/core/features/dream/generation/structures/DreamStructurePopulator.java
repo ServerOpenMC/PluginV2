@@ -6,6 +6,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.world.structure.SchematicsUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;

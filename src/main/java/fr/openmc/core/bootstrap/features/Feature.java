@@ -4,6 +4,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.*;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.event.Listener;
 
 import java.sql.SQLException;
@@ -21,11 +22,11 @@ public abstract class Feature {
     public final void startInit() {
         // Condition d'initialisation (si feature ne doit pas etre lancé dans les tests ou que elle nécéssite un hook)
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
-            OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
             return;
         }
         if (this instanceof LoadIfEnable<?> loadIfEnable && !loadIfEnable.shouldLoad()) {
-            OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
             return;
         }
 
@@ -36,12 +37,12 @@ public abstract class Feature {
             if (this instanceof HasListeners hasListeners) {
                 for (Listener listener : hasListeners.getListeners()) {
                     if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
-                        OMCPlugin.getInstance().logErrorMessage("Listener " + listener.getClass().getSimpleName() + " de Feature " + this.getClass().getSimpleName() + " non chargée dans les Unit Tests");
+                        OMCLogger.errorFormatted("Listener " + listener.getClass().getSimpleName() + " de Feature " + this.getClass().getSimpleName() + " non chargée dans les Unit Tests");
                         continue;
                     }
 
                     if (this instanceof LoadIfEnable<?> loadIfEnable && !loadIfEnable.shouldLoad()) {
-                        OMCPlugin.getInstance().logErrorMessage("Listener " + listener.getClass().getSimpleName() + " de Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
+                        OMCLogger.errorFormatted("Listener " + listener.getClass().getSimpleName() + " de Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
                         continue;
                     }
 
@@ -56,10 +57,10 @@ public abstract class Feature {
                 }
 
             initialize = true;
-            OMCPlugin.getInstance().logSuccessMessage("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
+            OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
         } catch (Exception e) {
             initialize = false;
-            OMCPlugin.getInstance().logErrorMessage("Feature " + this.getClass().getSimpleName() + " non initialisée.");
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
             throw e;
         }
     }

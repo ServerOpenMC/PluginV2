@@ -5,7 +5,6 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 import java.io.File;
 import java.util.List;
@@ -48,16 +47,16 @@ public class ItemsAdderHook extends Hooks {
 
             // * Charge les registres de nos placeholders
             IAPlaceholderRegistry placeholderRegistry = IAPlaceholderRegistry.loadDefault();
-            logger.info("\u001B[32m{} placeholders ItemsAdder chargés\u001B[0m", placeholderRegistry.getPlaceholdersCount());
+            OMCLogger.successFormatted("{} placeholders ItemsAdder chargés", placeholderRegistry.getPlaceholdersCount());
 
             // * Copie chaque dossier de contenu
             for (String folder : contentFolders) {
-                copyContentFolder(context, folder, contentDir, placeholderRegistry);
+                copyContentFolder(folder, contentDir, placeholderRegistry);
             }
 
-            logger.info("\u001B[32m✔ Contenus ItemsAdder copiés avec succès\u001B[0m");
+            OMCLogger.successFormatted("Contenus ItemsAdder copiés avec succès");
         } catch (Exception e) {
-            logger.error("Erreur lors de la copie des contenus ItemsAdder", e);
+            OMCLogger.error("Erreur lors de la copie des contenus ItemsAdder", e);
         }
     }
 
@@ -67,30 +66,29 @@ public class ItemsAdderHook extends Hooks {
      * @param folderName Nom du dossier à copier
      * @param targetDir Dossier destination
      */
-    private static void copyContentFolder(BootstrapContext context, String folderName, File targetDir,
+    private static void copyContentFolder(String folderName, File targetDir,
                                           IAPlaceholderRegistry placeholderRegistry) {
-        ComponentLogger logger = context.getLogger();
         try {
             File destFolder = new File(targetDir, folderName);
 
             // * On supprime le dossier qui se trouve déjà ds contents
             if (destFolder.exists()) {
-                FilesUtils.deleteDirectory(logger, destFolder);
+                FilesUtils.deleteDirectory(destFolder);
             }
 
             // * On crée le dossier si il n'est pas fait
             if (!FilesUtils.createDirectoryIfNotExists(destFolder)) {
-                logger.warn("Impossible de créer le dossier {}", destFolder.getAbsolutePath());
+                OMCLogger.warn("Impossible de créer le dossier {}", destFolder.getAbsolutePath());
                 return;
             }
 
             // * On copie les resources contents vers la plugins/ItemAdder/contents
-            FilesUtils.copyResourceFolder(logger, CONTENTS_FOLDER_NAME + "/" + folderName, destFolder,
-                    content -> placeholderRegistry.applyPlaceholders(content, logger));
+            FilesUtils.copyResourceFolder(CONTENTS_FOLDER_NAME + "/" + folderName, destFolder,
+                    content -> placeholderRegistry.applyPlaceholders(content));
 
-            logger.debug("Dossier {} copié avec succès", folderName);
+            OMCLogger.debug("Dossier {} copié avec succès", folderName);
         } catch (Exception e) {
-            logger.warn("Erreur lors de la copie du dossier {}: {}", folderName, e.getMessage());
+            OMCLogger.warn("Erreur lors de la copie du dossier {}: {}", folderName, e.getMessage());
         }
     }
 }

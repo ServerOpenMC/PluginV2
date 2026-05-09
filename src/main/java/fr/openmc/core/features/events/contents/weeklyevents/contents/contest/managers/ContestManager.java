@@ -12,6 +12,7 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;

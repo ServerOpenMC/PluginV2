@@ -4,6 +4,7 @@ import com.flowpowered.nbt.*;
 import com.flowpowered.nbt.Tag;
 import com.flowpowered.nbt.stream.NBTInputStream;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;

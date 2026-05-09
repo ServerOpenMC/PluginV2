@@ -3,6 +3,7 @@ package fr.openmc.api.menulib;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;

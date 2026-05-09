@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.event.Listener;

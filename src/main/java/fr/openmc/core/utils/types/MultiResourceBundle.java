@@ -94,7 +94,7 @@ public class MultiResourceBundle {
         Set<String> result = new HashSet<>();
 
         for (String localePath : getLocaleHierarchy()) {
-            for (String fileName : FilesUtils.listFileNamesInResource(null, folderName + "/" + localePath)) {
+            for (String fileName : FilesUtils.listFileNamesInResource(folderName + "/" + localePath)) {
                 result.add(toBundleName(fileName));
             }
         }

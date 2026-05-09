@@ -6,6 +6,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;

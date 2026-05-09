@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.generation.structures;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

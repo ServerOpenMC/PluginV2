@@ -8,6 +8,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.models.Statistic;
 import org.bukkit.Bukkit;
 

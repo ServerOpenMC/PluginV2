@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.animations.commands.DebugAnimationCommand;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;

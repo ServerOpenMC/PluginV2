@@ -2,6 +2,7 @@ package fr.openmc.core.features.displays.bossbar.contents;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
