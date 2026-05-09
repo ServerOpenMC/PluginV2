@@ -11,7 +11,6 @@ import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,7 +56,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
         File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
         File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents
 
-        List<String> contentFoldersName = FilesUtils.listFolderNames(OMCPlugin.getInstance().getSLF4JLogger(), contentDir.getAbsolutePath());
+        List<String> contentFoldersName = FilesUtils.listFolderNames(contentDir.getAbsolutePath());
 
         for (String content : contentFoldersName) {
             File inContentDir = new File(contentDir, content);
@@ -141,7 +140,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
 
             // * On copie les resources contents vers la plugins/ItemAdder/contents
             FilesUtils.copyResourceFolder(CONTENTS_FOLDER_NAME + "/" + folderName, destFolder,
-                    content -> placeholderRegistry.applyPlaceholders(content));
+                    placeholderRegistry::applyPlaceholders);
 
             OMCLogger.debug("Dossier {} copié avec succès", folderName);
         } catch (Exception e) {

@@ -21,7 +21,6 @@ import java.util.jar.JarFile;
  * Utilitaires pour la gestion des fichiers et dossiers
  */
 public class FilesUtils {
-    //todo: enelver les Logger et faire une classe OMCLogger en static qui est initialisé dans le bootstrap et dans le runtime (tout en changeant de logger)
     private static final Set<String> TEXT_EXTENSIONS = Set.of(
             "yml",
             "yaml",
@@ -55,11 +54,10 @@ public class FilesUtils {
     /**
      * Retourne la liste de tous les dossiers présents
      *
-     * @param logger Le logger
      * @param pathName Chemin
      * @return Liste des noms des dossiers
      */
-    public static List<String> listFolderNames(Logger logger, String pathName) {
+    public static List<String> listFolderNames(String pathName) {
         Set<String> folderNames = new HashSet<>();
 
         try {
@@ -72,7 +70,7 @@ public class FilesUtils {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Erreur lors de la lecture: {}", e.getMessage());
+            OMCLogger.warn("Erreur lors de la lecture: {}", e.getMessage());
         }
 
         return folderNames.stream().sorted().toList();
@@ -81,11 +79,10 @@ public class FilesUtils {
     /**
      * Retourne la liste de tous les fichiers présents
      *
-     * @param logger Le logger
      * @param pathName Chemin
      * @return Liste des noms des dossiers
      */
-    public static List<String> listFileNames(Logger logger, String pathName) {
+    public static List<String> listFileNames(String pathName) {
         Set<String> result = new HashSet<>();
 
         try {
@@ -97,7 +94,7 @@ public class FilesUtils {
                         .forEach(path -> result.add(toFileName(rootPath, path)));
             }
         } catch (Exception e) {
-            logger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
+            OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
         }
 
         return result.stream().sorted().toList();
@@ -106,7 +103,6 @@ public class FilesUtils {
     /**
      * Retourne la liste de tous les dossiers présents dans une ressource du JAR
      *
-     * @param logger Le logger
      * @param resourcePath Chemin dans les ressources (ex: "contents")
      * @return Liste des noms des dossiers dans la ressource
      */
@@ -123,7 +119,7 @@ public class FilesUtils {
                 if (protocol.equals("file")) {
                     // * méthode de parcours d'un fichier
                     try {
-                        folderNames.addAll(listFolderNames(logger, url.getPath()));
+                        folderNames.addAll(listFolderNames(url.getPath()));
                     } catch (Exception e) {
                         OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
                     }
@@ -190,7 +186,7 @@ public class FilesUtils {
                         Path rootPath = Paths.get(url.toURI());
                         if (!Files.exists(rootPath)) continue;
 
-                        result.addAll(listFileNames(logger, rootPath.toString()));
+                        result.addAll(listFileNames(rootPath.toString()));
                     } catch (Exception e) {
                         OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
                     }
