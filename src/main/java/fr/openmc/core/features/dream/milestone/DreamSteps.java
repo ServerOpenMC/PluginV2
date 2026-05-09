@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.milestone;
 
 import fr.openmc.core.features.dream.milestone.quests.*;
 import fr.openmc.core.features.milestones.MilestoneStep;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import lombok.Getter;
 
 @Getter

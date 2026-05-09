@@ -2,9 +2,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -29,12 +29,12 @@ public class OpenSettingsMenuQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.COMPARATOR,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.OPEN_SETTINGS,
+		        TutorialSteps.OPEN_SETTINGS,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.OPEN_SETTINGS.ordinal() + 1) + " §f! Les §9paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, ..." +
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_SETTINGS.ordinal() + 1) + " §f! Les §9paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, ..." +
 								        " Sujet à part, vous pouvez passer en mode compétition grâce aux §6contests§f, une sorte de concours hebdomadaire !",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS

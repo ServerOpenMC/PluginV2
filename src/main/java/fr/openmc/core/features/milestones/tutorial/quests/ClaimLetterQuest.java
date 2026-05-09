@@ -2,9 +2,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -28,12 +28,12 @@ public class ClaimLetterQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.PAPER,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.CLAIM_LETTER,
+		        TutorialSteps.CLAIM_LETTER,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.CLAIM_LETTER.ordinal() + 1) + " §f! Vous avez découvert les bases d'OpenMC. Et maintenant, libre à vous d'aller découvrir les features par vous même ! Sur ce, nous vous souhaitons le meilleur de votre aventure sur §dOpenMC §f!",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.CLAIM_LETTER.ordinal() + 1) + " §f! Vous avez découvert les bases d'OpenMC. Et maintenant, libre à vous d'aller découvrir les features par vous même ! Sur ce, nous vous souhaitons le meilleur de votre aventure sur §dOpenMC §f!",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )

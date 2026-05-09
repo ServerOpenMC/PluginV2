@@ -3,9 +3,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -29,12 +29,12 @@ public class OpenAdminShopMenuQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.EMERALD,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.OPEN_ADMINSHOP,
+		        TutorialSteps.OPEN_ADMINSHOP,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.OPEN_ADMINSHOP.ordinal() + 1) + " §f! L'§cadminshop §fvous servira à vous procurer de l'argent et des blocs ! Vous pouvez d'ailleurs dès maintenant vendre ou acheter une ressource à l'adminshop !",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_ADMINSHOP.ordinal() + 1) + " §f! L'§cadminshop §fvous servira à vous procurer de l'argent et des blocs ! Vous pouvez d'ailleurs dès maintenant vendre ou acheter une ressource à l'adminshop !",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )
