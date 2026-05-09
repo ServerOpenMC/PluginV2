@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -52,7 +52,7 @@ public class CityCreateConditions {
             return false;
         }
 
-        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest(), AYWENITE_CREATE)) {
+        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite")).getBest(), AYWENITE_CREATE)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(AYWENITE_CREATE)), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

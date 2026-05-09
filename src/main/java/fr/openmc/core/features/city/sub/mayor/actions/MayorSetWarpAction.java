@@ -2,12 +2,12 @@ package fr.openmc.core.features.city.sub.mayor.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -75,7 +75,7 @@ public class MayorSetWarpAction {
         List<Component> loreItemInterraction = List.of(
                 TranslationManager.translation("feature.city.mayor.warp.wand.lore")
         );
-        ItemStack item = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
+        ItemStack item = OMCRegistry.CUSTOM_ITEMS.get("omc_items:warp_stick").getBest();
         ItemMeta itemMeta = item.getItemMeta();
 
         itemMeta.displayName(TranslationManager.translation("feature.city.mayor.warp.wand.name"));

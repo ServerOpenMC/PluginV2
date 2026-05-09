@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public abstract class CustomItem {
     @Override
     public boolean equals(Object object) {
         if (object instanceof ItemStack anotherItem) {
-            CustomItem citem = CustomItemRegistry.getByItemStack(anotherItem);
+            CustomItem citem = OMCRegistry.CUSTOM_ITEMS.get(anotherItem);
 
             if (citem == null) return false;
             return citem.getId().equals(this.getId());

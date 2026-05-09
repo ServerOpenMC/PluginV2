@@ -3,12 +3,12 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -119,6 +119,6 @@ public class MineralRushPerk implements Listener {
 
         Block block = event.getBlock();
 
-        block.getWorld().dropItemNaturally(block.getLocation(), CustomItemRegistry.getByName("omc_items:aywenite").getBest());
+        block.getWorld().dropItemNaturally(block.getLocation(), OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest());
     }
 }

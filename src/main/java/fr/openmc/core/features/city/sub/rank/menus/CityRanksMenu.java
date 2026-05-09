@@ -3,13 +3,13 @@ package fr.openmc.core.features.city.sub.rank.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -127,7 +127,7 @@ public class CityRanksMenu extends Menu {
 		if (canManageRanks) {
 			List<Component> loreCreateRank = TranslationManager.translationLore("feature.city.rank.menu.list.create.lore");
 
-			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
+			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(),
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.create.title"));
 						itemMeta.lore(loreCreateRank);

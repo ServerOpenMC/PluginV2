@@ -1,7 +1,7 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.items.options.UsableItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class InteractListener implements Listener {
         Player player = event.getPlayer();
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        CustomItem item = CustomItemRegistry.getByItemStack(itemInHand);
+        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
 
         if (item == null) return;
 

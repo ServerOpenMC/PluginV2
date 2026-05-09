@@ -3,12 +3,12 @@ package fr.openmc.core.features.city.sub.milestone.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.CityRequirement;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
 import fr.openmc.core.features.city.sub.milestone.requirements.ItemDepositRequirement;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -132,10 +132,10 @@ public class LevelMilestoneMenu extends PaginatedMenu {
 
         buttons.put(49, new ItemBuilder(this, Material.BARRIER, meta ->
                 meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
-        buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+        buttons.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
-        buttons.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+        buttons.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
 

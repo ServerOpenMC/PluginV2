@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.registries;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.commands.DreamItemCommand;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemDropsListener;
@@ -37,7 +38,6 @@ import fr.openmc.core.features.dream.registries.items.loots.*;
 import fr.openmc.core.features.dream.registries.items.orb.*;
 import fr.openmc.core.features.dream.registries.items.tools.*;
 import fr.openmc.core.registry.items.CustomItem;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
@@ -127,7 +127,7 @@ public class DreamItemRegistry {
      * Charge la classe durant le runtime
      */
     public static void init() {
-        CustomItemRegistry.registerItems(DREAM_ITEM_REGISTRY);
+        OMCRegistry.CUSTOM_ITEMS.register(DREAM_ITEM_REGISTRY);
 
         CommandsManager.getHandler().register(
                 new DreamItemCommand()
@@ -156,7 +156,7 @@ public class DreamItemRegistry {
     public static DreamItem getByName(String name) {
         if (!name.startsWith("omc_dream:")) name = "omc_dream:" + name;
 
-        CustomItem ci = CustomItemRegistry.getByName(name);
+        CustomItem ci = OMCRegistry.CUSTOM_ITEMS.get(name);
         if (ci == null) return null;
         if (!(ci instanceof DreamItem di)) return null;
 
@@ -166,7 +166,7 @@ public class DreamItemRegistry {
     @Nullable
     public static DreamItem getByItemStack(ItemStack stack) {
         if (stack == null) return null;
-        CustomItem ci = CustomItemRegistry.getByItemStack(stack);
+        CustomItem ci = OMCRegistry.CUSTOM_ITEMS.get(stack);
 
         if (ci == null) return null;
         if (!(ci instanceof DreamItem di)) return null;

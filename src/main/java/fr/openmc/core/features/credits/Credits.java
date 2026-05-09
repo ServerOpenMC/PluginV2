@@ -1,5 +1,6 @@
 package fr.openmc.core.features.credits;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
@@ -22,7 +23,6 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -36,27 +36,27 @@ public enum Credits {
     ADMINSHOP(Material.GOLD_INGOT, "Adminshop", AdminShopManager.class),
     ANIMATIONS(Material.AMETHYST_BLOCK, "Les Animations", AnimationsManager.class),
     CUBE(Material.LAPIS_BLOCK, "Le Cube", Set.of("iambibi_")),
-    CITY(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_chateau").getBest(), "Les Villes", CityManager.class),
+    CITY(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_chateau").getBest(), "Les Villes", CityManager.class),
     DREAM(Material.SCULK, "La Dimension des Rêves", DreamManager.class),
-    DREAM_MILESTONE(CustomItemRegistry.getByName("omc_dream:singularity").getBest(), "Le Milestone des Rêves", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
+    DREAM_MILESTONE(OMCRegistry.CUSTOM_ITEMS.get("omc_dream:singularity").getBest(), "Le Milestone des Rêves", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
     MASCOTS(Material.ZOMBIE_SPAWN_EGG, "Les Mascottes", MascotsManager.class),
-    MAYOR(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bank").getBest(), "Les Maires", Set.of("iambibi_"), Set.of("Gexary")),
+    MAYOR(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bank").getBest(), "Les Maires", Set.of("iambibi_"), Set.of("Gexary")),
     CITY_MILESTONE(Material.NETHER_STAR, "Le Milestone des Villes", Set.of("iambibi_")),
     WAR(Material.IRON_SWORD, "Les Guerres", Set.of("iambibi_")),
     NOTATION(Material.PAPER, "Les Notations", Set.of("iambibi_")),
     RANK(Material.VAULT, "Les Grades", Set.of("gab400")),
-    CONTEST(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), "Les Contests", ContestManager.class),
+    CONTEST(OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(), "Les Contests", ContestManager.class),
     WEEKLY_EVENTS(Material.FIREWORK_ROCKET, "Les Evenements Hebdomadaires", WeeklyEventsManager.class),
     HOLOGRAMS(Material.OAK_HANGING_SIGN, "Les Hologrammes", HologramLoader.class),
     ECONOMY(Material.GOLD_BLOCK, "L'Economie", EconomyManager.class),
     FRIENDS(Material.EMERALD_BLOCK, "Le systeme d'ami", FriendManager.class),
-    HOMES(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_maison").getBest(), "Le Systeme d'Home", HomesManager.class),
+    HOMES(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_maison").getBest(), "Le Systeme d'Home", HomesManager.class),
     LEADERBOARD(Material.ANCIENT_DEBRIS, "Les Classements", LeaderboardManager.class),
     MAILBOX(Material.PAPER, "La Boite aux Lettres", MailboxManager.class),
-    MAINMENU(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(), "Le Menu Principal", MainMenu.class),
+    MAINMENU(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_information").getBest(), "Le Menu Principal", MainMenu.class),
     MILESTONES(Material.SEA_LANTERN, "Les Milestones", MilestonesManager.class),
     PRIVATEMESSAGE(Material.ZOMBIE_HEAD, "Les messages privés", PrivateMessageManager.class),
-    QUEST(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_chateau").getBest(), "Les Quêtes", QuestsManager.class),
+    QUEST(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_chateau").getBest(), "Les Quêtes", QuestsManager.class),
     SETTINGS(Material.REDSTONE_TORCH, "Les Paramêtres", PlayerSettingsManager.class),
     TICKETS(Material.BOOK, "Les Tickets V1", TicketManager.class),
     TPA(Material.ENDER_PEARL, "Le Tpa", TPAManager.class),

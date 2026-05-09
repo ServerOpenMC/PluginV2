@@ -5,10 +5,10 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -73,23 +73,23 @@ public class ConfirmMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(totalPrice)), Component.text(EconomyManager.getEconomyIcon())
         );
 
-        content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
+        content.put(9, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("messages.global.cancel"));
         }, true));
 
-        content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
+        content.put(10, createQuantityButton("-64", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:64_btn").getBest(), event -> {
             if (quantity > 64) quantity -= 64;
             else quantity = 1;
             this.open();
         }));
 
-        content.put(11, createQuantityButton("-10", CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), event -> {
+        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:minus_btn").getBest(), event -> {
             if (quantity > 10) quantity -= 10;
             else quantity = 1;
             this.open();
         }));
 
-        content.put(12, createQuantityButton("-1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
+        content.put(12, createQuantityButton("-1", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:1_btn").getBest(), event -> {
             if (quantity > 1) quantity--;
             else quantity = 1;
             this.open();
@@ -119,13 +119,13 @@ public class ConfirmMenu extends Menu {
             }
         }));
 
-        content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> increaseQuantity(1)));
+        content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:1_btn").getBest(), event -> increaseQuantity(1)));
 
-        content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> increaseQuantity(10)));
+        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(), event -> increaseQuantity(10)));
 
-        content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
+        content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
 
-        content.put(17, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), meta -> {
+        content.put(17, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("messages.global.accept"));
         }).setOnClick(event -> {
             getOwner().closeInventory();

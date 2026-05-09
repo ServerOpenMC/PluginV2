@@ -2,8 +2,8 @@ package fr.openmc.core.utils.bukkit;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -301,7 +301,7 @@ public class ItemUtils {
     }
 
     public static boolean takeAywenite(Player player, int amount) {
-        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
         if (aywenite == null) return false;
 
         if (!hasEnoughItems(player, aywenite, amount)) {
@@ -320,7 +320,7 @@ public class ItemUtils {
     }
 
     public static boolean giveAywenite(Player player, int amount) {
-        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
         if (aywenite == null) return false;
 
         aywenite.setAmount(amount);

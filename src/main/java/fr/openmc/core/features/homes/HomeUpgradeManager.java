@@ -1,9 +1,9 @@
 package fr.openmc.core.features.homes;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -11,8 +11,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.Objects;
 
 public class HomeUpgradeManager {
 
@@ -49,7 +47,7 @@ public class HomeUpgradeManager {
                 return;
             }
 
-            if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest(), ayweniteAmount)) {
+            if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), ayweniteAmount)) {
                 MessagesManager.sendMessage(
                         player,
                         Component.text("Vous n'avez pas assez d'§dAywenite §f(" + ayweniteAmount + " nécessaires)"),
