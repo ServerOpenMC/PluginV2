@@ -4,9 +4,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
@@ -36,12 +36,12 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
                 ),
                 OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(),
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.OPEN_CONTEST,
+		        TutorialSteps.OPEN_CONTEST,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(1000),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.OPEN_CONTEST.ordinal() + 1) + " §f! Les §6contests§f opposent 2 groupes sur un thème, les gagnants remportent une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §9mailbox§f, un système de lettre pour recevoir ou bien envoyer des lettres !",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_CONTEST.ordinal() + 1) + " §f! Les §6contests§f opposent 2 groupes sur un thème, les gagnants remportent une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §9mailbox§f, un système de lettre pour recevoir ou bien envoyer des lettres !",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        ),

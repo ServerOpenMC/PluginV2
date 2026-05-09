@@ -248,7 +248,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             WeeklyEvent event = EVENTS.get(eventIdx);
             List<WeeklyEventPhase> phases = event.getPhases();
 
-            int phaseStart = (i == 0) ? data.getCurrentPhaseIndex() : 0;
+            int phaseStart = (i == 0) ? (data.getCurrentPhaseIndex() + 1) : 0;
 
             for (int j = phaseStart; j < phases.size(); j++) {
                 WeeklyEventPhase phase = phases.get(j);

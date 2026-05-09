@@ -53,6 +53,8 @@ public class ContestCommand {
             } else {
                 new VoteMenu(player).open();
             }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("§cLe Contest est dans sa phase terminée, veuillez contactez le staff."), Prefix.CONTEST, MessageType.ERROR, true);
         }
     }
 

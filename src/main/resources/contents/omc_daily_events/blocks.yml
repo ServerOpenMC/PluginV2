@@ -1,0 +1,31 @@
+info:
+  namespace: omc_daily_events
+items:
+  obese_potato:
+    display_name: Patate obèse
+    graphics:
+      textures:
+        north: obese_crops/potato/obese_potato_side
+        south: obese_crops/potato/obese_potato_side
+        east: obese_crops/potato/obese_potato_side
+        west: obese_crops/potato/obese_potato_side
+        up: obese_crops/potato/obese_potato_top
+        down: obese_crops/potato/obese_potato_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_potato_stem
+
+  obese_potato_stem:
+    display_name: Tige de patate obèse
+    graphics:
+      icon: obese_crops/potato/obese_potato_stem
+      parent: block/cross
+      textures:
+        cross: obese_crops/potato/obese_potato_stem
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_WIRE

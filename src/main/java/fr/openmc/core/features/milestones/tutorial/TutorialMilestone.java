@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class TutorialMilestone implements Milestone<TutorialStep> {
+public class TutorialMilestone implements Milestone<TutorialSteps> {
 
     private static final HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
 
@@ -49,8 +49,8 @@ public class TutorialMilestone implements Milestone<TutorialStep> {
     }
 
     @Override
-    public Class<TutorialStep> getStepClass() {
-        return TutorialStep.class;
+    public Class<TutorialSteps> getStepClass() {
+        return TutorialSteps.class;
     }
 
     @Override
