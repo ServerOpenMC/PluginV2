@@ -17,7 +17,7 @@ public class CustomItemAutoComplete implements SuggestionProvider<BukkitCommandA
                 .stream()
                 .map(CustomItem::getId)
                 .filter(id -> !id.startsWith("omc_dream:"))
-                .map(id -> id.replace("omc_dream:", ""))
+                .map(id -> id.split(":")[1])
                 .toList();
     }
 }

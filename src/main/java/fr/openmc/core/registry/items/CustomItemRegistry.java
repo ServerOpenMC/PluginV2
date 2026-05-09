@@ -2,7 +2,6 @@ package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
@@ -19,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class CustomItemRegistry extends Registry<String, CustomItem> {
 
     public static final NamespacedKey CUSTOM_ITEM_KEY =
-            new NamespacedKey(OMCPlugin.getInstance(), "custom_item");
+            new NamespacedKey("openmc", "custom_item");
 
     @Override
     public void postInit() {
@@ -92,6 +91,15 @@ public class CustomItemRegistry extends Registry<String, CustomItem> {
         register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
         register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
         register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
+    }
+
+    public CustomItem get(String id) {
+        if (super.get(id) != null) return super.get(id);
+
+        return values().stream()
+                .filter(item -> item.getId().split(":")[1].equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public CustomItem get(ItemStack stack) {

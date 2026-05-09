@@ -1,6 +1,6 @@
 package fr.openmc.core;
 
-import fr.openmc.core.bootstrap.registries.BootstrapRegistry;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
@@ -24,21 +24,39 @@ public final class OMCRegistry {
 
     public static void bootstrapAll() {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
-            if (r instanceof BootstrapRegistry b) {
-                b.bootstrap();
+            if (isOverridden(r, "bootstrap")) {
+                r.bootstrap();
+                OMCLogger.successFormatted("Registre {} chargée pendant le bootstrap", r.getClass().getSimpleName());
             }
         }
     }
 
     public static void initAll() {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
-            r.init();
+            if (isOverridden(r, "init")) {
+                r.init();
+                OMCLogger.successFormatted("Registre {} chargée pendant le runtime", r.getClass().getSimpleName());
+            }
         }
     }
 
     public static void postInitAll() {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
-            r.postInit();
+            if (isOverridden(r, "postInit")) {
+                r.postInit();
+                OMCLogger.successFormatted("Registre {} chargée après ItemsAdder", r.getClass().getSimpleName());
+            }
+        }
+    }
+
+    private static boolean isOverridden(LifecycleRegistry r, String methodName) {
+        try {
+            return !r.getClass()
+                    .getMethod(methodName)
+                    .getDeclaringClass()
+                    .equals(LifecycleRegistry.class);
+        } catch (NoSuchMethodException e) {
+            return false;
         }
     }
 }
