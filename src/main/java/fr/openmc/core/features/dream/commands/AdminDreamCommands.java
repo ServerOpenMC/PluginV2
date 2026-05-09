@@ -4,11 +4,11 @@ import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.commands.autocomplete.DreamMilestoneStepsAutoComplete;
 import fr.openmc.core.features.dream.listeners.dream.PlayerObtainOrb;
-import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -65,6 +65,6 @@ public class AdminDreamCommands {
             return;
         }
 
-        DreamMilestoneDialog.send(player, (DreamSteps) quest.getStep(), dialogs, 1);
+        MilestoneDialog.send(player, quest.getStep(), dialogs);
     }
 }

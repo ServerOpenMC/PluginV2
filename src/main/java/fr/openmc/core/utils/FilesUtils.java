@@ -53,8 +53,60 @@ public class FilesUtils {
     }
 
     /**
+     * Retourne la liste de tous les dossiers présents
+     *
+     * @param logger Le logger
+     * @param pathName Chemin
+     * @return Liste des noms des dossiers
+     */
+    public static List<String> listFolderNames(Logger logger, String pathName) {
+        Set<String> folderNames = new HashSet<>();
+
+        try {
+            var path = Paths.get(pathName);
+            if (Files.exists(path)) {
+                try (var stream = Files.list(path)) {
+                    stream.filter(Files::isDirectory)
+                            .map(p -> p.getFileName().toString())
+                            .forEach(folderNames::add);
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Erreur lors de la lecture: {}", e.getMessage());
+        }
+
+        return folderNames.stream().sorted().toList();
+    }
+
+    /**
+     * Retourne la liste de tous les fichiers présents
+     *
+     * @param logger Le logger
+     * @param pathName Chemin
+     * @return Liste des noms des dossiers
+     */
+    public static List<String> listFileNames(Logger logger, String pathName) {
+        Set<String> result = new HashSet<>();
+
+        try {
+            Path rootPath = Paths.get(pathName);
+            if (!Files.exists(rootPath)) return List.of();
+
+            try (var stream = Files.walk(rootPath)) {
+                stream.filter(Files::isRegularFile)
+                        .forEach(path -> result.add(toFileName(rootPath, path)));
+            }
+        } catch (Exception e) {
+            logger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
+        }
+
+        return result.stream().sorted().toList();
+    }
+
+    /**
      * Retourne la liste de tous les dossiers présents dans une ressource du JAR
      *
+     * @param logger Le logger
      * @param resourcePath Chemin dans les ressources (ex: "contents")
      * @return Liste des noms des dossiers dans la ressource
      */
@@ -71,17 +123,11 @@ public class FilesUtils {
                 if (protocol.equals("file")) {
                     // * méthode de parcours d'un fichier
                     try {
-                        var path = Paths.get(url.toURI());
-                        if (Files.exists(path)) {
-                            try (var stream = Files.list(path)) {
-                                stream.filter(Files::isDirectory)
-                                        .map(p -> p.getFileName().toString())
-                                        .forEach(folderNames::add);
-                            }
-                        }
+                        folderNames.addAll(listFolderNames(logger, url.getPath()));
                     } catch (Exception e) {
                         OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
                     }
+
                 } else if (protocol.equals("jar")) {
                     // * méthode de parcours d'un jar
                     try {
@@ -123,6 +169,12 @@ public class FilesUtils {
         return folderNames.stream().sorted().toList();
     }
 
+    /**
+     * Retourne la liste de tous les fichiers présents dans une ressource du JAR
+     *
+     * @param resourcePath Chemin dans les ressources (ex: "contents")
+     * @return Liste des noms des fichiers dans la ressource
+     */
     public static List<String> listFileNamesInResource(String resourcePath) {
         Set<String> result = new HashSet<>();
 
@@ -136,13 +188,9 @@ public class FilesUtils {
                 if (protocol.equals("file")) {
                     try {
                         Path rootPath = Paths.get(url.toURI());
-                        if (!Files.exists(rootPath)) {
-                            continue;
-                        }
-                        try (var stream = Files.walk(rootPath)) {
-                            stream.filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".properties"))
-                                    .forEach(path -> result.add(toFileName(rootPath, path)));
-                        }
+                        if (!Files.exists(rootPath)) continue;
+
+                        result.addAll(listFileNames(logger, rootPath.toString()));
                     } catch (Exception e) {
                         OMCLogger.warn("Erreur lors de la lecture des ressources en mode fichier: {}", e.getMessage());
                     }
@@ -179,6 +227,7 @@ public class FilesUtils {
         }
         return result.stream().sorted().toList();
     }
+
     /**
      * Copie un dossier depuis les ressources vers le système de fichiers
      *
@@ -349,6 +398,31 @@ public class FilesUtils {
             return true;
         }
         return directory.mkdirs();
+    }
+
+    /**
+     * Retourne la liste des fichiers se terminant par l'extention
+     * @param directory le dossier
+     * @param extention l'extention du fichier
+     * @return la liste des fichiers se terminant par l'extention
+     */
+    public static List<File> getAllFiles(File directory, String extention) {
+        List<File> ymlFiles = new ArrayList<>();
+
+        if (directory == null || !directory.exists()) return ymlFiles;
+
+        File[] files = directory.listFiles();
+        if (files == null) return ymlFiles;
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                ymlFiles.addAll(getAllFiles(file, extention));
+            } else if (file.getName().toLowerCase().endsWith("." + extention)) {
+                ymlFiles.add(file);
+            }
+        }
+
+        return ymlFiles;
     }
 
     private static String toFileName(Path rootPath, Path filePath) {

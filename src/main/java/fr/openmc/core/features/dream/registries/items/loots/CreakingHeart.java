@@ -12,7 +12,7 @@ public class CreakingHeart extends DreamItem {
                 "omc_dream:creaking_heart",
                 "Coeur de Creaking",
                 DreamRarity.RARE,
-                Material.RESIN_CLUMP,
+                Material.PAPER,
                 false
         ));
     }

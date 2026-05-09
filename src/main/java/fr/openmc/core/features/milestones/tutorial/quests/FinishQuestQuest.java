@@ -1,9 +1,9 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -28,12 +28,12 @@ public class FinishQuestQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.DIAMOND,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.FINISH_QUEST,
+		        TutorialSteps.FINISH_QUEST,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.FINISH_QUEST.ordinal() + 1) + " §f! Et voici une §9récompense §f! Pratique, non ? Allons découvrir une autre méthode de production d'argent et de consommation ! Allez dans l'§cadminshop§f, un endroit où plusieurs items sont achetable à des prix variants en fonction l'§coffre et la demande §f!",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.FINISH_QUEST.ordinal() + 1) + " §f! Et voici une §9récompense §f! Pratique, non ? Allons découvrir une autre méthode de production d'argent et de consommation ! Allez dans l'§cadminshop§f, un endroit où plusieurs items sont achetable à des prix variants en fonction l'§coffre et la demande §f!",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )

@@ -3,9 +3,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -31,13 +31,13 @@ public class HomeCreateQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.ENDER_PEARL,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.HOME_CREATE,
+		        TutorialSteps.HOME_CREATE,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
 				        new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.HOME_CREATE.ordinal() + 1) + " §f! Les homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 home au début. Il va falloir penser à les améliorer...",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.HOME_CREATE.ordinal() + 1) + " §f! Les homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 home au début. Il va falloir penser à les améliorer...",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )

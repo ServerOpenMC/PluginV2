@@ -3,9 +3,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -33,15 +33,15 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
                 ),
                 CustomItemRegistry.getByName("omc_items:aywenite").getBest(),
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.BREAK_AYWENITE,
+		        TutorialSteps.BREAK_AYWENITE,
 		        new QuestTier(
 				        30,
 				        new QuestMoneyReward(3500),
-				        new QuestTextReward("Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.BREAK_AYWENITE.ordinal() + 1 /* Pas le choix */) + " §f! Comme dit précédemment l'§dAywenite §fest un minerai, précieux pour les features. D'ailleurs vous pouvez l'utiliser pour faire votre ville ! ", Prefix.MILLESTONE, MessageType.SUCCESS),
+				        new QuestTextReward("Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.BREAK_AYWENITE.ordinal() + 1 /* Pas le choix */) + " §f! Comme dit précédemment l'§dAywenite §fest un minerai, précieux pour les features. D'ailleurs vous pouvez l'utiliser pour faire votre ville ! ", Prefix.MILLESTONE, MessageType.SUCCESS),
 				        new QuestMethodsReward(
 						        player -> {
 							        if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
-								        TutorialStep.CITY_CREATE.getQuest().incrementProgress(player.getUniqueId());
+								        TutorialSteps.CITY_CREATE.getQuest().incrementProgress(player.getUniqueId());
 							        }
 						        }
 				        )

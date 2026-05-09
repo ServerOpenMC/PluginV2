@@ -4,7 +4,7 @@ import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

@@ -190,6 +190,9 @@ public class OMCPlugin extends JavaPlugin {
      * Charge les registres et features qui doivent être lancé apres ItemsAdder
      */
     public void loadAfterItemsAdder() {
+        // ** LOAD ITEMS ADDER CONTENTS **
+        ItemsAdderHook.loadContents();
+
         // ** REGISTRIES **
         CustomItemRegistry.init();
         CustomEnchantmentRegistry.postInit();

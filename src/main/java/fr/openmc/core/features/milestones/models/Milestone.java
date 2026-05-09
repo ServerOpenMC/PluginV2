@@ -3,6 +3,7 @@ package fr.openmc.core.features.milestones.models;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.bossbar.MilestoneBossBarOptions;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
