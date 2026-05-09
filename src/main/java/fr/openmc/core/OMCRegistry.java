@@ -5,9 +5,11 @@ import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.util.List;
 
+@SuppressWarnings("UnstableApiUsage")
 public final class OMCRegistry {
 
     public static final CustomItemRegistry CUSTOM_ITEMS = new CustomItemRegistry();
@@ -22,10 +24,10 @@ public final class OMCRegistry {
 
     private OMCRegistry() {}
 
-    public static void bootstrapAll() {
+    public static void bootstrapAll(BootstrapContext context) {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
             if (isOverridden(r, "bootstrap")) {
-                r.bootstrap();
+                r.bootstrap(context);
                 OMCLogger.successFormatted("Registre {} chargée pendant le bootstrap", r.getClass().getSimpleName());
             }
         }

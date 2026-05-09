@@ -49,7 +49,7 @@ public class OMCBootstrap implements PluginBootstrap {
         ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
 
         // ** REGISTRY MANAGER **
-        OMCRegistry.bootstrapAll();
+        OMCRegistry.bootstrapAll(context);
 
 //        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
 //                .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)

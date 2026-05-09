@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;
 import fr.openmc.core.features.dream.registries.enchantements.Soulbound;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryComposeEvent;
 import io.papermc.paper.registry.event.RegistryEvents;
@@ -19,15 +20,15 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> {
 
     @Override
-    public void bootstrap() {
+    public void bootstrap(BootstrapContext context) {
         registerAll(
                 new Soulbound(),
                 new Experientastic(),
                 new DreamSleeper()
         );
 
-        RegistryEvents.ENCHANTMENT.compose()
-                .newHandler(this::loadEnchantmentInBootstrap);
+        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
+                .newHandler(this::loadEnchantmentInBootstrap));
 
     }
 
