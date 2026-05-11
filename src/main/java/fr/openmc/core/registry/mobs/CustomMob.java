@@ -77,7 +77,7 @@ public abstract class CustomMob<T extends LivingEntity> {
     public EntitySnapshot getMobSnapshot() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
-        T entity = world.createEntity(new Location(world, 0, 0, 0), entityClass);
+        LivingEntity entity = world.createEntity(new Location(world, 0, 0, 0), entityClass);
 
         applyStats(entity);
 

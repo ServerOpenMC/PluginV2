@@ -22,7 +22,7 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
 
     private static final NamespacedKey BREEZY_WIND_CHARGE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "breezy_wind_charge");
     public Breezy(String id) {
-        super("omc_dream:brezzy",
+        super(id,
                 "Breezy",
                 Breeze.class,
                 100.0,
@@ -36,7 +36,7 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
     public EntitySnapshot getMobSnapshot() {
         World world = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
         if (world == null) return null;
-        Breeze breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
+        Mob breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
 
         applyStats(breeze);
 
