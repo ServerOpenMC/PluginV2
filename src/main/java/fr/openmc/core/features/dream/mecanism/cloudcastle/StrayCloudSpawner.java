@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
-import fr.openmc.core.features.dream.registries.mobs.DreamStray;
+import fr.openmc.core.OMCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -19,7 +19,7 @@ public class StrayCloudSpawner {
         if (block.getState() instanceof TrialSpawner spawner) {
             TrialSpawnerConfiguration normal = spawner.getNormalConfiguration();
 
-            normal.setSpawnedEntity(new DreamStray().createSnapshot());
+            normal.setSpawnedEntity(OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_stray").getMobSnapshot());
 
             NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/mob_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);

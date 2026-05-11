@@ -33,6 +33,7 @@ public class DreamBlocksRegistry {
                 new CloudVault(),
                 new BossCloudSpawner()
         );
+
         ConfigurationSerialization.registerClass(DreamBlock.class);
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "registered_blocks.yml");
         load();

@@ -5,18 +5,16 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Frog;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
-public class CrazyFrog extends DreamMob {
+public class CrazyFrog extends DreamMob<Frog> {
 
-    public CrazyFrog() {
-        super("crazy_frog",
+    public CrazyFrog(String id) {
+        super(id,
                 "Grenouille Folle",
-                EntityType.FROG,
+                Frog.class,
                 18.0,
                 0L,
                 RandomUtils.randomBetween(0.2, 0.4),
@@ -31,8 +29,8 @@ public class CrazyFrog extends DreamMob {
     }
 
     @Override
-    public LivingEntity spawn(Location location) {
-        Frog frog = (Frog) this.getPreBuildMob(location);
+    public Frog spawn(Location location) {
+        Frog frog = this.getPreBuildMob(location);
 
         frog.setVariant(Frog.Variant.WARM);
         frog.setVelocity(location.getDirection().multiply(1.3));
