@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.bootstrap.integration.DatapackLoader;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
@@ -7,16 +8,11 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.event.RegistryEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Bootstrap Paper du plugin OpenMC.
@@ -35,18 +31,8 @@ public class OMCBootstrap implements PluginBootstrap {
     public void bootstrap(@NotNull BootstrapContext context) {
         OMCLogger.setBootstrapLogger(context.getLogger());
 
-        // ** LOAD DATAPACK **
-        context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
-                event -> {
-                    try {
-                        URI uri = Objects.requireNonNull(getClass().getResource("/datapack")).toURI();
-
-                        event.registrar().discoverPack(uri, "omc");
-                    } catch (URISyntaxException | IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        ));
+        // ** LOAD DATAPACKS **
+        DatapackLoader.loadAllInResource(context);
 
         // ** LOAD ITEMS ADDER NAMESPACES **
         ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
