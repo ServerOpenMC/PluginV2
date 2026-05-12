@@ -1,0 +1,13 @@
+{
+    "processors": [
+        {
+            "processor_type": "gravity",
+            "heightmap": "OCEAN_FLOOR_WG",
+            "offset": -1
+        },
+        {
+            "processor_type": "block_ignore",
+            "blocks": [{"Name": "air"}]
+        }
+    ]
+}
