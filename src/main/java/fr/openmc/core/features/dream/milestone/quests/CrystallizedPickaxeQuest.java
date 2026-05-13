@@ -2,10 +2,10 @@ package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.events;
 
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
+import fr.openmc.core.features.dream.registries.DreamStructure;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

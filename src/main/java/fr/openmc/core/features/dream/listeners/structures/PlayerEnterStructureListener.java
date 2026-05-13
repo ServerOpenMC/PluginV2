@@ -2,8 +2,7 @@ package fr.openmc.core.features.dream.listeners.structures;
 
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.PlayerEnterStructureEvent;
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
+import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -26,12 +25,12 @@ public class PlayerEnterStructureListener implements Listener {
 		Location to = e.getTo();
 		if ((from.getBlockX() >> 4) != (to.getBlockX() >> 4) || (from.getBlockZ() >> 4) != (to.getBlockZ() >> 4)) return;
 		
-		DreamStructure oldStructure = DreamStructuresManager.getStructureAt(from);
-		DreamStructure newStructure = DreamStructuresManager.getStructureAt(to);
+		DreamStructure oldStructure = DreamStructure.getDreamStructureAt(from);
+		DreamStructure newStructure = DreamStructure.getDreamStructureAt(to);
 		if (oldStructure == newStructure) return;
 		if (newStructure == null) return;
 		
-		MessagesManager.sendMessage(player, Component.text("§7Vous entrez dans : " + newStructure.type().getName()), Prefix.DREAM, MessageType.INFO, true);
+		MessagesManager.sendMessage(player, Component.text("§7Vous entrez dans : ").append(newStructure.getName()), Prefix.DREAM, MessageType.INFO, true);
 		Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterStructureEvent(player, newStructure));
 	}
 }

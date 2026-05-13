@@ -1,9 +1,7 @@
-package fr.openmc.core.features.dream.generation.listeners;
+package fr.openmc.core.features.dream.listeners.structures;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.biomes.CloudChunkGenerator;
-import fr.openmc.core.features.dream.generation.biomes.GlaciteCaveChunkGenerator;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.BossCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.CloudVault;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.PhantomCloudSpawner;
@@ -33,21 +31,24 @@ public class ReplaceBlockListener implements Listener {
 
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    for (int y = GlaciteCaveChunkGenerator.MIN_CAVE_HEIGHT; y <= GlaciteCaveChunkGenerator.MAX_CAVE_HEIGHT; y++) {
+                    for (int y = -64; y <= 40; y++) {
+                        // Glacite Trade NPC
                         if (chunkSnapshot.getBlockType(x, y, z) == Material.SEA_LANTERN) {
                             toReplaces.add(new ToReplace(x, y, z, Material.SEA_LANTERN));
                         }
                     }
 
-                    for (int y = GlaciteCaveChunkGenerator.MAX_CAVE_HEIGHT; y <= CloudChunkGenerator.MIN_HEIGHT_CLOUD; y++) {
+                    for (int y = 40; y <= 120; y++) {
                         Material mat = chunkSnapshot.getBlockType(x, y, z);
+                        // Altar
                         if (mat.equals(Material.GRAY_GLAZED_TERRACOTTA)) {
                             toReplaces.add(new ToReplace(x, y, z, mat));
                         }
                     }
 
-                    for (int y = CloudChunkGenerator.MAX_HEIGHT_CLOUD; y <= CloudChunkGenerator.MAX_HEIGHT_CLOUD + 85; y++) {
+                    for (int y = 125; y <= 125 + 100; y++) {
                         Material mat = chunkSnapshot.getBlockType(x, y, z);
+                        // Breezy, Stray, Phantom  Spawner, Cloud Vault
                         if (mat.equals(Material.NETHERITE_BLOCK)
                                 || mat.equals(Material.COAL_BLOCK)
                                 || mat.equals(Material.LAPIS_BLOCK)

@@ -18,16 +18,13 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.commands.AdminDreamCommands;
 import fr.openmc.core.features.dream.commands.DreamCommands;
-import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
-import fr.openmc.core.features.dream.generation.listeners.CloudStructureDispenserListener;
-import fr.openmc.core.features.dream.generation.listeners.ReplaceBlockListener;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
+import fr.openmc.core.features.dream.listeners.structures.CloudStructureDispenserListener;
 import fr.openmc.core.features.dream.listeners.structures.PlayerEnterStructureListener;
 import fr.openmc.core.features.dream.listeners.structures.PlayerExitStructureListener;
+import fr.openmc.core.features.dream.listeners.structures.ReplaceBlockListener;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -74,10 +71,8 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
     @Override
     public void init() {
         // ** MANAGERS **
-        DreamDimensionManager.init();
         GlaciteNpcManager.init();
         PlayerCloneNpc.init();
-        DreamStructuresManager.init();
         DreamItemRegistry.init();
         DreamLootTableRegistry.init();
         DreamBlocksRegistry.init();
@@ -125,7 +120,8 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new PlayerEnterStructureListener(),
                 new PlayerExitStructureListener(),
                 new PlayerFoodChangeListener(),
-                new DreamLootListener()
+                new DreamLootListener(),
+                new SetupDreamDimensionListener()
         );
     }
 

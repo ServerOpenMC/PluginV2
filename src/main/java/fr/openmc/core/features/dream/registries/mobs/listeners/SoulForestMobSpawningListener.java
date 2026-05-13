@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.dream.registries.mobs.Soul;
 import org.bukkit.Location;
@@ -35,7 +35,7 @@ public class SoulForestMobSpawningListener implements Listener {
         if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) return;
         if (!DreamUtils.isDreamWorld(spawningLoc)) return;
         e.setCancelled(true);
-        if (!spawningLoc.getWorld().getBiome(spawningLoc).equals(DreamBiome.SOUL_FOREST.getBiome())) return;
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.SOUL_FOREST)) return;
 
         double choice = Math.random();
 

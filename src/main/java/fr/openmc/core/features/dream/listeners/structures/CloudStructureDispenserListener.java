@@ -1,7 +1,6 @@
-package fr.openmc.core.features.dream.generation.listeners;
+package fr.openmc.core.features.dream.listeners.structures;
 
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
+import fr.openmc.core.features.dream.registries.DreamStructure;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -17,9 +16,9 @@ public class CloudStructureDispenserListener implements Listener {
 
         if (block.getType() != Material.DISPENSER) return;
 
-        if (DreamStructuresManager.isInsideStructure(
+        if (DreamStructure.isInInsideDreamStructure(
                 block.getLocation(),
-                DreamStructure.DreamType.CLOUD_CASTLE
+                DreamStructure.CLOUD_CASTLE
         ))
             event.setCancelled(true);
 
@@ -29,7 +28,7 @@ public class CloudStructureDispenserListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
 
-        if (block.getType() == Material.DISPENSER && DreamStructuresManager.isInsideStructure(block.getLocation(), DreamStructure.DreamType.CLOUD_CASTLE)) {
+        if (block.getType() == Material.DISPENSER && DreamStructure.isInInsideDreamStructure(block.getLocation(), DreamStructure.CLOUD_CASTLE)) {
             event.setCancelled(true);
         }
     }

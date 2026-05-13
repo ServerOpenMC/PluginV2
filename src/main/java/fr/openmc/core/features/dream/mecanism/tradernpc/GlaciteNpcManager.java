@@ -5,7 +5,7 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
