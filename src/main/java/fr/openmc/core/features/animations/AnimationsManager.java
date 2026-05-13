@@ -78,7 +78,7 @@ public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfE
         for (Animation animation : Animation.values()) {
             String animationName = animation.getNameAnimation();
 
-            String resourcePath = "data/animations/" + animationName + ".animation.json";
+            String resourcePath = "contents/omc_animations/" + animationName + ".animation.json";
             JsonObject animationJson = loadAnimation(plugin, resourcePath);
 
             JsonObject animations = animationJson.getAsJsonObject("animations");
