@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.generator.structure.GeneratedStructure;
 
 public class PlayerEnterStructureListener implements Listener {
 	
@@ -29,8 +30,10 @@ public class PlayerEnterStructureListener implements Listener {
 		DreamStructure newStructure = DreamStructure.getDreamStructureAt(to);
 		if (oldStructure == newStructure) return;
 		if (newStructure == null) return;
-		
+
+		GeneratedStructure generatedStructure = to.getWorld().getStructures(to.getChunk().getX(), to.getChunk().getZ()).stream().findFirst().orElse(null);
+
 		MessagesManager.sendMessage(player, Component.text("§7Vous entrez dans : ").append(newStructure.getName()), Prefix.DREAM, MessageType.INFO, true);
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterStructureEvent(player, newStructure));
+		Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterStructureEvent(player, newStructure, generatedStructure));
 	}
 }

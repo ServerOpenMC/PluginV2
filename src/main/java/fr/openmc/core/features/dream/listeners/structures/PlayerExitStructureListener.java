@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.generator.structure.GeneratedStructure;
 
 public class PlayerExitStructureListener implements Listener {
 	
@@ -29,8 +30,11 @@ public class PlayerExitStructureListener implements Listener {
 		DreamStructure newStructure = DreamStructure.getDreamStructureAt(to);
 		if (oldStructure == newStructure) return;
 		if (newStructure != null) return;
-		
+
+		GeneratedStructure oldGeneratedStructure = from.getWorld().getStructures(from.getChunk().getX(), from.getChunk().getZ()).stream().findFirst().orElse(null);
+
+
 		MessagesManager.sendMessage(player, Component.text("§7Vous sortez de : ").append(oldStructure.getName()), Prefix.DREAM, MessageType.INFO, true);
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerExitStructureEvent(player, oldStructure));
+		Bukkit.getServer().getPluginManager().callEvent(new PlayerExitStructureEvent(player, oldStructure, oldGeneratedStructure));
 	}
 }
