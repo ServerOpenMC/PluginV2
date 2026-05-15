@@ -8,7 +8,9 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -60,11 +62,13 @@ public class WarChooseSizeMenu extends PaginatedMenu {
             int count = i;
 
             items.add(new ItemBuilder(this, Material.IRON_SWORD, meta -> {
-                meta.displayName(Component.text("§c" + count + " vs " + count));
-                meta.lore(List.of(
-                        Component.text("§7Affrontement entre " + count + " §7joueurs de chaque ville."),
-                        Component.empty(),
-                        Component.text("§e§lCLIQUEZ POUR CONTINUER")
+                meta.displayName(TranslationManager.translation(
+                        "feature.city.war.menu.size.title",
+                        Component.text(count).color(NamedTextColor.RED)
+                ).color(NamedTextColor.RED));
+                meta.lore(TranslationManager.translationLore(
+                        "feature.city.war.menu.size.lore",
+                        Component.text(count).color(NamedTextColor.GRAY)
                 ));
             }).setOnClick(event -> {
                 WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, count);
@@ -82,18 +86,14 @@ public class WarChooseSizeMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
+        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
+        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 
-        List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Guerres !"),
-                Component.text("§7La préparation, le combat, ..."),
-                Component.text("§e§lCLIQUEZ ICI POUR EN SAVOIR PLUS!")
-        );
+        List<Component> loreInfo = TranslationManager.translationLore("feature.city.war.menu.more_info.lore");
 
         map.put(53, new ItemBuilder(this, Material.BOOK, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.war.menu.more_info.title"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
@@ -101,8 +101,8 @@ public class WarChooseSizeMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Guerres - Séléction";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.war.menu.size.menu_title");
     }
 
     @Override

@@ -8,6 +8,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
@@ -50,11 +51,6 @@ public class BankManager extends Feature implements DatabaseFeature {
         banks = loadAllBanks();
         CommandsManager.getHandler().register(new BankCommands());
         updateInterestTimer();
-    }
-
-    @Override
-    public void save() {
-        // nothing to save
     }
 
     @Override
@@ -103,7 +99,7 @@ public class BankManager extends Feature implements DatabaseFeature {
             banksDao.createOrUpdate(bank);
             return true;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to save bank " + bank.getPlayerUUID(), e);
+            OMCLogger.error("Failed to save bank " + bank.getPlayerUUID(), e);
             return false;
         }
     }
@@ -252,10 +248,10 @@ public class BankManager extends Feature implements DatabaseFeature {
         // quelqu'un fait les unit test des banques, merci de le prendre en compte.
         
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            OMCPlugin.getInstance().getSLF4JLogger().info("Applying all player interests...");
+            OMCLogger.info("Applying all player interests...");
             applyAllPlayerInterests();
             CityBankManager.applyAllCityInterests();
-            OMCPlugin.getInstance().getSLF4JLogger().info("All player interests applied successfully.");
+            OMCLogger.info("All player interests applied successfully.");
             updateInterestTimer();
 
         }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)

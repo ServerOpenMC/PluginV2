@@ -2,10 +2,10 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -30,12 +30,12 @@ public class SellBuyQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.GOLD_INGOT,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.SELL_BUY_ADMINSHOP,
+		        TutorialSteps.SELL_BUY_ADMINSHOP,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.SELL_BUY_ADMINSHOP.ordinal() + 1) + " §f! L'§cadminshop §fpropose divers objets afin de pouvoir build, ou faire de l'argent ! Cependant, lorsque vous mourrez vous perdez §6" + PlayerDeathListener.LOSS_MONEY * 100 + "%§f de votre argent ! Il est donc important de faire attention à votre peau, ou alors de déposer de l'argent dans votre banque !",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.SELL_BUY_ADMINSHOP.ordinal() + 1) + " §f! L'§cadminshop §fpropose divers objets afin de pouvoir build, ou faire de l'argent ! Cependant, lorsque vous mourrez vous perdez §6" + PlayerDeathListener.LOSS_MONEY * 100 + "%§f de votre argent ! Il est donc important de faire attention à votre peau, ou alors de déposer de l'argent dans votre banque !",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )

@@ -12,7 +12,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -39,7 +41,10 @@ public class AgriculturalEssorPerk implements Listener {
         if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) {
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:agricultural_essor"))), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.mayor.perk.event.agricultural.start",
+                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:agricultural_essor"))).color(NamedTextColor.RED)
+            ), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
@@ -61,7 +66,7 @@ public class AgriculturalEssorPerk implements Listener {
 
             if (player == null || !player.isOnline()) continue;
 
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest terminée !"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.perk.event.agricultural.end"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 

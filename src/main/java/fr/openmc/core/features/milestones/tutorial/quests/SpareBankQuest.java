@@ -1,10 +1,10 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.economy.events.BankDepositEvent;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -29,12 +29,12 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.DIAMOND_BLOCK,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.SPARE_BANK,
+		        TutorialSteps.SPARE_BANK,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.SPARE_BANK.ordinal() + 1) + " §f! Les §bbanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.SPARE_BANK.ordinal() + 1) + " §f! Les §bbanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
 								        "Personnalisons maintenant l'expérience de jeu grâce aux paramètres !",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS

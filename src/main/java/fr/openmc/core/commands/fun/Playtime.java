@@ -1,11 +1,12 @@
 package fr.openmc.core.commands.fun;
 
 import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.text.TranslationManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -18,8 +19,7 @@ public class Playtime {
     @Description("Donne votre temps de jeu")
     private void playtime(Player player) {
         long timePlayed = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
-
-        MessagesManager.sendMessage(player, Component.text(TranslationManager.getTranslation("messages.general.playtime",
-                        "fr", "playTime", DateUtils.convertTime(timePlayed))), Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("command.fun.playtime.success",
+                Component.text(DateUtils.convertTime(timePlayed), NamedTextColor.LIGHT_PURPLE)), Prefix.OPENMC, MessageType.INFO, true);
     }
 }

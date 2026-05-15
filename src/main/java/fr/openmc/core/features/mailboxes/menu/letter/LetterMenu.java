@@ -37,8 +37,8 @@ public class LetterMenu extends Menu {
     private ItemStack[] letterItems;
 
     @Override
-    public @NotNull String getName() {
-        return "Lettre de " + letterHead.displayName();
+    public @NotNull Component getName() {
+        return Component.text("Lettre de " + letterHead.displayName());
     }
 
     @Override

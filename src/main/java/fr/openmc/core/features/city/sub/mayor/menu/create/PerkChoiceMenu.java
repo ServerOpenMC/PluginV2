@@ -14,7 +14,10 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -70,41 +73,61 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
             if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
-            List<Component> perkLore = new ArrayList<>(newPerk.getLore());
+            List<Component> perkLore = new ArrayList<>(TranslationManager.translationLore(newPerk.getLoreKey()));
 
-            perkLore.add(Component.text(newPerk.getCategory().getName()));
+            perkLore.add(TranslationManager.translation(newPerk.getCategory().getNameKey()));
 
             switch (newPerk.getCategory()) {
                 case AGRICULTURAL -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_AGRICULTURAL)) {
-	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_AGRICULTURAL) + " pour débloquer ceci"));
+                        perkLore.add(TranslationManager.translation(
+                                "feature.city.mayor.menu.perk_choice.locked",
+                                Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_AGRICULTURAL))
+                                        .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                        ));
                     }
                 }
                 case ECONOMIC -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_ECONOMY)) {
-	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_ECONOMY) + " pour débloquer ceci"));
+                        perkLore.add(TranslationManager.translation(
+                                "feature.city.mayor.menu.perk_choice.locked",
+                                Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_ECONOMY))
+                                        .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                        ));
                     }
                 }
                 case MILITARY -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_MILITARY)) {
-	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_MILITARY) + " pour débloquer ceci"));
+                        perkLore.add(TranslationManager.translation(
+                                "feature.city.mayor.menu.perk_choice.locked",
+                                Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_MILITARY))
+                                        .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                        ));
                     }
                 }
                 case STRATEGY -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_STRATEGY)) {
-	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_STRATEGY) + " pour débloquer ceci"));
+                        perkLore.add(TranslationManager.translation(
+                                "feature.city.mayor.menu.perk_choice.locked",
+                                Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_STRATEGY))
+                                        .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                        ));
                     }
                 }
                 case DREAM -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_DREAM)) {
-                        perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_DREAM) + " pour débloquer ceci"));
+                        perkLore.add(TranslationManager.translation(
+                                "feature.city.mayor.menu.perk_choice.locked",
+                                Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_DREAM))
+                                        .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                        ));
                     }
                 }
             }
 
 
             ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
-                itemMeta.customName(Component.text(newPerk.getName()));
+                itemMeta.customName(TranslationManager.translation(newPerk.getNameKey()));
                 itemMeta.lore(perkLore);
             })
                     .hide((newPerk != null) ? newPerk.getToHide() : null)
@@ -144,7 +167,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
                                                 ("perk3".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk2 != null && perk2.getType() == PerkType.EVENT)))
                                 );
                         if (isPerkEvent) {
-	                        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 réformes de type évènement !"), Prefix.MAYOR, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.perk_choice.error.event_duplicate"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
                         }
 
@@ -167,23 +190,23 @@ public class PerkChoiceMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Revenir en arrière"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.back"));
         }).setOnClick(inventoryClickEvent -> {
             new MayorCreateMenu(getOwner(), perk1, perk2, perk3, type).open();
         }));
 
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cPage précédente"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.prev"));
         }).setPreviousPageButton());
         map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.next"));
         }).setNextPageButton());
         return map;
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des maires - Reformes";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.mayor.menu.perk_choice.name");
     }
 
     @Override

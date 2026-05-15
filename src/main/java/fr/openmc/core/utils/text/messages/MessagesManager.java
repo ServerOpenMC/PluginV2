@@ -1,14 +1,15 @@
 package fr.openmc.core.utils.text.messages;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.Normalizer;
+import java.util.List;
 import java.util.Map;
 
 public class MessagesManager {
@@ -64,7 +65,6 @@ public class MessagesManager {
         if (sender.isOnline() && sender instanceof Player player) {
             sendMessage(player, message, prefix, type, 1.0F, sound);
         }
-
     }
 
     /**
@@ -77,6 +77,21 @@ public class MessagesManager {
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix) {
         sendMessage(sender, message, prefix, MessageType.NONE, false);
+    }
+
+    /**
+     * Sends a message to the player.
+     * @param player The player to send the message
+     * @param messages The list of component which will be concatenated and sent to the player
+     */
+    public static void sendMessage(Player player, List<Component> messages) {
+        Component messageComponent = Component.empty();
+
+        for (Component component : messages) {
+            messageComponent = messageComponent.appendNewline().append(component);
+        }
+
+        player.sendMessage(messageComponent);
     }
 
     /**
@@ -96,6 +111,28 @@ public class MessagesManager {
                 );
 
         Bukkit.broadcast(messageComponent);
+    }
+
+    /**
+     *
+     * Broadcasts a formatted message to the entire server
+     *
+     * @param world   The world to broadcast the message in
+     * @param message The content of the message
+     * @param prefix  The prefix for the message
+     * @param type    The type of message (information, error, success, warning)
+     */
+    public static void broadcastMessage(World world, Component message, Prefix prefix, MessageType type) {
+        Component messageComponent =
+                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
+                        .append(prefix.getPrefix())
+                        .append(Component.text(" §7» ")
+                                .append(message)
+                        );
+
+        for (Player player : world.getPlayers()) {
+            player.sendMessage(messageComponent);
+        }
     }
 
     public static String textToSmall(String text) {
@@ -128,55 +165,4 @@ public class MessagesManager {
 
         return result.toString();
     }
-
-    @Getter
-    public enum Message {
-        // Command messages
-        NO_PERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
-        NO_PERMISSION_2(Component.text("§cVous n'avez pas le droit de faire ceci.")),
-        MISSING_ARGUMENT(Component.text("§cVous devez spécifier un argument.")),
-
-        // Player messages
-        PLAYER_NOT_FOUND(Component.text("§cLe joueur n'a pas été trouvé.")),
-
-        // General messages
-        PLAYER_MISSING_MONEY(Component.text("Tu n'as pas assez d'argent.")),
-
-        // City messages
-        PLAYER_NO_CITY(Component.text("Tu n'es pas dans une ville.")),
-        PLAYER_IN_CITY(Component.text("Tu es déjà dans une ville.")),
-        TARGET_IN_OTHER_CITY(Component.text("Ce joueur n'est pas dans ta ville.")),
-        TARGET_NO_CITY(Component.text("Ce joueur n'est pas dans une ville.")),
-        
-        CITY_NO_FREE_CLAIM(Component.text("Cette ville n'a pas de claims gratuits.")),
-        CITY_CANNOT_ACCESS_PERMS(Component.text("Tu n'as pas la permission d'accéder aux permissions de cette ville.")),
-        CITY_CANNOT_CLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville.")),
-        CITY_ISNT_OWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire.")),
-        CITY_CANNOT_RENAME(Component.text("Tu n'as pas la permission de renommer ta ville.")),
-        CITY_CANNOT_DEPOSIT(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville.")),
-        CITY_CANNOT_WITHDRAW(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville.")),
-        CITY_IS_OWNER(Component.text("Le propriétaire a tous les pouvoirs.")),
-        CITY_CANNOT_KICK(Component.text("Tu n'as pas la permission d'exclure ce membre.")),
-        CITY_CANNOT_KICK_HIMSELF(Component.text("Tu ne peux pas t'exclure toi même de la ville.")),
-        CITY_ONLY_OWNER(Component.text("Seul le propriétaire peut faire cela.")),
-
-        CITY_RANKS_NOT_EXIST(Component.text("Ce grade n'existe pas.")),
-        CITY_RANKS_MAX(Component.text("Le nombre maximum de grades a été atteint, tu ne peux pas en ajouter d'autres.")),
-        CITY_RANKS_ALREADY_EXIST(Component.text("Ce grade existe déjà.")),
-        CITY_RANKS_CANNOT_DELETE(Component.text("Tu ne peux pas supprimer le grade de propriétaire.")),
-        CITY_RANKS_CANNOT_MODIFY_HIGHER(Component.text("Tu ne peux pas modifier un grade supérieur ou égal au tien.")),
-        CITY_RANKS_CANNOT_ASSIGN(Component.text("Tu n'as pas la permission d'assigner des grades.")),
-
-        CITY_NOT_FOUND(Component.text("La ville n'existe pas")),
-
-        ;
-
-        private final Component message;
-
-        Message(Component message) {
-            this.message = message;
-        }
-
-    }
-
 }

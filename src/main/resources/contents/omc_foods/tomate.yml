@@ -1,0 +1,10 @@
+info:
+  namespace: omc_foods
+items:
+  tomate:
+    display_name: Tomate
+    resource:
+      material: BEETROOT
+      generate: true
+      textures:
+      - items/tomate.png

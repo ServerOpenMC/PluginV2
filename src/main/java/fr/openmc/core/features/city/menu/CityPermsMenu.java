@@ -14,7 +14,9 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,30 +62,32 @@ public class CityPermsMenu extends PaginatedMenu {
             boolean hasPerm = memberPerms != null && memberPerms.contains(permission);
             ItemBuilder itemBuilder = new ItemBuilder(this, permission.getIcon(), itemMeta -> {
                 itemMeta.setEnchantmentGlintOverride(hasPerm);
-                String name;
+                String nameKey;
                 if (edit) {
-                    if (hasPerm) {
-                        name = "§cRetirer " + permission.getDisplayName();
-                    } else {
-                        name = "§aAjouter " + permission.getDisplayName();
-                    }
+                    nameKey = hasPerm
+                            ? "feature.city.menus.perms.permission.remove"
+                            : "feature.city.menus.perms.permission.add";
                 } else {
-                    if (hasPerm) {
-                        name = "§c" + permission.getDisplayName();
-                    } else {
-                        name = "§a" + permission.getDisplayName();
-                    }
+                    nameKey = "feature.city.menus.perms.permission";
                 }
 
-                itemMeta.displayName(Component.text(name).decoration(TextDecoration.ITALIC, false));
+                NamedTextColor permColor = hasPerm ? NamedTextColor.RED : NamedTextColor.GREEN;
+                itemMeta.displayName(TranslationManager.translation(
+                        nameKey,
+                        permission.getDisplayName().color(permColor)
+                ).decoration(TextDecoration.ITALIC, false));
 
-                List<Component> lore = List.of(
-                        Component.text("§e§lCLIQUEZ POUR " + (hasPerm ? "RETIRER" : "AJOUTER") + " CETTE PERMISSION")
-                );
-                itemMeta.lore(edit ? lore : List.of());
+                if (edit) {
+                    String loreKey = hasPerm
+                            ? "feature.city.menus.perms.permission.lore.remove"
+                            : "feature.city.menus.perms.permission.lore.add";
+                    itemMeta.lore(TranslationManager.translationLore(loreKey));
+                } else {
+                    itemMeta.lore(List.of());
+                }
             }).setOnClick(inventoryClickEvent -> {
                 if (!edit)
-                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_CANNOT_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, true);
                 else {
                     CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
                     new CityPermsMenu(player, memberUUID, true).open();
@@ -101,27 +105,24 @@ public class CityPermsMenu extends PaginatedMenu {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
         map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage précédente"));
-            itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page précédente")));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
+            itemMeta.lore(TranslationManager.translationLore("messages.menus.previous_page_lore"));
         }).setPreviousPageButton());
 
         map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
-            itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page suivante")));
+            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
+            itemMeta.lore(TranslationManager.translationLore("messages.menus.next_page_lore"));
         }).setNextPageButton());
 
         if (edit) {
             map.put(53, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                itemMeta.displayName(Component.text("Gérer toutes les permissions du membre"));
-                itemMeta.lore(List.of(
-                        Component.text("§cClique-gauche pour tout retirer"),
-                        Component.text("§aClique-droit pour tout ajouter")
-                ));
+                itemMeta.displayName(TranslationManager.translation("feature.city.menus.perms.bulk.title"));
+                itemMeta.lore(TranslationManager.translationLore("feature.city.menus.perms.bulk.lore"));
             }).setOnClick(inventoryClickEvent -> {
                 if (inventoryClickEvent.isLeftClick()) CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
                 else if (inventoryClickEvent.isRightClick()) CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
@@ -134,8 +135,8 @@ public class CityPermsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Permissions de " + CacheOfflinePlayer.getOfflinePlayer(memberUUID).getName();
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.menus.perms.name", Component.text(CacheOfflinePlayer.getOfflinePlayer(memberUUID).getName()));
     }
 
     @Override

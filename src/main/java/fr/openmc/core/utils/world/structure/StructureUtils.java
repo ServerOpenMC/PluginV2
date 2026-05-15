@@ -4,6 +4,7 @@ import com.flowpowered.nbt.*;
 import com.flowpowered.nbt.Tag;
 import com.flowpowered.nbt.stream.NBTInputStream;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;
@@ -41,7 +42,7 @@ public class StructureUtils {
                     CachedStructure cached = buildCache(nbt);
                     STRUCTURE_CACHE.put(group + "/" + name.replace(".nbt", ""), cached);
                 } catch (IOException e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().error("Impossible de précharger la structure {}/{}", group, name);
+                    OMCLogger.error("Impossible de précharger la structure {}/{}", group, name);
                 }
             }
         }

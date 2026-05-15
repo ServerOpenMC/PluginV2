@@ -1,0 +1,10 @@
+info:
+  namespace: omc_items
+categories:
+  omc_items:
+    enabled: true
+    skip_if_already: false
+    icon: omc_items:aywenite
+    name: "OpenMC Items"
+    items:
+      - omc_items:*

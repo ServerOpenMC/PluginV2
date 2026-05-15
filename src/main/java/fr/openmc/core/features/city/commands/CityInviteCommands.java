@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.conditions.CityInviteConditions;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -44,11 +45,29 @@ public class CityInviteCommands {
         } else {
             playerInvitations.add(sender);
         }
-        MessagesManager.sendMessage(sender, Component.text("Tu as invité " + target.getName() + " dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender,
+                TranslationManager.translation("feature.city.invite.commands.invite.success",
+                        target.displayName()),
+                Prefix.CITY,
+                MessageType.SUCCESS,
+                false
+        );
         MessagesManager.sendMessage(target,
-                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getName() + "\n")
-                        .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
-                        .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                TranslationManager.translation(
+                        "feature.city.invite.commands.invite.received",
+                        sender.displayName(),
+                        Component.text(city.getName())
+                )
+                        .append(Component.newline())
+                        .append(TranslationManager.translation("feature.city.invite.commands.invite.accept")
+                                .clickEvent(ClickEvent.runCommand("/city accept " + sender.getName()))
+                                .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.invite.commands.invite.accept_hover")))
+                        )
+                        .append(Component.newline())
+                        .append(TranslationManager.translation("feature.city.invite.commands.invite.deny")
+                                .clickEvent(ClickEvent.runCommand("/city deny " + sender.getName()))
+                                .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.invite.commands.invite.deny_hover")))
+                        ),
                 Prefix.CITY, MessageType.INFO, false);
     }
 
@@ -62,12 +81,15 @@ public class CityInviteCommands {
         List<Player> playerInvitations = invitations.get(player);
 
         if (playerInvitations == null) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!playerInvitations.contains(inviter)) {
-            MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.invite.commands.accept.not_invited",
+                    inviter.displayName()
+            ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -79,9 +101,9 @@ public class CityInviteCommands {
 
         invitations.remove(player);
 
-        MessagesManager.sendMessage(player, Component.text("Tu as rejoint " + newCity.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.joined", Component.text(newCity.getName())), Prefix.CITY, MessageType.SUCCESS, false);
         if (inviter.isOnline()) {
-            MessagesManager.sendMessage(inviter, Component.text(player.getName() + " a accepté ton invitation !"), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(inviter, TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.displayName()), Prefix.CITY, MessageType.SUCCESS, true);
         }
     }
 
@@ -97,7 +119,7 @@ public class CityInviteCommands {
         invitations.remove(player);
 
         if (inviter.isOnline()) {
-            MessagesManager.sendMessage(inviter, Component.text(player.getName() + " a refusé ton invitation"), Prefix.CITY, MessageType.WARNING, true);
+            MessagesManager.sendMessage(inviter, TranslationManager.translation("feature.city.invite.commands.deny.inviter_notified", Component.text(player.getName())), Prefix.CITY, MessageType.WARNING, true);
         }
     }
 }

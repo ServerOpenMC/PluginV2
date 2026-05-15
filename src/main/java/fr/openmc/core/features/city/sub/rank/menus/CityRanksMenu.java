@@ -10,7 +10,9 @@ import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +20,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static fr.openmc.api.menulib.utils.ItemUtils.getDataComponentType;
 
@@ -32,8 +37,8 @@ public class CityRanksMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu de la Ville - Grades";
+	public @NotNull Component getName() {
+		return TranslationManager.translation("feature.city.rank.menu.list.title");
 	}
 	
 	@Override
@@ -67,12 +72,25 @@ public class CityRanksMenu extends Menu {
 				
 				map.put(i, new ItemBuilder(this, icon,
 						itemMeta -> {
-							itemMeta.displayName(Component.text("§eGrade " + rankName).decoration(TextDecoration.ITALIC, false));
+							itemMeta.displayName(TranslationManager.translation(
+									"feature.city.rank.menu.list.rank.title",
+									Component.text(rankName).color(NamedTextColor.YELLOW)
+							).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
 							itemMeta.lore(List.of(
-									Component.text("§7Priorité : §d" + priority).decoration(TextDecoration.ITALIC, false),
-									Component.text("§7Permissions : §b" + rank.getPermissionsSet().size()).decoration(TextDecoration.ITALIC, false),
+									TranslationManager.translation(
+											"feature.city.rank.menu.list.rank.lore.priority",
+											Component.text(priority).color(NamedTextColor.LIGHT_PURPLE)
+									).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+									TranslationManager.translation(
+											"feature.city.rank.menu.list.rank.lore.permissions",
+											Component.text(rank.getPermissionsSet().size()).color(NamedTextColor.AQUA)
+									).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
 									Component.empty(),
-									Component.text(canManageRanks && CityRankCondition.canModifyRankPermissions(city, getOwner(), priority) ? "§e§lCLIQUEZ POUR MODIFIER LE ROLE" : "§e§lCLIQUEZ POUR S'Y INFORMER")
+									TranslationManager.translation(
+											canManageRanks && CityRankCondition.canModifyRankPermissions(city, getOwner(), priority)
+													? "feature.city.rank.menu.list.rank.lore.click_edit"
+													: "feature.city.rank.menu.list.rank.lore.click_info"
+									).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)
 							));
 						}
 				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open())
@@ -84,25 +102,19 @@ public class CityRanksMenu extends Menu {
 		
 		map.put(18, new ItemBuilder(this, Material.ARROW,
 				itemMeta -> {
-					itemMeta.displayName(Component.text("§cRetour"));
-					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
+					itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+					itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
 				}).setOnClick(inventoryClickEvent -> new CityMenu(getOwner()).open()));
 		
 		
 		if (canAssignRanks) {
-			List<Component> loreAssignRanks = new ArrayList<>();
-			if (city.getRanks().isEmpty()) {
-				loreAssignRanks.add(Component.text("§cAucun grade n'a été créé dans cette ville."));
-				loreAssignRanks.add(Component.text("§7Créez un grade pour pouvoir l'assigner aux membres."));
-			} else {
-				loreAssignRanks.add(Component.text("§fVous pouvez assigner des grades aux membres de la ville."));
-				loreAssignRanks.add(Component.empty());
-				loreAssignRanks.add(Component.text("§e§lCLIQUEZ POUR ASSIGNER UN GRADE"));
-			}
-			
+			List<Component> loreAssignRanks = city.getRanks().isEmpty()
+					? TranslationManager.translationLore("feature.city.rank.menu.list.assign.lore.empty")
+					: TranslationManager.translationLore("feature.city.rank.menu.list.assign.lore.available");
+
 			map.put(22, new ItemBuilder(this, Material.FEATHER,
 							itemMeta -> {
-								itemMeta.displayName(Component.text("§aAssigner des grades"));
+								itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.assign.title"));
 								itemMeta.lore(loreAssignRanks);
 							}).setOnClick(inventoryClickEvent -> {
 						if (city.getRanks().isEmpty()) return;
@@ -113,15 +125,11 @@ public class CityRanksMenu extends Menu {
 		}
 		
 		if (canManageRanks) {
-			List<Component> loreCreateRank = List.of(
-					Component.text("§fVous pouvez faire un grade, §aun ensemble de permission !"),
-					Component.empty(),
-					Component.text("§e§lCLIQUEZ POUR CREER UN GRADE")
-			);
-			
+			List<Component> loreCreateRank = TranslationManager.translationLore("feature.city.rank.menu.list.create.lore");
+
 			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
 					itemMeta -> {
-						itemMeta.displayName(Component.text("§aAjouter un grade"));
+						itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.create.title"));
 						itemMeta.lore(loreCreateRank);
 					}).setOnClick(inventoryClickEvent -> CityRankAction.beginCreateRank(player))
 			);

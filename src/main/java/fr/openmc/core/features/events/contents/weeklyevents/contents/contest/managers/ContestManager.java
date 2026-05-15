@@ -8,9 +8,11 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;
@@ -23,8 +25,8 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.mod
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.ItemsAdderHook;
 import fr.openmc.core.hooks.WorldGuardHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -51,6 +53,7 @@ import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
+@Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
 public class ContestManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
 
     public static ContestData data;
@@ -170,15 +173,15 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
      * Sauvegarde les données des joueurs (points, camp, etc.) dans la DB.
      */
     public static void saveContestPlayerData() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving contest player data...");
+        OMCLogger.info("Saving contest player data...");
         dataPlayer.forEach((player, data) -> {
             try {
                 playerDao.createOrUpdate(data);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
+                OMCLogger.warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
             }
         });
-        OMCPlugin.getInstance().getSLF4JLogger().info("Contest player data saved successfully.");
+        OMCLogger.info("Contest player data saved successfully.");
     }
 
     /**

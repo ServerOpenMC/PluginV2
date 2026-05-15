@@ -8,6 +8,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.models.Statistic;
 import org.bukkit.Bukkit;
 
@@ -17,16 +18,6 @@ import java.util.UUID;
 
 public class AnalyticsManager extends Feature implements DatabaseFeature {
     static Dao<Statistic, String> statsDao;
-
-    @Override
-    protected void init() {
-        // nothing to init
-    }
-
-    @Override
-    protected void save() {
-        // nothing to save
-    }
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -60,7 +51,7 @@ public class AnalyticsManager extends Feature implements DatabaseFeature {
 
             return stats.getFirst().getValue();
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Statistics of {}", playerUUID, e);
+            OMCLogger.error("Failed to get Statistics of {}", playerUUID, e);
             return defaultValue;
         }
     }

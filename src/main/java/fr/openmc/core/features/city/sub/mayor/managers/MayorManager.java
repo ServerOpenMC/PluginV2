@@ -8,6 +8,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -23,10 +24,10 @@ import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -311,19 +312,11 @@ public class MayorManager {
 
         NPCManager.updateAllNPCS();
 
-        Bukkit.broadcast(Component.text("""
-                §8§m                                                     §r
-                §7
-                §3§lMAIRE !§r §7Les élections sont ouvertes !§7
-                §8§oPrésentez vous, votez pour des maires, ...
-                §8§oRegardez si vous avez assez de membres !
-                §7
-                §8§m                                                     §r"""
-        ));
+        Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase1"));
     }
 
     public static void initPhase2() {
-        OMCPlugin.getInstance().getSLF4JLogger().debug("MAYOR - INIT PHASE 2");
+        OMCLogger.debug("MAYOR - INIT PHASE 2");
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
@@ -335,13 +328,7 @@ public class MayorManager {
 
         NPCManager.updateAllNPCS();
 
-        Bukkit.broadcast(Component.text("""
-                §8§m                                                     §r
-                §7
-                §3§lMAIRE !§r §7Vos réformes sont actives !§7
-                §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
-                §7
-                §8§m                                                     §r"""));
+        Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase2"));
     }
 
     public static void initCityPhase1(City city, Map<UUID, Mayor> copyCityMayor) {
@@ -387,7 +374,7 @@ public class MayorManager {
     }
 
     public static void initCityPhase2(City city) {
-        OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
+        OMCLogger.debug("- City : {}", city.getName());
         runSetupMayor(city);
 
         for (UUID uuid : city.getMembers()) {
@@ -435,7 +422,7 @@ public class MayorManager {
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksAll(city);
                 if (perks.size() < 3) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                    OMCLogger.warn(
                             "No unlocked mayor perks combination found for city {} (OWNER_CHOOSE)",
                             city.getName()
                     );
@@ -480,7 +467,7 @@ public class MayorManager {
                   }
 
                 if (perk1 == null || perks.size() < 2) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn(
+                    OMCLogger.warn(
                             "Unable to select unlocked mayor perks for city {} (ELECTION)",
                             city.getName()
                     );

@@ -6,8 +6,10 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -20,6 +22,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.util.List;
 
+@Credit(developers = {"iambibi_"})
 public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
 
     private static final List<WeeklyEvent> EVENTS = List.of(
@@ -46,11 +49,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         }
 
         scheduleNextPhase();
-    }
-
-    @Override
-    public void save() {
-        // nothing to save
     }
 
     /**
@@ -201,7 +199,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         int phaseIndex = event.getPhases().indexOf(phase);
 
         if (eventIndex == -1 || phaseIndex == -1) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("[WeeklyEvents] Event ou phase non trouvé");
+            OMCLogger.error("[WeeklyEvents] Event ou phase non trouvé");
             return;
         }
 
@@ -220,7 +218,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
 
         scheduleNextPhase();
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("[WeeklyEvents] Event forcé : {} à la phase {}",
+        OMCLogger.info("[WeeklyEvents] Event forcé : {} à la phase {}",
                 PlainTextComponentSerializer.plainText().serialize(event.getName()),
                 PlainTextComponentSerializer.plainText().serialize(phase.getName()));
     }
@@ -235,7 +233,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         data.setCurrentPhaseIndex(0);
         save(data);
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("[WeeklyEvents] Passage à l'event suivant : {}",
+        OMCLogger.info("[WeeklyEvents] Passage à l'event suivant : {}",
                 PlainTextComponentSerializer.plainText().serialize(getCurrentEvent().getName()));
     }
 
@@ -251,7 +249,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             WeeklyEvent event = EVENTS.get(eventIdx);
             List<WeeklyEventPhase> phases = event.getPhases();
 
-            int phaseStart = (i == 0) ? data.getCurrentPhaseIndex() : 0;
+            int phaseStart = (i == 0) ? (data.getCurrentPhaseIndex() + 1) : 0;
 
             for (int j = phaseStart; j < phases.size(); j++) {
                 WeeklyEventPhase phase = phases.get(j);

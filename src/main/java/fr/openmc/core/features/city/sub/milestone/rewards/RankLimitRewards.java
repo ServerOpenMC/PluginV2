@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
 public enum RankLimitRewards implements CityRewards {
@@ -46,6 +48,9 @@ public enum RankLimitRewards implements CityRewards {
 
     @Override
     public Component getName() {
-        return Component.text("§a" + rankLimit + " §7grades maximum");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.rank_limit",
+                Component.text(rankLimit).color(NamedTextColor.GREEN)
+        ).color(NamedTextColor.GRAY);
     }
 }

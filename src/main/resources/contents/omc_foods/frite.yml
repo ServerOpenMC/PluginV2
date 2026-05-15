@@ -1,0 +1,25 @@
+info:
+  namespace: omc_foods
+items:
+  frite:
+    display_name: Frite
+    permission: ayw.frite
+    resource:
+      material: GOLDEN_CARROT
+      generate: true
+      textures:
+      - items/frite.png
+recipes:
+  crafting_table:
+    frite:
+      enabled: true
+      shapeless: false
+      pattern:
+      - XAX
+      - XAX
+      - XAX
+      ingredients:
+        A: BAKED_POTATO
+      result:
+        item: omc_foods:frite
+        amount: 1

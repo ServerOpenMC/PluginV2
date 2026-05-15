@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  * Enumération représentant les récompenses d'intérêt pour une ville.
@@ -64,6 +66,9 @@ public enum InterestRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        return Component.text("§7+ §6" + interest * 100 + "% §6d'intérêt");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.interest",
+                Component.text(interest * 100).color(NamedTextColor.GOLD)
+        ).color(NamedTextColor.GRAY);
     }
 }

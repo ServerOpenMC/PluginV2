@@ -1,6 +1,11 @@
 package fr.openmc.api.input;
 
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +20,7 @@ public class ChatInput implements Listener {
 
     private static final Map<UUID, Consumer<String>> playerInputs = new HashMap<>();
 
-    public static void sendInput(Player player, String startMessage, Consumer<String> callback) {
+    public static void sendInput(Player player, Component startMessage, Consumer<String> callback) {
         playerInputs.put(player.getUniqueId(), callback);
         player.closeInventory();
         player.sendMessage(startMessage);
@@ -32,7 +37,8 @@ public class ChatInput implements Listener {
             if (event.message() instanceof TextComponent textComponent) {
                 String string = textComponent.content();
                 if (string.contains("cancel")) {
-                    player.sendMessage("§eVous avez annulé l'action !");
+                    MessagesManager.sendMessage(player,
+                            TranslationManager.translation("api.chatinput.cancel"), Prefix.OPENMC, MessageType.INFO, false);
                     callback.accept(null);
                 }
                 callback.accept(string);

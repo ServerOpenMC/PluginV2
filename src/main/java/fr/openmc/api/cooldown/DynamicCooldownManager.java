@@ -9,28 +9,33 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.commands.debug.DebugCooldownCommand;
+import fr.openmc.core.commands.utils.CooldownCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Main class for managing cooldowns
  */
-public class DynamicCooldownManager extends Feature implements DatabaseFeature {
+public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasCommands {
+
     /**
      * Represents a single cooldown with duration and last use time
      */
     @DatabaseTable(tableName = "cooldowns")
     public static class Cooldown {
-        @DatabaseField(id = true)
+        @DatabaseField(generatedId = true)
+        private int id;
+        @DatabaseField(uniqueCombo = true, canBeNull = false)
         private UUID uniqueId;
-        @DatabaseField(canBeNull = false)
+        @DatabaseField(uniqueCombo = true, canBeNull = false)
         private String group;
         @DatabaseField(canBeNull = false)
         private long duration;
@@ -90,6 +95,15 @@ public class DynamicCooldownManager extends Feature implements DatabaseFeature {
     }
 
     @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new DebugCooldownCommand(),
+                new CooldownCommand()
+        );
+    }
+
+
+    @Override
     public void save() {
         DynamicCooldownManager.saveCooldowns();
     }
@@ -125,7 +139,7 @@ public class DynamicCooldownManager extends Feature implements DatabaseFeature {
     }
 
     public static void saveCooldowns() {
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving cooldowns...");
+        OMCLogger.info("Saving cooldowns...");
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
@@ -135,11 +149,17 @@ public class DynamicCooldownManager extends Feature implements DatabaseFeature {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    try {
+                        cooldownDao.delete(cooldown);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         });
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Cooldowns saved successfully.");
+        OMCLogger.info("Cooldowns saved successfully.");
     }
 
     /**

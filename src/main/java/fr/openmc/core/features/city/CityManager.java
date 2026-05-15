@@ -8,10 +8,12 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
@@ -34,13 +36,15 @@ import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CityManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder {
+@Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
+public class CityManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasListeners, HasCommands {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
@@ -49,22 +53,6 @@ public class CityManager extends Feature implements DatabaseFeature, LoadAfterIt
     @Override
     public void init() {
         loadCities();
-
-        CommandsManager.getHandler().register(
-                new AdminCityCommands(),
-                new CityCommands(),
-                new CityChatCommand(),
-                new CityPermsCommands(),
-                new CityChestCommand(),
-                new CityRankCommands(),
-                new CityTopCommands(),
-                new CityInviteCommands(),
-                new CityClaimCommands()
-        );
-
-        OMCPlugin.registerEvents(
-                new CityChatListener()
-        );
 
         // SUB-FEATURE
         MayorManager.init();
@@ -75,6 +63,28 @@ public class CityManager extends Feature implements DatabaseFeature, LoadAfterIt
         NotationManager.init();
         CityRankManager.init();
         CityMilestoneManager.init();
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new AdminCityCommands(),
+                new CityCommands(),
+                new CityChatCommand(),
+                new CityPermsCommands(),
+                new CityChestCommand(),
+                new CityRankCommands(),
+                new CityTopCommands(),
+                new CityInviteCommands(),
+                new CityClaimCommands()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new CityChatListener()
+        );
     }
 
     @Override
@@ -507,7 +517,7 @@ public class CityManager extends Feature implements DatabaseFeature, LoadAfterIt
 
             if (Chronometer.containsChronometer(memberId, "mascot:stick"))
                 if (Bukkit.getEntity(memberId) != null)
-                    Chronometer.stopChronometer(member, "mascot:stick", null, "%null%");
+                    Chronometer.stopChronometer(member, "mascot:stick", null, null);
 
             Mascot mascot = city.getMascot();
             if (mascot == null)

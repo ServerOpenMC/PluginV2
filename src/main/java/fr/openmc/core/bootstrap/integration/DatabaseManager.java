@@ -32,7 +32,7 @@ public class DatabaseManager {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             }
         } catch (ClassNotFoundException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Database driver not found. Please ensure the MySQL or H2 driver is included in the classpath.");
+            OMCLogger.error("Database driver not found. Please ensure the MySQL or H2 driver is included in the classpath.");
             throw new RuntimeException(e);
         }
 
@@ -50,18 +50,18 @@ public class DatabaseManager {
                         try {
                             f.startDB(connectionSource);
                         } catch (SQLException e) {
-                            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
+                            OMCLogger.error("Failed to initialize the database connection.", e);
                             throw new RuntimeException(e);
                         } catch (ConnectionPendingException e) {
-                            OMCPlugin.getInstance().getSLF4JLogger().error("Database connection is pending. Please check your database configuration.");
+                            OMCLogger.error("Database connection is pending. Please check your database configuration.");
                             throw new RuntimeException(e);
                         }
                     });
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
+            OMCLogger.error("Failed to initialize the database connection.", e);
             throw new RuntimeException(e);
         } catch (ConnectionPendingException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Database connection is pending. Please check your database configuration.");
+            OMCLogger.error("Database connection is pending. Please check your database configuration.");
             throw new RuntimeException(e);
         }
     }

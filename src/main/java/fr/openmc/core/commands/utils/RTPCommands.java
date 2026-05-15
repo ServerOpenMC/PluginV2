@@ -7,7 +7,9 @@ import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,6 +23,8 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.File;
+
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 public class RTPCommands {
 
@@ -53,7 +57,7 @@ public class RTPCommands {
     @CommandPermission("omc.commands.rtp")
     @DynamicCooldown(
             group="player:rtp",
-            message = "§cTu dois attendre avant de pouvoir te rtp (%formatTime%)")
+            messageKey = "command.utils.rtp.must_wait")
     @Cooldown(15)
     public void rtp(Player player) {
         if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
@@ -70,11 +74,14 @@ public class RTPCommands {
 
                 if ((tries + 1) >= maxTries) {
                     // On a déjà mis le cooldown au début
-                    player.sendActionBar(Component.text("Échec du RTP. Réessayez plus tard..."));
+                    player.sendActionBar(TranslationManager.translation("command.utils.rtp.fail"));
                     return;
                 }
 
-                player.sendActionBar(Component.text("RTP: Tentative " + (tries + 1) + "/" + maxTries + " §cÉchec§r..."));
+                player.sendActionBar(TranslationManager.translation("command.utils.rtp.try",
+                        Component.text(tries + 1),
+                        Component.text(maxTries)));
+
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -111,7 +118,11 @@ public class RTPCommands {
 
     public void tpPlayer(Player player, Location loc) {
         PlayerUtils.sendFadeTitleTeleport(player, loc);
-        MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y: §e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ()), Prefix.OPENMC, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.rtp.success",
+                        Component.text(loc.getBlockX()).color(YELLOW),
+                        Component.text(loc.getBlockY()).color(YELLOW),
+                        Component.text(loc.getBlockZ()).color(NamedTextColor.YELLOW)
+                ).color(NamedTextColor.GREEN), Prefix.OPENMC, MessageType.SUCCESS, true);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L)
         );

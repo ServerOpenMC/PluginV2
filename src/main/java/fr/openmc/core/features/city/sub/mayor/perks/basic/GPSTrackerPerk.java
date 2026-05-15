@@ -9,7 +9,9 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,7 +57,10 @@ public class GPSTrackerPerk implements Listener {
             applyGlowing(player);
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVous venez d'entrer dans la ville §e" + newCity.getName() + "§c qui dispose du §e§lGPS Tracker§c ! Soyez sur vos gardes."),
+                    TranslationManager.translation(
+                            "feature.city.mayor.perk.basic.gps_tracker.entered",
+                            Component.text(newCity.getName()).color(NamedTextColor.YELLOW)
+                    ),
                     Prefix.MAYOR,
                     MessageType.INFO,
                     false

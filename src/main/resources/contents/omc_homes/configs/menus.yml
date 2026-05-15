@@ -1,0 +1,27 @@
+info:
+  namespace: omc_homes
+font_images:
+  omc_homes_menus_home:
+    permission: "ayw.emoji.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "menus/homes_menu.png"
+    y_position: 25
+  omc_homes_menus_home_delete:
+    permission: "ayw.emoji.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "menus/homes_menu_delete.png"
+    y_position: 25
+  omc_homes_menus_home_upgrade:
+    permission: "ayw.emoji.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "menus/homes_menu_upgrade.png"
+    y_position: 25
+  omc_homes_menus_home_settings:
+    permission: "ayw.emoji.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "menus/homes_settings.png"
+    y_position: 25

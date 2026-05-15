@@ -3,9 +3,9 @@ package fr.openmc.core.features.milestones.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.milestones.Milestone;
-import fr.openmc.core.features.milestones.MilestoneQuest;
 import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.milestones.models.Milestone;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -48,8 +48,8 @@ public class MilestoneMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des milestones - " + milestone.getName();
+    public @NotNull Component getName() {
+        return Component.text("Menu des milestones - " + milestone.getName());
     }
 
     @Override

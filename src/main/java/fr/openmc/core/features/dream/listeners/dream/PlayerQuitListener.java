@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +17,8 @@ public class PlayerQuitListener implements Listener {
 
         if (!DreamUtils.isInDream(player)) return;
 
+        if (PlayerCloneNpc.getCloneNpc(player) != null)
+            PlayerCloneNpc.deleteCloneNpc(player);
         DreamManager.removeDreamPlayer(player, player.getLocation());
     }
 }

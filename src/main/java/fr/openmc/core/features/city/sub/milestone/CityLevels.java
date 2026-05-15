@@ -14,8 +14,10 @@ import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -29,14 +31,15 @@ import static fr.openmc.core.features.city.actions.CityCreateAction.FREE_CLAIMS;
 @Getter
 public enum CityLevels {
     LEVEL_1(
-            Component.text("Niveau 1"),
-            Component.text("Ère urbaine"),
+            "feature.city.levels.level_1.name",
+            "feature.city.levels.level_1.description",
             List.of(
                     new CommandRequirement("/city create", 1)
             ),
             List.of(
                     new TemplateRewards(
-                            Component.text("§6" + FREE_CLAIMS + " claims §7gratuits")
+                            "feature.city.levels.rewards.free_claims",
+                            Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)
                     ),
                     MascotsSkinUnlockRewards.LEVEL_1,
                     MascotsLevelsRewards.LEVEL_1,
@@ -45,8 +48,8 @@ public enum CityLevels {
             0
     ),
     LEVEL_2(
-            Component.text("Niveau 2"),
-            Component.text("Les fondations"),
+            "feature.city.levels.level_2.name",
+            "feature.city.levels.level_2.description",
             List.of(
                     new CommandRequirement("/city map", 1),
                     new CommandRequirement("/city claim view", 1),
@@ -55,18 +58,23 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 5 claims");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.claims",
+                                            Component.text(5)
+                                    );
                                 }
 
-                                return Component.text("Avoir 5 claims (%d/5)".formatted(
-                                        city.getChunks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.claims.progress",
+                                        Component.text(5),
+                                        Component.text(city.getChunks().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getLaw().getWarp() != null,
                             city -> CustomItemRegistry.getByName("omc_items:warp_stick").getBest(),
-                            (city, ignore) -> Component.text("Poser un /city setwarp")
+                            (city, ignore) -> TranslationManager.translation("feature.city.levels.requirements.setwarp")
                     ),
                     new ItemDepositRequirement(Material.GOLD_INGOT, 128)
             ),
@@ -81,8 +89,8 @@ public enum CityLevels {
             60 * 10
     ),
     LEVEL_3(
-            Component.text("Niveau 3"),
-            Component.text("Ville peu développée"),
+            "feature.city.levels.level_3.name",
+            "feature.city.levels.level_3.description",
             List.of(
                     new CommandRequirement("/city bank", 1),
                     new CommandRequirement("/city chest", 1),
@@ -91,12 +99,17 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 10 claims");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.claims",
+                                            Component.text(10)
+                                    );
                                 }
 
-                                return Component.text("Avoir 10 claims (%d/10)".formatted(
-                                        city.getChunks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.claims.progress",
+                                        Component.text(10),
+                                        Component.text(city.getChunks().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -104,12 +117,17 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 5k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("5k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 5k dans la banque (%s/5k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("5k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -117,18 +135,26 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.PLAYER_HEAD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 2 membres");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.members",
+                                            Component.text(2)
+                                    );
                                 }
 
-                                return Component.text("Avoir 2 membres (%d/2)".formatted(
-                                        city.getMembers().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.members.progress",
+                                        Component.text(2),
+                                        Component.text(city.getMembers().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 2,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, ignore) -> Component.text("Avoir sa mascotte niveau 2")
+                            (city, ignore) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.mascot_level",
+                                    Component.text(2)
+                            )
                     ),
                     new ItemDepositRequirement(Material.SPIDER_EYE, 8),
                     new ItemDepositRequirement(Material.BONE, 16),
@@ -147,25 +173,30 @@ public enum CityLevels {
             60 * 30
     ),
     LEVEL_4(
-            Component.text("Niveau 4"),
-            Component.text("Démocratie"),
+            "feature.city.levels.level_4.name",
+            "feature.city.levels.level_4.description",
             List.of(
                     new TemplateRequirement(
                             city -> !city.getAvailableNotation().isEmpty(),
                             city -> ItemStack.of(Material.DIAMOND),
-                            (city, level) -> Component.text("Recevoir une notation")
+                            (city, level) -> TranslationManager.translation("feature.city.levels.requirements.notation.receive")
                     ),
                     new TemplateRequirement(
                             city -> city.getRanks().size() >= 2,
                             city -> ItemStack.of(Material.DANDELION),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 2 grades (/city rank)");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.ranks",
+                                            Component.text(2)
+                                    );
                                 }
 
-                                return Component.text("Avoir 2 grades (%d/2)".formatted(
-                                        city.getRanks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.ranks.progress",
+                                        Component.text(2),
+                                        Component.text(city.getRanks().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -173,12 +204,17 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 15k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("15k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 15k dans la banque (%s/15k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("15k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), 128),
@@ -192,7 +228,7 @@ public enum CityLevels {
 
                             city -> CustomItemRegistry.getByName("omc_blocks:urne").getBest(),
                             
-                            (city, level, scope) -> Component.text("Craftez une urne"),
+                            (city, level, scope) -> TranslationManager.translation("feature.city.levels.requirements.craft_urne"),
                             "craft_urne",
                             CraftItemEvent.class,
                             (event, scope) -> {
@@ -223,19 +259,22 @@ public enum CityLevels {
             60 * 90
     ),
     LEVEL_5(
-            Component.text("Niveau 5"),
-            Component.text("Développement économique"),
+            "feature.city.levels.level_5.name",
+            "feature.city.levels.level_5.description",
             List.of(
                     new TemplateRequirement(
                             city -> NPCManager.hasNPCS(city.getUniqueId()),
                             city -> CustomItemRegistry.getByName("omc_blocks:urne").getBest(),
-                            (city, level) -> Component.text("Poser l'urne")
+                            (city, level) -> TranslationManager.translation("feature.city.levels.requirements.place_urne")
                     ),
 
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 10),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 10 points sur une des notations")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.notation.points",
+                                    Component.text(10)
+                            )
                     ),
                     new CommandRequirement("/city mayor", 1),
                     new ItemDepositRequirement(Material.GOLD_BLOCK, 32),
@@ -245,12 +284,17 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 20k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("20k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 20k dans la banque (%s/20k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("20k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -258,12 +302,17 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 23 claims");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.claims",
+                                            Component.text(23)
+                                    );
                                 }
 
-                                return Component.text("Avoir 23 claims (%d/23)".formatted(
-                                        city.getChunks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.claims.progress",
+                                        Component.text(23),
+                                        Component.text(city.getChunks().size())
+                                );
                             }
                     ),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest(), 32)
@@ -281,25 +330,33 @@ public enum CityLevels {
             60 * 60 * 3
     ),
     LEVEL_6(
-            Component.text("Niveau 6"),
-            Component.text("Capitale"),
+            "feature.city.levels.level_6.name",
+            "feature.city.levels.level_6.description",
             List.of(
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 20),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 20 points sur une des notations")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.notation.points",
+                                    Component.text(20)
+                            )
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 30000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 30k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("30k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 30k dans la banque (%s/30k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("30k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -307,18 +364,26 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 27 claims");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.claims",
+                                            Component.text(27)
+                                    );
                                 }
 
-                                return Component.text("Avoir 27 claims (%d/27)".formatted(
-                                        city.getChunks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.claims.progress",
+                                        Component.text(27),
+                                        Component.text(city.getChunks().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 5,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Avoir la mascotte niveau 5")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.mascot_level",
+                                    Component.text(5)
+                            )
                     ),
                     new ItemDepositRequirement(Material.STONE_BRICKS, 400),
                     new ItemDepositRequirement(Material.BLACK_CONCRETE, 184),
@@ -338,25 +403,33 @@ public enum CityLevels {
             60 * 60 * 5
     ),
     LEVEL_7(
-            Component.text("Niveau 7"),
-            Component.text("Royaume ?"),
+            "feature.city.levels.level_7.name",
+            "feature.city.levels.level_7.description",
             List.of(
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 30),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 30 points sur une des notations")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.notation.points",
+                                    Component.text(30)
+                            )
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 40000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 40k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("40k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 40k dans la banque (%s/40k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("40k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -364,18 +437,26 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 30 claims");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.claims",
+                                            Component.text(30)
+                                    );
                                 }
 
-                                return Component.text("Avoir 30 claims (%d/30)".formatted(
-                                        city.getChunks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.claims.progress",
+                                        Component.text(30),
+                                        Component.text(city.getChunks().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 6,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Avoir la mascotte niveau 6")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.mascot_level",
+                                    Component.text(6)
+                            )
                     ),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), 400),
                     new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
@@ -396,43 +477,56 @@ public enum CityLevels {
             60 * 60 * 10
     ),
     LEVEL_8(
-            Component.text("Niveau 8"),
-            Component.text("Empire ?"),
+            "feature.city.levels.level_8.name",
+            "feature.city.levels.level_8.description",
             List.of(
                     new TemplateRequirement(
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 2,
                             city -> ItemStack.of(Material.IRON_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir fait 2 guerres");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.war.count",
+                                            Component.text(2)
+                                    );
                                 }
 
-                                return Component.text("Avoir fait 2 guerres (%s/2)".formatted(
-                                        WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.war.count.progress",
+                                        Component.text(2),
+                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 1,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
-                            (city, level) -> Component.text("Gagner une guerre")
+                            (city, level) -> TranslationManager.translation("feature.city.levels.requirements.war.win")
                     ),
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 40),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 40 points sur une des notations")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.notation.points",
+                                    Component.text(40)
+                            )
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 60000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 60k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("60k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 60k dans la banque (%s/60k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("60k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -440,18 +534,26 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 50 claims");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.claims",
+                                            Component.text(50)
+                                    );
                                 }
 
-                                return Component.text("Avoir 50 claims (%d/50)".formatted(
-                                        city.getChunks().size()
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.claims.progress",
+                                        Component.text(50),
+                                        Component.text(city.getChunks().size())
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 7,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Avoir la mascotte niveau 7")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.mascot_level",
+                                    Component.text(7)
+                            )
                     ),
                     new ItemDepositRequirement(Material.NETHERITE_INGOT, 4),
                     new ItemDepositRequirement(Material.OBSIDIAN, 128),
@@ -470,44 +572,60 @@ public enum CityLevels {
             60 * 60 * 16
     ),
     LEVEL_9(
-            Component.text("Niveau 9"),
-            Component.text("Puissance militaire"),
+            "feature.city.levels.level_9.name",
+            "feature.city.levels.level_9.description",
             List.of(
                     new TemplateRequirement(
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 3,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Gagner 3 guerres");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.war.win.count",
+                                            Component.text(3)
+                                    );
                                 }
 
-                                return Component.text("Gagner 3 guerres (%s/3)".formatted(
-                                        WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWon() : 0
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.war.win.count.progress",
+                                        Component.text(3),
+                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWon() : 0)
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 50),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 50 points sur une des notations")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.notation.points",
+                                    Component.text(50)
+                            )
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 80000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 80k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("80k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 80k dans la banque (%s/80k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("80k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 8,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Avoir une mascotte niveau 8")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.mascot_level",
+                                    Component.text(8)
+                            )
                     ),
                     new ItemDepositRequirement(Material.DIAMOND, 300),
                     new ItemDepositRequirement(Material.CYAN_CONCRETE, 200),
@@ -526,30 +644,38 @@ public enum CityLevels {
             60 * 60 * 24
     ),
     LEVEL_10(
-            Component.text("Niveau 10"),
-            Component.text("Métropole"),
+            "feature.city.levels.level_10.name",
+            "feature.city.levels.level_10.description",
             List.of(
                     new TemplateRequirement(
                             city -> NotationManager.top10Cities.contains(city.getUniqueId()),
                             city -> ItemStack.of(Material.HONEYCOMB),
-                            (city, level) -> Component.text("Être dans le top 10 des notations sur une des notations")
+                            (city, level) -> TranslationManager.translation("feature.city.levels.requirements.notation.top10")
                     ),
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 60),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 60 points sur une des notations")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.notation.points",
+                                    Component.text(60)
+                            )
                     ),
                     new TemplateRequirement(
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 10,
                             city -> ItemStack.of(Material.NETHERITE_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir fait 10 guerres");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.war.count",
+                                            Component.text(10)
+                                    );
                                 }
 
-                                return Component.text("Avoir fait 10 guerres (%s/10)".formatted(
-                                        WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.war.count.progress",
+                                        Component.text(10),
+                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                );
                             }
                     ),
                     new TemplateRequirement(
@@ -557,18 +683,26 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 200k dans la banque");
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.bank",
+                                            Component.text("200k")
+                                    );
                                 }
 
-                                return Component.text("Avoir 200k dans la banque (%s/200k)".formatted(
-                                        EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
-                                ));
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.bank.progress",
+                                        Component.text("200k"),
+                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                );
                             }
                     ),
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 9,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Avoir une mascotte niveau 9")
+                            (city, level) -> TranslationManager.translation(
+                                    "feature.city.levels.requirements.mascot_level",
+                                    Component.text(9)
+                            )
                     ),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_blocks:aywenite_block").getBest(), 64),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), 128),
@@ -588,8 +722,8 @@ public enum CityLevels {
     ),
     ;
 
-    private final Component name;
-    private final Component description;
+    private final String nameKey;
+    private final String descriptionKey;
     private final List<CityRequirement> requirements;
     private final List<CityRewards> rewards;
     private final long upgradeTime;
@@ -597,18 +731,26 @@ public enum CityLevels {
     /**
      * Constructeur de l'énumération des niveaux de ville.
      *
-     * @param name         le nom du niveau sous forme de composant
-     * @param description  la description du niveau sous forme de composant
+     * @param nameKey      la clé du nom du niveau
+     * @param descriptionKey la clé de la description du niveau
      * @param requirements la liste des exigences à remplir
      * @param rewards      la liste des récompenses obtenues une fois le niveau atteint
      * @param upgradeTime  le temps requis pour la montée de niveau (en secondes)
      */
-    CityLevels(Component name, Component description, List<CityRequirement> requirements, List<CityRewards> rewards, long upgradeTime) {
-        this.name = name;
-        this.description = description;
+    CityLevels(String nameKey, String descriptionKey, List<CityRequirement> requirements, List<CityRewards> rewards, long upgradeTime) {
+        this.nameKey = nameKey;
+        this.descriptionKey = descriptionKey;
         this.requirements = requirements;
         this.rewards = rewards;
         this.upgradeTime = upgradeTime;
+    }
+
+    public Component getName() {
+        return TranslationManager.translation(nameKey);
+    }
+
+    public Component getDescription() {
+        return TranslationManager.translation(descriptionKey);
     }
 
     /**

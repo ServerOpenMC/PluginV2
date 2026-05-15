@@ -2,16 +2,17 @@ package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * QuestsManager is responsible for managing quests in the game.
@@ -19,7 +20,8 @@ import java.util.UUID;
  * It handles the registration of quests, loading default quests,
  * and saving quest progress for players.
  */
-public class QuestsManager extends Feature implements LoadAfterItemsAdder {
+@Credit(developers = {"Axeno"}, graphist = {"Gexary"})
+public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCommands {
     static final Map<String, Quest> quests = new HashMap<>();
 
     /**
@@ -29,10 +31,15 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder {
      */
     @Override
     public void init() {
-        QuestProgressSaveManager.init();
-
         loadDefaultQuests();
         QuestProgressSaveManager.loadAllQuestProgress();
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new QuestCommand()
+        );
     }
 
     @Override
@@ -53,7 +60,7 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder {
                 Bukkit.getPluginManager().registerEvents(questL, OMCPlugin.getInstance());
             }
         } else {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Quest {} is already registered.", quest.getName(), new Exception());
+            OMCLogger.warn("Quest {} is already registered.", quest.getName(), new Exception());
         }
     }
 

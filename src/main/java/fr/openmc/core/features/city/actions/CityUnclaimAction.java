@@ -8,7 +8,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,17 +29,17 @@ public class CityUnclaimAction {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
-            MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.cant_claim_here"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasChunk(chunkX, chunkZ)) {
-	        MessagesManager.sendMessage(sender, Component.text("Vous devez posséder ce claim pour le unclaim"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.unclaim.must_own_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.getMascot().getChunk().getX() == chunkX && city.getMascot().getChunk().getZ() == chunkZ) {
-            MessagesManager.sendMessage(sender, Component.text("Vous ne pouvez pas unclaim le claim de la mascotte"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.unclaim.cant_unclaim_mascot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -58,6 +58,6 @@ public class CityUnclaimAction {
 
         city.removeChunk(chunkX, chunkZ);
 
-        MessagesManager.sendMessage(sender, Component.text("Vous venez de rétrécir votre ville en supprimant ce claim"), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.unclaim.success"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

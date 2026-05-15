@@ -1,0 +1,10 @@
+info:
+  namespace: omc_foods
+items:
+  salade:
+    display_name: Salade
+    resource:
+      material: DRIED_KELP
+      generate: true
+      textures:
+      - items/salade.png

@@ -5,7 +5,7 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

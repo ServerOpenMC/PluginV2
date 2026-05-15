@@ -1,6 +1,8 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -14,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Manages the saving and loading of quest progress for players.
  */
-public class QuestProgressSaveManager {
+public class QuestProgressSaveManager extends Feature {
 
     private static final String SAVE_FOLDER = "quests";
     static final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
@@ -22,11 +24,17 @@ public class QuestProgressSaveManager {
     /**
      * Init for QuestProgressSaveManager.
      */
-    public static void init() {
+    @Override
+    public void init() {
         File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
         }
+    }
+
+    @Override
+    protected void save() {
+        // not used, already saved in QuestManager
     }
 
     /**
@@ -118,7 +126,7 @@ public class QuestProgressSaveManager {
         try {
             config.save(playerFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Could not save quest progress for player {}", playerUUID, e);
+            OMCLogger.error("Could not save quest progress for player {}", playerUUID, e);
         }
     }
 
@@ -152,9 +160,9 @@ public class QuestProgressSaveManager {
                     UUID playerUUID = UUID.fromString(playerFile.getName().replace(".yml", ""));
                     loadPlayerQuestProgress(playerUUID);
                 } catch (IllegalArgumentException e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().warn("Invalid UUID in quest progress file: {}", playerFile.getName(), e);
+                    OMCLogger.warn("Invalid UUID in quest progress file: {}", playerFile.getName(), e);
                 } catch (Exception e) {
-                    OMCPlugin.getInstance().getSLF4JLogger().error("Error loading quest progress for file: {}", playerFile.getName(), e);
+                    OMCLogger.error("Error loading quest progress for file: {}", playerFile.getName(), e);
                 }
             }
         }

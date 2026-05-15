@@ -13,7 +13,10 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -43,8 +46,8 @@ public class MascotsSkinMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des skins des mascottes";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.mascots.menu.skin.name");
     }
 
     @Override
@@ -75,8 +78,8 @@ public class MascotsSkinMenu extends Menu {
         }
 
         map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
-            meta.displayName(Component.text("§aRetour"));
-	        meta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+            meta.displayName(TranslationManager.translation("messages.menus.back"));
+            meta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
         }, true));
 
         return map;
@@ -96,16 +99,22 @@ public class MascotsSkinMenu extends Menu {
         List<Component> loreMascots = new ArrayList<>();
 
         if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
-	        loreMascots.add(Component.text("§cVous devez être niveau " + MascotsSkinUnlockRewards.getLevelRequiredSkin(type) + " pour débloquer ce skin"));
+            loreMascots.add(TranslationManager.translation(
+                    "feature.city.mascots.menu.skin.lore.level_required",
+                    Component.text(MascotsSkinUnlockRewards.getLevelRequiredSkin(type)).color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+            ));
         } else {
-            loreMascots.add(Component.text("§cVous devez avoir §d" + type.getPrice() + " Aywenite"));
+            loreMascots.add(TranslationManager.translation(
+                    "feature.city.mascots.menu.skin.lore.price_required",
+                    Component.text(type.getPrice()).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+            ));
         }
 
         return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())),
                 meta -> meta.lore(loreMascots))
                 .setOnClick(event -> {
                     if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
-                        MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas le niveau de ville requis pour mettre ce skin"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.mascots.menu.skin.error.level_required"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
                     if (!egg.equals(type.getSpawnEgg())) {
@@ -116,7 +125,7 @@ public class MascotsSkinMenu extends Menu {
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                             getOwner().closeInventory();
                         } else {
-                            MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.mascots.menu.skin.error.not_enough_aywenite"), Prefix.CITY, MessageType.ERROR, false);
                             getOwner().closeInventory();
                         }
                     } else {

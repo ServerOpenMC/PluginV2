@@ -9,6 +9,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -101,22 +102,21 @@ public class ItemDepositRequirement implements CityRequirement {
     @Override
     public Component getName(City city, CityLevels level) {
         if (city.getLevel() != level.ordinal()) {
-            return Component.text(String.format(
-                    "Déposer %d %s",
-                    amountRequired,
-                    ItemUtils.getItemName(itemType)
-            ));
+            return TranslationManager.translation(
+                    "feature.city.levels.requirements.deposit",
+                    Component.text(amountRequired),
+                    Component.text(ItemUtils.getItemName(itemType))
+            );
         }
 
-        return Component.text(String.format(
-                "Déposer %d %s (%d/%d)",
-                amountRequired,
-                ItemUtils.getItemName(itemType),
-                Objects.requireNonNull(
+        return TranslationManager.translation(
+                "feature.city.levels.requirements.deposit.progress",
+                Component.text(amountRequired),
+                Component.text(ItemUtils.getItemName(itemType)),
+                Component.text(Objects.requireNonNull(
                         CityStatisticsManager.getOrCreateStat(city.getUniqueId(), getScope())
-                ).asInt(),
-                amountRequired
-        ));
+                ).asInt())
+        );
     }
 
     /**
@@ -126,7 +126,7 @@ public class ItemDepositRequirement implements CityRequirement {
      */
     @Override
     public Component getDescription() {
-        return Component.text("§e§lCLIQUEZ ICI POUR DEPOSER");
+        return TranslationManager.translation("feature.city.levels.requirements.deposit.description");
     }
 
     /**
@@ -152,10 +152,13 @@ public class ItemDepositRequirement implements CityRequirement {
 
         if (removed > 0) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous avez déposé §3" + (toRemove == 1 ? "un" : toRemove) + " ")
-                            .append(Component.text(ItemUtils.getItemName(itemType))
+                    TranslationManager.translation(
+                            "feature.city.levels.requirements.deposit.success",
+                            Component.text(removed),
+                            Component.text(ItemUtils.getItemName(itemType))
                                     .color(NamedTextColor.DARK_AQUA)
-                                    .decoration(TextDecoration.ITALIC, false)),
+                                    .decoration(TextDecoration.ITALIC, false)
+                    ),
                     Prefix.CITY, MessageType.SUCCESS, false);
             CityStatisticsManager.increment(city.getUniqueId(), getScope(), removed);
             menu.open();

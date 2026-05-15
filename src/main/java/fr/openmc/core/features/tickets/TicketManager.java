@@ -4,10 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,8 +18,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+@Credit(developers = {"Axeno"}, graphist = {"Tfloa"})
 @Getter
-public class TicketManager extends Feature {
+public class TicketManager extends Feature implements HasListeners {
 
     public static int hoursPerTicket = 8;
     public static final List<PlayerStats> timePlayed = new ArrayList<>();
@@ -34,8 +38,10 @@ public class TicketManager extends Feature {
     }
 
     @Override
-    public void save() {
-        // nothing to save
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new TicketListener()
+        );
     }
 
     /**
@@ -45,13 +51,13 @@ public class TicketManager extends Feature {
      */
     public static void loadPlayerStats(File statsDirectory) {
         if (!statsDirectory.exists() || !statsDirectory.isDirectory()) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("Stats directory does not exist or is not a directory.");
+            OMCLogger.info("Stats directory does not exist or is not a directory.");
             return;
         }
 
         File[] files = statsDirectory.listFiles((dir, name) -> name.endsWith(".json"));
         if (files == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("No stats files found.");
+            OMCLogger.info("No stats files found.");
             return;
         }
 
@@ -113,9 +119,9 @@ public class TicketManager extends Feature {
                 }
             }
         } catch (IllegalArgumentException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Invalid UUID in filename: {}", statFile.getName(), e);
+            OMCLogger.warn("Invalid UUID in filename: {}", statFile.getName(), e);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading stats from file: {}", statFile.getName(), e);
+            OMCLogger.error("Error loading stats from file: {}", statFile.getName(), e);
         }
     }
 
@@ -175,7 +181,7 @@ public class TicketManager extends Feature {
     private static void updatePlayerJsonFile(UUID uuid, int ticketToGive, boolean given) {
         File playerFile = new File(statsDirectory, uuid.toString() + ".json");
         if (!playerFile.exists()) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Player stats file not found for UUID: {}", uuid);
+            OMCLogger.warn("Player stats file not found for UUID: {}", uuid);
             return;
         }
 
@@ -215,9 +221,9 @@ public class TicketManager extends Feature {
             }
 
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error updating stats file for UUID: {}", uuid, e);
+            OMCLogger.error("Error updating stats file for UUID: {}", uuid, e);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Unexpected error updating stats file for UUID: {}", uuid, e);
+            OMCLogger.error("Unexpected error updating stats file for UUID: {}", uuid, e);
         }
     }
 

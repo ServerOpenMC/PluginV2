@@ -4,9 +4,12 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.settings.PlayerSettings;
@@ -37,7 +40,8 @@ import java.util.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
-public class MailboxManager extends Feature implements DatabaseFeature {
+@Credit(developers = {"Gexary", "Axeno"}, graphist = {"Gexary"})
+public class MailboxManager extends Feature implements DatabaseFeature, HasCommands {
     private static final int MAX_STACKS_PER_LETTER = 27;
     private static final List<Letter> letters = new ArrayList<>();
 
@@ -46,6 +50,13 @@ public class MailboxManager extends Feature implements DatabaseFeature {
     @Override
     public void init() {
         MailboxManager.loadLetters();
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new MailboxCommand()
+        );
     }
 
     @Override
@@ -87,7 +98,7 @@ public class MailboxManager extends Feature implements DatabaseFeature {
             sendSuccessSendingMessage(sender, receiverName, numItems);
             return true;
         } catch (Exception ex) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline player: {}", ex.getMessage(), ex);
+            OMCLogger.warn("Error while sending items to offline player: {}", ex.getMessage(), ex);
             MessagesManager.sendMessage(
                     sender,
                     Component.text("Une erreur est apparue lors de l'envoie des items à ", NamedTextColor.DARK_RED)
@@ -115,7 +126,7 @@ public class MailboxManager extends Feature implements DatabaseFeature {
                 letters.add(letter);
             }
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline players: {}", e.getMessage(), e);
+            OMCLogger.warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }
     }
 
@@ -272,7 +283,7 @@ public class MailboxManager extends Feature implements DatabaseFeature {
                     .max()
                     .orElse(0) + 1;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading letters from database: {}", e.getMessage(), e);
+            OMCLogger.error("Error loading letters from database: {}", e.getMessage(), e);
         }
     }
 
@@ -283,7 +294,7 @@ public class MailboxManager extends Feature implements DatabaseFeature {
                 letterDao.create(letter);
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving letters to database: {}", e.getMessage(), e);
+            OMCLogger.error("Error saving letters to database: {}", e.getMessage(), e);
         }
     }
 }

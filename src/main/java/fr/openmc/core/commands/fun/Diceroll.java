@@ -3,7 +3,9 @@ package fr.openmc.core.commands.fun;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -18,6 +20,7 @@ public class Diceroll {
     private void diceroll(Player player) {
         int result = ThreadLocalRandom.current().nextInt(10) + 1;
 
-        MessagesManager.sendMessage(player, Component.text("🎲 Le résultat est: §6" + result + "§r 🎲"), Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("command.fun.diceroll.success",
+                Component.text(result).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.INFO, true);
     }
 }

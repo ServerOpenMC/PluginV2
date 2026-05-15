@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.generation;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.generation.biomes.*;
 import fr.openmc.core.features.dream.generation.populators.glacite.GlaciteGeodePopulator;
@@ -69,7 +70,7 @@ public class DreamDimensionManager {
         World dream = Bukkit.getWorld(DIMENSION_NAME);
         if (dream == null) return;
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Saving seed: {}", dream.getSeed());
+        OMCLogger.info("Saving seed: {}", dream.getSeed());
         saveSeed(dream.getSeed());
     }
 
@@ -84,11 +85,11 @@ public class DreamDimensionManager {
         if (!worldFolder.exists()) {
             seed = createSeed();
             creator.seed(seed);
-            plugin.getSLF4JLogger().info("New Dream world created with seed: {}", seed);
+            OMCLogger.info("New Dream world created with seed: {}", seed);
         } else {
             World existing = Bukkit.getWorld(DIMENSION_NAME);
             seed = (existing != null) ? existing.getSeed() : creator.seed();
-            plugin.getSLF4JLogger().info("Loading existing Dream world with seed: {}", seed);
+            OMCLogger.info("Loading existing Dream world with seed: {}", seed);
         }
 
         creator.generator(new DreamChunkGenerator(seed));
@@ -134,7 +135,7 @@ public class DreamDimensionManager {
 
         dream.setTime(18000);
 
-        plugin.getSLF4JLogger().info("Dream Dimension ready!");
+        OMCLogger.info("Dream Dimension ready!");
     }
 
     // ** STRUCTURE NBT MANAGING **
@@ -175,7 +176,7 @@ public class DreamDimensionManager {
 
     private static void loadSeed() {
         if (!seedFile.exists()) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("Fichier seed.yml manquant, il sera créé au saveSeed().");
+            OMCLogger.info("Fichier seed.yml manquant, il sera créé au saveSeed().");
         }
         seedConfig = YamlConfiguration.loadConfiguration(seedFile);
     }
@@ -185,7 +186,7 @@ public class DreamDimensionManager {
         try {
             seedConfig.save(seedFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Cannot save seed dream_world", e);
+            OMCLogger.error("Cannot save seed dream_world", e);
         }
     }
 

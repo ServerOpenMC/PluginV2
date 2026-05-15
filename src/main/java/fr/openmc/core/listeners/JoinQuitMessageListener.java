@@ -1,13 +1,14 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
-import fr.openmc.core.features.tpa.TPAQueue;
+import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -50,7 +51,7 @@ public class JoinQuitMessageListener implements Listener {
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
@@ -109,17 +110,17 @@ public class JoinQuitMessageListener implements Listener {
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
-        if (TPAQueue.requesterHasPendingRequest(player)) {
-            Player targetTPA = TPAQueue.getTargetByRequester(player);
-            TPAQueue.removeRequest(player, targetTPA);
+        if (TPAManager.requesterHasPendingRequest(player)) {
+            Player targetTPA = TPAManager.getTargetByRequester(player);
+            TPAManager.removeRequest(player, targetTPA);
             MessagesManager.sendMessage(targetTPA, Component.text("§3La demande de téléportation de §6" + player.getName() + " §4a été annulée car il s'est déconnecté"), Prefix.OPENMC, MessageType.INFO, true);
-        } else if (TPAQueue.hasPendingRequest(player)) {
-            for (Player requester : TPAQueue.getRequesters(player)) {
-                TPAQueue.removeRequest(requester, player);
+        } else if (TPAManager.hasPendingRequest(player)) {
+            for (Player requester : TPAManager.getRequesters(player)) {
+                TPAManager.removeRequest(requester, player);
                 MessagesManager.sendMessage(requester, Component.text("§4Votre demande de téléportation à §6" + player.getName() + " §4a été annulée car il s'est déconnecté"), Prefix.OPENMC, MessageType.WARNING, true);
             }
         }

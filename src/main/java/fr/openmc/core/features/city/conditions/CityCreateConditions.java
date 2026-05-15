@@ -9,8 +9,8 @@ import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -32,27 +32,33 @@ public class CityCreateConditions {
      */
     public static boolean canCityCreate(Player player, String cityName) {
         if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.create.must_wait",
+                    Component.text(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
+            ), Prefix.CITY, MessageType.INFO, false);
             return false;
         }
 
         if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_IN_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_already_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
-	        MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() + " §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.create.not_enough_player_money",
+                    Component.text(MONEY_CREATE + EconomyManager.getEconomyIcon())
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest(), AYWENITE_CREATE)) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(AYWENITE_CREATE)), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
-	        MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir uniquement des caractères alphanumerique et doit faire moins de 24 caractères"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.invalid_name", Component.text(InputUtils.MAX_LENGTH_CITY)), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

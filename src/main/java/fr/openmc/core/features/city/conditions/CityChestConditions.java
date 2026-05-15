@@ -10,6 +10,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,22 +35,28 @@ public class CityChestConditions {
      */
     public static boolean canCityChestOpen(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CHEST)) {
-	        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CHEST) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "messages.city.havent_unlocked_feature",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CHEST))
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CityPermission.CHEST)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.ACCESS_CITY_CHEST)) {
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.chest.open.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.getChestWatcher() != null) {
-            MessagesManager.sendMessage(player, Component.text("Le coffre est déjà ouvert par par §c" + Bukkit.getPlayer(city.getChestWatcher()).getName()), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.chest.open.already_opened_by",
+                    Component.text(Bukkit.getPlayer(city.getChestWatcher()).getName())
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
@@ -64,29 +71,35 @@ public class CityChestConditions {
      */
     public static boolean canCityChestUpgrade(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas dans une ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CityPermission.CHEST_UPGRADE)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions d'améliorer le coffre de la ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.UPGRADE_CHEST)) {
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.chest.upgrade.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.getChestPages() >= ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
-	        MessagesManager.sendMessage(player, Component.text("Le coffre de la ville est déjà au niveau maximum (" + ChestPageLimitRewards.getChestPageLimit(city.getLevel()) + " page(s) maximale(s)), Pour améliorer cette limite, passez a un niveau de ville supérieur"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.chest.upgrade.max_level",
+                    Component.text(ChestPageLimitRewards.getChestPageLimit(city.getLevel()))
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         int price = city.getChestPages() * UPGRADE_PER_MONEY; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
         if (city.getBalance() < price) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "messages.city.city_not_enough_money",
+                    Component.text(price + EconomyManager.getEconomyIcon())
+            ), Prefix.CITY, MessageType.ERROR, true);
             return false;
         }
 
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
         if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest(), aywenite)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite §f(" + aywenite + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(aywenite)), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

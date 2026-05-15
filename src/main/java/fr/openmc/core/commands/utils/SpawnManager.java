@@ -2,16 +2,22 @@ package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.listeners.RespawnListener;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
-public class SpawnManager extends Feature {
+public class SpawnManager extends Feature implements HasCommands, HasListeners {
 
     private static File spawnFile;
     private static FileConfiguration spawnConfig;
@@ -24,8 +30,18 @@ public class SpawnManager extends Feature {
     }
 
     @Override
-    public void save() {
-        // nothing to save
+    public Set<Object> getCommands() {
+        return Set.of(
+                new Spawn(),
+                new SetSpawn()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new RespawnListener()
+        );
     }
 
     private static void loadSpawnConfig() {
@@ -70,8 +86,7 @@ public class SpawnManager extends Feature {
         try {
             spawnConfig.save(spawnFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
+            OMCLogger.warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
         }
     }
-    
 }

@@ -4,10 +4,10 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.events.MemberJoinEvent;
-import fr.openmc.core.features.milestones.MilestoneQuest;
-import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -34,12 +34,12 @@ public class CityCreateQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.OAK_DOOR,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.CITY_CREATE,
+		        TutorialSteps.CITY_CREATE,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.CITY_CREATE.ordinal() + 1) + " §f! Cette version d'OpenMC est centrée autour des villes. Vous y trouverez une §emilestone spéciale pour les villes §f (/city milestone) qui vous guidera dans cette aventure singulière ! Et si vous passiez votre ville au §3niveau 2 §f?",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.CITY_CREATE.ordinal() + 1) + " §f! Cette version d'OpenMC est centrée autour des villes. Vous y trouverez une §emilestone spéciale pour les villes §f (/city milestone) qui vous guidera dans cette aventure singulière ! Et si vous passiez votre ville au §3niveau 2 §f?",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        ),
@@ -47,7 +47,7 @@ public class CityCreateQuest extends MilestoneQuest implements Listener {
 						        player -> {
 							        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 							        if (playerCity.getLevel() >= 2) {
-								        TutorialStep.CITY_LEVEL_2.getQuest().incrementProgress(player.getUniqueId());
+								        TutorialSteps.CITY_LEVEL_2.getQuest().incrementProgress(player.getUniqueId());
 							        }
 						        }
 				        )

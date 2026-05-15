@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -34,7 +35,7 @@ public class Restart {
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
         if (sender instanceof Player) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -45,9 +46,12 @@ public class Restart {
         for (City city : CityManager.getCities()) {
             UUID watcherUUID = city.getChestWatcher();
             if (watcherUUID == null) continue;
-	        
-	        MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un redémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
-            Bukkit.getPlayer(watcherUUID).closeInventory();
+            Player player = Bukkit.getPlayer(watcherUUID);
+            if (player == null || !player.isOnline()) continue;
+
+
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("command.utils.restart.cannot_open_city_chest"), Prefix.OPENMC, MessageType.INFO, false);
+            player.closeInventory();
         }
 
         OMCPlugin plugin = OMCPlugin.getInstance();
@@ -57,10 +61,10 @@ public class Restart {
                 if (remainingTime == 0) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         Component kickMessage = Component.text()
-                                .append(Component.text("🔄 Redémarrage du serveur 🔄\n", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+                                .append(TranslationManager.translation("command.utils.restart.redem").color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
                                 .append(Component.text("\n"))
-                                .append(Component.text("Le serveur est en train de redémarrer.\n", NamedTextColor.WHITE))
-                                .append(Component.text("Merci de votre patience !", NamedTextColor.GRAY))
+                                .append(TranslationManager.translation("command.utils.restart.server_restarting").color(NamedTextColor.WHITE))
+                                .append(TranslationManager.translation("command.utils.restart.thanks").color(NamedTextColor.GRAY))
                                 .build();
                         player.kick(kickMessage, PlayerKickEvent.Cause.RESTART_COMMAND);
                     }
@@ -73,11 +77,16 @@ public class Restart {
                 }
 
                 MessagesManager.broadcastMessage(
-                        Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")),
+                        TranslationManager.translation("command.utils.restart.restarting_in",
+                                Component.text(remainingTime).color(NamedTextColor.LIGHT_PURPLE),
+                                Component.text(remainingTime == 1 ? "" : "s")),
                         Prefix.OPENMC, MessageType.WARNING);
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Title title = Title.title(Component.text("Redémarrage"), Component.text("§d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")));
+                    Title title = Title.title(TranslationManager.translation("command.utils.restart.restart"),
+                            TranslationManager.translation("command.utils.restart.in",
+                                    Component.text(remainingTime).color(NamedTextColor.LIGHT_PURPLE),
+                                    Component.text(remainingTime == 1 ? "" : "s")));
                     player.showTitle(title);
 
                     player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 0.4F);

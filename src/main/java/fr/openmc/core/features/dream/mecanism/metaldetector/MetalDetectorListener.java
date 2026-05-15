@@ -2,13 +2,6 @@ package fr.openmc.core.features.dream.mecanism.metaldetector;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.registry.loottable.CustomLootTable;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.world.LocationUtils;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

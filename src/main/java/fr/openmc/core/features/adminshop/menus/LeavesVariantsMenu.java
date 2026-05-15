@@ -9,15 +9,15 @@ import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -27,23 +27,22 @@ import java.util.Map;
 public class LeavesVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
-    private final Menu previousMenu;
+
     private static final List<Material> LEAVES_VARIANTS = List.of(
         Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
         Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES, Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES,
         Material.PALE_OAK_LEAVES, Material.AZALEA_LEAVES, Material.FLOWERING_AZALEA_LEAVES
     );
 
-    public LeavesVariantsMenu(Player owner, String categoryId, ShopItem originalItem, Menu previousMenu) {
+    public LeavesVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
         super(owner);
         this.categoryId = categoryId;
         this.originalItem = originalItem;
-        this.previousMenu = previousMenu;
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des variantes de feuilles";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.adminshop.menu.leaves_variants.name");
     }
 
     @Override
@@ -72,31 +71,25 @@ public class LeavesVariantsMenu extends Menu {
 
         int maxVariants = Math.min(LEAVES_VARIANTS.size(), organizedSlots.length);
 
-        ItemStack baseItemStack = new ItemStack(originalItem.getMaterial());
-        ItemMeta baseMeta = baseItemStack.getItemMeta();
-        baseMeta.displayName(Component.text("Feuilles", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-        baseItemStack.setItemMeta(baseMeta);
-        content.put(4, new ItemBuilder(this, baseItemStack));
+        content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
+                meta.displayName(TranslationManager.translation("feature.adminshop.menu.leaves_variants.leaves")
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false))));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = LEAVES_VARIANTS.get(i);
             int slot = organizedSlots[i];
 
-            ItemStack itemStack = new ItemStack(variant);
-            ItemMeta meta = itemStack.getItemMeta();
+            TranslatableComponent variantName = ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
 
-            meta.displayName(ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-
-            meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
-
-            itemStack.setItemMeta(meta);
-
-            ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
-            itemBuilder.setItemId(variant.name())
+            content.put(slot, new ItemBuilder(this, variant, meta -> {
+                meta.displayName(variantName);
+                meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
+            }).setItemId(variant.name())
                     .setOnClick(event -> {
                         ShopItem colorVariant = new ShopItem(
                                 variant.name(),
-                                ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                variantName,
                                 variant,
                                 originalItem.getSlot(),
                                 originalItem.getInitialSellPrice(),
@@ -106,23 +99,19 @@ public class LeavesVariantsMenu extends Menu {
                         );
 
 
-                       if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
-                       } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
-                       }
-                    });
-
-            content.put(slot, itemBuilder);
+                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        }
+                    }));
         }
 
-        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
-            meta.displayName(Component.text("Retour à la catégorie", NamedTextColor.GREEN));
-        }, true);
-
-        content.put(49, backButton);
+        content.put(49, new ItemBuilder(this,
+                CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(),
+                true));
         return content;
     }
 

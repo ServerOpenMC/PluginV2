@@ -10,7 +10,9 @@ import fr.openmc.core.features.city.sub.notation.menu.NotationDialog;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -27,7 +29,7 @@ public class NotationsButton {
                 contents,
                 slots,
                 new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.itemName(Component.text("§3La Notation de votre ville"));
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.notation.title"));
                     itemMeta.lore(getDynamicLore(city, notation));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> {
@@ -41,20 +43,20 @@ public class NotationsButton {
     private static List<Component> getDynamicLore(City city, CityNotation notation) {
         List<Component> lore;
         if (notation != null) {
-            lore = List.of(
-                    Component.text("§7Notation de la ville : §9" + Math.floor(notation.getTotalNote()) + "§7/§9" + NotationNote.getMaxTotalNote()),
-                    Component.text("§7Argent remporté : §6" + EconomyManager.getFormattedSimplifiedNumber(notation.getMoney()) + EconomyManager.getEconomyIcon()),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR VOIR LA NOTATION")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.main.notation.lore",
+                    Component.text(Math.floor(notation.getTotalNote())).color(NamedTextColor.BLUE),
+                    Component.text(NotationNote.getMaxTotalNote()).color(NamedTextColor.BLUE),
+                    Component.text(EconomyManager.getFormattedSimplifiedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
+                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
             );
         } else {
             if (FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.NOTATION)) {
-                lore = List.of(
-                        Component.text("§cVous n'avez pas de notation")
-                );
+                lore = TranslationManager.translationLore("feature.city.menus.main.notation.lore.none");
             } else {
-                lore = List.of(
-                        Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.NOTATION) + " pour débloquer ceci")
+                lore = TranslationManager.translationLore(
+                        "feature.city.menus.main.notation.lore.locked",
+                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.NOTATION)).color(NamedTextColor.RED)
                 );
             }
         }

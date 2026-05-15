@@ -1,0 +1,15 @@
+info:
+  namespace: omc_sounds
+sounds:
+  join_rift:
+    path: ambient/join_rift
+    settings:
+      subtitle: sounds.ambient.join_rift
+  cube_idle1:
+    path: ambient/cube_idle1
+    settings:
+      subtitle: sounds.ambient.cube.idle1
+  cube_idle2:
+    path: ambient/cube_idle2
+    settings:
+      subtitle: sounds.ambient.cube.idle2

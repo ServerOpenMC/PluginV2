@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  * Énumération représentant les récompenses de limite de solde
@@ -73,6 +75,11 @@ public enum PlayerBankLimitRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-	    return Component.text("§7Limite à §6" + bankBalanceLimit + " d'argent §7dans la §bbanque personnelle");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.player_bank_limit",
+                Component.text(bankBalanceLimit).color(NamedTextColor.GOLD),
+                TranslationManager.translation("feature.city.levels.rewards.player_bank_label")
+                        .color(NamedTextColor.AQUA)
+        ).color(NamedTextColor.GRAY);
     }
 }

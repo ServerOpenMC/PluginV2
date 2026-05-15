@@ -10,12 +10,15 @@ import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DamageResistant;
@@ -35,6 +38,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.damage.DamageType;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -42,20 +46,26 @@ import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
-public class HalloweenManager extends Feature implements DatabaseFeature {
+public class HalloweenManager extends Feature implements DatabaseFeature, HasCommands, HasListeners {
     private static Object2ObjectMap<UUID, HalloweenData> halloweenData;
     private static Dao<HalloweenData, String> halloweenDataDao;
 
     public void init() {
-        if (FancyNpcsHook.isEnable())
-            Bukkit.getPluginManager().registerEvents(new HalloweenNPCListener(), OMCPlugin.getInstance());
-
-        halloweenData = loadAllHalloweenDatas();
+       halloweenData = loadAllHalloweenDatas();
     }
 
     @Override
-    public void save() {
-        // nothing to save
+    public Set<Object> getCommands() {
+        return Set.of(
+                new HalloweenCommands()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new HalloweenNPCListener()
+        );
     }
 
     public static void depositPumpkins(UUID playerUUID, int amount) {
@@ -90,7 +100,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature {
             halloweenDataDao.createOrUpdate(data);
             return true;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to save halloween data {}", data.getPlayerUUID(), e);
+            OMCLogger.error("Failed to save halloween data {}", data.getPlayerUUID(), e);
             return false;
         }
     }
@@ -103,7 +113,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature {
                 newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load halloween datas from database", e);
+            OMCLogger.error("Failed to load halloween datas from database", e);
         }
 
         return newHalloweenDatas;

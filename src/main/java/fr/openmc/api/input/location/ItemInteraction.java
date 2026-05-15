@@ -9,6 +9,7 @@ import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -51,14 +52,16 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet de donner un objet à une personne et de quand elle clique avec l'Item, la méthode renverra la positon ou il a cliqué
      */
-    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, String startMessage, String endMessage, Function<Location, Boolean> result, Runnable onFail) {
+    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, Component startMessage, Component endMessage, Function<Location, Boolean> result, Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire ! L'action a été annulée"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.not_egnough_space"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
         if (Chronometer.containsChronometer(player.getUniqueId(), chronometerGroup)) {
-            MessagesManager.sendMessage(player, Component.text("Vous avez déjà l'Item !"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.have_already_item"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -128,7 +131,7 @@ public class ItemInteraction implements Listener {
 
                             ChronometerInfo chronoInfo = interactionInfo.chronometerInfo();
                             if (chronoInfo != null) {
-                                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");
+                                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
                             }
 
                             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(interactionId);
@@ -192,12 +195,14 @@ public class ItemInteraction implements Listener {
         if (clickedItem != null && MaterialUtils.isBundle(clickedItem)) {
             if (isItemInteraction(cursorItem)) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
             }
         } else if (MaterialUtils.isBundle(cursorItem)) {
             if (isItemInteraction(clickedItem)) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
             }
         }
     }
@@ -226,26 +231,30 @@ public class ItemInteraction implements Listener {
             if (invType != InventoryType.PLAYER &&
                     invType != InventoryType.CREATIVE &&
                     invType != InventoryType.CRAFTING) {
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
                 event.setCancelled(true);
                 return;
             }
         }
 
         if (event.getSlotType() == InventoryType.SlotType.CRAFTING) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.isShiftClick()) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet par shift-click"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_move_item_by_shiftclick"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
         }
     }
@@ -259,7 +268,8 @@ public class ItemInteraction implements Listener {
 
         if (isItemInteraction(item)) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(event.getPlayer(), Component.text("§cVous ne pouvez pas jeter cet item"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(event.getPlayer(),
+                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
         }
     }
 
@@ -278,7 +288,8 @@ public class ItemInteraction implements Listener {
             return;
 
         event.setCancelled(true);
-        MessagesManager.sendMessage(event.getPlayer(), Component.text("§cVous ne pouvez pas mettre cet item dans un cadre"), Prefix.OPENMC, MessageType.ERROR, false);
+        MessagesManager.sendMessage(event.getPlayer(),
+                TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
     }
 
     /*
@@ -333,7 +344,7 @@ public class ItemInteraction implements Listener {
             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
 
             if (chronoInfo != null) {
-                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");
+                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
             }
 
             int slotOfItem = ItemUtils.getSlotOfItem(player, item);

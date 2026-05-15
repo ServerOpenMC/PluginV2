@@ -14,7 +14,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -34,24 +36,26 @@ public class CityChangeAction {
         if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
 
         if (typeChange.equals(CityType.WAR) && !FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
-	        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.havent_unlocked_feature",
+                            Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR))),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        String cityTypeActuel;
-        String cityTypeAfter;
-        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
-        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
+        Component inPeace = TranslationManager.translation("feature.city.type.in_peace").color(NamedTextColor.GREEN);
+        Component inWar = TranslationManager.translation("feature.city.type.in_war").color(NamedTextColor.RED);
+        Component cityTypeActuel = city.getType() == CityType.WAR ? inWar : inPeace;
+        Component cityTypeAfter = city.getType() == CityType.WAR ? inPeace : inWar;
 
         List<Component> confirmLore = new ArrayList<>();
-        confirmLore.add(Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"));
-        confirmLore.add(Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter));
+        confirmLore.add(TranslationManager.translation("feature.city.type.confirm_change"));
+        confirmLore.add(TranslationManager.translation("feature.city.type.change_type_to_type", cityTypeActuel, cityTypeAfter));
         if (typeChange == CityType.WAR) {
             confirmLore.add(Component.empty());
-	        confirmLore.add(Component.text("§c⚠ Vous pourrez être exposé à des guerres contre d'autres villes à tout moment !"));
+	        confirmLore.add(TranslationManager.translation("feature.city.type.warning_war"));
         }
         confirmLore.add(Component.empty());
-	    confirmLore.add(Component.text("§c⚠ Ta mascotte §4§lperdera 1 niveau !"));
+	    confirmLore.add(TranslationManager.translation("feature.city.type.mascot_losing_level"));
 
         ConfirmMenu menu = new ConfirmMenu(
                 player,
@@ -62,7 +66,7 @@ public class CityChangeAction {
                 player::closeInventory,
                 confirmLore,
                 List.of(
-		                Component.text("§7Ne pas changer le §dtype de ville")
+		                TranslationManager.translation("feature.city.type.not_change_type")
                 )
         );
         menu.open();
@@ -72,7 +76,7 @@ public class CityChangeAction {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -81,17 +85,21 @@ public class CityChangeAction {
         Mascot mascot = city.getMascot();
 
         if (mascot == null) {
-	        MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas de mascotte pour changer le type de votre ville (contactez le staff)"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.mascot_not_exist_change_type"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!mascot.isAlive()) {
-	        MessagesManager.sendMessage(sender, Component.text("Votre mascotte doit être en vie pour changer le type de ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.mascot_must_by_alive_change_type"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-	        MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " avant de changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.must_wait_before_change_type",
+                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -118,18 +126,22 @@ public class CityChangeAction {
                 mob.setHealth(maxHealth);
             }
 
-            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+            mob.customName(MascotsManager.getAliveMascotName(
                     city.getName(),
                     mob.getHealth(),
                     maxHealth
-            )));
+            ));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        String cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-        String cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        Component inPeace = TranslationManager.translation("feature.city.type.in_peace").color(NamedTextColor.GREEN);
+        Component inWar = TranslationManager.translation("feature.city.type.in_war").color(NamedTextColor.RED);
+        Component cityTypeActuel = city.getType() == CityType.WAR ? inPeace : inWar;
+        Component cityTypeAfter = city.getType() == CityType.WAR ? inWar : inPeace;
 
-        MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.change_type_success",
+                        cityTypeActuel, cityTypeAfter),
+                Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

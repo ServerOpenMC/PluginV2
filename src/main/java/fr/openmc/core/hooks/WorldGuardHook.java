@@ -25,11 +25,6 @@ public class WorldGuardHook extends Hooks {
         return "WorldGuard";
     }
 
-    @Override
-    protected void init() {
-        // not used
-    }
-
     public static boolean isRegionConflict(Location location) {
         if (!isEnable()) return false;
 

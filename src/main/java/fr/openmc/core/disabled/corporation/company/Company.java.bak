@@ -14,7 +14,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.Queue;
+import fr.openmc.core.utils.types.Queue;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

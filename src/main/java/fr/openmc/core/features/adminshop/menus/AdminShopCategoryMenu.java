@@ -8,6 +8,7 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -15,8 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -32,8 +31,8 @@ public class AdminShopCategoryMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu d'une catégorie de l'adminshop";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.adminshop.menu.category.name");
     }
 
     @Override
@@ -63,39 +62,34 @@ public class AdminShopCategoryMenu extends Menu {
         if (categoryItems != null) {
             for (ShopItem item : categoryItems.values()) {
                 Material material = item.getMaterial();
-                ItemStack itemStack = new ItemStack(material);
-                ItemMeta meta = itemStack.getItemMeta();
-                meta.displayName(item.getName().color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
                 boolean category = material.name().endsWith("_LEAVES") || material.name().endsWith("_LOG") || item.isHasColorVariant();
-                meta.lore(category ? List.of(Component.text("§8■ §7Clique gauche pour choisir l'item")) : AdminShopUtils.extractLoreForItem(item));
 
-                itemStack.setItemMeta(meta);
-
-                ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
-                itemBuilder.setItemId(item.getId())
+                content.put(item.getSlot(), new ItemBuilder(this, material, meta -> {
+                    meta.displayName(item.getName()
+                            .color(NamedTextColor.GRAY)
+                            .decoration(TextDecoration.ITALIC, false));
+                    meta.lore(category ? List.of(TranslationManager.translation("feature.adminshop.right_click_choice"))
+                            : AdminShopUtils.extractLoreForItem(item));
+                }).setItemId(item.getId())
                         .setOnClick(event -> {
                             if (material.name().endsWith("_LEAVES"))
-                                AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item, this);
+                                AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item);
                             else if (material.name().endsWith("_LOG"))
-                                AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item, this);
+                                AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
                             else if (item.isHasColorVariant())
-                                AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
+                                AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
                             else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                                AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
+                                AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
                             else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                                AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId(), this);
-                        });
-
-                content.put(item.getSlot(), itemBuilder);
+                                AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
+                        }));
             }
         }
 
-        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
-            meta.displayName(Component.text("§aRetour au menu principal"));
-        }, true);
-
-        content.put(40, backButton);
+        content.put(40, new ItemBuilder(this,
+                CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(),
+                true));
 
         return content;
     }

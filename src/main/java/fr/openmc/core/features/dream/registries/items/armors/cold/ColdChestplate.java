@@ -2,15 +2,20 @@ package fr.openmc.core.features.dream.registries.items.armors.cold;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class ColdChestplate extends DreamItem implements DreamEquipableItem {
-    public ColdChestplate(String name) {
-        super(name);
+    public ColdChestplate() {
+        super(new DreamItemMeta(
+                "omc_dream:cold_chestplate",
+                "Plastron Glacé",
+                DreamRarity.LEGENDARY,
+                Material.LEATHER_CHESTPLATE,
+                true
+        ));
     }
 
     @Override
@@ -24,25 +29,7 @@ public class ColdChestplate extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.LEGENDARY;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return true;
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return this.getBestTransferable();
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.DIAMOND_CHESTPLATE);
-
-        item.getItemMeta().itemName(Component.text("Plastron Glacé"));
-        return item;
     }
 }

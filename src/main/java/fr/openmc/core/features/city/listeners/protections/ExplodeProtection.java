@@ -8,7 +8,9 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -121,8 +123,13 @@ public class ExplodeProtection implements Listener {
             if (member.isOnline()) {
                 MessagesManager.sendMessage(
                         (Player) member,
-		                Component.text("Vous vous êtes pris une TNT dans votre ville par la ville §4" + attackerCity.getName() + " §fet posée par §4" + attacker.getName() + "§f ! §8(§c" + currentTnt + "§8/§c" + MAX_TNT_PER_DAY + " tnt journalières§8)"),
-                        Prefix.CITY,
+                        TranslationManager.translation("feature.city.listeners.tnt_explode",
+                                Component.text(attackerCity.getName()).color(NamedTextColor.DARK_RED),
+                                Component.text(attacker.getName()).color(NamedTextColor.DARK_RED),
+                                Component.text(currentTnt).color(NamedTextColor.RED),
+                                Component.text(MAX_TNT_PER_DAY).color(NamedTextColor.RED)
+                        ),
+		                Prefix.CITY,
                         MessageType.WARNING,
                         false
                 );

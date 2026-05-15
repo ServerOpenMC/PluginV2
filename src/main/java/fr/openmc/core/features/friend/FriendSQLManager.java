@@ -6,9 +6,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -18,22 +16,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class FriendSQLManager extends Feature implements DatabaseFeature {
+public class FriendSQLManager {
 
     private static Dao<Friend, UUID> friendsDao;
 
-    @Override
-    protected void init() {
-        // nothing to init
-    }
 
-    @Override
-    protected void save() {
-        // nothing to save
-    }
-
-    @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Friend.class);
         friendsDao = DaoManager.createDao(connectionSource, Friend.class);
     }
@@ -55,7 +43,7 @@ public class FriendSQLManager extends Feature implements DatabaseFeature {
             }
 
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Friends Object 1={} 2={}", first, second, e);
+            OMCLogger.error("Failed to get Friends Object 1={} 2={}", first, second, e);
             return null;
         }
     }
@@ -64,7 +52,7 @@ public class FriendSQLManager extends Feature implements DatabaseFeature {
         try {
             return friendsDao.create(new Friend(first, second, Timestamp.valueOf(LocalDateTime.now()))) != 0;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to add Friends in database", e);
+            OMCLogger.error("Failed to add Friends in database", e);
             return false;
         }
     }
@@ -73,7 +61,7 @@ public class FriendSQLManager extends Feature implements DatabaseFeature {
         try {
             return friendsDao.delete(getFriendObject(first, second)) != 0;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to remove Friends in database", e);
+            OMCLogger.error("Failed to remove Friends in database", e);
             return false;
         }
     }
@@ -92,7 +80,7 @@ public class FriendSQLManager extends Feature implements DatabaseFeature {
         try {
             return friendsDao.update(friend) != 0;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to set Best Friends in database", e);
+            OMCLogger.error("Failed to set Best Friends in database", e);
             return false;
         }
     }
@@ -110,7 +98,7 @@ public class FriendSQLManager extends Feature implements DatabaseFeature {
                 query.where().eq("first", playerUUID).or().eq("second", playerUUID);
                 friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get a friends async", e);
+                OMCLogger.error("Failed to get a friends async", e);
             }
             return friends;
         });
@@ -127,7 +115,7 @@ public class FriendSQLManager extends Feature implements DatabaseFeature {
                         query.where().eq("best_friend", true));
                 friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get Best Friends async", e);
+                OMCLogger.error("Failed to get Best Friends async", e);
             }
             return friends;
         });

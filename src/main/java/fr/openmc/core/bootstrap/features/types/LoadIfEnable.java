@@ -7,7 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Charge la feature si un hook est active.
+ * Charge la feature ou le listener si un hook est active.
  * Le hook est determine par le parametre generique de l'interface.
  */
 public interface LoadIfEnable <T extends Hooks> {

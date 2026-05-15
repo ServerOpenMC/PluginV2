@@ -4,6 +4,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import org.bukkit.Bukkit;
@@ -19,7 +20,7 @@ public class GlaciteNpcManager implements Listener {
                 new GlaciteTraderInteractListener()
         );
         if (DreamDimensionManager.hasSeedChanged()) {
-            OMCPlugin.getInstance().getSLF4JLogger().info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");
+            OMCLogger.info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");
             // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
@@ -28,7 +29,7 @@ public class GlaciteNpcManager implements Listener {
                         npc.removeForAll();
                     }
                 });
-            }, 20L * 30);
+            }, FancyNpcsHook.FANCY_INIT_DELAY);
         }
     }
 

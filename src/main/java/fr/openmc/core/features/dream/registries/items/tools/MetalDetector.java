@@ -5,13 +5,15 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorTask;
+import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.world.LocationUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -22,7 +24,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,31 +32,19 @@ import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetector
 import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager.hiddenChests;
 
 public class MetalDetector extends DreamItem implements UsableItem {
-    public MetalDetector(String name) {
-        super(name);
-    }
-
-    @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return false;
+    public MetalDetector() {
+        super(new DreamItemMeta(
+                "omc_dream:metal_detector",
+                "Détecteur à métaux",
+                DreamRarity.EPIC,
+                Material.STICK,
+                false
+        ));
     }
 
     @Override
     public ItemStack getTransferableItem() {
         return null;
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.STICK);
-
-        item.getItemMeta().itemName(Component.text("Détecteur à métaux"));
-        return item;
     }
 
     @Override
@@ -78,16 +67,20 @@ public class MetalDetector extends DreamItem implements UsableItem {
                 clicked.setType(Material.MUD);
                 CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
                 if (lootTable == null) return;
+
                 List<ItemStack> rewards = lootTable.rollLoots();
 
                 for (ItemStack item : rewards) {
                     player.getInventory().addItem(item);
+
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                            Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))
+                    );
                 }
 
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                         Bukkit.getServer().getPluginManager().callEvent(new MetalDetectorLootEvent(player, rewards))
                 );
-                MessagesManager.sendMessage(player, Component.text("Vous avez découvert §e" + rewards.size() + " §fobjet(s) dans vos rêves !"), Prefix.DREAM, MessageType.SUCCESS, false);
             }
         }
     }

@@ -9,6 +9,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
@@ -37,7 +38,8 @@ public class CityClaimAction {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
-            MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.cant_claim_here"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -46,20 +48,24 @@ public class CityClaimAction {
         ChunkPos chunkVec2 = new ChunkPos(chunkX, chunkZ);
 
         if (!isAdjacentToOwnCity(chunkVec2, city.getChunks())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk n'est pas adjacent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.isnt_adjacent"),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
         if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.is_in_region"),
+                    Prefix.CITY, MessageType.ERROR, true);
             return;
         }
 
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
             City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
+            if (chunkCity == null) return;
             String cityName = chunkCity.getName();
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim par " + cityName + "."), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.already_claim",
+                    Component.text(cityName)), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -68,7 +74,9 @@ public class CityClaimAction {
 
         if (city.getFreeClaims() <= 0) {
             if (city.getBalance() < price) {
-                MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.city_not_enough_money",
+                                Component.text(price + EconomyManager.getEconomyIcon())),
+                        Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -80,7 +88,8 @@ public class CityClaimAction {
 
         city.addChunk(chunkX, chunkZ);
 
-        MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.claim_success"),
+                Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     private static boolean isAdjacentToOwnCity(@NotNull ChunkPos newClaim, Set<ChunkPos> cityClaims) {

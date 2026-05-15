@@ -1,0 +1,17 @@
+info:
+  namespace: ia_various_configs
+minecraft_lang_overwrite:
+  esc_menu_texts:
+    entries:
+      "menu.game": ":openmc_logo:"
+      "menu.disconnect": ":offset_-12::offset_-256::bottom_esc::offset_-256:"
+      "menu.returnToGame": ""
+      "menu.options": ""
+      "menu.sendFeedback": ""
+      "menu.playerReporting": ""
+      "gui.advancements": ""
+      "gui.stats": ""
+      "menu.reportBugs": ""
+    languages:
+      - ALL
+#AVdkN1crF1aGdEZlNkQCNEdRdVU0EEVNRzaU5kMJRlT4dGVRdzd6ZVUM1URHpUVXxWMUJ0M

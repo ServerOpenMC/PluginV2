@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.registries.items.armors.creaking;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -9,8 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class OldCreakingBoots extends DreamItem implements DreamEquipableItem {
-    public OldCreakingBoots(String name) {
-        super(name);
+    public OldCreakingBoots() {
+        super(new DreamItemMeta(
+                "omc_dream:old_creaking_boots",
+                "Vieille Botte de Creaking",
+                DreamRarity.COMMON,
+                Material.LEATHER_BOOTS,
+                true
+        ));
     }
 
     @Override
@@ -24,25 +31,7 @@ public class OldCreakingBoots extends DreamItem implements DreamEquipableItem {
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.COMMON;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return true;
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return this.getBestTransferable();
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.IRON_BOOTS);
-
-        item.getItemMeta().itemName(Component.text("Bottes du Vieux Creaking"));
-        return item;
     }
 }

@@ -10,7 +10,11 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -39,36 +43,41 @@ public class TypeButton {
 
     private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Player player) {
         return () -> new ItemBuilder(menu, Material.PAPER, meta -> {
-            meta.itemName(Component.text("§5Le statut de votre ville"));
+            meta.itemName(TranslationManager.translation("feature.city.menus.main.type.title"));
             meta.lore(getDynamicLore(city, player));
             meta.setItemModel(NamespacedKey.minecraft("air"));
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) return;
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE))) return;
 
             new CityTypeMenu(player).open();
         });
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
-        boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.TYPE);
+        boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE);
+        boolean showWarCommand = city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR);
+        boolean hasCooldown = !DynamicCooldownManager.isReady(city.getUniqueId(), "city:type");
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("§7Votre ville est en §5" + city.getType().getDisplayName().toLowerCase(Locale.ROOT)));
+        lore.add(TranslationManager.translation(
+                "feature.city.menus.main.type.lore.status",
+                Component.text(PlainTextComponentSerializer.plainText().serialize(city.getType().getDisplayName()).toLowerCase(Locale.ROOT))
+        ));
 
-        if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
-            lore.add(Component.empty());
-            lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
+        if (showWarCommand) {
+            lore.add(TranslationManager.translation("feature.city.menus.main.type.lore.war_command"));
         }
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-            lore.add(Component.empty());
-            lore.add(Component.text("§cCooldown §7: " +
-                    DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type"))));
+        if (hasCooldown) {
+            lore.add(TranslationManager.translation(
+                    "feature.city.menus.main.type.lore.cooldown",
+                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
+                            .decoration(TextDecoration.ITALIC, false).color(NamedTextColor.GRAY)
+            ));
         }
 
         if (hasPermissionChangeType) {
-            lore.add(Component.empty());
-            lore.add(Component.text("§e§lCLIQUEZ ICI POUR LE CHANGER"));
+            lore.add(TranslationManager.translation("feature.city.menus.main.type.lore.click"));
         }
 
         return lore;
