@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.fishes;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -8,18 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
 public class Poissonion extends DreamItem {
-    public Poissonion(String name) {
-        super(name);
-    }
-
-    @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.RARE;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return true;
+    public Poissonion() {
+        super(new DreamItemMeta(
+                "omc_dream:poissonion",
+                "Poissonion",
+                DreamRarity.RARE,
+                Material.COD,
+                true
+        ));
     }
 
     @Override
@@ -27,11 +24,4 @@ public class Poissonion extends DreamItem {
         return this.getBest();
     }
 
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.PUFFERFISH);
-
-        item.getItemMeta().itemName(Component.text("Poissonion"));
-        return item;
-    }
 }

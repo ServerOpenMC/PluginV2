@@ -9,6 +9,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.Stats;
 import org.bukkit.Bukkit;
 
@@ -37,7 +38,7 @@ public class TransactionsManager extends Feature implements DatabaseFeature {
             query.where().eq("recipient", playerUUID.toString()).or().eq("sender", playerUUID.toString());
             return transactionsDao.query(query.prepare());
         } catch (SQLException err) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to get transactions {}", playerUUID, err);
+            OMCLogger.error("Failed to get transactions {}", playerUUID, err);
             return List.of(new Transaction("CONSOLE", "CONSOLE", 0, "ERREUR"));
         }
     }
@@ -57,7 +58,7 @@ public class TransactionsManager extends Feature implements DatabaseFeature {
             try {
                 transactionsDao.create(transaction);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to register transactions", e);
+                OMCLogger.error("Failed to register transactions", e);
             }
         });
     }

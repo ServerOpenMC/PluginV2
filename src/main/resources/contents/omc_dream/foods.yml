@@ -1,0 +1,209 @@
+info:
+  namespace: omc_dream
+items:
+  moon_fish:
+    display_name: "{dream_item_name:moon_fish}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:moon_fish}
+      generate: true
+      textures:
+        - fishes/moon_fish.png
+    consumable:
+      nutrition: 2
+      saturation: 0.4
+    tooltip_style: "{dream_rarity:moon_fish}"
+
+  sun_fish:
+    display_name: "{dream_item_name:sun_fish}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:sun_fish}
+      generate: true
+      textures:
+        - fishes/sun_fish.png
+    lore:
+      - '§7Attention! Vous risquez'
+      - '§7de vous brulez!'
+    consumable:
+      nutrition: 6
+      saturation: 9.6
+    tooltip_style: "{dream_rarity:sun_fish}"
+
+  poissonion:
+    display_name: "{dream_item_name:poissonion}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:poissonion}
+      generate: true
+      textures:
+        - fishes/poissonion.png
+    lore:
+      - '§7On dirait un onion...'
+    consumable:
+      nutrition: 2
+      saturation: 0.4
+    tooltip_style: "{dream_rarity:poissonion}"
+
+  cooked_poissonion:
+    display_name: "{dream_item_name:cooked_poissonion}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:cooked_poissonion}
+      generate: true
+      textures:
+        - fishes/cooked_poissonion.png
+    lore:
+      - '§7Mot du dev:'
+      - '§7Il est plus beau cru'
+    consumable:
+      nutrition: 5
+      saturation: 6
+    tooltip_style: "{dream_rarity:cooked_poissonion}"
+
+  dockerfish:
+    display_name: "{dream_item_name:dockerfish}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:dockerfish}
+      generate: true
+      textures:
+        - fishes/dockerfish.png
+    consumable:
+      nutrition: 2
+      saturation: 0.4
+    tooltip_style: "{dream_rarity:dockerfish}"
+
+  chips_aywen:
+    display_name: "{dream_item_name:chips_aywen}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_aywen}
+      generate: false
+      model_path: consumable/chips_aywen
+    lore:
+      - '§7Les joueurs aiment tellement Aywen'
+      - "§7malgré qu'il ait joué meme pas 1h30"
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_aywen}"
+
+  chips_dihydrogene:
+    display_name: "{dream_item_name:chips_dihydrogene}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_dihydrogene}
+      generate: false
+      model_path: consumable/chips_dihydrogene
+    lore:
+      - '§7Attention explosif!'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_dihydrogene}"
+
+  chips_jimmy:
+    display_name: "{dream_item_name:chips_jimmy}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_jimmy}
+      generate: false
+      model_path: consumable/chips_jimmy
+    lore:
+      - '§7R.I.P Jimmy'
+      - '§7Root est son successeur'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_jimmy}"
+
+  chips_lait_2_margouta:
+    display_name: "{dream_item_name:chips_lait_2_margouta}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_lait_2_margouta}
+      generate: false
+      model_path: consumable/chips_lait_2_margouta
+    lore:
+      - '§7Miam'
+    consumable:
+      nutrition: 20
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_lait_2_margouta}"
+
+  chips_nature:
+    display_name: "{dream_item_name:chips_nature}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_nature}
+      generate: false
+      model_path: consumable/chips_nature
+    lore:
+      - '§7Basique, simple'
+    consumable:
+      nutrition: 10
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_nature}"
+
+  chips_sans_plomb:
+    display_name: "{dream_item_name:chips_sans_plomb}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_sans_plomb}
+      generate: false
+      model_path: consumable/chips_sans_plomb
+    lore:
+      - '§7La hausse de prix....'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_sans_plomb}"
+
+  chips_terre:
+    display_name: "{dream_item_name:chips_terre}"
+    components_nbt_file: "nbt/eatable.json"
+    resource:
+      material: {dream_item_material:chips_terre}
+      generate: false
+      model_path: consumable/chips_terre
+    lore:
+      - '§7pourquoi pas'
+    consumable:
+      nutrition: 15
+      saturation: 3
+    tooltip_style: "{dream_rarity:chips_terre}"
+recipes:
+  cooking:
+    sun_fish:
+      ingredient:
+        item: omc_dream:moon_fish
+      exp: 1
+      machines:
+        - FURNACE
+        - SMOKER
+      result:
+        item: omc_dream:sun_fish
+        amount: 1
+    poissonion:
+      ingredient:
+        item: omc_dream:poissonion
+      exp: 1
+      machines:
+        - FURNACE
+        - SMOKER
+      result:
+        item: omc_dream:cooked_poissonion
+        amount: 1
+  crafting_table:
+    kebab:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_foods:salade
+        B: omc_foods:tomate
+        C: omc_dream:cooked_poissonion
+        D: BREAD
+      result:
+        item: omc_foods:kebab
+        amount: 1

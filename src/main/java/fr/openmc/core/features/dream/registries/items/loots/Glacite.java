@@ -1,37 +1,24 @@
 package fr.openmc.core.features.dream.registries.items.loots;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class Glacite extends DreamItem {
-    public Glacite(String name) {
-        super(name);
-    }
-
-    @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.EPIC;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return false;
+    public Glacite() {
+        super(new DreamItemMeta(
+                "omc_dream:glacite",
+                "Glacite",
+                DreamRarity.EPIC,
+                Material.BLUE_ICE,
+                false
+        ));
     }
 
     @Override
     public ItemStack getTransferableItem() {
         return null;
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.BLUE_ICE);
-
-        item.getItemMeta().itemName(Component.text("Glacite"));
-        return item;
     }
 }

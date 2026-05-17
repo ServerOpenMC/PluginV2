@@ -1,0 +1,17 @@
+info:
+  namespace: omc_quests
+items:
+  quests_right_arrow:
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures: 
+        - right_arrow
+  quests_left_arrow:
+    display_name: Pourquoi faire ?
+    resource:
+      material: PAPER
+      generate: true
+      textures: 
+        - left_arrow

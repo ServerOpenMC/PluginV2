@@ -1,0 +1,34 @@
+info:
+  namespace: omc_company
+items:
+  caisse:
+    display_name: "§6§lCaisse"
+    permission: company.caisse
+    resource:
+      material: PAPER
+      generate: false
+      model_path: items/caisse
+    behaviours:
+      furniture:
+        breakable: false
+        entity: item_display
+        solid: true
+        fixed_rotation: true
+        hitbox:
+          length: 1
+          height: 1
+          width: 1
+          width_offset: 0
+        placeable_on:
+          walls: false
+          ceiling: false
+          floor: true
+        display_transformation:
+          translation:
+            x: 0
+            y: 0.5
+            z: 0
+          scale:
+            x: 1
+            y: 1
+            z: 1

@@ -3,9 +3,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -30,12 +30,12 @@ public class CityLevelTwoQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.NETHER_STAR,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.CITY_LEVEL_2,
+		        TutorialSteps.CITY_LEVEL_2,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.CITY_LEVEL_2.ordinal() + 1) + " §f! Vous êtes bien parti pour découvrir toutes les features qu'ils se cachent dans les villes ! Mais avant cela, je voudrais que vous posiez un §2home§f.",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.CITY_LEVEL_2.ordinal() + 1) + " §f! Vous êtes bien parti pour découvrir toutes les features qu'ils se cachent dans les villes ! Mais avant cela, je voudrais que vous posiez un §2home§f.",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )

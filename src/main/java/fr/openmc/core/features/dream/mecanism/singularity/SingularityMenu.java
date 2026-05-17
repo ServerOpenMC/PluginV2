@@ -106,8 +106,8 @@ public class SingularityMenu extends PaginatedMenu {
         DreamItem cursorDream = DreamItemRegistry.getByItemStack(cursor);
         DreamItem currentDream = DreamItemRegistry.getByItemStack(current);
 
-        if ((cursorDream != null && cursorDream.getName().equals("omc_dream:singularity"))
-                || (currentDream != null && currentDream.getName().equals("omc_dream:singularity"))) {
+        if ((cursorDream != null && cursorDream.getId().equals("omc_dream:singularity"))
+                || (currentDream != null && currentDream.getId().equals("omc_dream:singularity"))) {
             event.setCancelled(true);
             return;
         }

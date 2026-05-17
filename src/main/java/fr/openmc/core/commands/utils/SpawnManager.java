@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.listeners.RespawnListener;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -85,7 +86,7 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         try {
             spawnConfig.save(spawnFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
+            OMCLogger.warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
         }
     }
 }

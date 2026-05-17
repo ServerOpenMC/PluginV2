@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
@@ -70,7 +71,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
             World world = Bukkit.getWorld(worldName);
 
             if (world == null) {
-                plugin.getSLF4JLogger().warn("World '{}' not found for multiblock '{}', skipping...", worldName, type);
+                OMCLogger.warn("World '{}' not found for multiblock '{}', skipping...", worldName, type);
                 continue;
             }
 
@@ -80,7 +81,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
 
             int y;
             if (DreamUtils.isDreamWorld(world) && DreamDimensionManager.hasSeedChanged()) {
-                plugin.getSLF4JLogger().warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
+                OMCLogger.warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
                 y = world.getHighestBlockYAt(x, z) + 1;
             } else {
                 y = origin.containsKey("y") ? (int) origin.get("y") : world.getHighestBlockYAt(x, z) + 1;
@@ -137,7 +138,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getSLF4JLogger().error("Could not save multiblocks.yml", e);
+            OMCLogger.error("Could not save multiblocks.yml", e);
         }
     }
 

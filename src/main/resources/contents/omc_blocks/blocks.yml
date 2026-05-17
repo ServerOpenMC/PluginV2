@@ -1,0 +1,192 @@
+info:
+  namespace: omc_blocks
+items:
+  aywenite_ore:
+    display_name: §dMinerais d'Aywenite
+    lore:
+      - "§7Une découverte surprenante"
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - aywenite_ore.png
+    specific_properties:
+      block:
+        drop_when_mined: false
+        drop_on_silk_touch: true
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        break_tools_whitelist:
+          - IRON_PICKAXE
+          - DIAMOND_PICKAXE
+          - NETHERITE_PICKAXE
+        hardness: 2
+        no_explosion: false
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+    events:
+      placed_block:
+        break:
+          drop_item:
+            item: omc_items:aywenite
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+          drop_exp:
+            chance: 100
+            min_amount: 1
+            max_amount: 3
+  deepslate_aywenite_ore:
+    display_name: §dMinerai d'Aywenite des Abimes
+    lore:
+      - "§7Une découverte surprenante"
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - deepslate_aywenite.png
+    specific_properties:
+      block:
+        hardness: 3
+        no_explosion: false
+        drop_when_mined: false
+        drop_on_silk_touch: true
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        break_tools_whitelist:
+          - IRON_PICKAXE
+          - DIAMOND_PICKAXE
+          - NETHERITE_PICKAXE
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+    events:
+      placed_block:
+        break:
+          drop_item:
+            item: omc_items:aywenite
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+          drop_exp:
+            chance: 100
+            min_amount: 1
+            max_amount: 3
+  aywenite_block:
+    display_name: §dBloc d'Aywenite
+    lore:
+      - "§7Une fusion de cette §dmatière unique"
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - aywenite_block.png
+    specific_properties:
+      block:
+        hardness: 3
+        no_explosion: false
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        break_tools_whitelist:
+          - PICKAXE
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+  ball_machine:
+    display_name: "Machine a Boule"
+    permission: blocks.ball_machine
+    resource:
+      material: PAPER
+      generate: false
+      model_path: items/ball_machin
+    behaviours:
+      furniture:
+        entity: item_display
+        solid: true
+        fixed_rotation: true
+        hitbox:
+          length: 1
+          height: 2
+          width: 1
+        placeable_on:
+          walls: false
+          ceiling: false
+          floor: true
+        display_transformation:
+          translation:
+            x: 0
+            y: 0.50
+            z: 0
+  urne:
+    display_name: "Urne"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: items/urne
+    behaviours:
+      furniture:
+        entity: item_display
+        solid: true
+        fixed_rotation: true
+        display_transformation:
+          right_rotation:
+          translation:
+            x: 0
+            y: 0.47
+            z: 0
+          scale:
+            x: 3
+            y: 3
+            z: 3
+        placeable_on:
+          walls: false
+          ceiling: false
+          floor: true
+recipes:
+  crafting_table:
+    aywenite_block:
+      enabled: true
+      pattern:
+        - AAA
+        - AAA
+        - AAA
+      ingredients:
+        A: "omc_items:aywenite"
+      result:
+        item: "omc_blocks:aywenite_block"
+        amount: 1
+    urne:
+      enabled: true
+      pattern:
+        - AAA
+        - APA
+        - SSS
+      ingredients:
+        A: "GLASS"
+        P: "PAPER"
+        S: "STONE_BRICKS"
+      result:
+        item: "omc_blocks:urne"
+        amount: 1

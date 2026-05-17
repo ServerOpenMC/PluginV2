@@ -11,9 +11,4 @@ public class ProtocolLibHook extends Hooks {
     protected String getPluginName() {
         return "ProtocolLib";
     }
-
-    @Override
-    protected void init() {
-        // not used
-    }
 }

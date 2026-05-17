@@ -1,0 +1,91 @@
+info:
+  namespace: omc_items
+items:
+  iron_hammer:
+    permission: customitems.iron_hammer
+    display_name: <gradient:#ffffff:#ffd08a>Marteau en fer
+    lore:
+      - "§7Permet de creuser une zone de 3x3 blocs"
+    resource:
+      material: IRON_PICKAXE
+      generate: false
+      model_path: items/hammers/iron_hammer
+    blocked_enchants:
+      - FORTUNE
+      - SILK_TOUCH
+    durability:
+      max_durability: 512
+
+  diamond_hammer:
+    permission: customitems.diamond_hammer
+    display_name: <gradient:#ffffff:#72f6ef>Marteau en diamant
+    lore:
+      - "§7Permet de creuser une zone de 3x3x2 blocs"
+    resource:
+      material: DIAMOND_PICKAXE
+      generate: false
+      model_path: items/hammers/diamond_hammer
+    blocked_enchants:
+      - FORTUNE
+      - SILK_TOUCH
+    durability:
+      max_durability: 2048
+
+  netherite_hammer:
+    permission: customitems.netherite_hammer
+    display_name: <gradient:#ffffff:#6b604f>Marteau en netherite
+    lore:
+      - "§7Permet de creuser une zone de 3x3x3 blocs"
+    resource:
+      material: NETHERITE_PICKAXE
+      generate: false
+      model_path: items/hammers/netherite_hammer
+    blocked_enchants:
+      - FORTUNE
+      - SILK_TOUCH
+    durability:
+      max_durability: 4096
+
+recipes:
+  crafting_table:
+    iron_hammer:
+      permission: omc_items.iron_hammer
+      enabled: true
+      pattern:
+        - BBB
+        - BSB
+        - XSX
+      ingredients:
+        B: IRON_BLOCK
+        S: STICK
+      result:
+        item: omc_items:iron_hammer
+        amount: 1
+
+    diamond_hammer:
+      permission: omc_items.diamond_hammer
+      enabled: true
+      pattern:
+        - BBB
+        - BSB
+        - XSX
+      ingredients:
+        B: DIAMOND_BLOCK
+        S: STICK
+      result:
+        item: omc_items:diamond_hammer
+        amount: 1
+
+    netherite_hammer:
+      permission: omc_items.netherite_hammer
+      enabled: true
+      pattern:
+        - BBB
+        - BSB
+        - XSX
+      ingredients:
+        B: NETHERITE_BLOCK
+        S: STICK
+      result:
+        item: omc_items:netherite_hammer
+        amount: 1

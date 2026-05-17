@@ -6,7 +6,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.world.structure.SchematicsUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -69,6 +69,6 @@ public abstract class DreamStructurePopulator extends BlockPopulator {
         );
         DreamStructuresManager.addStructure(type, min, max);
 
-        OMCPlugin.getInstance().getSLF4JLogger().info("Structure '{}' placée entre {}, {}, {} et {}, {}, {}", type.getId(), min.x(), min.y(), min.z(), max.x(), max.y(), max.z());
+        OMCLogger.info("Structure '{}' placée entre {}, {}, {} et {}, {}, {}", type.getId(), min.x(), min.y(), min.z(), max.x(), max.y(), max.z());
     }
 }

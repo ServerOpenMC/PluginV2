@@ -1,0 +1,10 @@
+{
+	"parent": "omc_animations:entity/player/rings",
+	"display": {
+		"head": {
+			"translation": [0, -1.8592, 0],
+			"scale": [1.419, 1.419, 1.419],
+			"rotation": [0, 0, 0]
+		}
+	}
+}

@@ -11,8 +11,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.CrystalizedPickaxe;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.utils.text.DirectionUtils;
 import net.kyori.adventure.text.Component;
@@ -87,7 +87,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 	public void onPlayerReturnDim(DreamEnterEvent e) {
 		Player player = e.getPlayer();
 		if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) == DreamSteps.FIND_CUBE.ordinal()) {
-			this.afterDialog.accept(player);
+			this.actionsAfterDialog.accept(player);
 		}
 	}
 }

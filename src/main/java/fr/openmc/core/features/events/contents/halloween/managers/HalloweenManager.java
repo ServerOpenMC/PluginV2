@@ -12,6 +12,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
@@ -94,7 +95,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
             halloweenDataDao.createOrUpdate(data);
             return true;
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to save halloween data {}", data.getPlayerUUID(), e);
+            OMCLogger.error("Failed to save halloween data {}", data.getPlayerUUID(), e);
             return false;
         }
     }
@@ -107,7 +108,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                 newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
             }
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load halloween datas from database", e);
+            OMCLogger.error("Failed to load halloween datas from database", e);
         }
 
         return newHalloweenDatas;

@@ -5,6 +5,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
@@ -59,7 +60,7 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCo
                 Bukkit.getPluginManager().registerEvents(questL, OMCPlugin.getInstance());
             }
         } else {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Quest {} is already registered.", quest.getName(), new Exception());
+            OMCLogger.warn("Quest {} is already registered.", quest.getName(), new Exception());
         }
     }
 

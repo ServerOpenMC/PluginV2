@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.models.registry;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.enchantments.CustomEnchantment;
 import io.papermc.paper.registry.RegistryAccess;
@@ -16,7 +17,11 @@ import org.jspecify.annotations.NonNull;
 @SuppressWarnings("UnstableApiUsage")
 public abstract class DreamEnchantment extends CustomEnchantment {
     public DreamItem getEnchantedBookItem(int level) {
-        return new DreamItem(getKey().asMinimalString() + level) {
+        return new DreamItem(new DreamItemMeta(getKey().asMinimalString() + level,
+                getKey().asString() + " " + level,
+                DreamRarity.EPIC,
+                Material.ENCHANTED_BOOK,
+                true)) {
             @Override
             public @NonNull ItemStack getVanilla() {
                 return getEnchantedBook(level);
@@ -24,12 +29,12 @@ public abstract class DreamEnchantment extends CustomEnchantment {
 
             @Override
             public DreamRarity getRarity() {
-                return DreamRarity.EPIC;
+                return ((DreamItemMeta) getMeta()).getRarity();
             }
 
             @Override
             public boolean isTransferable() {
-                return true;
+                return ((DreamItemMeta) getMeta()).getTransferable();
             }
 
             @Override

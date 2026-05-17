@@ -1,5 +1,7 @@
 package fr.openmc.core;
 
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -31,6 +33,8 @@ public class OMCBootstrap implements PluginBootstrap {
      */
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
+        OMCLogger.setBootstrapLogger(context.getLogger());
+
         // ** LOAD DATAPACK **
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
                 event -> {
@@ -43,6 +47,9 @@ public class OMCBootstrap implements PluginBootstrap {
                     }
                 }
         ));
+
+        // ** LOAD ITEMS ADDER NAMESPACES **
+        ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
 
         // ** ENCHANTMENT IMPL **
         CustomEnchantmentRegistry.init();

@@ -26,7 +26,7 @@ public class ResourcePacksGenerator {
     public static Path generateBase(BootstrapContext context, String folderName) throws IOException {
         Path resourcePackFolder = context.getDataDirectory().resolve(folderName);
 
-        FilesUtils.deleteDirectory(resourcePackFolder);
+        FilesUtils.deleteDirectory(resourcePackFolder.toFile());
         Files.createDirectories(resourcePackFolder);
 
         generateMetadata(resourcePackFolder, folderName);
