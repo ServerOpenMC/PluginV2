@@ -196,7 +196,7 @@ contestList:
     selected: 0
   - camp1: "Héros"
     color1: "YELLOW"
-    camp2: "Villian"
+    camp2: "Vilian"
     color2: "RED"
     selected: 0
   - camp1: "Chaos"
