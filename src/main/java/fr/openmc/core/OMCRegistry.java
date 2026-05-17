@@ -31,7 +31,7 @@ public final class OMCRegistry {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
             if (isOverridden(r, "bootstrap", BootstrapContext.class)) {
                 r.bootstrap(context);
-                OMCLogger.successFormatted("Registre {} chargée pendant le bootstrap", r.getClass().getSimpleName());
+                OMCLogger.successFormatted("Registre {} chargé pendant le bootstrap", r.getClass().getSimpleName());
             }
         }
     }
@@ -40,7 +40,7 @@ public final class OMCRegistry {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
             if (isOverridden(r, "init")) {
                 r.init();
-                OMCLogger.successFormatted("Registre {} chargée pendant le runtime", r.getClass().getSimpleName());
+                OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
             }
         }
     }
@@ -49,7 +49,7 @@ public final class OMCRegistry {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
             if (isOverridden(r, "postInit")) {
                 r.postInit();
-                OMCLogger.successFormatted("Registre {} chargée après ItemsAdder", r.getClass().getSimpleName());
+                OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
             }
         }
     }
