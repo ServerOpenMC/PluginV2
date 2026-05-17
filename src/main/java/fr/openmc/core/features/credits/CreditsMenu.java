@@ -6,7 +6,9 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,16 +53,26 @@ public class CreditsMenu extends PaginatedMenu {
         for (Credits credit : Credits.values()) {
             List<Component> lore = new ArrayList<>();
 
-            lore.add(Component.text("§7Développeur(s) : §9" + String.join(", ", credit.getDeveloppers())));
+            lore.addAll(TranslationManager.translationLore(
+                    "feature.credits.menu.lore.developers",
+                    Component.text(String.join(", ", credit.getDeveloppers())).color(NamedTextColor.BLUE)
+            ));
             if (!credit.getGraphists().isEmpty()) {
-                lore.add(Component.text("§7Graphiste(s) : §6" + String.join(", ", credit.getGraphists())));
+                lore.addAll(TranslationManager.translationLore(
+                        "feature.credits.menu.lore.graphists",
+                        Component.text(String.join(", ", credit.getGraphists())).color(NamedTextColor.GOLD)
+                ));
             }
             if (!credit.getBuilders().isEmpty()) {
-                lore.add(Component.text("§7Builder(s) : §a" + String.join(", ", credit.getBuilders())));
+                lore.addAll(TranslationManager.translationLore(
+                        "feature.credits.menu.lore.builders",
+                        Component.text(String.join(", ", credit.getBuilders())).color(NamedTextColor.GREEN)
+                ));
             }
 
             ItemBuilder item = new ItemBuilder(this, credit.getIcon(), itemMeta -> {
-                itemMeta.displayName(Component.text("§e" + credit.getFeatureName())
+                itemMeta.displayName(TranslationManager.translation(credit.getFeatureKey())
+                        .color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(lore);
             }).hide(ItemUtils.getDataComponentType());
@@ -75,10 +87,10 @@ public class CreditsMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
+        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
         map.put(49, new ItemBuilder(this, Material.BARRIER, meta -> {
-            meta.displayName(Component.text("§cFermer le menu"));
+            meta.displayName(TranslationManager.translation("feature.credits.menu.close"));
         }).setOnClick(e -> getOwner().closeInventory()));
 
         return map;
@@ -86,7 +98,7 @@ public class CreditsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Crédits du serveur");
+        return TranslationManager.translation("feature.credits.menu.title");
     }
 
     @Override

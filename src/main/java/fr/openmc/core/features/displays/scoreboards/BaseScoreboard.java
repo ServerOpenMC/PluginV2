@@ -3,6 +3,7 @@ package fr.openmc.core.features.displays.scoreboards;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -66,13 +67,14 @@ public abstract class BaseScoreboard {
     public Component getTitle() {
         return canShowLogo
                 ? Component.text(FontImageWrapper.replaceFontImages(":openmc:"))
-                : Component.text("OPENMC", NamedTextColor.LIGHT_PURPLE);
+                : TranslationManager.translation("feature.displays.scoreboard.title.text").color(NamedTextColor.LIGHT_PURPLE);
     }
 
     /**
      * @return Un {@link Component} pour le footer
      */
     public static Component getFooter() {
-        return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6>%s</gradient>".formatted(textToSmall("play.openmc.fr")));
+        String footerText = textToSmall(TranslationManager.translationString("feature.displays.scoreboard.footer.text"));
+        return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6>%s</gradient>".formatted(footerText));
     }
 }

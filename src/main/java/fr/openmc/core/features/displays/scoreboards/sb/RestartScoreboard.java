@@ -4,6 +4,7 @@ import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -26,7 +27,11 @@ public class RestartScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(text("%s %s".formatted(textToSmall("Redémarrage dans"), DateUtils.convertSecondToTime(Restart.remainingTime)), NamedTextColor.RED));
+        lines.add(text(
+                "%s %s".formatted(textToSmall(
+                TranslationManager.translationString("feature.displays.scoreboard.restart.in")),
+                DateUtils.convertSecondToTime(Restart.remainingTime)
+        ), NamedTextColor.RED));
         lines.add(empty());
         lines.add(getFooter());
 
