@@ -87,7 +87,7 @@ public class CityMenu extends Menu {
         TypeButton.init(this, inventory, city, TYPE_SLOTS);
 
         // ** Chest Button
-        ChestButton.init(this, city, CHEST_SLOTS);
+        ChestButton.init(this, inventory, city, CHEST_SLOTS);
 
         // ** Bank Button
         BankButton.init(this, inventory, city, BANK_SLOTS);

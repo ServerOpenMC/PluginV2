@@ -222,6 +222,22 @@ public abstract class Menu implements InventoryHolder {
         }
         return map;
     }
+
+	public final void update() {
+		if (owner == null) return;
+
+		Inventory open = owner.getOpenInventory().getTopInventory();
+
+		if (!(open.getHolder() instanceof Menu menu) || menu != this) return;
+
+		Map<Integer, ItemBuilder> content = getContent();
+
+		for (Map.Entry<Integer, ItemBuilder> entry : content.entrySet()) {
+			setItem(owner, open, entry.getKey(), entry.getValue());
+		}
+
+		owner.updateInventory();
+	}
 	
 	/**
 	 * Checks if the given {@link ItemStack} is associated with the specified item ID.

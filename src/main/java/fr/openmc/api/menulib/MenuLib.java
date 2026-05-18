@@ -83,6 +83,12 @@ public final class MenuLib implements Listener {
         menu.getItemClickEvents().put(itemBuilder, e);
     }
 
+    public static void updateMenu(Player player) {
+        if (!(player.getInventory().getHolder(false) instanceof Menu menu)) return;
+
+        menu.update();
+    }
+
     public static void clearHistory(Player player) {
         menuHistory.remove(player);
     }

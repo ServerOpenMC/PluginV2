@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -212,6 +213,7 @@ public class CityChestMenu extends PaginatedMenu {
 
         Inventory inv = event.getInventory();
         exit(city, inv);
+        MenuLib.updateMenu(player);
     }
 
     private void exit(City city, Inventory inv) {

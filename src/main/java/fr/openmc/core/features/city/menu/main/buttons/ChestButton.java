@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -19,33 +18,26 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
 
 public class ChestButton {
-    public static void init(Menu menu, City city, int[] slots) {
+    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
+        MenuUtils.createButtonItem(
+                contents,
+                slots,
+                new ItemBuilder(menu, Material.PAPER, itemMeta -> {
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.chest.title"));
+                    itemMeta.lore(getDynamicLore(city, player));
+                    itemMeta.setItemModel(NamespacedKey.minecraft("air"));
+                }).setOnClick(inventoryClickEvent -> {
+                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
-        MenuUtils.runDynamicButtonItem(
-                        player,
-                        menu,
-                        slots,
-                        getItemSupplier(menu, city, player)
-                )
-                .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
-    }
+                    if (!CityChestConditions.canCityChestOpen(cityCheck, player)) return;
 
-    private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Player player) {
-        return () ->  new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.chest.title"));
-            itemMeta.lore(getDynamicLore(city, player));
-            itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-        }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-            if (!CityChestConditions.canCityChestOpen(cityCheck, player)) return;
-
-            new CityChestMenu(player, city, 1).open();
-        });
+                    new CityChestMenu(player, city, 1).open();
+                })
+        );
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
