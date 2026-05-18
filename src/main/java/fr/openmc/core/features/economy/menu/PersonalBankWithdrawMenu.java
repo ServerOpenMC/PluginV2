@@ -94,7 +94,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.withdraw.input.name"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.economy.bank.withdraw.input.prompt"), MAX_LENGTH, input -> {
                 if (input == null) return;
 
                 BankManager.withdraw(player.getUniqueId(), input);

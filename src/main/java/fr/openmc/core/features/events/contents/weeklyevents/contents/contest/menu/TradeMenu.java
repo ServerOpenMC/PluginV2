@@ -15,6 +15,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -38,7 +39,7 @@ public class TradeMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Contests - Échanges");
+        return TranslationManager.translation("feature.events.contest.trade.menu.title");
     }
 
     @Override
@@ -66,21 +67,15 @@ public class TradeMenu extends Menu {
 
         ItemStack shellContest = CustomItemRegistry.getByName(SHELL_NAMESPACE).getBest();
 
-        List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les contest !"),
-                Component.text("§7Le déroulement, les résultats, ..."),
-                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
-        );
+        List<Component> loreInfo = TranslationManager.translationLore("feature.events.contest.trade.info.lore");
 
-        List<Component> loreTrade = Arrays.asList(
-                Component.text("§7Vendez un maximum de ressources"),
-                Component.text("§7Contre des §bcoquillages de contest"),
-                Component.text("§7Pour faire gagner la ")
-                        .append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor))
+        List<Component> loreTrade = TranslationManager.translationLore(
+                "feature.events.contest.trade.main.lore",
+                Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)
         );
 
         inventory.put(4, new ItemBuilder(this, shellContest, itemMeta -> {
-            itemMeta.displayName(Component.text("§7Les échanges"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.trade.main.name"));
             itemMeta.lore(loreTrade);
         }));
 
@@ -96,10 +91,10 @@ public class TradeMenu extends Menu {
             int amount = (int) trade.get("amount");
             int amountShell = (int) trade.get("amount_shell");
 
-            List<Component> lore = Arrays.asList(
-                    Component.text("§7Vendez §e" + amount + " §7pour §b" + amountShell + " coquillage(s)"),
-                    Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
-                    Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
+            List<Component> lore = TranslationManager.translationLore(
+                    "feature.events.contest.trade.offer.lore",
+                    Component.text(amount).color(NamedTextColor.YELLOW),
+                    Component.text(amountShell).color(NamedTextColor.AQUA)
             );
 
 
@@ -107,7 +102,7 @@ public class TradeMenu extends Menu {
                     .setOnClick(event -> {
                         if (!ItemsAdderHook.isEnable()) {
                             MessagesManager.sendMessage(player,
-                                    Component.text("§cFonctionnalité bloquée. Contactez l'administration."),
+                                    TranslationManager.translation("feature.events.contest.trade.unavailable"),
                                     Prefix.CONTEST, MessageType.ERROR, true);
                             return;
                         }
@@ -125,10 +120,10 @@ public class TradeMenu extends Menu {
             );
         }
 
-        inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
+        inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
@@ -231,9 +226,12 @@ public class TradeMenu extends Menu {
      */
     private void sendSuccessMessage(Player player, int itemsRemoved, int shellsEarned, Component tradeName) {
         MessagesManager.sendMessage(player,
-                Component.text("§7Vous avez échangé §e" + itemsRemoved + " ")
-                        .append(tradeName).color(NamedTextColor.YELLOW)
-                        .append(Component.text(" §7contre §b" + shellsEarned + " coquillage(s) de contest")),
+                TranslationManager.translation(
+                        "feature.events.contest.trade.success",
+                        Component.text(itemsRemoved).color(NamedTextColor.YELLOW),
+                        tradeName.color(NamedTextColor.YELLOW),
+                        Component.text(shellsEarned).color(NamedTextColor.AQUA)
+                ),
                 Prefix.CONTEST, MessageType.SUCCESS, true);
     }
 
@@ -244,7 +242,7 @@ public class TradeMenu extends Menu {
      */
     private void sendNotEnoughMessage(Player player) {
         MessagesManager.sendMessage(player,
-                Component.text("§cVous n'avez pas assez de cette ressource pour l'échanger !"),
+                TranslationManager.translation("feature.events.contest.trade.not_enough"),
                 Prefix.CONTEST, MessageType.ERROR, true);
     }
 }

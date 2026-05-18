@@ -2,6 +2,9 @@ package fr.openmc.core.features.homes.world;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -92,13 +95,17 @@ public class DisabledWorldHome {
         return new ArrayList<>(disabledWorlds.keySet());
     }
 
-    public static String getDisabledWorldInfo(String world) {
+    public static Component getDisabledWorldInfo(String world) {
         WorldDisableInfo info = disabledWorlds.get(world);
         if(info != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            return "§7Ajouté par §e" + info.addedBy() + " §7le §e" + sdf.format(info.addedOn());
+            return TranslationManager.translation(
+                    "feature.homes.world.info",
+                    Component.text(info.addedBy()).color(NamedTextColor.YELLOW),
+                    Component.text(sdf.format(info.addedOn())).color(NamedTextColor.YELLOW)
+            );
         }
-        return null;
+        return Component.empty();
     }
 
 }

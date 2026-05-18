@@ -92,7 +92,7 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.input.name"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.economy.bank.deposit.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
 
                         BankManager.deposit(player.getUniqueId(), input);

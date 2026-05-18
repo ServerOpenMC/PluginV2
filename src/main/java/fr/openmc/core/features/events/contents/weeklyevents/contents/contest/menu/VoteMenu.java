@@ -161,14 +161,18 @@ public class VoteMenu extends Menu {
                 String campColor = ContestManager.data.getColor1();
 
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
+                Component teamComponent = TranslationManager.translation(
+                        "feature.events.contest.team.label",
+                        Component.text(campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                );
                 List<Component> loreAccept = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.join.lore",
-                        Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                        teamComponent
                 );
 
                 List<Component> loreDeny = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.cancel.lore",
-                        Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                        teamComponent
                 );
 
                 ConfirmMenu menu = new ConfirmMenu(
@@ -180,7 +184,7 @@ public class VoteMenu extends Menu {
                                     player,
                                     TranslationManager.translation(
                                             "feature.events.contest.vote.joined",
-                                            Component.text("La team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                                            teamComponent
                                     ),
                                     Prefix.CONTEST,
                                     MessageType.SUCCESS,
@@ -211,14 +215,18 @@ public class VoteMenu extends Menu {
                 String campColor = ContestManager.data.getColor2();
 
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
+                Component teamComponent = TranslationManager.translation(
+                        "feature.events.contest.team.label",
+                        Component.text(campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                );
                 List<Component> loreAccept = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.join.lore",
-                        Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                        teamComponent
                 );
 
                 List<Component> loreDeny = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.cancel.lore",
-                        Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                        teamComponent
                 );
 
                 ConfirmMenu menu = new ConfirmMenu(
@@ -230,7 +238,7 @@ public class VoteMenu extends Menu {
                                     player,
                                     TranslationManager.translation(
                                             "feature.events.contest.vote.joined",
-                                            Component.text("La team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
+                                            teamComponent
                                     ),
                                     Prefix.CONTEST,
                                     MessageType.SUCCESS,

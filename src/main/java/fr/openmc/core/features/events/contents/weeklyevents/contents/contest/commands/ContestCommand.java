@@ -17,7 +17,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -39,7 +41,12 @@ public class ContestCommand {
         if (!contest.isActive()) {
             int days = (ContestPhase.VOTE_CAMP.getPhase().getStartDay().getValue()
                     - DateUtils.getCurrentDayOfWeek().getValue() + 7) % 7;
-            MessagesManager.sendMessage(player, Component.text("§cIl n'y a aucun Contest ! Revenez dans " + days + " jour(s)."), Prefix.CONTEST, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.events.contest.command.no_event",
+                            Component.text(days).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.CONTEST, MessageType.ERROR, true);
             return;
         }
 
@@ -54,7 +61,7 @@ public class ContestCommand {
                 new VoteMenu(player).open();
             }
         } else {
-            MessagesManager.sendMessage(player, Component.text("§cLe Contest est dans sa phase terminée, veuillez contactez le staff."), Prefix.CONTEST, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.ended_phase"), Prefix.CONTEST, MessageType.ERROR, true);
         }
     }
 
@@ -78,12 +85,12 @@ public class ContestCommand {
         Contest contest = (Contest) WeeklyEventsManager.getEvent(Contest.class);
 
         if (!contest.isActive()) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir un contest lorsqu'il n'est pas actif"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.setcontest.not_active"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
         if (contest.getActivePhase() != ContestPhase.VOTE_CAMP.getPhase()) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir un contest lorsqu'il a commencé"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.setcontest.started"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
@@ -91,9 +98,15 @@ public class ContestCommand {
         if (new HashSet<>(ContestManager.getColorContestList()).containsAll(Arrays.asList(color1, color2))) {
             ContestManager.clearDB();
             ContestManager.insertCustomContest(camp1, color1, camp2, color2);
-            MessagesManager.sendMessage(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegardé\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.events.contest.command.setcontest.saved",
+                            Component.text(camp1).color(NamedTextColor.YELLOW),
+                            Component.text(camp2).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
-            MessagesManager.sendMessage(player, Component.text("§c/contest setcontest <camp1> <color1> <camp2> <color2> et color doit comporter une couleur valide"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.setcontest.invalid_color"), Prefix.STAFF, MessageType.ERROR, true);
         }
     }
 
@@ -139,21 +152,27 @@ public class ContestCommand {
         Contest contest = (Contest) WeeklyEventsManager.getEvent(Contest.class);
 
         if (contest.getActivePhase() != ContestPhase.TRADE_PHASE.getPhase()) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le contest n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.addpoints.not_started"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
         if (ContestManager.dataPlayer.get(target.getUniqueId()) == null) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points à ce joueur car il ne s'est pas inscrit"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.addpoints.not_registered"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
         if (points <= 0) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points négatifs ou égal à 0"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.addpoints.invalid"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
         ContestPlayerManager.setPointsPlayer(target.getUniqueId() ,points + ContestManager.dataPlayer.get(target.getUniqueId()).getPoints());
-        MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player,
+                TranslationManager.translation(
+                        "feature.events.contest.command.addpoints.success",
+                        Component.text(points).color(NamedTextColor.YELLOW),
+                        Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                ),
+                Prefix.STAFF, MessageType.SUCCESS, true);
     }
 }

@@ -14,6 +14,7 @@ import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -36,7 +37,7 @@ public class ContributionMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Contests - Contributions");
+        return TranslationManager.translation("feature.events.contest.contribution.title");
     }
 
     @Override
@@ -63,54 +64,47 @@ public class ContributionMenu extends Menu {
         NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
         Material m = ColorUtils.getMaterialFromColor(campColor);
 
-        List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les contests !"),
-                Component.text("§7Le déroulement, Les résultats, ..."),
-                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+        List<Component> loreInfo = TranslationManager.translationLore("feature.events.contest.trade.info.lore");
+
+        List<Component> loreContribute = TranslationManager.translationLore(
+                "feature.events.contest.contribution.lore.contribute",
+                Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)
         );
 
-        List<Component> loreContribute = Arrays.asList(
-                Component.text("§7Donner vos §bcoquillages de contest"),
-                Component.text("§7Pour faire gagner ta ")
-                        .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lCliquez pour verser tout vos coquillages")
+        List<Component> loreTrade = TranslationManager.translationLore(
+                "feature.events.contest.contribution.lore.trade",
+                Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)
         );
 
-        List<Component> loreTrade = Arrays.asList(
-                Component.text("§7Faites des échanges contre des §bcoquillages de contest"),
-                Component.text("§7Utile pour faire gagner ta ")
-                        .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lCliquez pour acceder au menu des échanges")
-        );
-
-        List<Component> loreRang = Arrays.asList(
+        List<Component> loreRang = TranslationManager.translationLore(
+                "feature.events.contest.contribution.lore.rank",
                 Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
-                Component.text("§7Progression §8: ")
-                        .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
-                        .append(Component.text("§8/"))
-                        .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
+                Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).color(campColor),
+                Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).color(campColor)
         );
 
         String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
+        ItemStack shellContest = Objects.requireNonNull(CustomItemRegistry.getByName(namespaceShellContest)).getBest();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-            itemMeta.displayName(Component.text("§6§lVotre titre"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.contribution.title.name"));
             itemMeta.lore(loreRang);
         }));
 
         inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
-            itemMeta.displayName(Component.text("§7Les échanges"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.trade.main.name"));
             itemMeta.lore(loreTrade);
         }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
 
         inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
+            itemMeta.displayName(TranslationManager.translation(
+                    "feature.events.contest.contribution.button.name",
+                    Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)
+            ));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
             if (!ItemsAdderHook.isEnable()) {
-                MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloquée. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.contribution.unavailable"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }
 
@@ -132,9 +126,12 @@ public class ContributionMenu extends Menu {
                         ContestManager.data.setPoints2(updatedCampPoints);
                     }
                     
-                    MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " coquillage(s) de contest§7 pour votre team !"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                    MessagesManager.sendMessage(getOwner(), TranslationManager.translation(
+                            "feature.events.contest.contribution.success",
+                            Component.text(shellCount).color(NamedTextColor.AQUA)
+                    ), Prefix.CONTEST, MessageType.SUCCESS, true);
                 } else {
-                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de coquillage de contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.events.contest.contribution.no_shells"), Prefix.CONTEST, MessageType.ERROR, true);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -142,7 +139,7 @@ public class ContributionMenu extends Menu {
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 

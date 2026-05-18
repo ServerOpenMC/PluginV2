@@ -70,11 +70,13 @@ public class FriendCommand {
                     true
             );
 
-            Component acceptButton = Component.text(" [Accepter]", NamedTextColor.GREEN)
+            Component acceptButton = TranslationManager.translation("feature.friend.button.accept")
+                    .color(NamedTextColor.GREEN)
                     .clickEvent(ClickEvent.runCommand("/friend accept " + player.getName()))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour accepter la demande d'ami", NamedTextColor.GREEN)));
+                    .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.button.accept_hover").color(NamedTextColor.GREEN)));
 
-            Component ignoreButton = Component.text(" [Ignorer]", NamedTextColor.GRAY)
+            Component ignoreButton = TranslationManager.translation("feature.friend.button.ignore")
+                    .color(NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.callback(audience -> {
                         if (!FriendManager.isRequestPending(player.getUniqueId())) {
                             MessagesManager.sendMessage(target, TranslationManager.translation("feature.friend.request.expired"), Prefix.FRIEND, MessageType.INFO, true);
@@ -92,11 +94,12 @@ public class FriendCommand {
                                 true
                         );
                     }))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour ignorer la demande d'ami", NamedTextColor.GRAY)));
+                    .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.button.ignore_hover").color(NamedTextColor.GRAY)));
 
-            Component denyButton = Component.text(" [Refuser]", NamedTextColor.RED)
+            Component denyButton = TranslationManager.translation("feature.friend.button.deny")
+                    .color(NamedTextColor.RED)
                     .clickEvent(ClickEvent.runCommand("/friend deny " + player.getName()))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour refuser la demande d'ami", NamedTextColor.RED)));
+                    .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.button.deny_hover").color(NamedTextColor.RED)));
 
             MessagesManager.sendMessage(
                     target,
@@ -134,11 +137,14 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
+            String targetDisplayName = target.getName() != null
+                    ? target.getName()
+                    : TranslationManager.translationString("feature.friend.unknown_player");
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation(
                             "feature.friend.remove.success",
-                            Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
@@ -199,12 +205,19 @@ public class FriendCommand {
             int startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, friendsList.size());
 
-            Component header = Component.text("  ✦ Liste d'amis (" + currentPage + "/" + totalPages + ") ✦  ")
+            Component header = TranslationManager.translation(
+                            "feature.friend.list.header",
+                            Component.text(currentPage),
+                            Component.text(totalPages)
+                    )
                     .color(NamedTextColor.GOLD);
             player.sendMessage(header);
             for (int i = startIndex; i < endIndex; i++) {
                 UUID friendUUID = friendsList.get(i);
                 OfflinePlayer friend = CacheOfflinePlayer.getOfflinePlayer(friendUUID);
+                String friendName = friend.getName() != null
+                        ? friend.getName()
+                        : TranslationManager.translationString("feature.friend.unknown_player");
 
                 try {
                     Timestamp timestamp = FriendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
@@ -214,15 +227,15 @@ public class FriendCommand {
 
                     City city = CityManager.getPlayerCity(friend.getUniqueId());
                     String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
-                    Component cityComponent = Component.text(city != null ? city.getName() : "Aucune").color(NamedTextColor.YELLOW);
+                    Component cityComponent = Component.text(city != null ? city.getName() : TranslationManager.translationString("feature.friend.list.city.none")).color(NamedTextColor.YELLOW);
                     Component moneyComponent = Component.text(formattedMoney).color(NamedTextColor.YELLOW);
                     Component statusComponent = isOnline
-                            ? Component.text("En ligne").color(NamedTextColor.GREEN)
-                            : Component.text("Hors ligne").color(NamedTextColor.RED);
+                            ? TranslationManager.translation("feature.friend.status.online").color(NamedTextColor.GREEN)
+                            : TranslationManager.translation("feature.friend.status.offline").color(NamedTextColor.RED);
 
                     TextComponent friendComponent = Component.text("  " + (i+1) + ". ")
                             .color(NamedTextColor.GRAY)
-                            .append(Component.text(friend.getName())
+                            .append(Component.text(friendName)
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
@@ -238,19 +251,26 @@ public class FriendCommand {
                             ? Component.text(" ⬤ ").color(NamedTextColor.GREEN)
                             : Component.text(" ⬤ ").color(NamedTextColor.RED);
                     
-                    Component dateInfo = Component.text("Depuis le " + formattedDate)
+                    Component dateInfo = TranslationManager.translation(
+                                    "feature.friend.list.date_since",
+                                    Component.text(formattedDate).color(NamedTextColor.GRAY)
+                            )
                             .color(NamedTextColor.GRAY);
 
-                    Component actions = Component.text(" [✖]")
+                    Component actions = TranslationManager.translation("feature.friend.list.action.remove")
                             .color(NamedTextColor.RED)
-                            .clickEvent(ClickEvent.runCommand("/friends remove " + friend.getName()))
-                            .hoverEvent(HoverEvent.showText(Component.text("Supprimer cet ami", NamedTextColor.RED)));
+                            .clickEvent(ClickEvent.runCommand("/friends remove " + friendName))
+                            .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.list.action.remove_hover").color(NamedTextColor.RED)));
 
                     player.sendMessage(friendComponent.append(statusIcon).append(dateInfo).append(actions));
 
                 } catch (Exception e) {
-                    player.sendMessage(Component.text("Erreur lors de la récupération des informations de " + friend.getName())
-                            .color(NamedTextColor.RED));
+                    player.sendMessage(
+                            TranslationManager.translation(
+                                    "feature.friend.list.fetch_error",
+                                    Component.text(friendName).color(NamedTextColor.RED)
+                            ).color(NamedTextColor.RED)
+                    );
                     throw new RuntimeException(e);
                 }
             }
@@ -260,30 +280,36 @@ public class FriendCommand {
 
                 if (currentPage > 1) {
                     navigation = navigation.append(
-                            Component.text(" « Page précédente ")
+                            TranslationManager.translation("feature.friend.list.navigation.previous")
                                     .color(NamedTextColor.AQUA)
                                     .clickEvent(ClickEvent.runCommand("/friends list " + (currentPage - 1)))
-                                    .hoverEvent(HoverEvent.showText(Component.text("Page " + (currentPage - 1))))
+                                    .hoverEvent(HoverEvent.showText(TranslationManager.translation(
+                                            "feature.friend.list.navigation.page",
+                                            Component.text(currentPage - 1)
+                                    )))
                     );
                 } else {
                     navigation = navigation.append(
-                            Component.text(" « Page précédente ")
+                            TranslationManager.translation("feature.friend.list.navigation.previous")
                                     .color(NamedTextColor.DARK_GRAY)
                     );
                 }
 
-                navigation = navigation.append(Component.text(" | ").color(NamedTextColor.GRAY));
+                navigation = navigation.append(TranslationManager.translation("feature.friend.list.navigation.separator").color(NamedTextColor.GRAY));
 
                 if (currentPage < totalPages) {
                     navigation = navigation.append(
-                            Component.text("Page suivante » ")
+                            TranslationManager.translation("feature.friend.list.navigation.next")
                                     .color(NamedTextColor.AQUA)
                                     .clickEvent(ClickEvent.runCommand("/friends list " + (currentPage + 1)))
-                                    .hoverEvent(HoverEvent.showText(Component.text("Page " + (currentPage + 1))))
+                                    .hoverEvent(HoverEvent.showText(TranslationManager.translation(
+                                            "feature.friend.list.navigation.page",
+                                            Component.text(currentPage + 1)
+                                    )))
                     );
                 } else {
                     navigation = navigation.append(
-                            Component.text("Page suivante » ")
+                            TranslationManager.translation("feature.friend.list.navigation.next")
                                     .color(NamedTextColor.DARK_GRAY)
                     );
                 }
@@ -313,11 +339,14 @@ public class FriendCommand {
                 return;
             }
             FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
+            String targetDisplayName = target.getName() != null
+                    ? target.getName()
+                    : TranslationManager.translationString("feature.friend.unknown_player");
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation(
                             "feature.friend.request.accepted",
-                            Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
@@ -358,11 +387,14 @@ public class FriendCommand {
                 return;
             }
             FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId()));
+            String targetDisplayName = target.getName() != null
+                    ? target.getName()
+                    : TranslationManager.translationString("feature.friend.unknown_player");
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation(
                             "feature.friend.request.denied",
-                            Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
