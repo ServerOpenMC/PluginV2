@@ -217,15 +217,6 @@ public final class MenuLib implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (!(e.getPlayer() instanceof  Player player)) return;
-        if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu) {
-            paginatedMenu.onClose(e);
-            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PaginatedMenu)) {
-                    MenuLib.clearHistory(player);
-                }
-            }, 1L);
-            return;
-        }
 
         if (e.getInventory().getHolder(false) instanceof Menu menu) {
             menu.onClose(e);
