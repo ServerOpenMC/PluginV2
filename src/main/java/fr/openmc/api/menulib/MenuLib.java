@@ -220,7 +220,8 @@ public final class MenuLib implements Listener {
         if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu) {
             paginatedMenu.onClose(e);
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PaginatedMenu)) {
+                if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof PaginatedMenu) &&
+                        !(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
                     MenuLib.clearHistory(player);
                 }
             }, 1L);
