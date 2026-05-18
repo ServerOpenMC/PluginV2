@@ -213,6 +213,7 @@ public class CityChestMenu extends PaginatedMenu {
 
         Inventory inv = event.getInventory();
         exit(city, inv);
+        // fixes #1007
         MenuLib.updateMenu(player);
     }
 

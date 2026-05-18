@@ -84,8 +84,7 @@ public final class MenuLib implements Listener {
     }
 
     public static void updateMenu(Player player) {
-        if (!(player.getInventory().getHolder(false) instanceof Menu menu)) return;
-
+        if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof Menu menu)) return;
         menu.update();
     }
 

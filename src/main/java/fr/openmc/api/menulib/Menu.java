@@ -147,9 +147,8 @@ public abstract class Menu implements InventoryHolder {
 
 			Inventory inventory = getInventory();
 
-			getContent().forEach((slot, item) -> {
-				setItem(owner, inventory, slot, item);
-			});
+			getContent().forEach((slot, item) ->
+					setItem(owner, inventory, slot, item));
 
             Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
 
@@ -230,11 +229,8 @@ public abstract class Menu implements InventoryHolder {
 
 		if (!(open.getHolder() instanceof Menu menu) || menu != this) return;
 
-		Map<Integer, ItemBuilder> content = getContent();
-
-		for (Map.Entry<Integer, ItemBuilder> entry : content.entrySet()) {
-			setItem(owner, open, entry.getKey(), entry.getValue());
-		}
+		getContent().forEach((slot, item) ->
+				setItem(owner, open, slot, item));
 
 		owner.updateInventory();
 	}
