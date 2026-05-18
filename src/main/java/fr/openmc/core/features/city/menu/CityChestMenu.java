@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -18,6 +19,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -214,7 +216,7 @@ public class CityChestMenu extends PaginatedMenu {
         Inventory inv = event.getInventory();
         exit(city, inv);
         // fixes #1007
-        MenuLib.updateMenu(player);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), ()-> MenuLib.updateMenu(player), 5L);
     }
 
     private void exit(City city, Inventory inv) {
