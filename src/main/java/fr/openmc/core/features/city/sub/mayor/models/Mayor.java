@@ -4,6 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.utils.text.ColorUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -57,6 +58,9 @@ public class Mayor {
     }
 
     public Component getName() {
+        if (this.name == null || this.name.isEmpty()) {
+            return TranslationManager.translation("messages.menus.none");
+        }
         return Component.text(this.name);
     }
 
