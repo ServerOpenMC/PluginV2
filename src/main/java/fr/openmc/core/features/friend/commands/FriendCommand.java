@@ -106,7 +106,10 @@ public class FriendCommand {
                     TranslationManager.translation(
                             "feature.friend.request.received",
                             Component.text(player.getName()).color(NamedTextColor.YELLOW)
-                    ).append(acceptButton).append(ignoreButton).append(denyButton),
+                    ).appendNewline()
+                            .append(acceptButton).appendSpace()
+                            .append(ignoreButton).appendSpace()
+                            .append(denyButton),
                     Prefix.FRIEND,
                     MessageType.INFO,
                     true
@@ -262,7 +265,7 @@ public class FriendCommand {
                             .clickEvent(ClickEvent.runCommand("/friends remove " + friendName))
                             .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.list.action.remove_hover").color(NamedTextColor.RED)));
 
-                    player.sendMessage(friendComponent.append(statusIcon).append(dateInfo).append(actions));
+                    player.sendMessage(friendComponent.append(statusIcon).append(dateInfo).appendSpace().append(actions));
 
                 } catch (Exception e) {
                     player.sendMessage(

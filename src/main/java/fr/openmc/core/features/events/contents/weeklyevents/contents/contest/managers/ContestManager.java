@@ -401,16 +401,22 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
 
-            if (player.isOnline() && player instanceof Player onelinePlayer) {
-                Component messageMail = TranslationManager.translation("feature.events.contest.mail.received")
-                        .append(TranslationManager.translation("feature.events.contest.mail.click"))
-                        .clickEvent(ClickEvent.runCommand("mailbox"))
-                        .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.events.contest.mail.hover")))
-                        .append(TranslationManager.translation("feature.events.contest.mail.open_mailbox"));
-                onelinePlayer.sendMessage(messageMail);
+            if (offlinePlayer.isOnline()) {
+                Player player = Bukkit.getPlayer(uuid);
+
+                if (player != null) {
+                    Component messageMail = TranslationManager.translation("feature.events.contest.mail.received")
+                            .appendNewline()
+                            .append(TranslationManager.translation("feature.events.contest.mail.click"))
+                            .clickEvent(ClickEvent.runCommand("mailbox"))
+                            .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.events.contest.mail.hover")))
+                            .append(TranslationManager.translation("feature.events.contest.mail.open_mailbox"));
+
+                    player.sendMessage(messageMail);
+                }
             }
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
@@ -431,9 +437,9 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             int money;
             int aywenite;
 
-            double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(ContestPlayerManager.getRankContestFromOfflineInt(player));
-            if(ContestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
-
+            double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(
+                    ContestPlayerManager.getRankContestFromOfflineInt(offlinePlayer));
+            if (ContestPlayerManager.hasWinInCampFromOfflinePlayer(offlinePlayer)) {
                 // Gagnant - ARGENT
                 int moneyMin = 10000;
                 int moneyMax = 12000;
@@ -442,7 +448,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(player.getUniqueId(), money, "Récompense contest - Gagnant");
+                EconomyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Gagnant");
  
                 // Gagnant - Aywenite
                 int ayweniteMin = 40;
@@ -453,7 +459,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Gagnant - EVENT
-                winners.add(player.getUniqueId());
+                winners.add(offlinePlayer.getUniqueId());
             } else {
                 // Perdant - ARGENT
                 int moneyMin = 2000;
@@ -463,7 +469,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(player.getUniqueId(), money, "Récompense contest - Perdant");
+                EconomyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Perdant");
 
                 // Perdant - Aywenite
                 int ayweniteMin = 20;
@@ -474,17 +480,20 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Perdant - EVENT
-                losers.add(player.getUniqueId());
+                losers.add(offlinePlayer.getUniqueId());
             }
 
             // PRINT REWARDS
             textRewards = textRewards
+                    .appendNewline()
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.money.prefix"))
                     .append(Component.text(money).color(NamedTextColor.GOLD))
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.money.suffix"))
+                    .appendNewline()
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.aywenite.prefix"))
                     .append(Component.text(aywenite).color(NamedTextColor.LIGHT_PURPLE))
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.aywenite.suffix"))
+                    .appendNewline()
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.boost.prefix"))
                     .append(Component.text(multiplicator).color(NamedTextColor.AQUA));
 
@@ -500,7 +509,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             itemListRewards.add(bookPlayer);
 
             ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
-            playerItemsMap.put(player, rewards);
+            playerItemsMap.put(offlinePlayer, rewards);
             rank.getAndIncrement();
         });
         

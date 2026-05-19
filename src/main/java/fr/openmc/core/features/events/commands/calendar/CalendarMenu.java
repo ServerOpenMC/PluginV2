@@ -10,6 +10,7 @@ import fr.openmc.core.features.events.models.Event;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -99,9 +100,9 @@ public class CalendarMenu extends PaginatedMenu {
 
                 eventLore.add(TranslationManager.translation(
                         "feature.events.calendar.phase.line",
-                        phase.getName(),
-                        Component.text(formattedDate),
-                        Component.text(formattedTime)
+                        phase.getName().color(NamedTextColor.GRAY),
+                        Component.text(formattedDate).color(NamedTextColor.GRAY),
+                        Component.text(formattedTime).color(NamedTextColor.GRAY)
                 ));
             }
         }
