@@ -14,6 +14,7 @@ import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -38,7 +39,10 @@ public class LetterMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Lettre de " + letterHead.displayName());
+        return TranslationManager.translation(
+                "feature.mailboxes.menu.title.letter",
+                letterHead.displayName()
+        );
     }
 
     @Override
@@ -58,9 +62,10 @@ public class LetterMenu extends Menu {
             if (letter.refuse()) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("Vous avez refusé la lettre #", NamedTextColor.DARK_GREEN)
-                                .append(Component.text(id, NamedTextColor.GREEN))
-                                .append(Component.text(".", NamedTextColor.DARK_GREEN)),
+                        TranslationManager.translation(
+                                "feature.mailboxes.message.refuse_success",
+                                Component.text(id).color(NamedTextColor.GREEN)
+                        ).color(NamedTextColor.DARK_GREEN),
                         Prefix.MAILBOX,
                         MessageType.SUCCESS,
                         true
@@ -69,9 +74,10 @@ public class LetterMenu extends Menu {
             }
         }
 
-        Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                .append(Component.text(id, NamedTextColor.RED))
-                .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
+        Component message = TranslationManager.translation(
+                "feature.mailboxes.message.letter_not_found",
+                Component.text(id).color(NamedTextColor.RED)
+        ).color(NamedTextColor.DARK_RED);
         MessagesManager.sendMessage(
                 player,
                 message,
@@ -93,9 +99,11 @@ public class LetterMenu extends Menu {
 
             MessagesManager.sendMessage(
                     getOwner(),
-                    Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                            .append(Component.text(letterHead.getItemsCount(), NamedTextColor.GREEN))
-                            .append(Component.text(" " + pluralize("item", letterHead.getItemsCount()), NamedTextColor.DARK_GREEN)),
+                    TranslationManager.translation(
+                            "feature.mailboxes.message.items_received",
+                            Component.text(letterHead.getItemsCount()).color(NamedTextColor.GREEN),
+                            Component.text(pluralize("item", letterHead.getItemsCount())).color(NamedTextColor.DARK_GREEN)
+                    ).color(NamedTextColor.DARK_GREEN),
                     Prefix.MAILBOX,
                     MessageType.SUCCESS,
                     true
@@ -107,9 +115,10 @@ public class LetterMenu extends Menu {
 
 
         } else {
-            Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                    .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
-                    .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.letter_not_found",
+                    Component.text(letterHead.getLetterId()).color(NamedTextColor.RED)
+            ).color(NamedTextColor.DARK_RED);
             MessagesManager.sendMessage(
                     getOwner(),
                     message,
@@ -159,9 +168,10 @@ public class LetterMenu extends Menu {
         getOwner().closeInventory();
         MessagesManager.sendMessage(
                 getOwner(),
-                Component.text("Vous avez annulé la lettre #", NamedTextColor.DARK_RED)
-                        .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
-                        .append(Component.text(".", NamedTextColor.DARK_RED)),
+                TranslationManager.translation(
+                        "feature.mailboxes.message.cancel_letter",
+                        Component.text(letterHead.getLetterId()).color(NamedTextColor.RED)
+                ).color(NamedTextColor.DARK_RED),
                 Prefix.MAILBOX,
                 MessageType.ERROR,
                 true

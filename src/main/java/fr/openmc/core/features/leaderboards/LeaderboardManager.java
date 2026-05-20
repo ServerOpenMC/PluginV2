@@ -17,6 +17,7 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
@@ -107,9 +108,10 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
     public static Component createContributorsTextLeaderboard() {
         var contributorsMap = new TreeMap<>(LeaderboardManager.getGithubContributorsMap());
         if (contributorsMap.isEmpty()) {
-            return Component.text("Aucun contributeur trouvé pour le moment.").color(NamedTextColor.RED);
+            return TranslationManager.translation("feature.leaderboards.empty.contributors")
+                    .color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard des Contributeurs GitHub ---")
+        Component text = TranslationManager.translation("feature.leaderboards.header.contributors")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : contributorsMap.entrySet()) {
@@ -121,19 +123,24 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
 
             int addLines = stats.added();
             int removeLines = stats.removed();
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
-                    .append(Component.text(rank).color(getRankColor(rank)))
-                    .append(Component.text(" ").append(Component.text(contributorName).color(NamedTextColor.LIGHT_PURPLE)))
-                    .append(Component.text(" + ").color(NamedTextColor.GREEN))
-                    .append(Component.text(addLines).color(NamedTextColor.WHITE)
-                            .append(Component.text(" - ").color(NamedTextColor.RED))
-                            .append(Component.text(removeLines).color(NamedTextColor.WHITE)));
+            TextColor rankColor = getRankColor(rank);
+            Component rankComponent = Component.text("#")
+                    .color(rankColor)
+                    .append(Component.text(rank).color(rankColor));
+            Component line = Component.text("\n")
+                    .append(TranslationManager.translation(
+                            "feature.leaderboards.line.contributors",
+                            rankComponent,
+                            Component.text(contributorName).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(addLines).color(NamedTextColor.WHITE),
+                            Component.text(removeLines).color(NamedTextColor.WHITE)
+                    ));
             text = text.append(line);
         }
-        text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.DARK_PURPLE)
-                .decorate(TextDecoration.BOLD));
+        text = text.append(Component.text("\n")
+                .append(TranslationManager.translation("feature.leaderboards.footer")
+                        .color(NamedTextColor.DARK_PURPLE)
+                        .decorate(TextDecoration.BOLD)));
         return text;
     }
 
@@ -145,9 +152,10 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
     public static Component createMoneyTextLeaderboard() {
         var moneyMap = new TreeMap<>(LeaderboardManager.getPlayerMoneyMap());
         if (moneyMap.isEmpty()) {
-            return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
+            return TranslationManager.translation("feature.leaderboards.empty.players")
+                    .color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard de l'argent des joueurs ---")
+        Component text = TranslationManager.translation("feature.leaderboards.header.money")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
@@ -157,17 +165,25 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
 
             if (playerName == null || money == null) continue;
 
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
-                    .append(Component.text(rank).color(getRankColor(rank)))
-                    .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE)))
-                    .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(money + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.WHITE));
+            TextColor rankColor = getRankColor(rank);
+            Component rankComponent = Component.text("#")
+                    .color(rankColor)
+                    .append(Component.text(rank).color(rankColor));
+            Component valueComponent = Component.text(money + " " + EconomyManager.getEconomyIcon())
+                    .color(NamedTextColor.WHITE);
+            Component line = Component.text("\n")
+                    .append(TranslationManager.translation(
+                            "feature.leaderboards.line.money",
+                            rankComponent,
+                            Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE),
+                            valueComponent
+                    ));
             text = text.append(line);
         }
-        text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.DARK_PURPLE)
-                .decorate(TextDecoration.BOLD));
+        text = text.append(Component.text("\n")
+                .append(TranslationManager.translation("feature.leaderboards.footer")
+                        .color(NamedTextColor.DARK_PURPLE)
+                        .decorate(TextDecoration.BOLD)));
         return text;
     }
 
@@ -179,9 +195,10 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
     public static Component createCityMoneyTextLeaderboard() {
         var moneyMap = LeaderboardManager.getVilleMoneyMap();
         if (moneyMap.isEmpty()) {
-            return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
+            return TranslationManager.translation("feature.leaderboards.empty.cities")
+                    .color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard de l'argent des villes ---")
+        Component text = TranslationManager.translation("feature.leaderboards.header.city_money")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
@@ -191,17 +208,25 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
 
             if (cityName == null || money == null) continue;
 
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
-                    .append(Component.text(rank).color(getRankColor(rank)))
-                    .append(Component.text(" ").append(Component.text(cityName).color(NamedTextColor.LIGHT_PURPLE)))
-                    .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(money + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.WHITE));
+            TextColor rankColor = getRankColor(rank);
+            Component rankComponent = Component.text("#")
+                    .color(rankColor)
+                    .append(Component.text(rank).color(rankColor));
+            Component valueComponent = Component.text(money + " " + EconomyManager.getEconomyIcon())
+                    .color(NamedTextColor.WHITE);
+            Component line = Component.text("\n")
+                    .append(TranslationManager.translation(
+                            "feature.leaderboards.line.city_money",
+                            rankComponent,
+                            Component.text(cityName).color(NamedTextColor.LIGHT_PURPLE),
+                            valueComponent
+                    ));
             text = text.append(line);
         }
-        text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.DARK_PURPLE)
-                .decorate(TextDecoration.BOLD));
+        text = text.append(Component.text("\n")
+                .append(TranslationManager.translation("feature.leaderboards.footer")
+                        .color(NamedTextColor.DARK_PURPLE)
+                        .decorate(TextDecoration.BOLD)));
         return text;
     }
 
@@ -213,9 +238,10 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
     public static Component createPlayTimeTextLeaderboard() {
         var playtimeMap = new TreeMap<>(LeaderboardManager.getPlayTimeMap());
         if (playtimeMap.isEmpty()) {
-            return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
+            return TranslationManager.translation("feature.leaderboards.empty.players")
+                    .color(NamedTextColor.RED);
         }
-        Component text = Component.text("------- Leaderboard du temps de jeu -------")
+        Component text = TranslationManager.translation("feature.leaderboards.header.playtime")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : playtimeMap.entrySet()) {
@@ -225,26 +251,33 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
 
             if (playerName == null || time == null) continue;
 
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
-                    .append(Component.text(rank).color(getRankColor(rank)))
-                    .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE)))
-                    .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(time).color(NamedTextColor.WHITE));
+            TextColor rankColor = getRankColor(rank);
+            Component rankComponent = Component.text("#")
+                    .color(rankColor)
+                    .append(Component.text(rank).color(rankColor));
+            Component line = Component.text("\n")
+                    .append(TranslationManager.translation(
+                            "feature.leaderboards.line.playtime",
+                            rankComponent,
+                            Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(time).color(NamedTextColor.WHITE)
+                    ));
             text = text.append(line);
         }
-        text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.DARK_PURPLE)
-                .decorate(TextDecoration.BOLD));
+        text = text.append(Component.text("\n")
+                .append(TranslationManager.translation("feature.leaderboards.footer")
+                        .color(NamedTextColor.DARK_PURPLE)
+                        .decorate(TextDecoration.BOLD)));
         return text;
     }
 
     public static Component createPumpkinCountTextLeaderboard() {
         var pumpkinCountMap = new TreeMap<>(LeaderboardManager.getPumpkinCountMap());
         if (pumpkinCountMap.isEmpty()) {
-            return Component.text("Aucun joueur trouvé pour le moment.", NamedTextColor.RED);
+            return TranslationManager.translation("feature.leaderboards.empty.players")
+                    .color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard des critrouilles ---")
+        Component text = TranslationManager.translation("feature.leaderboards.header.pumpkin")
                 .color(TextColor.color(156, 69, 26))
                 .decorate(TextDecoration.BOLD);
         for (var entry : pumpkinCountMap.entrySet()) {
@@ -254,17 +287,23 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
 
             if (playerName == null || pumpkinCount == null) continue;
 
-            Component line = Component.text("\n#")
-                    .color(getRankColor(rank))
-                    .append(Component.text(rank).color(getRankColor(rank)))
-                    .append(Component.text(" ").append(Component.text(playerName).color(TextColor.color(255, 107, 37))))
-                    .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(pumpkinCount + " citrouilles").color(NamedTextColor.WHITE));
+            TextColor rankColor = getRankColor(rank);
+            Component rankComponent = Component.text("#")
+                    .color(rankColor)
+                    .append(Component.text(rank).color(rankColor));
+            Component line = Component.text("\n")
+                    .append(TranslationManager.translation(
+                            "feature.leaderboards.line.pumpkin",
+                            rankComponent,
+                            Component.text(playerName).color(TextColor.color(255, 107, 37)),
+                            Component.text(pumpkinCount).color(NamedTextColor.WHITE)
+                    ));
             text = text.append(line);
         }
-        text = text.append(Component.text("\n-----------------------------------------")
-                .color(TextColor.color(156, 69, 26))
-                .decorate(TextDecoration.BOLD));
+        text = text.append(Component.text("\n")
+                .append(TranslationManager.translation("feature.leaderboards.footer")
+                        .color(TextColor.color(156, 69, 26))
+                        .decorate(TextDecoration.BOLD)));
         return text;
     }
 

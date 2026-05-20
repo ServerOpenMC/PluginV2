@@ -10,6 +10,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,23 +24,26 @@ public class ClaimLetterQuest extends MilestoneQuest implements Listener {
 
     public ClaimLetterQuest() {
         super(
-                "Ouvrir la lettre des récompenses",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.claim_letter.name"),
                 List.of(
-                        "§fTapez §d/mailbox §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu mailbox",
-                        "§8§oUn moyen efficace d'envoyer des items à d'autres joueurs !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.claim_letter.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.claim_letter.description.2")
                 ),
                 Material.PAPER,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.CLAIM_LETTER,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.CLAIM_LETTER.ordinal() + 1) + " §f! Vous avez découvert les bases d'OpenMC. Et maintenant, libre à vous d'aller découvrir les features par vous même ! Sur ce, nous vous souhaitons le meilleur de votre aventure sur §dOpenMC §f!",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.CLAIM_LETTER,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.claim_letter.reward",
+                                        Component.text(TutorialSteps.CLAIM_LETTER.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 

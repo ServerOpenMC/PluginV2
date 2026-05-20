@@ -11,6 +11,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,23 +25,26 @@ public class OpenAdminShopMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenAdminShopMenuQuest() {
         super(
-                "Ouvrir le menu de l'adminshop",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.open_adminshop.name"),
                 List.of(
-                        "§fTapez §c/adminshop §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
-                        "§8§oLe marché qui varie en fonction de l'offre et de la demande !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_adminshop.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_adminshop.description.2")
                 ),
                 Material.EMERALD,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.OPEN_ADMINSHOP,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_ADMINSHOP.ordinal() + 1) + " §f! L'§cadminshop §fvous servira à vous procurer de l'argent et des blocs ! Vous pouvez d'ailleurs dès maintenant vendre ou acheter une ressource à l'adminshop !",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.OPEN_ADMINSHOP,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.open_adminshop.reward",
+                                        Component.text(TutorialSteps.OPEN_ADMINSHOP.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 
