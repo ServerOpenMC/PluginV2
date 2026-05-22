@@ -132,7 +132,6 @@ public class SchematicsUtils {
                         .build();
 
                 Operations.complete(op);
-                session.flushSession();
             } catch (WorldEditException e) {
                 e.printStackTrace();
             }
