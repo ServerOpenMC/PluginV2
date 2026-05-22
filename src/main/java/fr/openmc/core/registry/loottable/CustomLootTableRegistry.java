@@ -3,7 +3,6 @@ package fr.openmc.core.registry.loottable;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class CustomLootTableRegistry {
     static final HashMap<String, CustomLootTable> lootTables = new HashMap<>();

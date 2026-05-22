@@ -1,6 +1,5 @@
 package fr.openmc.core.listeners;
 
-import org.bukkit.GameRule;
 import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
