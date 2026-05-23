@@ -59,7 +59,6 @@ dependencies {
     compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
-    implementation "com.flowpowered:flow-nbt:1.0.0"
     implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
     implementation "io.github.revxrsal:lamp.common:${revxrsalLampVersion}"
     implementation "io.github.revxrsal:lamp.bukkit:${revxrsalLampVersion}"
