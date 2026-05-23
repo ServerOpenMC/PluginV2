@@ -7,37 +7,29 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntitySnapshot;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Stray;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 
-import java.util.List;
+public class DreamStray extends DreamMob<Stray> {
 
-public class DreamStray extends DreamMob {
-
-    public DreamStray() {
-        super("dream_stray",
+    public DreamStray(String id) {
+        super(id,
                 "Stray Endormi",
-                EntityType.STRAY,
+                Stray.class,
                 9.0,
                 3L,
                 0.2,
-                1.2,
-                List.of()
+                1.2
         );
     }
 
     @Override
-    public LivingEntity spawn(Location location) {
-        return null;
-    }
-
-    public EntitySnapshot createSnapshot() {
+    public EntitySnapshot getMobSnapshot() {
         World world = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
         if (world == null) return null;
-        Stray stray = world.createEntity(new Location(world, 0, 0, 0), Stray.class);
+        LivingEntity stray = world.createEntity(new Location(world, 0, 0, 0), Stray.class);
 
         applyStats(stray);
 

@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.rank.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
@@ -10,7 +11,6 @@ import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -150,13 +150,13 @@ public class CityRankDetailsMenu extends Menu {
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open()));
 		
-		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
+		map.put(18, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.cancel_create.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.cancel_create.lore"));
 		}).setOnClick(inventoryClickEvent -> getOwner().closeInventory()));
 		
 		if (canManageRanks) {
-			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
+			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.create.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.create.lore"));
 			}).setOnClick(inventoryClickEvent -> {
@@ -284,7 +284,7 @@ public class CityRankDetailsMenu extends Menu {
 			else new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
 		}));
 		
-		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
+		map.put(18, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.cancel_edit.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.cancel_edit.lore"));
 		}).setOnClick(inventoryClickEvent -> {
@@ -293,14 +293,14 @@ public class CityRankDetailsMenu extends Menu {
 		}));
 		
 		if (canManageRanks) {
-			map.put(22, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), itemMeta -> {
+			map.put(22, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:minus_btn").getBest(), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.delete.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.delete.lore"));
 			}).setOnClick(inventoryClickEvent ->
 					CityRankAction.deleteRank(getOwner(), oldRank.getName())
 			));
 			
-			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
+			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.save.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.save.lore"));
 			}).setOnClick(inventoryClickEvent -> {

@@ -1,9 +1,11 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
+import fr.openmc.core.registry.mobs.CustomMob;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,7 +21,8 @@ public class DreamMobDamageListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
-        if (!DreamMobsRegistry.isDreamMob(livingEntity)) return;
+        if (!CustomMobRegistry.isCustomMob(livingEntity)) return;
+        if (!(OMCRegistry.CUSTOM_MOBS.getMob(livingEntity) instanceof DreamMob)) return;
 
         if (event instanceof EntityDamageByEntityEvent entityEvent) {
             Entity damager = entityEvent.getDamager();
@@ -37,10 +40,11 @@ public class DreamMobDamageListener implements Listener {
 
         if (!(damaged instanceof Player p)) return;
         if (!(damager instanceof LivingEntity livingEntity)) return;
-        if (!DreamMobsRegistry.isDreamMob(livingEntity)) return;
+        if (!CustomMobRegistry.isCustomMob(livingEntity)) return;
 
-        DreamMob dreamMob = DreamMobsRegistry.getFromEntity(livingEntity);
-        if (dreamMob == null) return;
+        CustomMob customMob = OMCRegistry.CUSTOM_MOBS.getMob(livingEntity);
+        if (customMob == null) return;
+        if (!(customMob instanceof DreamMob dreamMob)) return;
 
         event.setCancelled(true);
 	    if (MilestoneDialog.isInMilestoneDialog(p)) return;

@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
@@ -52,7 +53,7 @@ public class HomeUpgradeMenu extends Menu {
                     ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
                     : lastUpgrade;
 
-            items.put(4, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            items.put(4, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
                 if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
                     itemMeta.lore(TranslationManager.translationLore(

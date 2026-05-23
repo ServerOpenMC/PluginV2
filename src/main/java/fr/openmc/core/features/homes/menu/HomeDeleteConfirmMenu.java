@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -55,7 +55,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(2, new ItemBuilder(
                             this,
-                            Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(),
+                            OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red").getBest(),
                             itemMeta -> {
                                 itemMeta.displayName(TranslationManager.translation("feature.homes.delete.confirm.name"));
                                 itemMeta.lore(TranslationManager.translationLore("feature.homes.delete.confirm.lore"));
@@ -87,7 +87,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(6, new ItemBuilder(
                     this,
-                    Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin")).getBest(),
+                    Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin")).getBest(),
                     itemMeta ->
                             itemMeta.displayName(TranslationManager.translation("feature.homes.delete.cancel.name")), true)
             );

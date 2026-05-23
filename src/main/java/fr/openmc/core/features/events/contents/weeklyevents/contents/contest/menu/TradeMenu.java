@@ -5,12 +5,12 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -65,7 +65,7 @@ public class TradeMenu extends Menu {
         String campName = ContestPlayerManager.getPlayerCampName(player);
         NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
-        ItemStack shellContest = CustomItemRegistry.getByName(SHELL_NAMESPACE).getBest();
+        ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.get(SHELL_NAMESPACE).getBest();
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.events.contest.trade.info.lore");
 

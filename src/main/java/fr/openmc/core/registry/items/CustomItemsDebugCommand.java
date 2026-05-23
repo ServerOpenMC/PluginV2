@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.items;
 
+import fr.openmc.core.OMCRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,7 +19,7 @@ public class CustomItemsDebugCommand {
     public void isCloseButton(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        CustomItem closeButton = CustomItemRegistry.getByName("_iainternal:icon_cancel");
+        CustomItem closeButton = OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel");
 
         passTest(player, 1, closeButton.equals(item));
         passTest(player, 2, closeButton.equals("_iainternal:icon_cancel"));
@@ -34,7 +35,7 @@ public class CustomItemsDebugCommand {
             player.sendMessage("§cVous ne tenez rien en main.");
             return;
         }
-        CustomItem item = CustomItemRegistry.getByItemStack(mainhand);
+        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(mainhand);
         if (item == null) {
             player.sendMessage("§cL'item en main n'est pas un custom item.");
         } else {
@@ -45,14 +46,14 @@ public class CustomItemsDebugCommand {
     @Subcommand("list")
     public void list(Player player) {
         player.sendMessage("§eListe des custom items :");
-        for (String item : CustomItemRegistry.getNames()) {
+        for (String item : OMCRegistry.CUSTOM_ITEMS.keys()) {
             player.sendMessage("§e- " + item);
         }
     }
 
     @Subcommand("get")
     public void get(Player player, String name) {
-        CustomItem item = CustomItemRegistry.getByName(name);
+        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(name);
         if (item == null) {
             player.sendMessage("§cCet item n'existe pas.");
             return;

@@ -7,6 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
@@ -27,7 +28,6 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -501,12 +501,10 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
             bookPlayer.setItemMeta(bookMetaPlayer);
 
-            if (CustomItemRegistry.getByName("omc_items:aywenite") != null) {
-                    ItemStack ayweniteItemStack = Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest();
-                ayweniteItemStack.setAmount(aywenite);
-                itemListRewards.add(ayweniteItemStack);
-            }
+            ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+            ayweniteItemStack.setAmount(aywenite);
             itemListRewards.add(bookPlayer);
+            itemListRewards.add(ayweniteItemStack);
 
             ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
             playerItemsMap.put(offlinePlayer, rewards);

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -28,7 +28,7 @@ public class Contest extends WeeklyEvent {
 
     @Override
     public ItemStack getIcon() {
-        return CustomItemRegistry.getByName("omc_contest:contest_shell").getBest();
+        return OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest();
     }
 
     @Override

@@ -8,6 +8,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -131,7 +132,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
 
             List<ItemStack> rewards = new ArrayList<>();
 
-            final ItemStack aywenite = Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest();
+            final ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
             aywenite.setAmount(64);
             switch (rank) {
                 case 1 -> {

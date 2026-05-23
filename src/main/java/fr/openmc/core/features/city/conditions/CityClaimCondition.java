@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -43,7 +43,7 @@ public class CityClaimCondition {
         if (city.getFreeClaims() > 0) return true;
 
         int amount = CityClaimAction.calculateAywenite(city.getChunks().size());
-        if (!ItemUtils.hasEnoughItems(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest(), amount)) {
+        if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), amount)) {
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(amount)),

@@ -17,32 +17,26 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.Comparator;
-import java.util.List;
 
-public class Breezy extends DreamMob implements Listener {
+public class Breezy extends DreamMob<Breeze> implements Listener {
 
     private static final NamespacedKey BREEZY_WIND_CHARGE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "breezy_wind_charge");
-    public Breezy() {
-        super("brezzy",
+    public Breezy(String id) {
+        super(id,
                 "Breezy",
-                EntityType.BREEZE,
+                Breeze.class,
                 100.0,
                 5L,
                 0.7,
-                4.0,
-                List.of()
+                4.0
         );
     }
 
     @Override
-    public LivingEntity spawn(Location location) {
-        return null;
-    }
-
-    public EntitySnapshot createSnapshot() {
+    public EntitySnapshot getMobSnapshot() {
         World world = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
         if (world == null) return null;
-        Breeze breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
+        Mob breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
 
         applyStats(breeze);
 

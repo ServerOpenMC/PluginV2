@@ -1,6 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -11,7 +12,6 @@ import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
                         "§fLe nouveau minerai de la §dV2, trouvable dans les grottes",
                         "§fIl vous sera §dutile §fdans de nombreuses fonctionnalités"
                 ),
-                CustomItemRegistry.getByName("omc_items:aywenite").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(),
 		        MilestoneType.TUTORIAL,
 		        TutorialSteps.BREAK_AYWENITE,
 		        new QuestTier(

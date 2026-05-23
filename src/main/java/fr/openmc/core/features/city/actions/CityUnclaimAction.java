@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.actions;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 
 public class CityUnclaimAction {
-    private static final ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+    private static final ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
 
     public static int calculatePrice(int chunkCount) {
         return 5000 + ((chunkCount - 1) * 1000) / 3;

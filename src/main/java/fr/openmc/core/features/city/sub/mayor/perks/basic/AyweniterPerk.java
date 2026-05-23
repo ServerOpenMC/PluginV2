@@ -1,12 +1,12 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -46,7 +46,7 @@ public class AyweniterPerk implements Listener {
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
-                ItemStack ayweniteItem = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+                ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
                 ayweniteItem.setAmount(2);
                 player.getInventory().addItem(ayweniteItem);
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 10.0F, 0.6F);

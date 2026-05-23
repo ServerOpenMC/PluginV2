@@ -6,13 +6,13 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -146,7 +146,7 @@ public class HomeMenu extends PaginatedMenu {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
         if(!wasTarget) {
-            map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            map.put(53, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
                 itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
             }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));

@@ -7,39 +7,30 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntitySnapshot;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Phantom;
 
-import java.util.List;
-
-public class DreamPhantom extends DreamMob {
-
-    public DreamPhantom() {
-        super("dream_phantom",
+@SuppressWarnings("UnstableApiUsage")
+public class DreamPhantom extends DreamMob<Phantom> {
+    public DreamPhantom(String id) {
+        super(id,
                 "Phantom Réveillé",
-                EntityType.PHANTOM,
+                Phantom.class,
                 10.0,
                 3L,
                 0.4,
-                RandomUtils.randomBetween(0.4, 0.8),
-                List.of()
+                RandomUtils.randomBetween(0.4, 0.8)
         );
     }
 
     @Override
-    public LivingEntity spawn(Location location) {
-        return null;
-    }
-
-    public EntitySnapshot createSnapshot(Location location) {
+    public EntitySnapshot getMobSnapshot(Object... args) {
         World world = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
         if (world == null) return null;
         Phantom phantom = world.createEntity(new Location(world, 0, 0, 0), Phantom.class);
 
         applyStats(phantom);
 
-        phantom.setAnchorLocation(location);
+        phantom.setAnchorLocation((Location) args[0]);
         phantom.setGlowing(true);
         phantom.setLootTable(null);
 

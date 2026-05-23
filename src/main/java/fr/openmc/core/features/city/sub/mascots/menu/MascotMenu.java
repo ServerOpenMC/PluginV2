@@ -7,13 +7,13 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.milestone.rewards.MascotsLevelsRewards;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -153,7 +153,7 @@ public class MascotMenu extends Menu {
 
                         movingMascots.add(cityUUID);
 
-                        ItemStack mascotsMoveItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
+                        ItemStack mascotsMoveItem = OMCRegistry.CUSTOM_ITEMS.get("omc_items:mascot_stick").getBest();
                         ItemMeta meta = mascotsMoveItem.getItemMeta();
 
                         if (meta != null) {

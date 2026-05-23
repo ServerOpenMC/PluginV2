@@ -1,10 +1,10 @@
 package fr.openmc.core.features.quests.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,11 +21,11 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
         super(
                 "The Mixture",
                 List.of("Fabriquer {target} The Mixture{s}"),
-                CustomItemRegistry.getByName("omc_foods:the_mixture").getBest()
+                OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest()
         );
 
         this.addTiers(
-                new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest(), 16)),
+                new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest(), 16)),
                 new QuestTier(32, new QuestMoneyReward(100)),
                 new QuestTier(128, new QuestMoneyReward(300)),
                 new QuestTier(512, new QuestMoneyReward(700))
@@ -35,7 +35,7 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item == null || !item.isSimilar(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest()))
+        if (item == null || !item.isSimilar(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest()))
             return;
 
         // Le joueur ne craft pas plus d'un kebab

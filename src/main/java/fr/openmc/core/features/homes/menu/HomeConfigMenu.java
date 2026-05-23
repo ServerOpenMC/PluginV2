@@ -6,11 +6,11 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -87,10 +87,10 @@ public class HomeConfigMenu extends Menu {
             HomesManager.renameHome(home, input);
         })));
 
-        content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
+        content.put(24, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.config.delete.name"));
             itemMeta.lore(TranslationManager.translationLore("feature.homes.config.delete.lore"));
-        }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
+        }).setOnClick(_ -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
         content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
         content.put(44, MailboxMenuManager.cancelBtn(this).setCloseButton());

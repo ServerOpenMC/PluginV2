@@ -1,11 +1,14 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
-import fr.openmc.core.features.dream.registries.mobs.DreamStray;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.registry.mobs.CustomMob;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.TrialSpawner;
+import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.loot.LootTable;
 import org.bukkit.spawner.TrialSpawnerConfiguration;
 
@@ -19,7 +22,21 @@ public class StrayCloudSpawner {
         if (block.getState() instanceof TrialSpawner spawner) {
             TrialSpawnerConfiguration normal = spawner.getNormalConfiguration();
 
-            normal.setSpawnedEntity(new DreamStray().createSnapshot());
+            CustomMob<?> mob = OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_stray");
+
+            if (mob == null) {
+                OMCLogger.warn("Mob 'omc_dream:dream_stray' not found in registry");
+                return;
+            }
+
+            EntitySnapshot snapshot = mob.getMobSnapshot();
+
+            if (snapshot == null) {
+                OMCLogger.warn("Snapshot for mob 'omc_dream:dream_stray' is null");
+                return;
+            }
+
+            normal.setSpawnedEntity(snapshot);
 
             NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/mob_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);
