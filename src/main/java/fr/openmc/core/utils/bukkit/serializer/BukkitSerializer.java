@@ -2,13 +2,12 @@ package fr.openmc.core.utils.bukkit.serializer;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.List;
 
 public class BukkitSerializer {
     public static byte[] serializeItemStacks(ItemStack[] inv) throws IOException {
@@ -16,45 +15,28 @@ public class BukkitSerializer {
     }
 
     public static ItemStack[] deserializeItemStacks(byte[] b) {
-        if (b == null || b.length == 0) {
+        if (b == null || b.length == 0)
             return new ItemStack[0];
-        }
+
         return ItemStack.deserializeItemsFromBytes(b);
     }
 
     public static String playerInventoryToBase64(PlayerInventory inv) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream)) {
-
-            dataOutput.writeObject(inv.getContents());
-
-            return Base64Coder.encodeLines(outputStream.toByteArray());
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to save player inventory.", e);
-        }
+        byte[] bytes = ItemStack.serializeItemsAsBytes(Arrays.asList(inv.getContents()));
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     public static String playerInventoryToBase64(ItemStack[] contents) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream)) {
+        if (contents == null || contents.length == 0)
+            return "";
 
-            dataOutput.writeObject(contents);
-
-            return Base64Coder.encodeLines(outputStream.toByteArray());
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to save player inventory.", e);
-        }
+        byte[] bytes = ItemStack.serializeItemsAsBytes(Arrays.asList(contents));
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
-    public static void playerInventoryFromBase64(PlayerInventory inv, String data) throws IOException {
-        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
-             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream)) {
-
-            ItemStack[] contents = (ItemStack[]) dataInput.readObject();
-
-            inv.setContents(contents);
-        } catch (ClassNotFoundException e) {
-            throw new IOException("Unable to decode class type.", e);
-        }
+    public static void playerInventoryFromBase64(PlayerInventory inv, String data) {
+        byte[] bytes = Base64.getDecoder().decode(data);
+        Collection<ItemStack> items = List.of(ItemStack.deserializeItemsFromBytes(bytes));
+        inv.setContents(items.toArray(new ItemStack[0]));
     }
 }

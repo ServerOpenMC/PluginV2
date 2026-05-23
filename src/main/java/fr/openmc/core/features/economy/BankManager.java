@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.time.DayOfWeek;
@@ -45,6 +46,8 @@ public class BankManager extends Feature implements DatabaseFeature {
     private static Map<UUID, Bank> banks;
 
     private static Dao<Bank, String> banksDao;
+
+    private static BukkitTask interestTask;
 
     @Override
     public void init() {
@@ -243,18 +246,31 @@ public class BankManager extends Feature implements DatabaseFeature {
         }
     }
 
-    private static void updateInterestTimer() {
-        if (OMCPlugin.isUnitTestVersion()) return; // Cette méthode bloque totalement le flux des tests. Si
-        // quelqu'un fait les unit test des banques, merci de le prendre en compte.
-        
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            OMCLogger.info("Applying all player interests...");
-            applyAllPlayerInterests();
-            CityBankManager.applyAllCityInterests();
-            OMCLogger.info("All player interests applied successfully.");
-            updateInterestTimer();
+    public static void updateInterestTimer() {
+        if (OMCPlugin.isUnitTestVersion()) return;
 
-        }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)
+        if (interestTask != null) return;
+
+        long delay = getSecondsUntilInterest() * 20L;
+
+        interestTask = Bukkit.getScheduler().runTaskLater(
+                OMCPlugin.getInstance(),
+                () -> {
+                    OMCLogger.info("Applying all player interests...");
+                    applyAllPlayerInterests();
+                    CityBankManager.applyAllCityInterests();
+                    OMCLogger.info("All player interests applied successfully.");
+
+                    interestTask = null;
+
+                    Bukkit.getScheduler().runTaskLater(
+                            OMCPlugin.getInstance(),
+                            BankManager::updateInterestTimer,
+                            20L * 10
+                    );
+                },
+                delay
+        );
     }
 
     public static long getSecondsUntilInterest() {

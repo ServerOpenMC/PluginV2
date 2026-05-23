@@ -1,5 +1,7 @@
 package fr.openmc.core.features.cube;
 
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -81,6 +83,8 @@ public class CubeCommands {
             cube.corruptedBubbleTask.cancel();
             cube.corruptedBubbleTask = null;
         }
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CubeDisableBubbleEvent(cube)));
         MessagesManager.sendMessage(player, TranslationManager.translation("feature.cube.command.stop_bubble"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 

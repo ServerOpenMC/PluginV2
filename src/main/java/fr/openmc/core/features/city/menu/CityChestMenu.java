@@ -1,10 +1,12 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -17,6 +19,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -205,17 +208,15 @@ public class CityChestMenu extends PaginatedMenu {
     public void onClose(InventoryCloseEvent event) {
         if (Restart.isRestarting) return;
         HumanEntity humanEntity = event.getPlayer();
-        if (!(humanEntity instanceof Player player)) {
-            return;
-        }
+        if (!(humanEntity instanceof Player player)) return;
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            return;
-        }
+        if (city == null) return;
 
         Inventory inv = event.getInventory();
         exit(city, inv);
+        // fixes #1007
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), ()-> MenuLib.updateMenu(player), 5L);
     }
 
     private void exit(City city, Inventory inv) {

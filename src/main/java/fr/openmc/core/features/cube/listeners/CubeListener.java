@@ -1,6 +1,8 @@
 package fr.openmc.core.features.cube.listeners;
 
 import fr.openmc.core.features.cube.Cube;
+import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
+import fr.openmc.core.features.cube.events.CubeEnableBubbleEvent;
 import fr.openmc.core.features.cube.events.EnterCubeZoneEvent;
 import fr.openmc.core.features.cube.events.ExitCubeZoneEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
@@ -14,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
@@ -39,6 +42,26 @@ public class CubeListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerQuit(PlayerJoinEvent event) {
+        updatePlayerBubbleState(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+            if (!(mb instanceof Cube cube)) continue;
+
+            Location center = cube.getCenter();
+            double radius = cube.RADIUS_BUBBLE;
+
+            if (!player.getWorld().equals(center.getWorld())) continue;
+
+            if (player.getLocation().distance(center) <= radius) onPlayerExitBubble(player);
+        }
+    }
+
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
@@ -54,41 +77,78 @@ public class CubeListener implements Listener {
 
     @EventHandler
     public void onPlayerEnterAndLeaveCubeZone(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+        updatePlayerBubbleState(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onCubeBubbleStart(CubeEnableBubbleEvent event) {
+        Cube cube = event.getCube();
+
+        Location center = cube.getCenter();
+        double radius = cube.RADIUS_BUBBLE;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().equals(center.getWorld())) continue;
+
+            if (player.getLocation().distance(center) <= radius) {
+                updatePlayerBubbleState(player);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onCubeBubbleStop(CubeDisableBubbleEvent event) {
+        Cube cube = event.getCube();
+
+        Location center = cube.getCenter();
+        double radius = cube.RADIUS_BUBBLE;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().equals(center.getWorld())) continue;
+
+            if (player.getLocation().distance(center) <= radius) {
+                updatePlayerBubbleState(player);
+            }
+        }
+    }
+
+    public void updatePlayerBubbleState(Player player) {
         if (!player.getLocation().getWorld().getName().equals("world")
                 && !player.getLocation().getWorld().getName().equals(DreamDimensionManager.DIMENSION_NAME)) return;
 
+        UUID uuid = player.getUniqueId();
+
         boolean insideAny = false;
-        Cube cube = null;
+        Cube bestCube = null;
 
         for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
-            if (!(mb instanceof Cube loopCube)) continue;
+            if (!(mb instanceof Cube cube)) continue;
 
-            Location center = loopCube.getCenter();
-            double radius = loopCube.RADIUS_BUBBLE;
+            if (cube.corruptedBubbleTask == null) continue;
 
-            if (!player.getWorld().equals(center.getWorld())) continue;
-            cube = loopCube;
+            if (!player.getWorld().equals(cube.getCenter().getWorld())) continue;
 
-            if (player.getLocation().distance(center) <= radius) {
+            double dist = player.getLocation().distance(cube.getCenter());
+
+            if (dist <= cube.RADIUS_BUBBLE) {
                 insideAny = true;
+                bestCube = cube;
                 break;
             }
         }
-        
-        if (cube == null) {
-            throw new NullPointerException("No Cube found in world: " + player.getLocation().getWorld().getName());
+
+        boolean alreadyInside = playersInBubble.contains(uuid);
+
+        if (insideAny && !alreadyInside) {
+            playersInBubble.add(uuid);
+            Bukkit.getPluginManager().callEvent(new EnterCubeZoneEvent(player, bestCube));
+            onPlayerEnterBubble(player);
+            return;
         }
 
-        UUID uuid = player.getUniqueId();
-
-        if (insideAny && !playersInBubble.contains(uuid)) {
-            playersInBubble.add(uuid);
-            Bukkit.getPluginManager().callEvent(new EnterCubeZoneEvent(player, cube));
-            if (cube.corruptedBubbleTask != null) onPlayerEnterBubble(player);
-        } else if (!insideAny && playersInBubble.contains(uuid)) {
+        if (!insideAny && alreadyInside) {
             playersInBubble.remove(uuid);
-            if (cube.corruptedBubbleTask != null) onPlayerExitBubble(player);
+            onPlayerExitBubble(player);
             Bukkit.getPluginManager().callEvent(new ExitCubeZoneEvent(player));
         }
     }
@@ -107,30 +167,5 @@ public class CubeListener implements Listener {
         
         attr.setBaseValue(0.08);
         player.removePotionEffect(PotionEffectType.JUMP_BOOST);
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
-            if (!(mb instanceof Cube cube)) continue;
-
-            if (cube.corruptedBubbleTask == null) continue;
-
-            Location center = cube.getCenter();
-            double radius = cube.RADIUS_BUBBLE;
-
-            if (!player.getWorld().equals(center.getWorld())) continue;
-
-            boolean inside = player.getLocation().distance(center) <= radius;
-
-            if (!inside) continue;
-
-            AttributeInstance attr = player.getAttribute(Attribute.GRAVITY);
-            if (attr != null) {
-                attr.setBaseValue(0.08);
-            }
-            player.removePotionEffect(PotionEffectType.JUMP_BOOST);
-        }
     }
 }

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import io.papermc.paper.block.bed.BedEnterProblem;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +18,7 @@ import java.util.Collection;
 public class MascotsSleepingListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBedEnter(PlayerBedEnterEvent event) {
-        if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.NOT_SAFE) return;
+        if (event.enterAction().problem() != BedEnterProblem.NOT_SAFE) return;
 
         Player player = event.getPlayer();
         Location bedLocation = event.getBed().getLocation();

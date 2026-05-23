@@ -2,7 +2,6 @@ package fr.openmc.core.features.itemsadder;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.EnumUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;

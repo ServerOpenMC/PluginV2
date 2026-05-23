@@ -62,7 +62,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
     private static final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
-            "DARK_GREEN","DARK_BLUE","BLACK"
+            "DARK_GREEN","DARK_BLUE"
     );
     private static final Set<Class<? extends Menu>> contestMenus = new HashSet<>();
 
