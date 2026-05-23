@@ -20,9 +20,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
@@ -60,16 +60,19 @@ public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfE
         // nothing to save
     }
 
-    public static JsonObject loadAnimation(OMCPlugin plugin, String ressourcePath) {
-        File file = new File(plugin.getDataFolder(), ressourcePath);
-        if (!file.exists()) {
-            return null;
-        }
+    public static JsonObject loadAnimation(OMCPlugin plugin, String resourcePath) {
+        try (InputStream inputStream = plugin.getResource(resourcePath)) {
+            if (inputStream == null) {
+                OMCLogger.error("Animation resource not found: {}", resourcePath);
+                return null;
+            }
 
-        try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
-            return JsonParser.parseReader(reader).getAsJsonObject();
+            try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+                return JsonParser.parseReader(reader).getAsJsonObject();
+            }
+
         } catch (IOException e) {
-            OMCLogger.error("Failed to load Animation {}", ressourcePath, e);
+            OMCLogger.error("Failed to load Animation {}", resourcePath, e);
             return null;
         }
     }

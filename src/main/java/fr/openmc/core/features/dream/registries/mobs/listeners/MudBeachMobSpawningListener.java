@@ -3,7 +3,7 @@ package fr.openmc.core.features.dream.registries.mobs.listeners;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamBiome;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;

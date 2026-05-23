@@ -8,9 +8,7 @@ import fr.openmc.core.features.dream.mecanism.altar.AltarManager;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.BossCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.CloudVault;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -53,14 +51,13 @@ public class DreamBlocksRegistry {
 
         config = YamlConfiguration.loadConfiguration(file);
 
-        World dream = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
-        if (dream == null) {
+        if (DreamDimensionManager.DIMENSION_WORLD == null) {
             OMCLogger.error("[DreamBlocks] Le monde " + DreamDimensionManager.DIMENSION_NAME + " est introuvable !");
             return;
         }
 
         dreamBlocks.clear();
-        if (dream.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && DreamDimensionManager.hasSeedChanged()) {
+        if (DreamDimensionManager.DIMENSION_WORLD.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && DreamDimensionManager.hasSeedChanged()) {
             config.set("blocks", new ArrayList<>());
             save();
             return;

@@ -2,7 +2,6 @@ package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.generation.biomes.CloudChunkGenerator;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import lombok.Getter;

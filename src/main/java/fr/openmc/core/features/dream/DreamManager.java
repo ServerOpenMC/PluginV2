@@ -38,10 +38,7 @@ import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DBPlayerSave;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.features.dream.registries.*;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Bukkit;
@@ -75,6 +72,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
     @Override
     public void init() {
         // ** MANAGERS **
+        DreamDimensionManager.init();
         GlaciteNpcManager.init();
         PlayerCloneNpc.init();
         DreamItemRegistry.init();
@@ -146,6 +144,8 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         DreamManager.saveAllDreamPlayerData();
 
         SingularityManager.disable();
+
+        DreamDimensionManager.save();
     }
 
     private static void loadAllPlayerSaveData() {
@@ -391,11 +391,10 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
     public static void tpPlayerDream(Player player) {
         Biome biome = DreamBiome.SCULK_PLAINS.getBiome();
-        World dreamWorld = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
 
-        if (dreamWorld == null) return;
+        if (DreamDimensionManager.DIMENSION_WORLD == null) return;
 
-        Location spawningLocation = LocationUtils.findLocationInBiome(dreamWorld, biome);
+        Location spawningLocation = LocationUtils.findLocationInBiome(DreamDimensionManager.DIMENSION_WORLD, biome);
 
         if (spawningLocation == null) return;
 
@@ -407,7 +406,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         if (dbDreamPlayer == null) return;
 
         player.teleportAsync(new Location(
-                Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME),
+                DreamDimensionManager.DIMENSION_WORLD,
                 dbDreamPlayer.getDreamX(),
                 dbDreamPlayer.getDreamY(),
                 dbDreamPlayer.getDreamZ()

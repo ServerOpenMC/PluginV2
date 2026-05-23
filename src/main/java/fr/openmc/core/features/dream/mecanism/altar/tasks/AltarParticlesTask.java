@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.altar.tasks;
 
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
 import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ public class AltarParticlesTask extends BukkitRunnable {
         if (Bukkit.getOnlinePlayers().isEmpty()) return;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().equals(DreamDimensionManager.DIMENSION_NAME)) continue;
+            if (!DreamUtils.isInDreamWorld(player)) continue;
             Location playerLoc = player.getLocation();
             World world = playerLoc.getWorld();
 

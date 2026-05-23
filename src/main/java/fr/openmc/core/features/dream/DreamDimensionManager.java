@@ -12,7 +12,8 @@ import java.io.IOException;
 
 public class DreamDimensionManager {
 
-    public static final String DIMENSION_NAME = "dream";
+    public static final String DIMENSION_NAME = "world_omc_dream_dream";
+    public static World DIMENSION_WORLD;
 
     private static File seedFile;
     private static FileConfiguration seedConfig;
@@ -21,14 +22,12 @@ public class DreamDimensionManager {
     public static void init() {
         seedFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "seed.yml");
         loadSeed();
+        DIMENSION_WORLD = Bukkit.getWorld(DIMENSION_NAME);
     }
 
-    public static void postInit() {
-        World dream = Bukkit.getWorld(DIMENSION_NAME);
-        if (dream == null) return;
-
-        OMCLogger.info("[DreamDimensionManager] Saving seed: {}", dream.getSeed());
-        saveSeed(dream.getSeed());
+    public static void save() {
+        OMCLogger.info("[DreamDimensionManager] Saving seed: {}", DIMENSION_WORLD.getSeed());
+        saveSeed(DIMENSION_WORLD.getSeed());
     }
 
     private static void loadSeed() {
@@ -49,11 +48,9 @@ public class DreamDimensionManager {
 
     public static void checkSeed() {
         long saved = seedConfig.getLong("world_seed", -1);
+        if (DIMENSION_WORLD == null) return;
 
-        World dream = Bukkit.getWorld(DIMENSION_NAME);
-        if (dream == null) return;
-
-        long current = dream.getSeed();
+        long current = DIMENSION_WORLD.getSeed();
 
         if (saved == -1) {
             saveSeed(current);
