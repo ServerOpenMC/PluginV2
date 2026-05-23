@@ -11,7 +11,6 @@ import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.text.fonts.CustomFonts;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -24,10 +23,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static fr.openmc.core.features.homes.utils.HomeUtil.MAX_LENGTH_HOME_NAME;
 
@@ -91,7 +90,7 @@ public class HomeConfigMenu extends Menu {
         content.put(24, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.config.delete.name"));
             itemMeta.lore(TranslationManager.translationLore("feature.homes.config.delete.lore"));
-        }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
+        }).setOnClick(_ -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
         content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
         content.put(44, MailboxMenuManager.cancelBtn(this).setCloseButton());
