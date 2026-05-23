@@ -34,7 +34,7 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
 
     @Override
     public EntitySnapshot getMobSnapshot() {
-        World world = DreamDimensionManager.DIMENSION_WORLD;
+        World world = DreamDimensionManager.DREAM_WORLD;
         if (world == null) return null;
         Mob breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
 

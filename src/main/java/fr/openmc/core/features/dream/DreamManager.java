@@ -21,10 +21,7 @@ import fr.openmc.core.features.dream.commands.DreamCommands;
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
-import fr.openmc.core.features.dream.listeners.structures.CloudStructureDispenserListener;
-import fr.openmc.core.features.dream.listeners.structures.PlayerEnterStructureListener;
-import fr.openmc.core.features.dream.listeners.structures.PlayerExitStructureListener;
-import fr.openmc.core.features.dream.listeners.structures.ReplaceBlockListener;
+import fr.openmc.core.features.dream.listeners.structures.*;
 import fr.openmc.core.features.dream.mecanism.blocksdrops.DreamBlocksDropsManager;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
@@ -123,7 +120,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new PlayerExitStructureListener(),
                 new PlayerFoodChangeListener(),
                 new DreamLootListener(),
-                new SetupDreamDimensionListener()
+                new BaseCampListener()
         );
     }
 
@@ -392,9 +389,9 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
     public static void tpPlayerDream(Player player) {
         Biome biome = DreamBiome.SCULK_PLAINS.getBiome();
 
-        if (DreamDimensionManager.DIMENSION_WORLD == null) return;
+        if (DreamDimensionManager.DREAM_WORLD == null) return;
 
-        Location spawningLocation = LocationUtils.findLocationInBiome(DreamDimensionManager.DIMENSION_WORLD, biome);
+        Location spawningLocation = LocationUtils.findLocationInBiome(DreamDimensionManager.DREAM_WORLD, biome);
 
         if (spawningLocation == null) return;
 
@@ -406,7 +403,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         if (dbDreamPlayer == null) return;
 
         player.teleportAsync(new Location(
-                DreamDimensionManager.DIMENSION_WORLD,
+                DreamDimensionManager.DREAM_WORLD,
                 dbDreamPlayer.getDreamX(),
                 dbDreamPlayer.getDreamY(),
                 dbDreamPlayer.getDreamZ()

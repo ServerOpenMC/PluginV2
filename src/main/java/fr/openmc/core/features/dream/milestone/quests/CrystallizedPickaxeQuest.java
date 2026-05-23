@@ -27,7 +27,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 	
 	private static final int cubeX = -171;
 	private static final int cubeZ = -117;
-	private static final Location cubeLoc = new Location(DreamDimensionManager.DIMENSION_WORLD, cubeX, DreamDimensionManager.DIMENSION_WORLD.getHighestBlockYAt(cubeX, cubeZ), cubeZ);
+	private static final Location cubeLoc = new Location(DreamDimensionManager.DREAM_WORLD, cubeX, DreamDimensionManager.DREAM_WORLD.getHighestBlockYAt(cubeX, cubeZ), cubeZ);
 
 	public CrystallizedPickaxeQuest() {
 		super(

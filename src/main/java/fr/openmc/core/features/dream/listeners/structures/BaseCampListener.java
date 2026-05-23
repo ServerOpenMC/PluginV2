@@ -24,7 +24,6 @@ public class BaseCampListener implements Listener {
         for (int x = (int) box.getMinX(); x <= box.getMaxX(); x++) {
             for (int y = (int) box.getMinY(); y <= box.getMaxY(); y++) {
                 for (int z = (int) box.getMinZ(); z <= box.getMaxZ(); z++) {
-
                     Block block = world.getBlockAt(x, y, z);
 
                     if (block.getType() == Material.CAMPFIRE || block.getType() == Material.SOUL_CAMPFIRE) {

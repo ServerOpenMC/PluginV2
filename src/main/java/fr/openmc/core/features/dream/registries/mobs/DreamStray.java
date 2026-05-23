@@ -26,7 +26,7 @@ public class DreamStray extends DreamMob<Stray> {
 
     @Override
     public EntitySnapshot getMobSnapshot() {
-        World world = DreamDimensionManager.DIMENSION_WORLD;
+        World world = DreamDimensionManager.DREAM_WORLD;
         if (world == null) return null;
         LivingEntity stray = world.createEntity(new Location(world, 0, 0, 0), Stray.class);
 

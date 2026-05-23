@@ -23,7 +23,7 @@ public class DreamPhantom extends DreamMob<Phantom> {
 
     @Override
     public EntitySnapshot getMobSnapshot(Object... args) {
-        World world = DreamDimensionManager.DIMENSION_WORLD;
+        World world = DreamDimensionManager.DREAM_WORLD;
         if (world == null) return null;
         Phantom phantom = world.createEntity(new Location(world, 0, 0, 0), Phantom.class);
 

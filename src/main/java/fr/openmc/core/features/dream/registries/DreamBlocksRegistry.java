@@ -51,13 +51,13 @@ public class DreamBlocksRegistry {
 
         config = YamlConfiguration.loadConfiguration(file);
 
-        if (DreamDimensionManager.DIMENSION_WORLD == null) {
+        if (DreamDimensionManager.DREAM_WORLD == null) {
             OMCLogger.error("[DreamBlocks] Le monde " + DreamDimensionManager.DIMENSION_NAME + " est introuvable !");
             return;
         }
 
         dreamBlocks.clear();
-        if (DreamDimensionManager.DIMENSION_WORLD.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && DreamDimensionManager.hasSeedChanged()) {
+        if (DreamDimensionManager.DREAM_WORLD.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && DreamDimensionManager.hasSeedChanged()) {
             config.set("blocks", new ArrayList<>());
             save();
             return;
