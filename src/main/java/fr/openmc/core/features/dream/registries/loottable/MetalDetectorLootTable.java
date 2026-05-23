@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.registries.loottable;
 
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;

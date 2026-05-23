@@ -5,6 +5,7 @@ import fr.openmc.core.features.displays.holograms.commands.autocomplete.Hologram
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ public class HologramCommand {
                 HologramLoader.setHologramLocation(hologramName, player.getLocation());
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§aPosition de l'hologramme " + hologramName + " mise à jour."),
+                        TranslationManager.translation("feature.displays.holograms.command.setpos.success", Component.text(hologramName)),
                         Prefix.STAFF,
                         MessageType.SUCCESS,
                         true
@@ -39,7 +40,11 @@ public class HologramCommand {
             } catch (IOException e) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§cErreur lors de la mise à jour de la position de l'hologramme " + hologramName + ": " + e.getMessage()),
+                        TranslationManager.translation(
+                                "feature.displays.holograms.command.setpos.error",
+                                Component.text(hologramName),
+                                Component.text(e.getMessage())
+                        ),
                         Prefix.STAFF,
                         MessageType.ERROR,
                         true
@@ -50,7 +55,7 @@ public class HologramCommand {
             String list = String.join(", ", HologramLoader.displays.keySet());
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVeuillez spécifier un hologramme valide : " + list),
+                    TranslationManager.translation("feature.displays.holograms.command.setpos.invalid", Component.text(list)),
                     Prefix.STAFF,
                     MessageType.WARNING,
                     true
@@ -65,7 +70,7 @@ public class HologramCommand {
         HologramLoader.unloadAll();
         MessagesManager.sendMessage(
                 sender,
-                Component.text("§cHologrammes désactivés avec succès."),
+                TranslationManager.translation("feature.displays.holograms.command.disable"),
                 Prefix.STAFF,
                 MessageType.SUCCESS,
                 true
@@ -80,7 +85,7 @@ public class HologramCommand {
         HologramLoader.loadAllFromFolder(hologramFolder);
         MessagesManager.sendMessage(
                 sender,
-                Component.text("§aHologrammes activés avec succès."),
+                TranslationManager.translation("feature.displays.holograms.command.enable"),
                 Prefix.STAFF,
                 MessageType.SUCCESS,
                 true

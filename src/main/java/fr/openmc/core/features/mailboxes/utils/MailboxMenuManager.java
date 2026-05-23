@@ -38,7 +38,7 @@ public class MailboxMenuManager {
     }
 
     public static ItemStack nextPageBtn() {
-        Component name = Component.text("Next page ➡", NamedTextColor.GOLD, TextDecoration.BOLD);
+        Component name = Component.text("Page suivante ➡", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false);
         ItemStack item = CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest();
         ItemMeta meta = item.getItemMeta();
         meta.displayName(name);
@@ -48,7 +48,7 @@ public class MailboxMenuManager {
     }
 
     public static ItemStack previousPageBtn() {
-        Component name = Component.text("⬅ Previous page", NamedTextColor.GOLD, TextDecoration.BOLD);
+        Component name = Component.text("⬅ Page précédente", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false);
         ItemStack item = CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest();
         ItemMeta meta = item.getItemMeta();
         meta.displayName(name);

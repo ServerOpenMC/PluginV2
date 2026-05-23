@@ -8,7 +8,9 @@ import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -34,7 +36,7 @@ public class RelocateHomeCommand {
         Location location = player.getLocation();
 
         if(DisabledWorldHome.isDisabledWorld(location.getWorld())) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.disabled_world"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
@@ -46,7 +48,7 @@ public class RelocateHomeCommand {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
             if(!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
 
@@ -57,30 +59,48 @@ public class RelocateHomeCommand {
                 }
 
                 HomesManager.relocateHome(h, location);
-                MessagesManager.sendMessage(player, Component.text("§aLe home §e" + h.getName() + " §aa été déplacé."), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(
+                        player,
+                        TranslationManager.translation(
+                                "feature.homes.command.relocate.other.success",
+                                Component.text(h.getName()).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.HOME,
+                        MessageType.SUCCESS,
+                        true
+                );
                 return;
             }
 
-            MessagesManager.sendMessage(player, Component.text("§cCe joueur n'a pas de home avec ce nom."), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_no_home_with_name"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
         List<Home> homes = HomesManager.getHomes(player.getUniqueId());
 
         if(WorldGuardHook.isRegionConflict(location)) {
-            MessagesManager.sendMessage(player, Component.text("§cTu ne peux pas définir un home ici, tu es dans une région protégée."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.relocate.protected_region"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
         for(Home h : homes) {
             if(h.getName().equalsIgnoreCase(home)) {
                 HomesManager.relocateHome(h, location);
-                MessagesManager.sendMessage(player, Component.text("§aTon home §e" + h.getName() + " §aa été déplacé."), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(
+                        player,
+                        TranslationManager.translation(
+                                "feature.homes.command.relocate.self.success",
+                                Component.text(h.getName()).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.HOME,
+                        MessageType.SUCCESS,
+                        true
+                );
                 return;
             }
         }
 
-        MessagesManager.sendMessage(player, Component.text("§cTu n'as pas de home avec ce nom."), Prefix.OPENMC, MessageType.ERROR, true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.self_no_home_with_name"), Prefix.OPENMC, MessageType.ERROR, true);
     }
 
 }

@@ -8,6 +8,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -70,7 +71,7 @@ public class CalendarMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(33, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
+        map.put(33, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
         return map;
     }
 
@@ -79,7 +80,7 @@ public class CalendarMenu extends PaginatedMenu {
 
         if (event instanceof WeeklyEvent we) {
             eventLore.add(Component.empty());
-            eventLore.add(Component.text("Phases :", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+            eventLore.add(TranslationManager.translation("feature.events.calendar.phases"));
             for (WeeklyEventPhase phase : we.getPhases()) {
                 LocalDateTime now = LocalDateTime.now();
 
@@ -95,15 +96,14 @@ public class CalendarMenu extends PaginatedMenu {
                 String formattedDate = dateEvent.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.FRANCE)
                         + " " + dateEvent.getDayOfMonth() + " "
                         + dateEvent.getMonth().getDisplayName(TextStyle.FULL, Locale.FRANCE);
-                // ex. Vendredi 13 Mars
+                String formattedTime = phase.getStartHour() + "h" + String.format("%02d", phase.getStartMinutes());
 
-                eventLore.add(Component.text("- ")
-                        .append(phase.getName())
-                        .append(Component.text(" le " + formattedDate + " à "
-                                + phase.getStartHour() + "h" + String.format("%02d", phase.getStartMinutes()))) // ex. 0h00
-                        .color(NamedTextColor.GRAY)
-                        .decoration(TextDecoration.ITALIC, false)
-                );
+                eventLore.add(TranslationManager.translation(
+                        "feature.events.calendar.phase.line",
+                        phase.getName().color(NamedTextColor.GRAY),
+                        Component.text(formattedDate).color(NamedTextColor.GRAY),
+                        Component.text(formattedTime).color(NamedTextColor.GRAY)
+                ));
             }
         }
         return eventLore;
@@ -111,7 +111,7 @@ public class CalendarMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Calendrier Evenementiel");
+        return TranslationManager.translation("feature.events.calendar.title");
     }
 
     @Override

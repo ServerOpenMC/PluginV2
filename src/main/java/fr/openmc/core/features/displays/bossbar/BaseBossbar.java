@@ -31,6 +31,14 @@ public abstract class BaseBossbar {
     protected abstract void update(Player player, BossBar bar);
 
     /**
+     * Détermine la complétion de la boss bar.
+     *
+     * @param player Le joueur
+     * @return La complétion de la boss bar
+     */
+    protected abstract Float progress(Player player);
+
+    /**
      * Détermine la couleur de la boss bar.
      *
      * @param player Le joueur

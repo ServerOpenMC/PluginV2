@@ -11,9 +11,10 @@ import net.minecraft.advancements.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -49,7 +50,7 @@ public class PacketListener implements Listener {
     private static ClientboundUpdateAdvancementsPacket createEmptyAdvancementPacket() {
         // Rien de très important ici, on crée justes les instances nécessaires pour le packet avec le minimum requis.
         DisplayInfo displayInfo = new DisplayInfo(
-                ItemStack.fromBukkitCopy(getInvisibleItem()),
+                ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(getInvisibleItem())),
                 Component.literal("Chargement..."),
                 Component.empty(),
                 Optional.empty(),
@@ -66,7 +67,7 @@ public class PacketListener implements Listener {
                 new AdvancementRequirements(new ArrayList<>()),
                 false
         );
-        AdvancementHolder advancementHolder = new AdvancementHolder(ResourceLocation.fromNamespaceAndPath("openmc", "advancement"), advancement);
+        AdvancementHolder advancementHolder = new AdvancementHolder(Identifier.fromNamespaceAndPath("openmc", "advancement"), advancement);
         return new ClientboundUpdateAdvancementsPacket(
                 true,
                 Collections.singletonList(advancementHolder),

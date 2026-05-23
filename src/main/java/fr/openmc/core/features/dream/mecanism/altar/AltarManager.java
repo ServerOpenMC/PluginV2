@@ -3,6 +3,8 @@ package fr.openmc.core.features.dream.mecanism.altar;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.events.AltarBindEvent;
 import fr.openmc.core.features.dream.events.AltarCraftingEvent;
+import fr.openmc.core.features.dream.mecanism.altar.tasks.AltarCheckTask;
+import fr.openmc.core.features.dream.mecanism.altar.tasks.AltarParticlesTask;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;

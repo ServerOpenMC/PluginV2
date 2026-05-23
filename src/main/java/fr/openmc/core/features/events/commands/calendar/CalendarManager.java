@@ -7,9 +7,8 @@ import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,7 +48,7 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
                         return List.of(new WeeklyEventPhase() {
                             @Override
                             public Component getName() {
-                                return Component.text("Inconnu");
+                                return TranslationManager.translation("feature.events.calendar.unknown_phase");
                             }
 
                             @Override
@@ -81,7 +80,7 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
 
                     @Override
                     public Component getName() {
-                        return Component.text("Evenement du Weekend", NamedTextColor.YELLOW, TextDecoration.BOLD);
+                        return TranslationManager.translation("feature.events.calendar.weekend_event_name");
                     }
 
                     @Override

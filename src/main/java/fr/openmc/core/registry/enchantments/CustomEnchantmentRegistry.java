@@ -1,28 +1,21 @@
 package fr.openmc.core.registry.enchantments;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;
 import fr.openmc.core.features.dream.registries.enchantements.Soulbound;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryComposeEvent;
 import io.papermc.paper.registry.keys.EnchantmentKeys;
 import net.kyori.adventure.key.Key;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
 
 public class CustomEnchantmentRegistry {
     private final static HashMap<Key, CustomEnchantment> customEnchantments = new HashMap<>();

@@ -8,8 +8,8 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ public class HalloweenPumpkinDepositMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Déposer vos citrouilles");
+        return TranslationManager.translation("feature.events.halloween.menu.deposit.title");
     }
 
     @Override
@@ -47,11 +47,8 @@ public class HalloweenPumpkinDepositMenu extends Menu {
         return Map.of(
                 13,
                 new ItemBuilder(this, Material.PUMPKIN, meta -> {
-                    meta.itemName(Component.text("Déposer vos citrouilles", TextColor.color(255, 107, 37)));
-                    meta.lore(List.of(
-                            Component.text("Cliquez ici pour déposer vos citrouilles et", NamedTextColor.GRAY),
-                            Component.text("obtenir des récompenses !", NamedTextColor.GRAY)
-                    ));
+                    meta.itemName(TranslationManager.translation("feature.events.halloween.menu.deposit.button.name"));
+                    meta.lore(TranslationManager.translationLore("feature.events.halloween.menu.deposit.button.lore"));
                     meta.setEnchantmentGlintOverride(true);
                 }).setOnClick(event -> {
                     Player player = (Player) event.getWhoClicked();
@@ -59,7 +56,7 @@ public class HalloweenPumpkinDepositMenu extends Menu {
                     if (pumpkinCount == 0) {
                         MessagesManager.sendMessage(
                                 player,
-                                Component.text("Vous n'avez aucune citrouille à déposer !", NamedTextColor.RED),
+                                TranslationManager.translation("feature.events.halloween.menu.deposit.no_pumpkin"),
                                 Prefix.HALLOWEEN,
                                 MessageType.ERROR,
                                 false
@@ -73,9 +70,10 @@ public class HalloweenPumpkinDepositMenu extends Menu {
                     HalloweenManager.depositPumpkins(player.getUniqueId(), pumpkinCount);
                     MessagesManager.sendMessage(
                             player,
-                            Component.text("Vous avez déposé ", NamedTextColor.GOLD)
-                                    .append(Component.text(pumpkinCount, TextColor.color(255, 107, 37), TextDecoration.BOLD))
-                                    .append(Component.text(" citrouilles !", NamedTextColor.GOLD)),
+                            TranslationManager.translation(
+                                    "feature.events.halloween.menu.deposit.success",
+                                    Component.text(pumpkinCount).color(TextColor.color(255, 107, 37)).decorate(TextDecoration.BOLD)
+                            ),
                             Prefix.HALLOWEEN,
                             MessageType.SUCCESS,
                             false
