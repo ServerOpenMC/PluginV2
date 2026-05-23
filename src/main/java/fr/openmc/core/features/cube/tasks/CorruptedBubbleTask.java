@@ -2,7 +2,7 @@ package fr.openmc.core.features.cube.tasks;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.Cube;
-import fr.openmc.core.features.cube.events.CubeDesactivateBubbleEvent;
+import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,7 +30,7 @@ public class CorruptedBubbleTask extends BukkitRunnable {
             cancel();
             cube.corruptedBubbleTask = null;
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                    Bukkit.getPluginManager().callEvent(new CubeDesactivateBubbleEvent(cube)));
+                    Bukkit.getPluginManager().callEvent(new CubeDisableBubbleEvent(cube)));
             return;
         }
 

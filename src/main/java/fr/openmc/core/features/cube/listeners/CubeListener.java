@@ -1,8 +1,8 @@
 package fr.openmc.core.features.cube.listeners;
 
 import fr.openmc.core.features.cube.Cube;
-import fr.openmc.core.features.cube.events.CubeActivateBubbleEvent;
-import fr.openmc.core.features.cube.events.CubeDesactivateBubbleEvent;
+import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
+import fr.openmc.core.features.cube.events.CubeEnableBubbleEvent;
 import fr.openmc.core.features.cube.events.EnterCubeZoneEvent;
 import fr.openmc.core.features.cube.events.ExitCubeZoneEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
@@ -81,7 +81,7 @@ public class CubeListener implements Listener {
     }
 
     @EventHandler
-    public void onCubeBubbleStart(CubeActivateBubbleEvent event) {
+    public void onCubeBubbleStart(CubeEnableBubbleEvent event) {
         Cube cube = event.getCube();
 
         Location center = cube.getCenter();
@@ -97,7 +97,7 @@ public class CubeListener implements Listener {
     }
 
     @EventHandler
-    public void onCubeBubbleStop(CubeDesactivateBubbleEvent event) {
+    public void onCubeBubbleStop(CubeDisableBubbleEvent event) {
         Cube cube = event.getCube();
 
         Location center = cube.getCenter();

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.cube;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.cube.events.CubeDesactivateBubbleEvent;
+import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -82,7 +82,7 @@ public class CubeCommands {
             cube.corruptedBubbleTask = null;
         }
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                Bukkit.getPluginManager().callEvent(new CubeDesactivateBubbleEvent(cube)));
+                Bukkit.getPluginManager().callEvent(new CubeDisableBubbleEvent(cube)));
         MessagesManager.sendMessage(player, Component.text("Bulle corrompue arreté"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 

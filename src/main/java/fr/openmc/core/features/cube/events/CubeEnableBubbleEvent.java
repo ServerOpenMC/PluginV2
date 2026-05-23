@@ -7,11 +7,11 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public class CubeDesactivateBubbleEvent extends Event {
+public class CubeEnableBubbleEvent extends Event {
 	private static final HandlerList HANDLERS = new HandlerList();
 	private final Cube cube;
 
-	public CubeDesactivateBubbleEvent(Cube cube) {
+	public CubeEnableBubbleEvent(Cube cube) {
 		this.cube = cube;
 	}
 	

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.cube;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.cube.events.CubeActivateBubbleEvent;
+import fr.openmc.core.features.cube.events.CubeEnableBubbleEvent;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.tasks.CorruptedBubbleTask;
@@ -216,7 +216,7 @@ public class Cube extends MultiBlock {
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, intervalCorruption);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                Bukkit.getPluginManager().callEvent(new CubeActivateBubbleEvent(this)));
+                Bukkit.getPluginManager().callEvent(new CubeEnableBubbleEvent(this)));
     }
 
     public void startBubbleParticles() {
