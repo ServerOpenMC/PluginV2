@@ -12,6 +12,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -42,46 +43,79 @@ public class FriendCommand {
     ) {
         try {
             if (player.getUniqueId().equals(target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous ajouter vous-même en ami."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.add.self"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (!PlayerSettingsManager.canReceiveFriendRequest(target.getUniqueId(), player.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur a désactivé les demandes d'amis."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.add.disabled"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (FriendManager.isRequestPending(target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous avez déjà envoyé une demande à ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.add.already_sent"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà ami de ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.add.already_friend"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             FriendManager.addRequest(player.getUniqueId(), target.getUniqueId());
-            MessagesManager.sendMessage(player, Component.text("§aDemande d'ami envoyée à §e" + target.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation(
+                            "feature.friend.add.sent",
+                            Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.FRIEND,
+                    MessageType.INFO,
+                    true
+            );
 
-            Component acceptButton = Component.text(" [Accepter]", NamedTextColor.GREEN)
+            Component acceptButton = TranslationManager.translation("feature.friend.button.accept")
+                    .color(NamedTextColor.GREEN)
                     .clickEvent(ClickEvent.runCommand("/friend accept " + player.getName()))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour accepter la demande d'ami", NamedTextColor.GREEN)));
+                    .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.button.accept_hover").color(NamedTextColor.GREEN)));
 
-            Component ignoreButton = Component.text(" [Ignorer]", NamedTextColor.GRAY)
+            Component ignoreButton = TranslationManager.translation("feature.friend.button.ignore")
+                    .color(NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.callback(audience -> {
                         if (!FriendManager.isRequestPending(player.getUniqueId())) {
-                            MessagesManager.sendMessage(target, Component.text("§cLa demande d'ami a expiré."), Prefix.FRIEND, MessageType.INFO, true);
+                            MessagesManager.sendMessage(target, TranslationManager.translation("feature.friend.request.expired"), Prefix.FRIEND, MessageType.INFO, true);
                             return;
                         }
                         FriendManager.removeRequest(FriendManager.getRequest(player.getUniqueId()));
-                        MessagesManager.sendMessage(target, Component.text("§cVous avez ignoré la demande d'ami de §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
+                        MessagesManager.sendMessage(
+                                target,
+                                TranslationManager.translation(
+                                        "feature.friend.request.ignored",
+                                        Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                                ),
+                                Prefix.FRIEND,
+                                MessageType.INFO,
+                                true
+                        );
                     }))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour ignorer la demande d'ami", NamedTextColor.GRAY)));
+                    .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.button.ignore_hover").color(NamedTextColor.GRAY)));
 
-            Component denyButton = Component.text(" [Refuser]", NamedTextColor.RED)
+            Component denyButton = TranslationManager.translation("feature.friend.button.deny")
+                    .color(NamedTextColor.RED)
                     .clickEvent(ClickEvent.runCommand("/friend deny " + player.getName()))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour refuser la demande d'ami", NamedTextColor.RED)));
+                    .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.button.deny_hover").color(NamedTextColor.RED)));
 
-            MessagesManager.sendMessage(target, Component.text("§e" + player.getName() + " §avous a envoyé une demande d'ami.").append(acceptButton).append(ignoreButton).append(denyButton), Prefix.FRIEND, MessageType.INFO, true);
+            MessagesManager.sendMessage(
+                    target,
+                    TranslationManager.translation(
+                            "feature.friend.request.received",
+                            Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                    ).appendNewline()
+                            .append(acceptButton).appendSpace()
+                            .append(ignoreButton).appendSpace()
+                            .append(denyButton),
+                    Prefix.FRIEND,
+                    MessageType.INFO,
+                    true
+            );
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de l'envoi de la demande d'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.add.error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }
@@ -95,23 +129,44 @@ public class FriendCommand {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
             if (!FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas amis avec ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.not_friend"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (!FriendManager.removeFriend(player.getUniqueId(), target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la suppression de l'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            MessagesManager.sendMessage(player, Component.text("§aVous avez supprimé §e" + target.getName() + " §ade votre liste d'amis."), Prefix.FRIEND, MessageType.INFO, true);
+            String targetDisplayName = target.getName() != null
+                    ? target.getName()
+                    : TranslationManager.translationString("feature.friend.unknown_player");
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation(
+                            "feature.friend.remove.success",
+                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.FRIEND,
+                    MessageType.INFO,
+                    true
+            );
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
-                MessagesManager.sendMessage(targetPlayer, Component.text("§cVous avez été supprimé de la liste d'amis de §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
+                MessagesManager.sendMessage(
+                        targetPlayer,
+                        TranslationManager.translation(
+                                "feature.friend.remove.removed_by",
+                                Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.FRIEND,
+                        MessageType.INFO,
+                        true
+                );
             }
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la suppression de l'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }
@@ -128,7 +183,7 @@ public class FriendCommand {
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friends -> {
             if (friends.isEmpty()) {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas d'amis pour le moment."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.list.none"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
 
@@ -136,19 +191,36 @@ public class FriendCommand {
             int totalPages = (int) Math.ceil((double) friendsList.size() / ITEMS_PER_PAGE);
 
             if (currentPage > totalPages) {
-                MessagesManager.sendMessage(player, Component.text("§cLa page " + currentPage + " n'existe pas. Total: " + totalPages + " pages"), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(
+                        player,
+                        TranslationManager.translation(
+                                "feature.friend.list.page_invalid",
+                                Component.text(currentPage).color(NamedTextColor.RED),
+                                Component.text(totalPages).color(NamedTextColor.RED)
+                        ),
+                        Prefix.FRIEND,
+                        MessageType.ERROR,
+                        true
+                );
                 return;
             }
 
             int startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, friendsList.size());
 
-            Component header = Component.text("  ✦ Liste d'amis (" + currentPage + "/" + totalPages + ") ✦  ")
+            Component header = TranslationManager.translation(
+                            "feature.friend.list.header",
+                            Component.text(currentPage),
+                            Component.text(totalPages)
+                    )
                     .color(NamedTextColor.GOLD);
             player.sendMessage(header);
             for (int i = startIndex; i < endIndex; i++) {
                 UUID friendUUID = friendsList.get(i);
                 OfflinePlayer friend = CacheOfflinePlayer.getOfflinePlayer(friendUUID);
+                String friendName = friend.getName() != null
+                        ? friend.getName()
+                        : TranslationManager.translationString("feature.friend.unknown_player");
 
                 try {
                     Timestamp timestamp = FriendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
@@ -158,16 +230,23 @@ public class FriendCommand {
 
                     City city = CityManager.getPlayerCity(friend.getUniqueId());
                     String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
+                    Component cityComponent = Component.text(city != null ? city.getName() : TranslationManager.translationString("feature.friend.list.city.none")).color(NamedTextColor.YELLOW);
+                    Component moneyComponent = Component.text(formattedMoney).color(NamedTextColor.YELLOW);
+                    Component statusComponent = isOnline
+                            ? TranslationManager.translation("feature.friend.status.online").color(NamedTextColor.GREEN)
+                            : TranslationManager.translation("feature.friend.status.offline").color(NamedTextColor.RED);
 
                     TextComponent friendComponent = Component.text("  " + (i+1) + ". ")
                             .color(NamedTextColor.GRAY)
-                            .append(Component.text(friend.getName())
+                            .append(Component.text(friendName)
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
-                                    Component.text("§7Ville : §e" + (city != null ? city.getName() : "Aucune") +
-                                            "\n§7Argent : §e" + formattedMoney +
-                                            "\n§7Statut : " + (isOnline ? "§aEn ligne" : "§cHors ligne")
+                                    TranslationManager.translation(
+                                            "feature.friend.list.hover",
+                                            cityComponent,
+                                            moneyComponent,
+                                            statusComponent
                                     )))
                             ;
 
@@ -175,19 +254,26 @@ public class FriendCommand {
                             ? Component.text(" ⬤ ").color(NamedTextColor.GREEN)
                             : Component.text(" ⬤ ").color(NamedTextColor.RED);
                     
-                    Component dateInfo = Component.text("Depuis le " + formattedDate)
+                    Component dateInfo = TranslationManager.translation(
+                                    "feature.friend.list.date_since",
+                                    Component.text(formattedDate).color(NamedTextColor.GRAY)
+                            )
                             .color(NamedTextColor.GRAY);
 
-                    Component actions = Component.text(" [✖]")
+                    Component actions = TranslationManager.translation("feature.friend.list.action.remove")
                             .color(NamedTextColor.RED)
-                            .clickEvent(ClickEvent.runCommand("/friends remove " + friend.getName()))
-                            .hoverEvent(HoverEvent.showText(Component.text("Supprimer cet ami", NamedTextColor.RED)));
+                            .clickEvent(ClickEvent.runCommand("/friends remove " + friendName))
+                            .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.list.action.remove_hover").color(NamedTextColor.RED)));
 
-                    player.sendMessage(friendComponent.append(statusIcon).append(dateInfo).append(actions));
+                    player.sendMessage(friendComponent.append(statusIcon).append(dateInfo).appendSpace().append(actions));
 
                 } catch (Exception e) {
-                    player.sendMessage(Component.text("Erreur lors de la récupération des informations de " + friend.getName())
-                            .color(NamedTextColor.RED));
+                    player.sendMessage(
+                            TranslationManager.translation(
+                                    "feature.friend.list.fetch_error",
+                                    Component.text(friendName).color(NamedTextColor.RED)
+                            ).color(NamedTextColor.RED)
+                    );
                     throw new RuntimeException(e);
                 }
             }
@@ -197,30 +283,36 @@ public class FriendCommand {
 
                 if (currentPage > 1) {
                     navigation = navigation.append(
-                            Component.text(" « Page précédente ")
+                            TranslationManager.translation("feature.friend.list.navigation.previous")
                                     .color(NamedTextColor.AQUA)
                                     .clickEvent(ClickEvent.runCommand("/friends list " + (currentPage - 1)))
-                                    .hoverEvent(HoverEvent.showText(Component.text("Page " + (currentPage - 1))))
+                                    .hoverEvent(HoverEvent.showText(TranslationManager.translation(
+                                            "feature.friend.list.navigation.page",
+                                            Component.text(currentPage - 1)
+                                    )))
                     );
                 } else {
                     navigation = navigation.append(
-                            Component.text(" « Page précédente ")
+                            TranslationManager.translation("feature.friend.list.navigation.previous")
                                     .color(NamedTextColor.DARK_GRAY)
                     );
                 }
 
-                navigation = navigation.append(Component.text(" | ").color(NamedTextColor.GRAY));
+                navigation = navigation.append(TranslationManager.translation("feature.friend.list.navigation.separator").color(NamedTextColor.GRAY));
 
                 if (currentPage < totalPages) {
                     navigation = navigation.append(
-                            Component.text("Page suivante » ")
+                            TranslationManager.translation("feature.friend.list.navigation.next")
                                     .color(NamedTextColor.AQUA)
                                     .clickEvent(ClickEvent.runCommand("/friends list " + (currentPage + 1)))
-                                    .hoverEvent(HoverEvent.showText(Component.text("Page " + (currentPage + 1))))
+                                    .hoverEvent(HoverEvent.showText(TranslationManager.translation(
+                                            "feature.friend.list.navigation.page",
+                                            Component.text(currentPage + 1)
+                                    )))
                     );
                 } else {
                     navigation = navigation.append(
-                            Component.text("Page suivante » ")
+                            TranslationManager.translation("feature.friend.list.navigation.next")
                                     .color(NamedTextColor.DARK_GRAY)
                     );
                 }
@@ -228,7 +320,7 @@ public class FriendCommand {
                 player.sendMessage(navigation);
             }
         }).exceptionally(ex -> {
-            MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la récupération de vos amis."), Prefix.FRIEND, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.list.error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(ex);
         });
     }
@@ -242,20 +334,41 @@ public class FriendCommand {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
             if (!FriendManager.isRequestPending(target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas reçu de demande d'ami de ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
-            MessagesManager.sendMessage(player, Component.text("§aVous êtes désormais ami avec §e" + target.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
+            String targetDisplayName = target.getName() != null
+                    ? target.getName()
+                    : TranslationManager.translationString("feature.friend.unknown_player");
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation(
+                            "feature.friend.request.accepted",
+                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.FRIEND,
+                    MessageType.INFO,
+                    true
+            );
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
-                MessagesManager.sendMessage(targetPlayer, Component.text("§aVous êtes désormais ami avec §e" + player.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
+                MessagesManager.sendMessage(
+                        targetPlayer,
+                        TranslationManager.translation(
+                                "feature.friend.request.accepted",
+                                Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.FRIEND,
+                        MessageType.INFO,
+                        true
+                );
             }
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de l'acceptation de la demande d'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.accept_error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }
@@ -269,20 +382,41 @@ public class FriendCommand {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
             if (!FriendManager.isRequestPending(target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas reçu de demande d'ami de ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId()));
-            MessagesManager.sendMessage(player, Component.text("§cVous avez refusé la demande d'ami de §e" + target.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
+            String targetDisplayName = target.getName() != null
+                    ? target.getName()
+                    : TranslationManager.translationString("feature.friend.unknown_player");
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation(
+                            "feature.friend.request.denied",
+                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.FRIEND,
+                    MessageType.INFO,
+                    true
+            );
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
-                MessagesManager.sendMessage(targetPlayer, Component.text("§cVotre demande d'ami a été refusée par §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
+                MessagesManager.sendMessage(
+                        targetPlayer,
+                        TranslationManager.translation(
+                                "feature.friend.request.denied_by",
+                                Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.FRIEND,
+                        MessageType.INFO,
+                        true
+                );
             }
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors du refus de la demande d'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.deny_error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }

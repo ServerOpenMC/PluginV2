@@ -24,8 +24,10 @@ import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -111,7 +113,7 @@ public class BankManager extends Feature implements DatabaseFeature {
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(offlinePlayer, Component.text("Veuillez mettre une entrée correcte"),
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.BANK, MessageType.ERROR, true);
             return;
         }
@@ -121,7 +123,7 @@ public class BankManager extends Feature implements DatabaseFeature {
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(offlinePlayer,
-                    Component.text("Pour avoir une banque personnelle, vous devez appartenir à une ville de niveau 2 minimum !"),
+                    TranslationManager.translation("feature.economy.bank.deposit.need_city_level_2"),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
         }
@@ -131,9 +133,8 @@ public class BankManager extends Feature implements DatabaseFeature {
 
         if (currentBalance >= limit) {
             MessagesManager.sendMessage(offlinePlayer,
-                    Component.text("Vous avez atteint la limite de votre plafond qui est de " +
-                            EconomyManager.getFormattedNumber(limit) +
-                            ". Améliorez votre ville au niveau supérieur !"),
+                    TranslationManager.translation("feature.economy.bank.deposit.limit_reached",
+                            Component.text(EconomyManager.getFormattedNumber(limit)).color(NamedTextColor.LIGHT_PURPLE)),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
         }
@@ -141,7 +142,7 @@ public class BankManager extends Feature implements DatabaseFeature {
         double allowedAmount = Math.min(amount, limit - currentBalance);
 
         if (!EconomyManager.withdrawBalance(playerUUID, allowedAmount)) {
-            MessagesManager.sendMessage(offlinePlayer, Component.text("Vous n'avez pas assez d'argent"),
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.deposit.not_enough_money"),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
         }
@@ -150,13 +151,17 @@ public class BankManager extends Feature implements DatabaseFeature {
 
         if (allowedAmount < amount) {
             MessagesManager.sendMessage(offlinePlayer,
-                    Component.text("Seulement " + EconomyManager.getFormattedNumber(allowedAmount) +
-                            " ont été déposés (plafond atteint)."),
+                    TranslationManager.translation(
+                            "feature.economy.bank.deposit.partial",
+                            Component.text(EconomyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE)
+                    ),
                     Prefix.BANK, MessageType.ERROR, false);
         } else {
             MessagesManager.sendMessage(offlinePlayer,
-                    Component.text("Vous avez déposé " +
-                            EconomyManager.getFormattedNumber(allowedAmount) + "."),
+                    TranslationManager.translation(
+                            "feature.economy.bank.deposit.success",
+                            Component.text(EconomyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE)
+                    ),
                     Prefix.BANK, MessageType.SUCCESS, false);
         }
     }
@@ -165,7 +170,7 @@ public class BankManager extends Feature implements DatabaseFeature {
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(offlinePlayer, Component.text("Veuillez mettre une entrée correcte"),
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.BANK, MessageType.ERROR, true);
             return;
         }
@@ -173,17 +178,18 @@ public class BankManager extends Feature implements DatabaseFeature {
         double amount = InputUtils.convertToMoneyValue(input);
 
         if (!withdraw(playerUUID, amount)) {
-            MessagesManager.sendMessage(offlinePlayer,
-                    Component.text("Tu n'as pas assez d'argent en banque"),
-                    Prefix.BANK, MessageType.ERROR, false);
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.withdraw.not_enough"), Prefix.BANK, MessageType.ERROR, false);
             return;
         }
 
         EconomyManager.addBalance(playerUUID, amount, "Retrait banque personnelle");
 
         MessagesManager.sendMessage(offlinePlayer,
-                Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r"
-                        + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"),
+                TranslationManager.translation(
+                        "feature.economy.bank.withdraw.transferred",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getEconomyIcon())
+                ),
                 Prefix.BANK, MessageType.SUCCESS, false);
     }
 
@@ -231,9 +237,12 @@ public class BankManager extends Feature implements DatabaseFeature {
         Player sender = Bukkit.getPlayer(playerUUID);
         if (sender != null)
             MessagesManager.sendMessage(sender,
-                    Component.text("Vous venez de percevoir §d" + interest * 100 + "% §rd'intérêt, soit §d"
-                            + EconomyManager.getFormattedSimplifiedNumber(allowedAmount) + "§r"
-                            + EconomyManager.getEconomyIcon()),
+                    TranslationManager.translation(
+                            "feature.economy.bank.interest.received",
+                            Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(EconomyManager.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(EconomyManager.getEconomyIcon())
+                    ),
                     Prefix.CITY, MessageType.SUCCESS, false);
     }
 

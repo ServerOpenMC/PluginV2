@@ -16,6 +16,9 @@ import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -97,8 +100,20 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
             logo = "OPEN MC";
         }
 
-        String header = !isInDream ? "\n\n\n\n\n\n\n" + logo + "\n\n  §eJoueurs en ligne §7: §6" + visibleOnlinePlayers + "§7/§e" + Bukkit.getMaxPlayers() + "  \n" : "\n\n\n\n\n\n\n" + logo + "\n\n";
-        String footer = isInDream ? "\n§1play.openmc.fr\n" : "\n§dplay.openmc.fr\n";
+        String header = !isInDream
+                ? TranslationManager.translationString(
+                        "feature.displays.tablist.header.default",
+                        Component.text(logo),
+                        Component.text(visibleOnlinePlayers).color(NamedTextColor.GOLD),
+                        Component.text(Bukkit.getMaxPlayers()).color(NamedTextColor.YELLOW)
+                )
+                : TranslationManager.translationString(
+                        "feature.displays.tablist.header.dream",
+                        Component.text(logo)
+                );
+        String footer = isInDream
+                ? TranslationManager.translationString("feature.displays.tablist.footer.dream")
+                : TranslationManager.translationString("feature.displays.tablist.footer.default");
 
         updateHeaderFooter(player, header, footer);
     }

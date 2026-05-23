@@ -6,6 +6,7 @@ import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.tasks.CorruptedBubbleTask;
 import fr.openmc.core.features.cube.tasks.ReproductionTask;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -38,7 +39,7 @@ public class Cube extends MultiBlock {
 
         // ## BOSS BAR ##
         if (showBossBar) {
-            cubeBossBar = Bukkit.createBossBar("Le Cube", BarColor.BLUE, BarStyle.SEGMENTED_6, BarFlag.CREATE_FOG, BarFlag.DARKEN_SKY);
+            cubeBossBar = Bukkit.createBossBar(TranslationManager.translationString("feature.cube.bossbar.title"), BarColor.BLUE, BarStyle.SEGMENTED_6, BarFlag.CREATE_FOG, BarFlag.DARKEN_SKY);
             cubeBossBar.setVisible(true);
 
             startBossBarUpdater();

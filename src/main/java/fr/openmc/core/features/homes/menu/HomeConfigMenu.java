@@ -15,11 +15,9 @@ import fr.openmc.core.utils.text.fonts.CustomFonts;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -44,7 +42,7 @@ public class HomeConfigMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Homes - Configuration");
+        return TranslationManager.translation("feature.homes.config.title");
     }
 
     @Override
@@ -65,47 +63,34 @@ public class HomeConfigMenu extends Menu {
         content.put(4, new ItemBuilder(this, home.getIconItem()).hide(ItemUtils.getDataComponentType()));
 
         content.put(20, new ItemBuilder(this, home.getIcon().getItemStack(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aChanger l'icône"));
-            itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
+            itemMeta.displayName(TranslationManager.translation("feature.homes.config.change_icon.name"));
+            itemMeta.lore(TranslationManager.translationLore("feature.homes.config.change_icon.lore"));
         }).hide(ItemUtils.getDataComponentType()).setOnClick(inventoryClickEvent -> new HomeChangeIconMenu(player, home).open()));
 
         content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
-            itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
-
-            TextComponent lore = Component.text()
-                    .append(Component.text("■ ", NamedTextColor.GRAY))
-                    .append(Component.text("Clique ", NamedTextColor.GREEN))
-                    .append(Component.text("gauche ", NamedTextColor.DARK_GREEN))
-                    .append(Component.text("pour changer le nom de votre home", NamedTextColor.GREEN))
-                    .style(Style.style(TextDecoration.ITALIC.withState(false)))
-                    .build();
-            itemMeta.lore(Collections.singletonList(lore));
-        }).setOnClick(e -> DialogInput.send(getOwner(), Component.text("Entrez votre nouveau nom de home"), MAX_LENGTH_HOME_NAME, input -> {
+            itemMeta.displayName(TranslationManager.translation("feature.homes.config.rename.name"));
+            itemMeta.lore(TranslationManager.translationLore("feature.homes.config.rename.lore"));
+        }).setOnClick(e -> DialogInput.send(getOwner(), TranslationManager.translation("feature.homes.config.rename.prompt"), MAX_LENGTH_HOME_NAME, input -> {
             if (input == null) return;
 
             if (!HomeUtil.isValidHomeName(input)) return;
 
             if (HomesManager.getHomesNames(getOwner().getUniqueId()).contains(input)) {
-                TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
-                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.rename.already_has"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
-            TextComponent message = Component.text()
-                    .append(Component.text("Ton home ", NamedTextColor.GREEN))
-                    .append(Component.text(home.getName(), NamedTextColor.YELLOW))
-                    .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
-                    .append(Component.text(input, NamedTextColor.YELLOW))
-                    .append(Component.text(".", NamedTextColor.GREEN))
-                    .build();
-
-            MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.homes.config.rename.success",
+                    Component.text(home.getName()).color(NamedTextColor.YELLOW),
+                    Component.text(input).color(NamedTextColor.YELLOW)
+            ), Prefix.HOME, MessageType.SUCCESS, true);
             HomesManager.renameHome(home, input);
         })));
 
-        content.put(24, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home"));
-            itemMeta.lore(List.of(Component.text("§7■ §cClique §4gauche §cpour supprimer votre home")));
+        content.put(24, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("feature.homes.config.delete.name"));
+            itemMeta.lore(TranslationManager.translationLore("feature.homes.config.delete.lore"));
         }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
         content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
