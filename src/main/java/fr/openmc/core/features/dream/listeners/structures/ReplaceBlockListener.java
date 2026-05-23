@@ -33,8 +33,8 @@ public class ReplaceBlockListener implements Listener {
                 for (int z = 0; z < 16; z++) {
                     for (int y = -64; y <= 40; y++) {
                         // Glacite Trade NPC
-                        if (chunkSnapshot.getBlockType(x, y, z) == Material.SEA_LANTERN) {
-                            toReplaces.add(new ToReplace(x, y, z, Material.SEA_LANTERN));
+                        if (chunkSnapshot.getBlockType(x, y, z) == Material.REDSTONE_ORE) {
+                            toReplaces.add(new ToReplace(x, y, z, Material.REDSTONE_ORE));
                         }
                     }
 
@@ -74,7 +74,7 @@ public class ReplaceBlockListener implements Listener {
                             block.setType(Material.ENCHANTING_TABLE);
                             DreamBlocksRegistry.addDreamBlock("altar", block.getLocation());
                         }
-                        case SEA_LANTERN -> {
+                        case REDSTONE_ORE -> {
                             block.setType(Material.AIR);
                             GlaciteNpcManager.createNPC(blockLocation);
                         }
