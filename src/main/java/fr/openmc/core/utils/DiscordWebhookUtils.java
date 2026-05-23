@@ -1,6 +1,6 @@
 package fr.openmc.core.utils;
 
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;

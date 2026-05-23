@@ -62,6 +62,28 @@ public class MilestoneBossBar extends BaseBossbar {
     }
 
     @Override
+    protected Float progress(Player player) {
+        int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
+
+        MilestoneStep[] steps = milestone.getStepEnum();
+
+        if (currentStep >= steps.length) return null;
+
+        int maxStep = steps.length;
+        MilestoneStep step = steps[currentStep];
+        MilestoneQuest quest = step.getQuest();
+
+        int progress = quest.getProgress(player.getUniqueId());
+        int goal = quest.getCurrentTarget(player.getUniqueId());
+
+        if (goal <= 1) {
+            return (float) currentStep / maxStep;
+        } else {
+            return (float) progress / goal;
+        }
+    }
+
+    @Override
     protected BossBar.Color color(Player player) {
         return milestone.getBossBarOptions().color();
     }
