@@ -8,8 +8,12 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.structure.GeneratedStructure;
 import org.bukkit.generator.structure.Structure;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 @Getter
 public enum DreamStructure {
@@ -47,10 +51,17 @@ public enum DreamStructure {
     }
 
     public static DreamStructure getDreamStructureAt(Location location) {
-        for (DreamStructure dreamStructure : DreamStructure.values()) {
-            if (location.getChunk().getStructures(dreamStructure.getStructure()).isEmpty()) continue;
+        for (DreamStructure structure : DreamStructure.values()) {
+            Collection<GeneratedStructure> structures = location.getChunk().getStructures(structure.getStructure());
 
-            return dreamStructure;
+            if (structures.isEmpty()) continue;
+
+            for (GeneratedStructure s : structures) {
+                BoundingBox boundingBox = s.getBoundingBox();
+                if (boundingBox != null && boundingBox.contains(location.toVector())) {
+                    return structure;
+                }
+            }
         }
 
         return null;

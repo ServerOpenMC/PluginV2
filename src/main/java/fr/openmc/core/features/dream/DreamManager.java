@@ -21,7 +21,9 @@ import fr.openmc.core.features.dream.commands.DreamCommands;
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
-import fr.openmc.core.features.dream.listeners.structures.*;
+import fr.openmc.core.features.dream.listeners.structures.CloudStructureDispenserListener;
+import fr.openmc.core.features.dream.listeners.structures.PlayerDreamStructureListener;
+import fr.openmc.core.features.dream.listeners.structures.ReplaceBlockListener;
 import fr.openmc.core.features.dream.mecanism.blocksdrops.DreamBlocksDropsManager;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
@@ -116,11 +118,9 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new SingularityCraftListener(),
-                new PlayerEnterStructureListener(),
-                new PlayerExitStructureListener(),
+                new PlayerDreamStructureListener(),
                 new PlayerFoodChangeListener(),
-                new DreamLootListener(),
-                new BaseCampListener()
+                new DreamLootListener()
         );
     }
 
