@@ -2,7 +2,7 @@ package fr.openmc.core.features.events.contents.halloween.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -43,10 +43,10 @@ public class HalloweenPumpkinDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         return Map.of(
                 13,
-                new ItemBuilder(this, Material.PUMPKIN, meta -> {
+                new ItemMenuBuilder(this, Material.PUMPKIN, meta -> {
                     meta.itemName(TranslationManager.translation("feature.events.halloween.menu.deposit.button.name"));
                     meta.lore(TranslationManager.translationLore("feature.events.halloween.menu.deposit.button.lore"));
                     meta.setEnchantmentGlintOverride(true);

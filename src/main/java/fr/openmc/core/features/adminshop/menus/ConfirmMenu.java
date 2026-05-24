@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
@@ -61,8 +61,8 @@ public class ConfirmMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         double pricePerUnit = isBuying ? shopItem.getActualBuyPrice() : shopItem.getActualSellPrice();
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
@@ -73,7 +73,7 @@ public class ConfirmMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(totalPrice)), Component.text(EconomyManager.getEconomyIcon())
         );
 
-        content.put(9, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), meta -> {
+        content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("messages.global.cancel"));
         }, true));
 
@@ -95,7 +95,7 @@ public class ConfirmMenu extends Menu {
             this.open();
         }));
 
-        content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
+        content.put(13, new ItemMenuBuilder(this, shopItem.getMaterial(), meta -> {
             meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).setOnClick(event -> {
@@ -125,7 +125,7 @@ public class ConfirmMenu extends Menu {
 
         content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
 
-        content.put(17, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), meta -> {
+        content.put(17, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("messages.global.accept"));
         }).setOnClick(event -> {
             getOwner().closeInventory();
@@ -144,9 +144,9 @@ public class ConfirmMenu extends Menu {
      * @param action    The action to perform when the button is clicked.
      * @return The created item stack.
      */
-    private ItemBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
+    private ItemMenuBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         boolean plus = text.contains("+");
-        return new ItemBuilder(this, itemStack, meta ->
+        return new ItemMenuBuilder(this, itemStack, meta ->
             meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
                     plus ?
                             TranslationManager.translation("feature.adminshop.menu.confirm.add") :

@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class CloudVaultLootTable extends CustomLootTable {
     @Override
-    public String getName() { return "omc_dream:cloud_vault"; }
+    public String getNamespace() { return "omc_dream:cloud_vault"; }
 
     @Override
     public Set<CustomLoot> getLoots() {

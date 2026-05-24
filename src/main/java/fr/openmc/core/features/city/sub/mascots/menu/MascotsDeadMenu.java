@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mascots.menu;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -62,12 +62,12 @@ public class MascotsDeadMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
-        Supplier<ItemBuilder> reduceItemSupplier = () -> {
-            return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
+        Supplier<ItemMenuBuilder> reduceItemSupplier = () -> {
+            return new ItemMenuBuilder(this, Material.DIAMOND, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.dead.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.mascots.menu.dead.lore",
@@ -97,7 +97,7 @@ public class MascotsDeadMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 13, reduceItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
         }, true));

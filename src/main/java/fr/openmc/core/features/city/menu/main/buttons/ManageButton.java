@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ManageButton {
-    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int slot) {
+    public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int slot) {
         Player player = menu.getOwner();
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
-        contents.put(slot, new ItemBuilder(menu, Material.PAPER, itemMeta -> {
+        contents.put(slot, new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation(
                     "feature.city.menus.main.manage.title",
                     Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)

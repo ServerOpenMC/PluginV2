@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.me
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -46,8 +46,8 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = TranslationManager.translationLore("feature.events.contest.phase.vote.lore");
 
@@ -61,24 +61,24 @@ public class MoreInfoMenu extends Menu {
         boolean ench0 = phase == ContestPhase.VOTE_CAMP.getPhase();
         boolean ench1 = phase == ContestPhase.TRADE_PHASE.getPhase();
 
-        inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.more_info.vote.name"));
             itemMeta.lore(lore0);
             itemMeta.setEnchantmentGlintOverride(ench0);
         }));
 
-        inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.more_info.trade.name"));
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }));
 
-        inventory.put(15, new ItemBuilder(this, Material.YELLOW_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.YELLOW_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.more_info.end.name"));
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 
         return inventory;
     }

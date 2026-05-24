@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
@@ -82,7 +82,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
             }
 
             String finalTitle = title;
-            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
         }
 
         return items;
@@ -94,15 +94,15 @@ public class WarPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("feature.city.war.menu.players.back_lore"));
         }, true));
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
+        map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
+        map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
         return map;
     }
 

@@ -2,7 +2,7 @@ package fr.openmc.core.features.economy.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.Transaction;
@@ -71,18 +71,18 @@ public class TransactionsMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
 
         for (Transaction transaction : TransactionsManager.getTransactionsByPlayers(target)) {
-            items.add(new ItemBuilder(this, transaction.toItemStack(target)));
+            items.add(new ItemMenuBuilder(this, transaction.toItemStack(target)));
         }
 
         return items;
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
+        map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
+        map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
         return map;
     }
 

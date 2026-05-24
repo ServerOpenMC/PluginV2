@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.bank.menu;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -52,8 +52,8 @@ public class CityBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -76,7 +76,7 @@ public class CityBankDepositMenu extends Menu {
             loreBankDepositAll = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.all.title"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
@@ -97,7 +97,7 @@ public class CityBankDepositMenu extends Menu {
             loreBankDepositHalf = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(13, new ItemBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.half.title"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
@@ -114,7 +114,7 @@ public class CityBankDepositMenu extends Menu {
             loreBankDepositInput = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.input.title"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
@@ -128,7 +128,7 @@ public class CityBankDepositMenu extends Menu {
 
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("feature.city.bank.menu.back_lore"));
         }, true));

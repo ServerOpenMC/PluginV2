@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.rank.menus;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
@@ -68,7 +68,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				lore.add(TranslationManager.translation("feature.city.rank.menu.members.item.click_assign")
 						.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 			}
-            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
 				Component displayName = player.getName() != null
 						? Component.text(player.getName())
 						: TranslationManager.translation("feature.city.rank.menu.members.item.name_unknown")
@@ -100,11 +100,11 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 	
 	@Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-		map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+		map.put(48, new ItemMenuBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 				.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
-		map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
+		map.put(50, new ItemMenuBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
 				.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 		return map;
 	}

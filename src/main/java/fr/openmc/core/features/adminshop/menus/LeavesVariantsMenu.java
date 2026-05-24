@@ -3,7 +3,7 @@ package fr.openmc.core.features.adminshop.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
@@ -59,8 +59,8 @@ public class LeavesVariantsMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         int[] organizedSlots = {
                 11, 12, 13, 14, 15,
@@ -71,7 +71,7 @@ public class LeavesVariantsMenu extends Menu {
 
         int maxVariants = Math.min(LEAVES_VARIANTS.size(), organizedSlots.length);
 
-        content.put(4, new ItemBuilder(this, originalItem.getMaterial(), meta ->
+        content.put(4, new ItemMenuBuilder(this, originalItem.getMaterial(), meta ->
                 meta.displayName(TranslationManager.translation("feature.adminshop.menu.leaves_variants.leaves")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false))));
@@ -82,7 +82,7 @@ public class LeavesVariantsMenu extends Menu {
 
             TranslatableComponent variantName = ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
 
-            content.put(slot, new ItemBuilder(this, variant, meta -> {
+            content.put(slot, new ItemMenuBuilder(this, variant, meta -> {
                 meta.displayName(variantName);
                 meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
             }).setItemId(variant.name())
@@ -109,7 +109,7 @@ public class LeavesVariantsMenu extends Menu {
                     }));
         }
 
-        content.put(49, new ItemBuilder(this,
+        content.put(49, new ItemMenuBuilder(this,
                 OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(),
                 true));
         return content;

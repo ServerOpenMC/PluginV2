@@ -3,13 +3,12 @@ package fr.openmc.core.features.homes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,8 +40,8 @@ public class HomeUpgradeMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> items = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
         int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
 
@@ -53,7 +52,7 @@ public class HomeUpgradeMenu extends Menu {
                     ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
                     : lastUpgrade;
 
-            items.put(4, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            items.put(4, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
                 if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
                     itemMeta.lore(TranslationManager.translationLore(

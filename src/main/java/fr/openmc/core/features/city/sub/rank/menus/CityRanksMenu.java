@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
@@ -55,8 +55,8 @@ public class CityRanksMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull Map<Integer, ItemBuilder> getContent() {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
+	public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		Player player = getOwner();
 		
 		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
@@ -70,7 +70,7 @@ public class CityRanksMenu extends Menu {
 				int priority = rank.getPriority();
 				Material icon = rank.getIcon() != null ? rank.getIcon() : Material.PAPER;
 				
-				map.put(i, new ItemBuilder(this, icon,
+				map.put(i, new ItemMenuBuilder(this, icon,
 						itemMeta -> {
 							itemMeta.displayName(TranslationManager.translation(
 									"feature.city.rank.menu.list.rank.title",
@@ -100,7 +100,7 @@ public class CityRanksMenu extends Menu {
 			}
 		}
 		
-		map.put(18, new ItemBuilder(this, Material.ARROW,
+		map.put(18, new ItemMenuBuilder(this, Material.ARROW,
 				itemMeta -> {
 					itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
 					itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
@@ -112,7 +112,7 @@ public class CityRanksMenu extends Menu {
 					? TranslationManager.translationLore("feature.city.rank.menu.list.assign.lore.empty")
 					: TranslationManager.translationLore("feature.city.rank.menu.list.assign.lore.available");
 
-			map.put(22, new ItemBuilder(this, Material.FEATHER,
+			map.put(22, new ItemMenuBuilder(this, Material.FEATHER,
 							itemMeta -> {
 								itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.assign.title"));
 								itemMeta.lore(loreAssignRanks);
@@ -127,7 +127,7 @@ public class CityRanksMenu extends Menu {
 		if (canManageRanks) {
 			List<Component> loreCreateRank = TranslationManager.translationLore("feature.city.rank.menu.list.create.lore");
 
-			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(),
+			map.put(26, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(),
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.create.title"));
 						itemMeta.lore(loreCreateRank);

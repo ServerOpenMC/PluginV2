@@ -34,10 +34,10 @@ public class CustomMobDeathListener implements Listener {
 
         if (customMob.getLoots() == null) return;
         for (CustomLoot loot : customMob.getLoots()) {
-            if (Math.random() >= loot.getChance()) return;
+            if (Math.random() >= loot.chance()) return;
 
-            int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
-            ItemStack drop = loot.getItem().asQuantity(amount);
+            int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
+            ItemStack drop = loot.getFirstLoot().asQuantity(amount);
             entity.getWorld().dropItemNaturally(entity.getLocation(), drop);
         }
     }

@@ -2,13 +2,12 @@ package fr.openmc.core.features.events.commands.calendar;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -46,7 +45,7 @@ public class CalendarMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         for (Event event : CalendarManager.getUpcomingEvents(14)) {
-            items.add(new ItemBuilder(this, event.getIcon(), meta -> {
+            items.add(new ItemMenuBuilder(this, event.getIcon(), meta -> {
                 meta.customName(event.getName().decoration(TextDecoration.ITALIC, false));
                 meta.lore(getEventLore(event));
             }));
@@ -70,9 +69,9 @@ public class CalendarMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(33, new ItemBuilder(this,
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(33, new ItemMenuBuilder(this,
                 OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
         return map;

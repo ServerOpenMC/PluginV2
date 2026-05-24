@@ -4,7 +4,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -60,8 +60,8 @@ public class CityModifyMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -84,7 +84,7 @@ public class CityModifyMenu extends Menu {
             );
         }
 
-        inventory.put(11, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.rename.title"));
             itemMeta.lore(loreRename);
         }).setOnClick(inventoryClickEvent -> {
@@ -117,7 +117,7 @@ public class CityModifyMenu extends Menu {
             );
         }
 
-        inventory.put(13, new ItemBuilder(this, Material.TOTEM_OF_UNDYING, itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this, Material.TOTEM_OF_UNDYING, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.transfer.title"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
@@ -135,7 +135,7 @@ public class CityModifyMenu extends Menu {
 
         }));
 
-        Supplier<ItemBuilder> deleteItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> deleteItemSupplier = () -> {
                 List<Component> loreDelete;
                 if (hasPermissionOwner) {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
@@ -151,7 +151,7 @@ public class CityModifyMenu extends Menu {
                             TranslationManager.translation("messages.global.cannot_do_this")
                     );
                 }
-                return new ItemBuilder(this, Material.TNT, itemMeta -> {
+                return new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
                     itemMeta.lore(loreDelete);
                 }).setOnClick(inventoryClickEvent -> {
@@ -166,7 +166,7 @@ public class CityModifyMenu extends Menu {
                 inventory.put(15, deleteItemSupplier.get());
             }
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));

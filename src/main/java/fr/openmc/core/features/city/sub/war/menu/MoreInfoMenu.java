@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.war.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -45,8 +45,8 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = TranslationManager.translationLore(
                 "feature.city.war.menu.more_info.prep.lore",
@@ -64,7 +64,7 @@ public class MoreInfoMenu extends Menu {
 
         List<Component> lore2 = TranslationManager.translationLore("feature.city.war.menu.more_info.result.lore");
 
-        inventory.put(11, new ItemBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation(
                     "feature.city.war.menu.more_info.prep.title",
                     Component.text(WarManager.TIME_PREPARATION).color(NamedTextColor.GOLD)
@@ -72,7 +72,7 @@ public class MoreInfoMenu extends Menu {
             itemMeta.lore(lore0);
         }));
 
-        inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation(
                     "feature.city.war.menu.more_info.combat.title",
                     Component.text(WarManager.TIME_FIGHT).color(NamedTextColor.RED)
@@ -80,12 +80,12 @@ public class MoreInfoMenu extends Menu {
             itemMeta.lore(lore1);
         }));
 
-        inventory.put(15, new ItemBuilder(this, Material.WHITE_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.WHITE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.war.menu.more_info.result.title"));
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 
         return inventory;
     }

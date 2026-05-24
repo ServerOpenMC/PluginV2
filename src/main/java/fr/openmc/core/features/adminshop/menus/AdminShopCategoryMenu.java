@@ -3,7 +3,7 @@ package fr.openmc.core.features.adminshop.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
@@ -54,8 +54,8 @@ public class AdminShopCategoryMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         Map<String, ShopItem> categoryItems = AdminShopManager.getCategoryItems(categoryId);
 
@@ -65,29 +65,28 @@ public class AdminShopCategoryMenu extends Menu {
 
                 boolean category = material.name().endsWith("_LEAVES") || material.name().endsWith("_LOG") || item.isHasColorVariant();
 
-                content.put(item.getSlot(), new ItemBuilder(this, material, meta -> {
+                content.put(item.getSlot(), new ItemMenuBuilder(this, material, meta -> {
                     meta.displayName(item.getName()
                             .color(NamedTextColor.GRAY)
                             .decoration(TextDecoration.ITALIC, false));
                     meta.lore(category ? List.of(TranslationManager.translation("feature.adminshop.right_click_choice"))
                             : AdminShopUtils.extractLoreForItem(item));
-                }).setItemId(item.getId())
-                        .setOnClick(event -> {
-                            if (material.name().endsWith("_LEAVES"))
-                                AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item);
-                            else if (material.name().endsWith("_LOG"))
-                                AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
-                            else if (item.isHasColorVariant())
-                                AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
-                            else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                                AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
-                            else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                                AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
-                        }));
+                }).setOnClick(event -> {
+                    if (material.name().endsWith("_LEAVES"))
+                        AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item);
+                    else if (material.name().endsWith("_LOG"))
+                        AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
+                    else if (item.isHasColorVariant())
+                        AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
+                    else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
+                        AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
+                    else if (event.isRightClick() && item.getInitialSellPrice() > 0)
+                        AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
+                }).setItemId(item.getId()));
             }
         }
 
-        content.put(40, new ItemBuilder(this,
+        content.put(40, new ItemMenuBuilder(this,
                 OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(),
                 true));
 

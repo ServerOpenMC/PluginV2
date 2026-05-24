@@ -4,7 +4,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.actions.CityCreateAction;
@@ -59,8 +59,8 @@ public class NoCityMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
 
@@ -70,7 +70,7 @@ public class NoCityMenu extends Menu {
                 nameNotif = TranslationManager.translation("feature.city.menus.no_city.invitations.none.title");
 	            loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.none.lore"));
 
-            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
+            inventory.put(15, new ItemMenuBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false)));
@@ -84,7 +84,7 @@ public class NoCityMenu extends Menu {
 
             loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.count.lore"));
 
-            inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
+            inventory.put(15, new ItemMenuBuilder(this, Material.BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> {
@@ -92,7 +92,7 @@ public class NoCityMenu extends Menu {
             }));
         }
 
-        Supplier<ItemBuilder> createItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> createItemSupplier = () -> {
                 List<Component> loreCreate;
                 if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
                     loreCreate = TranslationManager.translationLore(
@@ -108,7 +108,7 @@ public class NoCityMenu extends Menu {
                     );
                 }
 
-                return new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
+                return new ItemMenuBuilder(this, Material.SCAFFOLDING, itemMeta -> {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.no_city.create.title"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {

@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -69,8 +69,8 @@ public class OwnerNpcMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
@@ -91,7 +91,7 @@ public class OwnerNpcMenu extends Menu {
                     TranslationManager.translation(perk1.getNameKey()));
             loreOwner.addAll(perk1 == null ? List.of() : TranslationManager.translationLore(perk1.getLoreKey()));
 
-            inventory.put(4, new ItemBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
+            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.owner.title", Component.text(nameOwner)).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreOwner);
             }));
@@ -100,7 +100,7 @@ public class OwnerNpcMenu extends Menu {
 	        Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
-            inventory.put(31, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            inventory.put(31, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(namePerk1);
                 itemMeta.lore(lorePerk1);
             }).hide(perk1 == null ? null : perk1.getToHide()));
@@ -127,7 +127,7 @@ public class OwnerNpcMenu extends Menu {
                     TranslationManager.translation(perk3.getNameKey()));
             loreOwner.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-            inventory.put(4, new ItemBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
+            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.owner.title", Component.text(nameOwner)).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreOwner);
             }));
@@ -136,7 +136,7 @@ public class OwnerNpcMenu extends Menu {
 	        Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
-            inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            inventory.put(20, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(namePerk1);
                 itemMeta.lore(lorePerk1);
             }).hide(perk1 == null ? null : perk1.getToHide()));
@@ -145,7 +145,7 @@ public class OwnerNpcMenu extends Menu {
 	        Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;
-            inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
+            inventory.put(22, new ItemMenuBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(namePerk2);
                 itemMeta.lore(lorePerk2);
             }).hide(perk2 == null ? null : perk2.getToHide()));
@@ -154,14 +154,14 @@ public class OwnerNpcMenu extends Menu {
 	        Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey())) : null;
-            inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
+            inventory.put(24, new ItemMenuBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(namePerk3);
                 itemMeta.lore(lorePerk3);
             }).hide(perk3 == null ? null : perk3.getToHide()));
         }
 
         if (mayor.getMayorUUID().equals(player.getUniqueId())) {
-            inventory.put(46, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
+            inventory.put(46, new ItemMenuBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.npc.move.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.npc.move.lore"));
             }).setOnClick(inventoryClickEvent -> {
