@@ -6,10 +6,26 @@ items:
     lore:
       - "<dark_gray><italic>un mystérieux mélange..."
       - "<gold>Aucun Effet Secondaire!"
-    components_nbt_file: "the_mixture_nbt.json"
-    material: POTION
     graphics:
       model: the_mixture
+    max_stack_size: 16
+    consumable:
+      nutrition: 4
+      saturation: 2
+      can_always_eat: true
+      animation: drink
+      sound: entity.generic.drink
+      effects:
+        - type: apply_status_effects
+          effects:
+            - potion: nausea
+              duration: 500
+            - potion: speed
+              duration: 2400
+              amplifier: 2
+            - potion: haste
+              duration: 1200
+              amplifier: 2
 recipes:
   crafting_table:
     the_mixture:
