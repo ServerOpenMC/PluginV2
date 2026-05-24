@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class PacketListener implements Listener {
+public class MainMenuListener implements Listener {
 
     private final ClientboundUpdateAdvancementsPacket advancementPacket;
     @Getter
@@ -37,7 +37,7 @@ public class PacketListener implements Listener {
     @Getter
     private static final List<UUID> enabledAdvancements = new ArrayList<>();
 
-    public PacketListener(OMCPlugin plugin) {
+    public MainMenuListener(OMCPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
         advancementPacket = createEmptyAdvancementPacket();
     }
