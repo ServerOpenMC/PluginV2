@@ -7,8 +7,8 @@ items:
     graphics:
       model: orb/orb_domination
     lore:
-      - "§7§ola boule de détermination..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - "<gray><italic>la boule de détermination..."
+      - "<gray>Un des 5 Fragments de la <white>Singularité"
     tooltip_style: "{dream_rarity:domination_orb}"
 
   ame_orb:
@@ -17,8 +17,8 @@ items:
     graphics:
       model: orb/orb_ame
     lore:
-      - "§7§ola boule de la conscience..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - "<gray><italic>la boule de la conscience..."
+      - "<gray>Un des 5 Fragments de la <white>Singularité"
     tooltip_style: "{dream_rarity:ame_orb}"
 
   mud_orb:
@@ -27,8 +27,8 @@ items:
     graphics:
       model: orb/orb_mud
     lore:
-      - "§7§ola boule de l'espoir..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - "<gray><italic>la boule de l'espoir..."
+      - "<gray>Un des 5 Fragments de la <white>Singularité"
     tooltip_style: "{dream_rarity:mud_orb}"
 
   cloud_orb:
@@ -37,8 +37,8 @@ items:
     graphics:
       model: orb/orb_cloud
     lore:
-      - "§7§ola boule du courage..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - "<gray><italic>la boule du courage..."
+      - "<gray>Un des 5 Fragments de la <white>Singularité"
     tooltip_style: "{dream_rarity:cloud_orb}"
 
   glacite_orb:
@@ -47,8 +47,8 @@ items:
     graphics:
       model: orb/orb_glacite
     lore:
-      - "§7§ola boule de la solitude..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - "<gray><italic>la boule de la solitude..."
+      - "<gray>Un des 5 Fragments de la <white>Singularité"
     tooltip_style: "{dream_rarity:glacite_orb}"
     
   singularity:
@@ -57,6 +57,6 @@ items:
     graphics:
       model: orb/singularity
     lore:
-      - "§7§ol'acheminement d'un parcours chaotique dans le futur"
-      - "§7La §fSingularité"
+      - "<gray><italic>l'acheminement d'un parcours chaotique dans le futur"
+      - "<gray>La <white>Singularité"
     tooltip_style: "{dream_rarity:singularity}"

@@ -2,10 +2,10 @@ info:
   namespace: omc_foods
 items:
   the_mixture:
-    name: "§9The Mixture"
+    name: "<blue>The Mixture"
     lore:
-      - "§8§oun mystérieux mélange..."
-      - "§6Aucun Effet Secondaire!"
+      - "<dark_gray><italic>un mystérieux mélange..."
+      - "<gold>Aucun Effet Secondaire!"
     components_nbt_file: "the_mixture_nbt.json"
     material: POTION
     graphics:

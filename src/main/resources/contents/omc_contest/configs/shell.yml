@@ -2,13 +2,13 @@ info:
   namespace: omc_contest
 items:
   contest_shell:
-    name: "§bCoquillage de Contest"
+    name: "<aqua>Coquillage de Contest"
     material: NAUTILUS_SHELL
     graphics:
       model: items/shell
     lore:
-      - "§7§oun mystérieux coquillage..."
-      - "§7Déposez le lors d'un Contest"
-      - "§7Utile si vous voulez faire gagner votre équipe"
+      - "<gray><italic>un mystérieux coquillage..."
+      - "<gray>Déposez le lors d'un Contest"
+      - "<gray>Utile si vous voulez faire gagner votre équipe"
       - ""
-      - "§5§lEPIC ITEM"
+      - "<dark_purple><bold>EPIC ITEM"

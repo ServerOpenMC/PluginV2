@@ -57,7 +57,7 @@ items:
     graphics:
       texture: armor/old_creaking/creaking_helmet
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
     durability:
       unbreakable: true
     equipment:
@@ -73,7 +73,7 @@ items:
     graphics:
       texture: armor/old_creaking/creaking_chestplate
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
     durability:
       unbreakable: true
     equipment:
@@ -89,7 +89,7 @@ items:
     graphics:
       texture: armor/old_creaking/creaking_leggings
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
     durability:
       unbreakable: true
     equipment:
@@ -105,7 +105,7 @@ items:
     graphics:
       texture: armor/old_creaking/creaking_boots
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
     durability:
       unbreakable: true
     equipment:
@@ -284,8 +284,8 @@ items:
   dream_helmet:
     name: "{dream_item_name:dream_helmet}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§oPeut-être est-elle liée aux rêves..."
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
+      - "<gray><italic>Peut-être est-elle liée aux rêves..."
     material: {dream_item_material:dream_helmet}
     graphics:
       texture: armor/dream/dream_helmet
@@ -301,8 +301,8 @@ items:
   dream_chestplate:
     name: "{dream_item_name:dream_chestplate}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§o..., les rêves se réalisent ..."
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
+      - "<gray><italic>..., les rêves se réalisent ..."
     material: {dream_item_material:dream_chestplate}
     graphics:
       texture: armor/dream/dream_chestplate
@@ -318,8 +318,8 @@ items:
   dream_leggings:
     name: "{dream_item_name:dream_leggings}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§o... toujours, en espérant que ... "
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
+      - "<gray><italic>... toujours, en espérant que ... "
     material: {dream_item_material:dream_leggings}
     graphics:
       texture: armor/dream/dream_leggings
@@ -335,8 +335,8 @@ items:
   dream_boots:
     name: "{dream_item_name:dream_boots}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§o... celui là ne se réalisera pas."
+      - "<gray><italic>Une armure aussi étrange que cet environnement"
+      - "<gray><italic>... celui là ne se réalisera pas."
     material: {dream_item_material:dream_boots}
     graphics:
       texture: armor/dream/dream_boots

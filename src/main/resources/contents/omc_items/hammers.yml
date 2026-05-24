@@ -5,7 +5,7 @@ items:
     permission: customitems.iron_hammer
     name: <gradient:#ffffff:#ffd08a>Marteau en fer
     lore:
-      - "§7Permet de creuser une zone de 3x3 blocs"
+      - "<gray>Permet de creuser une zone de 3x3 blocs"
     material: IRON_PICKAXE
     graphics:
       model: items/hammers/iron_hammer
@@ -19,7 +19,7 @@ items:
     permission: customitems.diamond_hammer
     name: <gradient:#ffffff:#72f6ef>Marteau en diamant
     lore:
-      - "§7Permet de creuser une zone de 3x3x2 blocs"
+      - "<gray>Permet de creuser une zone de 3x3x2 blocs"
     material: DIAMOND_PICKAXE
     graphics:
       model: items/hammers/diamond_hammer
@@ -33,7 +33,7 @@ items:
     permission: customitems.netherite_hammer
     name: <gradient:#ffffff:#6b604f>Marteau en netherite
     lore:
-      - "§7Permet de creuser une zone de 3x3x3 blocs"
+      - "<gray>Permet de creuser une zone de 3x3x3 blocs"
     material: NETHERITE_PICKAXE
     graphics:
       model: items/hammers/netherite_hammer

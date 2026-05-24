@@ -2,9 +2,9 @@ info:
   namespace: omc_blocks
 items:
   aywenite_ore:
-    name: §dMinerais d'Aywenite
+    name: <light_purple>Minerais d'Aywenite
     lore:
-      - "§7Une découverte surprenante"
+      - "<gray>Une découverte surprenante"
     graphics:
       texture: aywenite_ore
     behaviours:
@@ -42,9 +42,9 @@ items:
             min_amount: 1
             max_amount: 3
   deepslate_aywenite_ore:
-    name: §dMinerai d'Aywenite des Abimes
+    name: <light_purple>Minerai d'Aywenite des Abimes
     lore:
-      - "§7Une découverte surprenante"
+      - "<gray>Une découverte surprenante"
     graphics:
       texture: deepslate_aywenite
     behaviours:
@@ -82,9 +82,9 @@ items:
             min_amount: 1
             max_amount: 3
   aywenite_block:
-    name: §dBloc d'Aywenite
+    name: <light_purple>Bloc d'Aywenite
     lore:
-      - "§7Une fusion de cette §dmatière unique"
+      - "<gray>Une fusion de cette <light_purple>matière unique"
     graphics:
       texture: aywenite_block
     behaviours:

@@ -7,7 +7,7 @@ items:
     graphics:
       model: "minecraft:item/sculk"
     lore:
-      - "§7§oDu sculk qui a vécu..."
+      - "<gray><italic>Du sculk qui a vécu..."
     tooltip_style: "{dream_rarity:corrupted_sculk}"
 
   old_pale_oak:
@@ -16,7 +16,7 @@ items:
     graphics:
       model: "minecraft:block/pale_oak_wood"
     lore:
-      - "§7§o... et qui a subit des crises."
+      - "<gray><italic>... et qui a subit des crises."
     tooltip_style: "{dream_rarity:old_pale_oak}"
 
   corrupted_string:
@@ -32,7 +32,7 @@ items:
     graphics:
       texture: minecraft:item/resin_clump
     lore:
-      - "§7§oun coeur frais."
+      - "<gray><italic>un coeur frais."
     tooltip_style: "{dream_rarity:creaking_heart}"
 
   old_creaking_axe:
@@ -102,7 +102,7 @@ items:
     graphics:
       texture: others/somnifere
     lore:
-      - '§7Vous allez faire un gros dodo'
+      - '<gray>Vous allez faire un gros dodo'
     tooltip_style: "{dream_rarity:somnifere}"
 
   metal_detector:
@@ -115,7 +115,7 @@ items:
   ewenite:
     name: "{dream_item_name:ewenite}"
     lore:
-      - "§7Un matériau pas ouf"
+      - "<gray>Un matériau pas ouf"
     material: {dream_item_material:ewenite}
     graphics:
       texture: others/ewenite

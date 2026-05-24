@@ -19,8 +19,8 @@ items:
     graphics:
       texture: fishes/sun_fish
     lore:
-      - '§7Attention! Vous risquez'
-      - '§7de vous brulez!'
+      - '<gray>Attention! Vous risquez'
+      - '<gray>de vous brulez!'
     consumable:
       nutrition: 6
       saturation: 9.6
@@ -33,7 +33,7 @@ items:
     graphics:
       texture: fishes/poissonion
     lore:
-      - '§7On dirait un onion...'
+      - '<gray>On dirait un onion...'
     consumable:
       nutrition: 2
       saturation: 0.4
@@ -46,8 +46,8 @@ items:
     graphics:
       texture: fishes/cooked_poissonion
     lore:
-      - '§7Mot du dev:'
-      - '§7Il est plus beau cru'
+      - '<gray>Mot du dev:'
+      - '<gray>Il est plus beau cru'
     consumable:
       nutrition: 5
       saturation: 6
@@ -71,8 +71,8 @@ items:
     graphics:
       model: consumable/chips_aywen
     lore:
-      - '§7Les joueurs aiment tellement Aywen'
-      - "§7malgré qu'il ait joué meme pas 1h30"
+      - '<gray>Les joueurs aiment tellement Aywen'
+      - "<gray>malgré qu'il ait joué meme pas 1h30"
     consumable:
       nutrition: 15
       saturation: 3
@@ -85,7 +85,7 @@ items:
     graphics:
       model: consumable/chips_dihydrogene
     lore:
-      - '§7Attention explosif!'
+      - '<gray>Attention explosif!'
     consumable:
       nutrition: 15
       saturation: 3
@@ -98,8 +98,8 @@ items:
     graphics:
       model: consumable/chips_jimmy
     lore:
-      - '§7R.I.P Jimmy'
-      - '§7Root est son successeur'
+      - '<gray>R.I.P Jimmy'
+      - '<gray>Root est son successeur'
     consumable:
       nutrition: 15
       saturation: 3
@@ -112,7 +112,7 @@ items:
     graphics:
       model: consumable/chips_lait_2_margouta
     lore:
-      - '§7Miam'
+      - '<gray>Miam'
     consumable:
       nutrition: 20
       saturation: 3
@@ -125,7 +125,7 @@ items:
     graphics:
       model: consumable/chips_nature
     lore:
-      - '§7Basique, simple'
+      - '<gray>Basique, simple'
     consumable:
       nutrition: 10
       saturation: 3
@@ -138,7 +138,7 @@ items:
     graphics:
       model: consumable/chips_sans_plomb
     lore:
-      - '§7La hausse de prix....'
+      - '<gray>La hausse de prix....'
     consumable:
       nutrition: 15
       saturation: 3
@@ -151,7 +151,7 @@ items:
     graphics:
       model: consumable/chips_terre
     lore:
-      - '§7pourquoi pas'
+      - '<gray>pourquoi pas'
     consumable:
       nutrition: 15
       saturation: 3

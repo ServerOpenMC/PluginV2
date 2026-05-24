@@ -14,9 +14,9 @@ items:
           roty: 0
         light_level: 6
   ewenite_ore:
-    name: §dMinerais d'Ewenite
+    name: <light_purple>Minerais d'Ewenite
     lore:
-      - "§7Une découverte pas surprenante"
+      - "<gray>Une découverte pas surprenante"
     graphics:
       texture: blocks/ewenite_ore
     behaviours:
@@ -55,9 +55,9 @@ items:
             min_amount: 1
             max_amount: 3
   deepslate_ewenite_ore:
-    name: §dMinerai d'Ewenite des Abimes
+    name: <light_purple>Minerai d'Ewenite des Abimes
     lore:
-      - "§7Une découverte pas surprenante"
+      - "<gray>Une découverte pas surprenante"
     graphics:
       texture: blocks/deepslate_ewenite_ore
     behaviours:
@@ -96,9 +96,9 @@ items:
             min_amount: 1
             max_amount: 3
   ewenite_block:
-    name: §dBloc d'Ewenite
+    name: <light_purple>Bloc d'Ewenite
     lore:
-      - "§7Une fusion de débilité."
+      - "<gray>Une fusion de débilité."
     graphics:
       texture: blocks/ewenite_block
     behaviours:

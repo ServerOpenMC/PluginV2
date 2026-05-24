@@ -2,9 +2,9 @@ info:
   namespace: omc_items
 items:
   aywenite:
-    name: §dAywenite
+    name: <light_purple>Aywenite
     lore:
-      - "§7Un matériau exceptionnel"
+      - "<gray>Un matériau exceptionnel"
     material: EMERALD
     graphics:
       texture: aywenite
@@ -26,14 +26,14 @@ items:
   renforced_stick:
     name: Bâton Renforcé
     lore:
-    - §9Ingrédients
+    - <blue>Ingrédients
     graphics:
       texture: renforced_stick
   spawner_extractor:
-    name: §6§lExtracteur de Spawner
+    name: <gold><bold>Extracteur de Spawner
     lore:
-    - "§7Cette outil permet de récupérer des spawners"
-    - "§c⚠ 40% de chance d’échec"
+    - "<gray>Cette outil permet de récupérer des spawners"
+    - "<red>⚠ 40% de chance d’échec"
     durability:
       max_durability: 2
     material: DIAMOND_PICKAXE

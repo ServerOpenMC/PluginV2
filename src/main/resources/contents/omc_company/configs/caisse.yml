@@ -2,7 +2,7 @@ info:
   namespace: omc_company
 items:
   caisse:
-    name: "§6§lCaisse"
+    name: "<gold><bold>Caisse"
     permission: company.caisse
     graphics:
       model: items/caisse
