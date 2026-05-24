@@ -2,10 +2,10 @@ info:
   namespace: omc_contest
 items:
   contest_shell:
-    display_name: "§bCoquillage de Contest"
-    resource:
-      material: NAUTILUS_SHELL
-      model_path: items/shell
+    name: "§bCoquillage de Contest"
+    material: NAUTILUS_SHELL
+    graphics:
+      model: items/shell
     lore:
       - "§7§oun mystérieux coquillage..."
       - "§7Déposez le lors d'un Contest"

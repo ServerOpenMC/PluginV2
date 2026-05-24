@@ -3,7 +3,6 @@ info:
 items:
   player_head:
     enabled: true
-    resource:
-      generate: false
-      model_path: item/player_head
-      material: PLAYER_HEAD
+    material: PLAYER_HEAD
+    graphics:
+      model: item/player_head

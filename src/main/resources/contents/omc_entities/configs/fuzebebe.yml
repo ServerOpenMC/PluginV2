@@ -2,7 +2,7 @@ info:
   namespace: omc_entities
 entities:
   babyfuze:
-    display_name: "Bébé Fuze"
+    name: "Bébé Fuze"
     type: ZOMBIE
     model_folder: entity/fuzebebe
     silent: true

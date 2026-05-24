@@ -2,15 +2,12 @@ info:
   namespace: omc_blocks
 items:
   aywenite_ore:
-    display_name: §dMinerais d'Aywenite
+    name: §dMinerais d'Aywenite
     lore:
       - "§7Une découverte surprenante"
-    resource:
-      generate: true
-      material: PAPER
-      textures:
-        - aywenite_ore.png
-    specific_properties:
+    graphics:
+      texture: aywenite_ore
+    behaviours:
       block:
         drop_when_mined: false
         drop_on_silk_touch: true
@@ -45,15 +42,12 @@ items:
             min_amount: 1
             max_amount: 3
   deepslate_aywenite_ore:
-    display_name: §dMinerai d'Aywenite des Abimes
+    name: §dMinerai d'Aywenite des Abimes
     lore:
       - "§7Une découverte surprenante"
-    resource:
-      generate: true
-      material: PAPER
-      textures:
-        - deepslate_aywenite.png
-    specific_properties:
+    graphics:
+      texture: deepslate_aywenite
+    behaviours:
       block:
         hardness: 3
         no_explosion: false
@@ -88,15 +82,12 @@ items:
             min_amount: 1
             max_amount: 3
   aywenite_block:
-    display_name: §dBloc d'Aywenite
+    name: §dBloc d'Aywenite
     lore:
       - "§7Une fusion de cette §dmatière unique"
-    resource:
-      generate: true
-      material: PAPER
-      textures:
-        - aywenite_block.png
-    specific_properties:
+    graphics:
+      texture: aywenite_block
+    behaviours:
       block:
         hardness: 3
         no_explosion: false
@@ -115,12 +106,10 @@ items:
             volume: 1
             pitch: 1
   ball_machine:
-    display_name: "Machine a Boule"
+    name: "Machine a Boule"
     permission: blocks.ball_machine
-    resource:
-      material: PAPER
-      generate: false
-      model_path: items/ball_machin
+    graphics:
+      model: items/ball_machin
     behaviours:
       furniture:
         entity: item_display
@@ -140,11 +129,9 @@ items:
             y: 0.50
             z: 0
   urne:
-    display_name: "Urne"
-    resource:
-      material: PAPER
-      generate: false
-      model_path: items/urne
+    name: "Urne"
+    graphics:
+      model: items/urne
     behaviours:
       furniture:
         entity: item_display

@@ -3,11 +3,9 @@ info:
 items:
   broche_kebab:
     enabled: true
-    display_name: Broche à viande 
-    resource:
-      material: PAPER
-      generate: false
-      model_path: broche_kebab
+    name: Broche à viande 
+    graphics:
+      model: broche_kebab
     behaviours:
       furniture:
         entity: armor_stand

@@ -2,13 +2,11 @@ info:
   namespace: omc_foods
 items:
   frite:
-    display_name: Frite
+    name: Frite
     permission: ayw.frite
-    resource:
-      material: GOLDEN_CARROT
-      generate: true
-      textures:
-      - items/frite.png
+    material: GOLDEN_CARROT
+    graphics:
+      texture: items/frite
 recipes:
   crafting_table:
     frite:

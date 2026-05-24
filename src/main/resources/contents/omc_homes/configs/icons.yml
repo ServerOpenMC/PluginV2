@@ -3,125 +3,79 @@ info:
 items:
   omc_homes_icon_axenq:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/axenq
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/axenq
   omc_homes_icon_bank:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/bank
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/bank
   omc_homes_icon_chateau:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/chateau
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/chateau
   omc_homes_icon_chest:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/chest
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/chest
   omc_homes_icon_grass:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/grass
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/grass
   omc_homes_icon_maison:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/maison
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/maison
   omc_homes_icon_sandblock:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/sandblock
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/sandblock
   omc_homes_icon_shop:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/shop
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/shop
   omc_homes_icon_xernas:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/xernas
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/xernas
   omc_homes_icon_zombie:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/zombie
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/zombie
   omc_homes_icon_upgrade:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/upgrade
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/upgrade
   omc_homes_icon_information:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/information
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/information
   omc_homes_icon_bin:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/bin
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/bin
   omc_homes_icon_bin_red:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - icons/bin_red
+    name: Pourquoi faire ?
+    graphics:
+      texture: icons/bin_red
   omc_homes_invisible:
     enabled: true
-    display_name: Pourquoi faire ?
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - items/invisible
-
+    name: Pourquoi faire ?
+    graphics:
+      texture: items/invisible
 font_images:
   bin:
       permission: 0

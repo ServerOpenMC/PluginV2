@@ -2,17 +2,10 @@ info:
   namespace: omc_company
 items:
   10_btn:
-    display_name: 10
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - 10_btn
-
+    name: 10
+    graphics:
+      texture: 10_btn
   company_box:
-    display_name: "company box"
-    resource:
-      material: PAPER
-      generate: true
-      textures:
-        - company_box
+    name: "company box"
+    graphics:
+      texture: company_box

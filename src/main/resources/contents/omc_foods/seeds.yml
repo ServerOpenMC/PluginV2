@@ -2,12 +2,10 @@ info:
   namespace: omc_foods
 items:
   tomato_seeds:
-    display_name: Graines de tomate
-    resource:
-      generate: true
-      material: WHEAT_SEEDS
-      textures:
-      - items/tomato_seeds
+    name: Graines de tomate
+    material: WHEAT_SEEDS
+    graphics:
+      texture: items/tomato_seeds
     specific_properties:
       seed:
         crop_block: BEETROOTS
@@ -18,12 +16,10 @@ items:
             max_amount: 2
             chance: 100
   onion_seeds:
-    display_name: "Graines d'onion"
-    resource:
-      generate: true
-      material: WHEAT_SEEDS
-      textures:
-      - items/onion_seeds
+    name: "Graines d'onion"
+    material: WHEAT_SEEDS
+    graphics:
+      texture: items/onion_seeds
     specific_properties:
       seed:
         crop_block: WHEAT
@@ -34,12 +30,10 @@ items:
             max_amount: 3
             chance: 100
   salad_seed:
-    display_name: Graine de salade
-    resource:
-      generate: true
-      material: WHEAT_SEEDS
-      textures:
-      - items/salad_seed
+    name: Graine de salade
+    material: WHEAT_SEEDS
+    graphics:
+      texture: items/salad_seed
     specific_properties:
       seed:
         crop_block: POTATOES

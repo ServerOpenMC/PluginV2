@@ -2,26 +2,22 @@ info:
   namespace: omc_dream
 items:
   moon_fish:
-    display_name: "{dream_item_name:moon_fish}"
+    name: "{dream_item_name:moon_fish}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:moon_fish}
-      generate: true
-      textures:
-        - fishes/moon_fish.png
+    material: {dream_item_material:moon_fish}
+    graphics:
+      texture: fishes/moon_fish
     consumable:
       nutrition: 2
       saturation: 0.4
     tooltip_style: "{dream_rarity:moon_fish}"
 
   sun_fish:
-    display_name: "{dream_item_name:sun_fish}"
+    name: "{dream_item_name:sun_fish}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:sun_fish}
-      generate: true
-      textures:
-        - fishes/sun_fish.png
+    material: {dream_item_material:sun_fish}
+    graphics:
+      texture: fishes/sun_fish
     lore:
       - '§7Attention! Vous risquez'
       - '§7de vous brulez!'
@@ -31,13 +27,11 @@ items:
     tooltip_style: "{dream_rarity:sun_fish}"
 
   poissonion:
-    display_name: "{dream_item_name:poissonion}"
+    name: "{dream_item_name:poissonion}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:poissonion}
-      generate: true
-      textures:
-        - fishes/poissonion.png
+    material: {dream_item_material:poissonion}
+    graphics:
+      texture: fishes/poissonion
     lore:
       - '§7On dirait un onion...'
     consumable:
@@ -46,13 +40,11 @@ items:
     tooltip_style: "{dream_rarity:poissonion}"
 
   cooked_poissonion:
-    display_name: "{dream_item_name:cooked_poissonion}"
+    name: "{dream_item_name:cooked_poissonion}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:cooked_poissonion}
-      generate: true
-      textures:
-        - fishes/cooked_poissonion.png
+    material: {dream_item_material:cooked_poissonion}
+    graphics:
+      texture: fishes/cooked_poissonion
     lore:
       - '§7Mot du dev:'
       - '§7Il est plus beau cru'
@@ -62,25 +54,22 @@ items:
     tooltip_style: "{dream_rarity:cooked_poissonion}"
 
   dockerfish:
-    display_name: "{dream_item_name:dockerfish}"
+    name: "{dream_item_name:dockerfish}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:dockerfish}
-      generate: true
-      textures:
-        - fishes/dockerfish.png
+    material: {dream_item_material:dockerfish}
+    graphics:
+      texture: fishes/dockerfish
     consumable:
       nutrition: 2
       saturation: 0.4
     tooltip_style: "{dream_rarity:dockerfish}"
 
   chips_aywen:
-    display_name: "{dream_item_name:chips_aywen}"
+    name: "{dream_item_name:chips_aywen}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_aywen}
-      generate: false
-      model_path: consumable/chips_aywen
+    material: {dream_item_material:chips_aywen}
+    graphics:
+      model: consumable/chips_aywen
     lore:
       - '§7Les joueurs aiment tellement Aywen'
       - "§7malgré qu'il ait joué meme pas 1h30"
@@ -90,12 +79,11 @@ items:
     tooltip_style: "{dream_rarity:chips_aywen}"
 
   chips_dihydrogene:
-    display_name: "{dream_item_name:chips_dihydrogene}"
+    name: "{dream_item_name:chips_dihydrogene}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_dihydrogene}
-      generate: false
-      model_path: consumable/chips_dihydrogene
+    material: {dream_item_material:chips_dihydrogene}
+    graphics:
+      model: consumable/chips_dihydrogene
     lore:
       - '§7Attention explosif!'
     consumable:
@@ -104,12 +92,11 @@ items:
     tooltip_style: "{dream_rarity:chips_dihydrogene}"
 
   chips_jimmy:
-    display_name: "{dream_item_name:chips_jimmy}"
+    name: "{dream_item_name:chips_jimmy}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_jimmy}
-      generate: false
-      model_path: consumable/chips_jimmy
+    material: {dream_item_material:chips_jimmy}
+    graphics:
+      model: consumable/chips_jimmy
     lore:
       - '§7R.I.P Jimmy'
       - '§7Root est son successeur'
@@ -119,12 +106,11 @@ items:
     tooltip_style: "{dream_rarity:chips_jimmy}"
 
   chips_lait_2_margouta:
-    display_name: "{dream_item_name:chips_lait_2_margouta}"
+    name: "{dream_item_name:chips_lait_2_margouta}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_lait_2_margouta}
-      generate: false
-      model_path: consumable/chips_lait_2_margouta
+    material: {dream_item_material:chips_lait_2_margouta}
+    graphics:
+      model: consumable/chips_lait_2_margouta
     lore:
       - '§7Miam'
     consumable:
@@ -133,12 +119,11 @@ items:
     tooltip_style: "{dream_rarity:chips_lait_2_margouta}"
 
   chips_nature:
-    display_name: "{dream_item_name:chips_nature}"
+    name: "{dream_item_name:chips_nature}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_nature}
-      generate: false
-      model_path: consumable/chips_nature
+    material: {dream_item_material:chips_nature}
+    graphics:
+      model: consumable/chips_nature
     lore:
       - '§7Basique, simple'
     consumable:
@@ -147,12 +132,11 @@ items:
     tooltip_style: "{dream_rarity:chips_nature}"
 
   chips_sans_plomb:
-    display_name: "{dream_item_name:chips_sans_plomb}"
+    name: "{dream_item_name:chips_sans_plomb}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_sans_plomb}
-      generate: false
-      model_path: consumable/chips_sans_plomb
+    material: {dream_item_material:chips_sans_plomb}
+    graphics:
+      model: consumable/chips_sans_plomb
     lore:
       - '§7La hausse de prix....'
     consumable:
@@ -161,12 +145,11 @@ items:
     tooltip_style: "{dream_rarity:chips_sans_plomb}"
 
   chips_terre:
-    display_name: "{dream_item_name:chips_terre}"
+    name: "{dream_item_name:chips_terre}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:chips_terre}
-      generate: false
-      model_path: consumable/chips_terre
+    material: {dream_item_material:chips_terre}
+    graphics:
+      model: consumable/chips_terre
     lore:
       - '§7pourquoi pas'
     consumable:

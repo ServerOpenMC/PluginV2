@@ -2,10 +2,9 @@ info:
   namespace: omc_plush
 items:
   peluche_awyen:
-    display_name: Aywen la peluche
-    resource: 
-      material: PAPER
-      model_path: peluche
+    name: Aywen la peluche
+    graphics:
+      model: peluche
     behaviours:
       furniture:
         entity: armor_stand
@@ -26,10 +25,9 @@ items:
           ceilling: false
           floor: true
   peluche_seinyy:
-    display_name: Seinyy la peluche
-    resource:
-      material: PAPER
-      model_path: peluche_seiny
+    name: Seinyy la peluche
+    graphics:
+      model: peluche_seiny
     behaviours:
       furniture:
         entity: armor_stand

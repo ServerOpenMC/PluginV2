@@ -3,10 +3,9 @@ info:
 items:
   suit_helmet:
     name: Suit Helmet
-    resource:
-      generate: true
+    material: IRON_HELMET
+    graphics:
       texture: items/suit_armor/helmet
-      material: IRON_HELMET
     durability:
       max_durability: 165
     equipment:
@@ -15,10 +14,9 @@ items:
         armor: 1
   suit_chestplate:
     name: Suit Chestplate
-    resource:
-      generate: true
+    material: IRON_CHESTPLATE
+    graphics:
       texture: items/suit_armor/chestplate
-      material: IRON_CHESTPLATE
     durability:
       max_durability: 165
     equipment:
@@ -27,10 +25,9 @@ items:
         armor: 1
   suit_leggings:
     name: Suit Leggings
-    resource:
-      generate: true
+    material: IRON_LEGGINGS
+    graphics:
       texture: items/suit_armor/leggings
-      material: IRON_LEGGINGS
     durability:
       max_durability: 165
     equipment:
@@ -39,10 +36,9 @@ items:
         armor: 1
   suit_boots:
     name: Suit Boots
-    resource:
-      generate: true
+    material: IRON_BOOTS
+    graphics:
       texture: items/suit_armor/boots
-      material: IRON_BOOTS
     durability:
       max_durability: 165
     equipment:
@@ -51,10 +47,9 @@ items:
         armor: 1
   aywen_cap:
     name: Aywen Cap
-    resource:
-      generate: false
-      model_path: armor/aywen_cap
-      material: IRON_HELMET
+    material: IRON_HELMET
+    graphics:
+      model: armor/aywen_cap
     durability:
       max_durability: 2010
     equipment:

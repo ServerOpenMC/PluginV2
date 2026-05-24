@@ -2,12 +2,10 @@ info:
   namespace: omc_company
 items:
   caisse:
-    display_name: "§6§lCaisse"
+    name: "§6§lCaisse"
     permission: company.caisse
-    resource:
-      material: PAPER
-      generate: false
-      model_path: items/caisse
+    graphics:
+      model: items/caisse
     behaviours:
       furniture:
         breakable: false

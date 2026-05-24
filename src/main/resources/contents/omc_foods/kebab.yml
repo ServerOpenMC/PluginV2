@@ -2,12 +2,10 @@ info:
   namespace: omc_foods
 items:
   kebab:
-    display_name: Kebab
-    resource:
-      material: COOKED_BEEF
-      generate: true
-      textures:
-      - items/kebab.png
+    name: Kebab
+    material: COOKED_BEEF
+    graphics:
+      texture: items/kebab
 recipes:
   crafting_table:
     kebab:

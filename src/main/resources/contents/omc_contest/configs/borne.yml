@@ -2,12 +2,10 @@ info:
   namespace: omc_contest
 items:
   borne:
-    display_name: "Borne"
+    name: "Borne"
     permission: contest.borne
-    resource:
-      material: PAPER
-      generate: false
-      model_path: items/borne
+    graphics:
+      model: items/borne
     behaviours:
       furniture:
         entity: item_display

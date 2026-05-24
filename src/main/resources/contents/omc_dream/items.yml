@@ -2,51 +2,44 @@ info:
   namespace: omc_dream
 items:
   corrupted_sculk:
-    display_name: "{dream_item_name:corrupted_sculk}"
-    resource:
-      material: {dream_item_material:corrupted_sculk}
-      generate: false
-      model_path: "minecraft:item/sculk"
+    name: "{dream_item_name:corrupted_sculk}"
+    material: {dream_item_material:corrupted_sculk}
+    graphics:
+      model: "minecraft:item/sculk"
     lore:
       - "§7§oDu sculk qui a vécu..."
     tooltip_style: "{dream_rarity:corrupted_sculk}"
 
   old_pale_oak:
-    display_name: "{dream_item_name:old_pale_oak}"
-    resource:
-      material: {dream_item_material:old_pale_oak}
-      generate: false
-      model_path: "minecraft:block/pale_oak_wood"
+    name: "{dream_item_name:old_pale_oak}"
+    material: {dream_item_material:old_pale_oak}
+    graphics:
+      model: "minecraft:block/pale_oak_wood"
     lore:
       - "§7§o... et qui a subit des crises."
     tooltip_style: "{dream_rarity:old_pale_oak}"
 
   corrupted_string:
-    display_name: "{dream_item_name:corrupted_string}"
-    resource:
-      generate: true
-      textures:
-        - minecraft:item/string.png
-      material: {dream_item_material:corrupted_string}
+    name: "{dream_item_name:corrupted_string}"
+    material: {dream_item_material:corrupted_string}
+    graphics:
+      texture: minecraft:item/string
     tooltip_style: "{dream_rarity:corrupted_string}"
 
   creaking_heart:
-    display_name: "{dream_item_name:creaking_heart}"
-    resource:
-      generate: true
-      textures:
-        - minecraft:item/resin_clump.png
-      material: {dream_item_material:creaking_heart}
+    name: "{dream_item_name:creaking_heart}"
+    material: {dream_item_material:creaking_heart}
+    graphics:
+      texture: minecraft:item/resin_clump
     lore:
       - "§7§oun coeur frais."
     tooltip_style: "{dream_rarity:creaking_heart}"
 
   old_creaking_axe:
-    display_name: "{dream_item_name:old_creaking_axe}"
-    resource:
-      generate: false
-      material: {dream_item_material:old_creaking_axe}
-      model_path: tools/creaking_axe
+    name: "{dream_item_name:old_creaking_axe}"
+    material: {dream_item_material:old_creaking_axe}
+    graphics:
+      model: tools/creaking_axe
     durability:
       unbreakable: true
     attribute_modifiers:
@@ -56,11 +49,10 @@ items:
     tooltip_style: "{dream_rarity:old_creaking_axe}"
 
   soul_axe:
-    display_name: "{dream_item_name:soul_axe}"
-    resource:
-      generate: false
-      material: {dream_item_material:soul_axe}
-      model_path: tools/soul_axe
+    name: "{dream_item_name:soul_axe}"
+    material: {dream_item_material:soul_axe}
+    graphics:
+      model: tools/soul_axe
     durability:
       unbreakable: true
     attribute_modifiers:
@@ -70,12 +62,10 @@ items:
     tooltip_style: "{dream_rarity:soul_axe}"
 
   soul:
-    display_name: "{dream_item_name:soul}"
-    resource:
-      generate: true
-      textures:
-        - others/soul
-      material: {dream_item_material:soul}
+    name: "{dream_item_name:soul}"
+    material: {dream_item_material:soul}
+    graphics:
+      texture: others/soul
     tooltip_style: "{dream_rarity:soul}"
 
   cloud_fishing_rod:
@@ -92,110 +82,95 @@ items:
     tooltip_style: "{dream_rarity:cloud_fishing_rod}"
 
   meteo_wand:
-    display_name: "{dream_item_name:meteo_wand}"
-    resource:
-      material: {dream_item_material:meteo_wand}
-      model_path: tools/meteo_wand
+    name: "{dream_item_name:meteo_wand}"
+    material: {dream_item_material:meteo_wand}
+    graphics:
+      model: tools/meteo_wand
     tooltip_style: "{dream_rarity:meteo_wand}"
 
   cloud_key:
-    display_name: "{dream_item_name:cloud_key}"
-    resource:
-      material: {dream_item_material:cloud_key}
-      generate: true
-      textures:
-        - others/cloud_key
+    name: "{dream_item_name:cloud_key}"
+    material: {dream_item_material:cloud_key}
+    graphics:
+      texture: others/cloud_key
     tooltip_style: "{dream_rarity:cloud_key}"
 
   somnifere:
-    display_name: "{dream_item_name:somnifere}"
+    name: "{dream_item_name:somnifere}"
     components_nbt_file: "nbt/eatable.json"
-    resource:
-      material: {dream_item_material:somnifere}
-      generate: true
-      textures:
-        - others/somnifere
-      lore:
-        - '§7Vous allez faire un gros dodo'
+    material: {dream_item_material:somnifere}
+    graphics:
+      texture: others/somnifere
+    lore:
+      - '§7Vous allez faire un gros dodo'
     tooltip_style: "{dream_rarity:somnifere}"
 
   metal_detector:
-    display_name: "{dream_item_name:metal_detector}"
-    resource:
-      generate: false
-      material: {dream_item_material:metal_detector}
-      model_path: tools/metal_detector
+    name: "{dream_item_name:metal_detector}"
+    material: {dream_item_material:metal_detector}
+    graphics:
+      model: tools/metal_detector
     tooltip_style: "{dream_rarity:metal_detector}"
 
   ewenite:
-    display_name: "{dream_item_name:ewenite}"
+    name: "{dream_item_name:ewenite}"
     lore:
       - "§7Un matériau pas ouf"
-    resource:
-      generate: true
-      material: {dream_item_material:ewenite}
-      textures:
-        - others/ewenite.png
+    material: {dream_item_material:ewenite}
+    graphics:
+      texture: others/ewenite
     nbt: '{"PublicBukkitValues":{"openmc:to_dream_item": "omc_dream:ewenite"}}'
     tooltip_style: "{dream_rarity:ewenite}"
 
   crystallized_pickaxe:
-    display_name: "{dream_item_name:crystallized_pickaxe}"
-    resource:
-      material: {dream_item_material:crystallized_pickaxe}
-      generate: true
-      textures:
-        - tools/crystalized_pickaxe
+    name: "{dream_item_name:crystallized_pickaxe}"
+    material: {dream_item_material:crystallized_pickaxe}
+    graphics:
+      texture: tools/crystalized_pickaxe
     durability:
       unbreakable: true
     tooltip_style: "{dream_rarity:crystallized_pickaxe}"
 
   mecanic_pickaxe:
-    display_name: "{dream_item_name:mecanic_pickaxe}"
-    resource:
-      material: {dream_item_material:mecanic_pickaxe}
-      generate: false
-      model_path: tools/mecanic_pickaxe
+    name: "{dream_item_name:mecanic_pickaxe}"
+    material: {dream_item_material:mecanic_pickaxe}
+    graphics:
+      model: tools/mecanic_pickaxe
     durability:
       unbreakable: true
     tooltip_style: "{dream_rarity:mecanic_pickaxe}"
 
   glacite:
-    display_name: "{dream_item_name:glacite}"
-    resource:
-      material: {dream_item_material:glacite}
-      generate: false
-      model_path: "minecraft:block/blue_ice"
+    name: "{dream_item_name:glacite}"
+    material: {dream_item_material:glacite}
+    graphics:
+      model: "minecraft:block/blue_ice"
     tooltip_style: "{dream_rarity:glacite}"
 
   coal_burn:
-    display_name: "{dream_item_name:coal_burn}"
-    resource:
-      material: {dream_item_material:coal_burn}
-      generate: false
-      model_path: "minecraft:item/charcoal"
+    name: "{dream_item_name:coal_burn}"
+    material: {dream_item_material:coal_burn}
+    graphics:
+      model: "minecraft:item/charcoal"
     tooltip_style: "{dream_rarity:coal_burn}"
 
   hard_stone:
-    display_name: "{dream_item_name:hard_stone}"
-    resource:
-      material: {dream_item_material:hard_stone}
-      generate: false
-      model_path: "minecraft:item/deepslate"
+    name: "{dream_item_name:hard_stone}"
+    material: {dream_item_material:hard_stone}
+    graphics:
+      model: "minecraft:item/deepslate"
     tooltip_style: "{dream_rarity:hard_stone}"
 
   crafting_table:
-    display_name: "{dream_item_name:crafting_table}"
-    resource:
-      material: {dream_item_material:crafting_table}
-      generate: false
-      model_path: "minecraft:item/crafting_table"
+    name: "{dream_item_name:crafting_table}"
+    material: {dream_item_material:crafting_table}
+    graphics:
+      model: "minecraft:item/crafting_table"
     tooltip_style: "{dream_rarity:crafting_table}"
 
   eternal_campfire:
-    display_name: "{dream_item_name:eternal_campfire}"
-    resource:
-      material: {dream_item_material:eternal_campfire}
-      generate: false
-      model_path: "minecraft:item/campfire"
+    name: "{dream_item_name:eternal_campfire}"
+    material: {dream_item_material:eternal_campfire}
+    graphics:
+      model: "minecraft:item/campfire"
     tooltip_style: "{dream_rarity:eternal_campfire}"

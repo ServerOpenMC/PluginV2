@@ -2,12 +2,10 @@ info:
   namespace: omc_dream
 items:
   vegetation_1:
-    display_name: "Sculk Végétation 1"
-    resource:
-      material: PAPER
-      generate: false
-      model_path: blocks/vegetation_1
-    specific_properties:
+    name: "Sculk Végétation 1"
+    graphics:
+      model: blocks/vegetation_1
+    behaviours:
       block:
         placed_model:
           type: REAL_WIRE
@@ -16,15 +14,12 @@ items:
           roty: 0
         light_level: 6
   ewenite_ore:
-    display_name: §dMinerais d'Ewenite
+    name: §dMinerais d'Ewenite
     lore:
       - "§7Une découverte pas surprenante"
-    resource:
-      generate: true
-      material: PAPER
-      textures:
-        - blocks/ewenite_ore.png
-    specific_properties:
+    graphics:
+      texture: blocks/ewenite_ore
+    behaviours:
       block:
         drop_when_mined: false
         drop_on_silk_touch: true
@@ -60,15 +55,12 @@ items:
             min_amount: 1
             max_amount: 3
   deepslate_ewenite_ore:
-    display_name: §dMinerai d'Ewenite des Abimes
+    name: §dMinerai d'Ewenite des Abimes
     lore:
       - "§7Une découverte pas surprenante"
-    resource:
-      generate: true
-      material: PAPER
-      textures:
-        - blocks/deepslate_ewenite_ore.png
-    specific_properties:
+    graphics:
+      texture: blocks/deepslate_ewenite_ore
+    behaviours:
       block:
         hardness: 3
         no_explosion: false
@@ -104,15 +96,12 @@ items:
             min_amount: 1
             max_amount: 3
   ewenite_block:
-    display_name: §dBloc d'Ewenite
+    name: §dBloc d'Ewenite
     lore:
       - "§7Une fusion de débilité."
-    resource:
-      generate: true
-      material: PAPER
-      textures:
-        - blocks/ewenite_block.png
-    specific_properties:
+    graphics:
+      texture: blocks/ewenite_block
+    behaviours:
       block:
         hardness: 3
         no_explosion: false

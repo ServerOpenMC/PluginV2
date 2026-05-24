@@ -7,13 +7,12 @@ scripts:
 items:
   builder_wand:
     permission: omc_items.builder_wand
-    display_name: Builder Wand
+    name: Builder Wand
     lore:
       - "§7Permet de poser une large zone de blocs"
-    resource:
-      material: WOODEN_SHOVEL
-      generate: false
-      model_path: items/builder_wand
+    material: WOODEN_SHOVEL
+    graphics:
+      model: items/builder_wand
     blocked_enchants:
       - ALL
     durability:
