@@ -3,7 +3,6 @@ info:
 categories:
   omc_homes:
     enabled: true
-    skip_if_already: false
     icon: omc_homes:omc_homes_icon_axenq
     name: "OpenMC Homes"
     items:

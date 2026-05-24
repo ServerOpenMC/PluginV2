@@ -3,7 +3,6 @@ info:
 categories:
   omc_contest:
     enabled: true
-    skip_if_already: false
     icon: omc_contest:contest_shell
     name: "OpenMC Contest"
     items:

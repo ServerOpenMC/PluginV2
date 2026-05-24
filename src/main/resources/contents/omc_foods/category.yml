@@ -3,7 +3,6 @@ info:
 categories:
   omc_foods:
     enabled: true
-    skip_if_already: false
     icon: omc_foods:kebab
     name: "OpenMC Foods"
     items:

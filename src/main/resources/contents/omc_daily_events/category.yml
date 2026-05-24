@@ -3,7 +3,6 @@ info:
 categories:
   omc_daily_events:
     enabled: true
-    skip_if_already: false
     icon: omc_daily_events:aywenite_block
     name: "OpenMC Daily Events"
     items:
