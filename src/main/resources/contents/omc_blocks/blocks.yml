@@ -19,16 +19,6 @@ items:
           - DIAMOND_PICKAXE
           - NETHERITE_PICKAXE
         hardness: 2
-        no_explosion: false
-        sound:
-          break:
-            name: BLOCK_STONE_BREAK
-            volume: 1
-            pitch: 1
-          place:
-            name: BLOCK_STONE_PLACE
-            volume: 1
-            pitch: 1
     events:
       placed_block:
         break:
@@ -50,7 +40,6 @@ items:
     behaviours:
       block:
         hardness: 3
-        no_explosion: false
         drop_when_mined: false
         drop_on_silk_touch: true
         placed_model:
@@ -60,15 +49,6 @@ items:
           - IRON_PICKAXE
           - DIAMOND_PICKAXE
           - NETHERITE_PICKAXE
-        sound:
-          break:
-            name: BLOCK_STONE_BREAK
-            volume: 1
-            pitch: 1
-          place:
-            name: BLOCK_STONE_PLACE
-            volume: 1
-            pitch: 1
     events:
       placed_block:
         break:
@@ -90,21 +70,11 @@ items:
     behaviours:
       block:
         hardness: 3
-        no_explosion: false
         placed_model:
           type: REAL_NOTE
           break_particles: ITEM
         break_tools_whitelist:
           - PICKAXE
-        sound:
-          break:
-            name: BLOCK_STONE_BREAK
-            volume: 1
-            pitch: 1
-          place:
-            name: BLOCK_STONE_PLACE
-            volume: 1
-            pitch: 1
   ball_machine:
     name: "Machine a Boule"
     permission: blocks.ball_machine
