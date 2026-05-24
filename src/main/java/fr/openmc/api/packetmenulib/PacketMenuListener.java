@@ -10,17 +10,18 @@ import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import lombok.Getter;
+import net.minecraft.world.inventory.ContainerInput;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class PacketListener extends PacketAdapter {
+public class PacketMenuListener extends PacketAdapter {
     @Getter
-    private static PacketListener instance;
+    private static PacketMenuListener instance;
 
-    public PacketListener(Plugin plugin) {
+    public PacketMenuListener(Plugin plugin) {
         super(plugin, PacketType.Play.Client.WINDOW_CLICK, PacketType.Play.Client.CLOSE_WINDOW, PacketType.Play.Server.OPEN_WINDOW, PacketType.Play.Server.SET_SLOT);
         ProtocolLibrary.getProtocolManager().addPacketListener(this);
         instance = this;
@@ -51,7 +52,7 @@ public class PacketListener extends PacketAdapter {
             int stateId = packet.getIntegers().read(1);
             short slot = packet.getShorts().read(0);
             byte button = packet.getBytes().read(0);
-            int mode = ( (net.minecraft.world.inventory.ClickAction) packet.getStructures().withType(net.minecraft.world.inventory.ClickAction.class).read(0)).ordinal();
+            int mode = ((ContainerInput) packet.getStructures().withType(ContainerInput.class).read(0)).ordinal();
 
             if (PacketMenuLib.getWindowIds().containsKey(event.getPlayer().getUniqueId()) && windowId == PacketMenuLib.getWindowIds().get(event.getPlayer().getUniqueId())) {
                 Player player = event.getPlayer();
