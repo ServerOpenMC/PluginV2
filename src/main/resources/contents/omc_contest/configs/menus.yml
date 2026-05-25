@@ -3,7 +3,7 @@ info:
 font_images:
     contest_menu:
         permission: contest.menu
-        show_in_gui: true
+        show_in_gui: false
         suggest_in_command: false
         path: "contest.png"
         y_position: 16

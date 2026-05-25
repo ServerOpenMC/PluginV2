@@ -9,7 +9,7 @@ font_images:
     y_position: 31
   omc_main_menu_page_2:
     permission: op
-    show_in_gui: true
+    show_in_gui: false
     path: "font/omc_main_menu_page_2.png"
     y_position: 31
   omc_main_menu_page_1_sans_ville:

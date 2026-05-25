@@ -3,7 +3,7 @@ info:
 font_images:
     quests_menu:
         permission: confirm.menu
-        show_in_gui: true
+        show_in_gui: false
         suggest_in_command: false
         path: "quests_menu.png"
         y_position: 43
