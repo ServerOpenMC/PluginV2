@@ -16,7 +16,8 @@ public abstract class CustomLootbox {
     private LootboxOptions options = new LootboxOptions( // default options
             InventorySize.LARGER,
             60,
-            IntStream.range(19, 26).boxed().toList()
+            IntStream.range(19, 26).boxed().toList(),
+            22
     );
 
     public CustomLootbox(String namespace, Component name, CustomLootTable lootTable) {

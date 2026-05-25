@@ -33,7 +33,7 @@ public class TicketListener implements Listener, NotInUnitTest {
 
     @EventHandler
     public void onGetRewardLootBox(LootboxRewardEvent event) {
-        if (!event.getBox().getNamespace().equals("omc:machine_ball_lootbox")) return;
+        if (!event.getBox().getNamespace().equals("omc:machine_ball")) return;
 
         String pelushKey = "omc_plush:peluche_seinyy";
 
@@ -51,6 +51,7 @@ public class TicketListener implements Listener, NotInUnitTest {
                     Component.text("§cVous avez déjà atteint la limite de cet item : ")
                             .append(Component.text("Peluche Seinyy")),
                     Prefix.OPENMC, MessageType.ERROR, true);
+            event.setCancelled(true);
             return;
         } else if (hasLootPelucheSeinyy && alreadyWon == 0) {
             ps.getMaxItemsGiven().put(pelushKey, alreadyWon + 1);

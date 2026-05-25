@@ -11,13 +11,14 @@ import java.util.stream.IntStream;
 public class MachineBallLootbox extends CustomLootbox {
     public MachineBallLootbox() {
         super(
-                "omc:machine_ball_lootbox",
+                "omc:machine_ball",
                 Component.text("§6§lLa Machine à boules"),
                 OMCRegistry.CUSTOM_LOOT_TABLES.get("omc:machine_ball"),
                 new LootboxOptions(
                         InventorySize.NORMAL,
                         60,
-                        IntStream.range(10, 16).boxed().toList()
+                        IntStream.range(10, 17).boxed().toList(),
+                        13
                 )
         );
     }
