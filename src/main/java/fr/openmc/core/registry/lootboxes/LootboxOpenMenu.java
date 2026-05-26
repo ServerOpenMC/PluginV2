@@ -179,6 +179,7 @@ public class LootboxOpenMenu extends Menu {
             @Override
             public void run() {
                 boolean cancelled = giveReward(winningItem);
+                System.out.println(cancelled);
                 if (cancelled) {
                     cancel();
                     return;
@@ -215,8 +216,7 @@ public class LootboxOpenMenu extends Menu {
 
     private boolean giveReward(CustomLoot wonItem) {
         LootboxRewardEvent rewardEvent = new LootboxRewardEvent(getOwner(), box, wonItem);
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                Bukkit.getPluginManager().callEvent(rewardEvent));
+        Bukkit.getPluginManager().callEvent(rewardEvent);
         if (rewardEvent.isCancelled()) return true;
 
         for (ItemStack reward : wonItem.items()) {
