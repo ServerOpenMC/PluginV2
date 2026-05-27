@@ -51,10 +51,6 @@ public class OMCBootstrap implements PluginBootstrap {
         // ** REGISTRY MANAGER **
         OMCRegistry.bootstrapAll(context);
 
-//        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
-//                .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)
-//        );
-
         // ** LOAD TRANSLATION **
         // this creates resource pack who is needed for item adder
         TranslationManager.init(
