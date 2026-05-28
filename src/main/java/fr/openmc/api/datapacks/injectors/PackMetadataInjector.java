@@ -15,7 +15,7 @@ public class PackMetadataInjector implements DatapackInjector {
         Path root = rootFile.toPath();
         try {
             Path metaDataFile = root.resolve("pack.mcmeta");
-            Files.writeString(metaDataFile, GSON.toJson(packMcMeta()));
+            Files.writeString(metaDataFile, packMcMeta());
         } catch (IOException e) {
             throw new IllegalStateException("Cannot write pack mcmeta file", e);
         }
@@ -25,7 +25,7 @@ public class PackMetadataInjector implements DatapackInjector {
         return String.format("""
                 {
                   "pack": {
-                    "description": "OMC generated datapack",
+                    "description": "OMC datapack injected from plugin",
                     "pack_format": %s,
                     "min_format": [%s, %s],
                     "max_format": [%s, %s]

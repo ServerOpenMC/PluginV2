@@ -19,14 +19,14 @@ public final class OMCRegistry {
     public static final CustomMobRegistry CUSTOM_MOBS = new CustomMobRegistry();
     public static final CustomEnchantmentRegistry CUSTOM_ENCHANTS = new CustomEnchantmentRegistry();
     public static final CustomLootTableRegistry CUSTOM_LOOT_TABLES = new CustomLootTableRegistry();
-    public static final CustomAmbientRegistry CUSTOM_AMBIENT = new CustomAmbientRegistry();
+    public static final CustomAmbientRegistry CUSTOM_AMBIENTS = new CustomAmbientRegistry();
 
     private static final List<LifecycleRegistry> ALL = List.of(
             CUSTOM_ITEMS,
             CUSTOM_MOBS,
             CUSTOM_ENCHANTS,
             CUSTOM_LOOT_TABLES,
-            CUSTOM_AMBIENT
+            CUSTOM_AMBIENTS
     );
 
     private OMCRegistry() {}
