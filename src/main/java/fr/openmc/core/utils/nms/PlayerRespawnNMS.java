@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.nms;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.resources.ResourceKey;
@@ -12,6 +13,9 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.storage.LevelData;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Classe receuillant les NMS lié au packet {@link ClientboundRespawnPacket}
@@ -20,8 +24,13 @@ import org.bukkit.craftbukkit.CraftServer;
  * @see CustomAmbient utilisation trés spécifique, on affiche une dimension_type sur le joueur, ds la dimension actuelle
  */
 public class PlayerRespawnNMS {
-    // todo: continue this
-    public static void sendRespawnPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo spawnInfo) {
+    /**
+     * Envoie le packet RESPAWN au joueur ciblé, avec des informations données
+     * En utilisant des procédures qui assurent le tout
+     * @param nmsPlayer le joueur en NMS
+     * @param spawnInfo Les informations de la dimension ou il est envoyé
+     */
+    public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo spawnInfo) {
         nmsPlayer.connection.send(new ClientboundRespawnPacket(
                 spawnInfo,
                 ClientboundRespawnPacket.KEEP_ALL_DATA
@@ -29,35 +38,49 @@ public class PlayerRespawnNMS {
 
 
         // ** Procédure afin que le packet respawn soit valide
-        PlayerRespawnNMS.sendPostRespawnPackets(nmsPlayer);
-//        resyncEntitiesAfterDimensionRefresh(player);
+        sendPostRespawnPackets(nmsPlayer);
+        resyncEntities(nmsPlayer.getBukkitEntity().getPlayer());
     }
 
-//    private void resyncEntitiesAfterDimensionRefresh(Player player) {
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                if (!player.isOnline()) return;
-//
-//                double range = 96.0D;
-//                for (Entity entity : player.getNearbyEntities(range, range, range)) {
-//                    if (entity.equals(player)) continue;
-//
-//                    player.hideEntity(OMCPlugin.getInstance(), entity);
-//                    player.showEntity(OMCPlugin.getInstance(), entity);
-//                }
-//            }
-//        }.runTaskLater(OMCPlugin.getInstance(), 2L);
-//    }
 
-    public static void sendRespawnPackets(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo targetSpawnInfo) {
+    /**
+     * Envoie le packet RESPAWN au joueur ciblé avec les informations de spawn,
+     * plus un pivot qui permet d'afficher un changement de dimension
+     * @param nmsPlayer le joueur ciblé
+     * @param targetSpawnInfo les informations de spawn
+     * @param pivotDimension la dimension de pivot
+     * Note : Assurer vous que le pivot ne pointe pas vers une dimension ou le joueur est déja
+     * {@code nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD) ? Level.END : Level.OVERWORLD;}
+     */
+    public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo targetSpawnInfo, ResourceKey<Level> pivotDimension) {
         CommonPlayerSpawnInfo currentSpawnInfo = nmsPlayer.createCommonSpawnInfo(nmsPlayer.level());
-        ResourceKey<Level> pivotDimension = getPivotDimension(currentSpawnInfo.dimension());
 
         // changement de dimension car sinon l'ambience de la dimension n'est pas affiché
-        sendRespawnPacket(nmsPlayer, getDimensionPlayerSpawnInfo(currentSpawnInfo, pivotDimension));
-        sendRespawnPacket(nmsPlayer, targetSpawnInfo);
+        sendPacket(nmsPlayer, createPlayerSpawnInfoWithDimension(currentSpawnInfo, pivotDimension));
+        sendPacket(nmsPlayer, targetSpawnInfo);
     }
+
+    /**
+     * Reaffiche les entités autour du joueur
+     * @param player le joueur ciblé
+     */
+    private static void resyncEntities(Player player) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline()) return;
+
+                double range = 96.0D;
+                for (Entity entity : player.getNearbyEntities(range, range, range)) {
+                    if (entity.equals(player)) continue;
+
+                    player.hideEntity(OMCPlugin.getInstance(), entity);
+                    player.showEntity(OMCPlugin.getInstance(), entity);
+                }
+            }
+        }.runTaskLater(OMCPlugin.getInstance(), 2L);
+    }
+
     /**
      * Procédure basée sur {@link ServerPlayer#teleport} afin de corriger que le packet RESPAWN invalide
      * @param nmsPlayer le joueur (NMS)
@@ -66,11 +89,12 @@ public class PlayerRespawnNMS {
         ServerLevel nmsWorld = nmsPlayer.level();
         LevelData levelData = nmsWorld.getLevelData();
 
-        PlayerList playerList = ((CraftServer) Bukkit.getServer()).getServer().getPlayerList();
-
+        // ** Lancement des différentes procédure nécessaire apres un Repsawn Packet
         nmsPlayer.connection.send(new ClientboundChangeDifficultyPacket(
                 levelData.getDifficulty(), levelData.isDifficultyLocked()
         ));
+
+        PlayerList playerList = ((CraftServer) Bukkit.getServer()).getServer().getPlayerList();
         playerList.sendPlayerPermissionLevel(nmsPlayer);
         nmsPlayer.connection.send(new ClientboundPlayerAbilitiesPacket(nmsPlayer.getAbilities()));
         playerList.sendLevelInfo(nmsPlayer, nmsWorld);
@@ -98,7 +122,13 @@ public class PlayerRespawnNMS {
         }
     }
 
-    private static CommonPlayerSpawnInfo getDimensionPlayerSpawnInfo(CommonPlayerSpawnInfo base, ResourceKey<Level> dimensionKey) {
+    /**
+     * Créer les Informations de Spawn avec la dimension ciblé, en gardant les autres informations de base
+     * @param base les informations de spawn de base
+     * @param dimensionKey la dimension type key
+     * @return Information de Spawn modifié
+     */
+    private static CommonPlayerSpawnInfo createPlayerSpawnInfoWithDimension(CommonPlayerSpawnInfo base, ResourceKey<Level> dimensionKey) {
         return new CommonPlayerSpawnInfo(
                 base.dimensionType(),
                 dimensionKey,
@@ -112,10 +142,4 @@ public class PlayerRespawnNMS {
                 base.seaLevel()
         );
     }
-
-    private static ResourceKey<Level> getPivotDimension(ResourceKey<Level> currentDimension) {
-        return currentDimension.equals(Level.OVERWORLD) ? Level.END : Level.OVERWORLD;
-    }
-
-
 }

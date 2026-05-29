@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -31,7 +32,11 @@ public abstract class CustomAmbient {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         // * On envoie le packet respawn qui applique l'ambience
-        PlayerRespawnNMS.sendRespawnPackets(nmsPlayer, getPlayerAmbientSpawnInfo(nmsPlayer));
+        PlayerRespawnNMS.sendPacket(
+                nmsPlayer,
+                getPlayerAmbientSpawnInfo(nmsPlayer),
+                getPivotDimension(nmsPlayer)
+        );
     }
 
     /**
@@ -42,7 +47,11 @@ public abstract class CustomAmbient {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         // * On envoie le packet respawn qui remets tout a la normale
-        PlayerRespawnNMS.sendRespawnPackets(nmsPlayer, nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()));
+        PlayerRespawnNMS.sendPacket(
+                nmsPlayer,
+                nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()),
+                getPivotDimension(nmsPlayer)
+        );
     }
 
     private CommonPlayerSpawnInfo getPlayerAmbientSpawnInfo(ServerPlayer nmsPlayer) {
@@ -73,5 +82,10 @@ public abstract class CustomAmbient {
                 spawnInfo.portalCooldown(),
                 spawnInfo.seaLevel()
         );
+    }
+
+    private static ResourceKey<Level> getPivotDimension(ServerPlayer nmsPlayer) {
+            return nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension()
+                    .equals(Level.OVERWORLD) ? Level.END : Level.NETHER;
     }
 }
