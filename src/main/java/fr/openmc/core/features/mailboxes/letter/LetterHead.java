@@ -40,7 +40,7 @@ public class LetterHead extends ItemStack {
                 nonItalic(translation(
                         "feature.mailboxes.letter.contains",
                         Component.text(itemsCount).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),
-                        Component.text(pluralize(" item", itemsCount)).color(NamedTextColor.DARK_GREEN)
+                        Component.text(pluralize("item", itemsCount)).color(NamedTextColor.DARK_GREEN)
                 ).color(NamedTextColor.DARK_GREEN))
         ));
         TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(
