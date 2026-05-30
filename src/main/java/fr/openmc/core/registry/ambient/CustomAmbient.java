@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.CommonPlayerSpawnInfo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -23,9 +23,10 @@ import java.util.UUID;
 public abstract class CustomAmbient {
     // ** UUID playerUUID -> String idAmbient
     public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
+    private Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
 
     public abstract String getId();
-    public abstract DimensionTypesInjector.DimensionTypeBuilder getDimensionType();
+    public abstract DimensionTypesInjector.DimensionTypeBuilder getDimensionTypeBuilder();
 
     /**
      * Choix de la transition de dimension lorsque le joueur change d'ambience
@@ -39,7 +40,7 @@ public abstract class CustomAmbient {
      * @return Un datapack injector
      */
     public DatapackInjector toDimensionTypeInjector() {
-        return new DimensionTypesInjector("omc_ambient").add(getId(), getDimensionType());
+        return new DimensionTypesInjector("omc_ambient").add(getId(), getDimensionTypeBuilder());
     }
 
     /**
@@ -96,23 +97,10 @@ public abstract class CustomAmbient {
      * @return les informations de spawn
      */
     private CommonPlayerSpawnInfo getPlayerAmbientSpawnInfo(ServerPlayer nmsPlayer) {
-        ServerLevel nmsWorld = nmsPlayer.level();
         CommonPlayerSpawnInfo spawnInfo = nmsPlayer.createCommonSpawnInfo(nmsPlayer.level());
 
-        ResourceKey<DimensionType> key = ResourceKey.create(
-                Registries.DIMENSION_TYPE,
-                Identifier.fromNamespaceAndPath("omc_ambient", this.getId())
-        );
-
-        Registry<DimensionType> dimRegistry =
-                nmsWorld.registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
-
-        Holder<DimensionType> dimensionTypeHolder = dimRegistry.get(key).orElseThrow(() ->
-                new IllegalStateException("DimensionType omc_ambient:"+ this.getId() +" introuvable")
-        );
-
         return new CommonPlayerSpawnInfo(
-                dimensionTypeHolder,
+                getDimensionType(),
                 spawnInfo.dimension(),
                 spawnInfo.seed(),
                 spawnInfo.gameType(),
@@ -123,5 +111,23 @@ public abstract class CustomAmbient {
                 spawnInfo.portalCooldown(),
                 spawnInfo.seaLevel()
         );
+    }
+
+    private Holder<DimensionType> getDimensionType() {
+        if (CACHED_DIMENSION_TYPE != null)
+            return CACHED_DIMENSION_TYPE;
+
+        ResourceKey<DimensionType> key = ResourceKey.create(
+                Registries.DIMENSION_TYPE,
+                Identifier.fromNamespaceAndPath("omc_ambient", this.getId())
+        );
+
+        Registry<DimensionType> dimRegistry =
+                MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
+
+        CACHED_DIMENSION_TYPE = dimRegistry.get(key).orElseThrow(() ->
+                new IllegalStateException("DimensionType omc_ambient:"+ this.getId() +" introuvable")
+        );
+        return CACHED_DIMENSION_TYPE;
     }
 }

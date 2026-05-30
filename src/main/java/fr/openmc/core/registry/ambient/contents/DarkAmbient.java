@@ -13,7 +13,7 @@ public class DarkAmbient extends CustomAmbient {
     }
 
     @Override
-    public DimensionTypesInjector.DimensionTypeBuilder getDimensionType() {
+    public DimensionTypesInjector.DimensionTypeBuilder getDimensionTypeBuilder() {
         return new DimensionTypesInjector.DimensionTypeBuilder()
                 .attributes(obj -> {
                     obj.addProperty("visual/ambient_light_color", "#DD37E6");
