@@ -24,6 +24,19 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @see CustomAmbient utilisation trés spécifique, on affiche une dimension_type sur le joueur, ds la dimension actuelle
  */
 public class PlayerRespawnNMS {
+
+    /**
+     * Envoie juste le packet respawn.
+     * @param nmsPlayer le joueur en NMS
+     * @param spawnInfo Les informations de la dimension ou il est envoyé
+     */
+    private static void sendSimplePacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo spawnInfo) {
+        nmsPlayer.connection.send(new ClientboundRespawnPacket(
+                spawnInfo,
+                ClientboundRespawnPacket.KEEP_ALL_DATA
+        ));
+    }
+
     /**
      * Envoie le packet RESPAWN au joueur ciblé, avec des informations données
      * En utilisant des procédures qui assurent le tout
@@ -31,11 +44,8 @@ public class PlayerRespawnNMS {
      * @param spawnInfo Les informations de la dimension ou il est envoyé
      */
     public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo spawnInfo) {
-        nmsPlayer.connection.send(new ClientboundRespawnPacket(
-                spawnInfo,
-                ClientboundRespawnPacket.KEEP_ALL_DATA
-        ));
-
+        // ** Envoie de l'entete du packet respawn
+        sendSimplePacket(nmsPlayer, spawnInfo);
 
         // ** Procédure afin que le packet respawn soit valide
         sendPostRespawnPackets(nmsPlayer);
@@ -53,10 +63,9 @@ public class PlayerRespawnNMS {
      * {@code nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD) ? Level.END : Level.OVERWORLD;}
      */
     public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo targetSpawnInfo, ResourceKey<Level> pivotDimension) {
-        CommonPlayerSpawnInfo currentSpawnInfo = nmsPlayer.createCommonSpawnInfo(nmsPlayer.level());
-
         // changement de dimension car sinon l'ambience de la dimension n'est pas affiché
-        sendPacket(nmsPlayer, createPlayerSpawnInfoWithDimension(currentSpawnInfo, pivotDimension));
+        // l'unique packet de repsawn pour simuler un changement de dimension + envoie du dimension type = plus rapide
+        sendSimplePacket(nmsPlayer, createPlayerSpawnInfoWithDimension(nmsPlayer, pivotDimension));
         sendPacket(nmsPlayer, targetSpawnInfo);
     }
 
@@ -97,6 +106,7 @@ public class PlayerRespawnNMS {
         PlayerList playerList = ((CraftServer) Bukkit.getServer()).getServer().getPlayerList();
         playerList.sendPlayerPermissionLevel(nmsPlayer);
         nmsPlayer.connection.send(new ClientboundPlayerAbilitiesPacket(nmsPlayer.getAbilities()));
+
         playerList.sendLevelInfo(nmsPlayer, nmsWorld);
         playerList.sendAllPlayerInfo(nmsPlayer);
         playerList.sendActivePlayerEffects(nmsPlayer);
@@ -106,6 +116,12 @@ public class PlayerRespawnNMS {
         nmsPlayer.connection.send(new ClientboundSetChunkCacheCenterPacket(
                 nmsPlayer.chunkPosition().x(),
                 nmsPlayer.chunkPosition().z()
+        ));
+
+        // ** Synchronise le cycle jour-nuit avec le monde actuel
+        nmsPlayer.connection.send(new ClientboundSetTimePacket(
+                nmsWorld.getGameTime(),
+                nmsWorld.clockManager().createFullSyncPacket().clockUpdates()
         ));
 
         int viewDistance = nmsWorld.getServer().getPlayerList().getViewDistance();
@@ -124,11 +140,13 @@ public class PlayerRespawnNMS {
 
     /**
      * Créer les Informations de Spawn avec la dimension ciblé, en gardant les autres informations de base
-     * @param base les informations de spawn de base
+     * @param nmsPlayer le joueur ciblé
      * @param dimensionKey la dimension type key
      * @return Information de Spawn modifié
      */
-    private static CommonPlayerSpawnInfo createPlayerSpawnInfoWithDimension(CommonPlayerSpawnInfo base, ResourceKey<Level> dimensionKey) {
+    private static CommonPlayerSpawnInfo createPlayerSpawnInfoWithDimension(ServerPlayer nmsPlayer, ResourceKey<Level> dimensionKey) {
+        CommonPlayerSpawnInfo base = nmsPlayer.createCommonSpawnInfo(nmsPlayer.level());
+
         return new CommonPlayerSpawnInfo(
                 base.dimensionType(),
                 dimensionKey,
