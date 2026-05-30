@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -23,13 +24,16 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
-        message = Component.text("§8§m                                                     §r\n\n§7 Vous jouez actuellement sur la version")
-            .append(Component.text("§d§l " + version).clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("§7 du plugin §d§lOpenMC.\n"))
-            .append(Component.text("§f§l Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("\n\n§8§m                                                     §r"));
+        message = TranslationManager.translation("feature.updates.message.version_prefix")
+            .append(Component.text(" "))
+            .append(TranslationManager.translation("feature.updates.message.version_number", Component.text(version)).clickEvent(ClickEvent.openUrl(milestoneUrl)))
+            .append(Component.text(" "))
+            .append(TranslationManager.translation("feature.updates.message.plugin_info"))
+            .append(Component.text("\n"))
+            .append(TranslationManager.translation("feature.updates.message.changelog").clickEvent(ClickEvent.openUrl(milestoneUrl)))
+            .append(Component.text("\n"));
 
-        long period = 14400 * 20; // 4h
+        long period = 14400 * 20;
 
         new BukkitRunnable() {
             @Override

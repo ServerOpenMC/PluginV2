@@ -7,7 +7,7 @@ import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -32,20 +32,20 @@ public class SocialSpyManager extends Feature implements HasCommands  {
      * @param player The player whose social spy status is being toggled.
      */
     public static void toggleSocialSpy(Player player) {
-        UUID playerUUID = player.getUniqueId();
+         UUID playerUUID = player.getUniqueId();
 
-        if (socialSpyEnabled.contains(playerUUID)) {
-            socialSpyEnabled.remove(playerUUID);
-            MessagesManager.sendMessage(player,
-                    Component.text("§aSocial Spy désactivé."),
-                    Prefix.OPENMC, MessageType.SUCCESS, true);
-        } else {
-            socialSpyEnabled.add(playerUUID);
-            MessagesManager.sendMessage(player,
-                    Component.text("§aSocial Spy activé."),
-                    Prefix.OPENMC, MessageType.SUCCESS, true);
-        }
-    }
+         if (socialSpyEnabled.contains(playerUUID)) {
+             socialSpyEnabled.remove(playerUUID);
+             MessagesManager.sendMessage(player,
+                     TranslationManager.translation("feature.privatemessage.socialspy.toggled_off"),
+                     Prefix.OPENMC, MessageType.SUCCESS, true);
+         } else {
+             socialSpyEnabled.add(playerUUID);
+             MessagesManager.sendMessage(player,
+                     TranslationManager.translation("feature.privatemessage.socialspy.toggled_on"),
+                     Prefix.OPENMC, MessageType.SUCCESS, true);
+         }
+     }
 
     /**
      * Checks if the social spy feature is enabled for the player.

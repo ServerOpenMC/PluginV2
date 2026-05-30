@@ -92,10 +92,10 @@ public class TPAManager extends Feature implements HasCommands {
 		if (tpaRequests.containsKey(target.getUniqueId())) {
 			if (tpaRequests.get(target.getUniqueId()).contains(player.getUniqueId())) {
 				long requestTime = tpaRequestTime.get(player.getUniqueId());
-				if (System.currentTimeMillis() - requestTime >= 30000) { // 30 secondes
-					MessagesManager.sendMessage(player, Component.text("§4Votre demande de téléportation à §6" + target.getName() + " §4a expiré"), Prefix.OPENMC, MessageType.WARNING, true);
-					MessagesManager.sendMessage(target, Component.text("§3La demande de téléportation de §6" + player.getName() + " §4a expiré"), Prefix.OPENMC, MessageType.INFO, true);
-					
+				if (System.currentTimeMillis() - requestTime >= 30000) {
+					MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.expire.sender", Component.text(target.getName())), Prefix.OPENMC, MessageType.WARNING, true);
+					MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.expire.target", Component.text(player.getName())), Prefix.OPENMC, MessageType.INFO, true);
+
 					removeRequest(player, target);
 				}
 			}

@@ -69,8 +69,8 @@ public class TPAcceptCommand {
 	private void teleport(Player requester, Player target) {
 		Location loc = target.getLocation();
 		PlayerUtils.sendFadeTitleTeleport(requester, loc);
-		MessagesManager.sendMessage(target, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
-		MessagesManager.sendMessage(requester, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(requester, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
 		TPAManager.removeRequest(requester, target);
 	}
 }

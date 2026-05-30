@@ -8,6 +8,7 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -65,17 +66,17 @@ public class PrivateMessageManager extends Feature implements HasCommands {
      * @param message The message to send.
      */
     public static void replyToLastMessage(Player sender, String message) {
-        UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
-        if (lastReceiverId == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVous n'avez pas de message privé récent."), Prefix.OPENMC, MessageType.ERROR, true);
-            return;
-        }
+         UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
+         if (lastReceiverId == null) {
+             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.missing_arg"), Prefix.OPENMC, MessageType.ERROR, true);
+             return;
+         }
 
-        Player receiver = sender.getServer().getPlayer(lastReceiverId);
-        if (receiver == null || !receiver.isOnline()) {
-            MessagesManager.sendMessage(sender, Component.text("§cLe joueur n'est pas en ligne."), Prefix.OPENMC, MessageType.ERROR, true);
-            return;
-        }
+         Player receiver = sender.getServer().getPlayer(lastReceiverId);
+         if (receiver == null || !receiver.isOnline()) {
+             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
+             return;
+         }
 
         sendPrivateMessage(sender, receiver, message);
     }

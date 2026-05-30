@@ -53,30 +53,30 @@ public class MachineBallsMenu extends Menu {
                 this,
                 Material.PAPER,
                 itemMeta -> {
-                    itemMeta.displayName(Component.text("§eRécupérer mes tickets"));
+                    itemMeta.displayName(TranslationManager.translation("feature.tickets.menu.get_tickets.title"));
                     itemMeta.lore(
                         List.of(
-                            Component.text("§7Récupérer les tickets que"),
-                            Component.text("§7vous avez récolté grâce à votre"),
-                            Component.text("§7temps de jeu sur OpenMC V1.")
+                            TranslationManager.translation("feature.tickets.menu.get_tickets.lore1"),
+                            TranslationManager.translation("feature.tickets.menu.get_tickets.lore2"),
+                            TranslationManager.translation("feature.tickets.menu.get_tickets.lore3")
                     ));
                 }
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
                     if (stats == null) {
-                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de statistique pour récupérer des tickets."), Prefix.OPENMC, MessageType.ERROR, true);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.no_stats"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
                     if (stats.isTicketGiven()) {
-                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous avez déjà récupéré vos tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.already_claimed"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
                     int ticketsToGive = TicketManager.giveTicket(getOwner().getUniqueId());
                     if (ticketsToGive <= 0) {
-                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de tickets à récupérer !"), Prefix.OPENMC, MessageType.ERROR, true);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.no_tickets"), Prefix.OPENMC, MessageType.ERROR, true);
                     } else {
-                        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez reçu §e%s §atickets !".formatted(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.claimed", Component.text(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
                     }
                 }
         ));
@@ -85,18 +85,18 @@ public class MachineBallsMenu extends Menu {
                 this,
                 Material.NETHER_STAR,
                 itemMeta -> {
-                    itemMeta.displayName(Component.text("§eOuvrir un ticket"));
+                    itemMeta.displayName(TranslationManager.translation("feature.tickets.menu.open_ticket.title"));
                     itemMeta.lore(
                         List.of(
-                            Component.text("§7Ouvrir une box avec 1 ticket."),
-                            Component.text("§7Vous avez actuellement §e%s §7tickets.".formatted(tickets))
+                            TranslationManager.translation("feature.tickets.menu.open_ticket.lore1"),
+                            TranslationManager.translation("feature.tickets.menu.open_ticket.lore2", Component.text(tickets))
                     ));
                 }
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
                     if (tickets <= 0) {
-                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.not_enough_tickets"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
                     MachineBallsOpenMenu menu = new MachineBallsOpenMenu(getOwner());

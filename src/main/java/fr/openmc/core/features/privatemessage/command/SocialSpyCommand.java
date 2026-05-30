@@ -43,22 +43,23 @@ public class SocialSpyCommand {
     @CommandPermission("omc.admin.commands.privatemessage.socialspy.admin")
     public void listSocialSpyPlayers(Player admin) {
         int spyCount = 0;
-        StringBuilder spyList = new StringBuilder("§6Joueurs avec Social Spy activé:\n");
+        StringBuilder spyList = new StringBuilder();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (SocialSpyManager.hasSocialSpyEnabled(onlinePlayer)) {
-                spyList.append("§7- §a").append(onlinePlayer.getName()).append("\n");
+                spyList.append(TranslationManager.translationString("feature.privatemessage.socialspy.list_item", Component.text(onlinePlayer.getName()))).append("\n");
                 spyCount++;
             }
         }
 
         if (spyCount == 0) {
             MessagesManager.sendMessage(admin,
-                    Component.text("§cAucun joueur n'a le social spy activé."),
+                    TranslationManager.translation("feature.privatemessage.socialspy.no_players"),
                     Prefix.OPENMC, MessageType.INFO, true);
         } else {
-            spyList.append("§6Total: §e").append(spyCount).append(" joueur(s)");
+            admin.sendMessage(TranslationManager.translationString("feature.privatemessage.socialspy.list_title"));
             admin.sendMessage(spyList.toString());
+            admin.sendMessage(TranslationManager.translationString("feature.privatemessage.socialspy.list_total", Component.text(spyCount)));
         }
     }
 }

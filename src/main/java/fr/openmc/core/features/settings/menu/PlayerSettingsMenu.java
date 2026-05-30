@@ -176,7 +176,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             this.refresh();
 
             MessagesManager.sendMessage(getOwner(),
-                    Component.text(settingType.getName() + " mis à jour.", NamedTextColor.GREEN)
+                    TranslationManager.translation("feature.settings.item.updated", Component.text(settingType.getName()))
                             .decoration(TextDecoration.ITALIC, false),
                     Prefix.SETTINGS, MessageType.SUCCESS, true);
         });

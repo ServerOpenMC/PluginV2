@@ -61,9 +61,9 @@ public class TicketListener implements Listener, NotInUnitTest {
         hologram.setLocation(hologramLocation.getX(), hologramLocation.getY(), hologramLocation.getZ());
         hologram.setScale(0.7f);
         hologram.setLines(
-                "§6§lMachine à boules V1",
-                "§eCliquez pour jouer !",
-                "§bBonne chance !"
+                TranslationManager.translationString("feature.tickets.machine.hologram_line1"),
+                TranslationManager.translationString("feature.tickets.machine.hologram_line2"),
+                TranslationManager.translationString("feature.tickets.machine.hologram_line3")
         );
 
         HologramLoader.registerHolograms(hologram);

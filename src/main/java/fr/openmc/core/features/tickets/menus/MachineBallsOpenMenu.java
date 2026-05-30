@@ -223,39 +223,39 @@ public class MachineBallsOpenMenu extends Menu {
     }
 
     private void giveReward(LootItem wonItem) {
-        PlayerStats ps = TicketManager.getPlayerStats(getOwner().getUniqueId());
-        if (ps == null) return;
+         PlayerStats ps = TicketManager.getPlayerStats(getOwner().getUniqueId());
+         if (ps == null) return;
 
-        String itemKey = wonItem.displayName();
-        int alreadyWon = ps.getMaxItemsGiven().getOrDefault(itemKey, 0);
+         String itemKey = wonItem.displayName();
+         int alreadyWon = ps.getMaxItemsGiven().getOrDefault(itemKey, 0);
 
-        if (wonItem.maxRewards() > 0 && alreadyWon >= wonItem.maxRewards()) {
-            MessagesManager.sendMessage(getOwner(),
-                    Component.text("§cVous avez déjà atteint la limite de cet item : ")
-                            .append(Component.text(wonItem.displayName())),
-                    Prefix.OPENMC, MessageType.ERROR, true);
-            return;
-        }
+         if (wonItem.maxRewards() > 0 && alreadyWon >= wonItem.maxRewards()) {
+             MessagesManager.sendMessage(getOwner(),
+                     TranslationManager.translation("feature.tickets.loot.limit_reached")
+                             .append(Component.text(wonItem.displayName())),
+                     Prefix.OPENMC, MessageType.ERROR, true);
+             return;
+         }
 
-        for (ItemStack reward : wonItem.rewards()) {
-            if (getOwner().getInventory().firstEmpty() != -1) {
-                getOwner().getInventory().addItem(reward);
-            } else {
-                getOwner().getWorld().dropItemNaturally(getOwner().getLocation(), reward);
-            }
-        }
+         for (ItemStack reward : wonItem.rewards()) {
+             if (getOwner().getInventory().firstEmpty() != -1) {
+                 getOwner().getInventory().addItem(reward);
+             } else {
+                 getOwner().getWorld().dropItemNaturally(getOwner().getLocation(), reward);
+             }
+         }
 
-        if (wonItem.maxRewards() > 0) {
-            ps.getMaxItemsGiven().put(itemKey, alreadyWon + 1);
-        }
+         if (wonItem.maxRewards() > 0) {
+             ps.getMaxItemsGiven().put(itemKey, alreadyWon + 1);
+         }
 
-        TicketManager.setTicketGiven(getOwner().getUniqueId(), ps.getTicketRemaining(), ps.isTicketGiven());
-        MessagesManager.sendMessage(getOwner(),
-                Component.text("§aVous avez gagné : ")
-                        .append(Component.text(wonItem.displayName()))
-                        .append(Component.text(" §a!")),
-                Prefix.OPENMC, MessageType.SUCCESS, true);
-    }
+         TicketManager.setTicketGiven(getOwner().getUniqueId(), ps.getTicketRemaining(), ps.isTicketGiven());
+         MessagesManager.sendMessage(getOwner(),
+                 TranslationManager.translation("feature.tickets.loot.won")
+                         .append(Component.text(wonItem.displayName()))
+                         .append(Component.text(" !")),
+                 Prefix.OPENMC, MessageType.SUCCESS, true);
+     }
 
     private List<LootItem> initializeLootItems() {
         List<LootItem> items = new ArrayList<>();
