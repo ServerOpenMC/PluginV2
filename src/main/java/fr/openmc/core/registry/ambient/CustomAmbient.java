@@ -53,9 +53,7 @@ public abstract class CustomAmbient {
         PlayerRespawnNMS.sendPacket(
                 nmsPlayer,
                 getPlayerAmbientSpawnInfo(nmsPlayer),
-                nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD)
-                        ? this.getTransitionDimension()
-                        : Level.OVERWORLD
+                getTransitionDimensionForPlayer(nmsPlayer)
         );
 
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
@@ -72,12 +70,23 @@ public abstract class CustomAmbient {
         PlayerRespawnNMS.sendPacket(
                 nmsPlayer,
                 nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()),
-                nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD)
-                        ? this.getTransitionDimension()
-                        : Level.OVERWORLD
+                getTransitionDimensionForPlayer(nmsPlayer)
         );
 
         ACTIVE_AMBIENTS.remove(player.getUniqueId());
+    }
+
+    /**
+     * Calcule la dimension de transition appropriée pour le joueur
+     * Si le joueur est en OVERWORLD, on transitionne vers l'ambience
+     * Sinon on revient à l'OVERWORLD
+     * @param nmsPlayer le joueur ciblé
+     * @return la key de dimension
+     */
+    private ResourceKey<Level> getTransitionDimensionForPlayer(ServerPlayer nmsPlayer) {
+        return nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD)
+                ? this.getTransitionDimension()
+                : Level.OVERWORLD;
     }
 
     /**
