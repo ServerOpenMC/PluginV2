@@ -11,7 +11,9 @@ import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -34,7 +36,7 @@ public class SetHomeCommand {
             @Named("home") @SuggestWith(HomeAutoComplete.class) String name
     ) {
         if(DisabledWorldHome.isDisabledWorld(player.getWorld())) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.disabled_world"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
@@ -45,23 +47,23 @@ public class SetHomeCommand {
 
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if(!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
             if(split.length < 2) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
             if (!HomeUtil.isValidHomeName(homeName)) {
-                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.invalid_name"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home home : homes) {
                 if (home.getName().equalsIgnoreCase(homeName)) {
-                    MessagesManager.sendMessage(player, Component.text("§cCe joueur a déjà un home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_already_has"), Prefix.HOME, MessageType.ERROR, true);
                     return;
                 }
             }
@@ -69,16 +71,35 @@ public class SetHomeCommand {
             Home home = new Home(UUID.randomUUID(), target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
             HomesManager.addHome(home);
 
-            MessagesManager.sendMessage(player, Component.text("§aLe home §e" + homeName + " §aa été défini pour §e" + targetName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation(
+                            "feature.homes.command.set.other.success",
+                            Component.text(homeName).color(NamedTextColor.YELLOW),
+                            Component.text(targetName).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.HOME,
+                    MessageType.SUCCESS,
+                    true
+            );
             if(target.isOnline() && target instanceof Player targetPlayer) {
-                MessagesManager.sendMessage(targetPlayer, Component.text("§aUn admin vous a défini un home §e" + homeName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(
+                        targetPlayer,
+                        TranslationManager.translation(
+                                "feature.homes.command.set.by_admin",
+                                Component.text(homeName).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.HOME,
+                        MessageType.SUCCESS,
+                        true
+                );
             }
 
             return;
         }
 
         if (!HomeUtil.isValidHomeName(name)) {
-            MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.invalid_name"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
@@ -86,7 +107,7 @@ public class SetHomeCommand {
         int homesLimit = HomesManager.getHomeLimit(player.getUniqueId());
 
         if(currentHome >= homesLimit) {
-            MessagesManager.sendMessage(player, Component.text("§cVous avez atteint la limite de homes."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.home_limit_reached"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
@@ -94,7 +115,7 @@ public class SetHomeCommand {
 
         for (Home home : homes) {
             if (home.getName().equalsIgnoreCase(name)) {
-                MessagesManager.sendMessage(player, Component.text("§cVous avez déjà un home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.already_has"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
         }
@@ -106,6 +127,15 @@ public class SetHomeCommand {
         HomesManager.addHome(home);
 
 
-        MessagesManager.sendMessage(player, Component.text("§aVotre home §e" + name + " §aa été défini."), Prefix.HOME, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(
+                player,
+                TranslationManager.translation(
+                        "feature.homes.command.set.self.success",
+                        Component.text(name).color(NamedTextColor.YELLOW)
+                ),
+                Prefix.HOME,
+                MessageType.SUCCESS,
+                true
+        );
     }
 }

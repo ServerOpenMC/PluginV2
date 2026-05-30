@@ -1,6 +1,7 @@
 package fr.openmc.core.features.quests.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
@@ -24,7 +25,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
         super(
                 TranslationManager.translationString("feature.quests.mine_aywenite.name"),
                 List.of(TranslationManager.translationString("feature.quests.mine_aywenite.description")),
-                CustomItemRegistry.getByName("omc_items:aywenite").getBest()
+                OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest()
         );
 
         this.addTiers(

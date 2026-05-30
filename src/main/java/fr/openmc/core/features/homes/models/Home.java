@@ -6,15 +6,16 @@ import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
 import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -100,13 +101,17 @@ public class Home {
         ItemStack item = getIcon().getItemStack().clone();
         ItemMeta meta = item.getItemMeta();
         Location location = getLocation();
-        meta.displayName(Component.text("§a" + name));
-        item.lore(List.of(
-                Component.text("§6Position:"),
-                Component.text("§6  W: §e" + location.getWorld().getName()),
-                Component.text("§6  X: §e" + (double) Math.round(location.getX() * 10d) / 10d),
-                Component.text("§6  Y: §e" + (double) Math.round(location.getY() * 10d) / 10d),
-                Component.text("§6  Z: §e" + (double) Math.round(location.getZ() * 10d) / 10d)));
+        meta.displayName(TranslationManager.translation(
+                "feature.homes.home.name",
+                Component.text(name).color(NamedTextColor.GREEN)
+        ));
+        item.lore(TranslationManager.translationLore(
+                "feature.homes.home.lore",
+                Component.text(location.getWorld().getName()).color(NamedTextColor.YELLOW),
+                Component.text(location.getX()).color(NamedTextColor.YELLOW),
+                Component.text(location.getY()).color(NamedTextColor.YELLOW),
+                Component.text(location.getZ()).color(NamedTextColor.YELLOW)
+        ));
         item.setItemMeta(meta);
         return item;
     }

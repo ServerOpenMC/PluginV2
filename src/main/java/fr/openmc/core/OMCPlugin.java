@@ -49,9 +49,6 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
-import fr.openmc.core.registry.items.CustomItemRegistry;
-import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
@@ -175,6 +172,9 @@ public class OMCPlugin extends JavaPlugin {
         CommandsManager.init();
         ListenersManager.init();
 
+        /* REGISTRIES */
+        OMCRegistry.initAll();
+
         /* FEATURES */
         REGISTRY_FEATURE.stream()
                 .filter(f -> !(f instanceof LoadAfterItemsAdder))
@@ -190,15 +190,13 @@ public class OMCPlugin extends JavaPlugin {
      * Charge les registres et features qui doivent être lancé apres ItemsAdder
      */
     public void loadAfterItemsAdder() {
-        // ** LOAD ITEMS ADDER CONTENTS **
+        /* LOAD ITEMS ADDER CONTENTS */
         ItemsAdderHook.loadContents();
 
-        // ** REGISTRIES **
-        CustomItemRegistry.init();
-        CustomEnchantmentRegistry.postInit();
-        CustomLootTableRegistry.init();
+        /* REGISTRIES */
+        OMCRegistry.postInitAll();
 
-        // ** FEATURES **
+        /* FEATURES */
         REGISTRY_FEATURE.stream()
                 .filter(f -> f instanceof LoadAfterItemsAdder)
                 .forEachOrdered(Feature::startInit);

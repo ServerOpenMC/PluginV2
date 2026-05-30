@@ -18,7 +18,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DreamBlocksRegistry {
 
@@ -27,12 +29,15 @@ public class DreamBlocksRegistry {
 
     private static final List<DreamBlock> dreamBlocks = new ArrayList<>();
 
+    private static final Map<String, List<DreamBlock>> cacheByType = new HashMap<>();
+
     public static void init() {
         OMCPlugin.registerEvents(
                 new DreamBlocksListeners(),
                 new CloudVault(),
                 new BossCloudSpawner()
         );
+
         ConfigurationSerialization.registerClass(DreamBlock.class);
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "registered_blocks.yml");
         load();
@@ -84,13 +89,10 @@ public class DreamBlocksRegistry {
         DreamBlock entry = new DreamBlock(type, loc);
         if (!dreamBlocks.contains(entry)) {
             dreamBlocks.add(entry);
+            cacheByType.computeIfAbsent(type.toLowerCase(), k -> new ArrayList<>())
+                    .add(entry);
             save();
         }
-    }
-
-    public static void removeDreamBlock(Location loc) {
-        dreamBlocks.removeIf(e -> e.location().equals(loc));
-        save();
     }
 
     public static boolean isDreamBlock(Location loc) {
@@ -106,6 +108,6 @@ public class DreamBlocksRegistry {
     }
 
     public static List<DreamBlock> getDreamBlocksByType(String type) {
-        return dreamBlocks.stream().filter(e -> e.type().equalsIgnoreCase(type)).toList();
+        return cacheByType.getOrDefault(type.toLowerCase(), new ArrayList<>());
     }
 }

@@ -3,10 +3,10 @@ package fr.openmc.core.features.mailboxes.utils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -29,7 +29,7 @@ public class MailboxMenuManager {
                 .append(Component.text("]", NamedTextColor.DARK_GRAY))
                 .append(Component.space())
                 .append(TranslationManager.translation(nameKey).color(color));
-        return new ItemBuilder(menu, CustomItemRegistry.getByName(customModelName).getBest(), meta -> {
+        return new ItemBuilder(menu, OMCRegistry.CUSTOM_ITEMS.get(customModelName).getBest(), meta -> {
             meta.displayName(itemName.decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, bold));
             meta.setMaxStackSize(1);
         });
@@ -43,7 +43,7 @@ public class MailboxMenuManager {
         Component name = TranslationManager.translation("feature.mailboxes.menu.button.next_page_arrow")
                 .color(NamedTextColor.GOLD)
                 .decorate(TextDecoration.BOLD);
-        ItemStack item = CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest();
+        ItemStack item = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_arrow_right").getBest();
         ItemMeta meta = item.getItemMeta();
         meta.displayName(name);
         meta.setMaxStackSize(1);
@@ -55,7 +55,7 @@ public class MailboxMenuManager {
         Component name = TranslationManager.translation("feature.mailboxes.menu.button.previous_page_arrow")
                 .color(NamedTextColor.GOLD)
                 .decorate(TextDecoration.BOLD);
-        ItemStack item = CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest();
+        ItemStack item = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_arrow_left").getBest();
         ItemMeta meta = item.getItemMeta();
         meta.displayName(name);
         meta.setMaxStackSize(1);
@@ -95,15 +95,15 @@ public class MailboxMenuManager {
     public static HashMap<Integer, ItemBuilder> getPaginatedButtons(Menu menu) {
         HashMap<Integer, ItemBuilder> buttons = new HashMap<>();
 
-        buttons.put(48, new ItemBuilder(menu, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest(), meta -> {
+        buttons.put(48, new ItemBuilder(menu, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_arrow_left").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.pagination.previous"));
         }).setPreviousPageButton());
 
-        buttons.put(49, new ItemBuilder(menu, CustomItemRegistry.getByName("omc_menus:mailbox_cancel_btn").getBest(), meta -> {
+        buttons.put(49, new ItemBuilder(menu, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_cancel_btn").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.pagination.close"));
         }).setCloseButton());
 
-        buttons.put(50, new ItemBuilder(menu, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest(), meta -> {
+        buttons.put(50, new ItemBuilder(menu, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_arrow_right").getBest(), meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.pagination.next"));
         }).setNextPageButton());
 

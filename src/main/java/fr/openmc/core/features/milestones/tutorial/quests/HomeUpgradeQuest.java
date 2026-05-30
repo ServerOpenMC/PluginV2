@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -8,7 +9,6 @@ import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -30,7 +30,7 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
                         TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.2"),
                         TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.3")
                 ),
-                CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade").getBest(),
                 MilestoneType.TUTORIAL,
                 TutorialSteps.HOME_UPGRADE,
                 new QuestTier(

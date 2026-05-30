@@ -1,8 +1,8 @@
 package fr.openmc.core.commands.debug;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.CustomItemAutoComplete;
 import fr.openmc.core.registry.items.CustomItem;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -25,7 +25,7 @@ public class CustomItemCommand {
             @SuggestWith(CustomItemAutoComplete.class) String name,
             @Optional Integer amount
     ) {
-        CustomItem item = CustomItemRegistry.getByName(name);
+        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(name);
 
         if (item == null) {
             MessagesManager.sendMessage(player, Component.text("Cet item n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);

@@ -4,10 +4,10 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -88,7 +88,7 @@ public class AdminShopCategoryMenu extends Menu {
         }
 
         content.put(40, new ItemBuilder(this,
-                CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(),
                 true));
 
         return content;

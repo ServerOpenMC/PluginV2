@@ -3,7 +3,6 @@ package fr.openmc.core.features.dream.registries.loottable;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.registry.loottable.CustomLootTable;
-import net.kyori.adventure.key.Key;
 
 import java.util.Set;
 

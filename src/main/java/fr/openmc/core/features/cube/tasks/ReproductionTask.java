@@ -1,5 +1,6 @@
-package fr.openmc.core.features.cube;
+package fr.openmc.core.features.cube.tasks;
 
+import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import org.bukkit.Location;
 import org.bukkit.Particle;

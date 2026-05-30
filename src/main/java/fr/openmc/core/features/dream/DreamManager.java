@@ -28,6 +28,7 @@ import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListene
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
 import fr.openmc.core.features.dream.listeners.structures.PlayerEnterStructureListener;
 import fr.openmc.core.features.dream.listeners.structures.PlayerExitStructureListener;
+import fr.openmc.core.features.dream.mecanism.blocksdrops.DreamBlocksDropsManager;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -40,7 +41,10 @@ import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DBPlayerSave;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.*;
+import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Bukkit;
@@ -82,7 +86,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         DreamLootTableRegistry.init();
         DreamBlocksRegistry.init();
         DreamMobsRegistry.init();
-        DreamBlocksDropsRegistry.init();
+        DreamBlocksDropsManager.init();
         CloudFishingManager.init();
         MetalDetectorManager.init();
         ColdManager.init();

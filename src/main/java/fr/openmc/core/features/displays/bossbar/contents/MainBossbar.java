@@ -33,6 +33,11 @@ public class MainBossbar extends BaseBossbar {
         bar.name(HelpConfigManager.getHelpMessages().get(indexMessage));
     }
 
+    @Override
+    protected Float progress(Player player) {
+        return 0f;
+    }
+
     /**
      * @param player Le joueur
      * @return La couleur de la boss bar

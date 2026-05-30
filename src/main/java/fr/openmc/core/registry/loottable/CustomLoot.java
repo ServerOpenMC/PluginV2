@@ -1,6 +1,5 @@
 package fr.openmc.core.registry.loottable;
 
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;

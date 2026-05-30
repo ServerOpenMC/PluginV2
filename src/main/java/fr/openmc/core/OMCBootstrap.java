@@ -2,13 +2,11 @@ package fr.openmc.core;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import io.papermc.paper.registry.event.RegistryEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +22,6 @@ import java.util.Objects;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class OMCBootstrap implements PluginBootstrap {
-
     /**
      * Configure les handlers de cycle de vie necessaires avant l'activation du plugin.
      *
@@ -51,11 +48,12 @@ public class OMCBootstrap implements PluginBootstrap {
         // ** LOAD ITEMS ADDER NAMESPACES **
         ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
 
-        // ** ENCHANTMENT IMPL **
-        CustomEnchantmentRegistry.init();
-        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
-                .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)
-        );
+        // ** REGISTRY MANAGER **
+        OMCRegistry.bootstrapAll(context);
+
+//        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
+//                .newHandler(CustomEnchantmentRegistry::loadEnchantmentInBootstrap)
+//        );
 
         // ** LOAD TRANSLATION **
         // this creates resource pack who is needed for item adder

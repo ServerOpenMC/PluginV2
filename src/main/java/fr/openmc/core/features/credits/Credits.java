@@ -1,5 +1,6 @@
 package fr.openmc.core.features.credits;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
@@ -22,7 +23,6 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -33,47 +33,47 @@ import java.util.Set;
 
 @Getter
 public enum Credits {
-    ADMINSHOP(Material.GOLD_INGOT, "Adminshop", AdminShopManager.class),
-    ANIMATIONS(Material.AMETHYST_BLOCK, "Les Animations", AnimationsManager.class),
-    CUBE(Material.LAPIS_BLOCK, "Le Cube", Set.of("iambibi_")),
-    CITY(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_chateau").getBest(), "Les Villes", CityManager.class),
-    DREAM(Material.SCULK, "La Dimension des Rêves", DreamManager.class),
-    DREAM_MILESTONE(CustomItemRegistry.getByName("omc_dream:singularity").getBest(), "Le Milestone des Rêves", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
-    MASCOTS(Material.ZOMBIE_SPAWN_EGG, "Les Mascottes", MascotsManager.class),
-    MAYOR(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bank").getBest(), "Les Maires", Set.of("iambibi_"), Set.of("Gexary")),
-    CITY_MILESTONE(Material.NETHER_STAR, "Le Milestone des Villes", Set.of("iambibi_")),
-    WAR(Material.IRON_SWORD, "Les Guerres", Set.of("iambibi_")),
-    NOTATION(Material.PAPER, "Les Notations", Set.of("iambibi_")),
-    RANK(Material.VAULT, "Les Grades", Set.of("gab400")),
-    CONTEST(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), "Les Contests", ContestManager.class),
-    WEEKLY_EVENTS(Material.FIREWORK_ROCKET, "Les Evenements Hebdomadaires", WeeklyEventsManager.class),
-    HOLOGRAMS(Material.OAK_HANGING_SIGN, "Les Hologrammes", HologramLoader.class),
-    ECONOMY(Material.GOLD_BLOCK, "L'Economie", EconomyManager.class),
-    FRIENDS(Material.EMERALD_BLOCK, "Le systeme d'ami", FriendManager.class),
-    HOMES(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_maison").getBest(), "Le Systeme d'Home", HomesManager.class),
-    LEADERBOARD(Material.ANCIENT_DEBRIS, "Les Classements", LeaderboardManager.class),
-    MAILBOX(Material.PAPER, "La Boite aux Lettres", MailboxManager.class),
-    MAINMENU(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(), "Le Menu Principal", MainMenu.class),
-    MILESTONES(Material.SEA_LANTERN, "Les Milestones", MilestonesManager.class),
-    PRIVATEMESSAGE(Material.ZOMBIE_HEAD, "Les messages privés", PrivateMessageManager.class),
-    QUEST(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_chateau").getBest(), "Les Quêtes", QuestsManager.class),
-    SETTINGS(Material.REDSTONE_TORCH, "Les Paramêtres", PlayerSettingsManager.class),
-    TICKETS(Material.BOOK, "Les Tickets V1", TicketManager.class),
-    TPA(Material.ENDER_PEARL, "Le Tpa", TPAManager.class),
-    RTP(Material.ENDER_PEARL, "Le RTP", Set.of("miseur")),
-    VERSIONNING(Material.COMMAND_BLOCK_MINECART, "Le Versionning", Set.of("Piquel Chips")),
-    CUSTOMITEMS(Material.COMMAND_BLOCK, "Les Custom Items", Set.of("Axeno")),
-    CHRONOMETER(Material.COMMAND_BLOCK, "Chronomêtre", Set.of("Nocolm")),
-    COOLDOWN(Material.COMMAND_BLOCK, "Cooldown", Set.of("Gyro", "iambibi_")),
-    MENU_LIB(Material.COMMAND_BLOCK, "Systeme de Menu", Set.of("Xernas78", "PuppyTransGirl", "iambibi_", "gab400")),
-    PACKET_MENU_LIB(Material.COMMAND_BLOCK, "Systeme de Menu en Packet", Set.of("miseur")),
-    ERRORHANDLER(Material.COMMAND_BLOCK, "Le systeme de gestion d'erreur", Set.of("iambibi_")),
-    UNITTEST(Material.COMMAND_BLOCK, "Les tests unitaires", Set.of("Nirbose", "Gyro")),
-    ORM(Material.COMMAND_BLOCK, "Systeme de base de données", Set.of("Piquel Chips")),
+    ADMINSHOP(Material.GOLD_INGOT, "feature.credits.feature.adminshop", AdminShopManager.class),
+    ANIMATIONS(Material.AMETHYST_BLOCK, "feature.credits.feature.animations", AnimationsManager.class),
+    CUBE(Material.LAPIS_BLOCK, "feature.credits.feature.cube", Set.of("iambibi_")),
+    CITY(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_chateau").getBest(), "feature.credits.feature.city", CityManager.class),
+    DREAM(Material.SCULK, "feature.credits.feature.dream", DreamManager.class),
+    DREAM_MILESTONE(OMCRegistry.CUSTOM_ITEMS.get("omc_dream:singularity").getBest(), "feature.credits.feature.dream_milestone", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
+    MASCOTS(Material.ZOMBIE_SPAWN_EGG, "feature.credits.feature.mascots", MascotsManager.class),
+    MAYOR(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bank").getBest(), "feature.credits.feature.mayor", Set.of("iambibi_"), Set.of("Gexary")),
+    CITY_MILESTONE(Material.NETHER_STAR, "feature.credits.feature.city_milestone", Set.of("iambibi_")),
+    WAR(Material.IRON_SWORD, "feature.credits.feature.war", Set.of("iambibi_")),
+    NOTATION(Material.PAPER, "feature.credits.feature.notation", Set.of("iambibi_")),
+    RANK(Material.VAULT, "feature.credits.feature.rank", Set.of("gab400")),
+    CONTEST(OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(), "feature.credits.feature.contest", ContestManager.class),
+    WEEKLY_EVENTS(Material.FIREWORK_ROCKET, "feature.credits.feature.weekly_events", WeeklyEventsManager.class),
+    HOLOGRAMS(Material.OAK_HANGING_SIGN, "feature.credits.feature.holograms", HologramLoader.class),
+    ECONOMY(Material.GOLD_BLOCK, "feature.credits.feature.economy", EconomyManager.class),
+    FRIENDS(Material.EMERALD_BLOCK, "feature.credits.feature.friends", FriendManager.class),
+    HOMES(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_maison").getBest(), "feature.credits.feature.homes", HomesManager.class),
+    LEADERBOARD(Material.ANCIENT_DEBRIS, "feature.credits.feature.leaderboard", LeaderboardManager.class),
+    MAILBOX(Material.PAPER, "feature.credits.feature.mailbox", MailboxManager.class),
+    MAINMENU(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_information").getBest(), "feature.credits.feature.mainmenu", MainMenu.class),
+    MILESTONES(Material.SEA_LANTERN, "feature.credits.feature.milestones", MilestonesManager.class),
+    PRIVATEMESSAGE(Material.ZOMBIE_HEAD, "feature.credits.feature.privatemessage", PrivateMessageManager.class),
+    QUEST(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_chateau").getBest(), "feature.credits.feature.quest", QuestsManager.class),
+    SETTINGS(Material.REDSTONE_TORCH, "feature.credits.feature.settings", PlayerSettingsManager.class),
+    TICKETS(Material.BOOK, "feature.credits.feature.tickets", TicketManager.class),
+    TPA(Material.ENDER_PEARL, "feature.credits.feature.tpa", TPAManager.class),
+    RTP(Material.ENDER_PEARL, "feature.credits.feature.rtp", Set.of("miseur")),
+    VERSIONNING(Material.COMMAND_BLOCK_MINECART, "feature.credits.feature.versionning", Set.of("Piquel Chips")),
+    CUSTOMITEMS(Material.COMMAND_BLOCK, "feature.credits.feature.customitems", Set.of("Axeno")),
+    CHRONOMETER(Material.COMMAND_BLOCK, "feature.credits.feature.chronometer", Set.of("Nocolm")),
+    COOLDOWN(Material.COMMAND_BLOCK, "feature.credits.feature.cooldown", Set.of("Gyro", "iambibi_")),
+    MENU_LIB(Material.COMMAND_BLOCK, "feature.credits.feature.menu_lib", Set.of("Xernas78", "PuppyTransGirl", "iambibi_", "gab400")),
+    PACKET_MENU_LIB(Material.COMMAND_BLOCK, "feature.credits.feature.packet_menu_lib", Set.of("miseur")),
+    ERRORHANDLER(Material.COMMAND_BLOCK, "feature.credits.feature.errorhandler", Set.of("iambibi_")),
+    UNITTEST(Material.COMMAND_BLOCK, "feature.credits.feature.unittest", Set.of("Nirbose", "Gyro")),
+    ORM(Material.COMMAND_BLOCK, "feature.credits.feature.orm", Set.of("Piquel Chips")),
     ;
 
     private final ItemStack icon;
-    private final String featureName;
+    private final String featureKey;
     private final Set<String> developpers;
     private final Set<String> graphists;
     private final Set<String> builders;
@@ -81,12 +81,12 @@ public enum Credits {
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
      * @param icon Icône du crédit
-     * @param featureName Nom de la feature
+     * @param featureKey Translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
-    Credits(Material icon, String featureName, Class<? extends Feature> featureClass) {
+    Credits(Material icon, String featureKey, Class<? extends Feature> featureClass) {
         this.icon = ItemStack.of(icon);
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         var contributors = getContributorsFromClass(featureClass);
         this.developpers = contributors[0];
         this.graphists = contributors[1];
@@ -96,61 +96,61 @@ public enum Credits {
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
      * @param icon Icône du crédit (ItemStack)
-     * @param featureName Nom de la feature
+     * @param featureKey La translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
-    Credits(ItemStack icon, String featureName, Class<? extends Feature> featureClass) {
+    Credits(ItemStack icon, String featureKey, Class<? extends Feature> featureClass) {
         this.icon = icon;
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         var contributors = getContributorsFromClass(featureClass);
         this.developpers = contributors[0];
         this.graphists = contributors[1];
         this.builders = contributors[2];
     }
 
-    Credits(Material icon, String featureName, Set<String> developpers) {
+    Credits(Material icon, String featureKey, Set<String> developpers) {
         this.icon = ItemStack.of(icon);
         this.developpers = developpers;
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         this.graphists = Set.of();
         this.builders = Set.of();
     }
 
-    Credits(ItemStack icon, String featureName, Set<String> developpers) {
+    Credits(ItemStack icon, String featureKey, Set<String> developpers) {
         this.icon = icon;
         this.developpers = developpers;
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         this.graphists = Set.of();
         this.builders = Set.of();
     }
 
-    Credits(ItemStack icon, String featureName, Set<String> developpers, Set<String> graphists) {
+    Credits(ItemStack icon, String featureKey, Set<String> developpers, Set<String> graphists) {
         this.icon = icon;
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         this.developpers = developpers;
         this.graphists = graphists;
         this.builders = Set.of();
     }
 
-    Credits(Material icon, String featureName, Set<String> developpers, Set<String> graphists) {
+    Credits(Material icon, String featureKey, Set<String> developpers, Set<String> graphists) {
         this.icon = ItemStack.of(icon);
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         this.developpers = developpers;
         this.graphists = graphists;
         this.builders = Set.of();
     }
 
-    Credits(ItemStack icon, String featureName, Set<String> developpers, Set<String> graphists, Set<String> builders) {
+    Credits(ItemStack icon, String featureKey, Set<String> developpers, Set<String> graphists, Set<String> builders) {
         this.icon = icon;
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         this.developpers = developpers;
         this.graphists = graphists;
         this.builders = builders;
     }
 
-    Credits(Material icon, String featureName, Set<String> developpers, Set<String> graphists, Set<String> builders) {
+    Credits(Material icon, String featureKey, Set<String> developpers, Set<String> graphists, Set<String> builders) {
         this.icon = ItemStack.of(icon);
-        this.featureName = featureName;
+        this.featureKey = featureKey;
         this.developpers = developpers;
         this.graphists = graphists;
         this.builders = builders;

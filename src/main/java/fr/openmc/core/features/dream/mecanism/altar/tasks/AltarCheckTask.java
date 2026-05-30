@@ -1,5 +1,6 @@
-package fr.openmc.core.features.dream.mecanism.altar;
+package fr.openmc.core.features.dream.mecanism.altar.tasks;
 
+import fr.openmc.core.features.dream.mecanism.altar.AltarManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

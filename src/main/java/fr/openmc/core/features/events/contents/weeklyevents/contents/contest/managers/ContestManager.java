@@ -7,6 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
@@ -27,10 +28,10 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.ColorUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -62,7 +63,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
     private static final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
-            "DARK_GREEN","DARK_BLUE","BLACK"
+            "DARK_GREEN","DARK_BLUE"
     );
     private static final Set<Class<? extends Menu>> contestMenus = new HashSet<>();
 
@@ -206,15 +207,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         ParticleUtils.color1 = null;
         ParticleUtils.color2 = null;
 
-        Bukkit.broadcast(Component.text("""
-                        §8§m                                                     §r
-                        §7
-                        §6§lCONTEST !§r §7 Les votes sont ouverts !§7
-                        §7
-                        §8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*
-                        §7
-                        §8§m                                                     §r"""
-        ));
+        Bukkit.broadcast(TranslationManager.translation("feature.events.contest.broadcast.phase1"));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
@@ -238,15 +231,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             TradeYMLManager.updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
-        Bukkit.broadcast(Component.text("""
-                        §8§m                                                     §r
-                        §7
-                        §6§lCONTEST !§r §7Les contributions ont commencé!§7
-                        §7Échangez des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
-                        §8§ovia la borne des contest ou /contest
-                        §7
-                        §8§m                                                     §r"""
-        ));
+        Bukkit.broadcast(TranslationManager.translation("feature.events.contest.broadcast.phase2"));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1.0F, 0.3F);
@@ -278,16 +263,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
         }
 
-        Bukkit.broadcast(Component.text("""
-                        §8§m                                                     §r
-                        §7
-                        §6§lCONTEST !§r §7Time over ! §7
-                        §7Fin du contest, retrouvez vos récompenses et le bilan de ce Contest
-                        §7sous forme de livre
-                        §8§o*/contest pour voir quand le prochain contest arrive*
-                        §7
-                        §8§m                                                     §r"""
-        ));
+        Bukkit.broadcast(TranslationManager.translation("feature.events.contest.broadcast.phase3"));
 
         // GET GLOBAL CONTEST INFORMATION
         String camp1Color = data.getColor1();
@@ -300,14 +276,13 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         // Create part of the book
         ItemStack baseBook = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta baseBookMeta = (BookMeta) baseBook.getItemMeta();
-        baseBookMeta.setTitle("Les Résultats du contest");
-        baseBookMeta.setAuthor("Les contests");
+        baseBookMeta.setTitle(TranslationManager.translationString("feature.events.contest.book.title"));
+        baseBookMeta.setAuthor(TranslationManager.translationString("feature.events.contest.book.author"));
 
-        List<Component> lore = Arrays.asList(
-                Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
-                        .append(Component.text(" §7VS "))
-                        .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)),
-                Component.text("§e§lOuvrez ce livre pour en savoir plus!")
+        List<Component> lore = TranslationManager.translationLore(
+                "feature.events.contest.book.lore",
+                Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1),
+                Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)
         );
         baseBookMeta.lore(lore);
 
@@ -371,27 +346,20 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             pointsLooserTaux = points1Taux;
         }
 
-        baseBookMeta.addPages(
-                Component.text("§8§lStatistiques globales \n§0Gagnant : ")
-                        .append(Component.text(campWinner).decoration(TextDecoration.ITALIC, false).color(colorWinner))
-                        .append(Component.text("\n§0Taux de vote : §8"))
-                        .append(Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Taux de points : §8"))
-                        .append(Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text( "\n\n§0Perdant : "))
-                        .append(Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser))
-                        .append(Component.text("\n§0Taux de vote : §8"))
-                        .append(Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Taux de points : §8"))
-                        .append(Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Multiplicateur d'infériorité : §bx"))
-                        .append(Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.AQUA))
-                        .append(Component.text("\n§8§oProchaine page : classement des 10 meilleurs contributeurs"))
-        );
+        baseBookMeta.addPages(TranslationManager.translation(
+                "feature.events.contest.book.page.global",
+                Component.text(campWinner).decoration(TextDecoration.ITALIC, false).color(colorWinner),
+                Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false),
+                Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false),
+                Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser),
+                Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false),
+                Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false),
+                Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.AQUA)
+        ));
 
 
         // 2EME PAGE - LES CLASSEMENTS
-        final Component[] leaderboard = {Component.text("§8§lLe classement du contest (jusqu'au 10ème)")};
+        final Component[] leaderboard = {TranslationManager.translation("feature.events.contest.book.page.ranking.title")};
 
         Map<UUID, ContestPlayer> orderedMap = dataPlayer.entrySet()
                 .stream()
@@ -414,7 +382,8 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
             Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderboardManager.getRankColor(rankInt[0] + 1))
                     .append(Component.text(dataOrdered.getName()).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
-                    .append(Component.text(" §8- §b" + dataOrdered.getPoints()));
+                    .append(Component.text(" - ", NamedTextColor.DARK_GRAY))
+                    .append(Component.text(dataOrdered.getPoints()).color(NamedTextColor.AQUA));
             rankInt[0]++;
             leaderboard[0] = leaderboard[0].append(rankComponent);
         });
@@ -432,41 +401,45 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
 
-            if (player.isOnline() && player instanceof Player onelinePlayer) {
-                Component messageMail = Component.text("Vous avez reçu la lettre du contest", NamedTextColor.DARK_GREEN)
-                        .append(Component.text("\nCliquez ici", NamedTextColor.YELLOW))
-                        .clickEvent(ClickEvent.runCommand("mailbox"))
-                        .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
-                        .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
-                onelinePlayer.sendMessage(messageMail);
+            if (offlinePlayer.isOnline()) {
+                Player player = Bukkit.getPlayer(uuid);
+
+                if (player != null) {
+                    Component messageMail = TranslationManager.translation("feature.events.contest.mail.received")
+                            .appendNewline()
+                            .append(TranslationManager.translation("feature.events.contest.mail.click"))
+                            .clickEvent(ClickEvent.runCommand("mailbox"))
+                            .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.events.contest.mail.hover")))
+                            .append(TranslationManager.translation("feature.events.contest.mail.open_mailbox"));
+
+                    player.sendMessage(messageMail);
+                }
             }
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
             String playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) + playerCampName; // ex. Novice en + Moutarde
 
-            bookMetaPlayer.addPages(
-                    Component.text("§8§lStatistiques personnelles\n§0Votre camp : ")
-                            .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                            .append(Component.text("\n§0Votre titre sur le contest §8: "))
-                            .append(Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                            .append(Component.text("\n§0Votre rang sur le contest : §8#"))
-                            .append(Component.text(rank.get()))
-                            .append(Component.text("\n§0Points déposés : §b" + points))
-            );
+            bookMetaPlayer.addPages(TranslationManager.translation(
+                    "feature.events.contest.book.page.personal",
+                    Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor),
+                    Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor),
+                    Component.text(rank.get()),
+                    Component.text(points).color(NamedTextColor.AQUA)
+            ));
 
             List<ItemStack> itemListRewards = new ArrayList<>();
-            String textRewards = "§8§lRécompenses";
+            Component textRewards = TranslationManager.translation("feature.events.contest.book.page.rewards.title");
 
             int money;
             int aywenite;
 
-            double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(ContestPlayerManager.getRankContestFromOfflineInt(player));
-            if(ContestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
-
+            double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(
+                    ContestPlayerManager.getRankContestFromOfflineInt(offlinePlayer));
+            if (ContestPlayerManager.hasWinInCampFromOfflinePlayer(offlinePlayer)) {
                 // Gagnant - ARGENT
                 int moneyMin = 10000;
                 int moneyMax = 12000;
@@ -475,7 +448,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(player.getUniqueId(), money, "Récompense contest - Gagnant");
+                EconomyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Gagnant");
  
                 // Gagnant - Aywenite
                 int ayweniteMin = 40;
@@ -486,7 +459,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Gagnant - EVENT
-                winners.add(player.getUniqueId());
+                winners.add(offlinePlayer.getUniqueId());
             } else {
                 // Perdant - ARGENT
                 int moneyMin = 2000;
@@ -496,7 +469,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(player.getUniqueId(), money, "Récompense contest - Perdant");
+                EconomyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Perdant");
 
                 // Perdant - Aywenite
                 int ayweniteMin = 20;
@@ -507,27 +480,34 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Perdant - EVENT
-                losers.add(player.getUniqueId());
+                losers.add(offlinePlayer.getUniqueId());
             }
 
             // PRINT REWARDS
-            textRewards += "\n§8+ §6" + money + "$ ";
-            textRewards += "\n§9+ §d" + aywenite + " d'Aywenite ";
-            textRewards += "\n§7Boost de §b" + multiplicator;
+            textRewards = textRewards
+                    .appendNewline()
+                    .append(TranslationManager.translation("feature.events.contest.book.page.rewards.money.prefix"))
+                    .append(Component.text(money).color(NamedTextColor.GOLD))
+                    .append(TranslationManager.translation("feature.events.contest.book.page.rewards.money.suffix"))
+                    .appendNewline()
+                    .append(TranslationManager.translation("feature.events.contest.book.page.rewards.aywenite.prefix"))
+                    .append(Component.text(aywenite).color(NamedTextColor.LIGHT_PURPLE))
+                    .append(TranslationManager.translation("feature.events.contest.book.page.rewards.aywenite.suffix"))
+                    .appendNewline()
+                    .append(TranslationManager.translation("feature.events.contest.book.page.rewards.boost.prefix"))
+                    .append(Component.text(multiplicator).color(NamedTextColor.AQUA));
 
-            bookMetaPlayer.addPages(
-                    Component.text(textRewards)
-            );
+            bookMetaPlayer.addPages(textRewards);
 
             bookPlayer.setItemMeta(bookMetaPlayer);
 
-            ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+            ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
             ayweniteItemStack.setAmount(aywenite);
             itemListRewards.add(bookPlayer);
             itemListRewards.add(ayweniteItemStack);
 
             ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
-            playerItemsMap.put(player, rewards);
+            playerItemsMap.put(offlinePlayer, rewards);
             rank.getAndIncrement();
         });
         

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.perks;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
@@ -83,7 +83,7 @@ public enum Perks {
             0,
             "feature.city.mayor.perk.ayweniter.name",
             "feature.city.mayor.perk.ayweniter.lore",
-            CustomItemRegistry.getByName("omc_items:aywenite").getBest()
+            OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest()
     ),
     GPS_TRACKER(
             9,

@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,7 +15,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class MoreInfoMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Contests - Plus d'info");
+        return TranslationManager.translation("feature.events.contest.more_info.title");
     }
 
     @Override
@@ -49,25 +49,11 @@ public class MoreInfoMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
-        List<Component> lore0 = Arrays.asList(
-                Component.text("§7Tout les vendredi, le contest commence"),
-                Component.text("§7Et les votes s'ouvrent, et il faut choisir"),
-                Component.text("§7Entre 2 camps, une ambience se crée dans le spawn...")
-        );
+        List<Component> lore0 = TranslationManager.translationLore("feature.events.contest.phase.vote.lore");
 
-        List<Component> lore1 = Arrays.asList(
-                Component.text("§7La nuit tombe sur le spawn pendant 2 jours"),
-                Component.text("§7Que la fête commence !"),
-                Component.text("§7Des trades sont disponible"),
-                Component.text("§7Donnant des coquillages de contest !")
-        );
+        List<Component> lore1 = TranslationManager.translationLore("feature.events.contest.phase.trade.lore");
 
-        List<Component> lore2 = Arrays.asList(
-                Component.text("§7Le levé de soleil sur le spawn !"),
-                Component.text("§7Les résultats tombent, et un camp"),
-                Component.text("§7sera gagnant. Et des récompenses seront attribuées"),
-                Component.text(("§7à chacun."))
-        );
+        List<Component> lore2 = TranslationManager.translationLore("feature.events.contest.phase.end.lore");
 
 
         WeeklyEventPhase phase = WeeklyEventsManager.getCurrentPhase();
@@ -76,23 +62,23 @@ public class MoreInfoMenu extends Menu {
         boolean ench1 = phase == ContestPhase.TRADE_PHASE.getPhase();
 
         inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§1Les votes - Vendredi"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.more_info.vote.name"));
             itemMeta.lore(lore0);
             itemMeta.setEnchantmentGlintOverride(ench0);
         }));
 
         inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§cL'affrontement - Samedi-Dimanche"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.more_info.trade.name"));
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }));
 
         inventory.put(15, new ItemBuilder(this, Material.YELLOW_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§eLes résultats - Lundi"));
+            itemMeta.displayName(TranslationManager.translation("feature.events.contest.more_info.end.name"));
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
+        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 
         return inventory;
     }

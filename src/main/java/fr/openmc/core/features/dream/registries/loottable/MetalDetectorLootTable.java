@@ -1,8 +1,7 @@
 package fr.openmc.core.features.dream.registries.loottable;
 
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import net.kyori.adventure.key.Key;
@@ -71,7 +70,7 @@ public class MetalDetectorLootTable extends CustomLootTable {
                         1
                 ),
                 new CustomLoot(
-                        CustomEnchantmentRegistry.getCustomEnchantmentByKey(Key.key("omc_dream:experientastic")).getEnchantedBookItem(1),
+                        OMCRegistry.CUSTOM_ENCHANTS.get(Key.key("omc_dream:experientastic")).getEnchantedBookItem(1),
                         0.03,
                         1,
                         1

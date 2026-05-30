@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, NotInUnitTest, HasListeners, HasCommands {
-    private static final OMCPlugin plugin = OMCPlugin.getInstance();
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;
@@ -38,7 +37,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
     public void init() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "multiblocks.yml");
         if (!file.exists()) {
-            plugin.saveResource("data/multiblocks.yml", false);
+            OMCPlugin.getInstance().saveResource("data/multiblocks.yml", false);
         }
         config = YamlConfiguration.loadConfiguration(file);
 

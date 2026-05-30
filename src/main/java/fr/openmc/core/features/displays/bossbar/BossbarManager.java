@@ -105,6 +105,7 @@ public class BossbarManager extends Feature implements HasCommands {
                     playerBars.put(id, existing);
 
                     base.update(player, existing);
+                    existing.progress(base.progress(player));
                     playerLastUpdate.put(id, now);
                     continue;
                 }
@@ -114,6 +115,7 @@ public class BossbarManager extends Feature implements HasCommands {
 
                 if (now - last >= intervalMillis) {
                     base.update(player, existing);
+                    existing.progress(base.progress(player));
                     playerLastUpdate.put(id, now);
                 }
 

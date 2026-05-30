@@ -1,18 +1,18 @@
 package fr.openmc.core.features.homes;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.Objects;
 
 public class HomeUpgradeManager {
 
@@ -41,7 +41,7 @@ public class HomeUpgradeManager {
             if(currentHomes < currentUpgrade) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§cVous n'avez pas atteint la limite de homes pour acheter cette amélioration."),
+                        TranslationManager.translation("feature.homes.upgrade.not_reached_limit"),
                         Prefix.HOME,
                         MessageType.ERROR,
                         true
@@ -49,10 +49,13 @@ public class HomeUpgradeManager {
                 return;
             }
 
-            if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest(), ayweniteAmount)) {
+            if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), ayweniteAmount)) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("Vous n'avez pas assez d'§dAywenite §f(" + ayweniteAmount + " nécessaires)"),
+                        TranslationManager.translation(
+                                "feature.homes.upgrade.not_enough_aywenite",
+                                Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE)
+                        ),
                         Prefix.OPENMC,
                         MessageType.ERROR,
                         true
@@ -63,7 +66,11 @@ public class HomeUpgradeManager {
             if (EconomyManager.getBalance(player.getUniqueId()) < price) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("Tu n'as pas assez d'argent sur toi ! (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"),
+                        TranslationManager.translation(
+                                "feature.homes.upgrade.not_enough_money",
+                                Component.text(price).color(NamedTextColor.YELLOW),
+                                Component.text(EconomyManager.getEconomyIcon())
+                        ),
                         Prefix.HOME,
                         MessageType.ERROR,
                         true
@@ -83,11 +90,16 @@ public class HomeUpgradeManager {
             });
 
             MessagesManager.sendMessage(player,
-                    Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + ayweniteAmount + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
+                    TranslationManager.translation(
+                            "feature.homes.upgrade.success",
+                            Component.text(updatedHomesLimit).color(NamedTextColor.YELLOW),
+                            Component.text(nextUpgrade.getPrice()).color(NamedTextColor.YELLOW),
+                            Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE)
+                    ), Prefix.HOME, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVous avez atteint la limite maximale de homes."),
+                    TranslationManager.translation("feature.homes.upgrade.max"),
                     Prefix.HOME,
                     MessageType.ERROR,
                     true

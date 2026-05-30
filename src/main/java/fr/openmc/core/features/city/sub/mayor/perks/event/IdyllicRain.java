@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -61,7 +61,7 @@ public class IdyllicRain implements Listener {
 
                 Location dropLoc = new Location(world, x + 0.5, y, z + 0.5);
 
-                ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+                ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
                 ItemMeta meta = aywenite.getItemMeta();
                 meta.getPersistentDataContainer().set(cityAyweniteKey, PersistentDataType.STRING, city.getUniqueId().toString());
                 aywenite.setItemMeta(meta);
@@ -98,7 +98,7 @@ public class IdyllicRain implements Listener {
 
         event.setCancelled(true);
 
-        ItemStack cleanAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        ItemStack cleanAywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
         cleanAywenite.setAmount(item.getAmount());
 
         event.getItem().remove();

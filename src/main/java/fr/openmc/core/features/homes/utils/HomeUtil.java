@@ -4,6 +4,9 @@ import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
 import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -89,14 +92,15 @@ public class HomeUtil {
 
     public static String formatLocation(org.bukkit.Location location) {
         if (location == null || location.getWorld() == null) {
-            return "§cLocation invalide";
+            return TranslationManager.translationString("feature.homes.location.invalid");
         }
 
-        return String.format("§e%s §7(§6%d§7, §6%d§7, §6%d§7)",
-                location.getWorld().getName(),
-                location.getBlockX(),
-                location.getBlockY(),
-                location.getBlockZ()
+        return TranslationManager.translationString(
+                "feature.homes.location.format",
+                Component.text(location.getWorld().getName()).color(NamedTextColor.YELLOW),
+                Component.text(location.getBlockX()).color(NamedTextColor.GOLD),
+                Component.text(location.getBlockY()).color(NamedTextColor.GOLD),
+                Component.text(location.getBlockZ()).color(NamedTextColor.GOLD)
         );
     }
 

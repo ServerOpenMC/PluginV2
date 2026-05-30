@@ -6,7 +6,7 @@ import revxrsal.commands.annotation.CommandPlaceholder;
 import revxrsal.commands.annotation.Cooldown;
 import revxrsal.commands.annotation.Description;
 
-@Command("events")
+@Command({"events", "calendar"})
 @Description("Ouvre l'interface des événement (journalier et weekly")
 public class CalendarCommand {
     @Cooldown(2)

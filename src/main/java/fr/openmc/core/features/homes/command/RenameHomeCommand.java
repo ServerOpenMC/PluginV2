@@ -7,7 +7,9 @@ import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -37,12 +39,12 @@ public class RenameHomeCommand {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
             if(!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
             if (!HomeUtil.isValidHomeName(newName)) {
-                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.invalid_name"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
@@ -52,21 +54,31 @@ public class RenameHomeCommand {
                     continue;
                 }
                 if(h.getName().equalsIgnoreCase(newName)) {
-                    MessagesManager.sendMessage(player, Component.text("§cCe joueur a déjà un home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_already_has"), Prefix.HOME, MessageType.ERROR, true);
                     return;
                 }
 
-                MessagesManager.sendMessage(player, Component.text("§aLe home §e" + h.getName() + " §aa été renommé en §e" + newName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(
+                        player,
+                        TranslationManager.translation(
+                                "feature.homes.command.rename.other.success",
+                                Component.text(h.getName()).color(NamedTextColor.YELLOW),
+                                Component.text(newName).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.HOME,
+                        MessageType.SUCCESS,
+                        true
+                );
                 HomesManager.renameHome(h, newName);
                 return;
             }
 
-            MessagesManager.sendMessage(player, Component.text("§cCe joueur n'a pas de home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_no_home_with_name"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
         if (!HomeUtil.isValidHomeName(newName)) {
-            MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.invalid_name"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
@@ -77,14 +89,24 @@ public class RenameHomeCommand {
                 continue;
             }
             if(h.getName().equalsIgnoreCase(newName)) {
-                MessagesManager.sendMessage(player, Component.text("§cTu as déjà un home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.rename.already_has"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
-            MessagesManager.sendMessage(player, Component.text("§aTon home §e" + h.getName() + " §aa été renommé en §e" + newName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation(
+                            "feature.homes.command.rename.self.success",
+                            Component.text(h.getName()).color(NamedTextColor.YELLOW),
+                            Component.text(newName).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.HOME,
+                    MessageType.SUCCESS,
+                    true
+            );
             HomesManager.renameHome(h, newName);
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("§cTu n'as pas de home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.self_no_home_with_name"), Prefix.HOME, MessageType.ERROR, true);
     }
 }

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -19,7 +20,7 @@ public class ConsumeKebabQuest extends Quest implements Listener {
         super(
                 TranslationManager.translationString("feature.quests.consume_kebab.name"),
                 List.of(TranslationManager.translationString("feature.quests.consume_kebab.description")),
-                CustomItemRegistry.getByName("omc_foods:kebab").getBest()
+                OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest()
         );
 
         this.addTiers(
@@ -33,7 +34,7 @@ public class ConsumeKebabQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        if (item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest())) {
+        if (item.isSimilar(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest())) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }
