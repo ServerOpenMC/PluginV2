@@ -13,6 +13,7 @@ import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
@@ -39,40 +40,41 @@ public class JoinQuitMessageListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        MessagesManager.sendMessage(player, Component.text("Bienvenue sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
+         MessagesManager.sendMessage(player, TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
 
-        TabList.updateTabList(player);
+         TabList.updateTabList(player);
 
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
-            for (UUID friendUUID : friendsUUIDS) {
-                final Player friend = player.getServer().getPlayer(friendUUID);
-                if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
-                }
-            }
-        }).exceptionally(throwable -> {
-            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
-            return null;
-        });
+         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+             for (UUID friendUUID : friendsUUIDS) {
+                 final Player friend = player.getServer().getPlayer(friendUUID);
+                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
+                     MessagesManager.sendMessage(friend, TranslationManager.translation("core.player.join.friend_online", Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())), Prefix.FRIEND, MessageType.NONE, true);
+                 }
+             }
+         }).exceptionally(throwable -> {
+             OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+             return null;
+         });
 
-        // Quest pending reward notification
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            for (Quest quest : QuestsManager.getAllQuests()) {
-                if (!quest.hasPendingRewards(player.getUniqueId()))
-                    continue;
+         // Quest pending reward notification
+         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+             for (Quest quest : QuestsManager.getAllQuests()) {
+                 if (!quest.hasPendingRewards(player.getUniqueId()))
+                     continue;
 
-                int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    MessagesManager.sendMessage(player,
-                            Component.text("§aVous avez " + pendingRewardsNumber + " récompense(s) de quête en attente.")
-                                    .append(Component.text(" §6Cliquez ici pour les récupérer."))
-                                            .clickEvent(ClickEvent.runCommand("/quest")),
-                            Prefix.QUEST,
-                            MessageType.INFO,
-                            true);
-                });
-            }
-        });
+                 int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
+                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                     MessagesManager.sendMessage(player,
+                             TranslationManager.translation("core.player.join.quest_reward", Component.text(pendingRewardsNumber))
+                                     .append(Component.text(" "))
+                                     .append(TranslationManager.translation("core.player.join.quest_reward_click"))
+                                             .clickEvent(ClickEvent.runCommand("/quest")),
+                             Prefix.QUEST,
+                             MessageType.INFO,
+                             true);
+                 });
+             }
+         });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
             event.joinMessage(Component.text(JOIN_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
@@ -102,28 +104,28 @@ public class JoinQuitMessageListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
 
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
-            for (UUID friendUUID : friendsUUIDS) {
-                final Player friend = player.getServer().getPlayer(friendUUID);
-                if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
-                }
-            }
-        }).exceptionally(throwable -> {
-            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
-            return null;
-        });
+         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+             for (UUID friendUUID : friendsUUIDS) {
+                 final Player friend = player.getServer().getPlayer(friendUUID);
+                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
+                     MessagesManager.sendMessage(friend, TranslationManager.translation("core.player.quit.friend_offline", Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())), Prefix.FRIEND, MessageType.NONE, true);
+                 }
+             }
+         }).exceptionally(throwable -> {
+             OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+             return null;
+         });
 
-        if (TPAManager.requesterHasPendingRequest(player)) {
-            Player targetTPA = TPAManager.getTargetByRequester(player);
-            TPAManager.removeRequest(player, targetTPA);
-            MessagesManager.sendMessage(targetTPA, Component.text("§3La demande de téléportation de §6" + player.getName() + " §4a été annulée car il s'est déconnecté"), Prefix.OPENMC, MessageType.INFO, true);
-        } else if (TPAManager.hasPendingRequest(player)) {
-            for (Player requester : TPAManager.getRequesters(player)) {
-                TPAManager.removeRequest(requester, player);
-                MessagesManager.sendMessage(requester, Component.text("§4Votre demande de téléportation à §6" + player.getName() + " §4a été annulée car il s'est déconnecté"), Prefix.OPENMC, MessageType.WARNING, true);
-            }
-        }
+         if (TPAManager.requesterHasPendingRequest(player)) {
+             Player targetTPA = TPAManager.getTargetByRequester(player);
+             TPAManager.removeRequest(player, targetTPA);
+             MessagesManager.sendMessage(targetTPA, TranslationManager.translation("core.player.tpa.expired_target", Component.text(player.getName())), Prefix.OPENMC, MessageType.INFO, true);
+         } else if (TPAManager.hasPendingRequest(player)) {
+             for (Player requester : TPAManager.getRequesters(player)) {
+                 TPAManager.removeRequest(requester, player);
+                 MessagesManager.sendMessage(requester, TranslationManager.translation("core.player.tpa.expired_requester", Component.text(player.getName())), Prefix.OPENMC, MessageType.WARNING, true);
+             }
+         }
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
             event.quitMessage(Component.text(QUIT_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
