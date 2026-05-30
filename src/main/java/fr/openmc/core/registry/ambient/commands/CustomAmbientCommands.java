@@ -43,7 +43,14 @@ public class CustomAmbientCommands {
             Player player,
             Player toPlayer
     ) {
-        CustomAmbient.reset(toPlayer);
+        if (!CustomAmbient.ACTIVE_AMBIENTS.containsKey(toPlayer.getUniqueId())) {
+            MessagesManager.sendMessage(player, TranslationManager.translation("command.registry.custom_ambient.reset.player_havnt_ambient"), Prefix.STAFF, MessageType.ERROR, true);
+            return;
+        }
+
+        String idAmbient = CustomAmbient.ACTIVE_AMBIENTS.get(toPlayer.getUniqueId());
+
+        OMCRegistry.CUSTOM_AMBIENTS.get(idAmbient).reset(toPlayer);
         MessagesManager.sendMessage(player, TranslationManager.translation("command.registry.custom_ambient.reset.success",
                 Component.text(toPlayer.getName()).color(NamedTextColor.YELLOW)
         ), Prefix.STAFF, MessageType.ERROR, true);

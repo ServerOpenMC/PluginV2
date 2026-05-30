@@ -1,9 +1,12 @@
 package fr.openmc.api.datapacks.injectors;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fr.openmc.api.datapacks.DatapackInjector;
+import net.minecraft.world.level.dimension.DimensionType;
+import org.bukkit.Particle;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +67,9 @@ public class DimensionTypesInjector implements DatapackInjector {
      *   "has_ceiling": false,
      *   "has_ender_dragon_fight": false,
      *   "has_skylight": true,
+     *   "has_fixed_time": true,
+     *   "skybox": "overworld",
+     *   "cardinal_light": "default",
      *   "height": 384,
      *   "infiniburn": "#minecraft:infiniburn_overworld",
      *   "logical_height": 384,
@@ -85,13 +91,16 @@ public class DimensionTypesInjector implements DatapackInjector {
         private Boolean hasCeiling = false;
         private Boolean hasEnderDragonFlight = false;
         private Boolean hasSkylight = true;
+        private Boolean hasFixedTime = false;
+        private String skybox = "overworld";
+        private String cardinalLight = "default";
         private Integer height = 384;
         private String infiniburn = "#infiniburn_overworld";
         private Integer logicalHeight = 384;
         private Integer minY = -64;
         private Integer monsterSpawnBlockLightLimit = 0;
         private JsonElement monsterSpawnLightLevel = new JsonPrimitive(0);
-        private String timelines;
+        private String timelines = "#minecraft:in_overworld";
 
         public DimensionTypeBuilder attributes(Consumer<JsonObject> builder) {
             JsonObject obj = new JsonObject();
@@ -103,6 +112,38 @@ public class DimensionTypesInjector implements DatapackInjector {
         public DimensionTypeBuilder attributes(JsonObject attributes) {
             this.attributes = attributes;
             return this;
+        }
+
+        /**
+         * Ajoute un attribut "minecraft:visual/ambient_particles" simple.
+         * Exemple :
+         * "minecraft:visual/ambient_particles": [ { "particle": { "type": "minecraft:crimson_spore" }, "probability": 0.025 } ]
+         */
+        public DimensionTypeBuilder ambientParticles(String particleType, double probability) {
+            if (this.attributes == null) this.attributes = new JsonObject();
+            JsonObject entry = new JsonObject();
+            JsonObject particle = new JsonObject();
+            particle.addProperty("type", particleType);
+            entry.add("particle", particle);
+            entry.addProperty("probability", probability);
+
+            if (this.attributes.has("minecraft:visual/ambient_particles") && this.attributes.get("minecraft:visual/ambient_particles").isJsonArray()) {
+                this.attributes.getAsJsonArray("minecraft:visual/ambient_particles").add(entry);
+            } else {
+                JsonArray arr = new JsonArray();
+                arr.add(entry);
+                this.attributes.add("minecraft:visual/ambient_particles", arr);
+            }
+            return this;
+        }
+
+        /**
+         * Ajoute un attribut "minecraft:visual/ambient_particles" simple.
+         * Exemple :
+         * "minecraft:visual/ambient_particles": [ { "particle": { "type": "minecraft:crimson_spore" }, "probability": 0.025 } ]
+         */
+        public DimensionTypeBuilder ambientParticles(Particle particle, double probability) {
+            return ambientParticles(particle.getKey().toString(), probability);
         }
 
         public DimensionTypeBuilder ambientLight(double ambientLight) {
@@ -132,6 +173,25 @@ public class DimensionTypesInjector implements DatapackInjector {
 
         public DimensionTypeBuilder hasSkylight(boolean hasSkylight) {
             this.hasSkylight = hasSkylight;
+            return this;
+        }
+
+        public DimensionTypeBuilder hasFixedTime(boolean hasFixedTime) {
+            this.hasFixedTime = hasFixedTime;
+            return this;
+        }
+
+        public DimensionTypeBuilder skybox(String skybox) {
+            this.skybox = skybox;
+            return this;
+        }
+
+        public DimensionTypeBuilder skybox(DimensionType.Skybox skybox) {
+            return skybox(skybox.getSerializedName());
+        }
+
+        public DimensionTypeBuilder cardinalLight(String cardinalLight) {
+            this.cardinalLight = cardinalLight;
             return this;
         }
 
@@ -193,6 +253,9 @@ public class DimensionTypesInjector implements DatapackInjector {
             if (hasCeiling != null) json.addProperty("has_ceiling", hasCeiling);
             if (hasEnderDragonFlight != null) json.addProperty("has_ender_dragon_fight", hasEnderDragonFlight);
             if (hasSkylight != null) json.addProperty("has_skylight", hasSkylight);
+            if (hasFixedTime != null) json.addProperty("has_fixed_time", hasFixedTime);
+            if (skybox != null) json.addProperty("skybox", skybox);
+            if (cardinalLight != null) json.addProperty("cardinal_light", cardinalLight);
             if (height != null) json.addProperty("height", height);
             if (infiniburn != null) json.addProperty("infiniburn", infiniburn);
             if (logicalHeight != null) json.addProperty("logical_height", logicalHeight);

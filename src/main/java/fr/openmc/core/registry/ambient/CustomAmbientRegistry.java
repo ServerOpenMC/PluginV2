@@ -4,6 +4,7 @@ import fr.openmc.api.datapacks.OMCDatapack;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
+import fr.openmc.core.registry.ambient.contents.HellAmbient;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
@@ -20,7 +21,8 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
     @Override
     public void bootstrap(BootstrapContext context) throws IOException {
         register(
-                new DarkAmbient()
+                new DarkAmbient(),
+                new HellAmbient()
         );
 
         for (CustomAmbient ambient : values()) {

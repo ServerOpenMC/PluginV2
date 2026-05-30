@@ -16,10 +16,28 @@ import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public abstract class CustomAmbient {
+    // ** UUID playerUUID -> String idAmbient
+    public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
+
     public abstract String getId();
     public abstract DimensionTypesInjector.DimensionTypeBuilder getDimensionType();
 
+    /**
+     * Choix de la transition de dimension lorsque le joueur change d'ambience
+     * @return La key de la dimension
+     */
+    public abstract ResourceKey<Level> getTransitionDimension();
+
+    /**
+     * Converti notre DimensionTypeBuild en un injecteur de datapack
+     * et qui mettera les dimension_type sous le namepsace omc_ambient
+     * @return Un datapack injector
+     */
     public DatapackInjector toDimensionTypeInjector() {
         return new DimensionTypesInjector("omc_ambient").add(getId(), getDimensionType());
     }
@@ -35,25 +53,39 @@ public abstract class CustomAmbient {
         PlayerRespawnNMS.sendPacket(
                 nmsPlayer,
                 getPlayerAmbientSpawnInfo(nmsPlayer),
-                getPivotDimension(nmsPlayer)
+                nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD)
+                        ? this.getTransitionDimension()
+                        : Level.OVERWORLD
         );
+
+        ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }
 
     /**
      * Retire l'ambience du Joueur
      * @param player le joueur ciblé
      */
-    public static void reset(Player player) {
+    public void reset(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         // * On envoie le packet respawn qui remets tout a la normale
         PlayerRespawnNMS.sendPacket(
                 nmsPlayer,
                 nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()),
-                getPivotDimension(nmsPlayer)
+                nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD)
+                        ? this.getTransitionDimension()
+                        : Level.OVERWORLD
         );
+
+        ACTIVE_AMBIENTS.remove(player.getUniqueId());
     }
 
+    /**
+     * Crée les informations de spawn du joueur en fonction de l'ambience ciblé
+     * En gros on cherche le dimension_type enregistré dans le registre, et on le mets dans les infos de spawn du joueur
+     * @param nmsPlayer le joueur ciblé
+     * @return les informations de spawn
+     */
     private CommonPlayerSpawnInfo getPlayerAmbientSpawnInfo(ServerPlayer nmsPlayer) {
         ServerLevel nmsWorld = nmsPlayer.level();
         CommonPlayerSpawnInfo spawnInfo = nmsPlayer.createCommonSpawnInfo(nmsPlayer.level());
@@ -82,10 +114,5 @@ public abstract class CustomAmbient {
                 spawnInfo.portalCooldown(),
                 spawnInfo.seaLevel()
         );
-    }
-
-    private static ResourceKey<Level> getPivotDimension(ServerPlayer nmsPlayer) {
-            return nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension()
-                    .equals(Level.OVERWORLD) ? Level.END : Level.NETHER;
     }
 }

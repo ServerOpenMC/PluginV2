@@ -118,12 +118,6 @@ public class PlayerRespawnNMS {
                 nmsPlayer.chunkPosition().z()
         ));
 
-        // ** Synchronise le cycle jour-nuit avec le monde actuel
-        nmsPlayer.connection.send(new ClientboundSetTimePacket(
-                nmsWorld.getGameTime(),
-                nmsWorld.clockManager().createFullSyncPacket().clockUpdates()
-        ));
-
         int viewDistance = nmsWorld.getServer().getPlayerList().getViewDistance();
         ChunkPos center = nmsPlayer.chunkPosition();
         for (int cx = center.x() - viewDistance; cx <= center.x() + viewDistance; cx++) {
