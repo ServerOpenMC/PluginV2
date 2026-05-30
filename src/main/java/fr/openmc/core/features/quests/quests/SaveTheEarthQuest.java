@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,7 +15,11 @@ import java.util.List;
 public class SaveTheEarthQuest extends Quest implements Listener {
 
     public SaveTheEarthQuest() {
-        super("Sauvons la planète", List.of("Planter {target} arbres et les faire grandir avec des poudres d'os"), Material.OAK_SAPLING);
+        super(
+                TranslationManager.translationString("feature.quests.save_the_earth.name"),
+                List.of(TranslationManager.translationString("feature.quests.save_the_earth.description")),
+                Material.OAK_SAPLING
+        );
 
         this.addTiers(
                 new QuestTier(10, new QuestItemReward(Material.OAK_LOG, 32)),

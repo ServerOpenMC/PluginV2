@@ -32,8 +32,4 @@ public record QuestTextReward(Component text, Prefix prefix, MessageType message
         }, 1L);
 
     }
-
-    public QuestTextReward(String text, Prefix prefix, MessageType messageType) {
-        this(Component.text(text), prefix, messageType);
-    }
 }

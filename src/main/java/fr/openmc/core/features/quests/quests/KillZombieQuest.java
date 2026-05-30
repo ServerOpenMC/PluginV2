@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
@@ -16,7 +17,11 @@ import java.util.List;
 public class KillZombieQuest extends Quest implements Listener {
 
     public KillZombieQuest() {
-        super("Apocalypse zombie ?", List.of("Tuer {target} zombies"), Material.ZOMBIE_HEAD);
+        super(
+                TranslationManager.translationString("feature.quests.kill_zombie.name"),
+                List.of(TranslationManager.translationString("feature.quests.kill_zombie.description")),
+                Material.ZOMBIE_HEAD
+        );
 
         this.addTiers(
                 new QuestTier(1000, new QuestMoneyReward(300)),

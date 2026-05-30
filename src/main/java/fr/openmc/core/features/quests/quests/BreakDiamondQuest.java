@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -17,8 +18,8 @@ public class BreakDiamondQuest extends Quest implements Listener {
 
     public BreakDiamondQuest() {
         super(
-                "Richou",
-                List.of("Casser {target} minerai{s} de diamant"),
+                TranslationManager.translationString("feature.quests.break_diamond.name"),
+                List.of(TranslationManager.translationString("feature.quests.break_diamond.description")),
                 Material.DIAMOND
         );
 
