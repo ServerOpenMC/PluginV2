@@ -90,6 +90,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
     }
 
+    @Override
     public Optional<CustomItem> get(String id) {
         if (super.get(id).isPresent()) return super.get(id);
 
