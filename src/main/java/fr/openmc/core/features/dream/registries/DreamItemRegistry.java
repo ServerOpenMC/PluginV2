@@ -118,12 +118,15 @@ public class DreamItemRegistry {
     public static final DreamItem MECHANIC_PICKAXE = create(new MecanicPickaxe());
 
     // * Registre des DreamItems accessible durant le bootstrap
-    public static final Set<CustomItem> DREAM_ITEM_REGISTRY = new HashSet<>();
+    public static Set<CustomItem> DREAM_ITEM_REGISTRY;
 
     // * Registre des DreamItems accesible via leur id, tres utilisé durant le bootstrap
     private static Map<String, DreamItem> DREAM_ITEM_BY_NAME_REGISTRY;
 
     private static DreamItem create(DreamItem item) {
+        if (DREAM_ITEM_REGISTRY == null)
+            DREAM_ITEM_REGISTRY = new HashSet<>();
+
         DREAM_ITEM_REGISTRY.add(item);
         return item;
     }
