@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class HomeDeleteConfirmMenu extends Menu {
 
@@ -55,7 +54,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(2, new ItemBuilder(
                             this,
-                            OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red").getBest(),
+                            OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(),
                             itemMeta -> {
                                 itemMeta.displayName(TranslationManager.translation("feature.homes.delete.confirm.name"));
                                 itemMeta.lore(TranslationManager.translationLore("feature.homes.delete.confirm.lore"));
@@ -87,7 +86,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(6, new ItemBuilder(
                     this,
-                    Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin")).getBest(),
+                    OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN.getBest(),
                     itemMeta ->
                             itemMeta.displayName(TranslationManager.translation("feature.homes.delete.cancel.name")), true)
             );

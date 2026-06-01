@@ -16,43 +16,43 @@ public class CloudVaultLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return Set.of(
                 new CustomLoot(
-                        DreamItemRegistry.getByName("cloud_helmet"),
+                        DreamItemRegistry.CLOUD_HELMET,
                         0.125,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("cloud_chestplate"),
+                        DreamItemRegistry.CLOUD_CHESTPLATE,
                         0.125,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("cloud_leggings"),
+                        DreamItemRegistry.CLOUD_LEGGINGS,
                         0.125,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("cloud_boots"),
+                        DreamItemRegistry.CLOUD_BOOTS,
                         0.125,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("somnifere"),
+                        DreamItemRegistry.SOMNIFERE,
                         0.45,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("cloud_fishing_rod"),
+                        DreamItemRegistry.CLOUD_FISHING_ROD,
                         0.08,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        OMCRegistry.CUSTOM_ENCHANTS.get(
+                        OMCRegistry.CUSTOM_ENCHANTS.getOrThrow(
                                 Key.key("omc_dream:dream_sleeper")
                         ).getEnchantedBookItem(2).getBest(),
                         0.10,

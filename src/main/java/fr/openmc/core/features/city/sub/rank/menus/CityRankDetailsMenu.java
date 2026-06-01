@@ -150,13 +150,13 @@ public class CityRankDetailsMenu extends Menu {
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open()));
 		
-		map.put(18, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), itemMeta -> {
+		map.put(18, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN.getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.cancel_create.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.cancel_create.lore"));
 		}).setOnClick(inventoryClickEvent -> getOwner().closeInventory()));
 		
 		if (canManageRanks) {
-			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), itemMeta -> {
+			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN.getBest(), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.create.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.create.lore"));
 			}).setOnClick(inventoryClickEvent -> {
@@ -284,7 +284,7 @@ public class CityRankDetailsMenu extends Menu {
 			else new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
 		}));
 		
-		map.put(18, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), itemMeta -> {
+		map.put(18, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN.getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.cancel_edit.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.cancel_edit.lore"));
 		}).setOnClick(inventoryClickEvent -> {
@@ -293,14 +293,14 @@ public class CityRankDetailsMenu extends Menu {
 		}));
 		
 		if (canManageRanks) {
-			map.put(22, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:minus_btn").getBest(), itemMeta -> {
+			map.put(22, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.MINUS_BTN.getBest(), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.delete.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.delete.lore"));
 			}).setOnClick(inventoryClickEvent ->
 					CityRankAction.deleteRank(getOwner(), oldRank.getName())
 			));
 			
-			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), itemMeta -> {
+			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN.getBest(), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.details.save.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.details.save.lore"));
 			}).setOnClick(inventoryClickEvent -> {

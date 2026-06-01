@@ -14,37 +14,37 @@ public class CloudFishingLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return Set.of(
                 new CustomLoot(
-                        DreamItemRegistry.getByName("meteo_wand"),
+                        DreamItemRegistry.METEO_WAND,
                         0.05,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("poissonion"),
+                        DreamItemRegistry.POISSONION,
                         0.5,
                         1,
                         2
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("moon_fish"),
+                        DreamItemRegistry.MOON_FISH,
                         0.5,
                         1,
                         2
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("sun_fish"),
+                        DreamItemRegistry.SUN_FISH,
                         0.5,
                         1,
                         2
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("dockerfish"),
+                        DreamItemRegistry.DOCKER_FISH,
                         0.1,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("somnifere"),
+                        DreamItemRegistry.SOMNIFERE,
                         0.4,
                         1,
                         1

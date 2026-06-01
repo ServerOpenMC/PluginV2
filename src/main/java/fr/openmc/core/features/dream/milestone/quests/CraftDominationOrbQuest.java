@@ -25,7 +25,7 @@ public class CraftDominationOrbQuest extends MilestoneQuest implements Listener 
 						"§fFabriquer l'§dOrbe de Domination",
 						"§8§o1 sur 5 pour les dominer tous !"
 				),
-				DreamItemRegistry.getByName("omc_dream:domination_orb").getBest(),
+				DreamItemRegistry.DOMINATION_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_DOMINATION_ORB,
 				new QuestTier(1),

@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 
 public class CityUnclaimAction {
-    private static final ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+    private static final ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
 
     public static int calculatePrice(int chunkCount) {
         return 5000 + ((chunkCount - 1) * 1000) / 3;

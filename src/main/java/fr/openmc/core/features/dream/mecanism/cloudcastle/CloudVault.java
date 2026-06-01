@@ -19,15 +19,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class CloudVault implements Listener {
-    private final CustomLootTable CLOUD_VAULT_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.get("omc_dream:cloud_vault");
+    private final CustomLootTable CLOUD_VAULT_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.getOrThrow("omc_dream:cloud_vault");
 
     public static void replaceBlockWithVault(Block block) {
         block.setType(Material.VAULT);
 
         if (block.getState() instanceof Vault vault) {
-            vault.setKeyItem(DreamItemRegistry.getByName("cloud_key").getBest());
-
-            vault.setDisplayedItem(DreamItemRegistry.getByName("cloud_key").getBest());
+            vault.setKeyItem(DreamItemRegistry.CLOUD_KEY.getBest());
+            vault.setDisplayedItem(DreamItemRegistry.CLOUD_KEY.getBest());
             vault.update();
         }
     }

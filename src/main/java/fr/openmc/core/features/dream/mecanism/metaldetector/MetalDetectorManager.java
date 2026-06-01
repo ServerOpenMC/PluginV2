@@ -11,7 +11,7 @@ import java.util.UUID;
 public class MetalDetectorManager {
     public static final Map<UUID, MetalDetectorTask> hiddenChests = new HashMap<>();
 
-    public static final CustomLootTable METAL_DETECTOR_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.get("omc_dream:metal_detector");
+    public static final CustomLootTable METAL_DETECTOR_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.getOrThrow("omc_dream:metal_detector");
 
     public static void init() {
         OMCPlugin.registerEvents(

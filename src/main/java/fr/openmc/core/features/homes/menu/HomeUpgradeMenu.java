@@ -9,7 +9,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class HomeUpgradeMenu extends Menu {
 
@@ -53,7 +51,7 @@ public class HomeUpgradeMenu extends Menu {
                     ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
                     : lastUpgrade;
 
-            items.put(4, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            items.put(4, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE.getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
                 if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
                     itemMeta.lore(TranslationManager.translationLore(

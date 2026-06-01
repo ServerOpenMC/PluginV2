@@ -159,22 +159,21 @@ public class CityPlayerListMenu extends PaginatedMenu {
           itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
+        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
 	        itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setOnClick(inventoryClickEvent ->
                 getOwner().closeInventory()
         ));
 
         map.put(48,
-                new ItemBuilder(this,
-                        Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange")).getBest(),
+                new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
 	                    itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
         map.put(50,
-                new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange")).getBest(),
+                new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
 	                    itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 
 
-        map.put(53, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_search")).getBest(), itemMeta -> {
+        map.put(53, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_SEARCH, itemMeta -> {
 	        itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.invite.title"));
             itemMeta.lore(
                     TranslationManager.translationLore(

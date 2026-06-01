@@ -63,7 +63,7 @@ public class Experientastic extends DreamEnchantment implements Listener {
         Player player = event.getEntity().getKiller();
         if (player == null) return;
 
-        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.get(this.getKey()).getEnchantment();
+        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.getOrThrow(this.getKey()).getEnchantment();
         if (enchant == null) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();

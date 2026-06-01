@@ -119,7 +119,7 @@ public class MascotsSkinMenu extends Menu {
                     }
                     if (!egg.equals(type.getSpawnEgg())) {
                         int aywenite = type.getPrice();
-                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                         if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
                             changeMascotsSkin(mascots, type.getEntityType(), getOwner(), aywenite);
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);

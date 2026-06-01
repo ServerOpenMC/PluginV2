@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -53,8 +54,23 @@ public class ItemBuilder extends ItemStack {
 	}
 
 	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link CustomItem}.
+	 * This constructor initializes the {@code ItemBuilder} to create items using the given menu and custom item,
+	 * with no additional customizations for the {@link ItemMeta}.
+	 *
+	 * @param itemMenu The {@link Menu} this item will be associated with. It represents the context in which
+	 *                 the item exists, such as a specific inventory or menu framework.
+	 * @param customItem The {@link CustomItem} of the item. It determines the base appearance and behavior
+	 *                 of the item being created.
+	 */
+	public ItemBuilder(Menu itemMenu, CustomItem customItem) {
+		this(itemMenu, customItem.getBest(), null, false);
+	}
+
+
+	/**
 	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link Material}.
-	 * This constructor initializes the {@code ItemBuilder} to create items using the given menu and material,
+	 * This constructor initializes the {@code ItemBuilder} to create items using the given menu and custom item,
 	 * with no additional customizations for the {@link ItemMeta}.
 	 *
 	 * @param itemMenu The {@link Menu} this item will be associated with. It represents the context in which
@@ -64,6 +80,21 @@ public class ItemBuilder extends ItemStack {
 	 */
 	public ItemBuilder(Menu itemMenu, Material material, boolean isBackButton) {
 		this(itemMenu, material, null, isBackButton);
+		this.backButton = isBackButton;
+	}
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link CustomItem}.
+	 * This constructor initializes the {@code ItemBuilder} to create items using the given menu and custom item,
+	 * with no additional customizations for the {@link ItemMeta}.
+	 *
+	 * @param itemMenu The {@link Menu} this item will be associated with. It represents the context in which
+	 *                 the item exists, such as a specific inventory or menu framework.
+	 * @param customItem The {@link CustomItem} of the item. It determines the base appearance and behavior
+	 *                 of the item being created.
+	 */
+	public ItemBuilder(Menu itemMenu, CustomItem customItem, boolean isBackButton) {
+		this(itemMenu, customItem.getBest(), null, isBackButton);
 		this.backButton = isBackButton;
 	}
 	
@@ -167,6 +198,51 @@ public class ItemBuilder extends ItemStack {
 	 */
 	public ItemBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
 		super(item);
+		this.itemMenu = itemMenu;
+		this.backButton = isBackButton;
+		meta = getItemMeta();
+		if (itemMeta != null) {
+			itemMeta.accept(meta);
+		}
+		setItemMeta(meta);
+	}
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link CustomItem},
+	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
+	 * This constructor initializes the {@code ItemBuilder} with a menu, a specific item to define
+	 * the base configuration, and a consumer for applying additional metadata customizations to the item.
+	 *
+	 * @param itemMenu   The {@link Menu} this item will be associated with. It represents the context in which
+	 *                   the item exists, such as a specific inventory or menu framework.
+	 * @param customitem The {@link CustomItem} defining the base item configuration. It includes the material,
+	 *                   amount, and current metadata of the item.
+	 * @param itemMeta   A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
+	 *                   modification of properties such as the display name, lore, enchantments, and more.
+	 */
+	public ItemBuilder(Menu itemMenu, CustomItem customitem, Consumer<ItemMeta> itemMeta) {
+		super(customitem.getBest());
+		this.itemMenu = itemMenu;
+		meta = customitem.getBest().getItemMeta();
+		if (itemMeta != null) itemMeta.accept(meta);
+		setItemMeta(meta);
+	}
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link CustomItem},
+	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
+	 * This constructor initializes the {@code ItemBuilder} with a menu, a specific item to define
+	 * the base configuration, and a consumer for applying additional metadata customizations to the item.
+	 *
+	 * @param itemMenu 		 The {@link Menu} this item will be associated with. It represents the context in which
+	 *                 		 the item exists, such as a specific inventory or menu framework.
+	 * @param customItem     The {@link CustomItem} defining the base item configuration. It includes the material,
+	 *                 		 amount, and current metadata of the item.
+	 * @param itemMeta 		 A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
+	 *                 		 modification of properties such as the display name, lore, enchantments, and more.
+	 */
+	public ItemBuilder(Menu itemMenu, CustomItem customItem, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
+		super(customItem.getBest());
 		this.itemMenu = itemMenu;
 		this.backButton = isBackButton;
 		meta = getItemMeta();

@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Optional;
+
 public class CustomMobRegistry extends Registry<String, CustomMobEntry> {
 
     public static final NamespacedKey CUSTOM_MOB_KEY =
@@ -38,8 +40,8 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> {
     }
 
     public CustomMob<?> getMob(String id) {
-        CustomMobEntry entry = get(id);
-        return entry != null ? entry.factory().apply(id) : null;
+        Optional<CustomMobEntry> entry = get(id);
+        return entry.isPresent() ? entry.get().factory().apply(id) : null;
     }
 
     public CustomMob<?> getMob(Entity entity) {

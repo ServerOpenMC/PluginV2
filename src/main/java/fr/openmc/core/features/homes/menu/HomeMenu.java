@@ -30,7 +30,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HomeMenu extends PaginatedMenu {
 
@@ -146,7 +149,7 @@ public class HomeMenu extends PaginatedMenu {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
         if(!wasTarget) {
-            map.put(53, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            map.put(53, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE.getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
                 itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
             }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));

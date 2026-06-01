@@ -70,7 +70,7 @@ public class CityCreateAction {
 
     private static ItemStack getMascotStick() {
         ItemStack stick;
-        CustomItem mascotStick = OMCRegistry.CUSTOM_ITEMS.get("omc_items:mascot_stick");
+        CustomItem mascotStick = OMCRegistry.CUSTOM_ITEMS.MASCOT_STICK;
         if (mascotStick != null)
             stick = mascotStick.getBest();
         else

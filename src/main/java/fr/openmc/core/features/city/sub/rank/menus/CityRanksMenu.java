@@ -127,7 +127,7 @@ public class CityRanksMenu extends Menu {
 		if (canManageRanks) {
 			List<Component> loreCreateRank = TranslationManager.translationLore("feature.city.rank.menu.list.create.lore");
 
-			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(),
+			map.put(26, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.PLUS_BTN.getBest(),
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.create.title"));
 						itemMeta.lore(loreCreateRank);

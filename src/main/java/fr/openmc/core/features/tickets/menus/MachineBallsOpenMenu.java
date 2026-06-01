@@ -260,12 +260,12 @@ public class MachineBallsOpenMenu extends Menu {
     private List<LootItem> initializeLootItems() {
         List<LootItem> items = new ArrayList<>();
 
-        items.add(new LootItem(OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_seinyy").getBest(),
+        items.add(new LootItem(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest(),
                 "§d§lPeluche Seinyy",
                 List.of(Component.text("§7Une petite peluche comme Seinyy !")),
                 10.0,
                 1,
-                List.of(OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_seinyy").getBest())));
+                List.of(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest())));
 
         items.add(new LootItem(Material.DIAMOND,
                 "§b§lDiamants",

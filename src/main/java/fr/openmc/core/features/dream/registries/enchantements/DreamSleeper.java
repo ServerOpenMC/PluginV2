@@ -66,7 +66,7 @@ public class DreamSleeper extends DreamEnchantment implements Listener {
         if (!(event.getDamager() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity living)) return;
 
-        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.get(this.getKey()).getEnchantment();
+        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.getOrThrow(this.getKey()).getEnchantment();
         if (enchant == null) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();

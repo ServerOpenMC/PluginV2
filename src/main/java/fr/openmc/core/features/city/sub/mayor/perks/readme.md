@@ -35,7 +35,7 @@ Il devra être un int, nom, un string,
 description, une liste de components
 itemstack, un itemstack :
 - ItemStack.of(Material)
-- OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), un CustomItem d'ItemAdder
+- OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), un CustomItem d'ItemAdder
 type de perk, PerkEvent donc soit un BASIC et EVENT
 
 Exemple d'une Réforme basique : 
@@ -92,7 +92,7 @@ public class AyweniterPerk implements Listener {
             if (block.getType() == Material.STONE) {
 
                 if (random.nextDouble() < DROP_CHANCE) {
-                    ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+                    ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                     ayweniteItem.setAmount(2);
                     player.getInventory().addItem(ayweniteItem);
                     player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 10.0F, 0.6F);

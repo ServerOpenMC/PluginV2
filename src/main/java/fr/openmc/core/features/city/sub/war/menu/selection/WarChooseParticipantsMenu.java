@@ -137,15 +137,15 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
-        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), meta -> {
+        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, meta -> {
             meta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
 
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), meta -> {
+        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, meta -> {
             meta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setCloseButton());
 
-        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), meta -> {
+        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, meta -> {
             meta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
 

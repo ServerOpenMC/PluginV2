@@ -99,9 +99,10 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this,  OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(),
+        map.put(45, new ItemBuilder(this,  OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
                 itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 
+        // todo: vrm dégeulasse ça
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());

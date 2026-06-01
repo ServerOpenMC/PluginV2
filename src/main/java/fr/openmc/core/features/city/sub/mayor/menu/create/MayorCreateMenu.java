@@ -229,11 +229,11 @@ public class MayorCreateMenu extends Menu {
         Component nameConfirm;
         List<Component> loreConfirm;
         if (canConfirmPerk) {
-            matConfirm = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest().getType();
+            matConfirm = OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN.getBest().getType();
             nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.ready").color(NamedTextColor.GREEN);
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.ready");
         } else {
-            matConfirm = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest().getType();
+            matConfirm = OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN.getBest().getType();
             nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.blocked").color(NamedTextColor.RED);
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.blocked");
         }

@@ -25,7 +25,7 @@ public class SoulOrbQuest extends MilestoneQuest implements Listener {
 						"§8§oÂmes dans la poche, permettez-moi, par votre pouvoir,",
 						"§8§od'obtenir votre orbe avec le sacrifice de l'Orbe de Domination."
 				),
-				DreamItemRegistry.getByName("omc_dream:ame_orb").getBest(),
+				DreamItemRegistry.SOUL_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.SOUL_ORB,
 				new QuestTier(1),

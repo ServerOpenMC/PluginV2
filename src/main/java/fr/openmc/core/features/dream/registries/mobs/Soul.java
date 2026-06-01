@@ -93,7 +93,7 @@ public class Soul extends DreamMob<Vex> {
     }
 
     private final List<CustomLoot> loots = List.of(new CustomLoot(
-            DreamItemRegistry.getByName("soul"),
+            DreamItemRegistry.SOUL,
             0.70,
             1,
             2

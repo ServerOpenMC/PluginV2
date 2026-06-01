@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static fr.openmc.core.features.homes.utils.HomeUtil.MAX_LENGTH_HOME_NAME;
 
@@ -87,7 +86,7 @@ public class HomeConfigMenu extends Menu {
             HomesManager.renameHome(home, input);
         })));
 
-        content.put(24, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
+        content.put(24, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.config.delete.name"));
             itemMeta.lore(TranslationManager.translationLore("feature.homes.config.delete.lore"));
         }).setOnClick(_ -> new HomeDeleteConfirmMenu(getOwner(), home).open()));

@@ -119,6 +119,6 @@ public class MineralRushPerk implements Listener {
 
         Block block = event.getBlock();
 
-        block.getWorld().dropItemNaturally(block.getLocation(), OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest());
+        block.getWorld().dropItemNaturally(block.getLocation(), OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest());
     }
 }

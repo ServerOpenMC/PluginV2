@@ -153,7 +153,7 @@ public class MascotMenu extends Menu {
 
                         movingMascots.add(cityUUID);
 
-                        ItemStack mascotsMoveItem = OMCRegistry.CUSTOM_ITEMS.get("omc_items:mascot_stick").getBest();
+                        ItemStack mascotsMoveItem = OMCRegistry.CUSTOM_ITEMS.MASCOT_STICK.getBest();
                         ItemMeta meta = mascotsMoveItem.getItemMeta();
 
                         if (meta != null) {

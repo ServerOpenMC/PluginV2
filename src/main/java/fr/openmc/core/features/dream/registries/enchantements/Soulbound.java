@@ -75,7 +75,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.get(this.getKey()).getEnchantment();
+        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.getOrThrow(this.getKey()).getEnchantment();
         if (enchant == null) return;
 
         int maxSoulboundLevel = 0;

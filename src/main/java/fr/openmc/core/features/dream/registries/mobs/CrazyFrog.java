@@ -20,7 +20,7 @@ public class CrazyFrog extends DreamMob<Frog> {
                 RandomUtils.randomBetween(0.2, 0.4),
                 RandomUtils.randomBetween(3, 2.3),
                 List.of(new CustomLoot(
-                        DreamItemRegistry.getByName("metal_detector"),
+                        DreamItemRegistry.METAL_DETECTOR,
                         0.5,
                         1,
                         1

@@ -109,7 +109,7 @@ public class LogVariantsMenu extends Menu {
         }
 
         content.put(49, new ItemBuilder(this,
-                OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN.getBest(),
                 true));
 
         return content;
