@@ -12,6 +12,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -77,7 +78,8 @@ public class MachineBallsMenu extends Menu {
                     if (ticketsToGive <= 0) {
                         MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.no_tickets"), Prefix.OPENMC, MessageType.ERROR, true);
                     } else {
-                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.claimed", Component.text(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.claimed",
+                                Component.text(ticketsToGive, NamedTextColor.YELLOW)), Prefix.OPENMC, MessageType.SUCCESS, true);
                     }
                 }
         ));

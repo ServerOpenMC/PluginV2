@@ -16,6 +16,7 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,7 +49,10 @@ public class JoinQuitMessageListener implements Listener {
              for (UUID friendUUID : friendsUUIDS) {
                  final Player friend = player.getServer().getPlayer(friendUUID);
                  if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                     MessagesManager.sendMessage(friend, TranslationManager.translation("core.player.join.friend_online", Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())), Prefix.FRIEND, MessageType.NONE, true);
+                      MessagesManager.sendMessage(friend, TranslationManager.translation(
+                              "core.player.join.friend_online",
+                              Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN)
+                      ), Prefix.FRIEND, MessageType.NONE, true);
                  }
              }
          }).exceptionally(throwable -> {
@@ -108,7 +112,10 @@ public class JoinQuitMessageListener implements Listener {
              for (UUID friendUUID : friendsUUIDS) {
                  final Player friend = player.getServer().getPlayer(friendUUID);
                  if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                     MessagesManager.sendMessage(friend, TranslationManager.translation("core.player.quit.friend_offline", Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())), Prefix.FRIEND, MessageType.NONE, true);
+                     MessagesManager.sendMessage(friend, TranslationManager.translation(
+                             "core.player.quit.friend_offline",
+                             Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.YELLOW)
+                     ), Prefix.FRIEND, MessageType.NONE, true);
                  }
              }
          }).exceptionally(throwable -> {
@@ -119,11 +126,17 @@ public class JoinQuitMessageListener implements Listener {
          if (TPAManager.requesterHasPendingRequest(player)) {
              Player targetTPA = TPAManager.getTargetByRequester(player);
              TPAManager.removeRequest(player, targetTPA);
-             MessagesManager.sendMessage(targetTPA, TranslationManager.translation("core.player.tpa.expired_target", Component.text(player.getName())), Prefix.OPENMC, MessageType.INFO, true);
+              MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
+                      "core.player.tpa.expired_target",
+                      Component.text(player.getName()).color(NamedTextColor.GOLD)
+              ), Prefix.OPENMC, MessageType.INFO, true);
          } else if (TPAManager.hasPendingRequest(player)) {
              for (Player requester : TPAManager.getRequesters(player)) {
                  TPAManager.removeRequest(requester, player);
-                 MessagesManager.sendMessage(requester, TranslationManager.translation("core.player.tpa.expired_requester", Component.text(player.getName())), Prefix.OPENMC, MessageType.WARNING, true);
+                  MessagesManager.sendMessage(requester, TranslationManager.translation(
+                          "core.player.tpa.expired_requester",
+                          Component.text(player.getName()).color(NamedTextColor.GOLD)
+                  ), Prefix.OPENMC, MessageType.WARNING, true);
              }
          }
 

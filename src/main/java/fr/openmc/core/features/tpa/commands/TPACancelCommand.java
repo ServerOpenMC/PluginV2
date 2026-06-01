@@ -6,6 +6,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -32,8 +33,14 @@ public class TPACancelCommand {
 		}
 		
 		TPAManager.removeRequest(player, target);
-		MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.success", Component.text(target.getName())), Prefix.OPENMC, MessageType.SUCCESS, true);
-		MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.cancel.cancelled", Component.text(player.getName())), Prefix.OPENMC, MessageType.INFO, true);
+		MessagesManager.sendMessage(player, TranslationManager.translation(
+				"feature.tpa.cancel.success",
+				Component.text(target.getName()).color(NamedTextColor.GOLD)
+		), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(target, TranslationManager.translation(
+				"feature.tpa.cancel.cancelled",
+				Component.text(player.getName()).color(NamedTextColor.DARK_RED)
+		), Prefix.OPENMC, MessageType.INFO, true);
 
 	}
 }

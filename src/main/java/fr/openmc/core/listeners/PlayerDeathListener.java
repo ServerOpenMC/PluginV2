@@ -28,7 +28,11 @@ public class PlayerDeathListener implements Listener {
 
          if (balance>0 && !DreamUtils.isInDreamWorld(player)) {
              withdrawBalance(player.getUniqueId(), balance * LOSS_MONEY);
-             MessagesManager.sendMessage(player, TranslationManager.translation("core.player.death.message", Component.text(getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon()), Component.text(getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon())), Prefix.OPENMC, MessageType.INFO, false);
+              MessagesManager.sendMessage(player, TranslationManager.translation(
+                      "core.player.death.message",
+                      Component.text(getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                      Component.text(getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
+              ), Prefix.OPENMC, MessageType.INFO, false);
          }
 
         Component deathMessage = event.deathMessage();

@@ -8,6 +8,8 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -24,14 +26,9 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
-        message = TranslationManager.translation("feature.updates.message.version_prefix")
-            .append(Component.text(" "))
-            .append(TranslationManager.translation("feature.updates.message.version_number", Component.text(version)).clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text(" "))
-            .append(TranslationManager.translation("feature.updates.message.plugin_info"))
-            .append(Component.text("\n"))
-            .append(TranslationManager.translation("feature.updates.message.changelog").clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("\n"));
+        message = TranslationManager.translation("feature.updates.message.broadcast_version",
+                Component.text(version, NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD)
+        ).clickEvent(ClickEvent.openUrl(milestoneUrl));
 
         long period = 14400 * 20;
 
