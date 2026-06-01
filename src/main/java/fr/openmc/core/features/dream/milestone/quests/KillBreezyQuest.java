@@ -1,12 +1,11 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.features.dream.registries.items.orb.CloudOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -55,7 +54,7 @@ public class KillBreezyQuest extends MilestoneQuest implements Listener {
 	public void onCollectOrb(EntityPickupItemEvent e) {
 		if (e.getEntity() instanceof Player player) {
 			if (!DreamUtils.isInDreamWorld(player)) return;
-			if (!DreamStructuresManager.isInsideStructure(player.getLocation(), DreamStructure.DreamType.CLOUD_CASTLE)) return;
+			if (!DreamStructure.isInInsideDreamStructure(player.getLocation(), DreamStructure.CLOUD_CASTLE)) return;
 			
 			ItemStack baseItem = e.getItem().getItemStack();
 			

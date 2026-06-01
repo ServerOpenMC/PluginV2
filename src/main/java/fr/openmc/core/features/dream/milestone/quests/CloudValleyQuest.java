@@ -1,13 +1,14 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.events.PlayerEnterBiomeEvent;
-import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.features.dream.generation.structures.DreamStructure;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
+import fr.openmc.core.features.dream.registries.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,14 +33,14 @@ public class CloudValleyQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Il s'agit d'une pleine d'un ancien peuple ayant dompté les forces du vent.",
 						"§3Voyageur : Tu devrais pouvoir y trouver des §drestes de leur civilisation§3.",
 						"§6C'est à dire ?",
-						"§3Voyageur : Tu as bien trouvé le " + DreamStructure.DreamType.SOUL_ALTAR.getName().substring(2) + " non ?"
+						"§3Voyageur : Tu as bien trouvé le " + PlainTextComponentSerializer.plainText().serialize(DreamStructure.CUBE_TEMPLE.getName()).substring(2) + " non ?"
 				)
 		);
 	}
 	
 	@EventHandler
 	public void onEnterBiome(PlayerEnterBiomeEvent e) {
-		if (e.getBiome() != DreamBiome.CLOUD_LAND.getBiome()) return;
+		if (!e.getBiome().equals(DreamBiome.CLOUD_LAND.getBiome())) return;
 		Player player = e.getPlayer();
 		
 		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;

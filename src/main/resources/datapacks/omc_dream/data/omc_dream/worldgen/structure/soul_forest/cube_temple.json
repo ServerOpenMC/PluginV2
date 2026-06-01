@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "omc_dream:soul_forest",
+  "step": "raw_generation",
+  "spawn_overrides": {},
+  "start_pool": "omc_dream:soul_forest/cube_temple/part_1",
+  "size": 8,
+  "start_height": {
+    "type": "minecraft:uniform",
+    "max_inclusive": {
+      "absolute": 70
+    },
+    "min_inclusive": {
+      "absolute": 65
+    }
+  },
+  "terrain_adaptation": "beard_box",
+  "max_distance_from_center": 100,
+  "use_expansion_hack": false
+}

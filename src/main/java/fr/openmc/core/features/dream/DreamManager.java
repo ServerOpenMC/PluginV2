@@ -18,16 +18,12 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.commands.AdminDreamCommands;
 import fr.openmc.core.features.dream.commands.DreamCommands;
-import fr.openmc.core.features.dream.generation.DreamBiome;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
-import fr.openmc.core.features.dream.generation.listeners.CloudStructureDispenserListener;
-import fr.openmc.core.features.dream.generation.listeners.ReplaceBlockListener;
-import fr.openmc.core.features.dream.generation.structures.DreamStructuresManager;
 import fr.openmc.core.features.dream.listeners.dream.*;
 import fr.openmc.core.features.dream.listeners.registry.CraftingConvertorListener;
 import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
-import fr.openmc.core.features.dream.listeners.structures.PlayerEnterStructureListener;
-import fr.openmc.core.features.dream.listeners.structures.PlayerExitStructureListener;
+import fr.openmc.core.features.dream.listeners.structures.CloudStructureDispenserListener;
+import fr.openmc.core.features.dream.listeners.structures.PlayerDreamStructureListener;
+import fr.openmc.core.features.dream.listeners.structures.ReplaceBlockListener;
 import fr.openmc.core.features.dream.mecanism.blocksdrops.DreamBlocksDropsManager;
 import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
@@ -41,10 +37,7 @@ import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DBPlayerSave;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.features.dream.registries.*;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Bukkit;
@@ -81,7 +74,6 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         DreamDimensionManager.init();
         GlaciteNpcManager.init();
         PlayerCloneNpc.init();
-        DreamStructuresManager.init();
         DreamItemRegistry.init();
         DreamLootTableRegistry.init();
         DreamBlocksRegistry.init();
@@ -126,8 +118,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new CraftingConvertorListener(),
                 new DreamItemEquipListener(),
                 new SingularityCraftListener(),
-                new PlayerEnterStructureListener(),
-                new PlayerExitStructureListener(),
+                new PlayerDreamStructureListener(),
                 new PlayerFoodChangeListener(),
                 new DreamLootListener()
         );
@@ -150,6 +141,8 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         DreamManager.saveAllDreamPlayerData();
 
         SingularityManager.disable();
+
+        DreamDimensionManager.save();
     }
 
     private static void loadAllPlayerSaveData() {
@@ -395,11 +388,10 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
     public static void tpPlayerDream(Player player) {
         Biome biome = DreamBiome.SCULK_PLAINS.getBiome();
-        World dreamWorld = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
 
-        if (dreamWorld == null) return;
+        if (DreamDimensionManager.DREAM_WORLD == null) return;
 
-        Location spawningLocation = LocationUtils.findLocationInBiome(dreamWorld, biome);
+        Location spawningLocation = LocationUtils.findLocationInBiome(DreamDimensionManager.DREAM_WORLD, biome);
 
         if (spawningLocation == null) return;
 
@@ -411,7 +403,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         if (dbDreamPlayer == null) return;
 
         player.teleportAsync(new Location(
-                Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME),
+                DreamDimensionManager.DREAM_WORLD,
                 dbDreamPlayer.getDreamX(),
                 dbDreamPlayer.getDreamY(),
                 dbDreamPlayer.getDreamZ()

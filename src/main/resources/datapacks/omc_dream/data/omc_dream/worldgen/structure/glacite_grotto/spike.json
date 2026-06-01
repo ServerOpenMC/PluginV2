@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "omc_dream:glacite_grotto",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_box",
+  "start_pool": "omc_dream:glacite_grotto/spike",
+  "size": 1,
+  "start_height": {
+    "type": "minecraft:uniform",
+    "max_inclusive": {
+        "absolute": 50
+    },
+    "min_inclusive": {
+        "absolute": -64
+    }
+  },
+  "max_distance_from_center": 1,
+  "use_expansion_hack": true
+}

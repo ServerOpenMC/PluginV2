@@ -20,10 +20,10 @@ public final class PacketMenuLib {
     @Getter
     private static final Map<UUID, Integer> windowIds = new HashMap<>();
     @Getter
-    private static PacketListener packetListener;
+    private static PacketMenuListener packetListener;
 
     public static void init(JavaPlugin plugin) {
-        packetListener = new PacketListener(plugin);
+        packetListener = new PacketMenuListener(plugin);
     }
 
     /**

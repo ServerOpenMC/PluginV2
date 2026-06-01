@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream;
 
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
