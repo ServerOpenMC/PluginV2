@@ -89,7 +89,7 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel"), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
         map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                 .setPreviousPageButton());

@@ -106,12 +106,12 @@ public class CityChestMenu extends PaginatedMenu {
 
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, Material.ARROW, true).setOnClick(inventoryClickEvent ->
-                exit(city, getInventory())));
+        map.put(45, new ItemBuilder(this, Material.ARROW, true)
+                .setOnClick(_ -> exit(city, getInventory())));
 
         map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             exit(city, getInventory());
             player.closeInventory();
         }));
