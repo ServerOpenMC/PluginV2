@@ -19,4 +19,10 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> {
             register(table);
         }
     }
+
+    public void register(Iterable<CustomLootTable> tables) {
+        for (CustomLootTable table : tables) {
+            register(table);
+        }
+    }
 }
