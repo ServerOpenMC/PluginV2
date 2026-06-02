@@ -3,6 +3,7 @@ package fr.openmc.core.features.homes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
@@ -10,7 +11,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -91,8 +91,8 @@ public class HomeConfigMenu extends Menu {
             itemMeta.lore(TranslationManager.translationLore("feature.homes.config.delete.lore"));
         }).setOnClick(_ -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
-        content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
-        content.put(44, MailboxMenuManager.cancelBtn(this).setCloseButton());
+        content.put(36, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this).setBackButton());
+        content.put(44, ItemMenuTemplate.BTN_CLOSE.apply(this));
 
         return content;
     }

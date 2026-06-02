@@ -365,6 +365,11 @@ public class ItemBuilder extends ItemStack {
 		return this;
 	}
 
+	public ItemBuilder setBackButton() {
+		this.backButton = true;
+		return this;
+	}
+
 	/**
 	 * Hides the tooltip of the item for the specified data component types.
 	 * If the tooltip is already hidden, this method will not change its state.
