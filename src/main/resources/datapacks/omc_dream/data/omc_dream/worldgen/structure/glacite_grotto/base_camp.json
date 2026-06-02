@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "omc_dream:glacite_grotto",
+  "step": "raw_generation",
+  "spawn_overrides": {},
+  "start_pool": "omc_dream:glacite_grotto/base_camp/part_1",
+  "size": 8,
+  "start_height": {
+    "type": "minecraft:uniform",
+    "max_inclusive": {
+        "absolute": -30
+    },
+    "min_inclusive": {
+        "absolute": -64
+    }
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}

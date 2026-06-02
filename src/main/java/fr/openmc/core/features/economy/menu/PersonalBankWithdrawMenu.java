@@ -6,7 +6,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +31,7 @@ public class PersonalBankWithdrawMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Banques - Retirer");
+        return TranslationManager.translation("feature.economy.bank.withdraw.menu.title");
     }
 
     @Override
@@ -55,32 +57,28 @@ public class PersonalBankWithdrawMenu extends Menu {
         double moneyBankPlayer = BankManager.getBankBalance(player.getUniqueId());
         double halfMoneyBankPlayer = moneyBankPlayer/2;
 
-        List<Component> loreBankWithdrawAll = List.of(
-                Component.text("§7Tout l'argent placé dans §6votre banque §7vous sera donné"),
-                Component.empty(),
-                Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.empty(),
-                Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
+        List<Component> loreBankWithdrawAll = TranslationManager.translationLore(
+                "feature.economy.bank.withdraw.all.lore",
+                Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre l'§6argent de votre banque"));
+            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.withdraw.all.name"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             player.closeInventory();
             BankManager.withdraw(player.getUniqueId(), String.valueOf(moneyBankPlayer));
         }));
 
-        List<Component> loreBankWithdrawHalf = List.of(
-                Component.text("§7La moitié de l'argent sera pris de §6votre banque §7pour vous le donner"),
-                Component.empty(),
-            Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.empty(),
-            Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
+        List<Component> loreBankWithdrawHalf = TranslationManager.translationLore(
+                "feature.economy.bank.withdraw.half.lore",
+                Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
         inventory.put(13, new ItemBuilder(this,new ItemStack(Material.DISPENSER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6argent de votre banque"));
+            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.withdraw.half.name"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             BankManager.withdraw(player.getUniqueId(), String.valueOf(halfMoneyBankPlayer));
@@ -88,16 +86,15 @@ public class PersonalBankWithdrawMenu extends Menu {
         }));
 
 
-        List<Component> loreBankWithdrawInput = List.of(
-                Component.text("§7L'argent demandé sera pris dans §6votre banque §7pour vous le donner"),
-            Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
+        List<Component> loreBankWithdrawInput = TranslationManager.translationLore(
+                "feature.economy.bank.withdraw.input.lore"
         );
 
         inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
+            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.withdraw.input.name"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.economy.bank.withdraw.input.prompt"), MAX_LENGTH, input -> {
                 if (input == null) return;
 
                 BankManager.withdraw(player.getUniqueId(), input);
@@ -105,11 +102,8 @@ public class PersonalBankWithdrawMenu extends Menu {
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu de votre banque"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
+            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
+            itemMeta.lore(TranslationManager.translationLore("feature.economy.bank.back.lore"));
         }, true));
 
         return inventory;

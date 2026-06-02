@@ -8,6 +8,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -20,19 +21,24 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DamageResistant;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.keys.tags.DamageTypeTagKeys;
+import io.papermc.paper.registry.tag.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Registry;
+import org.bukkit.damage.DamageType;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -126,7 +132,7 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
 
             List<ItemStack> rewards = new ArrayList<>();
 
-            final ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+            final ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
             aywenite.setAmount(64);
             switch (rank) {
                 case 1 -> {
@@ -134,16 +140,19 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                     customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
                     customPumpkin.unsetData(DataComponentTypes.FOOD);
 
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
+
+                    Registry<DamageType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE);
+                    Tag<DamageType> fireTag = registry.getTag(DamageTypeTagKeys.IS_FIRE);
+
+                    customPumpkin.setData(
+                            DataComponentTypes.DAMAGE_RESISTANT,
+                            DamageResistant.damageResistant(fireTag)
+                    );
+
                     customPumpkin.editMeta(meta -> {
-                        meta.itemName(Component.text("La Tarte de la Victoire (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
-                        meta.lore(List.of(
-                                Component.text("Récompense du joueur ayant récolté le plus de citrouilles", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("lors de l'événement Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.empty(),
-                                Component.text("Obtenu par ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                                        .append(Component.text(offlinePlayer.getName() == null ? "Inconnu" : offlinePlayer.getName(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-                        ));
+                        Component ownerName = Component.text(offlinePlayer.getName() == null ? TranslationManager.translationString("feature.events.halloween.unknown_player") : offlinePlayer.getName()).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+                        meta.itemName(TranslationManager.translation("feature.events.halloween.reward.rank1.name"));
+                        meta.lore(TranslationManager.translationLore("feature.events.halloween.reward.rank1.lore", ownerName));
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone(), aywenite.clone()));
@@ -155,17 +164,18 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                     customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
                     customPumpkin.unsetData(DataComponentTypes.FOOD);
 
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
+                    Registry<DamageType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE);
+                    Tag<DamageType> fireTag = registry.getTag(DamageTypeTagKeys.IS_FIRE);
+
+                    customPumpkin.setData(
+                            DataComponentTypes.DAMAGE_RESISTANT,
+                            DamageResistant.damageResistant(fireTag)
+                    );
+
                     customPumpkin.editMeta(meta -> {
-                        meta.itemName(Component.text("La Tarte de l'Excellence (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
-                        meta.lore(List.of(
-                                Component.text("Récompense du joueur ayant récolté la deuxième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("grande quantité de citrouilles lors de l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.empty(),
-                                Component.text("Obtenu par ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                                        .append(Component.text(offlinePlayer.getName() == null ? "Inconnu" : offlinePlayer.getName(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-                        ));
+                        Component ownerName = Component.text(offlinePlayer.getName() == null ? TranslationManager.translationString("feature.events.halloween.unknown_player") : offlinePlayer.getName()).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+                        meta.itemName(TranslationManager.translation("feature.events.halloween.reward.rank2.name"));
+                        meta.lore(TranslationManager.translationLore("feature.events.halloween.reward.rank2.lore", ownerName));
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone()));
@@ -177,17 +187,18 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                     customPumpkin.unsetData(DataComponentTypes.CONSUMABLE);
                     customPumpkin.unsetData(DataComponentTypes.FOOD);
 
-                    customPumpkin.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(DamageTypeTagKeys.IS_FIRE));
+                    Registry<DamageType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE);
+                    Tag<DamageType> fireTag = registry.getTag(DamageTypeTagKeys.IS_FIRE);
+
+                    customPumpkin.setData(
+                            DataComponentTypes.DAMAGE_RESISTANT,
+                            DamageResistant.damageResistant(fireTag)
+                    );
+
                     customPumpkin.editMeta(meta -> {
-                        meta.itemName(Component.text("La Tarte du Mérite (2025)", TextColor.color(255, 107, 37), TextDecoration.BOLD, TextDecoration.UNDERLINED));
-                        meta.lore(List.of(
-                                Component.text("Récompense du joueur ayant récolté la troisième plus", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("grande quantité de citrouilles lors de l'événement", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.text("Halloween 2025.", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                Component.empty(),
-                                Component.text("Obtenu par ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                                        .append(Component.text(offlinePlayer.getName() == null ? "Inconnu" : offlinePlayer.getName(), NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false))
-                        ));
+                        Component ownerName = Component.text(offlinePlayer.getName() == null ? TranslationManager.translationString("feature.events.halloween.unknown_player") : offlinePlayer.getName()).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+                        meta.itemName(TranslationManager.translation("feature.events.halloween.reward.rank3.name"));
+                        meta.lore(TranslationManager.translationLore("feature.events.halloween.reward.rank3.lore", ownerName));
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite));
@@ -210,17 +221,6 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
         halloweenNPC.removeForAll();
         npcManager.removeNpc(halloweenNPC);
 
-        Bukkit.getServer().sendMessage(
-                    Component.newline()
-                    .append(Component.text("L'événement Halloween 2025 est maintenant terminé !", TextColor.color(255, 107, 37))
-                            .append(Component.newline())
-                            .append(Component.text("Vous pouvez retrouver vos récompenses dans votre", TextColor.color(255, 107, 37))))
-                            .append(Component.text(" boîte aux lettres", TextColor.color(255, 107, 37), TextDecoration.BOLD))
-                            .append(Component.text(".", TextColor.color(255, 107, 37)))
-                            .append(Component.newline())
-                            .append(Component.text("Merci à tous pour votre participation !", TextColor.fromHexString("#FFD580")))
-                            .append(Component.newline())
-
-        );
+        Bukkit.getServer().sendMessage(TranslationManager.translation("feature.events.halloween.event.end.broadcast"));
     }
 }

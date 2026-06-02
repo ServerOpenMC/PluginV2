@@ -94,19 +94,19 @@ public class ShopMenu extends Menu {
             putOwnerItems(content);
         }
 
-        content.put(39, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+        content.put(39, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cItem précédent");
         }).setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, onFirstItem() ? itemIndex : itemIndex - 1).open()));
 
-        content.put(41, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+        content.put(41, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aItem suivant");
         }).setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, onLastItem() ? itemIndex : itemIndex + 1).open()));
 
-        content.put(40, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
+        content.put(40, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§7Fermer");
         }).setCloseButton());
 
-        content.put(19, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), itemMeta -> {
+        content.put(19, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:minus_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§5Définir à 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -114,7 +114,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(20, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
+        content.put(20, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_company:10_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cRetirer 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -126,7 +126,7 @@ public class ShopMenu extends Menu {
             }
             open();
         }));
-        content.put(21, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
+        content.put(21, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:1_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cRetirer 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -145,14 +145,14 @@ public class ShopMenu extends Menu {
                 itemMeta.setLore(lore);
             }).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat"))).open()));
 
-        content.put(23, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
+        content.put(23, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:1_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 1;
             open();
         }));
-        content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
+        content.put(24, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_company:10_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -160,7 +160,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(25, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), itemMeta -> {
+        content.put(25, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:64_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§5Ajouter 64");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -169,7 +169,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(44, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:company_box").getBest(), itemMeta -> {
+        content.put(44, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_company:company_box").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§7Catalogue");
         }).setOnClick(inventoryClickEvent -> new ShopCatalogueMenu(getOwner(), shop, itemIndex).open()));
 
@@ -183,7 +183,7 @@ public class ShopMenu extends Menu {
 
     private void putOwnerItems(Map<Integer, ItemBuilder> content) {
 
-        content.put(0, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
+        content.put(0, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§c§lSupprimer le shop");
         }).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression"))).open()));
 

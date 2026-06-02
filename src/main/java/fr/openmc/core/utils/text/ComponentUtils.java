@@ -2,7 +2,6 @@ package fr.openmc.core.utils.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class ComponentUtils {
@@ -23,7 +22,7 @@ public class ComponentUtils {
                 continue;
             }
             Component component = like.asComponent();
-            normalized[i] = component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE).colorIfAbsent(NamedTextColor.WHITE);
+            normalized[i] = component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
         }
         return normalized;
     }

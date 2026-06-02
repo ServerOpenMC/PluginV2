@@ -1,13 +1,12 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
-import fr.openmc.core.features.dream.registries.mobs.DreamCreaking;
-import fr.openmc.core.features.dream.registries.mobs.DreamSpider;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Creaking;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,7 +32,7 @@ public class PlainsMobSpawningListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     void onCreatureSpawn(CreatureSpawnEvent e) {
-        if (DreamMobsRegistry.isDreamMob(e.getEntity())) return;
+        if (CustomMobRegistry.isCustomMob(e.getEntity())) return;
 
         Location spawningLoc = e.getEntity().getLocation();
 
@@ -41,17 +40,17 @@ public class PlainsMobSpawningListener implements Listener {
         World world = spawningLoc.getWorld();
         if (!DreamUtils.isDreamWorld(world)) return;
         e.setCancelled(true);
-        if (!world.getBiome(spawningLoc).equals(DreamBiome.SCULK_PLAINS.getBiome())) return;
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.SCULK_PLAINS)) return;
 
         if (e.getEntity().getType().equals(EntityType.CREAKING)) {
             e.setCancelled(false);
-            new DreamCreaking().apply((Creaking) e.getEntity());
+            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_creaking").apply(e.getEntity());
             return;
         }
 
         double choice = Math.random();
         if (choice < DREAM_SPIDER_PROBABILITY) {
-            new DreamSpider().spawn(spawningLoc);
+            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_spider").spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

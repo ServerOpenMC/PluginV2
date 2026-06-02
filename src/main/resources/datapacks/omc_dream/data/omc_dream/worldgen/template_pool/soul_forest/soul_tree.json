@@ -1,0 +1,41 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:soul_forest/tree_1",
+        "processors": "omc_dream:soul_forest/soul_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:soul_forest/tree_2",
+        "processors": "omc_dream:soul_forest/soul_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:soul_forest/tree_3",
+        "processors": "omc_dream:soul_forest/soul_tree_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:soul_forest/tree_4",
+        "processors": "omc_dream:soul_forest/soul_tree_processor"
+      }
+    }
+  ]
+}

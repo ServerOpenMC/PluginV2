@@ -1,10 +1,10 @@
 package fr.openmc.core.features.quests.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class WinContestQuest extends Quest implements Listener {
                 Material.NAUTILUS_SHELL
         );
         
-        this.addTier(new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), 5)));
+        this.addTier(new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(), 5)));
     }
     
     @EventHandler

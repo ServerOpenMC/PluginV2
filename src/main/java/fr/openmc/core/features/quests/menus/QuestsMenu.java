@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -12,7 +13,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.Component;
@@ -116,13 +116,13 @@ public class QuestsMenu extends Menu {
         }
 
         if (this.currentPage > 0) {
-            content.put(19, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest(), meta ->
+            content.put(19, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_quests:quests_left_arrow")).getBest(), meta ->
                     meta.displayName(Component.text("Page précédente").decoration(TextDecoration.ITALIC, false))
             ));
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(25, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest(), meta ->
+            content.put(25, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_quests:quests_right_arrow")).getBest(), meta ->
                     meta.displayName(Component.text("Page suivante").decoration(TextDecoration.ITALIC, false))
             ));
         }

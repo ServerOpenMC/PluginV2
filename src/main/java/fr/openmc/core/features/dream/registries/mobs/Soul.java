@@ -3,9 +3,10 @@ package fr.openmc.core.features.dream.registries.mobs;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.bukkit.EntityUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,22 +25,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
-public class Soul extends DreamMob {
+public class Soul extends DreamMob<Vex> {
 
-    public Soul() {
-        super("soul",
+    public Soul(String id) {
+        super(id,
                 "Âme",
-                EntityType.ARMOR_STAND,
+                Vex.class,
                 2,
                 3L,
                 RandomUtils.randomBetween(0.4, 0.5),
-                RandomUtils.randomBetween(0.7, 0.9),
-                null
+                RandomUtils.randomBetween(0.7, 0.9)
         );
     }
 
     @Override
-    public LivingEntity spawn(Location location) {
+    public Vex spawn(Location location) {
         World world = location.getWorld();
         if (world == null) return null;
 
@@ -51,13 +51,13 @@ public class Soul extends DreamMob {
 
         vex.getEquipment().clear();
 
-        this.setAttributeIfPresent(vex, Attribute.MAX_HEALTH, this.getHealth());
+        EntityUtils.setAttributeIfPresent(vex, Attribute.MAX_HEALTH, this.getHealth());
         vex.setHealth(this.getHealth());
-        this.setAttributeIfPresent(vex, Attribute.MOVEMENT_SPEED, this.getSpeed());
-        this.setAttributeIfPresent(vex, Attribute.SCALE, this.getScale());
+        EntityUtils.setAttributeIfPresent(vex, Attribute.MOVEMENT_SPEED, this.getSpeed());
+        EntityUtils.setAttributeIfPresent(vex, Attribute.SCALE, this.getScale());
 
         vex.getPersistentDataContainer().set(
-                DreamMobsRegistry.mobKey,
+                CustomMobRegistry.CUSTOM_MOB_KEY,
                 PersistentDataType.STRING,
                 this.getId()
         );
@@ -76,11 +76,11 @@ public class Soul extends DreamMob {
                 "§6§lSoul"
         ));
 
-        this.setAttributeIfPresent(stand, Attribute.MAX_HEALTH, this.getHealth());
+        EntityUtils.setAttributeIfPresent(stand, Attribute.MAX_HEALTH, this.getHealth());
         stand.setHealth(this.getHealth());
 
         stand.getPersistentDataContainer().set(
-                DreamMobsRegistry.mobKey,
+                CustomMobRegistry.CUSTOM_MOB_KEY,
                 PersistentDataType.STRING,
                 this.getId()
         );

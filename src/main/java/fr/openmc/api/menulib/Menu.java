@@ -147,9 +147,8 @@ public abstract class Menu implements InventoryHolder {
 
 			Inventory inventory = getInventory();
 
-			getContent().forEach((slot, item) -> {
-				setItem(owner, inventory, slot, item);
-			});
+			getContent().forEach((slot, item) ->
+					setItem(owner, inventory, slot, item));
 
             Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
 
@@ -222,6 +221,19 @@ public abstract class Menu implements InventoryHolder {
         }
         return map;
     }
+
+	public final void update() {
+		if (owner == null) return;
+
+		Inventory open = owner.getOpenInventory().getTopInventory();
+
+		if (!(open.getHolder() instanceof Menu menu) || menu != this) return;
+
+		getContent().forEach((slot, item) ->
+				setItem(owner, open, slot, item));
+
+		owner.updateInventory();
+	}
 	
 	/**
 	 * Checks if the given {@link ItemStack} is associated with the specified item ID.

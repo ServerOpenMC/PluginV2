@@ -6,17 +6,19 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -58,7 +60,7 @@ public class HomeMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Homes");
+        return TranslationManager.translation("feature.homes.menu.title");
     }
 
     @Override
@@ -94,11 +96,11 @@ public class HomeMenu extends PaginatedMenu {
             }
             try {
                 items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
-                    itemMeta.displayName(Component.text("§e" + home.getName()));
-                    itemMeta.lore(List.of(
-                            Component.text("§7■ §aClique §2gauche pour vous téléporter"),
-                            Component.text("§7■ §cCliquez §4droit §cpour configurer le home")
+                    itemMeta.displayName(TranslationManager.translation(
+                            "feature.homes.home.name",
+                            Component.text(home.getName()).color(NamedTextColor.YELLOW)
                     ));
+                    itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.item.lore"));
                 }).hide(ItemUtils.getDataComponentType()).setOnClick(event -> {
                     if(event.isLeftClick()) {
                         this.getInventory().close();
@@ -109,7 +111,16 @@ public class HomeMenu extends PaginatedMenu {
                                     Bukkit.getPluginManager().callEvent(new HomeTpEvent(home, getOwner()));
                                 }
                             }.runTask(OMCPlugin.getInstance());
-                            MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                            MessagesManager.sendMessage(
+                                    getOwner(),
+                                    TranslationManager.translation(
+                                            "feature.homes.menu.teleport.success",
+                                            Component.text(home.getName()).color(NamedTextColor.YELLOW)
+                                    ),
+                                    Prefix.HOME,
+                                    MessageType.SUCCESS,
+                                    true
+                            );
                         });
                     } else if(event.isRightClick()) {
                         Player player = (Player) event.getWhoClicked();
@@ -117,7 +128,7 @@ public class HomeMenu extends PaginatedMenu {
                     }
                 }));
             } catch (Exception e) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cUne erreur est survenue, veuillez contacter le staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.homes.menu.error"), Prefix.OPENMC, MessageType.ERROR, false);
                 getOwner().closeInventory();
                 throw new RuntimeException("Failed to create HomeMenu item for home: " + home.getName(), e);
             }
@@ -135,11 +146,9 @@ public class HomeMenu extends PaginatedMenu {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
         if(!wasTarget) {
-            map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
-                itemMeta.displayName(Component.text("§8● §6Améliorer les homes §8(Click ici)"));
-                itemMeta.lore(List.of(
-                    Component.text("§6Cliquez pour améliorer vos homes")
-                ));
+            map.put(53, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+                itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
+                itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
             }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
         }
 

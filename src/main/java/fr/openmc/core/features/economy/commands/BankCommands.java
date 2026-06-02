@@ -10,7 +10,9 @@ import fr.openmc.core.features.economy.menu.PersonalBankMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -23,7 +25,12 @@ public class BankCommands {
     public static void openBankMenu(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.economy.bank.command.not_unlocked",
+                            Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK)).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -38,7 +45,12 @@ public class BankCommands {
     ) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.economy.bank.command.not_unlocked",
+                            Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK)).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -53,7 +65,12 @@ public class BankCommands {
     ) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.economy.bank.command.not_unlocked",
+                            Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK)).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -69,16 +86,22 @@ public class BankCommands {
         }
 
         double balance = BankManager.getBankBalance(player.getUniqueId());
-        MessagesManager.sendMessage(player, Component.text("Il y a §d" + EconomyManager.getFormattedSimplifiedNumber(balance) + "§r" + EconomyManager.getEconomyIcon() + " dans ta banque"), Prefix.BANK, MessageType.INFO, false);
+        MessagesManager.sendMessage(player,
+                TranslationManager.translation(
+                        "feature.economy.bank.command.balance",
+                        Component.text(EconomyManager.getFormattedSimplifiedNumber(balance)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getEconomyIcon())
+                ),
+                Prefix.BANK, MessageType.INFO, false);
     }
 
     @Subcommand("admin interest apply")
     @Description("Distribue les intérèts à tout les joueurs et a toute les villes")
     @CommandPermission("omc.admins.commands.bank.interest.apply")
     void applyInterest(Player player) {
-        MessagesManager.sendMessage(player, Component.text("Distribution des intérêts en cours..."), Prefix.BANK, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.economy.bank.interest.apply.start"), Prefix.BANK, MessageType.INFO, false);
         BankManager.applyAllPlayerInterests();
         CityBankManager.applyAllCityInterests();
-        MessagesManager.sendMessage(player, Component.text("Distribution des intérêts réussie."), Prefix.BANK, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.economy.bank.interest.apply.success"), Prefix.BANK, MessageType.SUCCESS, false);
     }
 }

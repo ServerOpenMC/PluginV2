@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -110,8 +110,8 @@ public class ConfirmMenu extends Menu {
 
         loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
-        ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
-        ItemStack acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
+        ItemStack refuseBtn = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest();
+        ItemStack acceptBtn = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest();
 
         inventory.put(posDenyBtn, new ItemBuilder(this, refuseBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));

@@ -1,10 +1,10 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.events.ArmorEquipEvent;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.registry.items.CustomItem;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.items.options.EquipableItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -50,7 +50,7 @@ public class EquipableItemListener implements Listener {
         for (ItemStack piece : player.getInventory().getArmorContents()) {
             if (piece == null || piece.getType().isAir()) continue;
 
-            CustomItem customItem = CustomItemRegistry.getByItemStack(piece);
+            CustomItem customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
             if (customItem instanceof EquipableItem equipable) {
                 equipable.removeEffects(player);
             }
@@ -87,7 +87,7 @@ public class EquipableItemListener implements Listener {
 
         if (oldPiece != null && !oldPiece.getType().isAir()) {
 
-            CustomItem customItem = CustomItemRegistry.getByItemStack(oldPiece);
+            CustomItem customItem = OMCRegistry.CUSTOM_ITEMS.get(oldPiece);
             if (customItem instanceof EquipableItem equipable) {
                 equipable.removeEffects(player);
             }
@@ -99,7 +99,7 @@ public class EquipableItemListener implements Listener {
 
             if (piece == null || piece.getType().isAir()) continue;
 
-            CustomItem customItem = CustomItemRegistry.getByItemStack(piece);
+            CustomItem customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
             if (!(customItem instanceof EquipableItem equipable)) continue;
 
             for (var entry : equipable.getEffects().entrySet()) {

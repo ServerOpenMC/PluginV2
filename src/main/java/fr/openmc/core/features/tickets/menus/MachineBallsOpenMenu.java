@@ -4,9 +4,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.tickets.PlayerStats;
 import fr.openmc.core.features.tickets.TicketManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -260,12 +260,12 @@ public class MachineBallsOpenMenu extends Menu {
     private List<LootItem> initializeLootItems() {
         List<LootItem> items = new ArrayList<>();
 
-        items.add(new LootItem(CustomItemRegistry.getByName("omc_plush:peluche_seinyy").getBest(),
+        items.add(new LootItem(OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_seinyy").getBest(),
                 "§d§lPeluche Seinyy",
                 List.of(Component.text("§7Une petite peluche comme Seinyy !")),
                 10.0,
                 1,
-                List.of(CustomItemRegistry.getByName("omc_plush:peluche_seinyy").getBest())));
+                List.of(OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_seinyy").getBest())));
 
         items.add(new LootItem(Material.DIAMOND,
                 "§b§lDiamants",

@@ -7,6 +7,7 @@ import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -17,7 +18,6 @@ import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -82,10 +82,10 @@ public class NPCManager implements Listener {
             String mayorDisplayName = "<gold>" + TranslationManager.translationString("feature.city.mayor.npc.display.mayor", Component.text(mayorName)) + "</gold>";
             dataMayor.setDisplayName(mayorDisplayName);
 
-            dataMayor.addEquipment(NpcEquipmentSlot.HEAD, CustomItemRegistry.getByName("omc_items:suit_helmet").getBest());
-            dataMayor.addEquipment(NpcEquipmentSlot.CHEST, CustomItemRegistry.getByName("omc_items:suit_chestplate").getBest());
-            dataMayor.addEquipment(NpcEquipmentSlot.LEGS, CustomItemRegistry.getByName("omc_items:suit_leggings").getBest());
-            dataMayor.addEquipment(NpcEquipmentSlot.FEET, CustomItemRegistry.getByName("omc_items:suit_boots").getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.HEAD, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_helmet").getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.CHEST, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_chestplate").getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.LEGS, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_leggings").getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.FEET, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_boots").getBest());
         } else {
             dataMayor.setSkin("https://s.namemc.com/i/1971f3c39cb8e3ef.png");
             String unknownDisplayName = "<dark_gray>" + TranslationManager.translationString("feature.city.mayor.npc.display.unknown") + "</dark_gray>";

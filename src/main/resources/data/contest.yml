@@ -196,7 +196,7 @@ contestList:
     selected: 0
   - camp1: "Héros"
     color1: "YELLOW"
-    camp2: "Villian"
+    camp2: "Vilian"
     color2: "RED"
     selected: 0
   - camp1: "Chaos"
@@ -210,7 +210,7 @@ contestList:
     color2: "WHITE"
     selected: 0
   - camp1: "Samsung"
-    color1: "BLACK"
+    color1: "DARK_GRAY"
     camp2: "Apple"
     color2: "WHITE"
     selected: 0
@@ -232,7 +232,7 @@ contestList:
   - camp1: "Pain Au Chocolat"
     color1: "WHITE"
     camp2: "Chocolatine"
-    color2: "BLACK"
+    color2: "DARK_GRAY"
     selected: 0
   - camp1: "Jour"
     color1: "YELLOW"
@@ -280,7 +280,7 @@ contestList:
     color2: "LIGHT_PURPLE"
     selected: 0
   - camp1: "DC"
-    color1: "BLACK"
+    color1: "DARK_GRAY"
     camp2: "Marvel"
     color2: "RED"
     selected: 0
@@ -320,7 +320,7 @@ contestList:
     color2: "LIGHT_PURPLE"
     selected: 0
   - camp1: "Manga"
-    color1: "BLACK"
+    color1: "DARK_GRAY"
     camp2: "Anime"
     color2: "DARK_RED"
     selected: 0

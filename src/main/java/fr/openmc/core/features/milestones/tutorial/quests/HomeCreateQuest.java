@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -10,7 +11,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import org.bukkit.Material;
@@ -35,7 +35,7 @@ public class HomeCreateQuest extends MilestoneQuest implements Listener {
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
-				        new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
+				        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
 				        new QuestTextReward(
 						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.HOME_CREATE.ordinal() + 1) + " §f! Les homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 home au début. Il va falloir penser à les améliorer...",
 						        Prefix.MILLESTONE,

@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.OMCRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -44,7 +44,7 @@ public class HomeMailbox extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
-        content.put(3, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_hourglass").getBest(), meta -> {
+        content.put(3, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_hourglass").getBest(), meta -> {
             meta.displayName(Component
                     .text("En attente", NamedTextColor.DARK_AQUA, TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)
@@ -58,7 +58,7 @@ public class HomeMailbox extends Menu {
             );
         }).setOnClick(e -> new PlayerMailbox(getOwner()).open()));
 
-        content.put(5, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_send").getBest(), meta -> {
+        content.put(5, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_send").getBest(), meta -> {
             meta.displayName(Component
                     .text("Envoyer", NamedTextColor.DARK_AQUA, TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)

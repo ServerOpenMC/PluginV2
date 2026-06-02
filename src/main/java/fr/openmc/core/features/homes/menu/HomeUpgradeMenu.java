@@ -4,18 +4,25 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class HomeUpgradeMenu extends Menu {
 
@@ -25,7 +32,7 @@ public class HomeUpgradeMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des Homes - Amélioration");
+        return TranslationManager.translation("feature.homes.upgrade.menu.title");
     }
 
     @Override
@@ -46,20 +53,23 @@ public class HomeUpgradeMenu extends Menu {
                     ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
                     : lastUpgrade;
 
-            items.put(4, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
-                itemMeta.displayName(Component.text("§8● §6Améliorer les homes §8(Clique gauche)"));
-                List<Component> lore = new ArrayList<>();
-                lore.add(Component.text("§6Nombre de home actuel: §e" + currentHome));
+            items.put(4, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+                itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
                 if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
-                    lore.add(Component.text("§cVous avez atteint le nombre maximum de homes"));
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.homes.upgrade.lore.max",
+                            Component.text(currentHome).color(NamedTextColor.YELLOW)
+                    ));
                 } else {
-                    lore.add(Component.text("§bPrix : §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon()));
-                    lore.add(Component.text("§bAywenite : §d" + nextUpgrade.getAyweniteCost()));
-                    lore.add(Component.text("§6Nombre de home au prochain niveau : §e" + nextUpgrade.getLimit()));
-                    lore.add(Component.text("§7→ Clique gauche pour améliorer"));
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.homes.upgrade.lore.available",
+                            Component.text(currentHome).color(NamedTextColor.YELLOW),
+                            Component.text(nextUpgrade.getPrice()).color(NamedTextColor.GREEN),
+                            Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                            Component.text(nextUpgrade.getAyweniteCost()).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(nextUpgrade.getLimit()).color(NamedTextColor.YELLOW)
+                    ));
                 }
-
-                itemMeta.lore(lore);
             }).setOnClick(event -> {
                 HomeUpgradeManager.upgradeHome(getOwner());
                 getOwner().closeInventory();

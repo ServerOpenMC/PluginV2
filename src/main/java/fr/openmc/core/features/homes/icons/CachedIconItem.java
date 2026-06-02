@@ -8,10 +8,12 @@ import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -34,9 +36,12 @@ public class CachedIconItem {
      */
     public CachedIconItem(HomeIcon homeIcon, ItemStack baseItemStack) {
         this.homeIcon = homeIcon;
-        this.displayName = Component.text("§a" + homeIcon.getVanillaName());
-        this.normalLore = Component.text("§7■ §aClique §2gauche §apour changer l'icône");
-        this.selectedLore = Component.text("§8[§a✔§8] §7Icône actuelle");
+        this.displayName = TranslationManager.translation(
+                "feature.homes.icon.name",
+                Component.text(homeIcon.getVanillaName()).color(NamedTextColor.GREEN)
+        );
+        this.normalLore = TranslationManager.translation("feature.homes.icon.normal_lore");
+        this.selectedLore = TranslationManager.translation("feature.homes.icon.selected_lore");
 
         this.normalItemWithBuilder = createNormalItemWithBuilder(baseItemStack);
         this.selectedItemWithBuilder = createSelectedItemWithBuilder(baseItemStack);
@@ -96,7 +101,11 @@ public class CachedIconItem {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         home.setIcon(homeIcon);
                         MessagesManager.sendMessage(player,
-                                Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée en §2" + homeIcon.getVanillaName() + "§a !"),
+                                TranslationManager.translation(
+                                        "feature.homes.icon.changed",
+                                        Component.text(home.getName()).color(NamedTextColor.DARK_GREEN),
+                                        Component.text(homeIcon.getVanillaName()).color(NamedTextColor.DARK_GREEN)
+                                ),
                                 Prefix.HOME, MessageType.SUCCESS, true);
 
                         HomeIconCacheManager.clearRenderedCache();

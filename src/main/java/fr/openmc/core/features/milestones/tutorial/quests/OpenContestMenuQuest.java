@@ -1,21 +1,28 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
+import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.inventory.ItemStack;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
@@ -27,7 +34,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
                         "§fTapez §d/contest §fou bien aller dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oUne méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(),
 		        MilestoneType.TUTORIAL,
 		        TutorialSteps.OPEN_CONTEST,
 		        new QuestTier(
@@ -38,8 +45,8 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        ),
-						new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), 30)
-				        /* new QuestMethodsReward(
+						new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), 30),
+				        new QuestMethodsReward(
 						        player -> {
 							        List<ItemStack> items = new ArrayList<>();
 							        
@@ -53,7 +60,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 								        );
 								        
 								        if (!limitDate.isBefore(today)) {
-									        ItemStack aywenPlush = CustomItemRegistry.getByName("omc_plush:peluche_awyen").getBest();
+									        ItemStack aywenPlush = OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_awyen").getBest();
 									        items.add(aywenPlush);
 								        }
 							        }
@@ -62,7 +69,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 							        
 							        MailboxManager.sendItems(player, player, itemsArray);
 						        }
-				        ) */ // => PELUCHES AVANT LE 3 NOVEMBRE 2025
+				        )
 		        )
         );
     }

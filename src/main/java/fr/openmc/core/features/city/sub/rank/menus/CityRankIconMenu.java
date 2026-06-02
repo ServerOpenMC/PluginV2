@@ -6,9 +6,9 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.DBCityRank;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -115,7 +115,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 				new CityRankIconMenu(getOwner(), city, page + 1, oldRank, newRank, filter).open();
 			}));
 		
-		map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_search").getBest(), itemMeta -> {
+		map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_search").getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.search.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.search.lore"));
 		}).setOnClick(event -> {

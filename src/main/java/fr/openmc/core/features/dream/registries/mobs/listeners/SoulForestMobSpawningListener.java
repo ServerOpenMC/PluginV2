@@ -1,9 +1,10 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
-import fr.openmc.core.features.dream.registries.mobs.Soul;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,19 +29,19 @@ public class SoulForestMobSpawningListener implements Listener {
      */
     @EventHandler
     void onCreatureSpawn(CreatureSpawnEvent e) {
-        if (DreamMobsRegistry.isDreamMob(e.getEntity())) return;
+        if (CustomMobRegistry.isCustomMob(e.getEntity())) return;
 
         Location spawningLoc = e.getEntity().getLocation();
 
         if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) return;
         if (!DreamUtils.isDreamWorld(spawningLoc)) return;
         e.setCancelled(true);
-        if (!spawningLoc.getWorld().getBiome(spawningLoc).equals(DreamBiome.SOUL_FOREST.getBiome())) return;
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.SOUL_FOREST)) return;
 
         double choice = Math.random();
 
         if (choice < SOUL_PROBABILITY) {
-            new Soul().spawn(spawningLoc);
+            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:soul").spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

@@ -1,11 +1,10 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
@@ -23,12 +22,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
 	
-	private static final Location cubeLoc = Objects.requireNonNull(MultiBlockManager.getMultiblockAtDimension(DreamDimensionManager.DIMENSION_NAME)).origin;
-	
+	private static final int cubeX = -171;
+	private static final int cubeZ = -117;
+	private static final Location cubeLoc = new Location(DreamDimensionManager.DREAM_WORLD, cubeX, DreamDimensionManager.DREAM_WORLD.getHighestBlockYAt(cubeX, cubeZ), cubeZ);
+
 	public CrystallizedPickaxeQuest() {
 		super(
 				"Bonne pioche",
@@ -45,9 +45,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 						"§3Voyageur : À partir de maintenant, tu vas devoir principalement miner. Les profondeurs de ce monde regorgent de §dminerais utiles " +
 								"§3pour la §ddernière étape §3de cette quête.",
 						"§6Alors ne traînons pas, partons en grotte.",
-						"§3Voyageur : Non ! Avant d'aller chercher le dernier orbe, fais un détour aux coordonnées §cX: " +
-								CrystallizedPickaxeQuest.cubeLoc.getBlockX() + " §9Z: " +
-								CrystallizedPickaxeQuest.cubeLoc.getBlockZ() + "§3. Comme promis, je te dois des explications."
+						"§3Voyageur : Non ! Avant d'aller chercher le dernier orbe, fais un détour aux coordonnées §cX: " + cubeX + " §9Z: " + cubeZ + "§3. Comme promis, je te dois des explications."
 				),
 				(player) -> new BukkitRunnable() {
 					@Override
@@ -61,7 +59,6 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 							this.cancel();
 							return;
 						}
-						
 						int distance = (int) player.getLocation().distance(CrystallizedPickaxeQuest.cubeLoc);
 						String direction = DirectionUtils.getDirectionArrow(player, CrystallizedPickaxeQuest.cubeLoc);
 						player.sendActionBar(Component.text("§b【Cube】 §eDistance : §6" + distance + " blocs §7(" + direction + ")"));

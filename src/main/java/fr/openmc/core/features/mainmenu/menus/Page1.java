@@ -22,7 +22,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.homes.command.TpHomeCommand;
 import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
-import fr.openmc.core.features.mainmenu.listeners.PacketListener;
+import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
@@ -251,12 +251,12 @@ public class Page1 implements Menu {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-                ClientboundUpdateAdvancementsPacket packet = PacketListener.getAdvancementPackets().get(nmsPlayer.getUUID());
+                ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
                 if (packet == null)
                     return;
 
                 nmsPlayer.connection.send(packet);
-                PacketListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
+                MainMenuListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
                 Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
                         .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
                         .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));

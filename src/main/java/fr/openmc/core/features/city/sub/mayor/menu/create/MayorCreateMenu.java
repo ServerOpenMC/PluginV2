@@ -4,12 +4,12 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -229,11 +229,11 @@ public class MayorCreateMenu extends Menu {
         Component nameConfirm;
         List<Component> loreConfirm;
         if (canConfirmPerk) {
-            matConfirm = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest().getType();
+            matConfirm = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest().getType();
             nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.ready").color(NamedTextColor.GREEN);
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.ready");
         } else {
-            matConfirm = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest().getType();
+            matConfirm = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest().getType();
             nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.blocked").color(NamedTextColor.RED);
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.blocked");
         }

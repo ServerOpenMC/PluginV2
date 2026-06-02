@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -57,10 +57,10 @@ public class ImpotCollection implements Listener {
 
             EntityEquipment equipment = zombie.getEquipment();
             if (equipment != null) {
-                equipment.setHelmet(CustomItemRegistry.getByName("omc_items:suit_helmet").getBest());
-                equipment.setChestplate(CustomItemRegistry.getByName("omc_items:suit_chestplate").getBest());
-                equipment.setLeggings(CustomItemRegistry.getByName("omc_items:suit_leggings").getBest());
-                equipment.setBoots(CustomItemRegistry.getByName("omc_items:suit_boots").getBest());
+                equipment.setHelmet(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_helmet").getBest());
+                equipment.setChestplate(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_chestplate").getBest());
+                equipment.setLeggings(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_leggings").getBest());
+                equipment.setBoots(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_boots").getBest());
             }
 
             zombie.setShouldBurnInDay(false);

@@ -9,7 +9,7 @@ import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
-import fr.openmc.core.features.mainmenu.listeners.PacketListener;
+import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.mainmenu.menus.Page1;
 import fr.openmc.core.hooks.ProtocolLibHook;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import java.util.Set;
 public class MainMenu extends Feature implements NotInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
     @Override
     public void init() {
-        new PacketListener(OMCPlugin.getInstance());
+        new MainMenuListener(OMCPlugin.getInstance());
     }
 
     @Override

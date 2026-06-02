@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:cloud_land/cloud_castle"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 27,
+        "spacing": 40,
+        "salt": 74673873
+    }
+}

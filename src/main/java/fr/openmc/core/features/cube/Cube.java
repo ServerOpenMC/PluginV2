@@ -1,9 +1,12 @@
 package fr.openmc.core.features.cube;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.cube.events.CubeEnableBubbleEvent;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
-import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.cube.tasks.CorruptedBubbleTask;
+import fr.openmc.core.features.cube.tasks.ReproductionTask;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -36,7 +39,7 @@ public class Cube extends MultiBlock {
 
         // ## BOSS BAR ##
         if (showBossBar) {
-            cubeBossBar = Bukkit.createBossBar("Le Cube", BarColor.BLUE, BarStyle.SEGMENTED_6, BarFlag.CREATE_FOG, BarFlag.DARKEN_SKY);
+            cubeBossBar = Bukkit.createBossBar(TranslationManager.translationString("feature.cube.bossbar.title"), BarColor.BLUE, BarStyle.SEGMENTED_6, BarFlag.CREATE_FOG, BarFlag.DARKEN_SKY);
             cubeBossBar.setVisible(true);
 
             startBossBarUpdater();
@@ -204,63 +207,17 @@ public class Cube extends MultiBlock {
     public final int RADIUS_BUBBLE = this.radius * 4;
 
     public void startCorruptedBubble() {
-        Location center = this.getCenter();
-
-        int totalTicks = 20 * 1300;
-
         startBubbleParticles();
 
         if (corruptedBubbleTask != null) corruptedBubbleTask.cancel();
 
         int intervalCorruption = 20 * 15;
-        corruptedBubbleTask = new BukkitRunnable() {
-            int elapsed = 0;
+        int totalTicks = 20 * 1300;
+        corruptedBubbleTask = new CorruptedBubbleTask(this, RADIUS_BUBBLE, intervalCorruption, totalTicks)
+                .runTaskTimer(OMCPlugin.getInstance(), 0L, intervalCorruption);
 
-            @Override
-            public void run() {
-                if (elapsed >= totalTicks) {
-                    cancel();
-                    corruptedBubbleTask = null;
-                    return;
-                }
-
-                for (int i = 0; i < 30; i++) {
-                    double theta = Math.random() * 2 * Math.PI;
-                    double phi = Math.random() * Math.PI;
-                    double r = Math.random() * RADIUS_BUBBLE;
-
-                    double x = r * Math.sin(phi) * Math.cos(theta);
-                    double y = r * Math.cos(phi);
-                    double z = r * Math.sin(phi) * Math.sin(theta);
-
-                    if (isPartOf(new Location(origin.getWorld(), x, y, z))) continue;
-
-                    Location loc = center.clone().add(x, y, z);
-                    Block block = loc.getBlock();
-                    Material type = block.getType();
-
-                    if (!DreamUtils.isDreamWorld(loc)) {
-                        switch (type) {
-                            case DIRT, GRASS_BLOCK, SAND, GRAVEL -> block.setType(Material.WARPED_NYLIUM);
-                            case OAK_LOG, BIRCH_LOG, SPRUCE_LOG, JUNGLE_LOG, DARK_OAK_LOG,
-                                 ACACIA_LOG, MANGROVE_LOG -> block.setType(Material.WARPED_STEM);
-                            case AIR, LAPIS_BLOCK -> {
-                            }
-                            default -> block.setType(Material.SCULK);
-                        }
-                    } else {
-                        switch (type) {
-                            case MUD -> block.setType(Material.SAND);
-                            case AIR, LAPIS_BLOCK -> {
-                            }
-                            default -> block.setType(Material.GRASS_BLOCK);
-                        }
-                    }
-                }
-
-                elapsed += intervalCorruption;
-            }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0L, intervalCorruption);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CubeEnableBubbleEvent(this)));
     }
 
     public void startBubbleParticles() {

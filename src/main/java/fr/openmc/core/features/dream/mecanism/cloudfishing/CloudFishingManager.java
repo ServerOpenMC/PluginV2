@@ -1,9 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.generation.biomes.CloudChunkGenerator;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
-import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -23,8 +22,8 @@ public class CloudFishingManager {
     @Getter
     private static final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
 
-    public static final double Y_CLOUD_FISHING = CloudChunkGenerator.MIN_HEIGHT_CLOUD - 5;
-    public static final CustomLootTable FISHING_LOOT_TABLE = CustomLootTableRegistry.getByName("omc_dream:cloud_fishing");
+    public static final double Y_CLOUD_FISHING = 120 - 5; // CloudChunk.MIN_HEIGHT_CLOUD - 5
+    public static final CustomLootTable FISHING_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.get("omc_dream:cloud_fishing");
 
     public static void init() {
         OMCPlugin.registerEvents(
