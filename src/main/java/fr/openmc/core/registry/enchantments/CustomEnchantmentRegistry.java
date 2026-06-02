@@ -19,14 +19,12 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 @SuppressWarnings("UnstableApiUsage")
 public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> {
 
+    public final CustomEnchantment SOULBOUND = register(new Soulbound());
+    public final CustomEnchantment EXPERIENTASTIC = register(new Experientastic());
+    public final CustomEnchantment DREAM_SLEEPER = register(new DreamSleeper());
+
     @Override
     public void bootstrap(BootstrapContext context) {
-        registerAll(
-                new Soulbound(),
-                new Experientastic(),
-                new DreamSleeper()
-        );
-
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
                 .newHandler(this::loadEnchantmentInBootstrap));
 
@@ -65,9 +63,7 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
         }
     }
 
-    public void registerAll(CustomEnchantment... enchantments) {
-        for (CustomEnchantment e : enchantments) {
-            register(e.getKey(), e);
-        }
+    public CustomEnchantment register(CustomEnchantment e) {
+        return register(e.getKey(), e);
     }
 }

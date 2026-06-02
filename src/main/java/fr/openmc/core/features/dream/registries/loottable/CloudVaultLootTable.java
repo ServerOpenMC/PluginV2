@@ -4,7 +4,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.registry.loottable.CustomLootTable;
-import net.kyori.adventure.key.Key;
 
 import java.util.Set;
 
@@ -52,9 +51,7 @@ public class CloudVaultLootTable extends CustomLootTable {
                         1
                 ),
                 new CustomLoot(
-                        OMCRegistry.CUSTOM_ENCHANTS.getOrThrow(
-                                Key.key("omc_dream:dream_sleeper")
-                        ).getEnchantedBookItem(2).getBest(),
+                        OMCRegistry.CUSTOM_ENCHANTS.DREAM_SLEEPER.getEnchantedBookItem(2).getBest(),
                         0.10,
                         1,
                         1
