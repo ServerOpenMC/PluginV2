@@ -277,7 +277,7 @@ public class Page1 implements Menu {
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
             String rawMessage = TranslationManager.translationString("feature.mainmenu.message.profile_dev");
-            player.sendMessage(Component.text(FontImageWrapper.replaceFontImages(rawMessage), NamedTextColor.RED));
+            MessagesManager.sendMessage(player, Component.text(FontImageWrapper.replaceFontImages(rawMessage), NamedTextColor.RED), Prefix.OPENMC, MessageType.INFO, true);
         } else if (RIGHT_ARROW_SLOT == slot) {
             PacketMenuLib.openMenu(new Page2(), player);
         } else if (SETTINGS_SLOTS.contains(slot)) {

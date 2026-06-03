@@ -21,8 +21,8 @@ import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 public class LeaderboardCommands {
     @CommandPlaceholder()
     void mainCommand(CommandSender sender) {
-        sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.invalid")
-                .color(NamedTextColor.RED));
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.leaderboards.command.invalid")
+                .color(NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, false);
     }
 
     @Subcommand({"contributeurs"})
