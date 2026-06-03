@@ -1,4 +1,4 @@
-package fr.openmc.core.features.dream.mecanism.sfx;
+package fr.openmc.core.features.dream.mecanism.sfx.clone;
 
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Location;
