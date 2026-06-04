@@ -13,7 +13,8 @@ public class DreamPlayerEnteredListener implements Listener {
 
     @EventHandler
     public void onDreamEnter(DreamEnterEvent event) {
-        DreamGhostManager.setupGhost(event.getPlayer());
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                DreamGhostManager.setupGhost(event.getPlayer()), 20L);
     }
 
     @EventHandler

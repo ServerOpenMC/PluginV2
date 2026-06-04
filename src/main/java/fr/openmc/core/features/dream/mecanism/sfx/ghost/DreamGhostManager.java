@@ -5,15 +5,15 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.sfx.ghost.listeners.DreamPlayerEnteredListener;
 import fr.openmc.core.features.dream.mecanism.sfx.ghost.listeners.PlayerQuitListener;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
-import fr.openmc.core.utils.bukkit.SkullUtils;
+import fr.openmc.core.utils.nms.SkullNMS;
+import fr.openmc.core.utils.nms.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collection;
@@ -27,8 +27,7 @@ import java.util.UUID;
  * Cache tous les joueurs + met juste leur tete d'affiché avec particule
  */
 public class DreamGhostManager {
-    private static final Map<UUID, ArmorStand> ghostStands = new HashMap<>();
-    private static final NamespacedKey GHOST_KEY = new NamespacedKey(OMCPlugin.getInstance(), "ghost_stand");
+    private static final Map<UUID, PlayerGhost> playerGhost = new HashMap<>();
 
     public static void init() {
         OMCPlugin.registerEvents(
@@ -38,39 +37,38 @@ public class DreamGhostManager {
     }
 
     public static void setupGhost(Player player) {
+        int entityId = player.getEntityId() + 100000;
+
+        ArmorStand stand = ArmorStandNMS.createFakeStand(player, entityId, player.getLocation());
+
+        AttributeInstance instance = stand.getAttribute(Attributes.SCALE);
+        if (instance == null) return;
+        instance.setBaseValue(1.7);
+
+        playerGhost.put(player.getUniqueId(), new PlayerGhost(entityId, stand));
+
         World world = player.getWorld();
 
         for (Player other : world.getPlayers()) {
-            if (!other.equals(player)) {
-                other.hidePlayer(OMCPlugin.getInstance(), player);
-                player.hidePlayer(OMCPlugin.getInstance(), other);
+            if (other.equals(player)) continue;
+
+            other.hidePlayer(OMCPlugin.getInstance(), player);
+            player.hidePlayer(OMCPlugin.getInstance(), other);
+
+            sendGhostTo(other, player, entityId, stand);
+
+            PlayerGhost otherGhost = playerGhost.get(other.getUniqueId());
+            if (otherGhost != null) {
+                sendGhostTo(player, other, otherGhost.entityId(), otherGhost.stand());
             }
         }
-
-        ArmorStand stand = (ArmorStand) world.spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-        stand.setVisible(false);
-        stand.setGravity(false);
-        stand.setCustomNameVisible(false);
-        stand.setCanPickupItems(false);
-        stand.setMarker(false);
-        stand.getPersistentDataContainer().set(GHOST_KEY, PersistentDataType.BOOLEAN, true);
-
-        AttributeInstance instance = stand.getAttribute(Attribute.SCALE);
-        if (instance == null) return;
-
-        instance.setBaseValue(1.7);
-
-        ItemStack skull = SkullUtils.getPlayerSkull(player.getUniqueId());
-        stand.getEquipment().setHelmet(skull);
-
-        ghostStands.put(player.getUniqueId(), stand);
 
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (!player.isOnline()
                         || !DreamUtils.isInDreamWorld(player)
-                        || !ghostStands.containsKey(player.getUniqueId())) {
+                        || !playerGhost.containsKey(player.getUniqueId())) {
                     removeGhost(player);
                     this.cancel();
                     return;
@@ -89,20 +87,36 @@ public class DreamGhostManager {
 
                 Particle.SHRIEK.builder()
                         .location(newStand)
-                        .data(20)
+                        .data(10)
                         .receivers(receivers)
                         .spawn();
 
-                stand.teleport(newStand);
-                player.hideEntity(OMCPlugin.getInstance(), stand);
+                for (Player other : player.getWorld().getPlayers()) {
+                    if (!other.equals(player)) {
+                        EntityTeleportNMS.sendTeleportPacket(other, entityId, player.getLocation());
+                    }
+                }
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
     }
 
+    private static void sendGhostTo(Player receiver, Player ghostOf, int entityId, ArmorStand stand) {
+        EntitySpawnNMS.sendSpawnPacket(receiver, EntityType.ARMOR_STAND, entityId, stand.getUUID(), ghostOf.getLocation());
+        EntitySpawnNMS.sendMetaDataEntity(receiver, stand);
+        EntityEquipmentNMS.sendHelmetPacket(receiver, entityId, SkullNMS.getPlayerSkullNMS(ghostOf));
+    }
+
     public static void removeGhost(Player player) {
-        ArmorStand stand = ghostStands.get(player.getUniqueId());
-        if (stand == null) return;
-        stand.remove();
-        ghostStands.remove(player.getUniqueId());
+        PlayerGhost ghost = playerGhost.remove(player.getUniqueId());
+
+        if (ghost.stand() == null) return;
+        ghost.stand().remove(Entity.RemovalReason.DISCARDED);
+
+        for (Player other : Bukkit.getOnlinePlayers()) {
+            if (other.equals(player)) continue;
+            EntityRemoveNMS.sendRemovePacket(other, ghost.entityId());
+            other.showPlayer(OMCPlugin.getInstance(), player);
+            player.showPlayer(OMCPlugin.getInstance(), other);
+        }
     }
 }
