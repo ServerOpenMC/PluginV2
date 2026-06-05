@@ -9,8 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Optional;
-
 public class CustomMobRegistry extends Registry<String, CustomMobEntry> implements KeyedRegistry<String, CustomMobEntry> {
 
     public static final NamespacedKey CUSTOM_MOB_KEY =
@@ -34,17 +32,12 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
         return register(mob.id(), mob);
     }
 
-    public CustomMob<?> getMob(String id) {
-        Optional<CustomMobEntry> entry = get(id);
-        return entry.isPresent() ? entry.get().factory().apply(id) : null;
-    }
-
     public CustomMob<?> getMob(Entity entity) {
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         if (!pdc.has(CUSTOM_MOB_KEY, PersistentDataType.STRING)) return null;
 
         String mobId = pdc.get(CUSTOM_MOB_KEY, PersistentDataType.STRING);
-        return getMob(mobId);
+        return get(mobId).map(CustomMobEntry::getMob).orElse(null);
     }
 
     public static boolean isCustomMob(Entity entity) {

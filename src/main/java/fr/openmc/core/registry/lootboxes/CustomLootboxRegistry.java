@@ -6,13 +6,7 @@ import fr.openmc.core.registry.lootboxes.contents.MachineBallLootbox;
 
 public class CustomLootboxRegistry extends Registry<String, CustomLootbox> implements KeyedRegistry<String, CustomLootbox> {
 
-    @Override
-    public void postInit() {
-        // ** REGISTRER LOOTBOXES **
-        register(
-                new MachineBallLootbox()
-        );
-    }
+    public final CustomLootbox MACHINE_BALL = register(new MachineBallLootbox());
 
     @Override
     public String key(CustomLootbox registryObject) {

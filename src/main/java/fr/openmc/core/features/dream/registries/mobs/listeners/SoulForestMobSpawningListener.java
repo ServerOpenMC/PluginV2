@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
@@ -41,7 +40,7 @@ public class SoulForestMobSpawningListener implements Listener {
         double choice = Math.random();
 
         if (choice < SOUL_PROBABILITY) {
-            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:soul").spawn(spawningLoc);
+            DreamMobsRegistry.SOUL.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

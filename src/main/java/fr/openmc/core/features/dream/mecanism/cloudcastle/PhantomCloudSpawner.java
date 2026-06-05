@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
-import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -20,7 +20,7 @@ public class PhantomCloudSpawner implements Listener {
         if (block.getState() instanceof TrialSpawner spawner) {
             TrialSpawnerConfiguration normal = spawner.getNormalConfiguration();
 
-            normal.setSpawnedEntity(OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_phantom").getMobSnapshot(block.getLocation()));
+            normal.setSpawnedEntity(DreamMobsRegistry.DREAM_PHANTOM.getMobSnapshot(block.getLocation()));
 
             NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/mob_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);
