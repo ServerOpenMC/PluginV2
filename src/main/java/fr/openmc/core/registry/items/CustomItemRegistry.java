@@ -2,6 +2,7 @@ package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
@@ -17,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
 
-public class CustomItemRegistry extends Registry<String, CustomItem> {
+public class CustomItemRegistry extends Registry<String, CustomItem> implements KeyedRegistry<String, CustomItem> {
 
     public static final NamespacedKey CUSTOM_ITEM_KEY =
             new NamespacedKey("openmc", "custom_item");
@@ -91,6 +92,11 @@ public class CustomItemRegistry extends Registry<String, CustomItem> {
     }
 
     @Override
+    public String key(CustomItem registryObject) {
+        return registryObject.getId();
+    }
+
+    @Override
     public Optional<CustomItem> get(String id) {
         if (super.get(id).isPresent()) return super.get(id);
 
@@ -137,12 +143,6 @@ public class CustomItemRegistry extends Registry<String, CustomItem> {
 
     public CustomItem register(String name, ItemStack item) {
         return register(name, new CustomItem(name) {
-            @Override
-            public ItemStack getVanilla() {
-                return item;
-            }
-        });
-    }
 
     public CustomItem register(String name, Material item) {
         return register(name, new ItemStack(item));
@@ -159,11 +159,5 @@ public class CustomItemRegistry extends Registry<String, CustomItem> {
                 return item;
             }
         });
-    }
-
-    public void register(Iterable<CustomItem> items) {
-        for (CustomItem item : items) {
-            register(item);
-        }
     }
 }

@@ -104,7 +104,7 @@ public class SetHomeCommand {
         }
 
         int currentHome = HomesManager.getHomes(player.getUniqueId()).size();
-        int homesLimit = HomesManager.getHomeLimit(player.getUniqueId());
+        int homesLimit = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
 
         if(currentHome >= homesLimit) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.home_limit_reached"), Prefix.HOME, MessageType.ERROR, true);

@@ -4,12 +4,14 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
 import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
+import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public final class OMCRegistry {
     public static CustomMobRegistry CUSTOM_MOBS;
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
+    public static final CustomAmbientRegistry CUSTOM_AMBIENTS = new CustomAmbientRegistry();
+
 
     private static final List<RegistryContext> ALL = List.of(
             new RegistryContext(
@@ -43,7 +47,12 @@ public final class OMCRegistry {
                     .noneMatch(t -> t == RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = ctx.registry().get();
-            r.bootstrap(context);
+            try {
+                r.bootstrap(context);
+            } catch (IOException e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du bootstrap", r.getClass().getSimpleName());
+                OMCLogger.error(e.getMessage());
+            }
             OMCLogger.successFormatted("Registre {} chargé pendant le bootstrap", r.getClass().getSimpleName());
         }
     }

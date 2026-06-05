@@ -86,7 +86,7 @@ public class HomesManager extends Feature implements DatabaseFeature, HasCommand
                 .toList();
     }
 
-    public static int getHomeLimit(UUID playerUUID) {
+    public static HomeLimits getHomeLimit(UUID playerUUID) {
         HomeLimit homeLimit = homeLimits.stream()
                 .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
                 .findFirst()
@@ -97,7 +97,7 @@ public class HomesManager extends Feature implements DatabaseFeature, HasCommand
             homeLimits.add(homeLimit);
         }
 
-        return homeLimit.getLimit();
+        return homeLimit.getHomeLimit();
     }
 
     public static void updateHomeLimit(UUID playerUUID) {

@@ -17,7 +17,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
 @SuppressWarnings("UnstableApiUsage")
-public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> {
+public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> implements KeyedRegistry<Key, CustomEnchantment> {
+
+    @Override
+    public Key key(CustomEnchantment registryObject) {
+        return registryObject.getKey();
+    }
 
     public final CustomEnchantment SOULBOUND = register(new Soulbound());
     public final CustomEnchantment EXPERIENTASTIC = register(new Experientastic());
@@ -61,9 +66,5 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
                 OMCPlugin.registerEvents(listener);
             }
         }
-    }
-
-    public CustomEnchantment register(CustomEnchantment e) {
-        return register(e.getKey(), e);
     }
 }

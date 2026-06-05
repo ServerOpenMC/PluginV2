@@ -47,7 +47,7 @@ public class ExplodeProtection implements Listener {
             if (tnt.getSource() instanceof Player player) {
                 handlePlayerTntExplosion(event, player);
             } else {
-                handleAnonymousTntExplosion(event);
+                handleNaturalExplosion(event);
             }
             return;
         }
@@ -137,11 +137,12 @@ public class ExplodeProtection implements Listener {
         }
     }
 
-    private void handleAnonymousTntExplosion(EntityExplodeEvent event) {
-        event.blockList().removeIf(block -> !ProtectionsManager.canExplodeNaturally(block.getLocation()));
-    }
-
     private void handleNaturalExplosion(EntityExplodeEvent event) {
+        if (!ProtectionsManager.canExplodeNaturally(event.getLocation())) {
+            event.setCancelled(true);
+            return;
+        }
+
         event.blockList().removeIf(block -> !ProtectionsManager.canExplodeNaturally(block.getLocation()));
     }
 }
