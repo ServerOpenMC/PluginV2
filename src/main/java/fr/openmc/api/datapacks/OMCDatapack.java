@@ -21,7 +21,7 @@ public class OMCDatapack {
 
     public OMCDatapack(String packName, String namespace) {
         this.packName=packName;
-        this.namespace=namespace;
+        this.namespace = namespace;
     }
 
     public void build(BootstrapContext context) throws IOException {
