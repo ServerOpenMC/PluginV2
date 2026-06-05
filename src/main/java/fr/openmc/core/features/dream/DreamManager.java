@@ -122,7 +122,8 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new SingularityCraftListener(),
                 new PlayerDreamStructureListener(),
                 new PlayerFoodChangeListener(),
-                new DreamLootListener()
+                new DreamLootListener(),
+                new PlayerPickupListener()
         );
     }
 
