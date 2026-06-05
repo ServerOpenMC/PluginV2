@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:soul_forest/pillar",
+        "processors": "omc_dream:soul_forest/soul_pillar_processor"
+      }
+    }
+  ]
+}

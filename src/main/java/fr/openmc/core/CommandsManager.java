@@ -3,6 +3,7 @@ package fr.openmc.core;
 import fr.openmc.api.cooldown.CooldownInterceptor;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CustomItemCommand;
+import fr.openmc.core.commands.debug.ToastCommand;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.RTPCommands;
@@ -46,7 +47,8 @@ public class CommandsManager {
                 new Restart(),
                 new CreditsCommand(),
                 new CustomItemCommand(),
-                new CustomAmbientCommands()
+                new CustomAmbientCommands(),
+                new ToastCommand()
         );
     }
 }

@@ -9,7 +9,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -44,36 +43,31 @@ public class HomeUpgradeMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> items = new HashMap<>();
 
-        int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
+        int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId()).getLimit();
 
-        int homeMaxLimit = HomeLimits.values().length - 1;
+        HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()));
 
-            HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
-            HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner())) != null
-                    ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
-                    : lastUpgrade;
-
-            items.put(4, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
-                itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
-                if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
-                    itemMeta.lore(TranslationManager.translationLore(
-                            "feature.homes.upgrade.lore.max",
-                            Component.text(currentHome).color(NamedTextColor.YELLOW)
-                    ));
-                } else {
-                    itemMeta.lore(TranslationManager.translationLore(
-                            "feature.homes.upgrade.lore.available",
-                            Component.text(currentHome).color(NamedTextColor.YELLOW),
-                            Component.text(nextUpgrade.getPrice()).color(NamedTextColor.GREEN),
-                            Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                            Component.text(nextUpgrade.getAyweniteCost()).color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(nextUpgrade.getLimit()).color(NamedTextColor.YELLOW)
-                    ));
-                }
-            }).setOnClick(event -> {
-                HomeUpgradeManager.upgradeHome(getOwner());
-                getOwner().closeInventory();
-            }));
+        items.put(4, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
+            if (nextUpgrade == null) {
+                itemMeta.lore(TranslationManager.translationLore(
+                        "feature.homes.upgrade.lore.max",
+                        Component.text(currentHome).color(NamedTextColor.YELLOW)
+                ));
+            } else {
+                itemMeta.lore(TranslationManager.translationLore(
+                        "feature.homes.upgrade.lore.available",
+                        Component.text(currentHome).color(NamedTextColor.YELLOW),
+                        Component.text(nextUpgrade.getPrice()).color(NamedTextColor.GREEN),
+                        Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                        Component.text(nextUpgrade.getAyweniteCost()).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(nextUpgrade.getLimit()).color(NamedTextColor.YELLOW)
+                ));
+            }
+        }).setOnClick(event -> {
+            HomeUpgradeManager.upgradeHome(getOwner());
+            getOwner().closeInventory();
+        }));
 
         return items;
     }

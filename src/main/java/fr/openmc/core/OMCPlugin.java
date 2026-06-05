@@ -24,7 +24,6 @@ import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
@@ -200,9 +199,6 @@ public class OMCPlugin extends JavaPlugin {
         REGISTRY_FEATURE.stream()
                 .filter(f -> f instanceof LoadAfterItemsAdder)
                 .forEachOrdered(Feature::startInit);
-
-        // todo: sera supprimé dans https://github.com/ServerOpenMC/PluginV2/pull/1168
-        DreamDimensionManager.postInit();
 
         if (WorldGuardHook.isEnable()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);

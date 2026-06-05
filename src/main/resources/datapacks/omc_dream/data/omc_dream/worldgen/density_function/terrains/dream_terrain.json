@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:range_choice",
+    "input": {
+        "type": "minecraft:y_clamped_gradient",
+        "from_y": 120,
+        "to_y": 130,
+        "from_value": 0,
+        "to_value": 1
+    },
+    "min_inclusive": 0.5,
+    "max_exclusive": 1,
+    "when_in_range": "omc_dream:terrains/cloud_terrain",
+    "when_out_of_range": "omc_dream:terrains/base_terrain"
+}

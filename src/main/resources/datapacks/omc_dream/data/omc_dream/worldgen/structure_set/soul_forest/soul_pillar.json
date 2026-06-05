@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:soul_forest/soul_pillar"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 6,
+        "spacing": 8,
+        "salt": 77347634
+    }
+}
