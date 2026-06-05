@@ -1,6 +1,8 @@
 package fr.openmc.core.features.mailboxes.utils;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.utils.text.messages.MessageType;

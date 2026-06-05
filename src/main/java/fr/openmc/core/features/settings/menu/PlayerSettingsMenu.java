@@ -5,7 +5,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -61,10 +61,10 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> buttons = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), meta -> {
+        buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(_ ->
@@ -129,7 +129,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     private ItemStack createBooleanItem(SettingType settingType, boolean currentValue) {
         Material material = currentValue ? settingType.getEnabledMaterial() : settingType.getDisabledMaterial();
 
-        return new ItemBuilder(this, material, meta -> {
+        return new ItemMenuBuilder(this, material, meta -> {
             meta.displayName(Component.text(settingType.getName(), NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 
@@ -154,7 +154,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     private ItemStack createEnumItem(SettingType settingType, Object currentValue) {
-        return new ItemBuilder(this, settingType.getEnabledMaterial(), meta -> {
+        return new ItemMenuBuilder(this, settingType.getEnabledMaterial(), meta -> {
             meta.displayName(Component.text(settingType.getName(), NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 

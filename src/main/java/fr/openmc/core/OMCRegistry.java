@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -23,6 +24,7 @@ public final class OMCRegistry {
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
+    public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
 
 
     private static final List<RegistryContext> ALL = List.of(
@@ -39,7 +41,10 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
-                    RegistryLoadingType.BOOTSTRAP)
+                    RegistryLoadingType.BOOTSTRAP),
+            new RegistryContext(
+                    () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
+                    RegistryLoadingType.AFTER_IA)
     );
 
     private OMCRegistry() {}

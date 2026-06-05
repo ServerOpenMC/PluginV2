@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -107,8 +107,8 @@ public class SendingLetter extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> items = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
         List<Integer> slots =
                 IntStream.rangeClosed(0, 53)
@@ -117,10 +117,10 @@ public class SendingLetter extends Menu {
                         .toList();
 
         for (int slot : slots) {
-            items.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
+            items.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
-        items.put(49, new ItemBuilder(this, getHead(receiver)));
+        items.put(49, new ItemMenuBuilder(this, getHead(receiver)));
         items.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
         items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this).setOnClick(e -> sendLetter(e.getInventory())));
         items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this).setOnClick(_ -> getOwner().closeInventory()));

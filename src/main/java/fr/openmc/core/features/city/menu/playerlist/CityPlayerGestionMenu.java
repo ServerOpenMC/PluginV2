@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.menu.playerlist;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -56,8 +56,8 @@ public class CityPlayerGestionMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -85,7 +85,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         }
 
-        inventory.put(11, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.OAK_DOOR, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.members.manage.kick.title", Component.text(playerTarget.getName()).color(NamedTextColor.RED)));
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
@@ -107,7 +107,7 @@ public class CityPlayerGestionMenu extends Menu {
 
         List<Component> lorePlayerTarget = TranslationManager.translationLore("feature.city.menus.members.manage.target.lore");
 
-        inventory.put(13, new ItemBuilder(this, SkullUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.manage.target.title", Component.text(playerTarget.getName()).color(NamedTextColor.YELLOW)));
             itemMeta.lore(lorePlayerTarget);
         }));
@@ -122,14 +122,14 @@ public class CityPlayerGestionMenu extends Menu {
             );
         }
 
-        inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.members.manage.perms.title"));
             itemMeta.lore(lorePermission);
         }).setOnClick(inventoryClickEvent ->
                 new CityPermsMenu(player, playerTarget.getUniqueId(), true).open()
         ));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("feature.city.menus.members.manage.back_lore"));
         }, true));

@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class TypeButton {
-    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int[] slots) {
+    public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
@@ -41,8 +41,8 @@ public class TypeButton {
         }
     }
 
-    private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Player player) {
-        return () -> new ItemBuilder(menu, Material.PAPER, meta -> {
+    private static Supplier<ItemMenuBuilder> getItemSupplier(Menu menu, City city, Player player) {
+        return () -> new ItemMenuBuilder(menu, Material.PAPER, meta -> {
             meta.itemName(TranslationManager.translation("feature.city.menus.main.type.title"));
             meta.lore(getDynamicLore(city, player));
             meta.setItemModel(NamespacedKey.minecraft("air"));

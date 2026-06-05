@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
@@ -63,12 +63,12 @@ public class Letter {
         return new LetterHead(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), this.cachedItems);
     }
 
-    public ItemBuilder toSenderLetterItemBuilder(Menu menu) {
+    public ItemMenuBuilder toSenderLetterItemBuilder(Menu menu) {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
 
         SenderLetter senderLetter = new SenderLetter(player, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
-        return new ItemBuilder(menu, senderLetter);
+        return new ItemMenuBuilder(menu, senderLetter);
     }
 
     @Override

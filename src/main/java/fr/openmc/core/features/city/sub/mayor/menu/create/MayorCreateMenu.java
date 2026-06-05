@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.menu.create;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.main.CityMenu;
@@ -68,8 +68,8 @@ public class MayorCreateMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         boolean canConfirmPerk;
@@ -88,7 +88,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk1.add(Component.empty());
                 lorePerk1.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
-            inventory.put(22, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            inventory.put(22, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(namePerk1);
                 itemMeta.lore(lorePerk1);
             })
@@ -97,7 +97,7 @@ public class MayorCreateMenu extends Menu {
                         new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
                     }));
 
-            inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
             }, true));
@@ -115,7 +115,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk2.add(Component.empty());
                 lorePerk2.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
-            inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
+            inventory.put(20, new ItemMenuBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(namePerk2);
                 itemMeta.lore(lorePerk2);
             })
@@ -135,7 +135,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk3.add(Component.empty());
                 lorePerk3.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
-            inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
+            inventory.put(24, new ItemMenuBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(namePerk3);
                 itemMeta.lore(lorePerk3);
             })
@@ -144,7 +144,7 @@ public class MayorCreateMenu extends Menu {
                         new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
                     }));
 
-            inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
             }).setOnClick(inventoryClickEvent -> {
@@ -165,7 +165,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk1.add(Component.empty());
                 lorePerk1.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
-            inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            inventory.put(20, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(namePerk1);
                 itemMeta.lore(lorePerk1);
             })
@@ -185,7 +185,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk2.add(Component.empty());
                 lorePerk2.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
-            inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
+            inventory.put(22, new ItemMenuBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(namePerk2);
                 itemMeta.lore(lorePerk2);
             })
@@ -205,7 +205,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk3.add(Component.empty());
                 lorePerk3.add(TranslationManager.translation("feature.city.mayor.menu.create.perk.change.lore"));
             }
-            inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
+            inventory.put(24, new ItemMenuBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.itemName(namePerk3);
                 itemMeta.lore(lorePerk3);
             })
@@ -214,7 +214,7 @@ public class MayorCreateMenu extends Menu {
                         new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
                     }));
 
-            inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.city"));
             }).setOnClick(inventoryClickEvent -> {
@@ -238,7 +238,7 @@ public class MayorCreateMenu extends Menu {
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.blocked");
         }
 
-        inventory.put(52, new ItemBuilder(this, matConfirm, itemMeta -> {
+        inventory.put(52, new ItemMenuBuilder(this, matConfirm, itemMeta -> {
             itemMeta.itemName(nameConfirm);
             itemMeta.lore(loreConfirm);
         }).setOnClick(inventoryClickEvent -> {

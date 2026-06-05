@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
@@ -81,7 +81,7 @@ public class InvitationsMenu extends PaginatedMenu {
                     Component.text(inviterCity.getName()).color(NamedTextColor.GRAY)
             );
 
-            items.add(new ItemBuilder(this, Material.PAPER, itemMeta -> {
+            items.add(new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
                 itemMeta.itemName(invitationName);
                 itemMeta.lore(invitationLore);
             }).setOnClick(InventoryClickEvent -> {
@@ -118,24 +118,24 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setOnClick(inventoryClickEvent ->
                 getOwner().closeInventory()
         ));
 
         map.put(48,
-                new ItemBuilder(this,OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
+                new ItemMenuBuilder(this,OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
                         itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
         map.put(50,
-                new ItemBuilder(this,OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
+                new ItemMenuBuilder(this,OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
                         itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 
         return map;

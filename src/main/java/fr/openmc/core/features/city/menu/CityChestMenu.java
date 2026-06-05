@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
@@ -99,17 +99,17 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
         if (Restart.isRestarting) return null;
 
         Player player = getOwner();
 
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, Material.ARROW, true)
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true)
                 .setOnClick(_ -> exit(city, getInventory())));
 
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setOnClick(_ -> {
             exit(city, getInventory());
@@ -117,7 +117,7 @@ public class CityChestMenu extends PaginatedMenu {
         }));
 
         if (hasPreviousPage()) {
-            map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
+            map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasPreviousPage()) {
@@ -131,7 +131,7 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
         if (hasNextPage()) {
-            map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
+            map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasNextPage()) {
@@ -166,7 +166,7 @@ public class CityChestMenu extends PaginatedMenu {
         }
 
         if (city.hasPermission(getOwner().getUniqueId(), CityPermission.UPGRADE_CHEST) && city.getChestPages() < ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
-            map.put(47, new ItemBuilder(this, Material.ENDER_CHEST, itemMeta -> {
+            map.put(47, new ItemMenuBuilder(this, Material.ENDER_CHEST, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.menus.chest.upgrade.title"));
                 itemMeta.lore(loreUpgrade);
             }).setOnClick(inventoryClickEvent -> {

@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.Letter;
@@ -135,8 +135,8 @@ public class LetterMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         ItemStack[] items = getLetterItems();
 
@@ -146,12 +146,12 @@ public class LetterMenu extends Menu {
         }
 
         for (int i = 0; i < items.length; i++)
-            content.put(i + 9, new ItemBuilder(this, items[i]));
+            content.put(i + 9, new ItemMenuBuilder(this, items[i]));
 
         content.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
         content.put(48, ItemMenuTemplate.BTN_MAILBOX_ACCEPT.apply(this)
                 .setOnClick(_ -> accept()));
-        content.put(49, new ItemBuilder(this, letterHead));
+        content.put(49, new ItemMenuBuilder(this, letterHead));
         content.put(50, ItemMenuTemplate.btn(
                 this,
                         "✘",

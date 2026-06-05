@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
@@ -57,12 +57,12 @@ public class CityRankAssignMenu extends Menu {
 	}
 	
 	@Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
 		Set<DBCityRank> availableRanks = city.getRanks();
 		for (DBCityRank rank : availableRanks) {
-			map.put(map.size(), new ItemBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
+			map.put(map.size(), new ItemMenuBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
 				itemMeta.displayName(Component.text(rank.getName()));
 				itemMeta.lore(List.of(
 						TranslationManager.translation(

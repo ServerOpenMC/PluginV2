@@ -3,7 +3,7 @@ package fr.openmc.core.features.economy.menu;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -50,8 +50,8 @@ public class PersonalBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
@@ -63,7 +63,7 @@ public class PersonalBankDepositMenu extends Menu {
                 Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
-        inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.all.name"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
@@ -78,7 +78,7 @@ public class PersonalBankDepositMenu extends Menu {
                 Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
-        inventory.put(13, new ItemBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.half.name"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
@@ -88,7 +88,7 @@ public class PersonalBankDepositMenu extends Menu {
             
         List<Component> loreBankDepositInput = TranslationManager.translationLore("feature.economy.bank.deposit.input.lore");
 
-        inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.input.name"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
@@ -100,7 +100,7 @@ public class PersonalBankDepositMenu extends Menu {
             );
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("feature.economy.bank.back.lore"));
         }, true));

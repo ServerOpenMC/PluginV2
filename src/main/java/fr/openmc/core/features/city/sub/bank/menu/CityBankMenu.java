@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.bank.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -55,8 +55,8 @@ public class CityBankMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -70,7 +70,7 @@ public class CityBankMenu extends Menu {
             loreBankDeposit = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(11, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.HOPPER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.title"));
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
@@ -87,7 +87,7 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE)) {
 
-            Supplier<ItemBuilder> interestItemSupplier = () -> new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+            Supplier<ItemMenuBuilder> interestItemSupplier = () -> new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.balance.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.bank.menu.balance.lore",
@@ -110,7 +110,7 @@ public class CityBankMenu extends Menu {
             loreBankTake = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(15, new ItemBuilder(this, Material.DISPENSER, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.DISPENSER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.title"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
@@ -125,7 +125,7 @@ public class CityBankMenu extends Menu {
             menu.open();
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("feature.city.bank.menu.back_lore"));
 

@@ -2,7 +2,7 @@ package fr.openmc.core.features.economy.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -56,13 +56,13 @@ public class PersonalBankMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Component> loreBankDeposit = TranslationManager.translationLore("feature.economy.bank.menu.deposit.lore");
 
-        inventory.put(11, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.HOPPER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.deposit.name"));
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
@@ -78,8 +78,8 @@ public class PersonalBankMenu extends Menu {
             return Map.of();
         }
 
-        Supplier<ItemBuilder> interestItemSupplier = () -> {
-            return new ItemBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
+        Supplier<ItemMenuBuilder> interestItemSupplier = () -> {
+            return new ItemMenuBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.balance.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.economy.bank.menu.balance.lore",
@@ -98,7 +98,7 @@ public class PersonalBankMenu extends Menu {
 
         List<Component> loreBankTake = TranslationManager.translationLore("feature.economy.bank.menu.withdraw.lore");
 
-        inventory.put(15, new ItemBuilder(this, Material.DISPENSER, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.DISPENSER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.withdraw.name"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {

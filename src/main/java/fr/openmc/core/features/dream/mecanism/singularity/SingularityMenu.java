@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.mecanism.singularity;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.TakeFromSingularityEvent;
@@ -74,7 +74,7 @@ public class SingularityMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
         return Collections.emptyMap();
     }
 

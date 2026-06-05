@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -50,8 +50,8 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = TranslationManager.translationLore(
                 "feature.city.mayor.menu.more_info.elections.lore",
@@ -63,19 +63,19 @@ public class MoreInfoMenu extends Menu {
 
         int phase = MayorManager.phaseMayor;
 
-        inventory.put(11, new ItemBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.more_info.elections.title"));
             itemMeta.lore(lore0);
             itemMeta.setEnchantmentGlintOverride(phase != 2);
         }));
 
-        inventory.put(15, new ItemBuilder(this, Material.CYAN_STAINED_GLASS_PANE, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, Material.CYAN_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.more_info.reforms.title"));
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(phase == 2);
         }));
 
-        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.back.name")), true));
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.back.name")), true));
 
         return inventory;
     }

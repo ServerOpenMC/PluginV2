@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
@@ -68,7 +69,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				lore.add(TranslationManager.translation("feature.city.rank.menu.members.item.click_assign")
 						.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 			}
-            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
 				Component displayName = player.getName() != null
 						? Component.text(player.getName())
 						: TranslationManager.translation("feature.city.rank.menu.members.item.name_unknown")
@@ -100,11 +101,11 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 	
 	@Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-		map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+		map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
-		map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
+		map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
 		return map;
 	}

@@ -4,7 +4,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -81,8 +81,8 @@ public class MascotMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         Mascot mascot = city.getMascot();
@@ -94,7 +94,7 @@ public class MascotMenu extends Menu {
 
         List<Component> loreSkinMascot = TranslationManager.translationLore("feature.city.mascots.menu.main.skin.lore");
 
-        map.put(11, new ItemBuilder(this, this.mascot.getMascotEgg(), itemMeta -> {
+        map.put(11, new ItemMenuBuilder(this, this.mascot.getMascotEgg(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.main.skin.title"));
             itemMeta.lore(loreSkinMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
@@ -109,7 +109,7 @@ public class MascotMenu extends Menu {
                     new MascotsSkinMenu(player, this.mascot.getMascotEgg(), this.mascot).open();
                 }));
 
-        Supplier<ItemBuilder> moveMascotItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
 
             if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
@@ -121,7 +121,7 @@ public class MascotMenu extends Menu {
                 lorePosMascot = TranslationManager.translationLore("feature.city.mascots.menu.main.move.lore.ready");
             }
 
-            return new ItemBuilder(this, Material.CHEST, itemMeta -> {
+            return new ItemMenuBuilder(this, Material.CHEST, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.main.move.title"));
                 itemMeta.lore(lorePosMascot);
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
@@ -206,7 +206,7 @@ public class MascotMenu extends Menu {
             MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
-            map.put(13, new ItemBuilder(this, moveMascotItemSupplier.get()));
+            map.put(13, new ItemMenuBuilder(this, moveMascotItemSupplier.get()));
         }
 
         List<Component> requiredAmount = new ArrayList<>();
@@ -230,7 +230,7 @@ public class MascotMenu extends Menu {
             ));
         }
 
-        ItemBuilder itemBuilder = new ItemBuilder(this, Material.PAPER, itemMeta -> {
+        ItemMenuBuilder itemBuilder = new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.main.upgrade.title"));
             itemMeta.lore(requiredAmount);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
@@ -269,20 +269,20 @@ public class MascotMenu extends Menu {
                     player.closeInventory();
                 }));
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
         }, true));
 
         if (city.isImmune()) {
-            Supplier<ItemBuilder> immunityItemSupplier = () -> {
+            Supplier<ItemMenuBuilder> immunityItemSupplier = () -> {
                 List<Component> lore = TranslationManager.translationLore(
                         "feature.city.mascots.menu.main.immunity.lore",
                         Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))).color(NamedTextColor.GRAY),
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
                 );
 
-                return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
+                return new ItemMenuBuilder(this, Material.DIAMOND, itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.main.immunity.title"));
                     itemMeta.lore(lore);
                 }).setOnClick(inventoryClickEvent -> {
