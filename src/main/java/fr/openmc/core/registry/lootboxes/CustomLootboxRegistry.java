@@ -1,9 +1,10 @@
 package fr.openmc.core.registry.lootboxes;
 
+import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.lootboxes.contents.MachineBallLootbox;
 
-public class CustomLootboxRegistry extends Registry<String, CustomLootbox> {
+public class CustomLootboxRegistry extends Registry<String, CustomLootbox> implements KeyedRegistry<String, CustomLootbox> {
 
     @Override
     public void postInit() {
@@ -13,9 +14,8 @@ public class CustomLootboxRegistry extends Registry<String, CustomLootbox> {
         );
     }
 
-    public void register(CustomLootbox... boxes) {
-        for (CustomLootbox box : boxes) {
-            register(box.getNamespace(), box);
-        }
+    @Override
+    public String key(CustomLootbox registryObject) {
+        return registryObject.getNamespace();
     }
 }

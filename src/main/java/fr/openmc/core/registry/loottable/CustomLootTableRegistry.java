@@ -18,10 +18,4 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public String key(CustomLootTable registryObject) {
         return registryObject.getNamespace();
     }
-
-    public void register(Iterable<CustomLootTable> tables) {
-        for (CustomLootTable table : tables) {
-            register(table);
-        }
-    }
 }
