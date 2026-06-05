@@ -13,7 +13,7 @@ public class MachineBallLootbox extends CustomLootbox {
         super(
                 "omc:machine_ball",
                 Component.text("§6§lLa Machine à boules"),
-                OMCRegistry.CUSTOM_LOOT_TABLES.get("omc:machine_ball"),
+                OMCRegistry.CUSTOM_LOOT_TABLES.getOrThrow("omc:machine_ball"),
                 new LootboxOptions(
                         InventorySize.NORMAL,
                         60,

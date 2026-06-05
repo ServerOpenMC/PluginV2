@@ -2,9 +2,8 @@ package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;

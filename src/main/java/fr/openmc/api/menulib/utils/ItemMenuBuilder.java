@@ -4,8 +4,8 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.utils.bukkit.ItemBuilder;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.bukkit.ItemBuilder;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -59,7 +59,7 @@ public class ItemMenuBuilder extends ItemBuilder {
 	 * @param customItem The {@link CustomItem} of the item. It determines the base appearance and behavior
 	 *                 of the item being created.
 	 */
-	public ItemBuilder(Menu itemMenu, CustomItem customItem) {
+	public ItemMenuBuilder(Menu itemMenu, CustomItem customItem) {
 		this(itemMenu, customItem.getBest(), null, false);
 	}
 
@@ -89,7 +89,7 @@ public class ItemMenuBuilder extends ItemBuilder {
 	 * @param customItem The {@link CustomItem} of the item. It determines the base appearance and behavior
 	 *                 of the item being created.
 	 */
-	public ItemBuilder(Menu itemMenu, CustomItem customItem, boolean isBackButton) {
+	public ItemMenuBuilder(Menu itemMenu, CustomItem customItem, boolean isBackButton) {
 		this(itemMenu, customItem.getBest(), null, isBackButton);
 		this.backButton = isBackButton;
 	}
@@ -208,12 +208,9 @@ public class ItemMenuBuilder extends ItemBuilder {
 	 * @param itemMeta   A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
 	 *                   modification of properties such as the display name, lore, enchantments, and more.
 	 */
-	public ItemBuilder(Menu itemMenu, CustomItem customitem, Consumer<ItemMeta> itemMeta) {
+	public ItemMenuBuilder(Menu itemMenu, CustomItem customitem, Consumer<ItemMeta> itemMeta) {
 		super(customitem.getBest());
 		this.itemMenu = itemMenu;
-		meta = customitem.getBest().getItemMeta();
-		if (itemMeta != null) itemMeta.accept(meta);
-		setItemMeta(meta);
 	}
 
 	/**
@@ -229,15 +226,10 @@ public class ItemMenuBuilder extends ItemBuilder {
 	 * @param itemMeta 		 A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
 	 *                 		 modification of properties such as the display name, lore, enchantments, and more.
 	 */
-	public ItemBuilder(Menu itemMenu, CustomItem customItem, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
+	public ItemMenuBuilder(Menu itemMenu, CustomItem customItem, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
 		super(customItem.getBest());
 		this.itemMenu = itemMenu;
 		this.backButton = isBackButton;
-		meta = getItemMeta();
-		if (itemMeta != null) {
-			itemMeta.accept(meta);
-		}
-		setItemMeta(meta);
 	}
 
 	/**
@@ -351,7 +343,7 @@ public class ItemMenuBuilder extends ItemBuilder {
 		return this;
 	}
 
-	public ItemBuilder setBackButton() {
+	public ItemMenuBuilder setBackButton() {
 		this.backButton = true;
 		return this;
 	}

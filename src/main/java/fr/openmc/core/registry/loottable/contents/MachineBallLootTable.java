@@ -21,9 +21,9 @@ public class MachineBallLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return Set.of(
                 new CustomLoot(
-                        Set.of(OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_seinyy").getBest()),
+                        Set.of(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest()),
                         new ItemBuilder(
-                            OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_seinyy").getBest(),
+                            OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY,
                             meta -> {
                                 meta.displayName(Component.text("§d§lPeluche Seinyy"));
                                 meta.lore(List.of(Component.text("§7Une petite peluche comme Seinyy !")));

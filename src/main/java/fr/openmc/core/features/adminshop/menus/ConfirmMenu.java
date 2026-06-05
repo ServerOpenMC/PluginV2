@@ -167,7 +167,7 @@ public class ConfirmMenu extends Menu {
      * @param action    The action to perform when the button is clicked.
      * @return The created item stack.
      */
-    private ItemBuilder createQuantityButton(String text, CustomItem customItem, Consumer<InventoryClickEvent> action) {
+    private ItemMenuBuilder createQuantityButton(String text, CustomItem customItem, Consumer<InventoryClickEvent> action) {
         return this.createQuantityButton(text, customItem.getBest(), action);
     }
 
