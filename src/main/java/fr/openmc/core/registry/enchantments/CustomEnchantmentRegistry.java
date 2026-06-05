@@ -2,6 +2,7 @@ package fr.openmc.core.registry.enchantments;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;
@@ -17,11 +18,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
 @SuppressWarnings("UnstableApiUsage")
-public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> {
+public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> implements KeyedRegistry<Key, CustomEnchantment> {
+
+    @Override
+    public Key key(CustomEnchantment registryObject) {
+        return registryObject.getKey();
+    }
 
     @Override
     public void bootstrap(BootstrapContext context) {
-        registerAll(
+        register(
                 new Soulbound(),
                 new Experientastic(),
                 new DreamSleeper()
@@ -62,12 +68,6 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
             if (e instanceof Listener listener) {
                 OMCPlugin.registerEvents(listener);
             }
-        }
-    }
-
-    public void registerAll(CustomEnchantment... enchantments) {
-        for (CustomEnchantment e : enchantments) {
-            register(e.getKey(), e);
         }
     }
 }

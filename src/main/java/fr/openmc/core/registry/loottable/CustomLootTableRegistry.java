@@ -3,7 +3,7 @@ package fr.openmc.core.registry.loottable;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
-public class CustomLootTableRegistry extends Registry<String, CustomLootTable> {
+public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {
 
     @Override
     public void postInit() {
@@ -13,9 +13,8 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> {
         );
     }
 
-    public void register(CustomLootTable... tables) {
-        for (CustomLootTable table : tables) {
-            register(table.getNamespace(), table);
-        }
+    @Override
+    public String key(CustomLootTable registryObject) {
+        return registryObject.getName();
     }
 }
