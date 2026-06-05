@@ -20,7 +20,7 @@ public class OMCDatapack {
     private final Set<DatapackInjector> injectors = new HashSet<>();
 
     public OMCDatapack(String packName, String namespace) {
-        this.packName=packName;
+        this.packName = packName;
         this.namespace = namespace;
     }
 
