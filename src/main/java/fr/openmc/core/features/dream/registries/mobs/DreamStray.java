@@ -1,9 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntitySnapshot;
@@ -27,7 +26,7 @@ public class DreamStray extends DreamMob<Stray> {
 
     @Override
     public EntitySnapshot getMobSnapshot() {
-        World world = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
+        World world = DreamDimensionManager.DREAM_WORLD;
         if (world == null) return null;
         LivingEntity stray = world.createEntity(new Location(world, 0, 0, 0), Stray.class);
 

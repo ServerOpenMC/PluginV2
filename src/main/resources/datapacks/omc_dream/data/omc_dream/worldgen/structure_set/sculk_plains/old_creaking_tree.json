@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_dream:sculk_plains/old_creaking_tree"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 2,
+        "spacing": 3,
+        "salt": 86753
+    }
+}
