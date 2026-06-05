@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -217,7 +218,7 @@ public enum CityLevels {
                                 );
                             }
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), 128),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 128),
                     new ItemDepositRequirement(Material.GRAY_WOOL, 32),
                     new ItemDepositRequirement(Material.GLASS, 128),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 8),
@@ -234,7 +235,7 @@ public enum CityLevels {
                             (event, scope) -> {
                                 CraftItemEvent eventCraft = (CraftItemEvent) event;
                                 ItemStack item = eventCraft.getCurrentItem();
-                                if (item == null || !item.isSimilar(OMCRegistry.CUSTOM_ITEMS.URNE.getBest()))
+                                if (item == null || !ItemUtils.isSimilar(item, OMCRegistry.CUSTOM_ITEMS.URNE.getBest()))
                                     return;
 
                                 Player player = (Player) eventCraft.getWhoClicked();
@@ -704,8 +705,8 @@ public enum CityLevels {
                                     Component.text(9)
                             )
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK.getBest(), 64),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest(), 128),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK, 64),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, 128),
                     new ItemDepositRequirement(Material.SCULK, 1028)
             ),
             List.of(

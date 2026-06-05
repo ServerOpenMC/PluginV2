@@ -21,7 +21,7 @@ public class WinContestQuest extends Quest implements Listener {
                 Material.NAUTILUS_SHELL
         );
         
-        this.addTier(new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest(), 5)));
+        this.addTier(new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, 5)));
     }
     
     @EventHandler

@@ -64,7 +64,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), meta -> {
+        buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED, meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(_ ->

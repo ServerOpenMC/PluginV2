@@ -84,7 +84,7 @@ public enum Perks {
             0,
             "feature.city.mayor.perk.ayweniter.name",
             "feature.city.mayor.perk.ayweniter.lore",
-            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest()
+            OMCRegistry.CUSTOM_ITEMS.AYWENITE
     ),
     GPS_TRACKER(
             9,

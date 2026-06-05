@@ -54,7 +54,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(2, new ItemMenuBuilder(
                             this,
-                            OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(),
+                            OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED,
                             itemMeta -> {
                                 itemMeta.displayName(TranslationManager.translation("feature.homes.delete.confirm.name"));
                                 itemMeta.lore(TranslationManager.translationLore("feature.homes.delete.confirm.lore"));
@@ -86,7 +86,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(6, new ItemMenuBuilder(
                     this,
-                    OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN.getBest(),
+                    OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN,
                     itemMeta ->
                             itemMeta.displayName(TranslationManager.translation("feature.homes.delete.cancel.name")), true)
             );

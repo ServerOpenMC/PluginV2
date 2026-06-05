@@ -21,7 +21,7 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
         super(
                 "The Mixture",
                 List.of("Fabriquer {target} The Mixture{s}"),
-                OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE.getBest()
+                OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE
         );
 
         this.addTiers(

@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -55,6 +56,21 @@ public class Quest {
         this.baseDescription = baseDescription;
         this.additionalLore = List.of();
         this.icon = icon;
+        this.isLargeActionBar = false;
+    }
+
+    /**
+     * Constructor for Quest.
+     *
+     * @param name            The name of the quest
+     * @param baseDescription The base description of the quest
+     * @param icon            The icon representing the quest - CustomItem
+     */
+    public Quest(String name, List<String> baseDescription, CustomItem icon) {
+        this.name = name;
+        this.baseDescription = baseDescription;
+        this.additionalLore = List.of();
+        this.icon = icon.getBest();
         this.isLargeActionBar = false;
     }
 

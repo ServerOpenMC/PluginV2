@@ -149,7 +149,7 @@ public class HomeMenu extends PaginatedMenu {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
         if(!wasTarget) {
-            map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE.getBest(), itemMeta -> {
+            map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
                 itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
             }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));

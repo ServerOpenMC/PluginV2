@@ -122,7 +122,7 @@ public class ConfirmMenu extends Menu {
 
         content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.BTN_1, event -> increaseQuantity(1)));
 
-        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.PLUS_BTN, event -> increaseQuantity(10)));
+        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.BTN_10, event -> increaseQuantity(10)));
 
         content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.BTN_64, event -> increaseQuantity(64)));
 

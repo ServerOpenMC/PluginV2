@@ -34,7 +34,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
                         "§fTapez §d/contest §fou bien aller dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oUne méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest(),
+                OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
 		        MilestoneType.TUTORIAL,
 		        TutorialSteps.OPEN_CONTEST,
 		        new QuestTier(
