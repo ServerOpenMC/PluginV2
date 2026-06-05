@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
+import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;

@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable;
 
+import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
@@ -15,6 +16,6 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
 
     @Override
     public String key(CustomLootTable registryObject) {
-        return registryObject.getName();
+        return registryObject.getNamespace();
     }
 }
