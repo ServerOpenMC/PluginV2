@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -15,16 +16,31 @@ import java.util.function.Function;
 
 public class ItemMenuTemplate {
     public static final Function<Menu, ItemMenuBuilder> BTN_PREVIOUS_PAGE_WHITE = (menu) ->
-            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_LEFT, meta -> {
-                meta.displayName(Component.text("⬅ Page précédente",
-                        NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
-            }).setPreviousPageButton();
+            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_LEFT, meta ->
+                    meta.displayName(Component.text("⬅ Page précédente",
+                    NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+            ).setPreviousPageButton();
 
     public static final Function<Menu, ItemMenuBuilder> BTN_NEXT_PAGE_WHITE = (menu) ->
-            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_RIGHT, meta -> {
-                meta.displayName(Component.text("Page suivante ➡",
-                        NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
-            }).setNextPageButton();
+            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_RIGHT, meta ->
+                    meta.displayName(Component.text("Page suivante ➡",
+                    NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+            ).setNextPageButton();
+
+    public static final Function<Menu, ItemMenuBuilder> BTN_PREVIOUS_PAGE_ORANGE = (menu) ->
+            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, meta ->
+                    meta.displayName(TranslationManager.translation("messages.menus.previous_page"))
+            ).setPreviousPageButton();
+
+    public static final Function<Menu, ItemMenuBuilder> BTN_NEXT_PAGE_ORANGE = (menu) ->
+            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, meta ->
+                    meta.displayName(TranslationManager.translation("messages.menus.next_page"))
+            ).setNextPageButton();
+
+    public static final Function<Menu, ItemMenuBuilder> BTN_CANCEL = (menu) ->
+            new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, meta ->
+                    meta.displayName(TranslationManager.translation("messages.menus.close"))
+            ).setCloseButton();
 
     public static final Function<Menu, ItemMenuBuilder> BTN_CLOSE = (menu) ->
             btn(menu, "✘", "Annuler", OMCRegistry.CUSTOM_ITEMS.MAILBOX_CANCEL_BTN, NamedTextColor.DARK_RED, true)

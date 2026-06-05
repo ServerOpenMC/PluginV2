@@ -97,10 +97,7 @@ public class MayorCreateMenu extends Menu {
                     .setOnClick(_ ->
                             new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open()));
 
-            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
-                itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
-            }, true));
+            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 

@@ -126,9 +126,7 @@ public class LevelMilestoneMenu extends PaginatedMenu {
             itemMeta.lore(loreRewards);
         }));
 
-        buttons.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
-        }, true));
+        buttons.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
         buttons.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta ->
                 meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());

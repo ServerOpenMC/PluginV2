@@ -104,10 +104,7 @@ public class CityPermsMenu extends PaginatedMenu {
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
-        }, true));
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
         map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));

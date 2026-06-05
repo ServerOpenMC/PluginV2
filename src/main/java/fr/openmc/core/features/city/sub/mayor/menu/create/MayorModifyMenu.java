@@ -11,7 +11,6 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -84,10 +83,7 @@ public class MayorModifyMenu extends Menu {
             new MayorColorMenu(player, null, null, null, "change", null).open();
         }));
 
-        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
-            itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.modify.back.lore"));
-        }, true));
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

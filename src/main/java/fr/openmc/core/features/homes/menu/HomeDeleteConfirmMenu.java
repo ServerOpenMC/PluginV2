@@ -86,9 +86,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(6, new ItemMenuBuilder(
                     this,
-                    OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN,
-                    itemMeta ->
-                            itemMeta.displayName(TranslationManager.translation("feature.homes.delete.cancel.name")), true)
+                    OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN, true)
             );
 
             return content;

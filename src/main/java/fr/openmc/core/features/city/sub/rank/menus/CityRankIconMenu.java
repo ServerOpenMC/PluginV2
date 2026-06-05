@@ -100,8 +100,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 	@Override
 	public Map<Integer, ItemMenuBuilder> getButtons() {
 		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-		map.put(45, new ItemMenuBuilder(this, Material.BARRIER
-				, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+		map.put(45, new ItemMenuBuilder(this, Material.BARRIER, true));
 		
 		if (hasPreviousPage())
 			map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,

@@ -77,10 +77,7 @@ public class MascotsSkinMenu extends Menu {
             map.put(mascotType.getSlot(), createMascotButton(playerCity, mascotType));
         }
 
-        map.put(18, new ItemMenuBuilder(this, Material.ARROW, meta -> {
-            meta.displayName(TranslationManager.translation("messages.menus.back"));
-            meta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }

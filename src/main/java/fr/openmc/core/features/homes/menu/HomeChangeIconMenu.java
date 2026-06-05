@@ -99,8 +99,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemMenuBuilder(this,  OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
-                itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+        map.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, true));
 
         map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
         map.put(49, ItemMenuTemplate.BTN_CLOSE.apply(this));

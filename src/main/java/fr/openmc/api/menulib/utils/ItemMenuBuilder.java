@@ -214,25 +214,6 @@ public class ItemMenuBuilder extends ItemBuilder {
 	}
 
 	/**
-	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link CustomItem},
-	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
-	 * This constructor initializes the {@code ItemBuilder} with a menu, a specific item to define
-	 * the base configuration, and a consumer for applying additional metadata customizations to the item.
-	 *
-	 * @param itemMenu 		 The {@link Menu} this item will be associated with. It represents the context in which
-	 *                 		 the item exists, such as a specific inventory or menu framework.
-	 * @param customItem     The {@link CustomItem} defining the base item configuration. It includes the material,
-	 *                 		 amount, and current metadata of the item.
-	 * @param itemMeta 		 A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
-	 *                 		 modification of properties such as the display name, lore, enchantments, and more.
-	 */
-	public ItemMenuBuilder(Menu itemMenu, CustomItem customItem, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
-		super(customItem.getBest());
-		this.itemMenu = itemMenu;
-		this.backButton = isBackButton;
-	}
-
-	/**
 	 * Sets the unique identifier for the item using the specified {@code itemId}.
 	 * The identifier is stored in the item's {@link PersistentDataContainer} as a
 	 * {@link String} in a lower-case format, allowing it to be associated with

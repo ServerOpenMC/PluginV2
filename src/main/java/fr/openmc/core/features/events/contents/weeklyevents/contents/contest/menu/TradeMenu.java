@@ -119,7 +119,7 @@ public class TradeMenu extends Menu {
             );
         }
 
-        inventory.put(27, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+        inventory.put(27, new ItemMenuBuilder(this, Material.ARROW, true));
 
         inventory.put(35, new ItemMenuBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));

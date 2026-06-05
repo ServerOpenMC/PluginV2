@@ -175,8 +175,7 @@ public class CityListDetailsMenu extends Menu {
 
 		map.put(26, new ItemMenuBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.details.type", city.getType().getDisplayName()))));
-		map.put(18, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
-				itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+		map.put(18, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, true));
 		return map;
 	}
 

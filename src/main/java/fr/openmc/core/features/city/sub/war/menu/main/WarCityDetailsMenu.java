@@ -151,10 +151,7 @@ public class WarCityDetailsMenu extends Menu {
                         city.getType().getDisplayName()
                 ).color(NamedTextColor.GRAY))));
 
-        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.menu.create;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -195,12 +196,8 @@ public class PerkChoiceMenu extends PaginatedMenu {
             new MayorCreateMenu(getOwner(), perk1, perk2, perk3, type).open();
         }));
 
-        map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.prev"));
-        }).setPreviousPageButton());
-        map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.next"));
-        }).setNextPageButton());
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
         return map;
     }
 

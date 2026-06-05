@@ -74,9 +74,7 @@ public class ConfirmMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(totalPrice)), Component.text(EconomyManager.getEconomyIcon())
         );
 
-        content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, meta -> {
-            meta.displayName(TranslationManager.translation("messages.global.cancel"));
-        }, true));
+        content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
 
         content.put(10, createQuantityButton("-64", OMCRegistry.CUSTOM_ITEMS.BTN_64, event -> {
             if (quantity > 64) quantity -= 64;
