@@ -27,11 +27,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     }
 
     @Override
-    public void register(CustomMobEntry mob) {
+    public CustomMobEntry register(CustomMobEntry mob) {
         if (mob.factory().apply(mob.id()) instanceof Listener listener) {
             OMCPlugin.registerEvents(listener);
         }
-        register(mob.id(), mob);
+        return register(mob.id(), mob);
     }
 
     public CustomMob<?> getMob(String id) {

@@ -22,7 +22,7 @@ public final class OMCRegistry {
     public static CustomMobRegistry CUSTOM_MOBS;
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
-    public static final CustomAmbientRegistry CUSTOM_AMBIENTS = new CustomAmbientRegistry();
+    public static CustomAmbientRegistry CUSTOM_AMBIENTS;
 
 
     private static final List<RegistryContext> ALL = List.of(
@@ -36,7 +36,10 @@ public final class OMCRegistry {
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_LOOT_TABLES = new CustomLootTableRegistry(),
-                    RegistryLoadingType.AFTER_IA)
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
+                    RegistryLoadingType.BOOTSTRAP)
     );
 
     private OMCRegistry() {}

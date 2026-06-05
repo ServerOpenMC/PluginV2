@@ -2,6 +2,7 @@ package fr.openmc.core.registry.enchantments;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;

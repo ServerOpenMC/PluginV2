@@ -137,12 +137,14 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
         }
     }
 
-    public CustomItem register(CustomItem item) {
-        return register(item.getId(), item);
-    }
-
     public CustomItem register(String name, ItemStack item) {
         return register(name, new CustomItem(name) {
+            @Override
+            public ItemStack getVanilla() {
+                return item;
+            }
+        });
+    }
 
     public CustomItem register(String name, Material item) {
         return register(name, new ItemStack(item));
