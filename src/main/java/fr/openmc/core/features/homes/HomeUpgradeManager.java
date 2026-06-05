@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 public class HomeUpgradeManager {
 
     public static HomeLimits getCurrentUpgrade(Player player) {
-        int currentLimit = HomesManager.getHomeLimit(player.getUniqueId());
+        int currentLimit = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
         for (HomeLimits upgrade : HomeLimits.values()) {
             if (upgrade.getLimit() == currentLimit) {
                 return upgrade;
@@ -27,12 +27,20 @@ public class HomeUpgradeManager {
     }
 
     public static HomeLimits getNextUpgrade(HomeLimits current) {
-        return HomeLimits.values()[current.ordinal() + 1];
+        if (current == null)
+            return null;
+
+        HomeLimits[] values = HomeLimits.values();
+        int nextIndex = current.ordinal() + 1;
+        if (nextIndex >= values.length)
+            return null;
+
+        return values[nextIndex];
     }
 
     public static void upgradeHome(Player player) {
         int currentHomes = HomesManager.getHomes(player.getUniqueId()).size();
-        int currentUpgrade = HomesManager.getHomeLimit(player.getUniqueId());
+        int currentUpgrade = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
         if(nextUpgrade != null) {
             int price = nextUpgrade.getPrice();
@@ -83,7 +91,7 @@ public class HomeUpgradeManager {
 
             HomesManager.updateHomeLimit(player.getUniqueId());
 
-            int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId());
+            int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
