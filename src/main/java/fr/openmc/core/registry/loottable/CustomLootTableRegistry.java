@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
 public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {
 
+    // ** REGISTER LOOT TABLE **
     public final CustomLootTable MACHINE_BALL = register(new MachineBallLootTable());
 
     @Override

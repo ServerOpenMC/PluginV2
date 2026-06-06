@@ -14,10 +14,13 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public static final NamespacedKey CUSTOM_MOB_KEY =
             new NamespacedKey("openmc", "custom_mob");
 
-    @Override
-    public void postInit() {
-        // ** REGISTER MOBS **
-    }
+    // ** REGISTER MOBS **
+    /* ex :
+    public static final CustomMobEntry BREEZY = create(new CustomMobEntry(
+            "omc_dream:breezy",
+            Breezy::new
+    ));
+     */
 
     @Override
     public String key(CustomMobEntry registryObject) {
