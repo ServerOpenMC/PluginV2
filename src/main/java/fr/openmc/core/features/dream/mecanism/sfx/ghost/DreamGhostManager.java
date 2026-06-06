@@ -67,8 +67,7 @@ public class DreamGhostManager {
             @Override
             public void run() {
                 if (!player.isOnline()
-                        || !DreamUtils.isInDreamWorld(player)
-                        || !playerGhost.containsKey(player.getUniqueId())) {
+                        || !DreamUtils.isInDreamWorld(player)) {
                     removeGhost(player);
                     this.cancel();
                     return;
@@ -114,7 +113,6 @@ public class DreamGhostManager {
         ghost.stand().remove(Entity.RemovalReason.DISCARDED);
 
         for (Player other : Bukkit.getOnlinePlayers()) {
-            if (other.equals(player)) continue;
             EntityRemoveNMS.sendRemovePacket(other, ghost.entityId());
             other.showPlayer(OMCPlugin.getInstance(), player);
             player.showPlayer(OMCPlugin.getInstance(), other);
