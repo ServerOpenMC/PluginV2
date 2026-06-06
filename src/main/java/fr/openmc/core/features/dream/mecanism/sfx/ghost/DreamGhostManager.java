@@ -107,6 +107,7 @@ public class DreamGhostManager {
     }
 
     public static void removeGhost(Player player) {
+        if (!playerGhost.containsKey(player.getUniqueId())) return;
         PlayerGhost ghost = playerGhost.remove(player.getUniqueId());
 
         if (ghost.stand() == null) return;
