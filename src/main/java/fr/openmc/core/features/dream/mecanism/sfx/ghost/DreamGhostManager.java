@@ -1,9 +1,9 @@
 package fr.openmc.core.features.dream.mecanism.sfx.ghost;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.sfx.ghost.listeners.DreamPlayerEnteredListener;
-import fr.openmc.core.features.dream.mecanism.sfx.ghost.listeners.PlayerQuitListener;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.nms.SkullNMS;
 import fr.openmc.core.utils.nms.entity.*;
@@ -12,7 +12,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -31,8 +34,7 @@ public class DreamGhostManager {
 
     public static void init() {
         OMCPlugin.registerEvents(
-                new DreamPlayerEnteredListener(),
-                new PlayerQuitListener()
+                new DreamPlayerEnteredListener()
         );
     }
 
@@ -52,8 +54,8 @@ public class DreamGhostManager {
         for (Player other : world.getPlayers()) {
             if (other.equals(player)) continue;
 
-            other.hidePlayer(OMCPlugin.getInstance(), player);
-            player.hidePlayer(OMCPlugin.getInstance(), other);
+            hidePlayer(other, player);
+            hidePlayer(player, other);
 
             sendGhostTo(other, player, entityId, stand);
 
@@ -112,10 +114,14 @@ public class DreamGhostManager {
         if (ghost.stand() == null) return;
         ghost.stand().remove(Entity.RemovalReason.DISCARDED);
 
-        for (Player other : Bukkit.getOnlinePlayers()) {
+        for (Player other : DreamDimensionManager.DREAM_WORLD.getPlayers()) {
+            if (other.equals(player)) continue;
+
             EntityRemoveNMS.sendRemovePacket(other, ghost.entityId());
-            other.showPlayer(OMCPlugin.getInstance(), player);
-            player.showPlayer(OMCPlugin.getInstance(), other);
         }
+    }
+
+    public static void hidePlayer(Player receiver, Player toHide) {
+        EntityRemoveNMS.sendRemovePacket(receiver, toHide.getEntityId());
     }
 }
