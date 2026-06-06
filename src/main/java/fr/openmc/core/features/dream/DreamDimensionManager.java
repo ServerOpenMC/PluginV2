@@ -63,6 +63,8 @@ public class DreamDimensionManager {
             // ** SET WORLD BORDER AND TIME **
             DREAM_WORLD.getWorldBorder().setSize(10000);
             DREAM_WORLD.setTime(18000);
+
+            OMCLogger.infoFormatted("Dimension des rêves setup (gamerules, worldborder, time)");
         }
     }
 
@@ -90,7 +92,7 @@ public class DreamDimensionManager {
 
         if (saved == -1) {
             saveSeed(current);
-            seedChanged = false;
+            seedChanged = true;
             return;
         }
 
