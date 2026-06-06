@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
@@ -58,10 +58,10 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> buttons = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), meta -> {
+        buttons.put(45, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(event -> {
@@ -85,9 +85,9 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             ).open();
         }));
 
-        buttons.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
+        buttons.put(48, new ItemMenuBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         buttons.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
-        buttons.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        buttons.put(50, new ItemMenuBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return buttons;
     }
@@ -126,7 +126,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     private ItemStack createBooleanItem(SettingType settingType, boolean currentValue) {
         Material material = currentValue ? settingType.getEnabledMaterial() : settingType.getDisabledMaterial();
 
-        return new ItemBuilder(this, material, meta -> {
+        return new ItemMenuBuilder(this, material, meta -> {
             meta.displayName(Component.text(settingType.getName(), NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 
@@ -151,7 +151,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     private ItemStack createEnumItem(SettingType settingType, Object currentValue) {
-        return new ItemBuilder(this, settingType.getEnabledMaterial(), meta -> {
+        return new ItemMenuBuilder(this, settingType.getEnabledMaterial(), meta -> {
             meta.displayName(Component.text(settingType.getName(), NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 

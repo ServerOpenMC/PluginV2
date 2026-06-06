@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.icons;
 
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
@@ -96,7 +96,7 @@ public class CachedIconItem {
         ItemStack baseItem = home.getIcon().equals(homeIcon) ?
                 selectedItemWithBuilder : normalItemWithBuilder;
 
-        return new ItemBuilder(menu, baseItem.clone())
+        return new ItemMenuBuilder(menu, baseItem.clone())
                 .setOnClick(event -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         home.setIcon(homeIcon);

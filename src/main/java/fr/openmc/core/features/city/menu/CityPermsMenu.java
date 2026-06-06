@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
@@ -60,7 +60,7 @@ public class CityPermsMenu extends PaginatedMenu {
             if (permission == CityPermission.OWNER) continue;
 
             boolean hasPerm = memberPerms != null && memberPerms.contains(permission);
-            ItemBuilder itemBuilder = new ItemBuilder(this, permission.getIcon(), itemMeta -> {
+            ItemMenuBuilder itemBuilder = new ItemMenuBuilder(this, permission.getIcon(), itemMeta -> {
                 itemMeta.setEnchantmentGlintOverride(hasPerm);
                 String nameKey;
                 if (edit) {
@@ -101,26 +101,26 @@ public class CityPermsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
         }, true));
 
-        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+        map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
             itemMeta.lore(TranslationManager.translationLore("messages.menus.previous_page_lore"));
         }).setPreviousPageButton());
 
-        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+        map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
             itemMeta.lore(TranslationManager.translationLore("messages.menus.next_page_lore"));
         }).setNextPageButton());
 
         if (edit) {
-            map.put(53, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+            map.put(53, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.menus.perms.bulk.title"));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.menus.perms.bulk.lore"));
             }).setOnClick(inventoryClickEvent -> {

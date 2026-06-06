@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class MetalDetectorLootTable extends CustomLootTable {
     @Override
-    public String getName() {return "omc_dream:metal_detector";}
+    public String getNamespace() {return "omc_dream:metal_detector";}
 
     @Override
     public Set<CustomLoot> getLoots() {

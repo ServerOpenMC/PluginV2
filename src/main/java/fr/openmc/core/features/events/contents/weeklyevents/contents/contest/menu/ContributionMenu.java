@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
@@ -56,9 +56,9 @@ public class ContributionMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         String campName = ContestPlayerManager.getPlayerCampName(player);
         NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
@@ -86,17 +86,17 @@ public class ContributionMenu extends Menu {
         String namespaceShellContest = "omc_contest:contest_shell";
         ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.get(namespaceShellContest).getBest();
 
-        inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+        inventory.put(8, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.contribution.title.name"));
             itemMeta.lore(loreRang);
         }));
 
-        inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.trade.main.name"));
             itemMeta.lore(loreTrade);
         }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
 
-        inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
+        inventory.put(15, new ItemMenuBuilder(this, m, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation(
                     "feature.events.contest.contribution.button.name",
                     Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)
@@ -138,7 +138,7 @@ public class ContributionMenu extends Menu {
             }
         }));
 
-        inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
+        inventory.put(35, new ItemMenuBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));

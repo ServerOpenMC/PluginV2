@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
@@ -163,14 +163,14 @@ public class CityChunkMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         long startTime = System.currentTimeMillis();
 
         addNavigationButtons(inventory);
 
         if (chunkInfoMap == null || chunkInfoMap.isEmpty()) {
-            inventory.put(22, new ItemBuilder(this, Material.CLOCK, itemMeta -> {
+            inventory.put(22, new ItemMenuBuilder(this, Material.CLOCK, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.loading.title"));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.menus.chunks.loading.lore"));
             }));
@@ -202,15 +202,15 @@ public class CityChunkMenu extends Menu {
         return List.of();
     }
 
-    private void addNavigationButtons(Map<Integer, ItemBuilder> inventory) {
+    private void addNavigationButtons(Map<Integer, ItemMenuBuilder> inventory) {
         if (playerCity != null) {
-            inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
                 itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
             }, true));
 
             if (hasFreeClaimAvailable) {
-                inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                inventory.put(49, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
 	                itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.free_claim.title"));
                     itemMeta.lore(TranslationManager.translationLore(
                             "feature.city.menus.chunks.free_claim.lore",
@@ -220,7 +220,7 @@ public class CityChunkMenu extends Menu {
             }
         }
 
-        inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {
+        inventory.put(53, new ItemMenuBuilder(this, Material.MAP, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.refresh.title"));
 	        itemMeta.lore(TranslationManager.translationLore("feature.city.menus.chunks.refresh.lore"));
         }).setOnClick(event -> {
@@ -232,7 +232,7 @@ public class CityChunkMenu extends Menu {
         }));
     }
 
-    private ItemBuilder createChunkItem(int chunkX, int chunkZ, ChunkInfo info) {
+    private ItemMenuBuilder createChunkItem(int chunkX, int chunkZ, ChunkInfo info) {
         Material material = Material.GRAY_STAINED_GLASS_PANE;
         City city = info.city();
         boolean isProtected = info.isProtected();
@@ -258,8 +258,8 @@ public class CityChunkMenu extends Menu {
         }
     }
 
-    private ItemBuilder createProtectedChunkItem(Material material, int chunkX, int chunkZ) {
-        return new ItemBuilder(this, material, itemMeta -> {
+    private ItemMenuBuilder createProtectedChunkItem(Material material, int chunkX, int chunkZ) {
+        return new ItemMenuBuilder(this, material, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.protected.title"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.city.menus.chunks.protected.lore",
@@ -268,7 +268,7 @@ public class CityChunkMenu extends Menu {
         });
     }
 
-    private ItemBuilder createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
+    private ItemMenuBuilder createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
         List<Component> lore;
         Component cityName = Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE);
         Component position = Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE);
@@ -292,14 +292,14 @@ public class CityChunkMenu extends Menu {
             );
         }
 
-        return new ItemBuilder(this, material, itemMeta -> {
+        return new ItemMenuBuilder(this, material, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.player_claim.title"));
             itemMeta.lore(lore);
         }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
-    private ItemBuilder createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
-        return new ItemBuilder(this, material, itemMeta -> {
+    private ItemMenuBuilder createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
+        return new ItemMenuBuilder(this, material, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.other_claim.title"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.city.menus.chunks.other_claim.lore",
@@ -309,7 +309,7 @@ public class CityChunkMenu extends Menu {
         });
     }
 
-    private ItemBuilder createUnclaimedChunkItem(Material material, int chunkX, int chunkZ) {
+    private ItemMenuBuilder createUnclaimedChunkItem(Material material, int chunkX, int chunkZ) {
         List<Component> lore;
         Component position = Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE);
         if (hasFreeClaimAvailable) {
@@ -330,7 +330,7 @@ public class CityChunkMenu extends Menu {
             );
         }
 
-        return new ItemBuilder(this, material, itemMeta -> {
+        return new ItemMenuBuilder(this, material, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.chunks.unclaimed.title"));
             itemMeta.lore(lore);
         }).setOnClick(event -> handleChunkClaimClick(player, chunkX, chunkZ, hasPermissionClaim));

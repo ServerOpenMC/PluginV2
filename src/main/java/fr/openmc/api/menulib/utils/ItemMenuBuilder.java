@@ -4,12 +4,11 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.utils.bukkit.ItemBuilder;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import io.papermc.paper.datacomponent.DataComponentType;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -17,8 +16,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -27,7 +24,7 @@ import java.util.function.Consumer;
  * in a menu context. It provides methods to set item properties, handle click events, and manage
  * metadata, making it easier to create interactive items within a menu system.
  */
-public class ItemBuilder extends ItemStack {
+public class ItemMenuBuilder extends ItemBuilder {
 	@Getter
 	private final Menu itemMenu;
 	@Getter
@@ -36,7 +33,6 @@ public class ItemBuilder extends ItemStack {
 	private boolean nextButton;
 	@Getter
 	private boolean backButton;
-	private ItemMeta meta;
 
 	/**
 	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link Material}.
@@ -48,7 +44,7 @@ public class ItemBuilder extends ItemStack {
 	 * @param material The {@link Material} of the item. It determines the base appearance and behavior
 	 *                 of the item being created.
 	 */
-	public ItemBuilder(Menu itemMenu, Material material) {
+	public ItemMenuBuilder(Menu itemMenu, Material material) {
 		this(itemMenu, material, null, false);
 	}
 
@@ -62,7 +58,7 @@ public class ItemBuilder extends ItemStack {
 	 * @param material The {@link Material} of the item. It determines the base appearance and behavior
 	 *                 of the item being created.
 	 */
-	public ItemBuilder(Menu itemMenu, Material material, boolean isBackButton) {
+	public ItemMenuBuilder(Menu itemMenu, Material material, boolean isBackButton) {
 		this(itemMenu, material, null, isBackButton);
 		this.backButton = isBackButton;
 	}
@@ -77,7 +73,7 @@ public class ItemBuilder extends ItemStack {
 	 * @param item     The {@link ItemStack} defining the base item configuration. It includes the material,
 	 *                 amount, and current metadata of the item.
 	 */
-	public ItemBuilder(Menu itemMenu, ItemStack item) {
+	public ItemMenuBuilder(Menu itemMenu, ItemStack item) {
 		this(itemMenu, item, null);
 	}
 
@@ -91,7 +87,7 @@ public class ItemBuilder extends ItemStack {
 	 * @param item     The {@link ItemStack} defining the base item configuration. It includes the material,
 	 *                 amount, and current metadata of the item.
 	 */
-	public ItemBuilder(Menu itemMenu, ItemStack item, boolean isBackButton) {
+	public ItemMenuBuilder(Menu itemMenu, ItemStack item, boolean isBackButton) {
 		this(itemMenu, item, null, isBackButton);
 		this.backButton = isBackButton;
 	}
@@ -109,7 +105,7 @@ public class ItemBuilder extends ItemStack {
 	 * @param itemMeta A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
 	 *                 modification of properties such as the display name, lore, enchantments, and more.
 	 */
-	public ItemBuilder(Menu itemMenu, Material material, Consumer<ItemMeta> itemMeta) {
+	public ItemMenuBuilder(Menu itemMenu, Material material, Consumer<ItemMeta> itemMeta) {
 		this(itemMenu, new ItemStack(material), itemMeta);
 	}
 
@@ -126,7 +122,7 @@ public class ItemBuilder extends ItemStack {
 	 * @param itemMeta A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
 	 *                 modification of properties such as the display name, lore, enchantments, and more.
 	 */
-	public ItemBuilder(Menu itemMenu, Material material, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
+	public ItemMenuBuilder(Menu itemMenu, Material material, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
 		this(itemMenu, new ItemStack(material), itemMeta);
 		this.backButton = isBackButton;
 	}
@@ -144,12 +140,9 @@ public class ItemBuilder extends ItemStack {
 	 * @param itemMeta A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
 	 *                 modification of properties such as the display name, lore, enchantments, and more.
 	 */
-	public ItemBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta) {
-		super(item);
+	public ItemMenuBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta) {
+		super(item, itemMeta);
 		this.itemMenu = itemMenu;
-		meta = item.getItemMeta();
-		if (itemMeta != null) itemMeta.accept(meta);
-		setItemMeta(meta);
 	}
 
 	/**
@@ -165,15 +158,10 @@ public class ItemBuilder extends ItemStack {
 	 * @param itemMeta A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
 	 *                 modification of properties such as the display name, lore, enchantments, and more.
 	 */
-	public ItemBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
-		super(item);
+	public ItemMenuBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
+		super(item, itemMeta);
 		this.itemMenu = itemMenu;
 		this.backButton = isBackButton;
-		meta = getItemMeta();
-		if (itemMeta != null) {
-			itemMeta.accept(meta);
-		}
-		setItemMeta(meta);
 	}
 
 	/**
@@ -184,16 +172,14 @@ public class ItemBuilder extends ItemStack {
 	 *
 	 * @param itemId The unique identifier to associate with the item. This value is stored
 	 *               in a lower-case format within the item's {@link PersistentDataContainer}.
-	 * @return The current instance of {@link ItemBuilder}, allowing for method chaining
+	 * @return The current instance of {@link fr.openmc.api.menulib.utils.ItemMenuBuilder}, allowing for method chaining
 	 * when creating and customizing items.
 	 */
-	public ItemBuilder setItemId(String itemId) {
-		PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-		dataContainer.set(MenuLib.getItemIdKey(), PersistentDataType.STRING, itemId.toLowerCase());
-		setItemMeta(meta);
+	public ItemMenuBuilder setItemId(String itemId) {
+		super.setItemId(itemId);
 		return this;
 	}
-	
+
 	/**
 	 * Sets the click event handler for the item. This method associates the specified
 	 * {@link Consumer} with the item to define a custom behavior when the item is clicked
@@ -201,10 +187,10 @@ public class ItemBuilder extends ItemStack {
 	 *
 	 * @param e A {@link Consumer} of {@link InventoryClickEvent} that specifies the action
 	 *          to be performed when the item is clicked.
-	 * @return The current instance of {@link ItemBuilder}, allowing method chaining
+	 * @return The current instance of {@link ItemMenuBuilder}, allowing method chaining
 	 * for further customization of the item.
 	 */
-	public ItemBuilder setOnClick(Consumer<InventoryClickEvent> e) {
+	public ItemMenuBuilder setOnClick(Consumer<InventoryClickEvent> e) {
 		try {
 			MenuLib.setItemClickEvent(itemMenu, this, e);
 		} catch (Exception ex) {
@@ -217,10 +203,10 @@ public class ItemBuilder extends ItemStack {
 	 * Sets the item to act as a close button. When the item is clicked, it closes
 	 * the inventory of the menu owner.
 	 *
-	 * @return The current instance of {@link ItemBuilder}, allowing method chaining
+	 * @return The current instance of {@link ItemMenuBuilder}, allowing method chaining
 	 * for further customization of the item.
 	 */
-	public ItemBuilder setCloseButton() {
+	public ItemMenuBuilder setCloseButton() {
 		try {
 			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.getOwner().closeInventory();
 			setOnClick(clickEventConsumer);
@@ -238,10 +224,10 @@ public class ItemBuilder extends ItemStack {
 	 * When the item is clicked, the page within the associated {@link PaginatedMenu} is incremented,
 	 * provided the current page is not the last. The updated menu is then reopened for the user.
 	 *
-	 * @return The current instance of {@link ItemBuilder}, enabling method chaining
+	 * @return The current instance of {@link ItemMenuBuilder}, enabling method chaining
 	 * for additional configurations of the item.
 	 */
-	public ItemBuilder setNextPageButton() {
+	public ItemMenuBuilder setNextPageButton() {
 		try {
 			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
 				if (itemMenu instanceof PaginatedMenu menu) {
@@ -267,10 +253,10 @@ public class ItemBuilder extends ItemStack {
 	 * When the item is clicked, the page within the associated {@link PaginatedMenu} is decremented,
 	 * provided the current page is not the first. The updated menu is then reopened for the user.
 	 *
-	 * @return The current instance of {@link ItemBuilder}, enabling method chaining
+	 * @return The current instance of {@link ItemMenuBuilder}, enabling method chaining
 	 * for additional configurations of the item.
 	 */
-	public ItemBuilder setPreviousPageButton() {
+	public ItemMenuBuilder setPreviousPageButton() {
 		try {
 			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
 				if (itemMenu instanceof PaginatedMenu menu) {
@@ -289,63 +275,14 @@ public class ItemBuilder extends ItemStack {
 		return this;
 	}
 
-	/**
-	 * Hides the tooltip of the item for the specified data component types.
-	 * If the tooltip is already hidden, this method will not change its state.
-	 *
-	 * @param typesToHide The array of {@link DataComponentType} that should be hidden in the tooltip.
-	 * @return The current instance of {@link ItemBuilder}, allowing for method chaining
-	 *         to further customize the item.
-	 */
 	@SuppressWarnings("UnstableApiUsage")
-    public ItemBuilder hide(DataComponentType... typesToHide) {
-		if (typesToHide == null) return this;
-
-		if (this.hasData(DataComponentTypes.TOOLTIP_DISPLAY) && this.getData(DataComponentTypes.TOOLTIP_DISPLAY).hideTooltip())
-			return this;
-
-		TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(typesToHide).build();
-		this.setData(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplay);
-
+	public ItemMenuBuilder hide(DataComponentType... typesToHide) {
+		super.hide(typesToHide);
 		return this;
 	}
 
-	/**
-	 * Hides the tooltip of the item based on the specified boolean value.
-	 * If {@code hideTooltip} is {@code true}, the tooltip will be hidden;
-	 * otherwise, it will be displayed normally.
-	 *
-	 * @param hideTooltip A boolean indicating whether to hide the tooltip ({@code true}) or not ({@code false}).
-	 * @return The current instance of {@link ItemBuilder}, allowing for method chaining
-	 *         to further customize the item.
-	 */
-	@SuppressWarnings("UnstableApiUsage")
-	public ItemBuilder hideTooltip(boolean hideTooltip) {
-		if (this.getType().equals(Material.AIR)) return this;
-
-		TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().hideTooltip(hideTooltip).build();
-		this.setData(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplay);
-
+	public ItemMenuBuilder hideTooltip(boolean hideTooltip) {
+		super.hideTooltip(hideTooltip);
 		return this;
-	}
-	
-	/**
-	 * Sets the metadata for the item. This method updates the current {@code ItemMeta} of the item and applies it.
-	 *
-	 * @param itemMeta The {@link ItemMeta} to be applied to the item.
-	 *                 May be {@code null} to clear any existing metadata.
-	 * @return {@code true} if the item meta was successfully applied, {@code false} otherwise.
-	 */
-	@Override
-	public final boolean setItemMeta(@Nullable ItemMeta itemMeta) {
-		try {
-			meta = itemMeta;
-			return super.setItemMeta(itemMeta);
-		} catch (Exception e) {
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.translatable("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
-			OMCLogger.error("An error occurred while setting the item meta: {}", e.getMessage(), e);
-			itemMenu.getOwner().closeInventory();
-		}
-		return false;
 	}
 }

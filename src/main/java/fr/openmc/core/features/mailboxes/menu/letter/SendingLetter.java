@@ -3,7 +3,7 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -107,8 +107,8 @@ public class SendingLetter extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> items = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
         List<Integer> slots =
                 IntStream.rangeClosed(0, 53)
@@ -117,13 +117,13 @@ public class SendingLetter extends Menu {
                         .toList();
 
         for (int slot : slots) {
-            items.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
+            items.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
-        items.put(49, new ItemBuilder(this, getHead(receiver)).setOnClick(e -> {}));
-        items.put(45, new ItemBuilder(this, MailboxMenuManager.homeBtn(this)));
-        items.put(48, new ItemBuilder(this, MailboxMenuManager.sendBtn(this)).setOnClick(e -> sendLetter(e.getInventory())));
-        items.put(50, new ItemBuilder(this, MailboxMenuManager.cancelBtn(this)).setOnClick(e -> getOwner().closeInventory()));
+        items.put(49, new ItemMenuBuilder(this, getHead(receiver)).setOnClick(e -> {}));
+        items.put(45, new ItemMenuBuilder(this, MailboxMenuManager.homeBtn(this)));
+        items.put(48, new ItemMenuBuilder(this, MailboxMenuManager.sendBtn(this)).setOnClick(e -> sendLetter(e.getInventory())));
+        items.put(50, new ItemMenuBuilder(this, MailboxMenuManager.cancelBtn(this)).setOnClick(e -> getOwner().closeInventory()));
 
         return items;
     }

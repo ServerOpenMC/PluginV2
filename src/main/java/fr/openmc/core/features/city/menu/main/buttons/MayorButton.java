@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -34,9 +34,9 @@ public class MayorButton {
 
     }
 
-    private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Player player) {
+    private static Supplier<ItemMenuBuilder> getItemSupplier(Menu menu, City city, Player player) {
         return () ->
-                new ItemBuilder(menu, Material.PAPER, itemMeta -> {
+                new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.mayor.title"));
                     itemMeta.lore(getDynamicLore(city, player));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));

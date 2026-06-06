@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -49,15 +49,15 @@ public class CityTypeMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         boolean enchantPeace = city.getType() == CityType.PEACE;
         List<Component> peaceInfo = TranslationManager.translationLore("feature.city.menus.type.peace.lore");
 
-        map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
+        map.put(11, new ItemMenuBuilder(this, Material.POPPY, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.type.peace.title"));
             itemMeta.lore(peaceInfo);
             itemMeta.setEnchantmentGlintOverride(enchantPeace);
@@ -78,7 +78,7 @@ public class CityTypeMenu extends Menu {
         }
 
         boolean enchantWar = city.getType() == CityType.WAR;
-        map.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
+        map.put(15, new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.type.war.title"));
             itemMeta.lore(warInfo);
             itemMeta.setEnchantmentGlintOverride(enchantWar);
@@ -88,7 +88,7 @@ public class CityTypeMenu extends Menu {
             CityChangeAction.beginChangeCity(player, CityType.WAR);
         }));
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
         }, true));
 

@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.icons.HomeIcon;
@@ -96,18 +96,18 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this,  OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(),
+        map.put(45, new ItemMenuBuilder(this,  OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 
-        map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
+        map.put(48, new ItemMenuBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
-        map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        map.put(50, new ItemMenuBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         // Search button
-        map.put(51, new ItemBuilder(this, Material.OAK_SIGN, meta -> {
+        map.put(51, new ItemMenuBuilder(this, Material.OAK_SIGN, meta -> {
             meta.displayName(TranslationManager.translation("feature.homes.icon.search.name"));
             List<Component> lore = new ArrayList<>();
             if (! searchQuery.isEmpty()) lore.add(TranslationManager.translation("feature.homes.icon.search.current", Component.text(searchQuery)));
@@ -135,11 +135,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
         // Invisible items
         for (int slot : List.of(46, 47, 52)) {
-            map.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
+            map.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
         // Category selector
-        map.put(53, new ItemBuilder(this, Material.COMPASS, meta -> {
+        map.put(53, new ItemMenuBuilder(this, Material.COMPASS, meta -> {
             meta.displayName(TranslationManager.translation("feature.homes.icon.category.name"));
 
             List<Component> lore = new ArrayList<>();

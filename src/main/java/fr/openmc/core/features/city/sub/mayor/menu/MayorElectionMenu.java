@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -71,15 +71,15 @@ public class MayorElectionMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
-        Supplier<ItemBuilder> electionItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> electionItemSupplier = () -> {
             List<Component> loreElection;
             if (MayorManager.hasVoted(player)) {
                 loreElection = TranslationManager.translationLore(
@@ -96,7 +96,7 @@ public class MayorElectionMenu extends Menu {
                 );
             }
 
-            return new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
+            return new ItemMenuBuilder(this, Material.JUKEBOX, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.election.item.name"));
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
@@ -133,7 +133,7 @@ public class MayorElectionMenu extends Menu {
                 lorePerkOwner = TranslationManager.translationLore("feature.city.mayor.menu.election.owner_reform.lore.choice");
             }
 
-            inventory.put(22, new ItemBuilder(this, SkullUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
+            inventory.put(22, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.election.owner_reform.name"));
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
@@ -143,7 +143,7 @@ public class MayorElectionMenu extends Menu {
             }));
         }
 
-        inventory.put(33, new ItemBuilder(this, Material.PAPER, itemMeta -> {
+        inventory.put(33, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.election.candidature.name"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
@@ -154,7 +154,7 @@ public class MayorElectionMenu extends Menu {
             }
         }));
 
-        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
             itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.common.back.lore"));
         }, true));
@@ -162,7 +162,7 @@ public class MayorElectionMenu extends Menu {
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.city.mayor.menu.common.more_info.lore");
 
-        inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        inventory.put(52, new ItemMenuBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.more_info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));

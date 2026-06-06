@@ -3,7 +3,7 @@ package fr.openmc.api.menulib.template;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -98,8 +98,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
@@ -113,7 +113,7 @@ public class ConfirmMenu extends Menu {
         ItemStack refuseBtn = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest();
         ItemStack acceptBtn = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest();
 
-        inventory.put(posDenyBtn, new ItemBuilder(this, refuseBtn, itemMeta -> {
+        inventory.put(posDenyBtn, new ItemMenuBuilder(this, refuseBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(loreDeny);
         }).setOnClick(event -> {
@@ -126,7 +126,7 @@ public class ConfirmMenu extends Menu {
             }
         }));
 
-        inventory.put(posAcceptBtn, new ItemBuilder(this, acceptBtn, itemMeta -> {
+        inventory.put(posAcceptBtn, new ItemMenuBuilder(this, acceptBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(loreAccept);
         }).setOnClick(event -> {

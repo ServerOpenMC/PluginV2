@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.menu.create;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
@@ -53,8 +53,8 @@ public class MayorModifyMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
@@ -62,19 +62,19 @@ public class MayorModifyMenu extends Menu {
         Perks perk3 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk3());
 
         assert perk2 != null;
-        inventory.put(20, new ItemBuilder(this, perk2.getItemStack(), itemMeta -> {
+        inventory.put(20, new ItemMenuBuilder(this, perk2.getItemStack(), itemMeta -> {
             itemMeta.customName(TranslationManager.translation(perk2.getNameKey()));
             itemMeta.lore(TranslationManager.translationLore(perk2.getLoreKey()));
         }));
 
         assert perk3 != null;
-        inventory.put(22, new ItemBuilder(this, perk3.getItemStack(), itemMeta -> {
+        inventory.put(22, new ItemMenuBuilder(this, perk3.getItemStack(), itemMeta -> {
             itemMeta.customName(TranslationManager.translation(perk3.getNameKey()));
             itemMeta.lore(TranslationManager.translationLore(perk3.getLoreKey()));
         }));
 
         List<Component> loreColor = TranslationManager.translationLore("feature.city.mayor.menu.modify.color.lore");
-        inventory.put(24, new ItemBuilder(this, ColorUtils.getMaterialFromColor(mayorCandidate.getCandidateColor()), itemMeta -> {
+        inventory.put(24, new ItemMenuBuilder(this, ColorUtils.getMaterialFromColor(mayorCandidate.getCandidateColor()), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation(
                     "feature.city.mayor.menu.modify.color.name",
                     TranslationManager.translation("feature.city.mayor.label.color").color(mayorCandidate.getCandidateColor())
@@ -84,7 +84,7 @@ public class MayorModifyMenu extends Menu {
             new MayorColorMenu(player, null, null, null, "change", null).open();
         }));
 
-        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
             itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.modify.back.lore"));
         }, true));

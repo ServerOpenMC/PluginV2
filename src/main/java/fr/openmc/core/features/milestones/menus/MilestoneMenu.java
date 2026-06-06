@@ -2,7 +2,7 @@ package fr.openmc.core.features.milestones.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
@@ -68,8 +68,8 @@ public class MilestoneMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         Player player = getOwner();
         int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
 
@@ -90,7 +90,7 @@ public class MilestoneMenu extends Menu {
 
 
             int slot = snake.nodes.get(i);
-            content.put(slot, new ItemBuilder(this, quest.getIcon(), meta -> {
+            content.put(slot, new ItemMenuBuilder(this, quest.getIcon(), meta -> {
                 meta.displayName(Component.text(
                         (completed ? "§a" : active ? "§e" : "§7") + quest.getName()
                 ));
@@ -120,13 +120,13 @@ public class MilestoneMenu extends Menu {
                     ? Material.LIME_STAINED_GLASS_PANE
                     : Material.GRAY_STAINED_GLASS_PANE;
 
-            content.put(a, new ItemBuilder(this, linkMat).hideTooltip(true));
+            content.put(a, new ItemMenuBuilder(this, linkMat).hideTooltip(true));
         }
 
-        content.put(45, new ItemBuilder(this, Material.ARROW, true));
+        content.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
         if (offset > 0) {
-            content.put(48, new ItemBuilder(this, Material.ARROW,
+            content.put(48, new ItemMenuBuilder(this, Material.ARROW,
                     meta -> meta.displayName(Component.text("§e◀ Page précédente")))
                     .setOnClick(c -> {
                         offset = Math.max(0, offset - MAX_VISIBLE_NODES);
@@ -135,7 +135,7 @@ public class MilestoneMenu extends Menu {
         }
 
         if (offset + visible < steps.size()) {
-            content.put(50, new ItemBuilder(this, Material.ARROW,
+            content.put(50, new ItemMenuBuilder(this, Material.ARROW,
                     meta -> meta.displayName(Component.text("§ePage suivante ▶")))
                     .setOnClick(c -> {
                         offset = Math.min(steps.size() - 1, offset + MAX_VISIBLE_NODES);
@@ -143,7 +143,7 @@ public class MilestoneMenu extends Menu {
                     }));
         }
 
-        content.put(53, new ItemBuilder(this, Material.BARRIER,
+        content.put(53, new ItemMenuBuilder(this, Material.BARRIER,
                 meta -> meta.displayName(Component.text("§cFermer"))).setCloseButton());
 
         return content;

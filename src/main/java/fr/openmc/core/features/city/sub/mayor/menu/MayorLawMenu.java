@@ -5,7 +5,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -77,8 +77,8 @@ public class MayorLawMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -86,7 +86,7 @@ public class MayorLawMenu extends Menu {
 
         CityLaw law = city.getLaw();
 
-        Supplier<ItemBuilder> pvpItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> pvpItemSupplier = () -> {
             Component nameLawPVP = law.isPvp()
                     ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.name.disable")
                     : TranslationManager.translation("feature.city.mayor.menu.law.pvp.name.enable");
@@ -119,7 +119,7 @@ public class MayorLawMenu extends Menu {
                 );
             }
 
-            return new ItemBuilder(this, Material.IRON_SWORD, itemMeta -> {
+            return new ItemMenuBuilder(this, Material.IRON_SWORD, itemMeta -> {
                 itemMeta.itemName(nameLawPVP);
                 itemMeta.lore(loreLawPVP);
             }).setOnClick(inventoryClickEvent -> {
@@ -147,7 +147,7 @@ public class MayorLawMenu extends Menu {
             inventory.put(19, pvpItemSupplier.get());
         }
 
-        Supplier<ItemBuilder> warpItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> warpItemSupplier = () -> {
             Location warpLoc = law.getWarp();
 
             List<Component> loreLawWarp;
@@ -192,7 +192,7 @@ public class MayorLawMenu extends Menu {
             }
 
 
-            return new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
+            return new ItemMenuBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.law.warp.name"));
                 itemMeta.lore(loreLawWarp);
             }).setOnClick(inventoryClickEvent -> {
@@ -207,7 +207,7 @@ public class MayorLawMenu extends Menu {
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         }
 
-        Supplier<ItemBuilder> announceItemSupplier = () -> {
+        Supplier<ItemMenuBuilder> announceItemSupplier = () -> {
             List<Component> loreLawAnnounce = new ArrayList<>(List.of(
                     TranslationManager.translation("feature.city.mayor.menu.law.announce.lore")
             ));
@@ -233,7 +233,7 @@ public class MayorLawMenu extends Menu {
                 );
             }
 
-            return new ItemBuilder(this, Material.BELL, itemMeta -> {
+            return new ItemMenuBuilder(this, Material.BELL, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.law.announce.name"));
                 itemMeta.lore(loreLawAnnounce);
             }).setOnClick(inventoryClickEvent -> {
@@ -273,7 +273,7 @@ public class MayorLawMenu extends Menu {
 
         Perks perkEvent = PerkManager.getPerkEvent(mayor);
         if (PerkManager.getPerkEvent(mayor) != null) {
-            Supplier<ItemBuilder> perkEventItemSupplier = () -> {
+            Supplier<ItemMenuBuilder> perkEventItemSupplier = () -> {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
                 Component namePerkEvent = TranslationManager.translation(perkEvent.getNameKey());
                 List<Component> lorePerkEvent = new ArrayList<>(TranslationManager.translationLore(perkEvent.getLoreKey()));
@@ -297,7 +297,7 @@ public class MayorLawMenu extends Menu {
                             )
                     );
                 }
-                return new ItemBuilder(this, iaPerkEvent, itemMeta -> {
+                return new ItemMenuBuilder(this, iaPerkEvent, itemMeta -> {
                     itemMeta.itemName(namePerkEvent);
                     itemMeta.lore(lorePerkEvent);
                 })
@@ -411,14 +411,14 @@ public class MayorLawMenu extends Menu {
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         }
 
-        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
             itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.common.back.lore"));
         }, true));
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.city.mayor.menu.common.more_info.lore");
 
-        inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        inventory.put(52, new ItemMenuBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.more_info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
