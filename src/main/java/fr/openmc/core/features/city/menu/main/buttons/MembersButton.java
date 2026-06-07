@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 public class MembersButton {
-    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int slot) {
+    public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int slot) {
         Player player = menu.getOwner();
 
-        contents.put(slot, new ItemBuilder(menu, Material.PAPER, itemMeta -> {
+        contents.put(slot, new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.members.title"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.city.menus.main.members.lore",

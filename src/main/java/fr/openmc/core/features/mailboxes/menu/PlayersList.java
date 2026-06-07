@@ -4,7 +4,7 @@ package fr.openmc.core.features.mailboxes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
@@ -55,7 +55,7 @@ public class PlayersList extends PaginatedMenu {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == getOwner()) continue;
             if (!MailboxManager.canSend(getOwner(), onlinePlayer)) continue;
-            pageItems.add(new ItemBuilder(this, ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()))
+            pageItems.add(new ItemMenuBuilder(this, ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()))
                     .setOnClick(event -> {
                         new SendingLetter(getOwner(), onlinePlayer).open();
                     }));
@@ -64,8 +64,8 @@ public class PlayersList extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> buttons = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
         buttons.put(45, MailboxMenuManager.homeBtn(this));
         buttons.putAll(MailboxMenuManager.getPaginatedButtons(this));

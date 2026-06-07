@@ -2,7 +2,7 @@ package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -38,7 +38,7 @@ import java.util.function.Consumer;
  */
 @Getter
 public abstract class Menu implements InventoryHolder {
-	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectMap<ItemMenuBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
 	private final Player owner;
 	
@@ -112,7 +112,7 @@ public abstract class Menu implements InventoryHolder {
 	 * and the value is the {@link ItemStack} present in that slot.
 	 */
 	@NotNull
-	public abstract Map<Integer, ItemBuilder> getContent();
+	public abstract Map<Integer, ItemMenuBuilder> getContent();
 
 	/**
 	 * Retrieves a list of inventory slot indices that can be taken from the menu.
@@ -160,7 +160,7 @@ public abstract class Menu implements InventoryHolder {
 		}
 	}
 
-	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
+	public final void setItem(Player player, Inventory inventory, int slot, ItemMenuBuilder item) {
 		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) {
 			if (!this.getTakableSlot().contains(slot)) {
 				inventory.setItem(slot, ItemUtils.getInvisibleItem());
@@ -175,7 +175,7 @@ public abstract class Menu implements InventoryHolder {
 		}
 
 		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
-			inventory.setItem(slot, new ItemBuilder(this, item, itemMeta -> {
+			inventory.setItem(slot, new ItemMenuBuilder(this, item, itemMeta -> {
 				itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
 				itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
 				itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : Component.text("Menu Précédent")));
@@ -200,7 +200,7 @@ public abstract class Menu implements InventoryHolder {
 	 * @return A {@link Map} where the key represents the inventory slot index, and the value is the {@link ItemStack} placed
 	 * in that slot.
 	 */
-	public final Map<Integer, ItemBuilder> fill(Material material) {
+	public final Map<Integer, ItemMenuBuilder> fill(Material material) {
 		return fill(new ItemStack(material));
 	}
 
@@ -211,12 +211,12 @@ public abstract class Menu implements InventoryHolder {
      *
      * @param item The {@link ItemStack} to use for filling the inventory.
      * @return     A {@link Map} where the key represents the inventory slot index,
-     *             and the value is the {@link ItemBuilder} placed in that slot.
+     *             and the value is the {@link ItemMenuBuilder} placed in that slot.
      */
-    public final Map<Integer, ItemBuilder> fill(ItemStack item) {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public final Map<Integer, ItemMenuBuilder> fill(ItemStack item) {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         for (int i = 0; i < getInventorySize().getSize(); i++) {
-            ItemBuilder filler = new ItemBuilder(this, item, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
+            ItemMenuBuilder filler = new ItemMenuBuilder(this, item, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
             map.put(i, filler);
         }
         return map;

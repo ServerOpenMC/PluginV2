@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.mecanism.tradernpc;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
@@ -51,8 +51,8 @@ public class GlaciteTradeMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Integer> tradeSlots = new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15, 21, 22, 23));
@@ -63,7 +63,7 @@ public class GlaciteTradeMenu extends Menu {
             int slot = tradeSlots.get(i);
 
             inventory.put(slot,
-                    new ItemBuilder(this, trade.getResult().getBest(), meta -> {
+                    new ItemMenuBuilder(this, trade.getResult().getBest(), meta -> {
                         meta.itemName(trade.getDisplayName());
                         meta.lore(this.getLoreTrade(trade));
                     }).setOnClick(event -> handleTrade(player, trade))
@@ -80,7 +80,7 @@ public class GlaciteTradeMenu extends Menu {
         );
 
         inventory.put(timeSlot,
-                new ItemBuilder(this, Material.EXPERIENCE_BOTTLE, meta -> {
+                new ItemMenuBuilder(this, Material.EXPERIENCE_BOTTLE, meta -> {
                     meta.itemName(Component.text("1 min de Temps", NamedTextColor.GREEN));
                     meta.lore(loreTime);
                 }).setOnClick(event -> {

@@ -2,12 +2,15 @@ package fr.openmc.core;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
+import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
+import java.io.IOException;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -17,12 +20,16 @@ public final class OMCRegistry {
     public static final CustomMobRegistry CUSTOM_MOBS = new CustomMobRegistry();
     public static final CustomEnchantmentRegistry CUSTOM_ENCHANTS = new CustomEnchantmentRegistry();
     public static final CustomLootTableRegistry CUSTOM_LOOT_TABLES = new CustomLootTableRegistry();
+    public static final CustomLootboxRegistry CUSTOM_LOOTBOXES = new CustomLootboxRegistry();
+    public static final CustomAmbientRegistry CUSTOM_AMBIENTS = new CustomAmbientRegistry();
 
     private static final List<LifecycleRegistry> ALL = List.of(
             CUSTOM_ITEMS,
             CUSTOM_MOBS,
             CUSTOM_ENCHANTS,
-            CUSTOM_LOOT_TABLES
+            CUSTOM_LOOT_TABLES,
+            CUSTOM_LOOTBOXES,
+            CUSTOM_AMBIENTS
     );
 
     private OMCRegistry() {}
@@ -30,7 +37,12 @@ public final class OMCRegistry {
     public static void bootstrapAll(BootstrapContext context) {
         for (LifecycleRegistry r : OMCRegistry.ALL) {
             if (isOverridden(r, "bootstrap", BootstrapContext.class)) {
-                r.bootstrap(context);
+                try {
+                    r.bootstrap(context);
+                } catch (IOException e) {
+                    OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du bootstrap", r.getClass().getSimpleName());
+                    OMCLogger.error(e.getMessage());
+                }
                 OMCLogger.successFormatted("Registre {} chargé pendant le bootstrap", r.getClass().getSimpleName());
             }
         }

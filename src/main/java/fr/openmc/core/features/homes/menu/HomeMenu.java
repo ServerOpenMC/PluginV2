@@ -3,7 +3,7 @@ package fr.openmc.core.features.homes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -95,7 +95,7 @@ public class HomeMenu extends PaginatedMenu {
                 home.setIcon(homeIcon);
             }
             try {
-                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
+                items.add(new ItemMenuBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.homes.home.name",
                             Component.text(home.getName()).color(NamedTextColor.YELLOW)
@@ -142,19 +142,19 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
         if(!wasTarget) {
-            map.put(53, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            map.put(53, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
                 itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
             }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
         }
 
-        map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
+        map.put(48, new ItemMenuBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
-        map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        map.put(50, new ItemMenuBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return map;
     }

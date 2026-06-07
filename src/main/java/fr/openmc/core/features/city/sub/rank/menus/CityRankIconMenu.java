@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
@@ -86,7 +86,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 		
 		for (int i = startIndex; i < endIndex; i++) {
 			Material material = filtered.get(i);
-			items.add(new ItemBuilder(this, material, itemMeta -> {
+			items.add(new ItemMenuBuilder(this, material, itemMeta -> {
 				if (itemMeta == null) return;
 				itemMeta.displayName(ItemUtils.getItemTranslation(material).decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(List.of(TranslationManager.translation("feature.city.rank.menu.icon.item.lore")));
@@ -99,23 +99,23 @@ public class CityRankIconMenu extends PaginatedMenu {
 	
 	
 	@Override
-	public Map<Integer, ItemBuilder> getButtons() {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
-		map.put(45, new ItemBuilder(this, Material.BARRIER
+	public Map<Integer, ItemMenuBuilder> getButtons() {
+		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+		map.put(45, new ItemMenuBuilder(this, Material.BARRIER
 				, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 		
 		if (hasPreviousPage())
-			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
+			map.put(48, new ItemMenuBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setOnClick(inventoryClickEvent -> {
 				new CityRankIconMenu(getOwner(), city, page - 1, oldRank, newRank, filter).open();
 			}));
 		if (hasNextPage())
-			map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
+			map.put(50, new ItemMenuBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setOnClick(inventoryClickEvent -> {
 				new CityRankIconMenu(getOwner(), city, page + 1, oldRank, newRank, filter).open();
 			}));
 		
-		map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_search").getBest(), itemMeta -> {
+		map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_search").getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.search.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.search.lore"));
 		}).setOnClick(event -> {
@@ -126,7 +126,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 		}));
 		
 		if (filter != null && !filter.isEmpty()) {
-			map.put(53, new ItemBuilder(this, Material.PAPER, itemMeta -> {
+			map.put(53, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.clear.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.clear.lore"));
 			}).setOnClick(event -> {

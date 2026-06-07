@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
@@ -62,8 +62,8 @@ public class WarCityDetailsMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
@@ -76,7 +76,7 @@ public class WarCityDetailsMenu extends Menu {
             Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
-            map.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            map.put(11, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(namePerk1);
                 itemMeta.lore(lorePerk1);
             }).hide((perk1 != null) ? perk1.getToHide() : null));
@@ -85,7 +85,7 @@ public class WarCityDetailsMenu extends Menu {
             Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;
-            map.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
+            map.put(13, new ItemMenuBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(namePerk2);
                 itemMeta.lore(lorePerk2);
             }).hide((perk2 != null) ? perk2.getToHide() : null));
@@ -94,7 +94,7 @@ public class WarCityDetailsMenu extends Menu {
             Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey())) : null;
-            map.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
+            map.put(15, new ItemMenuBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(namePerk3);
                 itemMeta.lore(lorePerk3);
             }).hide((perk3 != null) ? perk3.getToHide() : null));
@@ -103,7 +103,7 @@ public class WarCityDetailsMenu extends Menu {
         LivingEntity mascotMob = (LivingEntity) mascot.getEntity();
         Location mascotLocation = mascotMob == null ? new Location(Bukkit.getWorld("world"), 0, 0, 0) : mascotMob.getLocation();
 
-        map.put(8, new ItemBuilder(this, city.getMascot().getMascotEgg(),
+        map.put(8, new ItemMenuBuilder(this, city.getMascot().getMascotEgg(),
                 itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.war.menu.details.mascot.level",
@@ -115,20 +115,20 @@ public class WarCityDetailsMenu extends Menu {
                     ).color(NamedTextColor.GRAY)));
                 }));
 
-        map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
+        map.put(9, new ItemMenuBuilder(this, new ItemStack(Material.PAPER),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation(
                         "feature.city.war.menu.details.size",
                         Component.text(city.getChunks().size()).color(NamedTextColor.GOLD)
                 ).color(NamedTextColor.GRAY))));
 
-        map.put(22, new ItemBuilder(this, new ItemStack(Material.DIAMOND),
+        map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation(
                         "feature.city.war.menu.details.wealth",
                         Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 ).color(NamedTextColor.GRAY))));
 
-        map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD), itemMeta -> {
+        map.put(4, new ItemMenuBuilder(this, new ItemStack(Material.PLAYER_HEAD), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation(
                     "feature.city.war.menu.details.population",
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
@@ -145,13 +145,13 @@ public class WarCityDetailsMenu extends Menu {
             ).color(NamedTextColor.GRAY)));
         }).setOnClick(inventoryClickEvent -> new WarPlayerListMenu(player, city).open()));
 
-        map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
+        map.put(26, new ItemMenuBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation(
                         "feature.city.war.menu.details.type",
                         city.getType().getDisplayName()
                 ).color(NamedTextColor.GRAY))));
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
             itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
         }, true));

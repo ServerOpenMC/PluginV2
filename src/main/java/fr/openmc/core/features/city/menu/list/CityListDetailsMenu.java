@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.menu.list;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
@@ -68,10 +68,10 @@ public class CityListDetailsMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull Map<Integer, ItemBuilder> getContent() {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
+	public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-		map.put(0, new ItemBuilder(this, Material.DIAMOND,
+		map.put(0, new ItemMenuBuilder(this, Material.DIAMOND,
 				itemMeta ->
 						itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.details.level", Component.text(this.city.getLevel()).color(NamedTextColor.DARK_AQUA)))).hide(ItemUtils.getDataComponentType())
 		);
@@ -102,7 +102,7 @@ public class CityListDetailsMenu extends Menu {
 
 			UUID ownerUUID = this.city.getPlayerWithPermission(CityPermission.OWNER);
 
-			map.put(12, new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUID),
+			map.put(12, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID),
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation(
 								"feature.city.menus.list.details.owner",
@@ -123,7 +123,7 @@ public class CityListDetailsMenu extends Menu {
 						TranslationManager.translation(perk3.getNameKey()));
 				loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-				map.put(14, new ItemBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
+				map.put(14, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
 								itemMeta -> {
 									itemMeta.displayName(
 										TranslationManager.translation(
@@ -137,7 +137,7 @@ public class CityListDetailsMenu extends Menu {
 				);
 			}
 		} else {
-			map.put(13, new ItemBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
+			map.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
 					itemMeta -> itemMeta.displayName(TranslationManager.translation(
 							"feature.city.menus.list.details.owner",
 							PlayerNameCache.name(this.city.getPlayerWithPermission(CityPermission.OWNER)).color(NamedTextColor.GRAY)
@@ -147,22 +147,22 @@ public class CityListDetailsMenu extends Menu {
 		
 		LivingEntity entity = (LivingEntity) city.getMascot().getEntity();
 
-		map.put(8, new ItemBuilder(this, new ItemStack(entity != null ? city.getMascot().getMascotEgg() : Material.BARRIER),
+		map.put(8, new ItemMenuBuilder(this, new ItemStack(entity != null ? city.getMascot().getMascotEgg() : Material.BARRIER),
 				itemMeta -> itemMeta.displayName(entity != null
 						? TranslationManager.translation("feature.city.menus.list.details.mascot.level", Component.text(city.getMascot().getLevel()).color(NamedTextColor.LIGHT_PURPLE))
 						: TranslationManager.translation("feature.city.menus.list.details.mascot.missing"))));
 
-		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
+		map.put(9, new ItemMenuBuilder(this, new ItemStack(Material.PAPER),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.details.size", Component.text(city.getChunks().size()).color(NamedTextColor.AQUA)))));
 
-		map.put(22, new ItemBuilder(this, new ItemStack(Material.DIAMOND),
+		map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation(
 						"feature.city.menus.list.details.wealth",
 						Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
 						Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
 				))));
 
-		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
+		map.put(4, new ItemMenuBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> {
 					itemMeta.displayName(TranslationManager.translation(
 							"feature.city.menus.list.details.population",
@@ -173,9 +173,9 @@ public class CityListDetailsMenu extends Menu {
 					itemMeta.lore(TranslationManager.translationLore("feature.city.menus.list.details.population.lore"));
 				}).setOnClick(inventoryClickEvent -> new CityPlayerListMenu(getOwner(), city).open()));
 
-		map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
+		map.put(26, new ItemMenuBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.details.type", city.getType().getDisplayName()))));
-		map.put(18, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange").getItemStack(),
+		map.put(18, new ItemMenuBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange").getItemStack(),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
 		return map;
 	}

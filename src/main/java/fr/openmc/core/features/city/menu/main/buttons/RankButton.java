@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 public class RankButton {
-    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int[] slots) {
+    public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
 
         MenuUtils.createButtonItem(
                 contents,
                 slots,
-                new ItemBuilder(menu, Material.PAPER, itemMeta -> {
+                new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.ranks.title"));
                     itemMeta.lore(getDynamicLore(city, player));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));

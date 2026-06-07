@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -70,8 +70,8 @@ public class MayorColorMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -96,7 +96,7 @@ public class MayorColorMenu extends Menu {
                     "feature.city.mayor.menu.color.option.lore",
                     Component.text(ColorUtils.getNameFromColor(color)).color(color)
             );
-            inventory.put(slot, new ItemBuilder(this, ColorUtils.getMaterialFromColor(color), itemMeta -> {
+            inventory.put(slot, new ItemMenuBuilder(this, ColorUtils.getMaterialFromColor(color), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation(
                         "feature.city.mayor.menu.color.option.name",
                         Component.text(ColorUtils.getNameFromColor(color)).color(color)

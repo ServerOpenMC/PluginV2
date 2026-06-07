@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class CloudFishingLootTable extends CustomLootTable {
     @Override
-    public String getName() { return "omc_dream:cloud_fishing"; }
+    public String getNamespace() { return "omc_dream:cloud_fishing"; }
 
     @Override
     public Set<CustomLoot> getLoots() {

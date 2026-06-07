@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
@@ -105,7 +105,7 @@ public class MayorVoteMenu extends PaginatedMenu {
             boolean ench = playerVote != null && candidate == playerVote;
 
 
-            ItemStack mayorItem = new ItemBuilder(this, SkullUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
+            ItemStack mayorItem = new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.mayor.menu.vote.mayor.title",
                             Component.text(candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false)
@@ -163,21 +163,21 @@ public class MayorVoteMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.vote.button.close"));
         }).setCloseButton());
-        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+        map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.vote.button.prev"));
         }).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+        map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.vote.button.next"));
         }).setNextPageButton());
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.city.mayor.menu.common.more_info.lore");
 
-        map.put(54, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        map.put(54, new ItemMenuBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.more_info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));

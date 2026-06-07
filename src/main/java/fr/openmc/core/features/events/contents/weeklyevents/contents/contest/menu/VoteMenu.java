@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -55,9 +55,9 @@ public class VoteMenu extends Menu {
 
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         String camp1Name = ContestManager.data.getCamp1();
         String camp2Name = ContestManager.data.getCamp2();
@@ -151,7 +151,7 @@ public class VoteMenu extends Menu {
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.events.contest.vote.info.lore");
 
-        inventory.put(camp1Slot, new ItemBuilder(this, m1, itemMeta -> {
+        inventory.put(camp1Slot, new ItemMenuBuilder(this, m1, itemMeta -> {
             itemMeta.displayName(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1));
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
@@ -205,7 +205,7 @@ public class VoteMenu extends Menu {
             }
         }));
 
-        inventory.put(camp2Slot, new ItemBuilder(this, m2, itemMeta -> {
+        inventory.put(camp2Slot, new ItemMenuBuilder(this, m2, itemMeta -> {
             itemMeta.displayName(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2));
             itemMeta.lore(lore2);
             itemMeta.setEnchantmentGlintOverride(ench2);
@@ -259,7 +259,7 @@ public class VoteMenu extends Menu {
             }
         }));
 
-        inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
+        inventory.put(35, new ItemMenuBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));
             itemMeta.lore(loreInfo);
         }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(player).open()));

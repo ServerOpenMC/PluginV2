@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -130,7 +130,7 @@ public class CityTopMenu extends PaginatedMenu {
 
                 int currentRank = rank.getAndIncrement();
 
-                items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.menus.top.item.title",
                             Component.text(currentRank).color(LeaderboardManager.getRankColor(currentRank)),
@@ -160,10 +160,10 @@ public class CityTopMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(49, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
+        map.put(49, new ItemMenuBuilder(this, Material.HOPPER, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.top.sort.title"));
             itemMeta.lore(generateSortLoreText());
         }).setOnClick(inventoryClickEvent -> {

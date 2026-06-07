@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.milestone.menu;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -57,8 +57,8 @@ public class CityMilestoneMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         int currentLevel = city.getLevel();
@@ -84,7 +84,7 @@ public class CityMilestoneMenu extends Menu {
             boolean completed = i < currentLevel;
             boolean active = i == currentLevel;
 
-            Supplier<ItemBuilder> upgradeItemSupplier = () -> getGenerateItemLevel(this, level, city, completed, active)
+            Supplier<ItemMenuBuilder> upgradeItemSupplier = () -> getGenerateItemLevel(this, level, city, completed, active)
                     .setOnClick(e -> {
                         if (!active) return;
 
@@ -103,7 +103,7 @@ public class CityMilestoneMenu extends Menu {
                 MenuUtils.runDynamicItem(player, this, slot, upgradeItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {
-                inventory.put(slot, new ItemBuilder(this, upgradeItemSupplier.get()));
+                inventory.put(slot, new ItemMenuBuilder(this, upgradeItemSupplier.get()));
             }
 
             if (i < levels.length - 1) {
@@ -111,16 +111,16 @@ public class CityMilestoneMenu extends Menu {
                 Material glass = unlocked ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
 
                 for (int pathSlot : pathSlots[i]) {
-                    inventory.put(pathSlot, new ItemBuilder(this, glass, meta -> meta.displayName(Component.empty())).hideTooltip(true));
+                    inventory.put(pathSlot, new ItemMenuBuilder(this, glass, meta -> meta.displayName(Component.empty())).hideTooltip(true));
                 }
             }
         }
 
-        inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.itemName(
+        inventory.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.itemName(
                 TranslationManager.translation("messages.menus.back")
         ), true));
 
-        inventory.put(49, new ItemBuilder(this, Material.BARRIER, meta ->
+        inventory.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta ->
                 meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
 
         return inventory;
@@ -149,8 +149,8 @@ public class CityMilestoneMenu extends Menu {
      * @param active    indique si le niveau est actuellement actif
      * @return un {@code ItemBuilder} configuré pour le niveau
      */
-    public static ItemBuilder getGenerateItemLevel(Menu menu, CityLevels level, City city, boolean completed, boolean active) {
-        ItemBuilder itemBuilder = new ItemBuilder(menu,
+    public static ItemMenuBuilder getGenerateItemLevel(Menu menu, CityLevels level, City city, boolean completed, boolean active) {
+        ItemMenuBuilder itemBuilder = new ItemMenuBuilder(menu,
                 completed ? Material.EMERALD_BLOCK : active ? Material.IRON_BLOCK : Material.COAL_BLOCK,
                 meta -> {
                     meta.displayName(level.getName()

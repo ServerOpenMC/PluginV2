@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.milestone.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
@@ -88,7 +88,7 @@ public class LevelMilestoneMenu extends PaginatedMenu {
                 loreRequirement.add(TranslationManager.translation("feature.city.levels.menu.deposit.click_all"));
             }
 
-            items.add(new ItemBuilder(this, requirement.getIcon(city), meta -> {
+            items.add(new ItemMenuBuilder(this, requirement.getIcon(city), meta -> {
                 Component prefix = Component.text(requirement.isDone(city, level) ? "✔ " : "✖ ")
                         .decorate(TextDecoration.BOLD);
                 meta.displayName(prefix.append(requirement.getName(city, level))
@@ -107,8 +107,8 @@ public class LevelMilestoneMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> buttons = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
         boolean completed = level.ordinal() < city.getLevel();
         boolean active = level.ordinal() == city.getLevel();
@@ -121,21 +121,21 @@ public class LevelMilestoneMenu extends PaginatedMenu {
             loreRewards.add(Component.text(" ").append(reward.getName()).decoration(TextDecoration.ITALIC, false));
         }
 
-        buttons.put(31, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+        buttons.put(31, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.levels.menu.rewards.item"));
             itemMeta.lore(loreRewards);
         }));
 
-        buttons.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        buttons.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
         }, true));
 
-        buttons.put(49, new ItemBuilder(this, Material.BARRIER, meta ->
+        buttons.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta ->
                 meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
-        buttons.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+        buttons.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
-        buttons.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+        buttons.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
 
