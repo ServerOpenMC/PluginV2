@@ -30,7 +30,6 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
                 WeeklyEventsManager.getCurrentEvent()
         ));
 
-        //todo: implement DailyEvent in upcoming events
 
         if (events.getLast() instanceof WeeklyEvent we) {
             for (int i = events.size(); i <= slots; i++) {

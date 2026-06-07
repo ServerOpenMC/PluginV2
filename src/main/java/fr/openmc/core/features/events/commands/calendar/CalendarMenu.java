@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.models.DailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
@@ -80,7 +81,11 @@ public class CalendarMenu extends PaginatedMenu {
     private List<Component> getEventLore(Event event) {
         List<Component> eventLore = new ArrayList<>(event.getDescription());
 
-        if (event instanceof WeeklyEvent we) {
+        if (event instanceof DailyEvent de) {
+            eventLore.add(Component.empty());
+            eventLore.add(TranslationManager.translation("feature.events.calendar.start_in"));
+
+        } else if (event instanceof WeeklyEvent we) {
             eventLore.add(Component.empty());
             eventLore.add(TranslationManager.translation("feature.events.calendar.phases"));
             for (WeeklyEventPhase phase : we.getPhases()) {

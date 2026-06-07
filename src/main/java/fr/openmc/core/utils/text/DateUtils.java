@@ -184,4 +184,9 @@ public class DateUtils {
 
         return ChronoUnit.SECONDS.between(now, nextDayOfWeekMidnight);
     }
+
+    public static long getDelayBetweenNow(LocalDateTime time) {
+        LocalDateTime now = LocalDateTime.now();
+        return ChronoUnit.SECONDS.between(now, time);
+    }
 }
