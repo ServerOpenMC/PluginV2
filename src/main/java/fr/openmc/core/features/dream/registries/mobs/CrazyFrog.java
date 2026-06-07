@@ -14,8 +14,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,6 +30,8 @@ import java.util.List;
  * Bem bem!
  */
 public class CrazyFrog extends DreamMob<Frog> implements Listener {
+
+    private static final HashMap<LivingEntity, BukkitTask> jumpTasks = new HashMap<>();
 
     public CrazyFrog(String id) {
         super(id,
@@ -61,12 +65,17 @@ public class CrazyFrog extends DreamMob<Frog> implements Listener {
         if (!(OMCRegistry.CUSTOM_MOBS.getMob(event.getEntity()) instanceof CrazyFrog)) return;
         if (!(event.getEntity() instanceof Frog frog)) return;
 
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+        if (jumpTasks.containsKey(frog)) {
+            cancelJumps(frog);
+        }
+
+        jumpTasks.put(frog, Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 jump(frog, RandomUtils.randomBetween(14, 15));
                 for (int i = 0; i <= 3; i++) {
-                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
-                        jump(frog, RandomUtils.randomBetween(9, 13)), 40L * i);
-                }},5L);
+                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                        jump(frog, RandomUtils.randomBetween(9, 13));
+                    }, 40L * i);
+                }},5L));
     }
 
     private void jump(LivingEntity entity, double distance) {
@@ -82,5 +91,10 @@ public class CrazyFrog extends DreamMob<Frog> implements Listener {
         double vz = dz / tick;
 
         entity.setVelocity(new Vector(vx, vy, vz));
+    }
+
+    private void cancelJumps(Frog frog) {
+        BukkitTask task = jumpTasks.remove(frog);
+        if (task != null) task.cancel();
     }
 }
