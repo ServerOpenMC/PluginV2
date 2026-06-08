@@ -1,9 +1,13 @@
 package fr.openmc.core.features.events.commands.calendar;
 
+import fr.openmc.api.menulib.MenuLib;
+import fr.openmc.api.menulib.OpenMenu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
@@ -11,6 +15,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPh
 import fr.openmc.core.features.events.models.Event;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -18,7 +23,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CalendarMenu extends PaginatedMenu {
+public class CalendarMenu extends PaginatedMenu implements OpenMenu {
+    private static final HashMap<String, ScheduleDailyEvent> scheduledEventById = new HashMap<>();
+
     public CalendarMenu(Player owner) {
         super(owner);
     }
@@ -55,20 +64,45 @@ public class CalendarMenu extends PaginatedMenu {
                 meta.lore(getEventLore(event));
             });
 
-            if (event instanceof ScheduleDailyEvent) {
-                //todo: add dynamic item
-//                MenuUtils.runDynamicItem(getOwner(), this, , builder -> {
-//                    ScheduleDailyEvent de = (ScheduleDailyEvent) event;
-//                    builder.getItemMeta().ifPresent(meta -> {
-//                        meta.displayName(de.getName().decoration(TextDecoration.ITALIC, false));
-//                        meta.lore(getEventLore(de));
-//                    });
-//                });
+            if (event instanceof ScheduleDailyEvent de) {
+                String itemId = "scheduled_" + de.getScheduledStartDate().toString().toLowerCase(); // .toLowerCase car mc enelve les maj sur les pdc
+                scheduledEventById.put(itemId, de);
+                items.add(itemBuilder.setItemId(itemId));
             } else if (event instanceof WeeklyEvent) {
                 items.add(itemBuilder);
             }
         }
         return items;
+    }
+
+    @Override
+    public void onOpen(InventoryOpenEvent event) {
+        int i = 0;
+        for (ItemStack itemStack : event.getInventory().getContents()) {
+            if (itemStack == null) {
+                i++;
+                continue;
+            }
+
+            PersistentDataContainerView pdc = itemStack.getPersistentDataContainer();
+            if (!pdc.has(MenuLib.getItemIdKey())) {
+                i++;
+                continue;
+            }
+
+            String itemId = pdc.get(MenuLib.getItemIdKey(), PersistentDataType.STRING);
+            ScheduleDailyEvent scheduleEvent = scheduledEventById.get(itemId);
+
+            if (scheduleEvent != null) {
+                MenuUtils.runDynamicItem(getOwner(), this, i, () ->
+                        new ItemMenuBuilder(this, scheduleEvent.getIcon(), meta -> {
+                            meta.customName(scheduleEvent.getName().decoration(TextDecoration.ITALIC, false));
+                            meta.lore(getEventLore(scheduleEvent));
+                        })
+                ).runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+            }
+            i++;
+        }
     }
 
     @Override
@@ -83,7 +117,7 @@ public class CalendarMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        return CalendarManager.getUpcomingEvents(14).size();
     }
 
     @Override

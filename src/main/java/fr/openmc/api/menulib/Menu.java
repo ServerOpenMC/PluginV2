@@ -18,8 +18,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -152,7 +154,10 @@ public abstract class Menu implements InventoryHolder {
 
             Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
 
-			owner.openInventory(inventory);
+			InventoryView openedMenu = owner.openInventory(inventory);
+
+			if (this instanceof OpenMenu om)
+				om.onOpen(new InventoryOpenEvent(openedMenu));
 		} catch (Exception e) {
 			MessagesManager.sendMessage(owner, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
 			owner.closeInventory();
