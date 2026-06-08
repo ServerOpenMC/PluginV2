@@ -36,7 +36,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     );
 
     private final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
-            9, 13, 16, 20, 21
+            9, 13, 16, 21
     ));
 
     // * Données à propos de la gestion des daily event
@@ -144,10 +144,16 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
             outgoingEvent = incomingEvents.removeFirst();
 
+            // * Commencement de l'evenement
             outgoingEvent.getDailyEvent().onStart().run();
 
             //todo: toast
-            //todo: gestion de fin
+
+            // * Programmation de la fin de l'evenement
+            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                   outgoingEvent.getDailyEvent().onEnd().run();
+                   outgoingEvent = null;
+                   }, outgoingEvent.getDailyEvent().getDuration() * 20L * 20L);
 
             // * 10 secondes d'attente avant de schedule un autre event (evite que plusieurs events se lancent en meme temps)
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
