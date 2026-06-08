@@ -4,16 +4,20 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
+import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +35,15 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
 
         events.addAll(DailyEventsManager.incomingEvents);
         events.add(WeeklyEventsManager.getCurrentEvent());
+
+        events.sort((e1, e2) -> {
+            LocalDateTime d1 = getEventStartDate(e1);
+            LocalDateTime d2 = getEventStartDate(e2);
+            if (d1 == null && d2 == null) return 0;
+            if (d1 == null) return 1;
+            if (d2 == null) return -1;
+            return d1.compareTo(d2);
+        });
 
         if (events.getLast() instanceof WeeklyEvent we) {
             for (int i = events.size(); i <= slots; i++) {
@@ -97,5 +110,19 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
         }
 
         return events;
+    }
+
+    private static LocalDateTime getEventStartDate(Event event) {
+        if (event instanceof ScheduleDailyEvent sde) {
+            return sde.getScheduledStartDate();
+        } else if (event instanceof WeeklyEvent we) {
+            WeeklyEventPhase firstPhase = we.getPhases().getFirst();
+            LocalDateTime now = DateUtils.getLocalDateTime();
+            return now.toLocalDate()
+                    .with(TemporalAdjusters.nextOrSame(firstPhase.getStartDay()))
+                    .plusWeeks(we.getWeekOffset())
+                    .atTime(firstPhase.getStartHour(), firstPhase.getStartMinutes());
+        }
+        return null;
     }
 }
