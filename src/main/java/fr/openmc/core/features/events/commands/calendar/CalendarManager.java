@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.commands.calendar;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -26,10 +27,10 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
     }
 
     public static List<Event> getUpcomingEvents(int slots) {
-        List<Event> events = new ArrayList<>(List.of(
-                WeeklyEventsManager.getCurrentEvent()
-        ));
+        List<Event> events = new ArrayList<>();
 
+        events.addAll(DailyEventsManager.incomingEvents);
+        events.add(WeeklyEventsManager.getCurrentEvent());
 
         if (events.getLast() instanceof WeeklyEvent we) {
             for (int i = events.size(); i <= slots; i++) {

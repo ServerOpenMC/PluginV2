@@ -40,7 +40,7 @@ public class GoldenHarvestEvent extends DailyEvent {
 
     @Override
     public List<Component> getDescription() {
-        return List.of();
+        return TranslationManager.translationLore("feature.dailyevents.goldenharvest.lore");
     }
 
     @Override

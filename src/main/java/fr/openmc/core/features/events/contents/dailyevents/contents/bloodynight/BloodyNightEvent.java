@@ -40,7 +40,7 @@ public class BloodyNightEvent extends DailyEvent {
 
     @Override
     public List<Component> getDescription() {
-        return List.of();
+        return TranslationManager.translationLore("feature.dailyevents.bloodynight.lore");
     }
 
     @Override

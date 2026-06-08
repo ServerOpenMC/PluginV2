@@ -14,6 +14,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
+import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -34,13 +35,13 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     );
 
     private final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
-            9, 13, 16, 19, 20
+            9, 13, 16, 20, 21
     ));
 
     // * Données à propos de la gestion des daily event
-    private DailyEvent outgoingEvent = null;
+    private ScheduleDailyEvent outgoingEvent = null;
     private BukkitTask nextEventTask;
-    public static List<DailyEvent> incomingEvents = new ArrayList<>();
+    public static List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
 
     private static Dao<IncomingEventsDB, Integer> dao;
 
@@ -87,31 +88,37 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      * Lors du premier chargement, on remplit directement notre liste de taille identique à nos slots horaires.
      * @return la liste prévue des x prochains évenements
      */
-    private List<DailyEvent> loadIncomingEvents() {
+    private List<ScheduleDailyEvent> loadIncomingEvents() {
+        List<ScheduleDailyEvent> scheduledEvents = new ArrayList<>();
+        LocalDateTime now = DateUtils.getLocalDateTime();
         IncomingEventsDB data = loadIncomingEventsDB();
         List<DailyEvent> incomingEvent = data.getDailyEventsIncomings();
 
         System.out.println("before incomingEvent " + incomingEvent);
 
         // * Si la liste est vide, soit c'est la premiere fois qu'on lance le plugin, soit que tout les events sont fini
-        if (incomingEvent.isEmpty()) {
-            List<DailyEvent> copyEvents = generateRandomOrder();
-
-            for (int _ : SLOT_HOURS_EVENTS) {
-                if (copyEvents.isEmpty()) {
-                    copyEvents = generateRandomOrder();
-                }
-
-                incomingEvent.add(copyEvents.removeFirst());
+        List<DailyEvent> copyEvents = new ArrayList<>(incomingEvent);
+        for (int hourSlot : SLOT_HOURS_EVENTS) {
+            if (copyEvents.isEmpty()) {
+                copyEvents = generateRandomOrder();
             }
+
+            LocalDateTime scheduledDailyEvent;
+            if (hourSlot > now.getHour()) {
+                scheduledDailyEvent=now.withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
+            } else {
+                scheduledDailyEvent=now.plusDays(1)
+                        .withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
+            }
+            scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), scheduledDailyEvent));
         }
 
-        System.out.println("after incomingEvent " + incomingEvent);
-        return incomingEvent;
+        System.out.println("after scheduledEvents " + scheduledEvents);
+        return scheduledEvents;
     }
 
     private BukkitTask scheduleNextEventTask() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.getLocalDateTime();
         // * On cherche la prochaine heure
         Integer nextHour = SLOT_HOURS_EVENTS.stream()
                 .filter(hour -> hour > now.getHour())
@@ -132,10 +139,20 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         System.out.println("Scheduling next daily event in " + delayTicks / 20 + " seconds at " + scheduleTime);
 
         return Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (incomingEvents.isEmpty()) {
+                incomingEvents = loadIncomingEvents();
+            }
+
             outgoingEvent = incomingEvents.removeFirst();
 
-            outgoingEvent.onStart();
-            nextEventTask = scheduleNextEventTask();
+            outgoingEvent.getDailyEvent().onStart().run();
+
+            //todo: toast
+            //todo: gestion de fin
+
+            // * 10 secondes d'attente avant de schedule un autre event (evite que plusieurs events se lancent en meme temps)
+            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                    nextEventTask = scheduleNextEventTask(), 20L * 10);
         }, delayTicks);
     }
 

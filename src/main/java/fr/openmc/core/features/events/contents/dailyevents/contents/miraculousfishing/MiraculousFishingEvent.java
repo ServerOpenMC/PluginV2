@@ -40,7 +40,7 @@ public class MiraculousFishingEvent extends DailyEvent {
 
     @Override
     public List<Component> getDescription() {
-        return List.of();
+        return TranslationManager.translationLore("feature.dailyevents.miraculousfishing.lore");
     }
 
     @Override

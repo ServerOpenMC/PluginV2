@@ -5,10 +5,11 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.events.contents.dailyevents.models.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
+import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,9 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CalendarMenu extends PaginatedMenu {
     public CalendarMenu(Player owner) {
@@ -46,10 +50,23 @@ public class CalendarMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         for (Event event : CalendarManager.getUpcomingEvents(14)) {
-            items.add(new ItemMenuBuilder(this, event.getIcon(), meta -> {
+            ItemMenuBuilder itemBuilder = new ItemMenuBuilder(this, event.getIcon(), meta -> {
                 meta.customName(event.getName().decoration(TextDecoration.ITALIC, false));
                 meta.lore(getEventLore(event));
-            }));
+            });
+
+            if (event instanceof ScheduleDailyEvent) {
+                //todo: add dynamic item
+//                MenuUtils.runDynamicItem(getOwner(), this, , builder -> {
+//                    ScheduleDailyEvent de = (ScheduleDailyEvent) event;
+//                    builder.getItemMeta().ifPresent(meta -> {
+//                        meta.displayName(de.getName().decoration(TextDecoration.ITALIC, false));
+//                        meta.lore(getEventLore(de));
+//                    });
+//                });
+            } else if (event instanceof WeeklyEvent) {
+                items.add(itemBuilder);
+            }
         }
         return items;
     }
@@ -81,15 +98,30 @@ public class CalendarMenu extends PaginatedMenu {
     private List<Component> getEventLore(Event event) {
         List<Component> eventLore = new ArrayList<>(event.getDescription());
 
-        if (event instanceof DailyEvent de) {
+        if (event instanceof ScheduleDailyEvent de) {
+            LocalDateTime now = DateUtils.getLocalDateTime();
+            LocalDateTime startDate = de.getScheduledStartDate();
+            LocalDateTime endDate = de.getScheduledStartDate();
+
             eventLore.add(Component.empty());
-            eventLore.add(TranslationManager.translation("feature.events.calendar.start_in"));
+            eventLore.add(TranslationManager.translation("feature.events.calendar.start_in",
+                    Component.text(DateUtils.convertSecondToTime(ChronoUnit.SECONDS.between(now, startDate)), NamedTextColor.YELLOW)
+            ));
+            eventLore.add(Component.empty());
+            eventLore.add(TranslationManager.translation("feature.events.calendar.start_date",
+                    Component.text(DateUtils.formatDate(startDate), NamedTextColor.AQUA),
+                    Component.text(DateUtils.formatHourMinute(endDate.getHour(), endDate.getMinute()), NamedTextColor.AQUA)
+            ));
+            eventLore.add(TranslationManager.translation("feature.events.calendar.end_date",
+                    Component.text(DateUtils.formatDate(endDate), NamedTextColor.AQUA),
+                    Component.text(DateUtils.formatHourMinute(endDate.getHour(), endDate.getMinute()), NamedTextColor.AQUA)
+            ));
 
         } else if (event instanceof WeeklyEvent we) {
             eventLore.add(Component.empty());
             eventLore.add(TranslationManager.translation("feature.events.calendar.phases"));
             for (WeeklyEventPhase phase : we.getPhases()) {
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = DateUtils.getLocalDateTime();
 
                 LocalDate nextDate = now.toLocalDate()
                         .with(TemporalAdjusters.nextOrSame(phase.getStartDay()))
@@ -100,10 +132,8 @@ public class CalendarMenu extends PaginatedMenu {
                         phase.getStartMinutes()
                 );
 
-                String formattedDate = dateEvent.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.FRANCE)
-                        + " " + dateEvent.getDayOfMonth() + " "
-                        + dateEvent.getMonth().getDisplayName(TextStyle.FULL, Locale.FRANCE);
-                String formattedTime = phase.getStartHour() + "h" + String.format("%02d", phase.getStartMinutes());
+                String formattedDate = DateUtils.formatDate(dateEvent);
+                String formattedTime = DateUtils.formatHourMinute(phase.getStartHour(), phase.getStartMinutes());
 
                 eventLore.add(TranslationManager.translation(
                         "feature.events.calendar.phase.line",

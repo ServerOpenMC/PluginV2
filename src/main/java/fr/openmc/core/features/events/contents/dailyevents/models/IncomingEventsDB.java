@@ -24,9 +24,9 @@ public class IncomingEventsDB {
 
     public IncomingEventsDB() {}
 
-    public IncomingEventsDB(List<DailyEvent> incomingEventsList) {
+    public IncomingEventsDB(List<ScheduleDailyEvent> incomingEventsList) {
         this.dailyEventsIdIncomings = incomingEventsList.stream()
-                .map(DailyEvent::getEventId)
+                .map(d->d.getDailyEvent().getEventId())
                 .toArray(String[]::new);
     }
 
