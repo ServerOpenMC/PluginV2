@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+//todo: ajouter des javadocs et commentaires sur certaines parties
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
     // * Constantes
@@ -115,6 +117,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         return scheduledEvents;
     }
 
+    //todo: diviser ça en plusieurs sous méthodes
     private BukkitTask scheduleNextEventTask() {
         LocalDateTime now = DateUtils.getLocalDateTime();
         // * On cherche la prochaine heure
@@ -137,6 +140,8 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         OMCLogger.info("Les prochains evenement : " + incomingEvents);
         OMCLogger.info("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
 
+        //todo: toast 1 min avant commencement
+
         return Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (incomingEvents.isEmpty()) {
                 incomingEvents = loadIncomingEvents();
@@ -147,13 +152,17 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             // * Commencement de l'evenement
             outgoingEvent.getDailyEvent().onStart().run();
 
-            //todo: toast
+            //todo: setup ambient (interface EventAmbient)
 
             // * Programmation de la fin de l'evenement
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                   outgoingEvent.getDailyEvent().onEnd().run();
-                   outgoingEvent = null;
-                   }, outgoingEvent.getDailyEvent().getDuration() * 20L * 20L);
+                outgoingEvent.getDailyEvent().onEnd().run();
+                outgoingEvent = null;
+
+                //todo: remove ambient
+                //todo: end toast
+
+            }, outgoingEvent.getDailyEvent().getDuration() * 20L * 20L);
 
             // * 10 secondes d'attente avant de schedule un autre event (evite que plusieurs events se lancent en meme temps)
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
