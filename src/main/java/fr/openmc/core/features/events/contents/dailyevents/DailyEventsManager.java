@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
@@ -94,8 +95,6 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         IncomingEventsDB data = loadIncomingEventsDB();
         List<DailyEvent> incomingEvent = data.getDailyEventsIncomings();
 
-        System.out.println("before incomingEvent " + incomingEvent);
-
         // * Si la liste est vide, soit c'est la premiere fois qu'on lance le plugin, soit que tout les events sont fini
         List<DailyEvent> copyEvents = new ArrayList<>(incomingEvent);
         for (int hourSlot : SLOT_HOURS_EVENTS) {
@@ -113,7 +112,6 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), scheduledDailyEvent));
         }
 
-        System.out.println("after scheduledEvents " + scheduledEvents);
         return scheduledEvents;
     }
 
@@ -136,7 +134,8 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
         long delayTicks = DateUtils.getDelayBetweenNow(scheduleTime) * 20;
 
-        System.out.println("Scheduling next daily event in " + delayTicks / 20 + " seconds at " + scheduleTime);
+        OMCLogger.info("Les prochains evenement : " + incomingEvents);
+        OMCLogger.info("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
 
         return Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (incomingEvents.isEmpty()) {
