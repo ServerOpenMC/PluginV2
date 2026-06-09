@@ -8,17 +8,20 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
+import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventAmbientListeners;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ScheduleNextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventToastTask;
 import fr.openmc.core.utils.text.DateUtils;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
@@ -26,11 +29,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 
 //todo: ajouter des javadocs et commentaires sur certaines parties
 @Credit(developers = {"iambibi_"})
-public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
+public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners {
     // * Constantes
     public static final List<DailyEvent> EVENTS = List.of(
         new MiraculousFishingEvent(),
@@ -66,6 +70,13 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         dao = DaoManager.createDao(connectionSource, IncomingEventsDB.class);
         TableUtils.createTableIfNotExists(connectionSource, IncomingEventsDB.class);
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new DailyEventAmbientListeners()
+        );
     }
 
     public static IncomingEventsDB loadIncomingEventsDB() {
@@ -152,5 +163,9 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         List<DailyEvent> copyEvents = new ArrayList<>(EVENTS);
         Collections.shuffle(copyEvents);
         return copyEvents;
+    }
+
+    public static boolean isActiveDailyEvent() {
+        return outgoingEvent != null;
     }
 }

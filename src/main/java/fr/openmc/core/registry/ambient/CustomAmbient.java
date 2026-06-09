@@ -16,6 +16,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -61,6 +62,16 @@ public abstract class CustomAmbient {
     }
 
     /**
+     * Applique l'ambience sur des joueurs
+     * @param receivers Les joueurs concernés
+     */
+    public void apply(Collection<Player> receivers) {
+        for (Player receiver : receivers) {
+            apply(receiver);
+        }
+    }
+
+    /**
      * Retire l'ambience du Joueur
      * @param player le joueur ciblé
      */
@@ -75,6 +86,16 @@ public abstract class CustomAmbient {
         );
 
         ACTIVE_AMBIENTS.remove(player.getUniqueId());
+    }
+
+    /**
+     * Retire l'ambience des joueurs
+     * @param receivers le joueur ciblé
+     */
+    public void reset(Collection<Player> receivers) {
+        for (Player receiver : receivers) {
+            reset(receiver);
+        }
     }
 
     /**

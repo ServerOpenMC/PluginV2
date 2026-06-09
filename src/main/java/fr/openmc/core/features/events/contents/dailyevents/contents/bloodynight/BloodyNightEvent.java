@@ -1,7 +1,10 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -11,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class BloodyNightEvent extends DailyEvent implements HasToast {
+public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient {
     @Override
     public String getEventId() {
         return "bloody_night";
@@ -72,5 +75,10 @@ public class BloodyNightEvent extends DailyEvent implements HasToast {
                 "feature.dailyevents.toast.bloodynight.end",
                 AdvancementType.GOAL
         );
+    }
+
+    @Override
+    public CustomAmbient getAmbient() {
+        return OMCRegistry.CUSTOM_AMBIENTS.DARK; // todo: make new custom ambients
     }
 }

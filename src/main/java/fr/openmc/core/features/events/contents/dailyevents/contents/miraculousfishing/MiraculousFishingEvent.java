@@ -1,7 +1,10 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -11,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class MiraculousFishingEvent extends DailyEvent implements HasToast {
+public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -25,7 +28,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast {
     @Override
     public int getDuration() {
         return 30;
-    }
+    } //todo: bug il a duré 10 min
 
     @Override
     public Runnable onStart() {
@@ -72,5 +75,10 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast {
                 "feature.dailyevents.toast.miraculousfishing.end",
                 AdvancementType.GOAL
         );
+    }
+
+    @Override
+    public CustomAmbient getAmbient() {
+        return OMCRegistry.CUSTOM_AMBIENTS.DARK; // todo: make new custom ambients
     }
 }

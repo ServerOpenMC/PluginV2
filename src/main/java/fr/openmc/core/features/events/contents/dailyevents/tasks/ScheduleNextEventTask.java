@@ -3,10 +3,13 @@ package fr.openmc.core.features.events.contents.dailyevents.tasks;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class ScheduleNextEventTask extends BukkitRunnable {
@@ -21,30 +24,41 @@ public class ScheduleNextEventTask extends BukkitRunnable {
         // * Commencement de l'evenement
         DailyEventsManager.outgoingEvent.getDailyEvent().onStart().run();
 
-        //todo: setup ambient (interface EventAmbient)
+        DailyEvent outgoingDailyEvent = DailyEventsManager.outgoingEvent.getDailyEvent();
+        Collection<Player> receivers = Bukkit.getOnlinePlayers()
+                .stream()
+                .filter(p -> p.getWorld().getName().equals(outgoingDailyEvent.getWorldEvent()))
+                .collect(Collectors.toSet());
+
+        // * Application de l'ambience
+        if (outgoingDailyEvent instanceof HasAmbient ambient) {
+            ambient.apply(receivers);
+        }
 
         // * Toast de début
-        DailyEvent outgoingDailyEvent = DailyEventsManager.outgoingEvent.getDailyEvent();
         if (outgoingDailyEvent instanceof HasToast toast) {
-            toast.getStartToastData().send(Bukkit.getOnlinePlayers()
-                    .stream()
-                    .filter(p -> p.getWorld().getName().equals(outgoingDailyEvent.getWorldEvent()))
-                    .collect(Collectors.toSet()));
+            toast.getStartToastData().send(receivers);
         }
 
 
         // * Programmation de la fin de l'evenement
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             DailyEventsManager.outgoingEvent.getDailyEvent().onEnd().run();
+
+            Collection<Player> receivers2 = Bukkit.getOnlinePlayers()
+                    .stream()
+                    .filter(p -> p.getWorld().getName().equals(outgoingDailyEvent.getWorldEvent()))
+                    .collect(Collectors.toSet());
+
             DailyEventsManager.outgoingEvent = null;
 
-            //todo: remove ambient
+
+            if (outgoingDailyEvent instanceof HasAmbient ambient) {
+                ambient.reset(receivers2);
+            }
 
             if (outgoingDailyEvent instanceof HasToast toast) {
-                toast.getEndToastData().send(Bukkit.getOnlinePlayers()
-                        .stream()
-                        .filter(p -> p.getWorld().getName().equals(outgoingDailyEvent.getWorldEvent()))
-                        .collect(Collectors.toSet()));
+                toast.getEndToastData().send(receivers2);
             }
 
         }, DailyEventsManager.outgoingEvent.getDailyEvent().getDuration() * 20L * 20L);
