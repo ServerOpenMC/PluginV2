@@ -116,13 +116,13 @@ public class QuestsMenu extends Menu {
         }
 
         if (this.currentPage > 0) {
-            content.put(19, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_quests:quests_left_arrow")).getBest(), meta ->
+            content.put(19, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.QUESTS_LEFT_ARROW, meta ->
                     meta.displayName(Component.text("Page précédente").decoration(TextDecoration.ITALIC, false))
             ));
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(25, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_quests:quests_right_arrow")).getBest(), meta ->
+            content.put(25, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.QUESTS_RIGHT_ARROW, meta ->
                     meta.displayName(Component.text("Page suivante").decoration(TextDecoration.ITALIC, false))
             ));
         }

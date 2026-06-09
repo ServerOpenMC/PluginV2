@@ -21,11 +21,11 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
         super(
                 "The Mixture",
                 List.of("Fabriquer {target} The Mixture{s}"),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest()
+                OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE
         );
 
         this.addTiers(
-                new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest(), 16)),
+                new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE.getBest(), 16)),
                 new QuestTier(32, new QuestMoneyReward(100)),
                 new QuestTier(128, new QuestMoneyReward(300)),
                 new QuestTier(512, new QuestMoneyReward(700))
@@ -35,7 +35,7 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item == null || !item.isSimilar(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest()))
+        if (item == null || !item.isSimilar(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE.getBest()))
             return;
 
         // Le joueur ne craft pas plus d'un kebab

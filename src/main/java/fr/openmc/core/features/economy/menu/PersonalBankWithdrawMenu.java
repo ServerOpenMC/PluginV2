@@ -101,10 +101,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             });
         }));
 
-        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(TranslationManager.translationLore("feature.economy.bank.back.lore"));
-        }, true));
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

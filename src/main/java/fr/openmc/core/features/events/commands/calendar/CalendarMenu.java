@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.commands.calendar;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.OpenMenu;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
@@ -123,9 +124,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        map.put(33, new ItemMenuBuilder(this,
-                OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(),
-                itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
+        map.put(33, ItemMenuTemplate.BTN_CANCEL.apply(this));
         return map;
     }
 

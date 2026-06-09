@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.registries.enchantements;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
@@ -63,7 +62,7 @@ public class Experientastic extends DreamEnchantment implements Listener {
         Player player = event.getEntity().getKiller();
         if (player == null) return;
 
-        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.get(this.getKey()).getEnchantment();
+        Enchantment enchant = this.getEnchantment();
         if (enchant == null) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();

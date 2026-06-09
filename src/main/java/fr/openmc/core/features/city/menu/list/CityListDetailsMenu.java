@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.menu.list;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
@@ -175,8 +175,7 @@ public class CityListDetailsMenu extends Menu {
 
 		map.put(26, new ItemMenuBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.details.type", city.getType().getDisplayName()))));
-		map.put(18, new ItemMenuBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange").getItemStack(),
-				itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+		map.put(18, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, true));
 		return map;
 	}
 

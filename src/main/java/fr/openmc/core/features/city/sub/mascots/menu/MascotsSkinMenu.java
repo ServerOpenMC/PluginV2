@@ -77,10 +77,7 @@ public class MascotsSkinMenu extends Menu {
             map.put(mascotType.getSlot(), createMascotButton(playerCity, mascotType));
         }
 
-        map.put(18, new ItemMenuBuilder(this, Material.ARROW, meta -> {
-            meta.displayName(TranslationManager.translation("messages.menus.back"));
-            meta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }
@@ -119,7 +116,7 @@ public class MascotsSkinMenu extends Menu {
                     }
                     if (!egg.equals(type.getSpawnEgg())) {
                         int aywenite = type.getPrice();
-                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                         if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
                             changeMascotsSkin(mascots, type.getEntityType(), getOwner(), aywenite);
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);

@@ -204,10 +204,7 @@ public class CityChunkMenu extends Menu {
 
     private void addNavigationButtons(Map<Integer, ItemMenuBuilder> inventory) {
         if (playerCity != null) {
-            inventory.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
-                itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
-            }, true));
+            inventory.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
             if (hasFreeClaimAvailable) {
                 inventory.put(49, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {

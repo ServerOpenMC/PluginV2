@@ -2,12 +2,12 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -120,10 +120,10 @@ public class SendingLetter extends Menu {
             items.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
-        items.put(49, new ItemMenuBuilder(this, getHead(receiver)).setOnClick(e -> {}));
-        items.put(45, new ItemMenuBuilder(this, MailboxMenuManager.homeBtn(this)));
-        items.put(48, new ItemMenuBuilder(this, MailboxMenuManager.sendBtn(this)).setOnClick(e -> sendLetter(e.getInventory())));
-        items.put(50, new ItemMenuBuilder(this, MailboxMenuManager.cancelBtn(this)).setOnClick(e -> getOwner().closeInventory()));
+        items.put(49, new ItemMenuBuilder(this, getHead(receiver)));
+        items.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
+        items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this).setOnClick(e -> sendLetter(e.getInventory())));
+        items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this).setOnClick(_ -> getOwner().closeInventory()));
 
         return items;
     }

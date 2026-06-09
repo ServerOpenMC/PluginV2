@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class HomeUpgradeMenu extends Menu {
 
@@ -47,7 +46,7 @@ public class HomeUpgradeMenu extends Menu {
 
         HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()));
 
-        items.put(4, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+        items.put(4, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
             if (nextUpgrade == null) {
                 itemMeta.lore(TranslationManager.translationLore(

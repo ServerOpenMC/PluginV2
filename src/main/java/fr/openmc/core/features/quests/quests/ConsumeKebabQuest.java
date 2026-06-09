@@ -15,7 +15,7 @@ import java.util.List;
 public class ConsumeKebabQuest extends Quest implements Listener {
 
     public ConsumeKebabQuest() {
-        super("Miam miam", List.of("Manger {target} kebab{s}"), OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest());
+        super("Miam miam", List.of("Manger {target} kebab{s}"), OMCRegistry.CUSTOM_ITEMS.KEBAB);
 
         this.addTiers(
                 new QuestTier(10, new QuestMoneyReward(30)),
@@ -28,7 +28,7 @@ public class ConsumeKebabQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        if (item.isSimilar(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest())) {
+        if (item.isSimilar(OMCRegistry.CUSTOM_ITEMS.KEBAB.getBest())) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }

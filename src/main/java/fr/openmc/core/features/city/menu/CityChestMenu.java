@@ -106,18 +106,18 @@ public class CityChestMenu extends PaginatedMenu {
 
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true).setOnClick(inventoryClickEvent ->
-                exit(city, getInventory())));
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true)
+                .setOnClick(_ -> exit(city, getInventory())));
 
-        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             exit(city, getInventory());
             player.closeInventory();
         }));
 
         if (hasPreviousPage()) {
-            map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+            map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasPreviousPage()) {
@@ -131,7 +131,7 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
         if (hasNextPage()) {
-            map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+            map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasNextPage()) {

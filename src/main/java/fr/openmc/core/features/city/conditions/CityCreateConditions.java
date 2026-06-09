@@ -13,8 +13,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
  * pour creer une ville (utile pour faire une modif sur menu et commandes).
@@ -52,7 +50,7 @@ public class CityCreateConditions {
             return false;
         }
 
-        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite")).getBest(), AYWENITE_CREATE)) {
+        if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), AYWENITE_CREATE)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(AYWENITE_CREATE)), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

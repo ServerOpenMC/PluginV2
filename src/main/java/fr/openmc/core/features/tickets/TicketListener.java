@@ -38,8 +38,8 @@ public class TicketListener implements Listener, NotInUnitTest {
         String pelushKey = "omc_plush:peluche_seinyy";
 
         boolean hasLootPelucheSeinyy = event.getLoot().items().stream()
-                .filter(loot -> OMCRegistry.CUSTOM_ITEMS.get(loot) != null)
-                .anyMatch(loot -> OMCRegistry.CUSTOM_ITEMS.get(loot).getId().equals(pelushKey));
+                .filter(loot -> OMCRegistry.CUSTOM_ITEMS.get(loot).isPresent())
+                .anyMatch(loot -> OMCRegistry.CUSTOM_ITEMS.getOrThrow(loot).getId().equals(pelushKey));
 
         Player player = event.getPlayer();
         PlayerStats ps = TicketManager.getPlayerStats(player.getUniqueId());

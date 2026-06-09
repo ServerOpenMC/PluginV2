@@ -35,7 +35,7 @@ public class HomeCreateQuest extends MilestoneQuest implements Listener {
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
-				        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
+				        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
 				        new QuestTextReward(
 						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.HOME_CREATE.ordinal() + 1) + " §f! Les homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 home au début. Il va falloir penser à les améliorer...",
 						        Prefix.MILLESTONE,

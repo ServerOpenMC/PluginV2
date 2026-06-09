@@ -102,7 +102,7 @@ public class MachineBallsMenu extends Menu {
                     }
 
                     if (TicketManager.useTicket(getOwner().getUniqueId())) {
-                        OMCRegistry.CUSTOM_LOOTBOXES.get("omc:machine_ball").open(getOwner());
+                        OMCRegistry.CUSTOM_LOOTBOXES.MACHINE_BALL.open(getOwner());
                     }
                 }
         ));

@@ -50,8 +50,8 @@ public class EquipableItemListener implements Listener {
         for (ItemStack piece : player.getInventory().getArmorContents()) {
             if (piece == null || piece.getType().isAir()) continue;
 
-            CustomItem customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
-            if (customItem instanceof EquipableItem equipable) {
+            Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
+            if (customItem.isPresent() && customItem.get() instanceof EquipableItem equipable) {
                 equipable.removeEffects(player);
             }
         }
@@ -87,8 +87,8 @@ public class EquipableItemListener implements Listener {
 
         if (oldPiece != null && !oldPiece.getType().isAir()) {
 
-            CustomItem customItem = OMCRegistry.CUSTOM_ITEMS.get(oldPiece);
-            if (customItem instanceof EquipableItem equipable) {
+            Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(oldPiece);
+            if (customItem.isPresent() && customItem.get() instanceof EquipableItem equipable) {
                 equipable.removeEffects(player);
             }
         }
@@ -99,8 +99,9 @@ public class EquipableItemListener implements Listener {
 
             if (piece == null || piece.getType().isAir()) continue;
 
-            CustomItem customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
-            if (!(customItem instanceof EquipableItem equipable)) continue;
+            Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
+            if (customItem.isEmpty()) continue;
+            if (!(customItem.get() instanceof EquipableItem equipable)) continue;
 
             for (var entry : equipable.getEffects().entrySet()) {
                 PotionEffectType type = entry.getKey();

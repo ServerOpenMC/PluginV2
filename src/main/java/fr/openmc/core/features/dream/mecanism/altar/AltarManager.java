@@ -89,7 +89,7 @@ public class AltarManager {
 
         if (recipe == null) return;
 
-        DreamItem soulOrb = DreamItemRegistry.getByName("soul");
+        DreamItem soulOrb = DreamItemRegistry.SOUL;
 
         if (soulOrb == null) {
             MessagesManager.sendMessage(player, Component.text("Erreur : omc_dream:soul pas trouvé"), Prefix.DREAM, MessageType.ERROR, false);

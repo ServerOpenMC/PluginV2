@@ -78,7 +78,7 @@ public class MoreInfoMenu extends Menu {
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

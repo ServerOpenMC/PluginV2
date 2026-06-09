@@ -1,6 +1,5 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -65,7 +64,7 @@ public class TradeMenu extends Menu {
         String campName = ContestPlayerManager.getPlayerCampName(player);
         NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
-        ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.get(SHELL_NAMESPACE).getBest();
+        ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.events.contest.trade.info.lore");
 
@@ -120,7 +119,7 @@ public class TradeMenu extends Menu {
             );
         }
 
-        inventory.put(27, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.back")), true));
+        inventory.put(27, new ItemMenuBuilder(this, Material.ARROW, true));
 
         inventory.put(35, new ItemMenuBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));
@@ -200,7 +199,7 @@ public class TradeMenu extends Menu {
      * @param amount le nombre total de coquillages à attribuer
      */
     private void giveShells(Player player, int amount) {
-        ItemStack baseShell = CustomStack.getInstance(SHELL_NAMESPACE).getItemStack();
+        ItemStack baseShell = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
         List<ItemStack> stacks = ItemUtils.splitAmountIntoStack(baseShell, amount);
         List<ItemStack> leftovers = new ArrayList<>();
         for (ItemStack stack : stacks) {

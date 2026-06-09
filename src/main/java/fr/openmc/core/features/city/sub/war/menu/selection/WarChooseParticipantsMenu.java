@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.war.menu.selection;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -137,17 +137,9 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
-        map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), meta -> {
-            meta.displayName(TranslationManager.translation("messages.menus.previous_page"));
-        }).setPreviousPageButton());
-
-        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), meta -> {
-            meta.displayName(TranslationManager.translation("messages.menus.close"));
-        }).setCloseButton());
-
-        map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), meta -> {
-            meta.displayName(TranslationManager.translation("messages.menus.next_page"));
-        }).setNextPageButton());
+        map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
 
         map.put(53, new ItemMenuBuilder(this, selected.size() == count ? Material.LIME_CONCRETE : Material.RED_CONCRETE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.war.menu.participants.confirm.title")

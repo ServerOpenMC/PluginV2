@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -93,14 +94,10 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.lore(lorePerk1);
             })
                     .hide((perk1 != null) ? perk1.getToHide() : null)
-                    .setOnClick(inventoryClickEvent -> {
-                        new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
-                    }));
+                    .setOnClick(_ ->
+                            new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open()));
 
-            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
-                itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
-            }, true));
+            inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 
@@ -120,9 +117,8 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.lore(lorePerk2);
             })
                     .hide((perk2 != null) ? perk2.getToHide() : null)
-                    .setOnClick(inventoryClickEvent -> {
-                        new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
-                    }));
+                    .setOnClick(_ ->
+                            new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open()));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
 	        Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
@@ -140,17 +136,14 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.lore(lorePerk3);
             })
                     .hide((perk3 != null) ? perk3.getToHide() : null)
-                    .setOnClick(inventoryClickEvent -> {
-                        new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
-                    }));
+                    .setOnClick(_ ->
+                            new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open()));
 
             inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.election"));
-            }).setOnClick(inventoryClickEvent -> {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
-            }));
+            }).setOnClick(_ ->
+                    new MayorElectionMenu(player).open()));
         } else if (type == MenuType.OWNER) {
             canConfirmPerk = perk1 != null && perk2 != null && perk3 != null;
 
@@ -170,9 +163,8 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.lore(lorePerk1);
             })
                     .hide((perk1 != null) ? perk1.getToHide() : null)
-                    .setOnClick(inventoryClickEvent -> {
-                        new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
-                    }));
+                    .setOnClick(_ ->
+                            new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open()));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
 	        Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
@@ -190,9 +182,8 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.lore(lorePerk2);
             })
                     .hide((perk2 != null) ? perk2.getToHide() : null)
-                    .setOnClick(inventoryClickEvent -> {
-                        new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
-                    }));
+                    .setOnClick(_ ->
+                            new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open()));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
 	        Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
@@ -210,38 +201,35 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.lore(lorePerk3);
             })
                     .hide((perk3 != null) ? perk3.getToHide() : null)
-                    .setOnClick(inventoryClickEvent -> {
-                        new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
-                    }));
+                    .setOnClick(_ ->
+                            new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open()));
 
             inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.create.back.city"));
-            }).setOnClick(inventoryClickEvent -> {
-                CityMenu menu = new CityMenu(player);
-                menu.open();
-            }));
+            }).setOnClick(_ ->
+                    new CityMenu(player).open()));
         } else {
             canConfirmPerk = false;
         }
 
-        Material matConfirm;
+        CustomItem ciConfirm;
         Component nameConfirm;
         List<Component> loreConfirm;
         if (canConfirmPerk) {
-            matConfirm = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest().getType();
+            ciConfirm = OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN;
             nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.ready").color(NamedTextColor.GREEN);
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.ready");
         } else {
-            matConfirm = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest().getType();
+            ciConfirm = OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN;
             nameConfirm = TranslationManager.translation("feature.city.mayor.menu.create.confirm.name.blocked").color(NamedTextColor.RED);
             loreConfirm = TranslationManager.translationLore("feature.city.mayor.menu.create.confirm.lore.blocked");
         }
 
-        inventory.put(52, new ItemMenuBuilder(this, matConfirm, itemMeta -> {
+        inventory.put(52, new ItemMenuBuilder(this, ciConfirm, itemMeta -> {
             itemMeta.itemName(nameConfirm);
             itemMeta.lore(loreConfirm);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (canConfirmPerk) {
                 if (type == MenuType.OWNER_1) {
                     MayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);

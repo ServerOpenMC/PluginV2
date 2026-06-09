@@ -93,7 +93,7 @@ public class CityRanksMenu extends Menu {
 									).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)
 							));
 						}
-				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open())
+				).setOnClick(_ -> new CityRankDetailsMenu(player, city, rank).open())
 						.hide(getDataComponentType()));
 				if (i >= 17) break;
 				i++;
@@ -104,7 +104,7 @@ public class CityRanksMenu extends Menu {
 				itemMeta -> {
 					itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
 					itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
-				}).setOnClick(inventoryClickEvent -> new CityMenu(getOwner()).open()));
+				}).setOnClick(_ -> new CityMenu(getOwner()).open()));
 		
 		
 		if (canAssignRanks) {
@@ -116,7 +116,7 @@ public class CityRanksMenu extends Menu {
 							itemMeta -> {
 								itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.assign.title"));
 								itemMeta.lore(loreAssignRanks);
-							}).setOnClick(inventoryClickEvent -> {
+							}).setOnClick(_ -> {
 						if (city.getRanks().isEmpty()) return;
 						
 						new CityRankMemberMenu(player, city).open();
@@ -127,11 +127,11 @@ public class CityRanksMenu extends Menu {
 		if (canManageRanks) {
 			List<Component> loreCreateRank = TranslationManager.translationLore("feature.city.rank.menu.list.create.lore");
 
-			map.put(26, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(),
+			map.put(26, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.PLUS_BTN,
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.list.create.title"));
 						itemMeta.lore(loreCreateRank);
-					}).setOnClick(inventoryClickEvent -> CityRankAction.beginCreateRank(player))
+					}).setOnClick(_ -> CityRankAction.beginCreateRank(player))
 			);
 		}
 		return map;

@@ -14,10 +14,13 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public static final NamespacedKey CUSTOM_MOB_KEY =
             new NamespacedKey("openmc", "custom_mob");
 
-    @Override
-    public void postInit() {
-        // ** REGISTER MOBS **
-    }
+    // ** REGISTER MOBS **
+    /* ex :
+    public static final CustomMobEntry BREEZY = create(new CustomMobEntry(
+            "omc_dream:breezy",
+            Breezy::new
+    ));
+     */
 
     @Override
     public String key(CustomMobEntry registryObject) {
@@ -25,16 +28,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     }
 
     @Override
-    public void register(CustomMobEntry mob) {
+    public CustomMobEntry register(CustomMobEntry mob) {
         if (mob.factory().apply(mob.id()) instanceof Listener listener) {
             OMCPlugin.registerEvents(listener);
         }
-        register(mob.id(), mob);
-    }
-
-    public CustomMob<?> getMob(String id) {
-        CustomMobEntry entry = get(id);
-        return entry != null ? entry.factory().apply(id) : null;
+        return register(mob.id(), mob);
     }
 
     public CustomMob<?> getMob(Entity entity) {
@@ -42,7 +40,7 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
         if (!pdc.has(CUSTOM_MOB_KEY, PersistentDataType.STRING)) return null;
 
         String mobId = pdc.get(CUSTOM_MOB_KEY, PersistentDataType.STRING);
-        return getMob(mobId);
+        return get(mobId).map(CustomMobEntry::getMob).orElse(null);
     }
 
     public static boolean isCustomMob(Entity entity) {
