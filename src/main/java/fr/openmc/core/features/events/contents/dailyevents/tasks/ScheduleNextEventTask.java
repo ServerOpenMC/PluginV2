@@ -61,7 +61,7 @@ public class ScheduleNextEventTask extends BukkitRunnable {
                 toast.getEndToastData().send(receivers2);
             }
 
-        }, DailyEventsManager.outgoingEvent.getDailyEvent().getDuration() * 20L * 20L);
+        }, DailyEventsManager.outgoingEvent.getDailyEvent().getDuration() * 60L * 20L);
 
         // * 10 secondes d'attente avant de schedule un autre event (evite que plusieurs events se lancent en meme temps)
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->

@@ -28,7 +28,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     @Override
     public int getDuration() {
         return 30;
-    } //todo: bug il a duré 10 min
+    }
 
     @Override
     public Runnable onStart() {
