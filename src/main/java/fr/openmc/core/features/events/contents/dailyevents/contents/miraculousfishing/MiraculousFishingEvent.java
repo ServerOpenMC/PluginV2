@@ -1,17 +1,25 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing;
 
-import fr.openmc.core.features.events.contents.dailyevents.models.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class MiraculousFishingEvent extends DailyEvent {
+public class MiraculousFishingEvent extends DailyEvent implements HasToast {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
+    }
+
+    @Override
+    public String getWorldEvent() {
+        return "world";
     }
 
     @Override
@@ -46,5 +54,23 @@ public class MiraculousFishingEvent extends DailyEvent {
     @Override
     public ItemStack getIcon() {
         return new ItemStack(Material.FISHING_ROD);
+    }
+
+    @Override
+    public CustomToastData getStartToastData() {
+        return new CustomToastData(
+                this.getIcon(),
+                "feature.dailyevents.toast.miraculousfishing.start",
+                AdvancementType.CHALLENGE
+        );
+    }
+
+    @Override
+    public CustomToastData getEndToastData() {
+        return new CustomToastData(
+                this.getIcon(),
+                "feature.dailyevents.toast.miraculousfishing.end",
+                AdvancementType.GOAL
+        );
     }
 }

@@ -13,11 +13,12 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
-import fr.openmc.core.features.events.contents.dailyevents.models.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.tasks.ScheduleNextEventTask;
+import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventToastTask;
 import fr.openmc.core.utils.text.DateUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
@@ -37,13 +38,15 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             new BloodyNightEvent()
     );
 
-    private final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
-            9, 13, 16, 21
+    private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
+            9, 13, 16, 19, 21
     ));
 
+    public static final int SHOW_BEGINNING_TOAST_DELAY = 60; // en secondes
+
     // * Données à propos de la gestion des daily event
-    private ScheduleDailyEvent outgoingEvent = null;
-    private BukkitTask nextEventTask;
+    public static ScheduleDailyEvent outgoingEvent = null;
+    public static BukkitTask nextEventTask;
     public static List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
 
     private static Dao<IncomingEventsDB, Integer> dao;
@@ -91,7 +94,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      * Lors du premier chargement, on remplit directement notre liste de taille identique à nos slots horaires.
      * @return la liste prévue des x prochains évenements
      */
-    private List<ScheduleDailyEvent> loadIncomingEvents() {
+    public static List<ScheduleDailyEvent> loadIncomingEvents() {
         List<ScheduleDailyEvent> scheduledEvents = new ArrayList<>();
         LocalDateTime now = DateUtils.getLocalDateTime();
         IncomingEventsDB data = loadIncomingEventsDB();
@@ -117,8 +120,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         return scheduledEvents;
     }
 
-    //todo: diviser ça en plusieurs sous méthodes
-    private BukkitTask scheduleNextEventTask() {
+    public static BukkitTask scheduleNextEventTask() {
         LocalDateTime now = DateUtils.getLocalDateTime();
         // * On cherche la prochaine heure
         Integer nextHour = SLOT_HOURS_EVENTS.stream()
@@ -137,40 +139,16 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
         long delayTicks = DateUtils.getDelayBetweenNow(scheduleTime) * 20;
 
-        OMCLogger.info("Les prochains evenement : " + incomingEvents);
-        OMCLogger.info("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
+        OMCLogger.infoFormatted("Les prochains evenement : " + incomingEvents);
+        OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertSecondToTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
 
-        //todo: toast 1 min avant commencement
+        new ShowBeginningEventToastTask()
+                .runTaskLater(OMCPlugin.getInstance(), delayTicks - SHOW_BEGINNING_TOAST_DELAY * 20L);
 
-        return Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            if (incomingEvents.isEmpty()) {
-                incomingEvents = loadIncomingEvents();
-            }
-
-            outgoingEvent = incomingEvents.removeFirst();
-
-            // * Commencement de l'evenement
-            outgoingEvent.getDailyEvent().onStart().run();
-
-            //todo: setup ambient (interface EventAmbient)
-
-            // * Programmation de la fin de l'evenement
-            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                outgoingEvent.getDailyEvent().onEnd().run();
-                outgoingEvent = null;
-
-                //todo: remove ambient
-                //todo: end toast
-
-            }, outgoingEvent.getDailyEvent().getDuration() * 20L * 20L);
-
-            // * 10 secondes d'attente avant de schedule un autre event (evite que plusieurs events se lancent en meme temps)
-            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
-                    nextEventTask = scheduleNextEventTask(), 20L * 10);
-        }, delayTicks);
+        return new ScheduleNextEventTask().runTaskLater(OMCPlugin.getInstance(), delayTicks);
     }
 
-    private List<DailyEvent> generateRandomOrder() {
+    private static List<DailyEvent> generateRandomOrder() {
         List<DailyEvent> copyEvents = new ArrayList<>(EVENTS);
         Collections.shuffle(copyEvents);
         return copyEvents;

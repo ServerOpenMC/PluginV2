@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.models;
 
 
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.models.Event;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;

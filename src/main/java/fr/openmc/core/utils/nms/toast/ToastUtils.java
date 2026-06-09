@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.nms;
+package fr.openmc.core.utils.nms.toast;
 
 import net.minecraft.advancements.*;
 import net.minecraft.network.chat.Component;
@@ -27,11 +27,38 @@ public class ToastUtils {
      * @param type le type du succes
      */
     public static void sendCustomToast(Player player, org.bukkit.inventory.ItemStack item, String translationKey, AdvancementType type) {
+        sendCustomToast(player, item, translationKey, new Object[]{}, type);
+    }
+
+    /**
+     * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
+     * @param player Le joueur ciblé
+     * @param material le material utilisé
+     * @param translationKey la clé de translation du texte
+     * @param type le type du succes
+     */
+    public static void sendCustomToast(Player player, Material material, String translationKey, AdvancementType type) {
+        sendCustomToast(player, new org.bukkit.inventory.ItemStack(material), translationKey, type);
+    }
+
+    /**
+     * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
+     * @param player Le joueur ciblé
+     * @param item l'item utilisé
+     * @param translationKey la clé de translation du texte
+     * @param type le type du succes
+     */
+    public static void sendCustomToast(
+            Player player,
+            org.bukkit.inventory.ItemStack item,
+            String translationKey,
+            Object[] translationsArgs,
+            AdvancementType type) {
         Advancement adv = new Advancement(
                 Optional.empty(),
                 Optional.of(new DisplayInfo(
                         ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(item)),
-                        Component.translatable(translationKey),
+                        Component.translatable(translationKey, translationsArgs),
                         Component.empty(),
                         Optional.empty(),
                         type,
@@ -76,7 +103,28 @@ public class ToastUtils {
      * @param translationKey la clé de translation du texte
      * @param type le type du succes
      */
-    public static void sendCustomToast(Player player, Material material, String translationKey, AdvancementType type) {
-        sendCustomToast(player, new org.bukkit.inventory.ItemStack(material), translationKey, type);
+    public static void sendCustomToast(
+            Player player,
+            Material material,
+            String translationKey,
+            Object[] translationsArgs,
+            AdvancementType type) {
+        sendCustomToast(player, new org.bukkit.inventory.ItemStack(material), translationKey, translationsArgs, type);
+    }
+
+    /**
+     * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
+     * @param player Le joueur ciblé
+     * @param toastData wrapper qui contient les données du taost
+     */
+    public static void sendCustomToast(
+            Player player,
+            CustomToastData toastData) {
+        sendCustomToast(player,
+                toastData.icon(),
+                toastData.translationKey(),
+                toastData.translationsArgs(),
+                toastData.type()
+        );
     }
 }

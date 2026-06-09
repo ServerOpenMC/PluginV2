@@ -1,6 +1,6 @@
 package fr.openmc.core.commands.debug;
 
-import fr.openmc.core.utils.nms.ToastUtils;
+import fr.openmc.core.utils.nms.toast.ToastUtils;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
