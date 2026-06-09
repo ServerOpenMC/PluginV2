@@ -63,7 +63,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     public CustomToastData getStartToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                "feature.dailyevents.toast.miraculousfishing.start",
+                TranslationManager.translation("feature.dailyevents.toast.miraculousfishing.start"),
                 AdvancementType.CHALLENGE
         );
     }
@@ -72,7 +72,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     public CustomToastData getEndToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                "feature.dailyevents.toast.miraculousfishing.end",
+                TranslationManager.translation("feature.dailyevents.toast.miraculousfishing.end"),
                 AdvancementType.GOAL
         );
     }

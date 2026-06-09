@@ -63,7 +63,7 @@ public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient
     public CustomToastData getStartToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                "feature.dailyevents.toast.bloodynight.start",
+                TranslationManager.translation("feature.dailyevents.toast.bloodynight.start"),
                 AdvancementType.CHALLENGE
         );
     }
@@ -72,7 +72,7 @@ public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient
     public CustomToastData getEndToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                "feature.dailyevents.toast.bloodynight.end",
+                TranslationManager.translation("feature.dailyevents.toast.bloodynight.end"),
                 AdvancementType.GOAL
         );
     }

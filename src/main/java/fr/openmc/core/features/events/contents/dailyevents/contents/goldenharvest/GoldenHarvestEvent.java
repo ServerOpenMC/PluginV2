@@ -63,7 +63,7 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     public CustomToastData getStartToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                "feature.dailyevents.toast.goldenharvest.start",
+                TranslationManager.translation("feature.dailyevents.toast.goldenharvest.start"),
                 AdvancementType.CHALLENGE
         );
     }
@@ -72,7 +72,7 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     public CustomToastData getEndToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                "feature.dailyevents.toast.goldenharvest.end",
+                TranslationManager.translation("feature.dailyevents.toast.goldenharvest.end"),
                 AdvancementType.GOAL
         );
     }

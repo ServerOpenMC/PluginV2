@@ -150,7 +150,8 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
         long delayTicks = DateUtils.getDelayBetweenNow(scheduleTime) * 20;
 
-        OMCLogger.infoFormatted("Les prochains evenement : " + incomingEvents);
+        OMCLogger.infoFormatted("Les prochains evenement : " + incomingEvents.stream()
+                .map(s->s.getDailyEvent().getClass().getSimpleName()).toList());
         OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertSecondToTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
 
         new ShowBeginningEventToastTask()

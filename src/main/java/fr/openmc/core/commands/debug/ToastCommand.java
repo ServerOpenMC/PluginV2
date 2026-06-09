@@ -1,6 +1,7 @@
 package fr.openmc.core.commands.debug;
 
 import fr.openmc.core.utils.nms.toast.ToastUtils;
+import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +15,6 @@ public class ToastCommand {
     @Subcommand("test")
     @CommandPermission("omc.admins.commands.toast.test")
     public void test(Player player) {
-        ToastUtils.sendCustomToast(player, Material.TEST_INSTANCE_BLOCK, "translation.key.fuck", AdvancementType.CHALLENGE);
+        ToastUtils.sendCustomToast(player, Material.TEST_INSTANCE_BLOCK, Component.text("test debile"), AdvancementType.CHALLENGE);
     }
 }

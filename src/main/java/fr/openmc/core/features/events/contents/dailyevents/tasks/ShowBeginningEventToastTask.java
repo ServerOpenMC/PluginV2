@@ -3,9 +3,11 @@ package fr.openmc.core.features.events.contents.dailyevents.tasks;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.utils.nms.toast.ToastUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.WorldUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.network.chat.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,26 +19,20 @@ public class ShowBeginningEventToastTask extends BukkitRunnable {
         ScheduleDailyEvent nextEvent = DailyEventsManager.incomingEvents.getFirst();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            String translationKey;
-            Object[] translationsArgs;
+            Component name;
             if (nextEvent.getDailyEvent().getWorldEvent().contains(onlinePlayer.getWorld().getName())) {
-                translationKey = "feature.dailyevents.toast.beginning_event_in_world";
-                translationsArgs = new Object[] {
-                        DailyEventsManager.SHOW_BEGINNING_TOAST_DELAY
-                };
+                name = TranslationManager.translation("feature.dailyevents.toast.beginning_event_in_world",
+                        Component.text(DailyEventsManager.SHOW_BEGINNING_TOAST_DELAY, NamedTextColor.YELLOW));
             } else {
-                translationKey = "feature.dailyevents.toast.beginning_event_out_world";
-                translationsArgs = new Object[] {
-                        Component.translatable(WorldUtils.getDisplayedWorldName(nextEvent.getDailyEvent().getWorldEvent())),
-                        DailyEventsManager.SHOW_BEGINNING_TOAST_DELAY
-                };
+                name = TranslationManager.translation("feature.dailyevents.toast.beginning_event_out_world",
+                        TranslationManager.translation(WorldUtils.getDisplayedWorldName(nextEvent.getDailyEvent().getWorldEvent())),
+                        Component.text(DailyEventsManager.SHOW_BEGINNING_TOAST_DELAY, NamedTextColor.YELLOW));
             }
 
             ToastUtils.sendCustomToast(
                     onlinePlayer,
                     Material.NOTE_BLOCK,
-                    translationKey,
-                    translationsArgs,
+                    name,
                     AdvancementType.TASK
             );
         }

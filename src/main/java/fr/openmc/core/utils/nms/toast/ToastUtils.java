@@ -1,7 +1,8 @@
 package fr.openmc.core.utils.nms.toast;
 
+import io.papermc.paper.adventure.PaperAdventure;
+import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.*;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,44 +23,38 @@ public class ToastUtils {
     /**
      * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
      * @param player Le joueur ciblé
-     * @param item l'item utilisé
-     * @param translationKey la clé de translation du texte
-     * @param type le type du succes
-     */
-    public static void sendCustomToast(Player player, org.bukkit.inventory.ItemStack item, String translationKey, AdvancementType type) {
-        sendCustomToast(player, item, translationKey, new Object[]{}, type);
-    }
-
-    /**
-     * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
-     * @param player Le joueur ciblé
      * @param material le material utilisé
-     * @param translationKey la clé de translation du texte
+     * @param name le component du nom
      * @param type le type du succes
      */
-    public static void sendCustomToast(Player player, Material material, String translationKey, AdvancementType type) {
-        sendCustomToast(player, new org.bukkit.inventory.ItemStack(material), translationKey, type);
+    public static void sendCustomToast(
+            Player player,
+            Material material,
+            Component name,
+            AdvancementType type) {
+        sendCustomToast(player, new org.bukkit.inventory.ItemStack(material), name, Component.empty(), type);
     }
 
     /**
      * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
      * @param player Le joueur ciblé
      * @param item l'item utilisé
-     * @param translationKey la clé de translation du texte
+     * @param name le Component du nom
+     * @param description le Component de la description
      * @param type le type du succes
      */
     public static void sendCustomToast(
             Player player,
             org.bukkit.inventory.ItemStack item,
-            String translationKey,
-            Object[] translationsArgs,
+            Component name,
+            Component description,
             AdvancementType type) {
         Advancement adv = new Advancement(
                 Optional.empty(),
                 Optional.of(new DisplayInfo(
                         ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(item)),
-                        Component.translatable(translationKey, translationsArgs),
-                        Component.empty(),
+                        PaperAdventure.asVanilla(name),
+                        PaperAdventure.asVanilla(description),
                         Optional.empty(),
                         type,
                         true,
@@ -78,6 +73,7 @@ public class ToastUtils {
         progress.update(ADV_REQUIREMENTS);
         progress.grantProgress("c");
 
+        System.out.println(progress.toString());
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         nmsPlayer.connection.send(new ClientboundUpdateAdvancementsPacket(
                 false,
@@ -99,22 +95,6 @@ public class ToastUtils {
     /**
      * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
      * @param player Le joueur ciblé
-     * @param material le material utilisé
-     * @param translationKey la clé de translation du texte
-     * @param type le type du succes
-     */
-    public static void sendCustomToast(
-            Player player,
-            Material material,
-            String translationKey,
-            Object[] translationsArgs,
-            AdvancementType type) {
-        sendCustomToast(player, new org.bukkit.inventory.ItemStack(material), translationKey, translationsArgs, type);
-    }
-
-    /**
-     * Affiche un Toast (= pop up lorsqu'on obtient un succes) Customisable
-     * @param player Le joueur ciblé
      * @param toastData wrapper qui contient les données du taost
      */
     public static void sendCustomToast(
@@ -122,8 +102,8 @@ public class ToastUtils {
             CustomToastData toastData) {
         sendCustomToast(player,
                 toastData.icon(),
-                toastData.translationKey(),
-                toastData.translationsArgs(),
+                toastData.name(),
+                toastData.description(),
                 toastData.type()
         );
     }
