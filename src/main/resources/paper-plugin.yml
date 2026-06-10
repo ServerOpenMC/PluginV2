@@ -8,25 +8,25 @@ dependencies:
   server:
     FancyNpcs:
       load: BEFORE
-      required: true
+      required: false
     PlaceholderAPI:
       load: BEFORE
       required: false
     LuckPerms:
       load: BEFORE
-      required: true
+      required: false
     ItemsAdder:
       load: BEFORE
-      required: true
+      required: false
     ProtocolLib:
       load: BEFORE
-      required: true
+      required: false
     WorldGuard:
       load: BEFORE
       required: false
     FastAsyncWorldEdit:
       load: BEFORE
-      required: true
+      required: false
 
 prefix: OMC
 authors: [ La communauté ]
