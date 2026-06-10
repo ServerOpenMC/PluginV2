@@ -9,15 +9,14 @@ public interface FeatureFactory {
 
     default Feature create(FeatureLoadingType type) {
         Feature feature = null;
-        String featureName = "null";
         try {
-            feature = create();
-
             if ((type.equals(FeatureLoadingType.RUNTIME) && !(feature instanceof LoadAfterItemsAdder))
                 || (type.equals(FeatureLoadingType.AFTER_IA) && feature instanceof LoadAfterItemsAdder)) {
+                feature = create();
                 return feature;
             }
         } catch (NoClassDefFoundError e) {
+            String featureName = "null";
             if (feature != null)
                 featureName = feature.getClass().getName();
 
