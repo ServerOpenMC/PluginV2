@@ -73,7 +73,6 @@ public class ToastUtils {
         progress.update(ADV_REQUIREMENTS);
         progress.grantProgress("c");
 
-        System.out.println(progress.toString());
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         nmsPlayer.connection.send(new ClientboundUpdateAdvancementsPacket(
                 false,
