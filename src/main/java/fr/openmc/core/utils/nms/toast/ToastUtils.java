@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-
-// todo: test if toast show with items adder not bugged
 public class ToastUtils {
     private static final Identifier TOAST_IDENTIFIER = Identifier.parse("omc:custom_toast");
     private static final AdvancementRequirements ADV_REQUIREMENTS = AdvancementRequirements.allOf(Set.of("c"));
