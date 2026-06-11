@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.ambient;
 
 import fr.openmc.api.datapacks.OMCDatapack;
+import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
@@ -33,6 +34,10 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
                         ambientDatapack.getNamespace(), ambient.getId()));
             }
         }
+
+        ambientDatapack.addInjector(new BiomesInjector("omc_ambient").add("empty",
+                new BiomesInjector.BiomeBuilder()
+                        .grassColor("#FFD700")));
 
         ambientDatapack.build(context, true); //todo: remettre ça en false
     }
