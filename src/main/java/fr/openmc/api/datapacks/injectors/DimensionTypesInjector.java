@@ -289,7 +289,7 @@ public class DimensionTypesInjector implements DatapackInjector {
             return this;
         }
 
-        public DimensionTypeBuilder timelines(TimelineInjector injector) {
+        public DimensionTypeBuilder timelines(TimelinesInjector injector) {
             this.timelines = injector.getNamespace() + ":" + injector.getId();
             return this;
         }

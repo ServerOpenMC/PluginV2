@@ -1,11 +1,11 @@
 package fr.openmc.core.registry.ambient;
 
-import fr.openmc.api.datapacks.injectors.TimelineInjector;
+import fr.openmc.api.datapacks.injectors.TimelinesInjector;
 
 public interface TimelineAmbient {
-    TimelineInjector.TimelineBuilder getTimelineBuilder();
+    TimelinesInjector.TimelineBuilder getTimelineBuilder();
 
-    default TimelineInjector toTimelineInjector(String namespace, String id) {
-        return new TimelineInjector(namespace).add(id, getTimelineBuilder());
+    default TimelinesInjector toTimelineInjector(String namespace, String id) {
+        return new TimelinesInjector(namespace).add(id, getTimelineBuilder());
     }
 }

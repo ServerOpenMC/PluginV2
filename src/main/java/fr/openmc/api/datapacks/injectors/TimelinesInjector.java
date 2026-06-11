@@ -23,17 +23,17 @@ import java.util.function.Consumer;
  * Qui injecte directement cela sous forme .json dans le datapack
  * https://minecraft.wiki/w/Timeline
  */
-public class TimelineInjector implements DatapackInjector {
+public class TimelinesInjector implements DatapackInjector {
 
     private final String namespace;
     private String id;
     private final Map<String, TimelineBuilder> entries = new LinkedHashMap<>();
 
-    public TimelineInjector(String namespace) {
+    public TimelinesInjector(String namespace) {
         this.namespace = namespace;
     }
 
-    public TimelineInjector add(String id, Consumer<TimelineBuilder> builder) {
+    public TimelinesInjector add(String id, Consumer<TimelineBuilder> builder) {
         TimelineBuilder instance = new TimelineBuilder();
         builder.accept(instance);
         entries.put(id, instance);
@@ -41,7 +41,7 @@ public class TimelineInjector implements DatapackInjector {
         return this;
     }
 
-    public TimelineInjector add(String id, TimelineBuilder builder) {
+    public TimelinesInjector add(String id, TimelineBuilder builder) {
         entries.put(id, builder);
         this.id = id;
         return this;
