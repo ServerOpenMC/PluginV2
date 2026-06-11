@@ -1,14 +1,10 @@
 package fr.openmc.api.datapacks.builders;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fr.openmc.api.datapacks.injectors.TimelinesInjector;
 import net.minecraft.world.level.dimension.DimensionType;
-import org.bukkit.Particle;
-
-import java.util.function.Consumer;
 
 /**
  * Exemple simple d'un dimension type :
@@ -55,93 +51,9 @@ public final class DimensionTypeBuilder {
     private JsonElement monsterSpawnLightLevel = new JsonPrimitive(0);
     private String timelines = "#minecraft:in_overworld";
 
-    public DimensionTypeBuilder attributes(Consumer<JsonObject> builder) {
-        JsonObject obj = new JsonObject();
-        builder.accept(obj);
-
-        this.attributes = new JsonObject();
-        for (var entry : obj.entrySet()) {
-            this.attributes.add(entry.getKey(), toOverridenEnvironnementAttribute(entry.getValue()));
-        }
+    public DimensionTypeBuilder attributesBuilder(EnvironnementAttributeBuilder builder) {
+        this.attributes = builder.getOutputData();
         return this;
-    }
-
-    public DimensionTypeBuilder attributes(JsonObject attributes) {
-        this.attributes = new JsonObject();
-        for (var entry : attributes.entrySet()) {
-            this.attributes.add(entry.getKey(), toOverridenEnvironnementAttribute(entry.getValue()));
-        }
-        return this;
-    }
-
-    /**
-     * Ajoute un attribut "minecraft:visual/ambient_particles" simple.
-     * Exemple :
-     * "minecraft:visual/ambient_particles": [ { "particle": { "type": "minecraft:crimson_spore" }, "probability": 0.025 } ]
-     */
-    public DimensionTypeBuilder ambientParticles(String particleType, double probability) {
-        if (this.attributes == null) this.attributes = new JsonObject();
-        JsonObject entry = new JsonObject();
-        JsonObject particle = new JsonObject();
-        particle.addProperty("type", particleType);
-        entry.add("particle", particle);
-        entry.addProperty("probability", probability);
-
-        String key = "minecraft:visual/ambient_particles";
-        if (this.attributes.has(key)) {
-            this.attributes.getAsJsonObject(key)
-                    .getAsJsonArray("argument")
-                    .add(entry);
-        } else {
-            JsonArray arr = new JsonArray();
-            arr.add(entry);
-            this.attributes.add(key, toOverridenEnvironnementAttribute(arr));
-        }
-        return this;
-    }
-
-    /**
-     * {
-     *           "particle": {
-     *             "type": "minecraft:dust_color_transition",
-     *             "from_color": 16776172,
-     *             "to_color": 16766720,
-     *             "scale": 1
-     *           },
-     *           "probability": 0.1
-     *         }
-     */
-    public DimensionTypeBuilder particleDustColorTransition(int fromColor, int toColor, float scale, double probability) {
-        if (this.attributes == null) this.attributes = new JsonObject();
-        JsonObject entry = new JsonObject();
-        JsonObject particle = new JsonObject();
-        particle.addProperty("type", "minecraft:dust_color_transition");
-        particle.addProperty("from_color", fromColor);
-        particle.addProperty("to_color", toColor);
-        particle.addProperty("scale", scale);
-        entry.add("particle", particle);
-        entry.addProperty("probability", probability);
-
-        String key = "minecraft:visual/ambient_particles";
-        if (this.attributes.has(key)) {
-            this.attributes.getAsJsonObject(key)
-                    .getAsJsonArray("argument")
-                    .add(entry);
-        } else {
-            JsonArray arr = new JsonArray();
-            arr.add(entry);
-            this.attributes.add(key, toOverridenEnvironnementAttribute(arr));
-        }
-        return this;
-    }
-
-    /**
-     * Ajoute un attribut "minecraft:visual/ambient_particles" simple.
-     * Exemple :
-     * "minecraft:visual/ambient_particles": [ { "particle": { "type": "minecraft:crimson_spore" }, "probability": 0.025 } ]
-     */
-    public DimensionTypeBuilder ambientParticles(Particle particle, double probability) {
-        return ambientParticles(particle.getKey().toString(), probability);
     }
 
     public DimensionTypeBuilder ambientLight(double ambientLight) {
