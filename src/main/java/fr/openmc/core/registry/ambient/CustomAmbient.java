@@ -3,6 +3,7 @@ package fr.openmc.core.registry.ambient;
 import fr.openmc.api.datapacks.DatapackInjector;
 import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
+import fr.openmc.core.utils.nms.PlayerBiomeNMS;
 import fr.openmc.core.utils.nms.PlayerRespawnNMS;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -25,7 +27,8 @@ import java.util.UUID;
 public abstract class CustomAmbient {
     // ** UUID playerUUID -> String idAmbient
     public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
-    private Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
+    public Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
+    public Holder<Biome> CACHED_BIOME = null;
 
     public abstract String getId();
     public abstract DimensionTypeBuilder getDimensionTypeBuilder();
@@ -59,7 +62,8 @@ public abstract class CustomAmbient {
                 getTransitionDimensionForPlayer(nmsPlayer)
         );
 
-        //todo faudrait envoyer un biome
+        if (this instanceof BiomeAmbient)
+            PlayerBiomeNMS.sendBiomes(player, getBiome());
 
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }
@@ -93,7 +97,7 @@ public abstract class CustomAmbient {
 
     /**
      * Retire l'ambience des joueurs
-     * @param receivers le joueur ciblé
+     * @param receivers le joueur ciblé74
      */
     public void reset(Collection<Player> receivers) {
         for (Player receiver : receivers) {
@@ -153,5 +157,23 @@ public abstract class CustomAmbient {
                 new IllegalStateException("DimensionType omc_ambient:"+ this.getId() +" introuvable")
         );
         return CACHED_DIMENSION_TYPE;
+    }
+
+    private Holder<Biome> getBiome() {
+        if (CACHED_BIOME != null)
+            return CACHED_BIOME;
+
+        ResourceKey<Biome> key = ResourceKey.create(
+                Registries.BIOME,
+                Identifier.fromNamespaceAndPath("omc_ambient", this.getId())
+        );
+
+        Registry<Biome> biomeRegistry =
+                MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.BIOME);
+
+        CACHED_BIOME = biomeRegistry.get(key).orElseThrow(() ->
+                new IllegalStateException("Biome omc_ambient:"+ this.getId() +" introuvable")
+        );
+        return CACHED_BIOME;
     }
 }

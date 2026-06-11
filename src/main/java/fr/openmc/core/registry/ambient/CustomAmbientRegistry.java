@@ -1,8 +1,6 @@
 package fr.openmc.core.registry.ambient;
 
 import fr.openmc.api.datapacks.OMCDatapack;
-import fr.openmc.api.datapacks.builders.BiomeBuilder;
-import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
@@ -30,15 +28,17 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
     public void bootstrap(BootstrapContext context) throws IOException {
         for (CustomAmbient ambient : values()) {
             ambientDatapack.addInjector(ambient.toDimensionTypeInjector());
+
             if (ambient instanceof TimelineAmbient timelineAmbient) {
                 ambientDatapack.addInjector(timelineAmbient.toTimelineInjector(
                         ambientDatapack.getNamespace(), ambient.getId()));
             }
-        }
 
-        ambientDatapack.addInjector(new BiomesInjector("omc_ambient").add("empty",
-                new BiomeBuilder()
-                        .grassColor("#FFD700")));
+            if (ambient instanceof BiomeAmbient biomeAmbient) {
+                ambientDatapack.addInjector(biomeAmbient.toBiomeInjector(
+                        ambientDatapack.getNamespace(), ambient.getId()));
+            }
+        }
 
         ambientDatapack.build(context, true); //todo: remettre ça en false
     }

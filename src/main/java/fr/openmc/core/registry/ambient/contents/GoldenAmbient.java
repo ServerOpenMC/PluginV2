@@ -1,14 +1,16 @@
 package fr.openmc.core.registry.ambient.contents;
 
+import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
 import fr.openmc.api.datapacks.builders.TimelineBuilder;
+import fr.openmc.core.registry.ambient.BiomeAmbient;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.registry.ambient.TimelineAmbient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
-public class GoldenAmbient extends CustomAmbient implements TimelineAmbient {
+public class GoldenAmbient extends CustomAmbient implements TimelineAmbient, BiomeAmbient {
     @Override
     public String getId() {
         return "golden_ambient";
@@ -32,6 +34,11 @@ public class GoldenAmbient extends CustomAmbient implements TimelineAmbient {
                         .particleDustColorTransition(16776172, 16766720, 2, 0.01))
                 .hasSkylight(true)
                 .timelines(toTimelineInjector("omc_ambient", getId()));
+    }
+
+    @Override
+    public BiomeBuilder getBiomeBuilder() {
+        return new BiomeBuilder();
     }
 
     @Override
