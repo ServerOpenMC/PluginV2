@@ -1,6 +1,6 @@
 package fr.openmc.core.registry.ambient.contents;
 
-import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
+import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -13,8 +13,8 @@ public class DarkAmbient extends CustomAmbient {
     }
 
     @Override
-    public DimensionTypesInjector.DimensionTypeBuilder getDimensionTypeBuilder() {
-        return new DimensionTypesInjector.DimensionTypeBuilder()
+    public DimensionTypeBuilder getDimensionTypeBuilder() {
+        return new DimensionTypeBuilder()
                 .attributes(obj -> {
                     obj.addProperty("visual/ambient_light_color", "#DD37E6");
                     obj.addProperty("visual/sky_color", "#DD37E6");

@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.ambient.contents;
 
-import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
-import fr.openmc.api.datapacks.injectors.TimelinesInjector;
+import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
+import fr.openmc.api.datapacks.builders.TimelineBuilder;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.registry.ambient.TimelineAmbient;
 import net.minecraft.resources.ResourceKey;
@@ -14,8 +14,8 @@ public class GoldenAmbient extends CustomAmbient implements TimelineAmbient {
     }
 
     @Override
-    public DimensionTypesInjector.DimensionTypeBuilder getDimensionTypeBuilder() {
-        return new DimensionTypesInjector.DimensionTypeBuilder()
+    public DimensionTypeBuilder getDimensionTypeBuilder() {
+        return new DimensionTypeBuilder()
                 .attributes(obj -> {
                     obj.addProperty("visual/ambient_light_color", "#FFE75C");
                     obj.addProperty("visual/sky_color", "#FFD700");
@@ -33,8 +33,8 @@ public class GoldenAmbient extends CustomAmbient implements TimelineAmbient {
     }
 
     @Override
-    public TimelinesInjector.TimelineBuilder getTimelineBuilder() {
-        return new TimelinesInjector.TimelineBuilder()
+    public TimelineBuilder getTimelineBuilder() {
+        return new TimelineBuilder()
                 .clock("minecraft:overworld")
                 .periodTicks(24000);
     }

@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.ambient;
 
 import fr.openmc.api.datapacks.DatapackInjector;
+import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
 import fr.openmc.core.utils.nms.PlayerRespawnNMS;
 import net.minecraft.core.Holder;
@@ -27,7 +28,7 @@ public abstract class CustomAmbient {
     private Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
 
     public abstract String getId();
-    public abstract DimensionTypesInjector.DimensionTypeBuilder getDimensionTypeBuilder();
+    public abstract DimensionTypeBuilder getDimensionTypeBuilder();
 
     /**
      * Choix de la transition de dimension lorsque le joueur change d'ambience
