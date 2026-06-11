@@ -58,6 +58,8 @@ public abstract class CustomAmbient {
                 getTransitionDimensionForPlayer(nmsPlayer)
         );
 
+        //todo faudrait envoyer un biome
+
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }
 

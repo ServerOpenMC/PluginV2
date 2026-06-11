@@ -24,7 +24,7 @@ public class DarkAmbient extends CustomAmbient {
                     obj.addProperty("visual/sunrise_sunset_color", "#FFBB00FA");
                 })
                 .defaultClock(null)
-                .timelines(null)
+                .timelines((String) null)
                 .skybox(DimensionType.Skybox.END)
                 .hasSkylight(true);
     }

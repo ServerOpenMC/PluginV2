@@ -105,12 +105,19 @@ public class DimensionTypesInjector implements DatapackInjector {
         public DimensionTypeBuilder attributes(Consumer<JsonObject> builder) {
             JsonObject obj = new JsonObject();
             builder.accept(obj);
-            this.attributes = obj;
+
+            this.attributes = new JsonObject();
+            for (var entry : obj.entrySet()) {
+                this.attributes.add(entry.getKey(), toOverridenEnvironnementAttribute(entry.getValue()));
+            }
             return this;
         }
 
         public DimensionTypeBuilder attributes(JsonObject attributes) {
-            this.attributes = attributes;
+            this.attributes = new JsonObject();
+            for (var entry : attributes.entrySet()) {
+                this.attributes.add(entry.getKey(), toOverridenEnvironnementAttribute(entry.getValue()));
+            }
             return this;
         }
 
@@ -127,12 +134,50 @@ public class DimensionTypesInjector implements DatapackInjector {
             entry.add("particle", particle);
             entry.addProperty("probability", probability);
 
-            if (this.attributes.has("minecraft:visual/ambient_particles") && this.attributes.get("minecraft:visual/ambient_particles").isJsonArray()) {
-                this.attributes.getAsJsonArray("minecraft:visual/ambient_particles").add(entry);
+            String key = "minecraft:visual/ambient_particles";
+            if (this.attributes.has(key)) {
+                this.attributes.getAsJsonObject(key)
+                        .getAsJsonArray("argument")
+                        .add(entry);
             } else {
                 JsonArray arr = new JsonArray();
                 arr.add(entry);
-                this.attributes.add("minecraft:visual/ambient_particles", arr);
+                this.attributes.add(key, toOverridenEnvironnementAttribute(arr));
+            }
+            return this;
+        }
+
+        /**
+         * {
+         *           "particle": {
+         *             "type": "minecraft:dust_color_transition",
+         *             "from_color": 16776172,
+         *             "to_color": 16766720,
+         *             "scale": 1
+         *           },
+         *           "probability": 0.1
+         *         }
+         */
+        public DimensionTypeBuilder particleDustColorTransition(int fromColor, int toColor, float scale, double probability) {
+            if (this.attributes == null) this.attributes = new JsonObject();
+            JsonObject entry = new JsonObject();
+            JsonObject particle = new JsonObject();
+            particle.addProperty("type", "minecraft:dust_color_transition");
+            particle.addProperty("from_color", fromColor);
+            particle.addProperty("to_color", toColor);
+            particle.addProperty("scale", scale);
+            entry.add("particle", particle);
+            entry.addProperty("probability", probability);
+
+            String key = "minecraft:visual/ambient_particles";
+            if (this.attributes.has(key)) {
+                this.attributes.getAsJsonObject(key)
+                        .getAsJsonArray("argument")
+                        .add(entry);
+            } else {
+                JsonArray arr = new JsonArray();
+                arr.add(entry);
+                this.attributes.add(key, toOverridenEnvironnementAttribute(arr));
             }
             return this;
         }
@@ -244,6 +289,11 @@ public class DimensionTypesInjector implements DatapackInjector {
             return this;
         }
 
+        public DimensionTypeBuilder timelines(TimelineInjector injector) {
+            this.timelines = injector.getNamespace() + ":" + injector.getId();
+            return this;
+        }
+
         private JsonObject toJson() {
             JsonObject json = new JsonObject();
             if (attributes != null) json.add("attributes", attributes);
@@ -264,6 +314,13 @@ public class DimensionTypesInjector implements DatapackInjector {
             if (monsterSpawnLightLevel != null) json.add("monster_spawn_light_level", monsterSpawnLightLevel);
             if (timelines != null) json.addProperty("timelines", timelines);
             return json;
+        }
+
+        private JsonObject toOverridenEnvironnementAttribute(JsonElement value) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("modifier", "override");
+            obj.add("argument", value);
+            return obj;
         }
     }
 }

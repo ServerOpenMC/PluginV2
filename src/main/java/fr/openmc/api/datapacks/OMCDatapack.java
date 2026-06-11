@@ -1,6 +1,7 @@
 package fr.openmc.api.datapacks;
 
 import fr.openmc.api.datapacks.injectors.PackMetadataInjector;
+import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
@@ -24,19 +25,30 @@ public class OMCDatapack {
         this.namespace = namespace;
     }
 
-    public void build(BootstrapContext context) throws IOException {
-        Path tempDir = Files.createTempDirectory("datapacks-openmc");
+    public void build(BootstrapContext context, boolean generateFiles) throws IOException {
+        String idDatapacks = "datapacks-openmc";
+        Path dir;
 
-        runInjector(tempDir, new PackMetadataInjector());
+        if (generateFiles) {
+            dir = context.getDataDirectory().resolve(idDatapacks);
+
+            FilesUtils.deleteDirectory(dir.toFile());
+            Files.createDirectories(dir);
+        } else {
+            dir = Files.createTempDirectory(idDatapacks);
+        }
+
+        runInjector(dir, new PackMetadataInjector());
 
         for (DatapackInjector injector : injectors) {
-            runInjector(tempDir, injector);
+            System.out.println(injector.getClass().getSimpleName());
+            runInjector(dir, injector);
         }
 
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY.newHandler(
                 event -> {
                     try {
-                        URI uri = tempDir.toUri();
+                        URI uri = dir.toUri();
 
                         event.registrar().discoverPack(uri, "openmc-injected");
                     } catch (IOException e) {
