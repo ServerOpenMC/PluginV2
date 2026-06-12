@@ -9,7 +9,6 @@ import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.GoldenAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
@@ -35,29 +34,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
         RegistriesLoadConfig.init();
 
         for (CustomAmbient ambient : values()) {
-            ambientDatapack.addInjector(ambient.toDimensionTypeInjector());
-
-            if (ambient instanceof TimelineAmbient timelineAmbient) {
-                ambientDatapack.addInjector(timelineAmbient.toTimelineInjector(
-                        ambientDatapack.getNamespace(), ambient.getId()));
-            }
-
-            if (ambient instanceof BiomeAmbient biomeAmbient) {
-                net.minecraft.core.Registry<Biome> biomeRegistry =
-                        MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.BIOME);
-
-                // ** Création de chaque variante des biomes existants.
-                // * Renvoie simplement un biome ayant les effects (grassColor, waterColor, ...) lié au biome original
-                // * si ça pas été override par le biome mis par le CustomAmbient
-                for (var biomeEntry : biomeRegistry.entrySet()) {
-                    ResourceKey<Biome> key = biomeEntry.getKey();
-                    if (key.identifier().getNamespace().equals(NAMESPACE)) continue; // * On skip les biomes de notre datapack
-
-                    Biome biome = biomeEntry.getValue();
-                    ambientDatapack.addInjector(biomeAmbient.toBiomeVariant(
-                            biome, biomeAmbient.toBiomeVariantKey(key.identifier(), ambient)));
-                }
-            }
+            ambient.getAmbientBuilder().runInjectors(ambient, ambientDatapack);
         }
 
         if (RegistriesLoadConfig.isMustRestart() || checkIfAmbientChange()) {
@@ -79,7 +56,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
                 MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.BIOME);
 
         int numberOfAmbient = values().stream()
-                .filter(ambient -> ambient instanceof BiomeAmbient)
+                .filter(ambient -> ambient.getAmbientBuilder().utilizeBiome())
                 .toList().size();
         int numberOfVanillaBiome = biomeRegistry.keySet().stream()
                 .filter(key -> !key.getNamespace().equals(NAMESPACE))

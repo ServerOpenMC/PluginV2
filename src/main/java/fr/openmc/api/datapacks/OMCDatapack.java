@@ -92,6 +92,12 @@ public class OMCDatapack {
         injectors.add(injector);
     }
 
+    public void addInjector(Iterable<DatapackInjector> injectors) {
+        for (DatapackInjector injector : injectors) {
+            addInjector(injector);
+        }
+    }
+
     private static void runInjector(Path datapackRoot, DatapackInjector injector) {
         injector.inject(datapackRoot.toFile());
     }

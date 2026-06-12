@@ -24,6 +24,9 @@ public class DreamDimensionManager {
     public static void init() {
         seedFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "seed.yml");
         loadSeed();
+        for (World world : Bukkit.getWorlds()) {
+            System.out.println(world.getName());
+        }
         DREAM_WORLD = Bukkit.getWorld(DIMENSION_NAME);
 
         setupDimension();

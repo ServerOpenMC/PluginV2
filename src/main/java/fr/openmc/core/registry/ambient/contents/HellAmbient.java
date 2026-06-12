@@ -1,8 +1,9 @@
 package fr.openmc.core.registry.ambient.contents;
 
-import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
 import fr.openmc.core.registry.ambient.CustomAmbient;
+import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
+import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -15,8 +16,8 @@ public class HellAmbient extends CustomAmbient {
     }
 
     @Override
-    public DimensionTypeBuilder getDimensionTypeBuilder() {
-        return new DimensionTypeBuilder()
+    public AmbientBuilder getAmbientBuilder() {
+        return new AmbientBuilder(CustomAmbientRegistry.NAMESPACE, this.getId())
                 .attributesBuilder(new EnvironnementAttributeBuilder()
                         .attributes(obj -> {
                             obj.addProperty("visual/ambient_light_color", "#A3170B");
@@ -33,7 +34,6 @@ public class HellAmbient extends CustomAmbient {
                 .cardinalLight("nether")
                 .timelines("#minecraft:in_nether")
                 .skybox(DimensionType.Skybox.NONE)
-                .infiniburn("#minecraft:infiniburn_nether")
                 .hasSkylight(false)
                 .hasCeiling(true)
                 .hasFixedTime(true);
