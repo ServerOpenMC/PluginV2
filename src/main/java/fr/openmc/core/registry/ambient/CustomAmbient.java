@@ -102,7 +102,7 @@ public abstract class CustomAmbient {
      * @return identifiant de la variante du biome (namespace:initialBiomePath_ambientId)
      */
     public Identifier toBiomeVariantKey(Identifier initialBiomeKey) {
-        return Identifier.parse(CustomAmbientRegistry.NAMESPACE + ":" + initialBiomeKey.getPath() + "_" + this.getId());
+        return Identifier.fromNamespaceAndPath(CustomAmbientRegistry.NAMESPACE, initialBiomeKey.getPath() + "_" + this.getId());
     }
 
     /**
