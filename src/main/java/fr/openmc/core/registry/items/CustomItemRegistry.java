@@ -4,6 +4,8 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.dungeons.Rarity;
+import fr.openmc.core.features.dungeons.registry.items.*;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
@@ -85,6 +87,33 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem IRON_HAMMER = register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
     public final CustomItem DIAMOND_HAMMER = register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
     public final CustomItem NETHERITE_HAMMER = register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
+
+    /* DUNGEONS */
+    public final CustomItem KEY_L1_R1 = register (new Key(1, Rarity.COMMON));
+    public final CustomItem KEY_L1_R2 = register (new Key(1, Rarity.RARE));
+    public final CustomItem KEY_L1_R3 = register (new Key(1, Rarity.EPIC));
+    public final CustomItem KEY_L1_R4 = register (new Key(1, Rarity.LEGENDARY));
+    public final CustomItem KEY_L1_R5 = register (new Key(1, Rarity.MASTER));
+
+    public final CustomItem KEY_L2_R1 = register (new Key(2, Rarity.COMMON));
+    public final CustomItem KEY_L2_R2 = register (new Key(2, Rarity.RARE));
+    public final CustomItem KEY_L2_R3 = register (new Key(2, Rarity.EPIC));
+    public final CustomItem KEY_L2_R4 = register (new Key(2, Rarity.LEGENDARY));
+    public final CustomItem KEY_L2_R5 = register (new Key(2, Rarity.MASTER));
+
+    public final CustomItem KEY_L3_R1 = register (new Key(3, Rarity.COMMON));
+    public final CustomItem KEY_L3_R2 = register (new Key(3, Rarity.RARE));
+    public final CustomItem KEY_L3_R3 = register (new Key(3, Rarity.EPIC));
+    public final CustomItem KEY_L3_R4 = register (new Key(3, Rarity.LEGENDARY));
+    public final CustomItem KEY_L3_R5 = register (new Key(3, Rarity.MASTER));
+
+    public final CustomItem KEY_L4_R1 = register (new Key(4, Rarity.COMMON));
+    public final CustomItem KEY_L4_R2 = register (new Key(4, Rarity.RARE));
+    public final CustomItem KEY_L4_R3 = register (new Key(4, Rarity.EPIC));
+    public final CustomItem KEY_L4_R4 = register (new Key(4, Rarity.LEGENDARY));
+    public final CustomItem KEY_L4_R5 = register (new Key(4, Rarity.MASTER));
+
+    public final CustomItem KEY_L5_R6 = register (new Key(5, Rarity.ABSOLUTE_MASTER));
 
     @Override
     public void postInit() {

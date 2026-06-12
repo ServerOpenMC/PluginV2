@@ -31,7 +31,8 @@ public enum Prefix {
     MILLESTONE("<gradient:#A2D182:#B8E89D>ᴍɪʟʟᴇѕᴛᴏɴᴇ</gradient>"),
     DREAM("<gradient:#4498DB:#412AEF>ᴅʀᴇᴀᴍ</gradient>"),
     MAILBOX("<gradient:#2C43C4:#6A76D9>ᴍᴀɪʟʙᴏx</gradient>"),
-    HALLOWEEN("<gradient:#FF7518:#FFD580>ʜᴀʟʟᴏᴡᴇᴇɴ</gradient>")
+    HALLOWEEN("<gradient:#FF7518:#FFD580>ʜᴀʟʟᴏᴡᴇᴇɴ</gradient>"),
+    DUNGEONS("<gradient:#E02323:#FFD76D>ᴅᴜɴɢᴇ</gradient><gradient:#FFD76D:#FFB900>ᴏɴѕ</gradient>")
     ;
 
     @Getter

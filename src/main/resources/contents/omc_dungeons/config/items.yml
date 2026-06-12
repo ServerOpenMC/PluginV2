@@ -1,0 +1,33 @@
+info:
+  namespace: omc_dungeons
+items:
+  key_level_1:
+    display_name: §l§aForêt Elfique
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+  key_level_2:
+    display_name: §l§cCroisade Ardente
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+  key_level_3:
+    display_name: §l§9Forêt des Elfs de la Nuits
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+  key_level_4:
+    display_name: §l§3Aether
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+  key_level_5:
+    display_name: §l§4Paralysie du Sommeil
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK

@@ -24,6 +24,7 @@ import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dungeons.DungeonsManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
@@ -114,7 +115,8 @@ public class OMCPlugin extends JavaPlugin {
             new LeaderboardManager(),
             new MainMenu(),
             new HologramLoader(),
-            new HomeIconCacheManager()
+            new HomeIconCacheManager(),
+            new DungeonsManager()
     ));
 
     // ** Registry of OMC Plugin Hooks
