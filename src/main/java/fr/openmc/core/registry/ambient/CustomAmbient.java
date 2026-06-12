@@ -128,7 +128,7 @@ public abstract class CustomAmbient {
                 initialEffects.foliageColorOverride();
         Integer waterColor = hasEffects(effects, "water_color") ?
                 MathUtils.hexToInt(effects.get("water_color").getAsString()) :
-                initialEffects.grassColorOverride().orElse(4159204);
+                initialEffects.waterColor();
         Optional<Integer> dryFoliageColor = hasEffects(effects, "dry_foliage_color") ?
                 Optional.of(MathUtils.hexToInt(effects.get("dry_foliage_color").getAsString())) :
                 initialEffects.foliageColorOverride();
