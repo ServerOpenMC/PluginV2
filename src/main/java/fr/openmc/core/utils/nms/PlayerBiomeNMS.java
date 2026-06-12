@@ -133,13 +133,15 @@ public class PlayerBiomeNMS {
     public static LevelChunk getFakeChunk(LevelChunk original, ServerLevel level, Holder<Biome> biome) {
         LevelChunk fakeChunk = new LevelChunk(level, original.getPos());
 
+        Strategy<Holder<Biome>> idMap = Strategy.createForBiomes(original.level.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap());
+
         LevelChunkSection[] originalSections = original.getSections();
         LevelChunkSection[] fakeSections = fakeChunk.getSections();
 
         for (int i = 0; i < originalSections.length; i++) {
             PalettedContainer<Holder<Biome>> container = new PalettedContainer<>(
                     biome,
-                    Strategy.createForBiomes(level.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap()),
+                    idMap,
                     null
             );
 
@@ -154,6 +156,7 @@ public class PlayerBiomeNMS {
     }
 
     private static final Map<Holder<Biome>, Holder<Biome>> BIOME_CACHE = new HashMap<>();
+    private static final Map<Holder<Biome>, Identifier> ID_MAPPED_BIOME_CACHE = new HashMap<>();
 
     /**
      * Crée un faux chunk en se basant sur l'originel et en changeant juste le biome du chunk en fonction
@@ -165,7 +168,6 @@ public class PlayerBiomeNMS {
     private static LevelChunk getFakeChunkWithMapping(
             LevelChunk original,
             Function<Identifier, Identifier> identifierModifier) {
-
         LevelChunk fake = new LevelChunk(original.level, original.getPos());
 
         Registry<Biome> registry = original.level.registryAccess().lookupOrThrow(Registries.BIOME);
@@ -175,6 +177,30 @@ public class PlayerBiomeNMS {
 
         for (int i = 0; i < originalSections.length; i++) {
             LevelChunkSection originalSection = originalSections[i];
+            PalettedContainer<Holder<Biome>> originalBiomes = null;
+
+            try {
+                originalBiomes =
+                        (PalettedContainer<Holder<Biome>>) SECTION_BIOMES.get(originalSection);
+            } catch (IllegalAccessException e) {
+                OMCLogger.error("Erreur d'acces à l'attribut biomes d'un levelChunkSetcion");
+            }
+
+            if (originalBiomes == null) continue;
+
+            // ** Si le chunk contient qu'un biome
+            if (originalBiomes.data.palette().getSize() == 1) {
+                Holder<Biome> single = originalBiomes.data.palette().valueFor(0);
+                Holder<Biome> mapped = getMapped(single, registry, identifierModifier);
+
+                PalettedContainer<Holder<Biome>> fakeBiomes1 = new PalettedContainer<>(mapped, idMap, null);
+                try {
+                    SECTION_BIOMES.set(fakeSections[i], fakeBiomes1);
+                } catch (IllegalAccessException e) {
+                    OMCLogger.error("Erreur d'acces à l'attribut biomes d'un levelChunkSetcion");
+                }
+                continue;
+            }
 
             PalettedContainer<Holder<Biome>> fakeBiomes = new PalettedContainer<>(
                     originalSection.getNoiseBiome(0,0,0),
@@ -182,21 +208,11 @@ public class PlayerBiomeNMS {
                     null
             );
 
-
             for (int x = 0; x < 4; x++) {
                 for (int y = 0; y < 4; y++) {
                     for (int z = 0; z < 4; z++) {
                         Holder<Biome> originalBiome = originalSection.getNoiseBiome(x, y, z);
-
-                        Holder<Biome> mapped = BIOME_CACHE.computeIfAbsent(originalBiome, cacheMappedBiome -> {
-                            Identifier keyModified = identifierModifier.apply(
-                                    cacheMappedBiome.unwrapKey().orElseThrow().identifier()
-                            );
-
-                            return registry.get(keyModified).orElseThrow(() ->
-                                   new IllegalStateException("Biome " + keyModified + " introuvable dans le registre")
-                           );
-                        });
+                        Holder<Biome> mapped = getMapped(originalBiome, registry, identifierModifier);
 
                         fakeBiomes.set(x, y, z, mapped);
                     }
@@ -211,5 +227,19 @@ public class PlayerBiomeNMS {
         }
 
         return fake;
+    }
+
+    private static Holder<Biome> getMapped(
+            Holder<Biome> original,
+            Registry<Biome> registry,
+            Function<Identifier, Identifier> identifierModifier) {
+        return BIOME_CACHE.computeIfAbsent(original, b -> {
+            Identifier keyModified = ID_MAPPED_BIOME_CACHE.computeIfAbsent(original, m ->
+                    identifierModifier.apply(
+                        m.unwrapKey().orElseThrow().identifier()
+                    )
+            );
+            return registry.get(keyModified).orElseThrow();
+        });
     }
 }
