@@ -3,6 +3,7 @@ package fr.openmc.core.registry.ambient.listeners;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.ambient.BiomeAmbient;
 import fr.openmc.core.registry.ambient.CustomAmbient;
+import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,6 +39,6 @@ public class BiomesOnChunkLoad implements Listener {
         ChunkAccess chunkAccess = ((CraftChunk) event.getChunk()).getHandle(ChunkStatus.FULL);
         if (!(chunkAccess instanceof LevelChunk nmsChunk)) return;
 
-        PlayerBiomeNMS.sendBiome(nmsPlayer, ambientApplied.CACHED_BIOME, nmsChunk);
+        PlayerBiomeNMS.remplaceBiome(nmsPlayer, nmsChunk, CustomAmbientRegistry.NAMESPACE, ambientApplied.getId());
     }
 }

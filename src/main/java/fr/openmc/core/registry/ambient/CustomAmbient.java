@@ -27,6 +27,7 @@ import java.util.UUID;
 public abstract class CustomAmbient {
     // ** UUID playerUUID -> String idAmbient
     public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
+
     public Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
     public Holder<Biome> CACHED_BIOME = null;
 
@@ -45,7 +46,7 @@ public abstract class CustomAmbient {
      * @return Un datapack injector
      */
     public DatapackInjector toDimensionTypeInjector() {
-        return new DimensionTypesInjector("omc_ambient").add(getId(), getDimensionTypeBuilder());
+        return new DimensionTypesInjector(CustomAmbientRegistry.NAMESPACE).add(getId(), getDimensionTypeBuilder());
     }
 
     /**
@@ -63,7 +64,7 @@ public abstract class CustomAmbient {
         );
 
         if (this instanceof BiomeAmbient)
-            PlayerBiomeNMS.sendBiomes(player, getBiome());
+            PlayerBiomeNMS.replaceBiomes(nmsPlayer, CustomAmbientRegistry.NAMESPACE, this.getId());
 
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }
@@ -147,14 +148,14 @@ public abstract class CustomAmbient {
 
         ResourceKey<DimensionType> key = ResourceKey.create(
                 Registries.DIMENSION_TYPE,
-                Identifier.fromNamespaceAndPath("omc_ambient", this.getId())
+                Identifier.fromNamespaceAndPath(CustomAmbientRegistry.NAMESPACE, this.getId())
         );
 
         Registry<DimensionType> dimRegistry =
                 MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
 
         CACHED_DIMENSION_TYPE = dimRegistry.get(key).orElseThrow(() ->
-                new IllegalStateException("DimensionType omc_ambient:"+ this.getId() +" introuvable")
+                new IllegalStateException("DimensionType " + CustomAmbientRegistry.NAMESPACE + ":"+ this.getId() +" introuvable")
         );
         return CACHED_DIMENSION_TYPE;
     }
@@ -165,14 +166,14 @@ public abstract class CustomAmbient {
 
         ResourceKey<Biome> key = ResourceKey.create(
                 Registries.BIOME,
-                Identifier.fromNamespaceAndPath("omc_ambient", this.getId())
+                Identifier.fromNamespaceAndPath(CustomAmbientRegistry.NAMESPACE, this.getId())
         );
 
         Registry<Biome> biomeRegistry =
                 MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.BIOME);
 
         CACHED_BIOME = biomeRegistry.get(key).orElseThrow(() ->
-                new IllegalStateException("Biome omc_ambient:"+ this.getId() +" introuvable")
+                new IllegalStateException("Biome " + CustomAmbientRegistry.NAMESPACE + ":"+ this.getId() +" introuvable")
         );
         return CACHED_BIOME;
     }

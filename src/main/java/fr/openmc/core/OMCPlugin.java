@@ -217,6 +217,9 @@ public class OMCPlugin extends JavaPlugin {
             feature.startSave();
         }
 
+        /* REGISTRIES */
+        OMCRegistry.stopAll();
+
         // - Close all inventories
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.closeInventory();

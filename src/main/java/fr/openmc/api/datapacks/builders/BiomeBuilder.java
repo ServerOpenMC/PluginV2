@@ -3,6 +3,7 @@ package fr.openmc.api.datapacks.builders;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 
 import java.util.function.Consumer;
 
@@ -30,17 +31,15 @@ import java.util.function.Consumer;
 public final class BiomeBuilder {
     private JsonObject attributes = new JsonObject();
     private final JsonArray carvers = new JsonArray();
+    @Getter
     private final JsonObject effects = new JsonObject();
-    {
-        effects.addProperty("water_color", "#3f76e4");
-    }
     private final JsonArray features = new JsonArray();
     private final JsonObject spawnCosts = new JsonObject();
     private final JsonObject spawners = new JsonObject();
     private String temperatureModifier = "none";
     private Double creatureSpawnProbability = 0.03;
-    private Double downfall = 0.5;
-    private Double temperatures = 0.5;
+    private Float downfall = 0.5f;
+    private Float temperatures = 0.5f;
     private Boolean hasPrecipitation = true;
 
     public BiomeBuilder attributes(EnvironnementAttributeBuilder builder) {
@@ -68,7 +67,7 @@ public final class BiomeBuilder {
         return this;
     }
 
-    public BiomeBuilder downfall(Double value) {
+    public BiomeBuilder downfall(Float value) {
         this.downfall=value;
         return this;
     }
@@ -98,6 +97,26 @@ public final class BiomeBuilder {
     }
 
     public BiomeBuilder dryFoliageColor(String color) {
+        this.effects.addProperty("dry_foliage_color", color);
+        return this;
+    }
+
+    public BiomeBuilder waterColor(Integer color) {
+        this.effects.addProperty("water_color", color);
+        return this;
+    }
+
+    public BiomeBuilder grassColor(Integer color) {
+        this.effects.addProperty("grass_color", color);
+        return this;
+    }
+
+    public BiomeBuilder foliageColor(Integer color) {
+        this.effects.addProperty("foliage_color", color);
+        return this;
+    }
+
+    public BiomeBuilder dryFoliageColor(Integer color) {
         this.effects.addProperty("dry_foliage_color", color);
         return this;
     }
@@ -135,12 +154,12 @@ public final class BiomeBuilder {
         return this;
     }
 
-    public BiomeBuilder temperatures(Double value) {
+    public BiomeBuilder temperatures(Float value) {
         this.temperatures=value;
         return this;
     }
 
-    public BiomeBuilder temperatures(Boolean bool) {
+    public BiomeBuilder hasPrecipitation(Boolean bool) {
         this.hasPrecipitation=bool;
         return this;
     }
