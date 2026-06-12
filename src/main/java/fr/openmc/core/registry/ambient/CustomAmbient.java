@@ -63,8 +63,9 @@ public abstract class CustomAmbient {
                 getTransitionDimensionForPlayer(nmsPlayer)
         );
 
-        if (this instanceof BiomeAmbient)
-            PlayerBiomeNMS.replaceBiomes(nmsPlayer, CustomAmbientRegistry.NAMESPACE, this.getId());
+        if (this instanceof BiomeAmbient biomeAmbient)
+            PlayerBiomeNMS.replaceBiomes(nmsPlayer,
+                    (biomeVarientKey) -> biomeAmbient.toBiomeVariantKey(biomeVarientKey, this));
 
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }

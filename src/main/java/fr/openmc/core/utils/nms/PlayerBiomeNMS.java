@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class PlayerBiomeNMS {
     private static Field SECTION_BIOMES;
@@ -80,19 +81,19 @@ public class PlayerBiomeNMS {
     }
 
     /**
-     * Remplace un simple biome par
+     * Remplace un simple biome par un id de biome transformé par identifierModifier
      * @param nmsPlayer Le joueur à envoyer les changements
-     * @param namespace le namespace du biome a envoyer
-     * @param id le id du biome a envoyer
+     * @param identifierModifier la clé du biome a modifier
      * @param initialChunk le chunk a remplacer le biome
      */
-    public static void remplaceBiome(ServerPlayer nmsPlayer, LevelChunk initialChunk, String namespace, String id) {
+    public static void remplaceBiome(
+            ServerPlayer nmsPlayer,
+            LevelChunk initialChunk,
+            Function<Identifier, Identifier> identifierModifier) {
         List<ClientboundChunksBiomesPacket.ChunkBiomeData> biomeDataList = new ArrayList<>();
         LevelChunk fakeChunk = PlayerBiomeNMS.getFakeChunkWithMapping(
                 initialChunk,
-                nmsPlayer.level(),
-                namespace,
-                id
+                identifierModifier
         );
         ClientboundChunksBiomesPacket.ChunkBiomeData data = new ClientboundChunksBiomesPacket.ChunkBiomeData(fakeChunk);
         biomeDataList.add(data);
@@ -100,7 +101,7 @@ public class PlayerBiomeNMS {
         nmsPlayer.connection.send(packet);
     }
 
-    public static void replaceBiomes(ServerPlayer nmsPlayer, String namespace, String id) {
+    public static void replaceBiomes(ServerPlayer nmsPlayer, Function<Identifier, Identifier> identifierModifier) {
         ServerLevel nmsWorld = nmsPlayer.level();
 
         int viewDistance = nmsWorld.getServer().getPlayerList().getViewDistance();
@@ -112,7 +113,7 @@ public class PlayerBiomeNMS {
                 LevelChunk chunk = nmsWorld.getChunkIfLoaded(cx, cz);
                 if (chunk == null) continue;
 
-                LevelChunk fakeChunk = getFakeChunkWithMapping(chunk, nmsWorld, namespace, id);
+                LevelChunk fakeChunk = getFakeChunkWithMapping(chunk, identifierModifier);
                 biomeDataList.add(new ClientboundChunksBiomesPacket.ChunkBiomeData(fakeChunk));
             }
         }
@@ -149,14 +150,18 @@ public class PlayerBiomeNMS {
 
         return fakeChunk;
     }
-
+    /**
+     * Crée un faux chunk en se basant sur l'originel et en changeant juste le biome du chunk en fonction
+     * d'un identifierModifier
+     * @param original le chunk original
+     * @param identifierModifier le modifier d'identifiant
+     * @return le faux chunk avec biomes modifiés
+     */
     private static LevelChunk getFakeChunkWithMapping(
             LevelChunk original,
-            ServerLevel nmsWorld,
-            String namespace,
-            String id) {
+            Function<Identifier, Identifier> identifierModifier) {
 
-        LevelChunk fake = new LevelChunk(nmsWorld, original.getPos());
+        LevelChunk fake = new LevelChunk(original.level, original.getPos());
         LevelChunkSection[] originalSections = original.getSections();
         LevelChunkSection[] fakeSections = fake.getSections();
 
@@ -165,22 +170,21 @@ public class PlayerBiomeNMS {
 
             PalettedContainer<Holder<Biome>> fakeBiomes = new PalettedContainer<>(
                     originalSection.getNoiseBiome(0,0,0),
-                    Strategy.createForBiomes(nmsWorld.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap()),
+                    Strategy.createForBiomes(original.level.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap()),
                     null
             );
 
-            Registry<Biome> registry = nmsWorld.registryAccess().lookupOrThrow(Registries.BIOME);
+            Registry<Biome> registry = original.level.registryAccess().lookupOrThrow(Registries.BIOME);
 
             for (int x = 0; x < 4; x++) {
                 for (int y = 0; y < 4; y++) {
                     for (int z = 0; z < 4; z++) {
                         Holder<Biome> originalBiome = originalSection.getNoiseBiome(x, y, z);
-                        // todo: faire directement in Identifier
-                        String keyMapped = namespace + ":" +
-                                originalBiome.unwrapKey().orElseThrow().identifier().getPath() + "_" + id;
 
-                        Holder<Biome> mapped = registry.get(Identifier.parse(keyMapped)).orElseThrow(() ->
-                                new IllegalStateException("Biome " + keyMapped + " introuvable dans le registre")
+                        Identifier keyModified = identifierModifier.apply(originalBiome.unwrapKey().orElseThrow().identifier());
+
+                        Holder<Biome> mapped = registry.get(keyModified).orElseThrow(() ->
+                                new IllegalStateException("Biome " + keyModified + " introuvable dans le registre")
                         );
 
                         fakeBiomes.set(x, y, z, mapped);

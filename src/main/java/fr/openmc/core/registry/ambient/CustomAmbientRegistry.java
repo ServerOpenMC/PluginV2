@@ -55,8 +55,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
 
                     Biome biome = biomeEntry.getValue();
                     ambientDatapack.addInjector(biomeAmbient.toBiomeVariant(
-                            biome, ambientDatapack.getNamespace(),
-                            key.identifier().getPath() + "_" + ambient.getId()));
+                            biome, biomeAmbient.toBiomeVariantKey(key.identifier(), ambient)));
                 }
             }
         }
