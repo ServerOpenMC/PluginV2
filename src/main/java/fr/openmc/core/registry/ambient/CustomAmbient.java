@@ -7,6 +7,7 @@ import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
 import fr.openmc.core.utils.MathUtils;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
 import fr.openmc.core.utils.nms.PlayerRespawnNMS;
+import fr.openmc.core.utils.nms.PlayerSetTimeNMS;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -55,6 +56,10 @@ public abstract class CustomAmbient {
 
         if (this.getAmbientBuilder().utilizeBiome())
             PlayerBiomeNMS.replaceBiomes(nmsPlayer, this::toBiomeVariantKey);
+
+        if (this.getAmbientBuilder().getTimeFixed() != null) {
+            PlayerSetTimeNMS.sendPacketSetTime(player, this.getAmbientBuilder().getTimeFixed());
+        }
 
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }

@@ -5,6 +5,7 @@ import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.registry.ambient.contents.BloodyAmbient;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.GoldenAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
@@ -25,6 +26,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
     public final CustomAmbient DARK = register(new DarkAmbient());
     public final CustomAmbient HELL = register(new HellAmbient());
     public final CustomAmbient GOLDEN = register(new GoldenAmbient());
+    public final CustomAmbient BLOODY = register(new BloodyAmbient());
 
     @Override
     public String key(CustomAmbient registryObject) {

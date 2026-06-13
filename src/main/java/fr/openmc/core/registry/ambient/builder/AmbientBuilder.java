@@ -29,6 +29,8 @@ public class AmbientBuilder {
     private TimelineBuilder timelineBuilder = null;
     @Getter
     private BiomeBuilder biomeBuilder = null;
+    @Getter
+    private Integer timeFixed = null;
 
     public AmbientBuilder(String namepace, String id) {
         this.namespace = namepace;
@@ -65,11 +67,16 @@ public class AmbientBuilder {
         return this;
     }
 
+    public AmbientBuilder hasFixedTime(boolean hasFixedTime, int timeSet) {
+        this.dimTypeBuilder.hasFixedTime(hasFixedTime);
+        this.timeFixed = timeSet;
+        return this;
+    }
+
     public AmbientBuilder hasFixedTime(boolean hasFixedTime) {
         this.dimTypeBuilder.hasFixedTime(hasFixedTime);
         return this;
     }
-
     public AmbientBuilder skybox(String skybox) {
         this.dimTypeBuilder.skybox(skybox);
         return this;
