@@ -27,7 +27,7 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
                         "§fpour pouvoir améliorer votre limite de homes",
                         "§8§oCela vous permettra d'avoir plus de homes !"
                 ),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE,
 		        MilestoneType.TUTORIAL,
 		        TutorialSteps.HOME_UPGRADE,
 		        new QuestTier(

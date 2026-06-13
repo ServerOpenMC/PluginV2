@@ -3,10 +3,10 @@ package fr.openmc.core.features.settings.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
@@ -25,7 +25,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class PlayerSettingsMenu extends PaginatedMenu {
@@ -61,33 +64,33 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemMenuBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red")).getBest(), meta -> {
+        buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED, meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
-        }).setOnClick(event -> {
-            new ConfirmMenu(getOwner(), () -> {
-                settings.resetAllSettings();
-                this.refresh();
-                MessagesManager.sendMessage(getOwner(),
-                        Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
-                                .decoration(TextDecoration.ITALIC, false),
-                        Prefix.SETTINGS, MessageType.SUCCESS, true);
-                },
-                this::open,
-                List.of(
-                    Component.text("Êtes-vous sûr de vouloir réinitialiser tous les paramètres ?",
-                            NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
-                    Component.text("Cette action est irréversible.", NamedTextColor.YELLOW)
-                            .decoration(TextDecoration.ITALIC, false)),
-                List.of(
-                    Component.text("Cliquez pour annuler", NamedTextColor.GRAY)
-                            .decoration(TextDecoration.ITALIC, false))
-            ).open();
-        }));
+        }).setOnClick(_ ->
+                new ConfirmMenu(getOwner(), () -> {
+                    settings.resetAllSettings();
+                    this.refresh();
+                    MessagesManager.sendMessage(getOwner(),
+                            Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
+                                    .decoration(TextDecoration.ITALIC, false),
+                            Prefix.SETTINGS, MessageType.SUCCESS, true);
+                    },
+                    this::open,
+                    List.of(
+                        Component.text("Êtes-vous sûr de vouloir réinitialiser tous les paramètres ?",
+                                NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
+                        Component.text("Cette action est irréversible.", NamedTextColor.YELLOW)
+                                .decoration(TextDecoration.ITALIC, false)),
+                    List.of(
+                        Component.text("Cliquez pour annuler", NamedTextColor.GRAY)
+                                .decoration(TextDecoration.ITALIC, false))
+                ).open()
+        ));
 
-        buttons.put(48, new ItemMenuBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        buttons.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
-        buttons.put(50, new ItemMenuBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        buttons.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
+        buttons.put(49, ItemMenuTemplate.BTN_CLOSE.apply(this));
+        buttons.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_WHITE.apply(this));
 
         return buttons;
     }

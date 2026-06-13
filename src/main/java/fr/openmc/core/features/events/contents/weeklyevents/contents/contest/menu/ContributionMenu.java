@@ -1,6 +1,5 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -83,15 +82,12 @@ public class ContributionMenu extends Menu {
                 Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).color(campColor)
         );
 
-        String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.get(namespaceShellContest).getBest();
-
         inventory.put(8, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.contribution.title.name"));
             itemMeta.lore(loreRang);
         }));
 
-        inventory.put(11, new ItemMenuBuilder(this, shellContest, itemMeta -> {
+        inventory.put(11, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.trade.main.name"));
             itemMeta.lore(loreTrade);
         }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
@@ -109,7 +105,7 @@ public class ContributionMenu extends Menu {
             }
 
             try {
-                ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
+                ItemStack shellContestItem = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
                 int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && isSimilar(shellContestItem, is)).mapToInt(ItemStack::getAmount).sum();
 
                 if (ItemUtils.hasEnoughItems(player, shellContestItem, shellCount)) {

@@ -101,7 +101,7 @@ public class MainMilestonesMenu extends Menu {
 
         inventory.put(16, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(Component.text(" §ks §cComming soon §ke"))));
 
-        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
+        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

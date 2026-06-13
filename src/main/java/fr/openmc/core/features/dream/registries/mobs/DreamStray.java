@@ -35,7 +35,7 @@ public class DreamStray extends DreamMob<Stray> {
         stray.setGlowing(true);
         EntityEquipment equipment = stray.getEquipment();
         if (stray.canUseEquipmentSlot(EquipmentSlot.FEET)) {
-            equipment.setBoots(DreamItemRegistry.getByName("cloud_boots").getBest());
+            equipment.setBoots(DreamItemRegistry.CLOUD_BOOTS.getBest());
             equipment.setBootsDropChance(0.0f);
         }
 

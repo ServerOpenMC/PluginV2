@@ -26,7 +26,7 @@ public class CraftEternalFireQuest extends MilestoneQuest implements Listener {
 						"§fFabriquer le §dfeu éternel",
 						"§8§oVa-t-on retrouver des dinosaures fossilisés ou Sid ?"
 				),
-				DreamItemRegistry.getByName("omc_dream:eternal_campfire").getBest(),
+				DreamItemRegistry.ETERNAL_CAMPFIRE,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_ETERNAL_FIRE,
 				new QuestTier(1),

@@ -13,7 +13,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -110,10 +109,7 @@ public class ConfirmMenu extends Menu {
 
         loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
-        ItemStack refuseBtn = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest();
-        ItemStack acceptBtn = OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest();
-
-        inventory.put(posDenyBtn, new ItemMenuBuilder(this, refuseBtn, itemMeta -> {
+        inventory.put(posDenyBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(loreDeny);
         }).setOnClick(event -> {
@@ -126,7 +122,7 @@ public class ConfirmMenu extends Menu {
             }
         }));
 
-        inventory.put(posAcceptBtn, new ItemMenuBuilder(this, acceptBtn, itemMeta -> {
+        inventory.put(posAcceptBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(loreAccept);
         }).setOnClick(event -> {

@@ -19,7 +19,6 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Objects;
 
 public class KillBreezyQuest extends MilestoneQuest implements Listener {
 	public KillBreezyQuest() {
@@ -41,7 +40,7 @@ public class KillBreezyQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Les explications arriveront en temps et en heures. Pour le moment, redescends sur terre, et dirige-toi vers les §dplages§3. " +
 								"J'aimerais pouvoir dire de sable fin...",
 						"§3Voyageur : Mais avant de partir, tu peux récupérer dans les coffres du château l'§dArmure des Nuages§3, qui te donnera §d" +
-								((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:cloud_chestplate"))).getAdditionalMaxTime() +
+								((DreamEquipableItem) DreamItemRegistry.CLOUD_CHESTPLATE).getAdditionalMaxTime() +
 								" secondes §3de temps supplémentaire par pièces d'armure. Tu peux également récupérer une §dcanne à pêche des nuages§3, et un §dlivre enchanté§3.",
 						"§6Une canne à pêche ? Mais pour pêcher quoi ? Des gouttelettes de nuage ?!",
 						"§3Voyageur : Exactement ! Celle-ci te permettra de pêcher dans les nuages comme si c'était un lac. Tu pourras notamment récupérer des " +

@@ -4,7 +4,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.registry.loottable.CustomLootTable;
-import net.kyori.adventure.key.Key;
 
 import java.util.Set;
 
@@ -16,67 +15,67 @@ public class MetalDetectorLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return Set.of(
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_dihydrogene"),
+                        DreamItemRegistry.CHIPS_DIHYDROGENE,
                         0.4,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_jimmy"),
+                        DreamItemRegistry.CHIPS_JIMMY,
                         0.2,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_terre"),
+                        DreamItemRegistry.CHIPS_TERRE,
                         0.4,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_sans_plomb"),
+                        DreamItemRegistry.CHIPS_SANS_PLOMB,
                         0.4,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_nature"),
+                        DreamItemRegistry.CHIPS_NATURE,
                         0.4,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_aywen"),
+                        DreamItemRegistry.CHIPS_AYWEN,
                         0.1,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("chips_lait_2_margouta"),
+                        DreamItemRegistry.CHIPS_LAIT_2_MARGOUTA,
                         0.005,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("somnifere"),
+                        DreamItemRegistry.SOMNIFERE,
                         0.4,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("mud_orb"),
+                        DreamItemRegistry.MUD_ORB,
                         0.05,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        OMCRegistry.CUSTOM_ENCHANTS.get(Key.key("omc_dream:experientastic")).getEnchantedBookItem(1),
+                        OMCRegistry.CUSTOM_ENCHANTS.EXPERIENTASTIC.getEnchantedBookItem(1),
                         0.03,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("crystallized_pickaxe"),
+                        DreamItemRegistry.CRYSTALIZED_PICKAXE,
                         0.1,
                         1,
                         1

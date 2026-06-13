@@ -126,16 +126,14 @@ public class LevelMilestoneMenu extends PaginatedMenu {
             itemMeta.lore(loreRewards);
         }));
 
-        buttons.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
-        }, true));
+        buttons.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
         buttons.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta ->
                 meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());
-        buttons.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+        buttons.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
         }).setPreviousPageButton());
-        buttons.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+        buttons.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
         }).setNextPageButton());
 

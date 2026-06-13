@@ -15,6 +15,8 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.util.Optional;
+
 @Command({"ambient", "customambient"})
 @CommandPermission("omc.admins.commands.customambient")
 public class CustomAmbientCommands {
@@ -24,14 +26,14 @@ public class CustomAmbientCommands {
             Player toPlayer,
             @SuggestWith(CustomAmbientAutoComplete.class) String id
     ) {
-        CustomAmbient ambient = OMCRegistry.CUSTOM_AMBIENTS.get(id);
+        Optional<CustomAmbient> ambient = OMCRegistry.CUSTOM_AMBIENTS.get(id);
 
-        if (ambient == null) {
+        if (ambient.isEmpty()) {
             MessagesManager.sendMessage(player, TranslationManager.translation("command.registry.custom_ambient.apply.null"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
-        ambient.apply(toPlayer);
+        ambient.get().apply(toPlayer);
         MessagesManager.sendMessage(player, TranslationManager.translation("command.registry.custom_ambient.apply.success",
                 Component.text(id).color(NamedTextColor.YELLOW),
                 Component.text(toPlayer.getName()).color(NamedTextColor.YELLOW)
@@ -50,7 +52,7 @@ public class CustomAmbientCommands {
 
         String idAmbient = CustomAmbient.ACTIVE_AMBIENTS.get(toPlayer.getUniqueId());
 
-        OMCRegistry.CUSTOM_AMBIENTS.get(idAmbient).reset(toPlayer);
+        OMCRegistry.CUSTOM_AMBIENTS.getOrThrow(idAmbient).reset(toPlayer);
         MessagesManager.sendMessage(player, TranslationManager.translation("command.registry.custom_ambient.reset.success",
                 Component.text(toPlayer.getName()).color(NamedTextColor.YELLOW)
         ), Prefix.STAFF, MessageType.ERROR, true);

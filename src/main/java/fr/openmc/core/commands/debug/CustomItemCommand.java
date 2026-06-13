@@ -25,14 +25,14 @@ public class CustomItemCommand {
             @SuggestWith(CustomItemAutoComplete.class) String name,
             @Optional Integer amount
     ) {
-        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(name);
+        java.util.Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(name);
 
-        if (item == null) {
+        if (item.isEmpty()) {
             MessagesManager.sendMessage(player, Component.text("Cet item n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        ItemStack finalItem = item.getBest();
+        ItemStack finalItem = item.get().getBest();
         if (amount != null && amount > 1) {
             finalItem.setAmount(amount);
         }

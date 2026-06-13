@@ -27,7 +27,7 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 						"§8§oPossible que les gens perdent tout de même",
 						"§8§odes choses. Ah tiens, 6 blocks vers la droite."
 				),
-				DreamItemRegistry.getByName("omc_dream:mud_orb").getBest(),
+				DreamItemRegistry.MUD_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.MUD_ORB,
 				new QuestTier(1),
@@ -40,7 +40,7 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 								"un autre §dlivre enchanté§3, ou encore une §dpioche §3qui te sera utile pour la suite... Je vais d'ailleurs check si tu n'en as pas déjà une."
 				),
 				player -> {
-					if (player.getInventory().contains(DreamItemRegistry.getByName("omc_dream:crystallized_pickaxe").getBest()))
+					if (player.getInventory().contains(DreamItemRegistry.CRYSTALIZED_PICKAXE.getBest()))
 						DreamSteps.CRYSTALLIZED_PICKAXE.getQuest().incrementProgressInDream(player.getUniqueId());
 				}
 		);

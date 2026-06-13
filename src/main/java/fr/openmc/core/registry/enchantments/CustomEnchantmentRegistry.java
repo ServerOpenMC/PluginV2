@@ -25,14 +25,13 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
         return registryObject.getKey();
     }
 
+    // ** REGISTER ENCHANTMENT **
+    public final CustomEnchantment SOULBOUND = register(new Soulbound());
+    public final CustomEnchantment EXPERIENTASTIC = register(new Experientastic());
+    public final CustomEnchantment DREAM_SLEEPER = register(new DreamSleeper());
+
     @Override
     public void bootstrap(BootstrapContext context) {
-        register(
-                new Soulbound(),
-                new Experientastic(),
-                new DreamSleeper()
-        );
-
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose()
                 .newHandler(this::loadEnchantmentInBootstrap));
 

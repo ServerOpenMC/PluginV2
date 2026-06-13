@@ -61,7 +61,7 @@ public class IdyllicRain implements Listener {
 
                 Location dropLoc = new Location(world, x + 0.5, y, z + 0.5);
 
-                ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+                ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                 ItemMeta meta = aywenite.getItemMeta();
                 meta.getPersistentDataContainer().set(cityAyweniteKey, PersistentDataType.STRING, city.getUniqueId().toString());
                 aywenite.setItemMeta(meta);
@@ -98,7 +98,7 @@ public class IdyllicRain implements Listener {
 
         event.setCancelled(true);
 
-        ItemStack cleanAywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+        ItemStack cleanAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
         cleanAywenite.setAmount(item.getAmount());
 
         event.getItem().remove();

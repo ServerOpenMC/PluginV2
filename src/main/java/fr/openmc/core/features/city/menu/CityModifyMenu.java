@@ -166,10 +166,7 @@ public class CityModifyMenu extends Menu {
                 inventory.put(15, deleteItemSupplier.get());
             }
 
-        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
-        }, true));
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

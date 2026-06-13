@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Optional;
+
 public class BlockBreakListener implements Listener {
 
     @EventHandler
@@ -21,10 +23,10 @@ public class BlockBreakListener implements Listener {
         ProtectionsManager.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
-        if (item == null) return;
+        Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
+        if (item.isEmpty()) return;
 
-        if (item instanceof BlockBreakableItem breakableItem) breakableItem.onBlockBreak(player, event);
+        if (item.get() instanceof BlockBreakableItem breakableItem) breakableItem.onBlockBreak(player, event);
     }
 
 }

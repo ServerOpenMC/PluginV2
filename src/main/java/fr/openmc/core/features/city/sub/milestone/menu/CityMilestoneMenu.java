@@ -116,9 +116,7 @@ public class CityMilestoneMenu extends Menu {
             }
         }
 
-        inventory.put(45, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.itemName(
-                TranslationManager.translation("messages.menus.back")
-        ), true));
+        inventory.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
         inventory.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta ->
                 meta.displayName(TranslationManager.translation("messages.menus.close"))).setCloseButton());

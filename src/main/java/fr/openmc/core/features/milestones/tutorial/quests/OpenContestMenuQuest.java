@@ -34,7 +34,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
                         "§fTapez §d/contest §fou bien aller dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oUne méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
 		        MilestoneType.TUTORIAL,
 		        TutorialSteps.OPEN_CONTEST,
 		        new QuestTier(
@@ -45,7 +45,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        ),
-						new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), 30),
+				        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), 30),
 				        new QuestMethodsReward(
 						        player -> {
 							        List<ItemStack> items = new ArrayList<>();
@@ -60,7 +60,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 								        );
 								        
 								        if (!limitDate.isBefore(today)) {
-									        ItemStack aywenPlush = OMCRegistry.CUSTOM_ITEMS.get("omc_plush:peluche_awyen").getBest();
+									        ItemStack aywenPlush = OMCRegistry.CUSTOM_ITEMS.PELUCHE_AWYEN.getBest();
 									        items.add(aywenPlush);
 								        }
 							        }

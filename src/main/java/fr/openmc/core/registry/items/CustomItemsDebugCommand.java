@@ -8,6 +8,8 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.util.Optional;
+
 @Command("debug customitems")
 @CommandPermission("omc.debug.customitems")
 public class CustomItemsDebugCommand {
@@ -19,7 +21,7 @@ public class CustomItemsDebugCommand {
     public void isCloseButton(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        CustomItem closeButton = OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel");
+        CustomItem closeButton = OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL;
 
         passTest(player, 1, closeButton.equals(item));
         passTest(player, 2, closeButton.equals("_iainternal:icon_cancel"));
@@ -35,11 +37,12 @@ public class CustomItemsDebugCommand {
             player.sendMessage("§cVous ne tenez rien en main.");
             return;
         }
-        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(mainhand);
-        if (item == null) {
-            player.sendMessage("§cL'item en main n'est pas un custom item.");
+        Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(mainhand);
+
+        if (item.isPresent()) {
+            player.sendMessage(item.get().getId());
         } else {
-            player.sendMessage(item.getId());
+            player.sendMessage("§cL'item en main n'est pas un custom item.");
         }
     }
 
@@ -53,11 +56,12 @@ public class CustomItemsDebugCommand {
 
     @Subcommand("get")
     public void get(Player player, String name) {
-        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(name);
-        if (item == null) {
+        Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(name);
+
+        if (item.isPresent()) {
+            player.getInventory().addItem(item.get().getBest());
+        } else {
             player.sendMessage("§cCet item n'existe pas.");
-            return;
         }
-        player.getInventory().addItem(item.getBest());
     }
 }

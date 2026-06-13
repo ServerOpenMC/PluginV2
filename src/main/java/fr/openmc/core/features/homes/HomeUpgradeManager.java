@@ -57,7 +57,7 @@ public class HomeUpgradeManager {
                 return;
             }
 
-            if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), ayweniteAmount)) {
+            if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), ayweniteAmount)) {
                 MessagesManager.sendMessage(
                         player,
                         TranslationManager.translation(

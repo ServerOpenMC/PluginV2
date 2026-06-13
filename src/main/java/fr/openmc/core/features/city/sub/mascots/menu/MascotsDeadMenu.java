@@ -97,10 +97,7 @@ public class MascotsDeadMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 13, reduceItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
-        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }

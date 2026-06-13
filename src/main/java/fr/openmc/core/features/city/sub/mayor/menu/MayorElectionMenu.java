@@ -154,10 +154,7 @@ public class MayorElectionMenu extends Menu {
             }
         }));
 
-        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.common.back.name").color(NamedTextColor.GREEN));
-            itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.common.back.lore"));
-        }, true));
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));
 
 
         List<Component> loreInfo = TranslationManager.translationLore("feature.city.mayor.menu.common.more_info.lore");

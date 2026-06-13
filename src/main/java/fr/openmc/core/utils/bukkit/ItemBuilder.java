@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.bukkit;
 
 import fr.openmc.api.menulib.MenuLib;
+import fr.openmc.core.registry.items.CustomItem;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
@@ -28,6 +29,10 @@ public class ItemBuilder extends ItemStack {
         this(item, null);
     }
 
+    public ItemBuilder(CustomItem customItem) {
+        this(customItem.getBest(), null);
+    }
+
     public ItemBuilder(Material material, Consumer<ItemMeta> itemMeta) {
         this(new ItemStack(material), itemMeta);
     }
@@ -38,6 +43,11 @@ public class ItemBuilder extends ItemStack {
         if (itemMeta != null) itemMeta.accept(meta);
         setItemMeta(meta);
     }
+
+    public ItemBuilder(CustomItem customItem, Consumer<ItemMeta> itemMeta) {
+        this(customItem.getBest(), itemMeta);
+    }
+
 
     /**
      * Sets the unique identifier for the item using the specified {@code itemId}.

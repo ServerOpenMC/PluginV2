@@ -88,9 +88,7 @@ public class CityTypeMenu extends Menu {
             CityChangeAction.beginChangeCity(player, CityType.WAR);
         }));
 
-        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }

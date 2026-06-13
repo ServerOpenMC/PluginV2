@@ -13,6 +13,10 @@ import java.io.IOException;
 public class CustomAmbientRegistry extends Registry<String, CustomAmbient> implements KeyedRegistry<String, CustomAmbient> {
     private final OMCDatapack ambientDatapack = new OMCDatapack("openmc", "omc_ambient");
 
+    // ** REGISTER AMBIENT **
+    public final CustomAmbient DARK = register(new DarkAmbient());
+    public final CustomAmbient HELL = register(new HellAmbient());
+
     @Override
     public String key(CustomAmbient registryObject) {
         return registryObject.getId();
@@ -20,11 +24,6 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
 
     @Override
     public void bootstrap(BootstrapContext context) throws IOException {
-        register(
-                new DarkAmbient(),
-                new HellAmbient()
-        );
-
         for (CustomAmbient ambient : values()) {
             ambientDatapack.addInjector(ambient.toDimensionTypeInjector());
         }

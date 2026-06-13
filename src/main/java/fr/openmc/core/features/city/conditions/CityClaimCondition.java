@@ -43,7 +43,7 @@ public class CityClaimCondition {
         if (city.getFreeClaims() > 0) return true;
 
         int amount = CityClaimAction.calculateAywenite(city.getChunks().size());
-        if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), amount)) {
+        if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), amount)) {
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(amount)),

@@ -75,7 +75,7 @@ public class MoreInfoMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(phase == 2);
         }));
 
-        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.common.back.name")), true));
+        inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,15 +19,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class CloudVault implements Listener {
-    private final CustomLootTable CLOUD_VAULT_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.get("omc_dream:cloud_vault");
+    private final CustomLootTable CLOUD_VAULT_LOOT_TABLE = DreamLootTableRegistry.CLOUD_VAULT;
 
     public static void replaceBlockWithVault(Block block) {
         block.setType(Material.VAULT);
 
         if (block.getState() instanceof Vault vault) {
-            vault.setKeyItem(DreamItemRegistry.getByName("cloud_key").getBest());
-
-            vault.setDisplayedItem(DreamItemRegistry.getByName("cloud_key").getBest());
+            vault.setKeyItem(DreamItemRegistry.CLOUD_KEY.getBest());
+            vault.setDisplayedItem(DreamItemRegistry.CLOUD_KEY.getBest());
             vault.update();
         }
     }

@@ -501,7 +501,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
             bookPlayer.setItemMeta(bookMetaPlayer);
 
-            ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+            ItemStack ayweniteItemStack = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
             ayweniteItemStack.setAmount(aywenite);
             itemListRewards.add(bookPlayer);
             itemListRewards.add(ayweniteItemStack);

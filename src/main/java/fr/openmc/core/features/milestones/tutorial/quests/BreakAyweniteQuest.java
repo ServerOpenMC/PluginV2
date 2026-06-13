@@ -31,7 +31,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
                         "§fLe nouveau minerai de la §dV2, trouvable dans les grottes",
                         "§fIl vous sera §dutile §fdans de nombreuses fonctionnalités"
                 ),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.AYWENITE,
 		        MilestoneType.TUTORIAL,
 		        TutorialSteps.BREAK_AYWENITE,
 		        new QuestTier(

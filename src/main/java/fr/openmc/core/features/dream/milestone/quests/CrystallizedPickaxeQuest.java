@@ -36,7 +36,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 						"§fObtenir la §dPioche Cristallisée",
 						"§8§oParfois, il faut savoir se creuser la tête"
 				),
-				DreamItemRegistry.getByName("omc_dream:crystallized_pickaxe").getBest(),
+				DreamItemRegistry.CRYSTALIZED_PICKAXE,
 				MilestoneType.DREAM,
 				DreamSteps.CRYSTALLIZED_PICKAXE,
 				new QuestTier(1),

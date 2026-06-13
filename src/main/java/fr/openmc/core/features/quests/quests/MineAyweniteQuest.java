@@ -20,7 +20,7 @@ import java.util.List;
 public class MineAyweniteQuest extends Quest implements Listener {
 
     public MineAyweniteQuest() {
-        super("Ohhh... c'est précieux ça ?", List.of("Miner {target} Aywenite{s}"), OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest());
+        super("Ohhh... c'est précieux ça ?", List.of("Miner {target} Aywenite{s}"), OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest());
 
         this.addTiers(
                 new QuestTier(1, new QuestMoneyReward(20)),

@@ -301,7 +301,7 @@ public class ItemUtils {
     }
 
     public static boolean takeAywenite(Player player, int amount) {
-        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
         if (aywenite == null) return false;
 
         if (!hasEnoughItems(player, aywenite, amount)) {
@@ -320,7 +320,7 @@ public class ItemUtils {
     }
 
     public static boolean giveAywenite(Player player, int amount) {
-        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
         if (aywenite == null) return false;
 
         aywenite.setAmount(amount);

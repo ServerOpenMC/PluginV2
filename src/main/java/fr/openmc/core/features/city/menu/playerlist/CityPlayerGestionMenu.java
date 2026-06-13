@@ -129,10 +129,7 @@ public class CityPlayerGestionMenu extends Menu {
                 new CityPermsMenu(player, playerTarget.getUniqueId(), true).open()
         ));
 
-        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(TranslationManager.translationLore("feature.city.menus.members.manage.back_lore"));
-        }, true));
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

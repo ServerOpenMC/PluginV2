@@ -153,7 +153,7 @@ public class MascotMenu extends Menu {
 
                         movingMascots.add(cityUUID);
 
-                        ItemStack mascotsMoveItem = OMCRegistry.CUSTOM_ITEMS.get("omc_items:mascot_stick").getBest();
+                        ItemStack mascotsMoveItem = OMCRegistry.CUSTOM_ITEMS.MASCOT_STICK.getBest();
                         ItemMeta meta = mascotsMoveItem.getItemMeta();
 
                         if (meta != null) {
@@ -269,10 +269,7 @@ public class MascotMenu extends Menu {
                     player.closeInventory();
                 }));
 
-        map.put(18, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         if (city.isImmune()) {
             Supplier<ItemMenuBuilder> immunityItemSupplier = () -> {

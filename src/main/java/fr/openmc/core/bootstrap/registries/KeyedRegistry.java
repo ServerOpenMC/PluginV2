@@ -3,10 +3,10 @@ package fr.openmc.core.bootstrap.registries;
 public interface KeyedRegistry<K, V> {
     K key(V registryObject);
 
-    void register(K key, V value);
+    V register(K key, V value);
 
-    default void register(V value) {
-        register(key(value), value);
+    default V register(V value) {
+        return register(key(value), value);
     }
 
     default void register(V... values) {

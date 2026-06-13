@@ -98,22 +98,22 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	public Map<Integer, ItemMenuBuilder> getButtons() {
 		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
-		map.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
+		map.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
 			itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
-		}).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank).open()));
+		}).setOnClick(_ -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank).open()));
 		
 		if (hasPreviousPage()) {
-			map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> {
+			map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
 				itemMeta.lore(List.of(TranslationManager.translation("messages.menus.previous_page_lore")));
-			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page - 1).open()));
+			}).setOnClick(_ -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page - 1).open()));
 		}
 		if (hasNextPage()) {
-			map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> {
+			map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
 				itemMeta.lore(List.of(TranslationManager.translation("messages.menus.next_page_lore")));
-			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page + 1).open()));
+			}).setOnClick(_ -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page + 1).open()));
 		}
 		
 		if (canEdit) {

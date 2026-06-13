@@ -75,7 +75,7 @@ public class MayorSetWarpAction {
         List<Component> loreItemInterraction = List.of(
                 TranslationManager.translation("feature.city.mayor.warp.wand.lore")
         );
-        ItemStack item = OMCRegistry.CUSTOM_ITEMS.get("omc_items:warp_stick").getBest();
+        ItemStack item = OMCRegistry.CUSTOM_ITEMS.WARP_STICK.getBest();
         ItemMeta itemMeta = item.getItemMeta();
 
         itemMeta.displayName(TranslationManager.translation("feature.city.mayor.warp.wand.name"));
