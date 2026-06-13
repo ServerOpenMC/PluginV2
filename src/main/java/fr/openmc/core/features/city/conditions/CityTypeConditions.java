@@ -9,6 +9,7 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -28,27 +29,33 @@ public class CityTypeConditions {
      */
     public static boolean canCityChangeType(City city, Player player, CityType toType) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) {
-	        MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le statut de ta ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE))) {
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.type.no_permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.getType().equals(toType)) {
-            MessagesManager.sendMessage(player, Component.text("Tu es déjà en " + toType.getName()), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.type.already_in_type", toType.getDisplayName()), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-	        MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.type.must_wait",
+                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (city.getBalance() < REQUIRED_MONEY_TYPE) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez avoir au moins " + REQUIRED_MONEY_TYPE + EconomyManager.getEconomyIcon() + " dans votre banque pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.conditions.type.not_enough_city_money",
+                    Component.text(REQUIRED_MONEY_TYPE + EconomyManager.getEconomyIcon())
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

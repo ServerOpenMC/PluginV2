@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -9,8 +9,10 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -19,13 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ChestButton {
-    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int[] slots) {
+    public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
         MenuUtils.createButtonItem(
                 contents,
                 slots,
-                new ItemBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.itemName(Component.text("§aLe coffre de la ville"));
+                new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
+                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.chest.title"));
                     itemMeta.lore(getDynamicLore(city, player));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> {
@@ -39,36 +41,25 @@ public class ChestButton {
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
-        boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CityPermission.CHEST);
+        boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CityPermission.ACCESS_CITY_CHEST);
         List<Component> lore;
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CHEST)) {
-            lore = List.of(
-                    Component.text("§7Acceder au coffre de votre ville pour"),
-                    Component.text("§7stocker des items en commun"),
-                    Component.empty(),
-                    Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CHEST) + " pour débloquer ceci")
+            lore = TranslationManager.translationLore(
+                    "feature.city.menus.main.chest.lore.locked",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CHEST)).color(NamedTextColor.RED)
             );
         } else {
             if (hasPermissionChest) {
                 if (city.getChestWatcher() != null) {
-                    lore = List.of(
-                            Component.text("§7Acceder au coffre de votre ville pour"),
-                            Component.text("§7stocker des items en commun"),
-                            Component.empty(),
-                            Component.text("§7Ce coffre est déjà ouvert par §c" + Bukkit.getPlayer(city.getChestWatcher()).getName())
+                    lore = TranslationManager.translationLore(
+                            "feature.city.menus.main.chest.lore.opened",
+                            Component.text(PlayerNameCache.getName(city.getChestWatcher())).color(NamedTextColor.RED)
                     );
                 } else {
-                    lore = List.of(
-                            Component.text("§7Acceder au coffre de votre ville pour"),
-                            Component.text("§7stocker des items en commun"),
-                            Component.empty(),
-                            Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
-                    );
+                    lore = TranslationManager.translationLore("feature.city.menus.main.chest.lore.click");
                 }
             } else {
-                lore = List.of(
-                        Component.text("§7Vous n'avez pas le §cdroit de visionner le coffre !")
-                );
+                lore = TranslationManager.translationLore("feature.city.menus.main.chest.lore.no_permission");
             }
         }
         return lore;

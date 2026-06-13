@@ -1,0 +1,68 @@
+info:
+  namespace: omc_dream
+items:
+  domination_orb:
+    display_name: "{dream_item_name:domination_orb}"
+    resource:
+      material: {dream_item_material:domination_orb}
+      generate: false
+      model_path: orb/orb_domination
+    lore:
+      - "§7§ola boule de détermination..."
+      - "§7Un des 5 Fragments de la §fSingularité"
+    tooltip_style: "{dream_rarity:domination_orb}"
+
+  ame_orb:
+    display_name: "{dream_item_name:ame_orb}"
+    resource:
+      material: {dream_item_material:ame_orb}
+      generate: false
+      model_path: orb/orb_ame
+    lore:
+      - "§7§ola boule de la conscience..."
+      - "§7Un des 5 Fragments de la §fSingularité"
+    tooltip_style: "{dream_rarity:ame_orb}"
+
+  mud_orb:
+    display_name: "{dream_item_name:mud_orb}"
+    resource:
+      material: {dream_item_material:mud_orb}
+      generate: false
+      model_path: orb/orb_mud
+    lore:
+      - "§7§ola boule de l'espoir..."
+      - "§7Un des 5 Fragments de la §fSingularité"
+    tooltip_style: "{dream_rarity:mud_orb}"
+
+  cloud_orb:
+    display_name: "{dream_item_name:cloud_orb}"
+    resource:
+      material: {dream_item_material:cloud_orb}
+      generate: false
+      model_path: orb/orb_cloud
+    lore:
+      - "§7§ola boule du courage..."
+      - "§7Un des 5 Fragments de la §fSingularité"
+    tooltip_style: "{dream_rarity:cloud_orb}"
+
+  glacite_orb:
+    display_name: "{dream_item_name:glacite_orb}"
+    resource:
+      material: {dream_item_material:glacite_orb}
+      generate: false
+      model_path: orb/orb_glacite
+    lore:
+      - "§7§ola boule de la solitude..."
+      - "§7Un des 5 Fragments de la §fSingularité"
+    tooltip_style: "{dream_rarity:glacite_orb}"
+    
+  singularity:
+    display_name: "{dream_item_name:singularity}"
+    resource:
+      material: {dream_item_material:singularity}
+      generate: false
+      model_path: orb/singularity
+    lore:
+      - "§7§ol'acheminement d'un parcours chaotique dans le futur"
+      - "§7La §fSingularité"
+    tooltip_style: "{dream_rarity:singularity}"

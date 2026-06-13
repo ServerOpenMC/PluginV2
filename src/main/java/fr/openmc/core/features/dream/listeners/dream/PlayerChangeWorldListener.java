@@ -4,10 +4,15 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
+import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -37,7 +42,15 @@ public class PlayerChangeWorldListener implements Listener {
         AttributeInstance inst = player.getAttribute(Attribute.MAX_HEALTH);
         if (inst == null) return;
         player.setHealth(inst.getBaseValue());
-	    OMCPlugin.getInstance().getServer().getPluginManager().callEvent(new DreamEnterEvent(player));
+
+        OMCPlugin.getInstance().getServer().getPluginManager().callEvent(new DreamEnterEvent(player));
+
+        // * SFX
+        sendSFX(player);
+        if (PlayerCloneNpc.getCloneNpc(player) == null)
+            PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SITTING);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                sendSFX(player), 20);
     }
 
     @EventHandler
@@ -48,5 +61,16 @@ public class PlayerChangeWorldListener implements Listener {
         if (DreamUtils.isDreamWorld(event.getTo())) return;
 
         DreamManager.removeDreamPlayer(player, event.getFrom());
+
+        // * SFX
+        sendSFX(player);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+            sendSFX(player), 20);
+    }
+
+    private void sendSFX(Player player) {
+        // * SFX
+        ParticleUtils.sendParticlePacket(Particle.FLASH, player.getLocation().add(0, 1, 0), 15);
+        ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.REVERSE_PORTAL, 20, 15, 1, null);
     }
 }

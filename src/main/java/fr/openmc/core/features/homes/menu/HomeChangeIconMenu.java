@@ -3,18 +3,19 @@ package fr.openmc.core.features.homes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -62,8 +63,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Homes - Changer l'icône";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.homes.icon.menu.title");
     }
 
     @Override
@@ -95,30 +96,29 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),
-                itemMeta -> itemMeta.displayName(Component.text("§7Retour")), true));
+        map.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, true));
 
-        map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
-        map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
+        map.put(49, ItemMenuTemplate.BTN_CLOSE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_WHITE.apply(this));
 
         // Search button
-        map.put(51, new ItemBuilder(this, Material.OAK_SIGN, meta -> {
-            meta.displayName(Component.text("§eRecherche"));
+        map.put(51, new ItemMenuBuilder(this, Material.OAK_SIGN, meta -> {
+            meta.displayName(TranslationManager.translation("feature.homes.icon.search.name"));
             List<Component> lore = new ArrayList<>();
-            if (! searchQuery.isEmpty()) lore.add(Component.text("§7Recherche actuelle : §f" + searchQuery));
+            if (! searchQuery.isEmpty()) lore.add(TranslationManager.translation("feature.homes.icon.search.current", Component.text(searchQuery)));
             lore.add(Component.empty());
-            lore.add(Component.text("§7■ §aClique §2gauche §apour rechercher"));
-            lore.add(Component.text("§7■ §cClique §4droit §cpour réinitialiser"));
+            lore.add(TranslationManager.translation("feature.homes.icon.search.left"));
+            lore.add(TranslationManager.translation("feature.homes.icon.search.right"));
             meta.lore(lore);
         }).setOnClick(event -> {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
 
-                DialogInput.send(getOwner(), Component.text("Entrez votre recherche pour un item"), MAX_LENGTH, input -> {
+                DialogInput.send(getOwner(), TranslationManager.translation("feature.homes.icon.search.prompt"), MAX_LENGTH, input -> {
                     if (input == null) return;
 
                     searchQuery = input;
@@ -134,25 +134,25 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
         // Invisible items
         for (int slot : List.of(46, 47, 52)) {
-            map.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
+            map.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
         // Category selector
-        map.put(53, new ItemBuilder(this, Material.COMPASS, meta -> {
-            meta.displayName(Component.text("§aCatégorie"));
+        map.put(53, new ItemMenuBuilder(this, Material.COMPASS, meta -> {
+            meta.displayName(TranslationManager.translation("feature.homes.icon.category.name"));
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("§7Sélection de catégorie"));
+            lore.add(TranslationManager.translation("feature.homes.icon.category.selection"));
             lore.add(Component.empty());
-            lore.add(Component.text("§7Catégories disponibles :"));
+            lore.add(TranslationManager.translation("feature.homes.icon.category.available"));
 
-            lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == HomeIcon.IconCategory.ALL));
-            lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == HomeIcon.IconCategory.VANILLA));
-            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == HomeIcon.IconCategory.CUSTOM));
+            lore.add(formatCategoryLine(NamedTextColor.YELLOW, TranslationManager.translation("feature.homes.icon.category.all"), currentCategory == HomeIcon.IconCategory.ALL));
+            lore.add(formatCategoryLine(NamedTextColor.GREEN, TranslationManager.translation("feature.homes.icon.category.vanilla"), currentCategory == HomeIcon.IconCategory.VANILLA));
+            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, TranslationManager.translation("feature.homes.icon.category.custom"), currentCategory == HomeIcon.IconCategory.CUSTOM));
 
             lore.add(Component.empty());
-            lore.add(Component.text("§7■ §aClique §2gauche §apour aller à la catégorie suivante"));
-            lore.add(Component.text("§7■ §cClique §4droit §cpour aller à la catégorie précédente"));
+            lore.add(TranslationManager.translation("feature.homes.icon.category.left"));
+            lore.add(TranslationManager.translation("feature.homes.icon.category.right"));
 
             meta.lore(lore);
         }).setOnClick(event -> {
@@ -161,7 +161,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             long last = CATEGORY_COOLDOWNS.getOrDefault(getOwner().getUniqueId(), 0L);
             if (now - last < CATEGORY_COOLDOWN_TIME) {
                 MessagesManager.sendMessage(getOwner(),
-                        Component.text("§cMerci de ne pas spammer le changement de catégorie."),
+                        TranslationManager.translation("feature.homes.icon.category.spam"),
                         Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
@@ -182,9 +182,9 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         return map;
     }
 
-    private Component formatCategoryLine(NamedTextColor color, String name, boolean selected) {
-        return Component.text((selected ? "§r• " : "§r  "), color)
-                .append(Component.text(name, NamedTextColor.DARK_GRAY));
+    private Component formatCategoryLine(NamedTextColor color, Component name, boolean selected) {
+        return Component.text(selected ? "• " : "  ", color)
+                .append(name.color(NamedTextColor.DARK_GRAY));
     }
 
     @Override

@@ -3,7 +3,8 @@ package fr.openmc.core.commands.admin.freeze;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,8 +42,9 @@ public class FreezeListener implements Listener {
 		Player player = event.getPlayer();
 		if (FreezeManager.FROZEN_PLAYERS.contains(player)) {
 			player.setInvulnerable(true);
-			player.sendTitle("§4Vous êtes freeze", "§5Si vous vous déconnectez, vous serez banni");
-			MessagesManager.sendMessage(player, Component.text("§4Vous avez été freeze"), Prefix.OPENMC, MessageType.WARNING, true);
+			player.showTitle(Title.title(TranslationManager.translation("command.admin.freeze.title"),
+					TranslationManager.translation("command.admin.freeze.subtitle")));
+			MessagesManager.sendMessage(player, TranslationManager.translation("command.admin.freeze.player_freezed"), Prefix.OPENMC, MessageType.WARNING, true);
 		}
 	}
 

@@ -6,8 +6,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.OldCreakingAxe;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,6 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Objects;
 
 public class OldAxeQuest extends MilestoneQuest implements Listener {
 	
@@ -27,7 +26,7 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 						"§fFabriquer une §dVieille hache du Creaking",
 						"§8§oNotre meilleur ami dans ce monde !"
 				),
-				DreamItemRegistry.getByName("omc_dream:old_creaking_axe").getBest(),
+				DreamItemRegistry.OLD_CREAKING_AXE,
 				MilestoneType.DREAM,
 				DreamSteps.OLD_AXE,
 				new QuestTier(1),
@@ -37,7 +36,7 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Je t'expliquerai lorsque tu l'auras. Elle va être facile à récupérer avec la hache.",
 						"§6Ai-je besoin d'autre chose ?",
 						"§3Voyageur : Ce n'est pas obligatoire, mais elle te permettrait de rester plus longtemps dans ce monde. Il existe l'armure §d\"Creaking\" §3que tu peux fabriquer. " +
-								"Cela te confèrera §d" + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:old_creaking_chestplate"))).getAdditionalMaxTime() + " secondes §3supplémentaires " +
+								"Cela te confèrera §d" + ((DreamEquipableItem) DreamItemRegistry.OLD_CREAKING_CHESTPLATE).getAdditionalMaxTime() + " secondes §3supplémentaires " +
 								"par pièces d'armure équipées."
 				)
 		);

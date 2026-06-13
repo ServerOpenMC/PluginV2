@@ -1,21 +1,17 @@
 package fr.openmc.core.features.dream.registries;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.listeners.registry.DreamMobDamageListener;
-import fr.openmc.core.features.dream.listeners.registry.DreamMobLootListener;
-import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.mobs.*;
 import fr.openmc.core.features.dream.registries.mobs.listeners.MudBeachMobSpawningListener;
 import fr.openmc.core.features.dream.registries.mobs.listeners.PlainsMobSpawningListener;
 import fr.openmc.core.features.dream.registries.mobs.listeners.SoulForestMobSpawningListener;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.Listener;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+import fr.openmc.core.registry.mobs.CustomMobEntry;
+import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Gestionnaire de l'apparition des mobs dans la Dimension des Rêves.
@@ -25,49 +21,64 @@ import java.util.Map;
  */
 public class DreamMobsRegistry {
 
-    public static final NamespacedKey mobKey = new NamespacedKey("openmc", "dream_mob");
+    public static final CustomMobEntry DREAM_STRAY = create(new CustomMobEntry(
+            "omc_dream:dream_stray",
+            DreamStray::new
+    ));
 
-    private static final Map<String, DreamMob> mobsByName = new HashMap<>();
+    public static final CustomMobEntry DREAM_CREAKING = create(new CustomMobEntry(
+            "omc_dream:dream_creaking",
+            DreamCreaking::new
+    ));
 
+    public static final CustomMobEntry DREAM_SPIDER = create(new CustomMobEntry(
+            "omc_dream:dream_spider",
+            DreamSpider::new
+    ));
+
+    public static final CustomMobEntry SOUL = create(new CustomMobEntry(
+            "omc_dream:soul",
+            Soul::new
+    ));
+
+    public static final CustomMobEntry BREEZY = create(new CustomMobEntry(
+            "omc_dream:breezy",
+            Breezy::new
+    ));
+
+    public static final CustomMobEntry DREAM_PHANTOM = create(new CustomMobEntry(
+            "omc_dream:dream_phantom",
+            DreamPhantom::new
+    ));
+
+    public static final CustomMobEntry CORRUPTED_TADPOLE = create(new CustomMobEntry(
+            "omc_dream:corrupted_tadpole",
+            CorruptedTadpole::new
+    ));
+
+    public static final CustomMobEntry CRAZY_FROG = create(new CustomMobEntry(
+            "omc_dream:crazy_frog",
+            CrazyFrog::new
+    ));
+
+    public static Set<CustomMobEntry> DREAM_MOB_REGISTRY;
+
+    private static CustomMobEntry create(CustomMobEntry entry) {
+        if (DREAM_MOB_REGISTRY == null)
+            DREAM_MOB_REGISTRY = new HashSet<>();
+
+        DREAM_MOB_REGISTRY.add(entry);
+        return entry;
+    }
     public static void init() {
         OMCPlugin.registerEvents(
                 new PlainsMobSpawningListener(),
                 new SoulForestMobSpawningListener(),
                 new MudBeachMobSpawningListener(),
-                new DreamMobLootListener(),
+                new CustomMobDeathListener(),
                 new DreamMobDamageListener()
         );
 
-        register(new DreamCreaking());
-        register(new DreamSpider());
-        register(new Soul());
-        register(new DreamStray());
-        register(new Breezy());
-        register(new DreamPhantom());
-        register(new CorruptedTadpole());
-        register(new CrazyFrog());
-    }
-
-    public static void register(DreamMob mob) {
-        if (mob instanceof Listener listener) {
-            OMCPlugin.registerEvents(listener);
-        }
-        mobsByName.put(mob.getId(), mob);
-    }
-
-    public static boolean isDreamMob(Entity entity) {
-        return entity.getPersistentDataContainer().has(mobKey);
-    }
-
-    public static DreamMob getByName(String name) {
-        return mobsByName.get(name);
-    }
-
-    public static DreamMob getFromEntity(Entity entity) {
-        PersistentDataContainer pdc = entity.getPersistentDataContainer();
-        if (!pdc.has(DreamMobsRegistry.mobKey, PersistentDataType.STRING)) return null;
-
-        String mobId = pdc.get(DreamMobsRegistry.mobKey, PersistentDataType.STRING);
-        return getByName(mobId);
+        OMCRegistry.CUSTOM_MOBS.register(DREAM_MOB_REGISTRY);
     }
 }

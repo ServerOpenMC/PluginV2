@@ -7,8 +7,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.SoulOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +25,7 @@ public class SoulOrbQuest extends MilestoneQuest implements Listener {
 						"§8§oÂmes dans la poche, permettez-moi, par votre pouvoir,",
 						"§8§od'obtenir votre orbe avec le sacrifice de l'Orbe de Domination."
 				),
-				DreamItemRegistry.getByName("omc_dream:ame_orb").getBest(),
+				DreamItemRegistry.SOUL_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.SOUL_ORB,
 				new QuestTier(1),

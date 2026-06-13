@@ -7,8 +7,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.Singularity;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Objects;
 
 public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 	
@@ -28,7 +27,7 @@ public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 						"§fCrafter la §dSingularité",
 						"§8§oLes orbes n'auraient-ils pas une utilité finale ?"
 				),
-				DreamItemRegistry.getByName("omc_dream:singularity").getBest(),
+				DreamItemRegistry.SINGULARITY,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_SINGULARITY,
 				new QuestTier(1),
@@ -48,7 +47,7 @@ public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 						"§3Voyageur : Quoi qu'il en soit, tu vas pouvoir §drécupérer les enchantements §3de cette dimension grâce à la singularité et même l'§darmure §3si tu le souhaites.",
 						"§3Voyageur : La singularité n'est pas assez puissante pour moi, mais largement assez pour des nouvelles armes ou armures.",
 						"§3Voyageur : Tout comme les orbes précédents, tu as la possibilité de te fabriquer une nouvelle armure. Celle-ci en revanche va nécessiter de refaire " +
-								"l'ensemble des orbes, mais ça en vaut le coup, car elle rajoute §d" + ((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:dream_chestplate"))).getAdditionalMaxTime()
+								"l'ensemble des orbes, mais ça en vaut le coup, car elle rajoute §d" + ((DreamEquipableItem) DreamItemRegistry.DREAM_CHESTPLATE).getAdditionalMaxTime()
 								+ " secondes §3de plus par pièce portée, mais aussi des effets.",
 						"§6... Merci !",
 						"§3Voyageur : Non ! C'est moi qui te remercie. Car un jour, quelqu'un que je respectais comme personne m'a dit : \"Remercie la personne que tu as aidé, " +

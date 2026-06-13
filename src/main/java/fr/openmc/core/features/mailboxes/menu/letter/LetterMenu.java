@@ -2,9 +2,11 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
@@ -16,6 +18,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -28,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
@@ -37,8 +39,8 @@ public class LetterMenu extends Menu {
     private ItemStack[] letterItems;
 
     @Override
-    public @NotNull String getName() {
-        return "Lettre de " + letterHead.displayName();
+    public @NotNull Component getName() {
+        return Component.text("Lettre de " + letterHead.displayName());
     }
 
     @Override
@@ -133,8 +135,8 @@ public class LetterMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         ItemStack[] items = getLetterItems();
 
@@ -144,13 +146,24 @@ public class LetterMenu extends Menu {
         }
 
         for (int i = 0; i < items.length; i++)
-            content.put(i + 9, new ItemBuilder(this, items[i]));
+            content.put(i + 9, new ItemMenuBuilder(this, items[i]));
 
-        content.put(45, homeBtn(this));
-        content.put(48, acceptBtn(this).setOnClick(e -> accept()));
-        content.put(49, new ItemBuilder(this, letterHead));
-        content.put(50, refuseBtn(this).setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
-        content.put(53, cancelBtn(this).setOnClick(e -> cancel()));
+        content.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
+        content.put(48, ItemMenuTemplate.BTN_MAILBOX_ACCEPT.apply(this)
+                .setOnClick(_ -> accept()));
+        content.put(49, new ItemMenuBuilder(this, letterHead));
+        content.put(50, ItemMenuTemplate.btn(
+                this,
+                        "✘",
+                        "Refuser",
+                        List.of(
+                                Component.text("Si vous faites cela, les items seront supprimés",
+                                        NamedTextColor.RED, TextDecoration.BOLD)
+                                        .decoration(TextDecoration.ITALIC, false)),
+                        OMCRegistry.CUSTOM_ITEMS.MAILBOX_REFUSE_BTN, NamedTextColor.DARK_RED, true)
+                .setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
+        content.put(53, ItemMenuTemplate.BTN_CLOSE.apply(this)
+                .setOnClick(_ -> cancel()));
 
         return content;
     }

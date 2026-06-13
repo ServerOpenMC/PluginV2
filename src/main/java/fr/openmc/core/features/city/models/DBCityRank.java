@@ -6,8 +6,8 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -85,15 +85,18 @@ public class DBCityRank {
 	 */
 	public DBCityRank validate(Player player) throws IllegalArgumentException {
 		if (name == null || name.isEmpty()) {
-			MessagesManager.sendMessage(player, Component.text("Le nom du grade ne peut pas être vide"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.name_cannot_be_null"),
+					Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank name cannot be null or empty");
 		}
 		if (priority < 0) {
-			MessagesManager.sendMessage(player, Component.text("La priorité doit être contenue entre 0 et 17"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.priority_must_be_0_17"),
+					Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank priority cannot be negative");
 		}
 		if (icon == null) {
-			MessagesManager.sendMessage(player, Component.text("L'icône du grade ne peut pas être nulle (prévenir le staff)"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.icon_cannot_be_null"),
+					Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank icon cannot be null");
 		}
 		return this;

@@ -1,13 +1,14 @@
 package fr.openmc.core.features.city.menu.list;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -61,7 +62,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
             String title = city.getRankName(uuid) + " ";
 
-            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
         }
 
         return items;
@@ -73,23 +74,18 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§e§lCLIQUEZ ICI POUR RETOURNER")
-            ));
-        }, true));
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
+        map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
         return map;
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu du détail des membres de " + city.getName();
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.list.members.name", Component.text(city.getName()));
     }
 
     @Override

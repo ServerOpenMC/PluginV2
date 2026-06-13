@@ -1,0 +1,157 @@
+info:
+  namespace: omc_ranks
+font_images:
+  admin:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "admin.png"
+    scale_ratio: 9
+    y_position: 8
+  mod:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "mod.png"
+    scale_ratio: 9
+    y_position: 8
+  helper:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "helper.png"
+    scale_ratio: 9
+    y_position: 8
+  player:
+    permission: "omc_ranks.player"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "player.png"
+    scale_ratio: 9
+    y_position: 8
+  builder:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "builder.png"
+    scale_ratio: 9
+    y_position: 8
+  youtube:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "youtube.png"
+    scale_ratio: 9
+    y_position: 8
+  patreon:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "patreon.png"
+    scale_ratio: 9
+    y_position: 8
+  patreon2:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "patreon2.png"
+    scale_ratio: 9
+    y_position: 8
+  java:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "java.png"
+    scale_ratio: 9
+    y_position: 8
+  skript:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "skript.png"
+    scale_ratio: 9
+    y_position: 8
+  developer:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "developer.png"
+    scale_ratio: 9
+    y_position: 8
+  dev:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "dev.png"
+    scale_ratio: 9
+    y_position: 8
+  vip:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "vip.png"
+    scale_ratio: 9
+    y_position: 8
+  vipplus:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "vipplus.png"
+    scale_ratio: 9
+    y_position: 8
+  modo:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "modo.png"
+    scale_ratio: 9
+    y_position: 8
+  event:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "event.png"
+    scale_ratio: 9
+    y_position: 8
+  rejoindre:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "rejoindre.png"
+    scale_ratio: 9
+    y_position: 8
+  discord:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "discord.png"
+    scale_ratio: 9
+    y_position: 8
+  game:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "game.png"
+    scale_ratio: 9
+    y_position: 8
+  modo_test:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "modo_test.png"
+    scale_ratio: 9
+    y_position: 8
+  manager:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "manager.png"
+    scale_ratio: 9
+    y_position: 8
+  animateur:
+    permission: "omc_ranks.admin"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "animateur.png"
+    scale_ratio: 9
+    y_position: 8

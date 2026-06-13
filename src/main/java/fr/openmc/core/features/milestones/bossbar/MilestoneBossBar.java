@@ -4,7 +4,7 @@ import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -58,6 +58,28 @@ public class MilestoneBossBar extends BaseBossbar {
             ).color(milestone.getBossBarOptions().textColor()));
 
             bar.progress((float) progress / goal);
+        }
+    }
+
+    @Override
+    protected Float progress(Player player) {
+        int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
+
+        MilestoneStep[] steps = milestone.getStepEnum();
+
+        if (currentStep >= steps.length) return null;
+
+        int maxStep = steps.length;
+        MilestoneStep step = steps[currentStep];
+        MilestoneQuest quest = step.getQuest();
+
+        int progress = quest.getProgress(player.getUniqueId());
+        int goal = quest.getCurrentTarget(player.getUniqueId());
+
+        if (goal <= 1) {
+            return (float) currentStep / maxStep;
+        } else {
+            return (float) progress / goal;
         }
     }
 

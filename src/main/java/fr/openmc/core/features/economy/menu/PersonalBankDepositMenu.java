@@ -3,10 +3,12 @@ package fr.openmc.core.features.economy.menu;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,8 +30,8 @@ public class PersonalBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Banques - Déposer";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.economy.bank.deposit.menu.title");
     }
 
     @Override
@@ -48,23 +50,21 @@ public class PersonalBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer/2;
 
-        List<Component> loreBankDepositAll = List.of(
-                Component.text("§7Tout votre argent sera placé dans §6votre banque"),
-                Component.empty(),
-                Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.empty(),
-                Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+        List<Component> loreBankDepositAll = TranslationManager.translationLore(
+                "feature.economy.bank.deposit.all.lore",
+                Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
-        inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer tout votre §6argent"));
+        inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
+            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.all.name"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
             BankManager.deposit(player.getUniqueId(), String.valueOf(moneyPlayer));
@@ -72,32 +72,27 @@ public class PersonalBankDepositMenu extends Menu {
         }));
 
 
-        List<Component> loreBankDepositHalf = List.of(
-                Component.text("§7La moitié de votre argent sera placé dans §6votre banque"),
-                Component.empty(),
-                Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.empty(),
-                Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+        List<Component> loreBankDepositHalf = TranslationManager.translationLore(
+                "feature.economy.bank.deposit.half.lore",
+                Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
-        inventory.put(13, new ItemBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6argent"));
+        inventory.put(13, new ItemMenuBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
+            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.half.name"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
             BankManager.deposit(player.getUniqueId(), String.valueOf(halfMoneyPlayer));
             player.closeInventory();
         }));
             
-        List<Component> loreBankDepositInput = List.of(
-                Component.text("§7Votre argent sera placé dans §6votre banque"),
-            Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
-        );
+        List<Component> loreBankDepositInput = TranslationManager.translationLore("feature.economy.bank.deposit.input.lore");
 
-        inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
+        inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
+            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.input.name"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.economy.bank.deposit.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
 
                         BankManager.deposit(player.getUniqueId(), input);
@@ -105,13 +100,7 @@ public class PersonalBankDepositMenu extends Menu {
             );
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu de votre banque"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
-        }, true));
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

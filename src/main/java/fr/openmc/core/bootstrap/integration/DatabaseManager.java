@@ -5,7 +5,7 @@ import com.j256.ormlite.logger.Level;
 import com.j256.ormlite.logger.LocalLogBackend;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.Feature;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -32,7 +32,7 @@ public class DatabaseManager {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             }
         } catch (ClassNotFoundException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Database driver not found. Please ensure the MySQL or H2 driver is included in the classpath.");
+            OMCLogger.error("Database driver not found. Please ensure the MySQL or H2 driver is included in the classpath.");
             throw new RuntimeException(e);
         }
 
@@ -44,24 +44,27 @@ public class DatabaseManager {
             String password = config.getString("database.password");
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
-            OMCPlugin.getInstance().REGISTRY_FEATURE.stream()
-                            .filter(f -> f instanceof DatabaseFeature)
+            OMCPlugin.getInstance().REGISTRY_FEATURE
                     .forEach(f -> {
                         try {
-                            f.startDB(connectionSource);
+                            Feature feature = f.create();
+                            feature.startDB(connectionSource);
                         } catch (SQLException e) {
-                            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
+                            OMCLogger.error("Failed to initialize the database connection.", e);
                             throw new RuntimeException(e);
                         } catch (ConnectionPendingException e) {
-                            OMCPlugin.getInstance().getSLF4JLogger().error("Database connection is pending. Please check your database configuration.");
+                            OMCLogger.error("Database connection is pending. Please check your database configuration.");
                             throw new RuntimeException(e);
+                        } catch (NoClassDefFoundError e) {
+                            OMCLogger.errorFormatted("Plugin has failed to start feature because {} does not exist.",
+                                    e.getMessage());
                         }
                     });
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
+            OMCLogger.error("Failed to initialize the database connection.", e);
             throw new RuntimeException(e);
         } catch (ConnectionPendingException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Database connection is pending. Please check your database configuration.");
+            OMCLogger.error("Database connection is pending. Please check your database configuration.");
             throw new RuntimeException(e);
         }
     }

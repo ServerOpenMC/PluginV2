@@ -1,9 +1,12 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
-import net.kyori.adventure.key.Key;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.registry.loottable.CustomLootTable;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Vault;
@@ -13,52 +16,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseLootEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class CloudVault implements Listener {
+    private final CustomLootTable CLOUD_VAULT_LOOT_TABLE = DreamLootTableRegistry.CLOUD_VAULT;
+
     public static void replaceBlockWithVault(Block block) {
         block.setType(Material.VAULT);
 
         if (block.getState() instanceof Vault vault) {
-            vault.setKeyItem(DreamItemRegistry.getByName("cloud_key").getBest());
-
-            vault.setDisplayedItem(DreamItemRegistry.getByName("cloud_key").getBest());
+            vault.setKeyItem(DreamItemRegistry.CLOUD_KEY.getBest());
+            vault.setDisplayedItem(DreamItemRegistry.CLOUD_KEY.getBest());
             vault.update();
         }
-    }
-
-    public static List<ItemStack> getLootCloudVault() {
-        Random random = new Random();
-
-        List<ItemStack> loot = new ArrayList<>();
-
-        for (int i = 0; i < 2; i++) {
-            int luck = random.nextInt(100);
-
-            if (luck < 50) {
-                List<ItemStack> rolls = List.of(
-                        DreamItemRegistry.getByName("cloud_helmet").getBest(),
-                        DreamItemRegistry.getByName("cloud_chestplate").getBest(),
-                        DreamItemRegistry.getByName("cloud_leggings").getBest(),
-                        DreamItemRegistry.getByName("cloud_boots").getBest()
-                );
-
-                loot.add(rolls.get(random.nextInt(rolls.size())));
-            } else if (luck < 75) {
-                loot.add(DreamItemRegistry.getByName("somnifere").getBest());
-            } else if (luck < 90) {
-                loot.add(DreamItemRegistry.getByName("cloud_fishing_rod").getBest());
-            } else {
-                ItemStack bookEnchanted = CustomEnchantmentRegistry.getCustomEnchantmentByKey(
-                        Key.key("omc_dream:dream_sleeper")
-                ).getEnchantedBookItem(2).getBest();
-                loot.add(bookEnchanted);
-            }
-        }
-
-        return loot;
     }
 
     @EventHandler
@@ -70,7 +40,16 @@ public class CloudVault implements Listener {
         if (!DreamUtils.isInDreamWorld(player)) return;
 
         if (!(event.getBlock().getState() instanceof Vault)) return;
+        if (CLOUD_VAULT_LOOT_TABLE == null) return;
 
-        event.setDispensedLoot(getLootCloudVault());
+
+        List<ItemStack> loot = CLOUD_VAULT_LOOT_TABLE.rollLootsWithAmount(3);
+        event.setDispensedLoot(loot);
+
+        for (ItemStack item : loot) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                    Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), CLOUD_VAULT_LOOT_TABLE.getChanceOf(item)))
+            );
+        }
     }
 }

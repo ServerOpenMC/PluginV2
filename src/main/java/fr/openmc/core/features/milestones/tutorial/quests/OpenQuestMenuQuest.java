@@ -2,9 +2,9 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
-import fr.openmc.core.features.milestones.tutorial.TutorialStep;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.menus.QuestsMenu;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -29,12 +29,12 @@ public class OpenQuestMenuQuest extends MilestoneQuest implements Listener {
                 ),
                 Material.GOLDEN_AXE,
 		        MilestoneType.TUTORIAL,
-		        TutorialStep.OPEN_QUEST,
+		        TutorialSteps.OPEN_QUEST,
 		        new QuestTier(
 				        1,
 				        new QuestMoneyReward(500),
 				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialStep.OPEN_QUEST.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
+						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_QUEST.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
 						        Prefix.MILLESTONE,
 						        MessageType.SUCCESS
 				        )

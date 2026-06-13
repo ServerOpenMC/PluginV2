@@ -1,7 +1,7 @@
 package fr.openmc.core.features.privatemessage;
 
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.utils.text.messages.MessageType;

@@ -1,23 +1,18 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 @Getter
 public enum CityType {
-    WAR("Guerre", "§c"),
-    PEACE("Paix", "§a"),
-
+    WAR(TranslationManager.translation("feature.city.war.war")),
+    PEACE(TranslationManager.translation("feature.city.war.peace")),
     ;
 
-    private String displayName;
-    private String color;
+    private final Component displayName;
 
-    CityType(String displayName, String color) {
+    CityType(Component displayName) {
         this.displayName = displayName;
-        this.color = color;
-    }
-
-    public String getName() {
-        return color + displayName + "§7";
     }
 }

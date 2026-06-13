@@ -1,0 +1,11 @@
+info:
+  namespace: graveyard_esc
+font_images:
+  bottom_esc:
+    path: "bottom_esc.png"
+    y_position: 128
+    scale_ratio: 256
+    suggest_in_command: false
+    show_in_gui: false
+
+#AVdkN1crF1aGdEZlNkQCNEdRdVU0EEVNRzaU5kMJRlT4dGVRdzd6ZVUM1URHpUVXxWMUJ0M

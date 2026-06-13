@@ -6,12 +6,13 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,13 +22,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, NotInUnitTest, HasListeners, HasCommands {
-    private static final OMCPlugin plugin = OMCPlugin.getInstance();
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;
@@ -37,7 +36,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
     public void init() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "multiblocks.yml");
         if (!file.exists()) {
-            plugin.saveResource("data/multiblocks.yml", false);
+            OMCPlugin.getInstance().saveResource("data/multiblocks.yml", false);
         }
         config = YamlConfiguration.loadConfiguration(file);
 
@@ -70,7 +69,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
             World world = Bukkit.getWorld(worldName);
 
             if (world == null) {
-                plugin.getSLF4JLogger().warn("World '{}' not found for multiblock '{}', skipping...", worldName, type);
+                OMCLogger.warn("World '{}' not found for multiblock '{}', skipping...", worldName, type);
                 continue;
             }
 
@@ -80,7 +79,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
 
             int y;
             if (DreamUtils.isDreamWorld(world) && DreamDimensionManager.hasSeedChanged()) {
-                plugin.getSLF4JLogger().warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
+                OMCLogger.warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
                 y = world.getHighestBlockYAt(x, z) + 1;
             } else {
                 y = origin.containsKey("y") ? (int) origin.get("y") : world.getHighestBlockYAt(x, z) + 1;
@@ -137,7 +136,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getSLF4JLogger().error("Could not save multiblocks.yml", e);
+            OMCLogger.error("Could not save multiblocks.yml", e);
         }
     }
 
@@ -145,14 +144,5 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
         multiBlocks.add(multiBlock);
 
         saveConfig();
-    }
-    
-    public static @Nullable MultiBlock getMultiblockAtDimension(String worldName) {
-        for (MultiBlock multiBlock : multiBlocks) {
-            if (multiBlock.origin.getWorld().getName().equals(worldName)) {
-                return multiBlock;
-            }
-        }
-        return null;
     }
 }

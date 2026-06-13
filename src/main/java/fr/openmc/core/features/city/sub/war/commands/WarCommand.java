@@ -14,7 +14,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;
@@ -33,46 +35,53 @@ public class WarCommand {
     void mainCommand(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.WAR)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "messages.city.havent_unlocked_feature",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR)).color(NamedTextColor.RED)
+            ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cguerre §f ! Changez la type de votre ville avec §c/city type §fou depuis le §cmenu principal des villes"),
+                    TranslationManager.translation("feature.city.war.command.type_required"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (playerCity.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est actuellement en période d'immunité, vous ne pouvez pas lancer de guerre pour le moment. \nTemps restant : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(playerCity.getUniqueId(), "city:immunity"))),
+                    TranslationManager.translation(
+                            "feature.city.war.command.city_immune",
+                            Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(playerCity.getUniqueId(), "city:immunity")))
+                                    .color(NamedTextColor.GOLD)
+                    ),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous n'avez pas la permission de lancer une guerre pour la ville"),
+                    TranslationManager.translation("feature.city.war.command.no_permission_launch"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (WarManager.getPendingDefenseFor(playerCity) != null) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous avez déjà été déclaré en guerre !"),
+                    TranslationManager.translation("feature.city.war.command.already_declared"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (playerCity.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous êtes déjà en guerre !"),
+                    TranslationManager.translation("feature.city.war.command.already_in_war"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -86,19 +95,22 @@ public class WarCommand {
     public void acceptDefense(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
-            player.sendMessage("§cVous n'avez pas de ville.");
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.WAR)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "messages.city.havent_unlocked_feature",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR)).color(NamedTextColor.RED)
+            ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         WarPendingDefense pending = WarManager.getPendingDefenseFor(city);
         if (pending == null) {
             MessagesManager.sendMessage(player,
-                    Component.text("Aucune guerre en cours de préparation."),
+                    TranslationManager.translation("feature.city.war.command.defense.none"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -106,13 +118,13 @@ public class WarCommand {
         boolean accepted = pending.accept(player.getUniqueId());
         if (!accepted) {
             MessagesManager.sendMessage(player,
-                    Component.text("Le nombre maximal de défenseurs est atteint."),
+                    TranslationManager.translation("feature.city.war.command.defense.full"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         MessagesManager.sendMessage(player,
-                Component.text("Vous participez désormais à la défense ! Plus aucun retour en arrière possible."),
+                TranslationManager.translation("feature.city.war.command.defense.accepted"),
                 Prefix.CITY, MessageType.ERROR, false);
 
         if (pending.getAcceptedDefenders().size() >= pending.getRequired() && !pending.isAlreadyExecuted()) {

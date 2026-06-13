@@ -3,15 +3,15 @@ package fr.openmc.core.features.city.sub.bank.menu;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,8 +32,8 @@ public class CityBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu de la banque de ville - Remplir";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.bank.menu.deposit.name");
     }
 
     @Override
@@ -52,14 +52,14 @@ public class CityBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE);
+        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT);
 
         double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer / 2;
@@ -67,21 +67,17 @@ public class CityBankDepositMenu extends Menu {
         List<Component> loreBankDepositAll;
 
         if (hasPermissionMoneyGive) {
-            loreBankDepositAll = List.of(
-		            Component.text("§7Tout votre argent sera placé dans la §6banque de la ville"),
-                    Component.empty(),
-                    Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+            loreBankDepositAll = TranslationManager.translationLore(
+                    "feature.city.bank.menu.deposit.all.lore",
+                    Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
-            loreBankDepositAll = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
-            );
+            loreBankDepositAll = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
-	        itemMeta.itemName(Component.text("§7Déposer tout votre §6argent"));
+        inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.all.title"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
             city.depositCityBank(player, String.valueOf(moneyPlayer));
@@ -92,21 +88,17 @@ public class CityBankDepositMenu extends Menu {
         List<Component> loreBankDepositHalf;
 
         if (hasPermissionMoneyGive) {
-            loreBankDepositHalf = List.of(
-		            Component.text("§7La moitié de votre argent sera placé dans la §6banque de la ville"),
-                    Component.empty(),
-                    Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.empty(),
-                    Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+            loreBankDepositHalf = TranslationManager.translationLore(
+                    "feature.city.bank.menu.deposit.half.lore",
+                    Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
-            loreBankDepositHalf = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
-            );
+            loreBankDepositHalf = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(13, new ItemBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
-	        itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6argent"));
+        inventory.put(13, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.half.title"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
             city.depositCityBank(player, String.valueOf(halfMoneyPlayer));
@@ -117,23 +109,18 @@ public class CityBankDepositMenu extends Menu {
         List<Component> loreBankDepositInput;
 
         if (hasPermissionMoneyGive) {
-            loreBankDepositInput = List.of(
-		            Component.text("§7Votre argent sera placé dans la §6banque de la ville"),
-                    Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
-            );
+            loreBankDepositInput = TranslationManager.translationLore("feature.city.bank.menu.deposit.input.lore");
         } else {
-            loreBankDepositInput = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
-            );
+            loreBankDepositInput = TranslationManager.translationLore("messages.global.cannot_do_this");
         }
 
-        inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
+        inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
+            itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.input.title"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.deposit.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
                 city.depositCityBank(player, input);
                     }
@@ -141,13 +128,7 @@ public class CityBankDepositMenu extends Menu {
 
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-		            Component.text("§7Vous allez retourner au menu précédent"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
-        }, true));
+        inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return inventory;
     }

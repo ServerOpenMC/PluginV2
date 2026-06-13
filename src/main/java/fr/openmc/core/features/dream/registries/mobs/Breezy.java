@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
-import fr.openmc.core.features.dream.milestone.DreamMilestoneDialog;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
+import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -17,32 +17,26 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.Comparator;
-import java.util.List;
 
-public class Breezy extends DreamMob implements Listener {
+public class Breezy extends DreamMob<Breeze> implements Listener {
 
     private static final NamespacedKey BREEZY_WIND_CHARGE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "breezy_wind_charge");
-    public Breezy() {
-        super("brezzy",
+    public Breezy(String id) {
+        super(id,
                 "Breezy",
-                EntityType.BREEZE,
+                Breeze.class,
                 100.0,
                 5L,
                 0.7,
-                4.0,
-                List.of()
+                4.0
         );
     }
 
     @Override
-    public LivingEntity spawn(Location location) {
-        return null;
-    }
-
-    public EntitySnapshot createSnapshot() {
-        World world = Bukkit.getWorld(DreamDimensionManager.DIMENSION_NAME);
+    public EntitySnapshot getMobSnapshot() {
+        World world = DreamDimensionManager.DREAM_WORLD;
         if (world == null) return null;
-        Breeze breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
+        Mob breeze = world.createEntity(new Location(world, 0, 0, 0), Breeze.class);
 
         applyStats(breeze);
 
@@ -86,8 +80,8 @@ public class Breezy extends DreamMob implements Listener {
 
         ParticleUtils.sendParticlePacket(
                 target,
-                eye,
                 Particle.CLOUD,
+                eye,
                 20, 0.2, 0.2, 0.2, 0.01, null
         );
     }
@@ -108,7 +102,7 @@ public class Breezy extends DreamMob implements Listener {
 
         for (Entity e : world.getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
             if (e instanceof Player p) {
-	            if (DreamMilestoneDialog.isPlayerInMilestoneDialog(p)) continue;
+	            if (MilestoneDialog.isInMilestoneDialog(p)) continue;
                 DreamUtils.removeDreamTime(p, this.getDamageTime(), true);
                 p.setVelocity(p.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(1.2).setY(0.6));
             }

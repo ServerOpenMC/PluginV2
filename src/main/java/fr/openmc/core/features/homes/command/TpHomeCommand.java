@@ -11,7 +11,9 @@ import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -37,7 +39,7 @@ public class TpHomeCommand {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
 
             if(!player.isConnected() && !target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
@@ -46,7 +48,7 @@ public class TpHomeCommand {
 
             if(split.length < 2) {
                 if(homes.isEmpty()) {
-                    MessagesManager.sendMessage(player, Component.text("§cCe joueur n'a pas de home."), Prefix.HOME, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_no_home"), Prefix.HOME, MessageType.ERROR, true);
                     return;
                 }
 
@@ -64,12 +66,22 @@ public class TpHomeCommand {
                             Bukkit.getPluginManager().callEvent(new HomeTpEvent(h, player));
                         }
                     }.runTask(OMCPlugin.getInstance());
-                    MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté au home §e" + h.getName() + " §ade §e" + target.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                    MessagesManager.sendMessage(
+                            player,
+                            TranslationManager.translation(
+                                    "feature.homes.command.teleport.other.success",
+                                    Component.text(h.getName()).color(NamedTextColor.YELLOW),
+                                    Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                            ),
+                            Prefix.HOME,
+                            MessageType.SUCCESS,
+                            true
+                    );
                     return;
                 }
             }
 
-            MessagesManager.sendMessage(player, Component.text("§cCe joueur n'a pas de home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_no_home_with_name"), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
@@ -77,7 +89,7 @@ public class TpHomeCommand {
 
         if(home == null || home.isBlank() || home.isEmpty()) {
             if(homes.isEmpty()) {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de home."), Prefix.HOME, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.no_home"), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
 
@@ -95,12 +107,21 @@ public class TpHomeCommand {
                         Bukkit.getPluginManager().callEvent(new HomeTpEvent(h, player));
                     }
                 }.runTask(OMCPlugin.getInstance());
-                MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à votre home §e" + h.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(
+                        player,
+                        TranslationManager.translation(
+                                "feature.homes.command.teleport.self.success",
+                                Component.text(h.getName()).color(NamedTextColor.YELLOW)
+                        ),
+                        Prefix.HOME,
+                        MessageType.SUCCESS,
+                        true
+                );
                 return;
             }
         }
 
-        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de home avec ce nom."), Prefix.HOME, MessageType.ERROR, true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.no_home_with_name"), Prefix.HOME, MessageType.ERROR, true);
     }
 
 }

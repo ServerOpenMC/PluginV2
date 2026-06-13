@@ -14,10 +14,11 @@ import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseSizeMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -39,81 +40,85 @@ public class WarActions {
         City launchCity = CityManager.getPlayerCity(launcherUUID);
 
         if (launchCity == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(launchCity, FeaturesRewards.Feature.WAR)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "messages.city.havent_unlocked_feature",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR))
+                            .color(NamedTextColor.RED)
+            ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!launchCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cgueere §f! Changez la type de votre ville avec §c/city type §fou dans le §cmenu principal des villes"),
+                    TranslationManager.translation("feature.city.war.begin.type_required"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!cityAttack.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer n'est pas dans un statut de guerre !"),
+                    TranslationManager.translation("feature.city.war.begin.target_not_war"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!launchCity.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous n'avez pas la permission de lancer une guerre pour la ville"),
+                    TranslationManager.translation("feature.city.war.begin.no_permission_launch"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (WarManager.getPendingDefenseFor(launchCity) != null) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous avez déjà été déclaré en guerre !"),
+                    TranslationManager.translation("feature.city.war.begin.already_declared"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (launchCity.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est en déjà en guerre !"),
+                    TranslationManager.translation("feature.city.war.begin.already_in_war"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (WarManager.getPendingDefenseFor(cityAttack) != null) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer et déjà en préparation des troupes"),
+                    TranslationManager.translation("feature.city.war.begin.target_preparing"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer est déjà en guerre !"),
+                    TranslationManager.translation("feature.city.war.begin.target_in_war"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (cityAttack.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer est en période d'immunité !"),
+                    TranslationManager.translation("feature.city.war.begin.target_immune"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (launchCity.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est en période d'immunité !"),
+                    TranslationManager.translation("feature.city.war.begin.city_immune"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (cityAttack.getOnlineMembers().isEmpty()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer n'a aucun membre de connecté !"),
+                    TranslationManager.translation("feature.city.war.begin.target_no_online"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -124,7 +129,7 @@ public class WarActions {
 
         if (maxSize < 1) {
             MessagesManager.sendMessage(player,
-                    Component.text("Aucun combat possible (pas assez de joueurs connectés)"),
+                    TranslationManager.translation("feature.city.war.begin.no_combat"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -144,7 +149,10 @@ public class WarActions {
         List<UUID> available = cityLaunch.getOnlineMembers().stream().toList();
 
         if (available.size() < count) {
-            player.sendMessage("§cPas assez de membres connectés pour lancer un combat en " + count + " vs " + count);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.war.begin.not_enough_members",
+                    Component.text(count).color(NamedTextColor.RED)
+            ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -162,7 +170,7 @@ public class WarActions {
     public static void confirmLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Une des villes est déjà en guerre !"),
+                    TranslationManager.translation("feature.city.war.begin.city_already_in_war"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -173,13 +181,14 @@ public class WarActions {
                     player.closeInventory();
                 },
                 player::closeInventory,
-                List.of(
-                        Component.text("§c§lATTENTION"),
-                        Component.text("§7Vous êtes sur le point de lancer une guerre contre §c" + cityAttack.getName()),
-                        Component.text("§7avec §c" + attackers.size() + " §7joueurs de votre ville.")
+                TranslationManager.translationLore(
+                        "feature.city.war.begin.confirm.lore",
+                        Component.text(cityAttack.getName()).color(NamedTextColor.RED),
+                        Component.text(attackers.size()).color(NamedTextColor.RED)
                 ),
-                List.of(
-                        Component.text("§7Ne pas lancer une guerre contre §c" + cityAttack.getName())
+                TranslationManager.translationLore(
+                        "feature.city.war.begin.confirm.cancel",
+                        Component.text(cityAttack.getName()).color(NamedTextColor.RED)
                 )
         );
         menu.open();
@@ -197,7 +206,7 @@ public class WarActions {
     public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Une des villes est déjà en guerre !"),
+                    TranslationManager.translation("feature.city.war.begin.city_already_in_war"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -205,10 +214,14 @@ public class WarActions {
         int requiredParticipants = attackers.size();
         Set<UUID> allDefenders = new HashSet<>(cityAttack.getMembers());
 
-        TextComponent info = Component.text("§c⚔ Votre ville est attaquée par §e" + cityLaunch.getName() + "§c, il vous faut §4" + requiredParticipants + " §c joueur(s)!");
-        TextComponent clickToJoin = Component.text("§aCliquez ici pour rejoindre la défense !")
+        Component info = TranslationManager.translation(
+                "feature.city.war.begin.defense.attacked",
+                Component.text(cityLaunch.getName()).color(NamedTextColor.YELLOW),
+                Component.text(requiredParticipants).color(NamedTextColor.RED)
+        );
+        Component clickToJoin = TranslationManager.translation("feature.city.war.begin.defense.click_to_join")
                 .clickEvent(ClickEvent.runCommand("/war acceptdefense"))
-                .hoverEvent(HoverEvent.showText(Component.text("§aCliquez pour participer à la guerre")));
+                .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.war.begin.defense.hover_join")));
 
         for (UUID uuid : allDefenders) {
             Player defender = Bukkit.getPlayer(uuid);
@@ -218,7 +231,10 @@ public class WarActions {
             }
         }
 
-        TextComponent infoAttackers = Component.text("§c⚔ Vous avez été choisi pour vous battre contre §e" + cityAttack.getName());
+        Component infoAttackers = TranslationManager.translation(
+                "feature.city.war.begin.attacker.chosen",
+                Component.text(cityAttack.getName()).color(NamedTextColor.YELLOW)
+        );
 
         for (UUID uuid : attackers) {
             Player attacker = Bukkit.getPlayer(uuid);
@@ -227,7 +243,10 @@ public class WarActions {
             }
         }
 
-        MessagesManager.sendMessage(player, Component.text("§8§oVeuillez attendre que " + cityAttack.getName() + " réagisse, la partie sera tout de même lancée dans 2 min"), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.city.war.begin.waiting_defense",
+                Component.text(cityAttack.getName()).color(NamedTextColor.YELLOW)
+        ), Prefix.CITY, MessageType.INFO, false);
 
         WarPendingDefense pending = new WarPendingDefense(cityLaunch, cityAttack, attackers, requiredParticipants);
         WarManager.addPendingDefense(pending);

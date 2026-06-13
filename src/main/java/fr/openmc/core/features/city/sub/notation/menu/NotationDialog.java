@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.utils.text.PaddingUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
@@ -51,7 +52,11 @@ public class NotationDialog {
         }
 
         Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Classement des Villes - Semaine " + weekNumber + " de " + yearNumber))
+                .base(DialogBase.builder(TranslationManager.translation(
+                                "feature.city.notation.dialog.title",
+                                Component.text(weekNumber),
+                                Component.text(yearNumber)
+                        ))
                         .body(body)
                         .canCloseWithEscape(true)
                         .build()
@@ -69,14 +74,23 @@ public class NotationDialog {
     }
 
     public static DialogBody lineCityNotationHeader(City city, String weekStr) {
-        Component header = Component.text(PaddingUtils.format("Ville", MAX_LENGTH_CITY)).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Activ.", 8)).hoverEvent(getHoverActivity())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Econo.", LENGTH_CASE)).hoverEvent(getHoverEconomy())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Milit.", LENGTH_CASE)).hoverEvent(getHoverMilitary())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Arch.", LENGTH_CASE)).hoverEvent(getHoverArchitectural())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Coh.", LENGTH_CASE)).hoverEvent(getHoverCoherence())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Total", LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr)))).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Argent", LENGTH_CASE)));
+        String headerCity = TranslationManager.translationString("feature.city.notation.header.city");
+        String headerActivity = TranslationManager.translationString("feature.city.notation.header.activity");
+        String headerEconomy = TranslationManager.translationString("feature.city.notation.header.economy");
+        String headerMilitary = TranslationManager.translationString("feature.city.notation.header.military");
+        String headerArchitectural = TranslationManager.translationString("feature.city.notation.header.architectural");
+        String headerCoherence = TranslationManager.translationString("feature.city.notation.header.coherence");
+        String headerTotal = TranslationManager.translationString("feature.city.notation.header.total");
+        String headerMoney = TranslationManager.translationString("feature.city.notation.header.money");
+
+        Component header = Component.text(PaddingUtils.format(headerCity, MAX_LENGTH_CITY)).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerActivity, 8)).hoverEvent(getHoverActivity())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerEconomy, LENGTH_CASE)).hoverEvent(getHoverEconomy())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerMilitary, LENGTH_CASE)).hoverEvent(getHoverMilitary())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerArchitectural, LENGTH_CASE)).hoverEvent(getHoverArchitectural())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerCoherence, LENGTH_CASE)).hoverEvent(getHoverCoherence())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerTotal, LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr)))).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(headerMoney, LENGTH_CASE)));
 
         header.font(Key.key(FONT));
 
@@ -93,13 +107,23 @@ public class NotationDialog {
 
         String centeredCityName = PaddingUtils.format(cityName, MAX_LENGTH_CITY);
 
-        Component hoverCityName = Component.text("§7Niveau de la mascotte : §c" + city.getMascot().getLevel())
-                .append(Component.newline())
-                .append(Component.text("§7Statut : " + city.getType().getName()))
-                .append(Component.newline())
-                .append(Component.text("§7Membres : §2" + city.getMembers().size()))
-                .append(Component.newline())
-                .append(Component.text("§eCliquez ici pour avoir plus d'info sur la ville"));
+        Component hoverCityName = TranslationManager.translation(
+                "feature.city.notation.hover.city.mascot_level",
+                Component.text(city.getMascot().getLevel()).color(NamedTextColor.RED)
+        ).color(NamedTextColor.GRAY)
+                .appendNewline()
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.city.status",
+                        city.getType().getDisplayName()
+                ).color(NamedTextColor.GRAY))
+                .appendNewline()
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.city.members",
+                        Component.text(city.getMembers().size()).color(NamedTextColor.GREEN)
+                ).color(NamedTextColor.GRAY))
+                .appendNewline()
+                .append(TranslationManager.translation("feature.city.notation.hover.city.more_info")
+                        .color(NamedTextColor.YELLOW));
 
         Component base = Component.empty();
 
@@ -135,10 +159,10 @@ public class NotationDialog {
                     .append(Component.text(" | "))
                     .append(Component.text(PaddingUtils.format(total, LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr))))
                     .append(Component.text(" | "))
-                    .append(Component.text("§6 +" + PaddingUtils.format(money, LENGTH_CASE)));
+                    .append(Component.text("+ " + PaddingUtils.format(money, LENGTH_CASE)).color(NamedTextColor.GOLD));
 
         } else {
-            base = base.append(Component.text("Aucune notation"));
+            base = base.append(TranslationManager.translation("feature.city.notation.table.none"));
         }
 
         base.font(Key.key(FONT));
@@ -151,7 +175,7 @@ public class NotationDialog {
 
     public static Component getHoverTotal(CityNotation notation) {
         if (notation == null) {
-            return Component.text("Aucun total pour vous");
+            return TranslationManager.translation("feature.city.notation.hover.total.none");
         }
 
 
@@ -159,50 +183,74 @@ public class NotationDialog {
         double noteEconomy = notation.getNoteEconomy() != null ? notation.getNoteEconomy() : 0;
         double noteMilitary = notation.getNoteMilitary() != null ? notation.getNoteMilitary() : 0;
 
-        return Component.text("§6§lDétails")
+        return TranslationManager.translation("feature.city.notation.hover.total.title")
+                .color(NamedTextColor.GOLD)
+                .decorate(TextDecoration.BOLD)
                 .appendNewline()
-                .append(Component.text("§8Activité " + noteActivity))
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.total.activity",
+                        Component.text(noteActivity).color(NamedTextColor.DARK_AQUA)
+                ).color(NamedTextColor.DARK_GRAY))
                 .appendNewline()
-                .append(Component.text("§8Économie " + noteEconomy))
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.total.economy",
+                        Component.text(noteEconomy).color(NamedTextColor.DARK_AQUA)
+                ).color(NamedTextColor.DARK_GRAY))
                 .appendNewline()
-                .append(Component.text("§8Militaire " + noteMilitary))
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.total.military",
+                        Component.text(noteMilitary).color(NamedTextColor.DARK_AQUA)
+                ).color(NamedTextColor.DARK_GRAY))
                 .appendNewline()
-                .append(Component.text("§8Architecture " + notation.getNoteArchitectural()))
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.total.architecture",
+                        Component.text(notation.getNoteArchitectural()).color(NamedTextColor.DARK_AQUA)
+                ).color(NamedTextColor.DARK_GRAY))
                 .appendNewline()
                 .append(Component.text("§8Cohérence " + notation.getNoteCoherence()))
                 .appendNewline()
                 .appendNewline()
-                .append(Component.text("§3§lJustification de la note"))
+                .append(TranslationManager.translation("feature.city.notation.hover.total.justification")
+                        .color(NamedTextColor.DARK_AQUA)
+                        .decorate(TextDecoration.BOLD))
                 .appendNewline()
-                .append(Component.text(notation.getDescription())).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, true);
+                .append(Component.text(notation.getDescription())
+                        .color(NamedTextColor.DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true));
     }
 
     public static Component getHoverActivity() {
-        return Component.text("Note allant de 0 à " + NotationNote.NOTE_ACTIVITY.getMaxNote() + " points, qui comprend, le nombre de joueurs actifs dans la ville par le temps de jeu d'une ville")
-                .appendNewline()
-                .append(Component.text("Note sur §3" + NotationNote.NOTE_ACTIVITY.getMaxNote() + " §fpoints"));
+        return TranslationManager.translation(
+                "feature.city.notation.hover.activity",
+                Component.text(NotationNote.NOTE_ACTIVITY.getMaxNote()).color(NamedTextColor.DARK_AQUA)
+        ).color(NamedTextColor.GRAY);
     }
 
     public static Component getHoverEconomy() {
-        return Component.text("Note qui comprend, la richesse de la ville et le PIB par habitant de la ville.")
-                .appendNewline()
-                .append(Component.text("Note sur §3" + NotationNote.NOTE_PIB.getMaxNote() + " §fpoints"));
+        return TranslationManager.translation(
+                "feature.city.notation.hover.economy",
+                Component.text(NotationNote.NOTE_PIB.getMaxNote()).color(NamedTextColor.DARK_AQUA)
+        ).color(NamedTextColor.GRAY);
     }
 
     public static Component getHoverMilitary() {
-        return Component.text("Note qui se base en fonction de la quantité de points de puissance de votre ville, récupérables via des guerres")
-                .appendNewline()
-                .append(Component.text("Note sur §3" + NotationNote.NOTE_PIB.getMaxNote() + " §fpoints"));
+        return TranslationManager.translation(
+                "feature.city.notation.hover.military",
+                Component.text(NotationNote.NOTE_PIB.getMaxNote()).color(NamedTextColor.DARK_AQUA)
+        ).color(NamedTextColor.GRAY);
     }
 
     public static Component getHoverCoherence() {
-        return Component.text("Note de cohérence qui comprend, la cohérence des constructions entre elles, l'harmonie des couleurs, la transition entre 2 thèmes, ...")
-                .append(Component.text("Note sur §3" + NotationNote.NOTE_COHERENCE.getMaxNote() + " §fpoints"));
+        return TranslationManager.translation(
+                "feature.city.notation.hover.coherence",
+                Component.text(NotationNote.NOTE_COHERENCE.getMaxNote()).color(NamedTextColor.DARK_AQUA)
+        ).color(NamedTextColor.GRAY);
     }
 
     public static Component getHoverArchitectural() {
-        return Component.text("Note d'architecture qui comprend, la diversité des blocs utilisés, l'architecture des builds ainsi que la végétation.")
-                .appendNewline()
-                .append(Component.text("Note sur §3" + NotationNote.NOTE_ARCHITECTURAL.getMaxNote() + " §fpoints"));
+        return TranslationManager.translation(
+                "feature.city.notation.hover.architectural",
+                Component.text(NotationNote.NOTE_ARCHITECTURAL.getMaxNote()).color(NamedTextColor.DARK_AQUA)
+        ).color(NamedTextColor.GRAY);
     }
 }

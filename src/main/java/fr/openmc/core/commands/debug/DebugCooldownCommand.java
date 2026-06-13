@@ -2,8 +2,7 @@ package fr.openmc.core.commands.debug;
 
 import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -15,13 +14,13 @@ public class DebugCooldownCommand {
     @Command("debug cooldown")
     @CommandPermission("omc.debug.cooldown")
     @Description("Test de cooldown")
-    @DynamicCooldown(group="test", message = "§c%ms% (%sec%s)")
+    @DynamicCooldown(group="test", messageKey = "command.api.cooldown.debug.must_wait")
     public void cooldown(Player player, @Named("isSuccess") @Suggest({"success", "error"}) String isSuccess) {
         if (isSuccess.equals("success")) {
-            player.sendMessage(Component.text("Succès, le cooldown est activé").color(NamedTextColor.GREEN));
+            player.sendMessage(TranslationManager.translation("command.debug.cooldown.success"));
             DynamicCooldownManager.use(player.getUniqueId(), "test" ,5000);
         } else {
-            player.sendMessage(Component.text("Erreur, vous pouvez refaire la commande").color(NamedTextColor.RED));
+            player.sendMessage(TranslationManager.translation("command.debug.cooldown.error"));
         }
     }
 }

@@ -1,0 +1,445 @@
+info:
+  namespace: omc_dream
+equipments:
+  old_creaking_armor:
+    type: armor
+    layer_1: armor/old_creaking/creaking_armor_layer_1
+    layer_2: armor/old_creaking/creaking_armor_layer_2
+  soul_armor:
+    type: armor
+    layer_1: armor/soul/soul_armor_layer_1
+    layer_2: armor/soul/soul_armor_layer_2
+  cloud_armor:
+    type: armor
+    layer_1: armor/cloud/cloud_layer_1
+    layer_2: armor/cloud/cloud_layer_2
+  cold_armor:
+    type: armor
+    layer_1: armor/cold/cold_armor_layer_1
+    layer_2: armor/cold/cold_armor_layer_2
+  dream_armor:
+    type: armor
+    layer_1: armor/dream/dream_armor_layer_1
+    layer_2: armor/dream/dream_armor_layer_2
+  pyjama_armor:
+    type: armor
+    layer_1: armor/pyjama/pyjama_layer_1
+    layer_2: armor/pyjama/pyjama_layer_2
+legacy_armor_renderings:
+  old_creaking_armor_shader:
+    layer_1: armor/old_creaking/creaking_armor_layer_1
+    layer_2: armor/old_creaking/creaking_armor_layer_2
+    color: "570e11"
+  soul_armor_shader:
+    layer_1: armor/soul/soul_armor_layer_1
+    layer_2: armor/soul/soul_armor_layer_2
+    color: "570e12"
+  cloud_armor_shader:
+    layer_1: armor/cloud/cloud_layer_1
+    layer_2: armor/cloud/cloud_layer_1_e
+    color: "570e13"
+  cold_armor_shader:
+    layer_1: armor/cold/cold_armor_layer_1
+    layer_2: armor/cold/cold_armor_layer_2
+    color: "570e14"
+  dream_armor_shader:
+    layer_1: armor/dream/dream_armor_layer_1
+    layer_2: armor/dream/dream_armor_layer_2
+    color: "570e15"
+  pyjama_armor_shader:
+    color: "ffffff"
+    layer_1: armor/pyjama/pyjama_layer_1
+    layer_2: armor/pyjama/pyjama_layer_2
+items:
+  old_creaking_helmet:
+    display_name: "{dream_item_name:old_creaking_helmet}"
+    resource:
+      generate: true
+      textures:
+        - armor/old_creaking/creaking_helmet
+      material: {dream_item_material:old_creaking_helmet}
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:old_creaking_armor
+      legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:old_creaking_helmet}"
+
+  old_creaking_chestplate:
+    display_name: "{dream_item_name:old_creaking_chestplate}"
+    resource:
+      generate: true
+      textures:
+        - armor/old_creaking/creaking_chestplate
+      material: {dream_item_material:old_creaking_chestplate}
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:old_creaking_armor
+      legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:old_creaking_chestplate}"
+
+  old_creaking_leggings:
+    display_name: "{dream_item_name:old_creaking_leggings}"
+    resource:
+      generate: true
+      textures:
+        - armor/old_creaking/creaking_leggings
+      material: {dream_item_material:old_creaking_leggings}
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:old_creaking_armor
+      legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:old_creaking_leggings}"
+
+  old_creaking_boots:
+    display_name: "{dream_item_name:old_creaking_boots}"
+    resource:
+      generate: true
+      textures:
+         - armor/old_creaking/creaking_boots
+      material: {dream_item_material:old_creaking_boots}
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:old_creaking_armor
+      legacy_armor_rendering_id: omc_dream:old_creaking_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:old_creaking_boots}"
+
+  soul_helmet:
+    display_name: "{dream_item_name:soul_helmet}"
+    resource:
+      material: {dream_item_material:soul_helmet}
+      generate: false
+      model_path: armor/soul/soul_helmet
+    durability:
+      unbreakable: true
+    equipment:
+      slot_attribute_modifiers:
+        armor: 2.5
+    tooltip_style: "{dream_rarity:soul_helmet}"
+
+  soul_chestplate:
+    display_name: "{dream_item_name:soul_chestplate}"
+    resource:
+      generate: true
+      textures:
+        - armor/soul/soul_chestplate
+      material: {dream_item_material:soul_chestplate}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:soul_armor
+      legacy_armor_rendering_id: omc_dream:soul_armor_shader
+      slot_attribute_modifiers:
+        armor: 2.5
+    tooltip_style: "{dream_rarity:soul_chestplate}"
+
+  soul_leggings:
+    display_name: "{dream_item_name:soul_leggings}"
+    resource:
+      generate: true
+      textures:
+        - armor/soul/soul_leggings
+      material: {dream_item_material:soul_leggings}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:soul_armor
+      legacy_armor_rendering_id: omc_dream:soul_armor_shader
+      slot_attribute_modifiers:
+        armor: 2.5
+    tooltip_style: "{dream_rarity:soul_leggings}"
+
+  soul_boots:
+    display_name: "{dream_item_name:soul_boots}"
+    resource:
+      generate: true
+      textures:
+        - armor/soul/soul_boots
+      material: {dream_item_material:soul_boots}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:soul_armor
+      legacy_armor_rendering_id: omc_dream:soul_armor_shader
+      slot_attribute_modifiers:
+        armor: 2.5
+    tooltip_style: "{dream_rarity:soul_boots}"
+
+  cloud_helmet:
+    display_name: "{dream_item_name:cloud_helmet}"
+    resource:
+      material: {dream_item_material:cloud_helmet}
+      generate: true
+      textures:
+        - armor/cloud/cloud_helmet
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cloud_armor
+      legacy_armor_rendering_id: omc_dream:cloud_armor_shader
+      slot_attribute_modifiers:
+        armor: 4
+    tooltip_style: "{dream_rarity:cloud_helmet}"
+
+  cloud_chestplate:
+    display_name: "{dream_item_name:cloud_chestplate}"
+    resource:
+      generate: true
+      textures:
+        - armor/cloud/cloud_chestplate
+      material: {dream_item_material:cloud_chestplate}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cloud_armor
+      legacy_armor_rendering_id: omc_dream:cloud_armor_shader
+      slot_attribute_modifiers:
+        armor: 4
+    tooltip_style: "{dream_rarity:cloud_chestplate}"
+
+  cloud_leggings:
+    display_name: "{dream_item_name:cloud_leggings}"
+    resource:
+      generate: true
+      textures:
+        - armor/cloud/cloud_leggings
+      material: {dream_item_material:cloud_leggings}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cloud_armor
+      legacy_armor_rendering_id: omc_dream:cloud_armor_shader
+      slot_attribute_modifiers:
+        armor: 4
+    tooltip_style: "{dream_rarity:cloud_leggings}"
+
+  cloud_boots:
+    display_name: "{dream_item_name:cloud_boots}"
+    resource:
+      generate: true
+      textures:
+        - armor/cloud/cloud_boots
+      material: {dream_item_material:cloud_boots}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cloud_armor
+      legacy_armor_rendering_id: omc_dream:cloud_armor_shader
+      slot_attribute_modifiers:
+        armor: 4
+    tooltip_style: "{dream_rarity:cloud_boots}"
+
+  cold_helmet:
+    display_name: "{dream_item_name:cold_helmet}"
+    resource:
+      material: {dream_item_material:cold_helmet}
+      generate: true
+      textures:
+        - armor/cold/cold_helmet
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cold_armor
+      legacy_armor_rendering_id: omc_dream:cold_armor_shader
+      slot_attribute_modifiers:
+        armor: 5
+    tooltip_style: "{dream_rarity:cold_helmet}"
+
+  cold_chestplate:
+    display_name: "{dream_item_name:cold_chestplate}"
+    resource:
+      generate: true
+      textures:
+        - armor/cold/cold_chestplate
+      material: {dream_item_material:cold_chestplate}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cold_armor
+      legacy_armor_rendering_id: omc_dream:cold_armor_shader
+      slot_attribute_modifiers:
+        armor: 5
+    tooltip_style: "{dream_rarity:cold_chestplate}"
+
+  cold_leggings:
+    display_name: "{dream_item_name:cold_leggings}"
+    resource:
+      generate: true
+      textures:
+        - armor/cold/cold_leggings
+      material: {dream_item_material:cold_leggings}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cold_armor
+      legacy_armor_rendering_id: omc_dream:cold_armor_shader
+      slot_attribute_modifiers:
+        armor: 5
+    tooltip_style: "{dream_rarity:cold_leggings}"
+
+  cold_boots:
+    display_name: "{dream_item_name:cold_boots}"
+    resource:
+      generate: true
+      textures:
+        - armor/cold/cold_boots
+      material: {dream_item_material:cold_boots}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:cold_armor
+      legacy_armor_rendering_id: omc_dream:cold_armor_shader
+      slot_attribute_modifiers:
+        armor: 5
+    tooltip_style: "{dream_rarity:cold_boots}"
+
+  dream_helmet:
+    display_name: "{dream_item_name:dream_helmet}"
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+      - "§7§oPeut-être est-elle liée aux rêves..."
+    resource:
+      material: {dream_item_material:dream_helmet}
+      generate: true
+      textures:
+        - armor/dream/dream_helmet
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:dream_armor
+      legacy_armor_rendering_id: omc_dream:dream_armor_shader
+      slot_attribute_modifiers:
+        armor: 7
+    tooltip_style: "{dream_rarity:dream_helmet}"
+
+  dream_chestplate:
+    display_name: "{dream_item_name:dream_chestplate}"
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+      - "§7§o..., les rêves se réalisent ..."
+    resource:
+      generate: true
+      textures:
+        - armor/dream/dream_chestplate
+      material: {dream_item_material:dream_chestplate}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:dream_armor
+      legacy_armor_rendering_id: omc_dream:dream_armor_shader
+      slot_attribute_modifiers:
+        armor: 7
+    tooltip_style: "{dream_rarity:dream_chestplate}"
+
+  dream_leggings:
+    display_name: "{dream_item_name:dream_leggings}"
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+      - "§7§o... toujours, en espérant que ... "
+    resource:
+      generate: true
+      textures:
+        - armor/dream/dream_leggings
+      material: {dream_item_material:dream_leggings}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:dream_armor
+      legacy_armor_rendering_id: omc_dream:dream_armor_shader
+      slot_attribute_modifiers:
+        armor: 7
+    tooltip_style: "{dream_rarity:dream_leggings}"
+
+  dream_boots:
+    display_name: "{dream_item_name:dream_boots}"
+    lore:
+      - "§7§oUne armure aussi étrange que cet environnement"
+      - "§7§o... celui là ne se réalisera pas."
+    resource:
+      generate: true
+      textures:
+        - armor/dream/dream_boots
+      material: {dream_item_material:dream_boots}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:dream_armor
+      legacy_armor_rendering_id: omc_dream:dream_armor_shader
+      slot_attribute_modifiers:
+        armor: 7
+    tooltip_style: "{dream_rarity:dream_boots}"
+
+  pyjama_helmet:
+    display_name: "{dream_item_name:pyjama_helmet}"
+    resource:
+      material: {dream_item_material:pyjama_helmet}
+      generate: true
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:pyjama_armor
+      legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:pyjama_helmet}"
+
+  pyjama_chestplate:
+    display_name: "{dream_item_name:pyjama_chestplate}"
+    resource:
+      generate: true
+      material: {dream_item_material:pyjama_chestplate}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:pyjama_armor
+      legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:pyjama_chestplate}"
+
+  pyjama_leggings:
+    display_name: "{dream_item_name:pyjama_leggings}"
+    resource:
+      generate: true
+      material: {dream_item_material:pyjama_leggings}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:pyjama_armor
+      legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:pyjama_leggings}"
+
+  pyjama_boots:
+    display_name: "{dream_item_name:pyjama_boots}"
+    resource:
+      generate: true
+      material: {dream_item_material:pyjama_boots}
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_dream:pyjama_armor
+      legacy_armor_rendering_id: omc_dream:pyjama_armor_shader
+      slot_attribute_modifiers:
+        armor: 1
+    tooltip_style: "{dream_rarity:pyjama_boots}"

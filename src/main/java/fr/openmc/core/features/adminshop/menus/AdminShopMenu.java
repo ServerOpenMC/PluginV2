@@ -3,15 +3,15 @@ package fr.openmc.core.features.adminshop.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopCategory;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -26,8 +26,8 @@ public class AdminShopMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu Principal de l'AdminShop";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.adminshop.menu.main.name");
     }
 
     @Override
@@ -44,18 +44,14 @@ public class AdminShopMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         int slot = 10;
         for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
-            ItemStack itemStack = new ItemStack(category.material());
-            ItemMeta meta = itemStack.getItemMeta();
-            meta.displayName(category.name().decoration(TextDecoration.ITALIC, false));
-            itemStack.setItemMeta(meta);
-
-            content.put(slot, new ItemBuilder(this, itemStack)
-                    .setItemId(category.id())
+            content.put(slot, new ItemMenuBuilder(this, category.material(), meta ->
+                    meta.displayName(category.name().decoration(TextDecoration.ITALIC, false)
+            )).setItemId(category.id())
                     .setOnClick(e -> {
                         AdminShopManager.currentCategory.put(getOwner().getUniqueId(), category.id());
                         new AdminShopCategoryMenu(getOwner(), category.id()).open();

@@ -9,8 +9,8 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -517,7 +517,7 @@ public class CityManager extends Feature implements DatabaseFeature, LoadAfterIt
 
             if (Chronometer.containsChronometer(memberId, "mascot:stick"))
                 if (Bukkit.getEntity(memberId) != null)
-                    Chronometer.stopChronometer(member, "mascot:stick", null, "%null%");
+                    Chronometer.stopChronometer(member, "mascot:stick", null, null);
 
             Mascot mascot = city.getMascot();
             if (mascot == null)

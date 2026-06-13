@@ -14,14 +14,17 @@ dependencies:
       required: false
     LuckPerms:
       load: BEFORE
-      required: true
+      required: false
     ItemsAdder:
       load: BEFORE
       required: false
     ProtocolLib:
       load: BEFORE
-      required: true
+      required: false
     WorldGuard:
+      load: BEFORE
+      required: false
+    FastAsyncWorldEdit:
       load: BEFORE
       required: false
 

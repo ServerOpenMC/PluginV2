@@ -1,0 +1,88 @@
+info:
+  namespace: omc_items
+items:
+  aywenite:
+    display_name: §dAywenite
+    lore:
+      - "§7Un matériau exceptionnel"
+    resource:
+      generate: true
+      material: EMERALD
+      textures:
+        - aywenite.png
+  mascot_stick:
+    display_name: Mascot Wand
+    resource:
+      material: STICK
+      model_path: items/msctt_wand
+  warp_stick:
+    display_name: Warp Wand
+    resource:
+      material: STICK
+      model_path: items/warp_wand
+  unknown_stick:
+    display_name: unknown wand
+    resource:
+      material: STICK
+      model_path: items/rndm_wand
+  renforced_stick:
+    display_name: Bâton Renforcé
+    lore:
+    - §9Ingrédients
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+      - renforced_stick.png
+  spawner_extractor:
+    display_name: §6§lExtracteur de Spawner
+    lore:
+    - "§7Cette outil permet de récupérer des spawners"
+    - "§c⚠ 40% de chance d’échec"
+    durability:
+      max_durability: 2
+    resource:
+      generate: false
+      material: DIAMOND_PICKAXE
+      model_path: items/spawner_extractor
+    blocked_enchants:
+      - ALL
+    events:
+      block_break:
+        decrement_durability:
+          amount: 1
+recipes:
+  crafting_table:
+    aywenite:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_blocks:aywenite_block
+      result:
+        item: omc_items:aywenite
+        amount: 9
+    renforced_stick:
+      enabled: true
+      pattern:
+      - XAX
+      - XBX
+      - XAX
+      ingredients:
+        A: IRON_BLOCK
+        B: STICK
+      result:
+        item: omc_items:renforced_stick
+        amount: 1
+    spawner_extractor:
+      enabled: true
+      pattern:
+      - AAA
+      - CBC
+      - XBX
+      ingredients:
+        A: omc_blocks:aywenite_block
+        B: omc_items:renforced_stick
+        C: NETHERITE_INGOT
+      result:
+        item: omc_items:spawner_extractor
+        amount: 1

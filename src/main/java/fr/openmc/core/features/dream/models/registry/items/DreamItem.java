@@ -1,28 +1,42 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
-import fr.openmc.core.hooks.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public abstract class DreamItem extends CustomItem {
+    @Getter
+    private DreamItemMeta meta;
     /**
-     * Creates a new DreamItem with the specified name.
-     *
-     * @param name The namespaced ID of the item, e.g., "omc_dream:orb".
+     * Crée un DreamItem à partir d'un meta qui contiens comme clé id équivalent au namespace:item
+     * @param dreamItemMeta La méta de la classe (obligatoire afin de lire certaines infos a propos de l'item depuis le bootstrap)
      */
-    protected DreamItem(String name) {
-        super(name);
+    protected DreamItem(DreamItemMeta dreamItemMeta) {
+        super(dreamItemMeta);
+        meta = dreamItemMeta;
     }
 
-    public abstract DreamRarity getRarity();
+    @Override
+    public @NonNull ItemStack getVanilla() {
+        ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
+        item.getItemMeta().itemName(Component.text(getMeta().getName()));
+        return item;
+    }
 
-    public abstract boolean isTransferable();
+    public DreamRarity getRarity() {
+        return getMeta().getRarity();
+    }
+
+    public boolean isTransferable() {
+        return getMeta().getTransferable();
+    };
 
     public abstract ItemStack getTransferableItem();
 
@@ -41,7 +55,7 @@ public abstract class DreamItem extends CustomItem {
         if (this instanceof DreamEquipableItem equipableItem) {
             lore.add(Component.empty());
 
-            lore.add(Component.text("§7§oTemps maximum: §r§a+" + equipableItem.getAdditionalMaxTime() + "s"));
+            lore.add(Component.text("§7§oTemps additionnel: §r§a+" + equipableItem.getAdditionalMaxTime() + "s"));
 
             Integer coldResistance = equipableItem.getColdResistance();
             if (coldResistance != null) {

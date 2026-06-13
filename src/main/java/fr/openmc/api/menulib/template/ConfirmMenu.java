@@ -3,16 +3,16 @@ package fr.openmc.api.menulib.template;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -72,8 +72,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu de Confirmation";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("api.menulib.menu.confirm.title");
     }
 
     @Override
@@ -97,8 +97,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
@@ -109,10 +109,7 @@ public class ConfirmMenu extends Menu {
 
         loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
-        ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
-        ItemStack acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
-
-        inventory.put(posDenyBtn, new ItemBuilder(this, refuseBtn, itemMeta -> {
+        inventory.put(posDenyBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(loreDeny);
         }).setOnClick(event -> {
@@ -125,7 +122,7 @@ public class ConfirmMenu extends Menu {
             }
         }));
 
-        inventory.put(posAcceptBtn, new ItemBuilder(this, acceptBtn, itemMeta -> {
+        inventory.put(posAcceptBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(loreAccept);
         }).setOnClick(event -> {

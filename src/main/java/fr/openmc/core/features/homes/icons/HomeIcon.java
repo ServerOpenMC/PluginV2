@@ -1,12 +1,11 @@
 package fr.openmc.core.features.homes.icons;
 
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.OMCRegistry;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +50,7 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
         switch (type) {
             case CUSTOM:
                 try {
-                    return Objects.requireNonNull(CustomItemRegistry.getByName(materialOrCustomId)).getBest();
+                    return OMCRegistry.CUSTOM_ITEMS.getOrThrow(materialOrCustomId).getBest();
                 } catch (Exception e) {
                     return new ItemStack(Material.GRASS_BLOCK);
                 }

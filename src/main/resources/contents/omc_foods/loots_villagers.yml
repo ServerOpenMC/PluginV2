@@ -1,0 +1,32 @@
+info:
+  namespace: omc_foods
+loots:
+  mobs:
+    villager:
+      type: VILLAGER
+      nbt:
+        profession:
+          path: VillagerData.profession
+          value: minecraft:farmer
+          type: string
+      items:
+        salade:
+          item: omc_foods:salade
+          min_amount: 1
+          max_amount: 1
+          chance: 25
+        tomate:
+          item: omc_foods:tomate
+          min_amount: 1
+          max_amount: 1
+          chance: 25
+        onion:
+          item: omc_foods:onion
+          min_amount: 1
+          max_amount: 1
+          chance: 25
+        courgette:
+          item: omc_foods:courgette
+          min_amount: 1
+          max_amount: 1
+          chance: 25

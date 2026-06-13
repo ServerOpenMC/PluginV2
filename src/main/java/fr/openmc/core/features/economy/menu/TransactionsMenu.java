@@ -1,13 +1,14 @@
 package fr.openmc.core.features.economy.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,8 +31,11 @@ public class TransactionsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des transactions de " + CacheOfflinePlayer.getOfflinePlayer(target).getName();
+    public @NotNull Component getName() {
+        return TranslationManager.translation(
+                "feature.economy.transactions.menu.title",
+                Component.text(CacheOfflinePlayer.getOfflinePlayer(target).getName())
+        );
     }
 
     @Override
@@ -67,18 +71,18 @@ public class TransactionsMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
 
         for (Transaction transaction : TransactionsManager.getTransactionsByPlayers(target)) {
-            items.add(new ItemBuilder(this, transaction.toItemStack(target)));
+            items.add(new ItemMenuBuilder(this, transaction.toItemStack(target)));
         }
 
         return items;
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
         return map;
     }
 

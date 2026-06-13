@@ -7,7 +7,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
@@ -28,11 +28,11 @@ public class AdminMascotsCommands {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         MascotsManager.removeMascotsFromCity(city);
-        MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.mascots.admin.remove.success"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

@@ -6,8 +6,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.MetalDetector;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class MetalDetectorQuest extends MilestoneQuest implements Listener {
 						"§fRécupérer le §ddétecteur à métaux",
 						"§8§oPourquoi les têtards sont aussi gros ?"
 				),
-				DreamItemRegistry.getByName("omc_dream:metal_detector").getBest(),
+				DreamItemRegistry.METAL_DETECTOR,
 				MilestoneType.DREAM,
 				DreamSteps.METAL_DETECTOR,
 				new QuestTier(1),

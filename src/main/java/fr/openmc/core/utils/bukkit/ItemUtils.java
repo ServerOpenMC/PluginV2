@@ -2,8 +2,8 @@ package fr.openmc.core.utils.bukkit;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -300,7 +301,7 @@ public class ItemUtils {
     }
 
     public static boolean takeAywenite(Player player, int amount) {
-        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
         if (aywenite == null) return false;
 
         if (!hasEnoughItems(player, aywenite, amount)) {
@@ -319,7 +320,7 @@ public class ItemUtils {
     }
 
     public static boolean giveAywenite(Player player, int amount) {
-        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
         if (aywenite == null) return false;
 
         aywenite.setAmount(amount);
@@ -475,14 +476,14 @@ public class ItemUtils {
         NamespacedKey namespacedKey = new NamespacedKey(OMCPlugin.getInstance(), key);
         return meta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
     }
-    
+
     public static ItemStack getTexturedItem(Material replacement) {
         if (replacement == null) return null;
         ItemStack item = new ItemStack(Material.PAPER);
         item.editMeta(meta -> meta.setItemModel(replacement.getKey()));
         return item;
     }
-    
+
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
      * Deux items sont considérés similaires s'ils ont le même type
@@ -542,5 +543,21 @@ public class ItemUtils {
             meta.setHideTooltip(true);
         });
         return item;
+    }
+
+    public static void reduceDurability(ItemStack item, int amount) {
+        if (item == null || item.getType().isAir()) return;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta instanceof Damageable d) {
+            int newDamage = d.getDamage() + amount;
+
+            if (newDamage >= d.getMaxDamage()) {
+                item.setAmount(0);
+            } else {
+                d.setDamage(newDamage);
+                item.setItemMeta(meta);
+            }
+        }
     }
 }

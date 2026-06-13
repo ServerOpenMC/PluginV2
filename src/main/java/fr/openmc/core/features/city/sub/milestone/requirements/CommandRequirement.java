@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.EventCityRequirement;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -86,19 +87,21 @@ public class CommandRequirement implements EventCityRequirement {
     @Override
     public Component getName(City city, CityLevels level) {
         if (city.getLevel() != level.ordinal()) {
-            return Component.text(String.format(
-                    "Exécuter %d fois %s",
-                    amountRequired, command
-            ));
+            return TranslationManager.translation(
+                    "feature.city.levels.requirements.command",
+                    Component.text(amountRequired),
+                    Component.text(command)
+            );
         }
 
-        return Component.text(String.format(
-                "Exécuter %d fois %s (%d/%d)",
-                amountRequired, command,
-                Objects.requireNonNull(
+        return TranslationManager.translation(
+                "feature.city.levels.requirements.command.progress",
+                Component.text(amountRequired),
+                Component.text(command),
+                Component.text(Objects.requireNonNull(
                         CityStatisticsManager.getOrCreateStat(city.getUniqueId(), getScope())
-                ).asInt(), amountRequired
-        ));
+                ).asInt())
+        );
     }
 
     /**

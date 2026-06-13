@@ -1,20 +1,22 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityTransferAction;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -62,15 +64,15 @@ public class CityTransferMenu extends PaginatedMenu {
 
                 String title = city.getRankName(uuid) + " ";
 
-                items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
                     itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                    itemMeta.lore(List.of(
-		                    Component.text("§7Voulez-vous transférer la ville à §d" + title + playerOffline.getName() + "§7 ?"),
-                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.city.menus.transfer.item.lore",
+                            Component.text(title + playerOffline.getName()).color(NamedTextColor.LIGHT_PURPLE)
                     ));
                 }).setOnClick(inventoryClickEvent -> {
                     if (!hasPermissionOwner) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.CITY_ISNT_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_isnt_owner"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 
@@ -87,17 +89,11 @@ public class CityTransferMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Fermer"));
-        }).setCloseButton());
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cPage précédente"));
-        }).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
-        }).setNextPageButton());
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
         return map;
     }
 
@@ -112,8 +108,8 @@ public class CityTransferMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu des villes - Transférer";
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.transfer.name");
     }
 
     @Override

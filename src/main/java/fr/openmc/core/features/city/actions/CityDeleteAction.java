@@ -8,7 +8,9 @@ import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -23,7 +25,7 @@ public class CityDeleteAction {
         City city = CityManager.getPlayerCity(uuid);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, true);
             player.closeInventory();
             return;
         }
@@ -39,18 +41,21 @@ public class CityDeleteAction {
                     }
 
                     CityManager.deleteCity(city);
-                    MessagesManager.sendMessage(player, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, MessageType.SUCCESS, false);
 
                     DynamicCooldownManager.use(uuid, "city:big", 60000); // 1 minute
                     player.closeInventory();
                 },
                 player::closeInventory,
                 List.of(
-                        Component.text("§7Voulez vous vraiment dissoudre la ville " + city.getName() + " ?"),
-                        Component.text("§cCette action est §4§lIRREVERSIBLE")
+                        TranslationManager.translation(
+                                "feature.city.delete.confirm.lore",
+                                Component.text(city.getName()).color(NamedTextColor.GRAY)
+                        ),
+                        TranslationManager.translation("feature.city.delete.confirm.warning")
                 ),
                 List.of(
-                        Component.text("§7Ne pas supprimer la ville")
+                        TranslationManager.translation("feature.city.delete.confirm.deny")
                 )
         );
         menu.open();

@@ -1,11 +1,12 @@
 package fr.openmc.core.features.displays.holograms;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
 import fr.openmc.core.utils.world.entities.TextDisplay;
@@ -126,7 +127,7 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         String hologramName = file.getName().replace(".yml", "");
         Location hologramLocation = hologramConfig.getLocation("location");
         if (hologramLocation == null) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Hologram {} has no location set in its config file, skipping.", hologramName);
+            OMCLogger.warn("Hologram {} has no location set in its config file, skipping.", hologramName);
             return;
         }
 

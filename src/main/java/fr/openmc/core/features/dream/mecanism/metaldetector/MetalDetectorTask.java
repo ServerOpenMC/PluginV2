@@ -39,7 +39,7 @@ public class MetalDetectorTask extends BukkitRunnable {
 
         DreamItem item = DreamItemRegistry.getByItemStack(player.getInventory().getItemInMainHand());
         if (item == null) return;
-        if (!item.getName().equals("omc_dream:metal_detector")) return;
+        if (!item.getId().equals("omc_dream:metal_detector")) return;
 
         double distance = player.getLocation().distance(chestLocation);
         String direction = DirectionUtils.getDirectionArrow(player, chestLocation);

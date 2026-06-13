@@ -6,8 +6,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.DominationOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +25,7 @@ public class CraftDominationOrbQuest extends MilestoneQuest implements Listener 
 						"§fFabriquer l'§dOrbe de Domination",
 						"§8§o1 sur 5 pour les dominer tous !"
 				),
-				DreamItemRegistry.getByName("omc_dream:domination_orb").getBest(),
+				DreamItemRegistry.DOMINATION_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_DOMINATION_ORB,
 				new QuestTier(1),

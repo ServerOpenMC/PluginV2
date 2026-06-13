@@ -1,8 +1,8 @@
 package fr.openmc.core.features.friend;
 
 import com.j256.ormlite.support.ConnectionSource;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.friend.commands.FriendCommand;

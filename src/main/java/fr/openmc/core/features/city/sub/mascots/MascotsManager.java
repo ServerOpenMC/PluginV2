@@ -6,8 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -24,7 +24,10 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,8 +51,6 @@ public class MascotsManager extends Feature implements DatabaseFeature, HasComma
     public static final List<UUID> movingMascots = new ArrayList<>();
     public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
-    public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%.0f/%.0f❤";
-    public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
@@ -204,11 +205,11 @@ public class MascotsManager extends Feature implements DatabaseFeature, HasComma
             mob.setHealth(maxHealth);
         }
 
-        mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
+        mob.customName(getAliveMascotName(
                 city.getName(),
                 mob.getHealth(),
                 maxHealth
-        )));
+        ));
     }
 
     public static void changeMascotsSkin(Mascot mascots, EntityType skin, Player player, int aywenite) {
@@ -223,7 +224,9 @@ public class MascotsManager extends Feature implements DatabaseFeature, HasComma
 
         // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
         if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && entityMascot.getHeight() <= 1.0) {
-	        MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la mascotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.city.mascots.skin.error.space_above"),
+                    Prefix.CITY, MessageType.INFO, false);
             return;
         }
 
@@ -233,7 +236,9 @@ public class MascotsManager extends Feature implements DatabaseFeature, HasComma
                 Material blockType = checkLoc.getBlock().getType();
 
                 if (blockType != Material.AIR) {
-	                MessagesManager.sendMessage(player, Component.text("Libérez de l'espace tout autour de la mascotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
+                    MessagesManager.sendMessage(player,
+                            TranslationManager.translation("feature.city.mascots.skin.error.space_around"),
+                            Prefix.CITY, MessageType.INFO, false);
                     return;
                 }
             }
@@ -282,11 +287,11 @@ public class MascotsManager extends Feature implements DatabaseFeature, HasComma
         mob.setPersistent(true);
         mob.setRemoveWhenFarAway(false);
 
-        mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
+        mob.customName(getAliveMascotName(
                 cityName,
                 baseHealth,
                 maxHealth
-        )));
+        ));
         mob.setCustomNameVisible(true);
 
         mob.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, true));
@@ -306,4 +311,20 @@ public class MascotsManager extends Feature implements DatabaseFeature, HasComma
         equipment.setItemInMainHandDropChance(0f);
         equipment.setItemInOffHandDropChance(0f);
     }
+
+    public static Component getAliveMascotName(String cityName, double health, double maxHealth) {
+        String formattedHealth = String.format(Locale.US, "%.0f", health);
+        String formattedMaxHealth = String.format(Locale.US, "%.0f", maxHealth);
+        return TranslationManager.translation(
+                "feature.city.mascots.name.alive",
+                Component.text(cityName).decorate(TextDecoration.BOLD),
+                Component.text(formattedHealth).color(NamedTextColor.RED),
+                Component.text("/" + formattedMaxHealth + "❤").color(NamedTextColor.RED)
+        );
+    }
+
+    public static Component getDeadMascotName() {
+        return TranslationManager.translation("feature.city.mascots.name.dead");
+    }
+
 }

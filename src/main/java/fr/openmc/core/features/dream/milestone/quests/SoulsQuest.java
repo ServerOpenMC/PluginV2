@@ -6,8 +6,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.loots.Soul;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +29,7 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 						"§8§oIl me semble avoir vu des créatures",
 						"§8§ovolantes rôder vers les grands arbres sombres."
 				),
-				DreamItemRegistry.getByName("omc_dream:soul").getBest(),
+				DreamItemRegistry.SOUL,
 				MilestoneType.DREAM,
 				DreamSteps.SOULS,
 				new QuestTier(SOULS),

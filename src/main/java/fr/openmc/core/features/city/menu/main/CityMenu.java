@@ -2,10 +2,12 @@ package fr.openmc.core.features.city.menu.main;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.main.buttons.*;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -35,8 +37,8 @@ public class CityMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des Villes";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.menus.main.name");
     }
 
     @Override
@@ -50,8 +52,8 @@ public class CityMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
 		City city = CityManager.getPlayerCity(player.getUniqueId());

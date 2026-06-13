@@ -1,0 +1,233 @@
+info:
+  namespace: omc_dream
+recipes:
+  crafting_table:
+    old_creaking_helmet:
+      enabled: true
+      pattern:
+        - BCB
+        - BXB
+        - AAA
+      ingredients:
+        A: "omc_dream:corrupted_string"
+        C: "omc_dream:creaking_heart"
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:old_creaking_helmet"
+        amount: 1
+    old_creaking_chestplate:
+      enabled: true
+      pattern:
+        - BXB
+        - BCB
+        - BAB
+      ingredients:
+        A: "omc_dream:corrupted_string"
+        C: "omc_dream:creaking_heart"
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:old_creaking_chestplate"
+        amount: 1
+    old_creaking_leggings:
+      enabled: true
+      pattern:
+        - BCB
+        - BXB
+        - BXB
+      ingredients:
+        C: "omc_dream:creaking_heart"
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:old_creaking_leggings"
+        amount: 1
+    old_creaking_boots:
+      enabled: true
+      pattern:
+        - AXA
+        - BXB
+        - CXC
+      ingredients:
+        A: "omc_dream:corrupted_string"
+        C: "omc_dream:creaking_heart"
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:old_creaking_boots"
+        amount: 1
+    old_creaking_axe:
+      enabled: true
+      pattern:
+        - XCC
+        - XBC
+        - BXX
+      ingredients:
+        C: "omc_dream:creaking_heart"
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:old_creaking_axe"
+        amount: 1
+    domination_orb:
+      enabled: true
+      pattern:
+        - BCB
+        - CSC
+        - BCB
+      ingredients:
+        C: "omc_dream:creaking_heart"
+        B: "omc_dream:old_pale_oak"
+        S: "omc_dream:corrupted_sculk"
+      result:
+        item: "omc_dream:domination_orb"
+        amount: 1
+
+    crafting_table:
+      enabled: true
+      pattern:
+        - BB
+        - BB
+      ingredients:
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:crafting_table"
+        amount: 1
+
+    eternal_campfire:
+      enabled: true
+      pattern:
+        - XCX
+        - CCC
+        - BBB
+      ingredients:
+        C: "omc_dream:coal_burn"
+        B: "omc_dream:old_pale_oak"
+      result:
+        item: "omc_dream:eternal_campfire"
+        amount: 1
+
+    mecanic_pickaxe:
+      enabled: true
+      pattern:
+        - WWW
+        - XOX
+        - XOX
+      ingredients:
+        W: "omc_dream:glacite"
+        O: "omc_dream:ewenite"
+      result:
+        item: "omc_dream:mecanic_pickaxe"
+        amount: 1
+
+    cold_helmet:
+      enabled: true
+      pattern:
+        - BCB
+        - BXB
+      ingredients:
+        C: "omc_dream:ewenite"
+        B: "omc_dream:glacite"
+      result:
+        item: "omc_dream:cold_helmet"
+        amount: 1
+
+    cold_chestplate:
+      enabled: true
+      pattern:
+        - BXB
+        - BCB
+        - BBB
+      ingredients:
+        C: "omc_dream:ewenite"
+        B: "omc_dream:glacite"
+      result:
+        item: "omc_dream:cold_chestplate"
+        amount: 1
+
+    cold_leggings:
+      enabled: true
+      pattern:
+        - BCB
+        - BXB
+        - BXB
+      ingredients:
+        C: "omc_dream:ewenite"
+        B: "omc_dream:glacite"
+      result:
+        item: "omc_dream:cold_leggings"
+        amount: 1
+
+    cold_boots:
+      enabled: true
+      pattern:
+        - BXB
+        - BXB
+        - CXC
+      ingredients:
+        C: "omc_dream:ewenite"
+        B: "omc_dream:glacite"
+      result:
+        item: "omc_dream:cold_boots"
+        amount: 1
+
+    dream_helmet:
+      enabled: true
+      pattern:
+        - BOB
+        - BXB
+      ingredients:
+        O: "omc_dream:cloud_orb"
+        B: "omc_dream:ewenite"
+      result:
+        item: "omc_dream:dream_helmet"
+        amount: 1
+
+    dream_chestplate:
+      enabled: true
+      pattern:
+        - BXB
+        - OBP
+        - BBB
+      ingredients:
+        B: "omc_dream:ewenite"
+        O: "omc_dream:ame_orb"
+        P: "omc_dream:glacite_orb"
+      result:
+        item: "omc_dream:dream_chestplate"
+        amount: 1
+
+    dream_leggings:
+      enabled: true
+      pattern:
+        - COC
+        - CXC
+        - CXC
+      ingredients:
+        O: "omc_dream:mud_orb"
+        C: "omc_dream:ewenite"
+      result:
+        item: "omc_dream:dream_leggings"
+        amount: 1
+
+    dream_boots:
+      enabled: true
+      pattern:
+        - OXC
+        - CXC
+        - CXC
+      ingredients:
+        C: "omc_dream:ewenite"
+        O: "omc_dream:domination_orb"
+      result:
+        item: "omc_dream:dream_boots"
+        amount: 1
+
+    singularity:
+      enabled: true
+      shapeless: true
+      ingredients:
+        D: "omc_dream:domination_orb"
+        R: "omc_dream:ame_orb"
+        E: "omc_dream:cloud_orb"
+        A: "omc_dream:mud_orb"
+        M: "omc_dream:glacite_orb"
+      result:
+        item: "omc_dream:singularity"
+        amount: 1

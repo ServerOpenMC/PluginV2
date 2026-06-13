@@ -1,0 +1,28 @@
+info:
+  namespace: omc_foods
+items:
+  the_mixture:
+    display_name: "§9The Mixture"
+    lore:
+      - "§8§oun mystérieux mélange..."
+      - "§6Aucun Effet Secondaire!"
+    components_nbt_file: "the_mixture_nbt.json"
+    resource:
+      material: POTION
+      generate: false
+      model_path: the_mixture
+recipes:
+  crafting_table:
+    the_mixture:
+      enabled: true
+      pattern:
+        - BCB
+        - CAC
+        - BCB
+      ingredients:
+        A: "omc_items:aywenite"
+        C: "GLASS"
+        B: "IRON_INGOT"
+      result:
+        item: "omc_foods:the_mixture"
+        amount: 1

@@ -1,15 +1,16 @@
 package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -73,15 +74,15 @@ public class WarPlayerListMenu extends PaginatedMenu {
             boolean hasPermissionOwner = city.hasPermission(memberUUID, CityPermission.OWNER);
             String title;
             if (hasPermissionOwner) {
-                title = "Propriétaire ";
+                title = TranslationManager.translationString("feature.city.war.menu.players.role.owner");
             } else if (MayorManager.cityMayor.get(city.getUniqueId()).getMayorUUID().equals(memberUUID)) {
-                title = "Maire ";
+                title = TranslationManager.translationString("feature.city.war.menu.players.role.mayor");
             } else {
-                title = "Membre ";
+                title = TranslationManager.translationString("feature.city.war.menu.players.role.member");
             }
 
             String finalTitle = title;
-            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
         }
 
         return items;
@@ -93,24 +94,18 @@ public class WarPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-		            Component.text("§7Vous allez retourner au menu des détails de la ville en guerre"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
-        }, true));
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
+        map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
         return map;
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu de Guerre - Membres";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.war.menu.players.title");
     }
 
     @Override

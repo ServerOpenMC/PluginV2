@@ -5,14 +5,15 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
-import fr.openmc.core.features.milestones.listeners.PlayerJoin;
+import fr.openmc.core.features.milestones.listeners.PlayerJoinListener;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -47,7 +48,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
     @Override
     public Set<Listener> getListeners() {
         return Set.of(
-                new PlayerJoin()
+                new PlayerJoinListener()
         );
     }
 
@@ -79,7 +80,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
                 Milestone<?> milestone = type.getMilestone();
 	            milestone.getPlayerData().put(data.getUUID(), data);
             }
-			OMCPlugin.getInstance().getSLF4JLogger().info("Milestones loaded successfully from the database!");
+			OMCLogger.info("Milestones loaded successfully from the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +98,7 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
                     millestoneDao.createOrUpdate(model);
                 }
             }
-	        OMCPlugin.getInstance().getSLF4JLogger().info("Milestones saved successfully to the database!");
+	        OMCLogger.info("Milestones saved successfully to the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -147,7 +148,9 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
      * @return the step of the milestone for the player
      */
     public static int getPlayerStep(MilestoneType type, UUID playerUUID) {
-        return getMilestoneData(type).get(playerUUID).getStep();
+        var data = getMilestoneData(type);
+        if (data == null) return 0;
+        return data.get(playerUUID).getStep();
     }
 
     /**

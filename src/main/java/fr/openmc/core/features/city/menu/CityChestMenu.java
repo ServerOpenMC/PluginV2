@@ -1,10 +1,13 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -12,10 +15,11 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -95,30 +99,26 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
         if (Restart.isRestarting) return null;
 
         Player player = getOwner();
 
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
-        }, true).setOnClick(inventoryClickEvent -> {
-            exit(city, getInventory());
-        }));
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true)
+                .setOnClick(_ -> exit(city, getInventory())));
 
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Fermer"));
-        }).setOnClick(inventoryClickEvent -> {
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
+        }).setOnClick(_ -> {
             exit(city, getInventory());
             player.closeInventory();
         }));
 
         if (hasPreviousPage()) {
-            map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-                itemMeta.displayName(Component.text("§cPage précédente"));
+            map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
+                itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasPreviousPage()) {
                     Inventory inv = inventoryClickEvent.getInventory();
@@ -131,8 +131,8 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
         if (hasNextPage()) {
-            map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-                itemMeta.displayName(Component.text("§aPage suivante"));
+            map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
+                itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasNextPage()) {
                     Inventory inv = inventoryClickEvent.getInventory();
@@ -145,21 +145,29 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
 
-        List<Component> loreUpgrade = new ArrayList<>(List.of(
-                Component.text("§7Votre ville doit avoir : "),
-                Component.text("§8- §6" + city.getChestPages() * UPGRADE_PER_MONEY).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
-                Component.text("§8- §d" + city.getChestPages() * UPGRADE_PER_AYWENITE + " d'Aywenite"),
-                Component.empty()
-        ));
+        List<Component> loreUpgrade;
+        Component moneyValue = Component.text(city.getChestPages() * UPGRADE_PER_MONEY).color(NamedTextColor.GOLD);
+        Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+        Component ayweniteValue = Component.text(city.getChestPages() * UPGRADE_PER_AYWENITE).color(NamedTextColor.LIGHT_PURPLE);
         if (city.getChestPages() >= ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
-	        loreUpgrade.add(Component.text("§cLimite atteinte"));
+            loreUpgrade = TranslationManager.translationLore(
+                    "feature.city.menus.chest.upgrade.lore.max",
+                    moneyValue,
+                    moneyIcon,
+                    ayweniteValue
+            );
         } else {
-            loreUpgrade.add(Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE"));
+            loreUpgrade = TranslationManager.translationLore(
+                    "feature.city.menus.chest.upgrade.lore.click",
+                    moneyValue,
+                    moneyIcon,
+                    ayweniteValue
+            );
         }
 
-        if (city.hasPermission(getOwner().getUniqueId(), CityPermission.CHEST_UPGRADE) && city.getChestPages() < ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
-            map.put(47, new ItemBuilder(this, Material.ENDER_CHEST, itemMeta -> {
-                itemMeta.displayName(Component.text("§aAméliorer le coffre"));
+        if (city.hasPermission(getOwner().getUniqueId(), CityPermission.UPGRADE_CHEST) && city.getChestPages() < ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
+            map.put(47, new ItemMenuBuilder(this, Material.ENDER_CHEST, itemMeta -> {
+                itemMeta.displayName(TranslationManager.translation("feature.city.menus.chest.upgrade.title"));
                 itemMeta.lore(loreUpgrade);
             }).setOnClick(inventoryClickEvent -> {
                 if (!canCityChestUpgrade(city, player)) return;
@@ -173,8 +181,8 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull String getName() {
-	    return "Menu du coffre de " + this.city.getName() + " - Page " + this.page;
+    public @NotNull Component getName() {
+	    return TranslationManager.translation("feature.city.menus.chest.name", Component.text(this.city.getName()), Component.text(this.page));
     }
 
     @Override
@@ -200,17 +208,15 @@ public class CityChestMenu extends PaginatedMenu {
     public void onClose(InventoryCloseEvent event) {
         if (Restart.isRestarting) return;
         HumanEntity humanEntity = event.getPlayer();
-        if (!(humanEntity instanceof Player player)) {
-            return;
-        }
+        if (!(humanEntity instanceof Player player)) return;
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            return;
-        }
+        if (city == null) return;
 
         Inventory inv = event.getInventory();
         exit(city, inv);
+        // fixes #1007
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), ()-> MenuLib.updateMenu(player), 5L);
     }
 
     private void exit(City city, Inventory inv) {

@@ -6,8 +6,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.blocks.EternalCampFire;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class CraftEternalFireQuest extends MilestoneQuest implements Listener {
 						"§fFabriquer le §dfeu éternel",
 						"§8§oVa-t-on retrouver des dinosaures fossilisés ou Sid ?"
 				),
-				DreamItemRegistry.getByName("omc_dream:eternal_campfire").getBest(),
+				DreamItemRegistry.ETERNAL_CAMPFIRE,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_ETERNAL_FIRE,
 				new QuestTier(1),

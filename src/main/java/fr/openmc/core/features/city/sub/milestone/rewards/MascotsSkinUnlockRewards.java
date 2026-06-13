@@ -2,8 +2,10 @@ package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.mascots.models.MascotType;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,13 +71,35 @@ public enum MascotsSkinUnlockRewards implements CityRewards {
         List<String> names = Arrays.stream(unlocked)
                 .map(MascotType::getDisplayName)
                 .toList();
-        String skins;
-        if (names.size() == 1) {
-            skins = "la mascotte " + names.getFirst();
-        } else {
-            skins = "les mascottes " + String.join(", ", names.subList(0, names.size() - 1))
-                    + " et " + names.get(names.size() - 1);
+
+        Component separator = TranslationManager.translation("feature.city.levels.rewards.list.separator")
+                .appendSpace();
+        Component lastSeparator = Component.space()
+                .append(TranslationManager.translation("feature.city.levels.rewards.list.last_separator"))
+                .appendSpace();
+
+        Component skinsList = Component.text(names.getFirst());
+        for (int i = 1; i < names.size(); i++) {
+            Component currentSeparator = (i == names.size() - 1) ? lastSeparator : separator;
+            skinsList = skinsList.append(currentSeparator).append(Component.text(names.get(i)));
         }
-        return Component.text("§7Débloque §c" + skins);
+
+        Component skins;
+        if (names.size() == 1) {
+            skins = TranslationManager.translation(
+                    "feature.city.levels.rewards.mascot_skin.single",
+                    skinsList
+            );
+        } else {
+            skins = TranslationManager.translation(
+                    "feature.city.levels.rewards.mascot_skin.multiple",
+                    skinsList
+            );
+        }
+
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.unlock",
+                skins.color(NamedTextColor.RED)
+        );
     }
 }

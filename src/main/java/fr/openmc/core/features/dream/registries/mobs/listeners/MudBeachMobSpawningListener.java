@@ -1,8 +1,9 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -28,7 +29,7 @@ public class MudBeachMobSpawningListener implements Listener {
      */
     @EventHandler
     void onCreatureSpawn(CreatureSpawnEvent e) {
-        if (DreamMobsRegistry.isDreamMob(e.getEntity())) return;
+        if (CustomMobRegistry.isCustomMob(e.getEntity())) return;
 
         Location spawningLoc = e.getEntity().getLocation();
 
@@ -38,11 +39,11 @@ public class MudBeachMobSpawningListener implements Listener {
 
         e.setCancelled(true);
 
-        if (!world.getBiome(spawningLoc).equals(DreamBiome.MUD_BEACH.getBiome())) return;
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.MUD_BEACH)) return;
 
         double choice = Math.random();
         if (choice < CORRUPTED_TADPOLE_PROBABILITY) {
-            DreamMobsRegistry.getByName("corrupted_tadpole").spawn(spawningLoc);
+            DreamMobsRegistry.CORRUPTED_TADPOLE.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

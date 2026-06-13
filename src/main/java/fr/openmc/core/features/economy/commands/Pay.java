@@ -5,7 +5,9 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -21,14 +23,26 @@ public class Pay {
             @Named("montant") @Range(min = 1) double amount
     ) {
         if(player == target) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous payer vous-même"), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.economy.pay.self"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
         if(EconomyManager.transferBalance(player.getUniqueId(), target.getUniqueId(), amount, "Paiement de " + player.getName() + " à " + target.getName())) {
-            MessagesManager.sendMessage(player, Component.text("§aVous avez payé §e" + target.getName() + "§a de §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
-            MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.economy.pay.success",
+                            Component.text(target.getName()).color(NamedTextColor.YELLOW),
+                            Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(target,
+                    TranslationManager.translation(
+                            "feature.economy.pay.received",
+                            Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
+                            Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                    ),
+                    Prefix.OPENMC, MessageType.INFO, true);
         } else {
-            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.economy.pay.not_enough"), Prefix.OPENMC, MessageType.ERROR, true);
         }
     }
 

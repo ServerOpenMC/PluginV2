@@ -1,7 +1,5 @@
 package fr.openmc.core.registry.enchantments;
 
-import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.CustomItem;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;

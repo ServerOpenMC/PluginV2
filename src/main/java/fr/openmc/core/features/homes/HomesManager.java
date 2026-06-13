@@ -4,8 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.bootstrap.annotations.Credit;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
@@ -86,7 +86,7 @@ public class HomesManager extends Feature implements DatabaseFeature, HasCommand
                 .toList();
     }
 
-    public static int getHomeLimit(UUID playerUUID) {
+    public static HomeLimits getHomeLimit(UUID playerUUID) {
         HomeLimit homeLimit = homeLimits.stream()
                 .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
                 .findFirst()
@@ -97,7 +97,7 @@ public class HomesManager extends Feature implements DatabaseFeature, HasCommand
             homeLimits.add(homeLimit);
         }
 
-        return homeLimit.getLimit();
+        return homeLimit.getHomeLimit();
     }
 
     public static void updateHomeLimit(UUID playerUUID) {

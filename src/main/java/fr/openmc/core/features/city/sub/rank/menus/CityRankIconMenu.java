@@ -1,16 +1,17 @@
 package fr.openmc.core.features.city.sub.rank.menus;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.DBCityRank;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -84,10 +85,10 @@ public class CityRankIconMenu extends PaginatedMenu {
 		
 		for (int i = startIndex; i < endIndex; i++) {
 			Material material = filtered.get(i);
-			items.add(new ItemBuilder(this, material, itemMeta -> {
+			items.add(new ItemMenuBuilder(this, material, itemMeta -> {
 				if (itemMeta == null) return;
 				itemMeta.displayName(ItemUtils.getItemTranslation(material).decoration(TextDecoration.ITALIC, false));
-				itemMeta.lore(List.of(Component.text("§7Cliquez pour sélectionner cette icône")));
+				itemMeta.lore(List.of(TranslationManager.translation("feature.city.rank.menu.icon.item.lore")));
 			}).hide(getDataComponentType())
 					.setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank.withIcon(material)).open()));
 		}
@@ -97,36 +98,35 @@ public class CityRankIconMenu extends PaginatedMenu {
 	
 	
 	@Override
-	public Map<Integer, ItemBuilder> getButtons() {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
-		map.put(45, new ItemBuilder(this, Material.BARRIER
-				, itemMeta -> itemMeta.displayName(Component.text("§cRetour")), true));
+	public Map<Integer, ItemMenuBuilder> getButtons() {
+		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+		map.put(45, new ItemMenuBuilder(this, Material.BARRIER, true));
 		
 		if (hasPreviousPage())
-			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
-					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setOnClick(inventoryClickEvent -> {
+			map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
+					itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setOnClick(inventoryClickEvent -> {
 				new CityRankIconMenu(getOwner(), city, page - 1, oldRank, newRank, filter).open();
 			}));
 		if (hasNextPage())
-			map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
-					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setOnClick(inventoryClickEvent -> {
+			map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
+					itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setOnClick(inventoryClickEvent -> {
 				new CityRankIconMenu(getOwner(), city, page + 1, oldRank, newRank, filter).open();
 			}));
 		
-		map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_search").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("§bRechercher une icône"));
-			itemMeta.lore(List.of(Component.text("§7Cliquez pour saisir un mot-clé")));
+		map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_SEARCH, itemMeta -> {
+			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.search.title"));
+			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.search.lore"));
 		}).setOnClick(event -> {
-			DialogInput.send(getOwner(), Component.text("Entrez le nom d'un mot clé pour l'icône"), MAX_LENGTH, input -> {
+			DialogInput.send(getOwner(), TranslationManager.translation("feature.city.rank.menu.icon.search.prompt"), MAX_LENGTH, input -> {
 				if (input == null) return;
 				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, input).open();
 			});
 		}));
 		
 		if (filter != null && !filter.isEmpty()) {
-			map.put(53, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-				itemMeta.displayName(Component.text("§cEffacer le filtre"));
-				itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ POUR EFFACER LE FILTRE")));
+			map.put(53, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
+				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.clear.title"));
+				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.clear.lore"));
 			}).setOnClick(event -> {
 				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open();
 			}));
@@ -135,8 +135,11 @@ public class CityRankIconMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu de choix d'une icône - Page " + (page + 1);
+	public @NotNull Component getName() {
+		return TranslationManager.translation(
+				"feature.city.rank.menu.icon.title",
+				Component.text(page + 1).color(NamedTextColor.YELLOW)
+		);
 	}
 	
 	@Override

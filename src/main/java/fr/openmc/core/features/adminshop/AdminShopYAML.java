@@ -1,6 +1,7 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -119,7 +120,7 @@ public class AdminShopYAML {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save admin shop configuration file: {}", e.getMessage(), e);
+            OMCLogger.warn("Failed to save admin shop configuration file: {}", e.getMessage(), e);
         }
     }
 

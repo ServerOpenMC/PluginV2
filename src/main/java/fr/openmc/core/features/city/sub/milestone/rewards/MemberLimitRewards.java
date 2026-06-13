@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  * Enumération représentant les récompenses de limite de membres pour une ville.
@@ -71,6 +73,9 @@ public enum MemberLimitRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        return Component.text("§d" + memberLimit + " §7membres maximum");
+        return TranslationManager.translation(
+                "feature.city.levels.rewards.member_limit",
+                Component.text(memberLimit).color(NamedTextColor.LIGHT_PURPLE)
+        ).color(NamedTextColor.GRAY);
     }
 }

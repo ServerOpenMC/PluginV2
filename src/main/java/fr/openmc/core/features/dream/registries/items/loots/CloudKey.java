@@ -1,37 +1,24 @@
 package fr.openmc.core.features.dream.registries.items.loots;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 public class CloudKey extends DreamItem {
-    public CloudKey(String name) {
-        super(name);
-    }
-
-    @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.RARE;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return false;
+    public CloudKey() {
+        super(new DreamItemMeta(
+                "omc_dream:cloud_key",
+                "Clé nuageuse",
+                DreamRarity.RARE,
+                Material.OMINOUS_TRIAL_KEY,
+                false
+        ));
     }
 
     @Override
     public ItemStack getTransferableItem() {
         return null;
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.OMINOUS_TRIAL_KEY);
-
-        item.getItemMeta().itemName(Component.text("Clé nuageuse"));
-        return item;
     }
 }

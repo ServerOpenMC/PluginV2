@@ -8,8 +8,8 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.DominationOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
-import java.util.Objects;
 
 public class AltarQuest extends MilestoneQuest implements Listener {
 	public AltarQuest() {
@@ -39,7 +38,7 @@ public class AltarQuest extends MilestoneQuest implements Listener {
 						"§6Comment puis-je en trouver, et comment les reconnaître ?",
 						"§3Voyageur : Regarde autour de l'autel, vers les §darbres§3. Les âmes se baladent à l'extérieur du bâtiment.",
 						"§3Voyageur : Tout comme l'armure \"Creaking\", il est possible d'avoir l'armure des §d\"Âmes\"§3. Celle-ci te confèrera §d" +
-								((DreamEquipableItem) Objects.requireNonNull(DreamItemRegistry.getByName("omc_dream:soul_chestplate"))).getAdditionalMaxTime() +
+								((DreamEquipableItem) DreamItemRegistry.SOUL_CHESTPLATE).getAdditionalMaxTime() +
 								" secondes §3supplémentaires par pièces d'armure équipées.",
 						"§3Voyageur : Tu peux également transformer ta hache à l'autel avec quelques âmes supplémentaires."
 				)

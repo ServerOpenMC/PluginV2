@@ -5,8 +5,8 @@ import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.GlaciteOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.models.MilestoneQuest;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +23,7 @@ public class GlaciteOrbQuest extends MilestoneQuest implements Listener {
 						"§fEchanger l'§dOrbe de Glace",
 						"§8§oDernière ligne droite pour les collecter toutes."
 				),
-				DreamItemRegistry.getByName("omc_dream:glacite_orb").getBest(),
+				DreamItemRegistry.GLACITE_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.GLACITE_ORB,
 				new QuestTier(1),

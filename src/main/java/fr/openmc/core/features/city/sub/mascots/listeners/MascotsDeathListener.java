@@ -7,7 +7,6 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -24,8 +23,6 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.UUID;
-
-import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
 
 public class MascotsDeathListener implements Listener {
     @EventHandler
@@ -47,7 +44,7 @@ public class MascotsDeathListener implements Listener {
         if (mascot == null) return;
 
         mascot.setAlive(false);
-        entity.customName(Component.text(DEAD_MASCOT_NAME));
+        entity.customName(MascotsManager.getDeadMascotName());
 
         e.setCancelled(true);
 

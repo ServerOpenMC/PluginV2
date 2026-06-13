@@ -3,8 +3,8 @@ package fr.openmc.core.features.mailboxes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -22,8 +22,8 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 public class HomeMailbox extends Menu {
 
     @Override
-    public @NotNull String getName() {
-        return "Boite aux lettres";
+    public @NotNull Component getName() {
+        return Component.text("Boite aux lettres");
     }
 
     @Override
@@ -41,24 +41,24 @@ public class HomeMailbox extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        content.put(3, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_hourglass").getBest(), meta -> {
+        content.put(3, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.MAILBOX_HOURGLASS, meta -> {
             meta.displayName(Component
                     .text("En attente", NamedTextColor.DARK_AQUA, TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)
             );
         }).setOnClick(e -> new PendingMailbox(getOwner()).open()));
 
-        content.put(4, new ItemBuilder(this, getHead(getOwner()), meta -> {
+        content.put(4, new ItemMenuBuilder(this, getHead(getOwner()), meta -> {
             meta.displayName(Component
                     .text("Ma boite aux lettres", NamedTextColor.GOLD, TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)
             );
         }).setOnClick(e -> new PlayerMailbox(getOwner()).open()));
 
-        content.put(5, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_send").getBest(), meta -> {
+        content.put(5, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.MAILBOX_SEND, meta -> {
             meta.displayName(Component
                     .text("Envoyer", NamedTextColor.DARK_AQUA, TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)

@@ -2,22 +2,24 @@ package fr.openmc.core.features.dream.registries.items.armors.dream;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.EquipableItem;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class DreamBoots extends DreamItem implements DreamEquipableItem, EquipableItem {
-    public DreamBoots(String name) {
-        super(name);
+    public DreamBoots() {
+        super(new DreamItemMeta(
+                "omc_dream:dream_boots",
+                "Bottes Oniriques",
+                DreamRarity.ONIRISIME,
+                Material.LEATHER_BOOTS,
+                true
+        ));
     }
 
     @Override
@@ -31,26 +33,8 @@ public class DreamBoots extends DreamItem implements DreamEquipableItem, Equipab
     }
 
     @Override
-    public DreamRarity getRarity() {
-        return DreamRarity.ONIRISIME;
-    }
-
-    @Override
-    public boolean isTransferable() {
-        return true;
-    }
-
-    @Override
     public ItemStack getTransferableItem() {
         return this.getBestTransferable();
-    }
-
-    @Override
-    public @NonNull ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.NETHERITE_BOOTS);
-
-        item.getItemMeta().itemName(Component.text("Bottes Oniriques"));
-        return item;
     }
 
     @Override

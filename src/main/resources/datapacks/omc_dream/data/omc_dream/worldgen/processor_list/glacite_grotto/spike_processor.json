@@ -1,0 +1,12 @@
+{
+    "processors": [
+        {
+            "processor_type": "minecraft:protected_blocks",
+            "value": "#snow"
+        },
+        {
+            "processor_type": "block_ignore",
+            "blocks": [{"Name": "air"}]
+        }
+    ]
+}

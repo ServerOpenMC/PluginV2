@@ -1,0 +1,10 @@
+info:
+  namespace: omc_blocks
+categories:
+  omc_blocks:
+    enabled: true
+    skip_if_already: false
+    icon: omc_blocks:aywenite_block
+    name: "OpenMC Blocks"
+    items:
+      - omc_blocks:*

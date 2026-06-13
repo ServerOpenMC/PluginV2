@@ -3,18 +3,20 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -41,7 +43,10 @@ public class MineralRushPerk implements Listener {
         if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement la §eRuée Minière §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.city.mayor.perk.event.mineral.start",
+                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))).color(NamedTextColor.RED)
+            ), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
@@ -63,7 +68,7 @@ public class MineralRushPerk implements Listener {
 
             if (player == null || !player.isOnline()) continue;
 	        
-	        MessagesManager.sendMessage(player, Component.text("La réforme d'évènement la §eRuée Minière §fest terminée !"), Prefix.MAYOR, MessageType.INFO, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.perk.event.mineral.end"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
@@ -114,6 +119,6 @@ public class MineralRushPerk implements Listener {
 
         Block block = event.getBlock();
 
-        block.getWorld().dropItemNaturally(block.getLocation(), CustomItemRegistry.getByName("omc_items:aywenite").getBest());
+        block.getWorld().dropItemNaturally(block.getLocation(), OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest());
     }
 }

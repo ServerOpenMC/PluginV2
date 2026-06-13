@@ -1,12 +1,12 @@
 package fr.openmc.core.features.quests.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.hooks.ItemsAdderHook;
-import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -20,7 +20,7 @@ import java.util.List;
 public class MineAyweniteQuest extends Quest implements Listener {
 
     public MineAyweniteQuest() {
-        super("Ohhh... c'est précieux ça ?", List.of("Miner {target} Aywenite{s}"), CustomItemRegistry.getByName("omc_items:aywenite").getBest());
+        super("Ohhh... c'est précieux ça ?", List.of("Miner {target} Aywenite{s}"), OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest());
 
         this.addTiers(
                 new QuestTier(1, new QuestMoneyReward(20)),

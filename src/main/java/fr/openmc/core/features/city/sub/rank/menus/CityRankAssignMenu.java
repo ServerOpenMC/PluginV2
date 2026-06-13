@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
@@ -11,7 +11,9 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -32,8 +34,8 @@ public class CityRankAssignMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Menu des Villes - Assigner un grade";
+	public @NotNull Component getName() {
+		return TranslationManager.translation("feature.city.rank.menu.assign.title");
 	}
 
 	@Override
@@ -55,19 +57,26 @@ public class CityRankAssignMenu extends Menu {
 	}
 	
 	@Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
 		Set<DBCityRank> availableRanks = city.getRanks();
 		for (DBCityRank rank : availableRanks) {
-			map.put(map.size(), new ItemBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
+			map.put(map.size(), new ItemMenuBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
 				itemMeta.displayName(Component.text(rank.getName()));
 				itemMeta.lore(List.of(
-						Component.text("§7Permissions : " + (rank.getPermissionsSet().isEmpty() ? "§cAucune" : "§a" + rank.getPermissionsSet().size() + " permission(s)"))
+						TranslationManager.translation(
+								"feature.city.rank.menu.assign.item.lore.count",
+								rank.getPermissionsSet().isEmpty()
+										? TranslationManager.translation("feature.city.rank.menu.assign.item.lore.none")
+												.color(NamedTextColor.RED)
+										: Component.text(rank.getPermissionsSet().size())
+												.color(NamedTextColor.GREEN)
+						).color(NamedTextColor.GRAY)
 				));
 			}).setOnClick(event -> {
 				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_ASSIGN.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.grade.cannot_assign"), Prefix.CITY, MessageType.ERROR, false);
 					return;
 				}
 

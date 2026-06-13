@@ -4,9 +4,10 @@ import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.MessagesManager.Message;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,14 +28,19 @@ public class Spawn {
 
         if (sender instanceof Player player && (target == null || player.getUniqueId().equals(target.getUniqueId()))) {
             PlayerUtils.sendFadeTitleTeleport(player, spawnLocation);
-            MessagesManager.sendMessage(player, Component.text("§aVous avez été envoyé au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.spawn.got_sent"),
+                    Prefix.OPENMC, MessageType.SUCCESS, true);
         } else {
             if(!(sender instanceof Player) || sender.hasPermission("omc.admin.commands.spawn.others")) {
                 PlayerUtils.sendFadeTitleTeleport(target, spawnLocation);
-                MessagesManager.sendMessage(sender, Component.text("§aVous avez envoyé §e" + target.getName() + "§a au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
-                MessagesManager.sendMessage(target, Component.text("§aVous avez été envoyé au spawn par §e" + (sender instanceof Player player ? player.getName() : "Console") + "§a"), Prefix.OPENMC, MessageType.WARNING, true);
+                MessagesManager.sendMessage(sender, TranslationManager.translation("command.utils.spawn.have_sent",
+                        Component.text(target.getName()).color(NamedTextColor.YELLOW)), Prefix.OPENMC, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(target, TranslationManager.translation("command.utils.spawn.have_sent_by",
+                        (sender instanceof Player player ? Component.text(player.getName()).color(NamedTextColor.YELLOW) :
+                                Component.text("Console").color(NamedTextColor.YELLOW))),
+                        Prefix.OPENMC, MessageType.WARNING, true);
             } else {
-                MessagesManager.sendMessage(sender, Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }

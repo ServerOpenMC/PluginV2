@@ -5,7 +5,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -50,7 +50,7 @@ public class FriendRequest extends BukkitRunnable {
         if (isPlayerOnline(playerUUID)) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null) {
-                MessagesManager.sendMessage(player, Component.text("§cLa demande d'ami a expiré."), Prefix.FRIEND, MessageType.INFO, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.expired"), Prefix.FRIEND, MessageType.INFO, true);
             }
         }
     }

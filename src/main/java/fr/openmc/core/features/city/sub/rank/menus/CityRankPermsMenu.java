@@ -2,19 +2,22 @@ package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankCommands;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -63,17 +66,22 @@ public class CityRankPermsMenu extends PaginatedMenu {
 			if (permission == CityPermission.OWNER) continue;
 			
 			boolean hasPerm = this.newRank.getPermissionsSet().contains(permission);
-			ItemBuilder itemBuilder = new ItemBuilder(this, permission.getIcon(), itemMeta -> {
+			ItemMenuBuilder itemBuilder = new ItemMenuBuilder(this, permission.getIcon(), itemMeta -> {
 				itemMeta.setEnchantmentGlintOverride(hasPerm);
-				itemMeta.displayName(Component.text((hasPerm ? "§cRetirer " : "§aAjouter ") + permission.getDisplayName()));
-				
+				itemMeta.displayName(TranslationManager.translation(
+						hasPerm ? "feature.city.rank.menu.perms.item.remove" : "feature.city.rank.menu.perms.item.add",
+						permission.getDisplayName()
+				).color(hasPerm ? NamedTextColor.RED : NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+
 				List<Component> lore = List.of(
-						Component.text("§e§lCLIQUEZ POUR " + (hasPerm ? "RETIRER" : "AJOUTER") + " CETTE PERMISSION")
+						TranslationManager.translation(
+							hasPerm ? "feature.city.rank.menu.perms.item.lore.remove" : "feature.city.rank.menu.perms.item.lore.add"
+						).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)
 				);
 				itemMeta.lore(lore);
 			}).setOnClick(inventoryClickEvent -> {
 				if (!canEdit)
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.CITY_RANKS_CANNOT_MODIFY_HIGHER.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+					MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.grade.cannot_modify_sup_role"), Prefix.CITY, MessageType.ERROR, true);
 				else {
 					CityRankCommands.swapPermission(getOwner(), newRank, permission);
 					new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
@@ -87,34 +95,31 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public Map<Integer, ItemBuilder> getButtons() {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
+	public Map<Integer, ItemMenuBuilder> getButtons() {
+		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
-		map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("§aRetour"));
-			itemMeta.lore(List.of(Component.text("§7Cliquez pour retourner au menu précédent")));
-		}).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank).open()));
+		map.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
+			itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
+			itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
+		}).setOnClick(_ -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank).open()));
 		
 		if (hasPreviousPage()) {
-			map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
-				itemMeta.displayName(Component.text("§aPage précédente"));
-				itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page précédente")));
-			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page - 1).open()));
+			map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
+				itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
+				itemMeta.lore(List.of(TranslationManager.translation("messages.menus.previous_page_lore")));
+			}).setOnClick(_ -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page - 1).open()));
 		}
 		if (hasNextPage()) {
-			map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
-				itemMeta.displayName(Component.text("§aPage suivante"));
-				itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page suivante")));
-			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page + 1).open()));
+			map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
+				itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
+				itemMeta.lore(List.of(TranslationManager.translation("messages.menus.next_page_lore")));
+			}).setOnClick(_ -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page + 1).open()));
 		}
 		
 		if (canEdit) {
-			map.put(53, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-				itemMeta.displayName(Component.text("§6Gérer toutes les permissions du grade"));
-				itemMeta.lore(List.of(
-						Component.text("§cClique-gauche pour tout retirer"),
-						Component.text("§aClique-droit pour tout ajouter")
-				));
+			map.put(53, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.perms.manage_all.title"));
+				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.perms.manage_all.lore"));
 			}).setOnClick(inventoryClickEvent -> {
 				if (inventoryClickEvent.isLeftClick()) CityRankCommands.removeAllPermissions(getOwner(), newRank);
 				else if (inventoryClickEvent.isRightClick()) CityRankCommands.addAllPermissions(getOwner(), newRank);
@@ -127,8 +132,11 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull String getName() {
-		return "Permissions du grade " + this.newRank.getName();
+	public @NotNull Component getName() {
+		return TranslationManager.translation(
+				"feature.city.rank.menu.perms.title",
+				Component.text(this.newRank.getName()).color(NamedTextColor.YELLOW)
+		);
 	}
 	
 	@Override

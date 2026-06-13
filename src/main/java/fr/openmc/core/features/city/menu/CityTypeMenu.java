@@ -2,21 +2,22 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityChangeAction;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,8 @@ public class CityTypeMenu extends Menu {
     }
 
     @Override
-    public @NotNull String getName() {
-        return "Menu des villes - Type";
+    public @NotNull Component getName() {
+        return TranslationManager.translation("feature.city.menus.type.name");
     }
 
     @Override
@@ -48,20 +49,16 @@ public class CityTypeMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        List<Component> peaceInfo = new ArrayList<>();
-
         boolean enchantPeace = city.getType() == CityType.PEACE;
-	    peaceInfo.add(Component.text("§7Votre sécurité est §aassurée §7!"));
-        peaceInfo.add(Component.empty());
-	    peaceInfo.add(Component.text("§6§lTIPS: Parfait pour build, et échanger en toute tranquilité !"));
+        List<Component> peaceInfo = TranslationManager.translationLore("feature.city.menus.type.peace.lore");
 
-        map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
-            itemMeta.displayName(Component.text("§aVille en paix"));
+        map.put(11, new ItemMenuBuilder(this, Material.POPPY, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.type.peace.title"));
             itemMeta.lore(peaceInfo);
             itemMeta.setEnchantmentGlintOverride(enchantPeace);
         }).setOnClick(inventoryClickEvent -> {
@@ -70,21 +67,19 @@ public class CityTypeMenu extends Menu {
             CityChangeAction.beginChangeCity(player, CityType.PEACE);
         }));
 
-        List<Component> warInfo = new ArrayList<>();
-        warInfo.add(Component.text("§7Un monde de §cguerre §7et de §cconcurrence."));
-        warInfo.add(Component.empty());
-        warInfo.add(Component.text("§c§l ⚠ ATTENTION"));
-	    warInfo.add(Component.text("§8- §cLes villes étant dans le même status que vous, pourront vous §cdéclarer la guerre !"));
-        warInfo.add(Component.text("§6§lTIPS: Idéal pour les tryhardeurs et les compétitifs"));
-
+        List<Component> warInfo;
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
-            warInfo.add(Component.empty());
-	        warInfo.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + " pour débloquer ceci"));
+            warInfo = TranslationManager.translationLore(
+                    "feature.city.menus.type.war.lore.locked",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR)).color(NamedTextColor.RED)
+            );
+        } else {
+            warInfo = TranslationManager.translationLore("feature.city.menus.type.war.lore");
         }
 
         boolean enchantWar = city.getType() == CityType.WAR;
-        map.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
-            itemMeta.displayName(Component.text("§cVille en guerre"));
+        map.put(15, new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.type.war.title"));
             itemMeta.lore(warInfo);
             itemMeta.setEnchantmentGlintOverride(enchantWar);
         }).setOnClick(inventoryClickEvent -> {
@@ -93,9 +88,7 @@ public class CityTypeMenu extends Menu {
             CityChangeAction.beginChangeCity(player, CityType.WAR);
         }));
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }
