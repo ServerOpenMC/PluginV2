@@ -1,6 +1,7 @@
 package fr.openmc.core.bootstrap.features.types;
 
 import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -17,11 +18,12 @@ public interface LoadIfEnable <T extends Hooks> {
      * @return True si le hook est actif et la feature doit etre chargée
      */
     default boolean shouldLoad() {
-        Class<? extends Hooks> hookClass = resolveHookClass();
-        if (hookClass == null) {
-            return false;
-        }
         try {
+            Class<? extends Hooks> hookClass = resolveHookClass();
+            if (hookClass == null) {
+                return false;
+            }
+
             Method method;
             try {
                 method = hookClass.getMethod("isEnable");
@@ -33,6 +35,9 @@ public interface LoadIfEnable <T extends Hooks> {
             return Boolean.TRUE.equals(result);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
+        } catch (NoClassDefFoundError e) {
+            OMCLogger.errorFormatted("Plugin has failed to register hooks because " + e.getMessage() + " does not exist.");
             return false;
         }
     }

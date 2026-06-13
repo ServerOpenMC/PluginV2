@@ -209,7 +209,7 @@ public class ItemMenuBuilder extends ItemBuilder {
 	 *                   modification of properties such as the display name, lore, enchantments, and more.
 	 */
 	public ItemMenuBuilder(Menu itemMenu, CustomItem customitem, Consumer<ItemMeta> itemMeta) {
-		super(customitem.getBest());
+		super(customitem.getBest(), itemMeta);
 		this.itemMenu = itemMenu;
 	}
 
