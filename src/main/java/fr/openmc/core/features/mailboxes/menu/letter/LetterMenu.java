@@ -164,11 +164,13 @@ public class LetterMenu extends Menu {
         content.put(50, ItemMenuTemplate.btn(
                 this,
                         "✘",
-                        "Refuser",
+                        "feature.mailboxes.menu.button.refuse",
                         List.of(
-                                Component.text("Si vous faites cela, les items seront supprimés",
-                                        NamedTextColor.RED, TextDecoration.BOLD)
-                                        .decoration(TextDecoration.ITALIC, false)),
+                                TranslationManager.translation("feature.mailboxes.menu.refuse_warning")
+                                        .color(NamedTextColor.RED)
+                                        .decorate(TextDecoration.BOLD)
+                                        .decoration(TextDecoration.ITALIC, false)
+                        ),
                         OMCRegistry.CUSTOM_ITEMS.MAILBOX_REFUSE_BTN, NamedTextColor.DARK_RED, true)
                 .setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
         content.put(53, ItemMenuTemplate.BTN_CLOSE.apply(this)

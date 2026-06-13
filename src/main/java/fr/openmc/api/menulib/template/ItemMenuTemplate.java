@@ -17,14 +17,18 @@ import java.util.function.Function;
 public class ItemMenuTemplate {
     public static final Function<Menu, ItemMenuBuilder> BTN_PREVIOUS_PAGE_WHITE = (menu) ->
             new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_LEFT, meta ->
-                    meta.displayName(Component.text("⬅ Page précédente",
-                    NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+                    meta.displayName(TranslationManager.translation("feature.mailboxes.menu.button.previous_page_arrow")
+                            .color(NamedTextColor.GOLD)
+                            .decorate(TextDecoration.BOLD)
+                            .decoration(TextDecoration.ITALIC, false))
             ).setPreviousPageButton();
 
     public static final Function<Menu, ItemMenuBuilder> BTN_NEXT_PAGE_WHITE = (menu) ->
             new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_RIGHT, meta ->
-                    meta.displayName(Component.text("Page suivante ➡",
-                    NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+                    meta.displayName(TranslationManager.translation("feature.mailboxes.menu.button.next_page_arrow")
+                            .color(NamedTextColor.GOLD)
+                            .decorate(TextDecoration.BOLD)
+                            .decoration(TextDecoration.ITALIC, false))
             ).setNextPageButton();
 
     public static final Function<Menu, ItemMenuBuilder> BTN_PREVIOUS_PAGE_ORANGE = (menu) ->
@@ -43,18 +47,21 @@ public class ItemMenuTemplate {
             ).setCloseButton();
 
     public static final Function<Menu, ItemMenuBuilder> BTN_CLOSE = (menu) ->
-            btn(menu, "✘", "Annuler", OMCRegistry.CUSTOM_ITEMS.MAILBOX_CANCEL_BTN, NamedTextColor.DARK_RED, true)
+            btn(menu, "✘", "feature.mailboxes.menu.button.cancel", OMCRegistry.CUSTOM_ITEMS.MAILBOX_CANCEL_BTN, NamedTextColor.DARK_RED, true)
                     .setCloseButton();
 
     public static final Function<Menu, ItemMenuBuilder> BTN_MAILBOX_ACCEPT = (menu) ->
-            btn(menu, "✔", "Accepter", OMCRegistry.CUSTOM_ITEMS.MAILBOX_ACCEPT_BTN, NamedTextColor.DARK_GREEN, true);
+            btn(menu, "✔", "feature.mailboxes.menu.button.accept", OMCRegistry.CUSTOM_ITEMS.MAILBOX_ACCEPT_BTN, NamedTextColor.DARK_GREEN, true);
 
     public static final Function<Menu, ItemMenuBuilder> BTN_MAILBOX_SEND = (menu) ->
-            btn(menu, "✉", "Envoyer", OMCRegistry.CUSTOM_ITEMS.MAILBOX_SEND, NamedTextColor.DARK_AQUA, true);
+            btn(menu, "✉", "feature.mailboxes.menu.button.send", OMCRegistry.CUSTOM_ITEMS.MAILBOX_SEND, NamedTextColor.DARK_AQUA, true);
 
     public static final Function<Menu, ItemMenuBuilder> BTN_MAILBOX_HOME = (menu) ->
             new ItemMenuBuilder(menu, Material.CHEST, meta -> {
-        meta.displayName(Component.text("⬅ Home", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(TranslationManager.translation("feature.mailboxes.menu.button.home_arrow")
+                .color(NamedTextColor.GOLD)
+                .decorate(TextDecoration.BOLD)
+                .decoration(TextDecoration.ITALIC, false));
         meta.setMaxStackSize(1);
     }).setOnClick(e -> new HomeMailbox(menu.getOwner()).open());
 
