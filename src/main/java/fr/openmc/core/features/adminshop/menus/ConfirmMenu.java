@@ -4,11 +4,12 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -61,8 +62,8 @@ public class ConfirmMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         double pricePerUnit = isBuying ? shopItem.getActualBuyPrice() : shopItem.getActualSellPrice();
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
@@ -73,29 +74,27 @@ public class ConfirmMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(totalPrice)), Component.text(EconomyManager.getEconomyIcon())
         );
 
-        content.put(9, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:refuse_btn").getBest(), meta -> {
-            meta.displayName(TranslationManager.translation("messages.global.cancel"));
-        }, true));
+        content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
 
-        content.put(10, createQuantityButton("-64", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:64_btn").getBest(), event -> {
+        content.put(10, createQuantityButton("-64", OMCRegistry.CUSTOM_ITEMS.BTN_64, event -> {
             if (quantity > 64) quantity -= 64;
             else quantity = 1;
             this.open();
         }));
 
-        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:minus_btn").getBest(), event -> {
+        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.MINUS_BTN, event -> {
             if (quantity > 10) quantity -= 10;
             else quantity = 1;
             this.open();
         }));
 
-        content.put(12, createQuantityButton("-1", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:1_btn").getBest(), event -> {
+        content.put(12, createQuantityButton("-1", OMCRegistry.CUSTOM_ITEMS.BTN_1, event -> {
             if (quantity > 1) quantity--;
             else quantity = 1;
             this.open();
         }));
 
-        content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
+        content.put(13, new ItemMenuBuilder(this, shopItem.getMaterial(), meta -> {
             meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).setOnClick(event -> {
@@ -119,13 +118,13 @@ public class ConfirmMenu extends Menu {
             }
         }));
 
-        content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:1_btn").getBest(), event -> increaseQuantity(1)));
+        content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.BTN_1, event -> increaseQuantity(1)));
 
-        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:plus_btn").getBest(), event -> increaseQuantity(10)));
+        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.BTN_10, event -> increaseQuantity(10)));
 
-        content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.get("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
+        content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.BTN_64, event -> increaseQuantity(64)));
 
-        content.put(17, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:accept_btn").getBest(), meta -> {
+        content.put(17, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, meta -> {
             meta.displayName(TranslationManager.translation("messages.global.accept"));
         }).setOnClick(event -> {
             getOwner().closeInventory();
@@ -144,9 +143,9 @@ public class ConfirmMenu extends Menu {
      * @param action    The action to perform when the button is clicked.
      * @return The created item stack.
      */
-    private ItemBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
+    private ItemMenuBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         boolean plus = text.contains("+");
-        return new ItemBuilder(this, itemStack, meta ->
+        return new ItemMenuBuilder(this, itemStack, meta ->
             meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
                     plus ?
                             TranslationManager.translation("feature.adminshop.menu.confirm.add") :
@@ -156,6 +155,18 @@ public class ConfirmMenu extends Menu {
                     .decoration(TextDecoration.ITALIC, false)))
             .setItemId("quantity_" + text.replace("+", "plus").replace("-", "minus"))
             .setOnClick(action);
+    }
+
+    /**
+     * Creates a quantity button with the specified text and item stack.
+     *
+     * @param text      The text to display on the button.
+     * @param customItem The CustomItem to use for the button.
+     * @param action    The action to perform when the button is clicked.
+     * @return The created item stack.
+     */
+    private ItemMenuBuilder createQuantityButton(String text, CustomItem customItem, Consumer<InventoryClickEvent> action) {
+        return this.createQuantityButton(text, customItem.getBest(), action);
     }
 
     /**

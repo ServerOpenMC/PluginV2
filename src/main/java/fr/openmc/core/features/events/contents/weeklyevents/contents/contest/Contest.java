@@ -28,7 +28,7 @@ public class Contest extends WeeklyEvent {
 
     @Override
     public ItemStack getIcon() {
-        return OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest();
+        return OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
     }
 
     @Override

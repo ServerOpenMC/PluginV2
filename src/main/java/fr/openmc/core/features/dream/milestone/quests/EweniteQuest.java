@@ -27,7 +27,7 @@ public class EweniteQuest extends MilestoneQuest implements Listener {
 						"§8§oUn nouveau minerai à exploiter.",
 						"§8§oBizarre, ce nom m'est familier."
 				),
-				DreamItemRegistry.getByName("omc_dream:ewenite").getBest(),
+				DreamItemRegistry.EWENITE,
 				MilestoneType.DREAM,
 				DreamSteps.EWENITE,
 				new QuestTier(1),

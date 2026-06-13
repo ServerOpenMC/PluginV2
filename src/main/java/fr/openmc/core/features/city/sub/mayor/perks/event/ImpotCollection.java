@@ -57,10 +57,10 @@ public class ImpotCollection implements Listener {
 
             EntityEquipment equipment = zombie.getEquipment();
             if (equipment != null) {
-                equipment.setHelmet(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_helmet").getBest());
-                equipment.setChestplate(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_chestplate").getBest());
-                equipment.setLeggings(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_leggings").getBest());
-                equipment.setBoots(OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_boots").getBest());
+                equipment.setHelmet(OMCRegistry.CUSTOM_ITEMS.SUIT_HELMET.getBest());
+                equipment.setChestplate(OMCRegistry.CUSTOM_ITEMS.SUIT_CHESTPLATE.getBest());
+                equipment.setLeggings(OMCRegistry.CUSTOM_ITEMS.SUIT_LEGGINGS.getBest());
+                equipment.setBoots(OMCRegistry.CUSTOM_ITEMS.SUIT_BOOTS.getBest());
             }
 
             zombie.setShouldBurnInDay(false);

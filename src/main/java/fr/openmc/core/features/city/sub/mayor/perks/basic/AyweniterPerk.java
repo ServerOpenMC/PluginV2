@@ -46,7 +46,7 @@ public class AyweniterPerk implements Listener {
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
-                ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+                ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                 ayweniteItem.setAmount(2);
                 player.getInventory().addItem(ayweniteItem);
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 10.0F, 0.6F);

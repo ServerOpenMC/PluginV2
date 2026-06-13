@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,11 +27,22 @@ public class QuestItemReward implements QuestReward {
     /**
      * Create a new QuestItemReward.
      *
-     * @param material The material of the item.
+     * @param itemStack The material of the item.
      * @param amount   The amount of the item.
      */
-    public QuestItemReward(ItemStack material, int amount) {
-        this.itemStack = material;
+    public QuestItemReward(ItemStack itemStack, int amount) {
+        this.itemStack = itemStack;
+        this.amount = amount;
+    }
+
+    /**
+     * Create a new QuestItemReward.
+     *
+     * @param customItem The material of the item.
+     * @param amount   The amount of the item.
+     */
+    public QuestItemReward(CustomItem customItem, int amount) {
+        this.itemStack = customItem.getBest();
         this.amount = amount;
     }
 

@@ -3,7 +3,7 @@ package fr.openmc.core.features.homes.menu;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomesManager;
@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class HomeDeleteConfirmMenu extends Menu {
 
@@ -49,13 +48,13 @@ public class HomeDeleteConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         Player player = getOwner();
 
-            content.put(2, new ItemBuilder(
+            content.put(2, new ItemMenuBuilder(
                             this,
-                            OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin_red").getBest(),
+                            OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED,
                             itemMeta -> {
                                 itemMeta.displayName(TranslationManager.translation("feature.homes.delete.confirm.name"));
                                 itemMeta.lore(TranslationManager.translationLore("feature.homes.delete.confirm.lore"));
@@ -76,7 +75,7 @@ public class HomeDeleteConfirmMenu extends Menu {
                     })
             );
 
-            content.put(4, new ItemBuilder(
+            content.put(4, new ItemMenuBuilder(
                     this,
                     home.getIconItem(),
                     itemMeta -> itemMeta.displayName(TranslationManager.translation(
@@ -85,11 +84,9 @@ public class HomeDeleteConfirmMenu extends Menu {
                     ))
             ).hide(ItemUtils.getDataComponentType()));
 
-            content.put(6, new ItemBuilder(
+            content.put(6, new ItemMenuBuilder(
                     this,
-                    Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_bin")).getBest(),
-                    itemMeta ->
-                            itemMeta.displayName(TranslationManager.translation("feature.homes.delete.cancel.name")), true)
+                    OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN, true)
             );
 
             return content;

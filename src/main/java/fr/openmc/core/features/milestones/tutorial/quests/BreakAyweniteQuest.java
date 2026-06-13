@@ -34,7 +34,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
                         TranslationManager.translationString("feature.milestones.tutorial.quest.break_aywenite.description.1"),
                         TranslationManager.translationString("feature.milestones.tutorial.quest.break_aywenite.description.2")
                 ),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.AYWENITE,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.BREAK_AYWENITE,
                 new QuestTier(

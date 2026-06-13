@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.perks;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.registry.items.CustomItem;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
@@ -83,7 +84,7 @@ public enum Perks {
             0,
             "feature.city.mayor.perk.ayweniter.name",
             "feature.city.mayor.perk.ayweniter.lore",
-            OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest()
+            OMCRegistry.CUSTOM_ITEMS.AYWENITE
     ),
     GPS_TRACKER(
             9,
@@ -166,7 +167,7 @@ public enum Perks {
             0,
             "feature.city.mayor.perk.great_dream.name",
             "feature.city.mayor.perk.great_dream.lore",
-            DreamItemRegistry.getByName("somnifere").getBest()
+            DreamItemRegistry.SOMNIFERE
     ),
     CHAOS_DREAM(
             18,
@@ -175,7 +176,7 @@ public enum Perks {
             24 * 60 * 60 * 1000L, // 1 jour
             "feature.city.mayor.perk.chaos_dream.name",
             "feature.city.mayor.perk.chaos_dream.lore",
-            DreamItemRegistry.getByName("singularity").getBest()
+            DreamItemRegistry.SINGULARITY
     )
     ;
 
@@ -196,6 +197,17 @@ public enum Perks {
         this.nameKey = nameKey;
         this.loreKey = loreKey;
         this.itemStack = itemStack;
+        this.toHide = toHide;
+    }
+
+    Perks(int id, PerkType type, PerkCategory category, long cooldown, @NotNull String nameKey, String loreKey, CustomItem customItem, DataComponentType... toHide) {
+        this.id = id;
+        this.type = type;
+        this.category = category;
+        this.cooldown = cooldown;
+        this.nameKey = nameKey;
+        this.loreKey = loreKey;
+        this.itemStack = customItem.getBest();
         this.toHide = toHide;
     }
 }

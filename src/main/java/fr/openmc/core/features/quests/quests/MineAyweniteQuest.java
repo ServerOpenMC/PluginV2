@@ -24,7 +24,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
         super(
                 TranslationManager.translationString("feature.quests.mine_aywenite.name"),
                 List.of(TranslationManager.translationString("feature.quests.mine_aywenite.description")),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest()
+                OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest()
         );
 
         this.addTiers(

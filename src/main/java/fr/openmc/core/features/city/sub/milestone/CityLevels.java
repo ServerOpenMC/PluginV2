@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -73,7 +74,7 @@ public enum CityLevels {
                     ),
                     new TemplateRequirement(
                             city -> city.getLaw().getWarp() != null,
-                            city -> OMCRegistry.CUSTOM_ITEMS.get("omc_items:warp_stick").getBest(),
+                            city -> OMCRegistry.CUSTOM_ITEMS.WARP_STICK.getBest(),
                             (city, ignore) -> TranslationManager.translation("feature.city.levels.requirements.setwarp")
                     ),
                     new ItemDepositRequirement(Material.GOLD_INGOT, 128)
@@ -217,16 +218,16 @@ public enum CityLevels {
                                 );
                             }
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), 128),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 128),
                     new ItemDepositRequirement(Material.GRAY_WOOL, 32),
                     new ItemDepositRequirement(Material.GLASS, 128),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:courgette").getBest(), 8),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 8),
                     new EventTemplateRequirement(
                             (city, scope) -> Objects.requireNonNull(CityStatisticsManager
                                             .getOrCreateStat(city.getUniqueId(), scope))
                                     .asInt() >= 1,
 
-                            city -> OMCRegistry.CUSTOM_ITEMS.get("omc_blocks:urne").getBest(),
+                            city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
                             
                             (city, level, scope) -> TranslationManager.translation("feature.city.levels.requirements.craft_urne"),
                             "craft_urne",
@@ -234,7 +235,7 @@ public enum CityLevels {
                             (event, scope) -> {
                                 CraftItemEvent eventCraft = (CraftItemEvent) event;
                                 ItemStack item = eventCraft.getCurrentItem();
-                                if (item == null || !item.isSimilar(OMCRegistry.CUSTOM_ITEMS.get("omc_blocks:urne").getBest()))
+                                if (item == null || !ItemUtils.isSimilar(item, OMCRegistry.CUSTOM_ITEMS.URNE.getBest()))
                                     return;
 
                                 Player player = (Player) eventCraft.getWhoClicked();
@@ -264,7 +265,7 @@ public enum CityLevels {
             List.of(
                     new TemplateRequirement(
                             city -> NPCManager.hasNPCS(city.getUniqueId()),
-                            city -> OMCRegistry.CUSTOM_ITEMS.get("omc_blocks:urne").getBest(),
+                            city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.place_urne")
                     ),
 
@@ -315,7 +316,7 @@ public enum CityLevels {
                                 );
                             }
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:the_mixture").getBest(), 32)
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE, 32)
             ),
             List.of(
                     FeaturesRewards.LEVEL_5,
@@ -388,7 +389,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.STONE_BRICKS, 400),
                     new ItemDepositRequirement(Material.BLACK_CONCRETE, 184),
                     new ItemDepositRequirement(Material.WHITE_CONCRETE, 64),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:courgette").getBest(), 98),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 98),
                     new ItemDepositRequirement(Material.DIAMOND, 128)
             ),
             List.of(
@@ -458,7 +459,7 @@ public enum CityLevels {
                                     Component.text(6)
                             )
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), 400),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 400),
                     new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
                     new ItemDepositRequirement(Material.TNT, 64),
                     new ItemDepositRequirement(Material.FLINT_AND_STEEL, 16),
@@ -630,7 +631,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.DIAMOND, 300),
                     new ItemDepositRequirement(Material.CYAN_CONCRETE, 200),
                     new ItemDepositRequirement(Material.DRIED_GHAST, 5),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest(), 128)
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.KEBAB, 128)
             ),
             List.of(
                     FeaturesRewards.LEVEL_9,
@@ -704,8 +705,8 @@ public enum CityLevels {
                                     Component.text(9)
                             )
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_blocks:aywenite_block").getBest(), 64),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(), 128),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK, 64),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, 128),
                     new ItemDepositRequirement(Material.SCULK, 1028)
             ),
             List.of(

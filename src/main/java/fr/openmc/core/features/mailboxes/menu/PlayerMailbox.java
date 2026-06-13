@@ -2,8 +2,9 @@ package fr.openmc.core.features.mailboxes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
@@ -54,7 +55,7 @@ public class PlayerMailbox extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
 
         MailboxManager.getReceivedLetters(getOwner()).forEach(letter ->
-                items.add(new ItemBuilder(this, letter.toLetterHead())
+                items.add(new ItemMenuBuilder(this, letter.toLetterHead())
                         .setOnClick(e -> new LetterMenu(getOwner(), letter).open()))
         );
 
@@ -62,11 +63,13 @@ public class PlayerMailbox extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> buttons = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, MailboxMenuManager.homeBtn(this));
-        buttons.putAll(MailboxMenuManager.getPaginatedButtons(this));
+        buttons.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
+        buttons.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
+        buttons.put(49, ItemMenuTemplate.BTN_CLOSE.apply(this));
+        buttons.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_WHITE.apply(this));
 
         return buttons;
     }

@@ -30,7 +30,7 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
                         TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.2"),
                         TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.3")
                 ),
-                OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade").getBest(),
+                OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.HOME_UPGRADE,
                 new QuestTier(

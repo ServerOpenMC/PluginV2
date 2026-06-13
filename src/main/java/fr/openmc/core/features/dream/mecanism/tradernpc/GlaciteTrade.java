@@ -4,37 +4,36 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 
 @Getter
 public enum GlaciteTrade {
     ORB_GLACITE(
-            DreamItemRegistry.getByName("glacite_orb"),
+            DreamItemRegistry.GLACITE_ORB,
             200,
             15,
             Component.text("§bOrbe de Glacite")
     ),
     SOULBOUND_BOOK(
-            (DreamItem) OMCRegistry.CUSTOM_ENCHANTS.get(Key.key("omc_dream:soulbound")).getEnchantedBookItem(2),
+            (DreamItem) OMCRegistry.CUSTOM_ENCHANTS.SOULBOUND.getEnchantedBookItem(2),
             150,
             5,
             Component.text("§bLivre d'enchantement : Soulbound II")
     ),
     SOMNIFERE(
-            DreamItemRegistry.getByName("somnifere"),
+            DreamItemRegistry.SOMNIFERE,
             20,
             0,
             Component.text("§bSomnifère")
     ),
     ETERNAL_CAMPFIRE(
-            DreamItemRegistry.getByName("eternal_campfire"),
+            DreamItemRegistry.ETERNAL_CAMPFIRE,
             0,
             2,
             Component.text("§bFeu de camp éternel")
     ),
     EWENITE(
-            DreamItemRegistry.getByName("ewenite"),
+            DreamItemRegistry.EWENITE,
             80,
             0,
             Component.text("§bEwenite")

@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -43,10 +44,10 @@ public class HomeMailbox extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        content.put(3, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_hourglass").getBest(), meta -> {
+        content.put(3, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.MAILBOX_HOURGLASS, meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.pending.item")
                     .color(NamedTextColor.DARK_AQUA)
                     .decorate(TextDecoration.BOLD)
@@ -54,7 +55,7 @@ public class HomeMailbox extends Menu {
             );
         }).setOnClick(e -> new PendingMailbox(getOwner()).open()));
 
-        content.put(4, new ItemBuilder(this, getHead(getOwner()), meta -> {
+        content.put(4, new ItemMenuBuilder(this, getHead(getOwner()), meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.player.item")
                     .color(NamedTextColor.GOLD)
                     .decorate(TextDecoration.BOLD)
@@ -62,7 +63,7 @@ public class HomeMailbox extends Menu {
             );
         }).setOnClick(e -> new PlayerMailbox(getOwner()).open()));
 
-        content.put(5, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("omc_menus:mailbox_send").getBest(), meta -> {
+        content.put(5, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.MAILBOX_SEND, meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.send.item")
                     .color(NamedTextColor.DARK_AQUA)
                     .decorate(TextDecoration.BOLD)

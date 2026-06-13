@@ -29,7 +29,7 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 						"§8§oIl me semble avoir vu des créatures",
 						"§8§ovolantes rôder vers les grands arbres sombres."
 				),
-				DreamItemRegistry.getByName("omc_dream:soul").getBest(),
+				DreamItemRegistry.SOUL,
 				MilestoneType.DREAM,
 				DreamSteps.SOULS,
 				new QuestTier(SOULS),

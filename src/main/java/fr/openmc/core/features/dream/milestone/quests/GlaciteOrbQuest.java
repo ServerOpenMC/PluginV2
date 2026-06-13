@@ -23,7 +23,7 @@ public class GlaciteOrbQuest extends MilestoneQuest implements Listener {
 						"§fEchanger l'§dOrbe de Glace",
 						"§8§oDernière ligne droite pour les collecter toutes."
 				),
-				DreamItemRegistry.getByName("omc_dream:glacite_orb").getBest(),
+				DreamItemRegistry.GLACITE_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.GLACITE_ORB,
 				new QuestTier(1),

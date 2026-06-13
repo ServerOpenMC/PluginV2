@@ -11,6 +11,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Optional;
+
 public class InteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -18,11 +20,11 @@ public class InteractListener implements Listener {
         Player player = event.getPlayer();
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        CustomItem item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
+        Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
 
-        if (item == null) return;
+        if (item.isEmpty()) return;
 
-        if (item instanceof UsableItem usable) {
+        if (item.get() instanceof UsableItem usable) {
             Action action = event.getAction();
 
             if (player.isSneaking()) usable.onSneakClick(player, event);

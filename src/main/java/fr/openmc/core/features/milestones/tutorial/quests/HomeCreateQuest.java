@@ -38,7 +38,7 @@ public class HomeCreateQuest extends MilestoneQuest implements Listener {
                 new QuestTier(
                         1,
                         new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
-                        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
+                        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
                         new QuestTextReward(
                                 TranslationManager.translation(
                                         "feature.milestones.tutorial.quest.home_create.reward",

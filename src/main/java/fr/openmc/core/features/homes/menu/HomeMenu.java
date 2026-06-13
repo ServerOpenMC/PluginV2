@@ -2,8 +2,9 @@ package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -12,7 +13,6 @@ import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -30,7 +30,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HomeMenu extends PaginatedMenu {
 
@@ -95,7 +98,7 @@ public class HomeMenu extends PaginatedMenu {
                 home.setIcon(homeIcon);
             }
             try {
-                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
+                items.add(new ItemMenuBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.homes.home.name",
                             Component.text(home.getName()).color(NamedTextColor.YELLOW)
@@ -142,19 +145,19 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
         if(!wasTarget) {
-            map.put(53, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+            map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
                 itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
             }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
         }
 
-        map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
-        map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
+        map.put(49, ItemMenuTemplate.BTN_CLOSE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_WHITE.apply(this));
 
         return map;
     }

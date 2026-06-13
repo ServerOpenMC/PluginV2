@@ -2,7 +2,7 @@ package fr.openmc.core.features.milestones.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.NoCityMenu;
@@ -52,13 +52,13 @@ public class MainMilestonesMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
         
         Milestone tutoMilestone = MilestoneType.TUTORIAL.getMilestone();
         
-        inventory.put(10, new ItemBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
+        inventory.put(10, new ItemMenuBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
             itemMeta.displayName(Component.text(tutoMilestone.getName()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(tutoMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
@@ -85,7 +85,7 @@ public class MainMilestonesMenu extends Menu {
             loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.click"));
         }
 
-        inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
+        inventory.put(12, new ItemMenuBuilder(this, Material.SEA_LANTERN, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.city.name")
                     .decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(loreMilestoneVille);
@@ -99,15 +99,15 @@ public class MainMilestonesMenu extends Menu {
         
         Milestone dreamMilestone = MilestoneType.DREAM.getMilestone();
         
-        inventory.put(14, new ItemBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
+        inventory.put(14, new ItemMenuBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
             itemMeta.displayName(Component.text(dreamMilestone.getName()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(dreamMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
         }).setOnClick(inventoryClickEvent -> dreamMilestone.getMenu(player).open()));
 
-        inventory.put(16, new ItemBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.coming_soon"))));
+        inventory.put(16, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.coming_soon"))));
 
-        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.back")), true));
+        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.back")), true));
 
         return inventory;
     }

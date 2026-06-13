@@ -30,7 +30,7 @@ public class MenuUtils {
 	 * @param slots            the slots where the button items should be placed
 	 * @param itemBuilder      the ItemBuilder to be used as the button item
 	 */
-	public static void createButtonItem(Map<Integer, ItemBuilder> inventoryContent, int[] slots, ItemBuilder itemBuilder) {
+	public static void createButtonItem(Map<Integer, ItemMenuBuilder> inventoryContent, int[] slots, ItemMenuBuilder itemBuilder) {
 		for (int slot : slots) {
 			inventoryContent.put(slot, itemBuilder);
 		}
@@ -44,7 +44,7 @@ public class MenuUtils {
 	 * @param itemSupplier Supplier of Item
 	 * @return The ItemBuilder with the name set
 	 */
-	public static BukkitRunnable runDynamicItem(Player player, Menu menu, int slot, Supplier<ItemBuilder> itemSupplier) {
+	public static BukkitRunnable runDynamicItem(Player player, Menu menu, int slot, Supplier<ItemMenuBuilder> itemSupplier) {
 		return new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -72,7 +72,7 @@ public class MenuUtils {
 	 * @param itemSupplier Supplier of Item
 	 * @return The ItemBuilder with the name set
 	 */
-	public static BukkitRunnable runDynamicButtonItem(Player player, Menu menu, int[] slots, Supplier<ItemBuilder> itemSupplier) {
+	public static BukkitRunnable runDynamicButtonItem(Player player, Menu menu, int[] slots, Supplier<ItemMenuBuilder> itemSupplier) {
 		return new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -82,7 +82,7 @@ public class MenuUtils {
 						return;
 					}
 
-					ItemBuilder item = itemSupplier.get();
+					ItemMenuBuilder item = itemSupplier.get();
 
 					for (int slot : slots) {
 						player.getOpenInventory().getTopInventory().setItem(slot, item);

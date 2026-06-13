@@ -15,8 +15,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
  * pour tout ce qui est autour du coffre de ville (utile pour faire une modif sur menu et commandes).
@@ -98,7 +96,7 @@ public class CityChestConditions {
         }
 
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
-        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite")).getBest(), aywenite)) {
+        if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), aywenite)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(aywenite)), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

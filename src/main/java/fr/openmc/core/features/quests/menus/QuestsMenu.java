@@ -3,7 +3,7 @@ package fr.openmc.core.features.quests.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -102,8 +102,8 @@ public class QuestsMenu extends Menu {
         }
     }
 
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         slotToQuestIndex.clear();
 
         int startIndex = this.currentPage * 9;
@@ -113,20 +113,20 @@ public class QuestsMenu extends Menu {
         for(int i = startIndex; i < endIndex; ++i) {
             Quest quest = QuestsManager.getAllQuests().get(i);
             ItemStack item = this.createQuestItem(quest);
-            content.put(slotIndex, new ItemBuilder(this, item));
+            content.put(slotIndex, new ItemMenuBuilder(this, item));
             this.slotToQuestIndex.put(slotIndex, i);
             ++slotIndex;
         }
 
         if (this.currentPage > 0) {
-            content.put(19, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_quests:quests_left_arrow")).getBest(), meta ->
+            content.put(19, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.QUESTS_LEFT_ARROW, meta ->
                     meta.displayName(TranslationManager.translation("feature.quests.menu.page.previous")
                             .decoration(TextDecoration.ITALIC, false))
             ));
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(25, new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("omc_quests:quests_right_arrow")).getBest(), meta ->
+            content.put(25, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.QUESTS_RIGHT_ARROW, meta ->
                     meta.displayName(TranslationManager.translation("feature.quests.menu.page.next")
                             .decoration(TextDecoration.ITALIC, false))
             ));
@@ -147,9 +147,9 @@ public class QuestsMenu extends Menu {
 
     private void updateInventory() {
         this.getInventory().clear();
-        Map<Integer, ItemBuilder> content = this.getContent();
+        Map<Integer, ItemMenuBuilder> content = this.getContent();
 
-        for (Map.Entry<Integer, ItemBuilder> entry : content.entrySet()) {
+        for (Map.Entry<Integer, ItemMenuBuilder> entry : content.entrySet()) {
             this.getInventory().setItem(entry.getKey(), entry.getValue());
         }
     }

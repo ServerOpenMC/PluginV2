@@ -1,7 +1,7 @@
 package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import lombok.Getter;
@@ -72,18 +72,18 @@ public abstract class PaginatedMenu extends Menu {
     public abstract List<ItemStack> getItems();
 
     /**
-     * Retrieves a mapping of button slots to their corresponding {@link ItemBuilder} instances
+     * Retrieves a mapping of button slots to their corresponding {@link ItemMenuBuilder} instances
      * for the current menu. Each entry in the map represents a specific button within the menu,
      * where the key is the slot index and the value is the item displayed as the button.
      *
      * @return A {@link Map} where keys are slot indices (integers) and values are the
-     * {@link ItemBuilder} objects representing the buttons in the inventory.
+     * {@link ItemMenuBuilder} objects representing the buttons in the inventory.
      */
-    public abstract Map<Integer, ItemBuilder> getButtons();
+    public abstract Map<Integer, ItemMenuBuilder> getButtons();
 
     /**
      * Retrieves the contents of the current page in the paginated menu.
-     * The method generates a mapping of slot indices to {@link ItemBuilder} instances,
+     * The method generates a mapping of slot indices to {@link ItemMenuBuilder} instances,
      * including static slots, dynamic items for the current page, and any additional buttons.
      * <p>
      * The static slots always contain either the specified border material or {@link Material#AIR}
@@ -91,13 +91,13 @@ public abstract class PaginatedMenu extends Menu {
      * pagination logic, and buttons are placed in the static slots if applicable.
      *
      * @return A non-null {@link Map} where keys are slot indices (integers) and values are
-     * {@link ItemBuilder} objects representing the items displayed in the menu for the current page.
+     * {@link ItemMenuBuilder} objects representing the items displayed in the menu for the current page.
      */
     @Override
-    public final @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public final @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         for (Integer staticSlot : getStaticSlots()) {
-            map.put(staticSlot, new ItemBuilder(this, ItemUtils.createItem(" ", getBorderMaterial() == null ? Material.AIR : getBorderMaterial())).hideTooltip(true));
+            map.put(staticSlot, new ItemMenuBuilder(this, ItemUtils.createItem(" ", getBorderMaterial() == null ? Material.AIR : getBorderMaterial())).hideTooltip(true));
         }
         List<Integer> staticSlots = StaticSlots.removeRecurringIntegers(getStaticSlots(), getInventorySize().getSize());
         int maxItems = getInventorySize().getSize() - staticSlots.size();
@@ -108,20 +108,20 @@ public abstract class PaginatedMenu extends Menu {
         for (int i = 0; i < getInventory().getSize(); i++) {
             if (!staticSlots.contains(i)) {
                 if (index + maxItems * page < getItems().size()) {
-                    map.put(i, new ItemBuilder(this, getItems().get(index + maxItems * page)));
+                    map.put(i, new ItemMenuBuilder(this, getItems().get(index + maxItems * page)));
                     index++;
                 }
             }
         }
 
         if (getButtons() != null) {
-            for (Map.Entry<Integer, ItemBuilder> entry : getButtons().entrySet()) {
+            for (Map.Entry<Integer, ItemMenuBuilder> entry : getButtons().entrySet()) {
                 Integer integer = entry.getKey();
-                ItemBuilder itemBuilder = entry.getValue();
+                ItemMenuBuilder itemBuilder = entry.getValue();
                 if (!staticSlots.contains(integer))
                     continue;
 
-                ItemBuilder newItemBuilder = new ItemBuilder(this, itemBuilder, itemBuilder.isBackButton());
+                ItemMenuBuilder newItemBuilder = new ItemMenuBuilder(this, itemBuilder, itemBuilder.isBackButton());
                 if (itemBuilder.isPreviousButton()) {
                     if (this.isFirstPage())
                         continue;

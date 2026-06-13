@@ -1,7 +1,6 @@
 package fr.openmc.core.features.dream.registries.enchantements;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
@@ -66,7 +65,7 @@ public class DreamSleeper extends DreamEnchantment implements Listener {
         if (!(event.getDamager() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity living)) return;
 
-        Enchantment enchant = OMCRegistry.CUSTOM_ENCHANTS.get(this.getKey()).getEnchantment();
+        Enchantment enchant = this.getEnchantment();
         if (enchant == null) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();
