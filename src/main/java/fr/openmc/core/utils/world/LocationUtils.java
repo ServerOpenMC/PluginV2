@@ -9,6 +9,16 @@ import org.bukkit.block.Block;
 import java.util.Random;
 
 public class LocationUtils {
+    public static Location randomLocation(Location origin, double distance) {
+        double angle = Math.random() * 2 * Math.PI;
+
+        double x = origin.getX() + Math.cos(angle) * distance;
+        double z = origin.getZ() + Math.sin(angle) * distance;
+
+        Location target = new Location(origin.getWorld(), x, origin.getY(), z);
+        return target.getWorld().getHighestBlockAt(target).getLocation().add(0, 1, 0);
+    }
+
     public static Location getSafeNearbySurface(Location location, int radius) {
         World world = location.getWorld();
         int baseY = location.getBlockY();
