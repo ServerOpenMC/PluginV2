@@ -3,7 +3,6 @@ package fr.openmc.api.datapacks;
 import fr.openmc.api.datapacks.injectors.PackMetadataInjector;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.FilesUtils;
-import io.papermc.paper.datapack.DatapackManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
@@ -23,8 +22,8 @@ public class OMCDatapack {
     private final String namespace;
     private final Set<DatapackInjector> injectors = new HashSet<>();
 
-    private final String ID_DATAPACK = "datapacks-openmc";
-    private final DatapackManager DATAPACK_MANAGER = OMCPlugin.getInstance().getServer().getDatapackManager();
+    public final String ID_DATAPACK_INJECTED = "openmc-injected";
+    private final String ID_TEMP_DATAPACK_FOLDER = "datapacks-openmc";
 
     public OMCDatapack(String packName, String namespace) {
         this.packName = packName;
@@ -35,12 +34,12 @@ public class OMCDatapack {
         Path dir;
 
         if (generateFiles) {
-            dir = context.getDataDirectory().resolve(ID_DATAPACK);
+            dir = context.getDataDirectory().resolve(ID_TEMP_DATAPACK_FOLDER);
 
             FilesUtils.deleteDirectory(dir.toFile());
             Files.createDirectories(dir);
         } else {
-            dir = Files.createTempDirectory(ID_DATAPACK);
+            dir = Files.createTempDirectory(ID_TEMP_DATAPACK_FOLDER);
         }
 
         runInjector(dir, new PackMetadataInjector());
@@ -54,7 +53,7 @@ public class OMCDatapack {
                     try {
                         URI uri = dir.toUri();
 
-                        event.registrar().discoverPack(uri, "openmc-injected");
+                        event.registrar().discoverPack(uri, ID_DATAPACK_INJECTED);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -69,9 +68,12 @@ public class OMCDatapack {
      * @throws IOException
      */
     public void buildRuntime(Runnable onBuilded) throws IOException {
-        Path dir = OMCPlugin.getInstance().getServer().getLevelDirectory().resolve("datapacks").resolve(ID_DATAPACK);
+        Path dir = OMCPlugin.getInstance().getServer()
+                .getLevelDirectory()
+                .resolve("datapacks")
+                .resolve(ID_TEMP_DATAPACK_FOLDER);
 
-        cleanup();
+        cleanupRumtime();
         Files.createDirectories(dir);
 
         runInjector(dir, new PackMetadataInjector());
@@ -83,8 +85,26 @@ public class OMCDatapack {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), onBuilded, 20L);
     }
 
-    public void cleanup() throws IOException {
-        Path dir = OMCPlugin.getInstance().getServer().getLevelDirectory().resolve("datapacks").resolve(ID_DATAPACK);
+    public void cleanupBootstrap(BootstrapContext context) throws IOException {
+        Path dataDir = context.getDataDirectory().toFile()
+                .toPath()
+                .toAbsolutePath()
+                .normalize(); // * ex /home/container/plugins/OpenMC
+
+        Path serverRoot = dataDir.getParent()   // * plugins/
+                .getParent();  // * /container
+
+        Path dir = serverRoot
+                .resolve("world") // * /container/world
+                .resolve("datapacks") // * /container/datapacks
+                .resolve(ID_TEMP_DATAPACK_FOLDER);
+        FilesUtils.deleteDirectory(dir.toFile());
+    }
+
+    public void cleanupRumtime() throws IOException {
+        Path dir = OMCPlugin.getInstance().getServer().getLevelDirectory()
+                .resolve("datapacks")
+                .resolve(ID_TEMP_DATAPACK_FOLDER);
         FilesUtils.deleteDirectory(dir.toFile());
     }
 

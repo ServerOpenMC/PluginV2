@@ -1,6 +1,5 @@
 package fr.openmc.core.registry.ambient;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,8 +22,8 @@ public class RegistriesLoadConfig {
     @Getter
     private static boolean mustRestart;
 
-    public static void init() {
-        registriesConfigFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/registry", "load.yml");
+    public static void init(File dataFolder) {
+        registriesConfigFile = new File(dataFolder + "/data/registry", "load.yml");
         registriesConfig = YamlConfiguration.loadConfiguration(registriesConfigFile);
 
         // * Premier lancement du plugin où suppression du fichier par une classe externe (ex CustomAmbientRegistry)

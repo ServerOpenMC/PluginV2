@@ -41,7 +41,7 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
-                    RegistryLoadingType.RUNTIME),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
                     RegistryLoadingType.AFTER_IA)

@@ -8,6 +8,7 @@ import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.GoldenAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.Biome;
@@ -15,6 +16,7 @@ import org.bukkit.Bukkit;
 
 import java.io.IOException;
 
+@SuppressWarnings("UnstableApiUsage")
 public class CustomAmbientRegistry extends Registry<String, CustomAmbient> implements KeyedRegistry<String, CustomAmbient> {
     public static final String NAMESPACE = "omc_ambient";
     private final OMCDatapack ambientDatapack = new OMCDatapack("openmc", NAMESPACE);
@@ -30,9 +32,19 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
     }
 
     @Override
-    public void init() {
-        RegistriesLoadConfig.init();
+    public void bootstrap(BootstrapContext context) throws IOException {
+        // * On check si la config à été enlevé,
+        // on l'eneleve avant le démarrage des datapacks (utile si y'a une erreur avec celui ci)
+        RegistriesLoadConfig.init(context.getDataDirectory().toFile());
 
+        if (RegistriesLoadConfig.isMustRestart()) {
+            OMCLogger.infoFormatted("Suppression du datapack/" + ambientDatapack.ID_DATAPACK_INJECTED);
+            ambientDatapack.cleanupBootstrap(context);
+        }
+    }
+
+    @Override
+    public void init() {
         for (CustomAmbient ambient : values()) {
             ambient.getAmbientBuilder().runInjectors(ambient, ambientDatapack);
         }
