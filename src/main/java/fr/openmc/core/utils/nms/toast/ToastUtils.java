@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ToastUtils {
-    private static final Identifier TOAST_IDENTIFIER = Identifier.parse("omc:custom_toast");
+    private static final Identifier TOAST_IDENTIFIER = Identifier.fromNamespaceAndPath("omc", "custom_toast");
     private static final AdvancementRequirements ADV_REQUIREMENTS = AdvancementRequirements.allOf(Set.of("c"));
 
     /**
