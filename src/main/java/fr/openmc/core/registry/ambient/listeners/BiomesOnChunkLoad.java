@@ -37,6 +37,6 @@ public class BiomesOnChunkLoad implements Listener {
         ChunkAccess chunkAccess = ((CraftChunk) event.getChunk()).getHandle(ChunkStatus.FULL);
         if (!(chunkAccess instanceof LevelChunk nmsChunk)) return;
 
-        PlayerBiomeNMS.remplaceBiome(nmsPlayer, nmsChunk, ambientApplied::toBiomeVariantKey);
+        PlayerBiomeNMS.remplaceBiome(nmsPlayer, nmsChunk, ambientApplied.getId(), ambientApplied::toBiomeVariantKey);
     }
 }

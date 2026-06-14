@@ -54,8 +54,9 @@ public abstract class CustomAmbient {
                 getTransitionDimensionForPlayer(nmsPlayer)
         );
 
-        if (this.getAmbientBuilder().utilizeBiome())
-            PlayerBiomeNMS.replaceBiomes(nmsPlayer, this::toBiomeVariantKey);
+        if (this.getAmbientBuilder().utilizeBiome()) {
+            PlayerBiomeNMS.replaceBiomes(nmsPlayer, this.getId(), this::toBiomeVariantKey);
+        }
 
         if (this.getAmbientBuilder().getTimeFixed() != null) {
             PlayerSetTimeNMS.sendPacketSetTime(player, this.getAmbientBuilder().getTimeFixed());

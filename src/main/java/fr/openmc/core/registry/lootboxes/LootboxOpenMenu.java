@@ -179,7 +179,6 @@ public class LootboxOpenMenu extends Menu {
             @Override
             public void run() {
                 boolean cancelled = giveReward(winningItem);
-                System.out.println(cancelled);
                 if (cancelled) {
                     cancel();
                     return;

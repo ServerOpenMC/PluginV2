@@ -91,10 +91,12 @@ public class PlayerBiomeNMS {
     public static void remplaceBiome(
             ServerPlayer nmsPlayer,
             LevelChunk initialChunk,
+            String keyMappedBiome,
             Function<Identifier, Identifier> identifierModifier) {
         List<ClientboundChunksBiomesPacket.ChunkBiomeData> biomeDataList = new ArrayList<>();
         LevelChunk fakeChunk = PlayerBiomeNMS.getFakeChunkWithMapping(
                 initialChunk,
+                keyMappedBiome,
                 identifierModifier
         );
         ClientboundChunksBiomesPacket.ChunkBiomeData data = new ClientboundChunksBiomesPacket.ChunkBiomeData(fakeChunk);
@@ -103,7 +105,10 @@ public class PlayerBiomeNMS {
         nmsPlayer.connection.send(packet);
     }
 
-    public static void replaceBiomes(ServerPlayer nmsPlayer, Function<Identifier, Identifier> identifierModifier) {
+    public static void replaceBiomes(
+            ServerPlayer nmsPlayer,
+            String keyMappedBiome,
+            Function<Identifier, Identifier> identifierModifier) {
         ServerLevel nmsWorld = nmsPlayer.level();
 
         int viewDistance = nmsWorld.getServer().getPlayerList().getViewDistance();
@@ -115,7 +120,7 @@ public class PlayerBiomeNMS {
                 LevelChunk chunk = nmsWorld.getChunkIfLoaded(cx, cz);
                 if (chunk == null) continue;
 
-                LevelChunk fakeChunk = getFakeChunkWithMapping(chunk, identifierModifier);
+                LevelChunk fakeChunk = getFakeChunkWithMapping(chunk, keyMappedBiome, identifierModifier);
                 biomeDataList.add(new ClientboundChunksBiomesPacket.ChunkBiomeData(fakeChunk));
             }
         }
@@ -155,9 +160,7 @@ public class PlayerBiomeNMS {
         return fakeChunk;
     }
 
-    private static final Map<Holder<Biome>, Holder<Biome>> BIOME_CACHE = new HashMap<>();
-    private static final Map<Holder<Biome>, Identifier> ID_MAPPED_BIOME_CACHE = new HashMap<>();
-
+    private static final Map<String, Holder<Biome>> BIOME_CACHE = new HashMap<>();
     /**
      * Crée un faux chunk en se basant sur l'originel et en changeant juste le biome du chunk en fonction
      * d'un identifierModifier
@@ -167,6 +170,7 @@ public class PlayerBiomeNMS {
      */
     private static LevelChunk getFakeChunkWithMapping(
             LevelChunk original,
+            String keyMappedBiome,
             Function<Identifier, Identifier> identifierModifier) {
         LevelChunk fake = new LevelChunk(original.level, original.getPos());
 
@@ -191,7 +195,7 @@ public class PlayerBiomeNMS {
             // ** Si le chunk contient qu'un biome
             if (originalBiomes.data.palette().getSize() == 1) {
                 Holder<Biome> single = originalBiomes.data.palette().valueFor(0);
-                Holder<Biome> mapped = getMapped(single, registry, identifierModifier);
+                Holder<Biome> mapped = getMapped(single, registry, keyMappedBiome, identifierModifier);
 
                 PalettedContainer<Holder<Biome>> fakeBiomes1 = new PalettedContainer<>(mapped, idMap, null);
                 try {
@@ -212,7 +216,7 @@ public class PlayerBiomeNMS {
                 for (int y = 0; y < 4; y++) {
                     for (int z = 0; z < 4; z++) {
                         Holder<Biome> originalBiome = originalSection.getNoiseBiome(x, y, z);
-                        Holder<Biome> mapped = getMapped(originalBiome, registry, identifierModifier);
+                        Holder<Biome> mapped = getMapped(originalBiome, registry, keyMappedBiome, identifierModifier);
 
                         fakeBiomes.set(x, y, z, mapped);
                     }
@@ -232,14 +236,14 @@ public class PlayerBiomeNMS {
     private static Holder<Biome> getMapped(
             Holder<Biome> original,
             Registry<Biome> registry,
+            String keyMappedBiome,
             Function<Identifier, Identifier> identifierModifier) {
-        return BIOME_CACHE.computeIfAbsent(original, b -> {
-            Identifier keyModified = ID_MAPPED_BIOME_CACHE.computeIfAbsent(original, m ->
-                    identifierModifier.apply(
-                        m.unwrapKey().orElseThrow().identifier()
-                    )
-            );
-            return registry.get(keyModified).orElseThrow();
+        Identifier originalId = original.unwrapKey().orElseThrow().identifier();
+        String cacheKey = keyMappedBiome + "/" + originalId;
+
+        return BIOME_CACHE.computeIfAbsent(cacheKey, k -> {
+            Identifier mappedId = identifierModifier.apply(originalId);
+            return registry.get(mappedId).orElseThrow();
         });
     }
 }
