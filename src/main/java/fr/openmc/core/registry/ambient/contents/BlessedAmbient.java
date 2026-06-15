@@ -21,7 +21,7 @@ public class BlessedAmbient extends CustomAmbient {
         return new AmbientBuilder(CustomAmbientRegistry.NAMESPACE, this.getId())
                 .attributesBuilder(new EnvironnementAttributeBuilder()
                         .attributes(obj -> {
-                            obj.addProperty("visual/sky_light_color", "#FFEB1F");
+                            obj.addProperty("visual/sky_light_color", "#FAED5C");
                             obj.addProperty("visual/ambient_light_color", "#001A19");
 
                             obj.addProperty("visual/sunrise_sunset_color", "#e540e58b");
@@ -41,7 +41,7 @@ public class BlessedAmbient extends CustomAmbient {
                 .skybox(DimensionType.Skybox.OVERWORLD)
                 .hasSkylight(true)
                 .biomes(new BiomeBuilder()
-                        .waterColor("#43C6EE"))
+                        .waterColor("#43d5ee"))
                 .defaultClock("overworld")
                 .timelines("#minecraft:in_overworld")
                 .hasFixedTime(true, 200);

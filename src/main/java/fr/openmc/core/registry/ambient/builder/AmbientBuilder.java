@@ -32,6 +32,9 @@ public class AmbientBuilder {
     @Getter
     private Integer timeFixed = null;
 
+    // todo attribut weatherFixed (bool)
+    // todo attribut weather (str) (si true)
+
     public AmbientBuilder(String namepace, String id) {
         this.namespace = namepace;
         this.id = id;

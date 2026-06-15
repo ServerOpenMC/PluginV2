@@ -2,6 +2,7 @@ package fr.openmc.api.datapacks.builders;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fr.openmc.api.datapacks.builders.sounds.AmbientSoundBuilder;
 import org.bukkit.Particle;
 
 import java.util.function.Consumer;
@@ -91,5 +92,10 @@ public class EnvironnementAttributeBuilder {
      */
     public EnvironnementAttributeBuilder ambientParticles(Particle particle, double probability) {
         return ambientParticles(particle.getKey().toString(), probability);
+    }
+
+    public EnvironnementAttributeBuilder ambientSounds(AmbientSoundBuilder ambientBuilder) {
+        this.attributes.add("audio/ambient_sounds", ambientBuilder.toJson());
+        return this;
     }
 }
