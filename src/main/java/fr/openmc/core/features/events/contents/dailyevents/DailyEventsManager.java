@@ -20,6 +20,7 @@ import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyE
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
+import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,12 +28,10 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 
-//todo: ajouter des javadocs et commentaires sur certaines parties
 //todo: tester les toasts lorsqu'ils refonctionneront (before, start, end)
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners {
@@ -80,6 +79,10 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         );
     }
 
+    /**
+     * Charge les données de la DB, généralement pdt le démarrage
+     * @return les données des daily event (ordre actuel)
+     */
     public static IncomingEventsDB loadIncomingEventsDB() {
         try {
             IncomingEventsDB data = dao.queryForId(1);
@@ -93,6 +96,10 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         }
     }
 
+    /**
+     * Sauvegarde les données des Daily Event dans la DB, généralement pdt l'arrêt du serveur
+     * @param data les données des daily events
+     */
     public static void saveIncomingEventsDB(IncomingEventsDB data) {
         try {
             dao.createOrUpdate(data);
@@ -116,7 +123,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         List<DailyEvent> copyEvents = new ArrayList<>(incomingEvent);
         for (int hourSlot : SLOT_HOURS_EVENTS) {
             if (copyEvents.isEmpty()) {
-                copyEvents = generateRandomOrder();
+                copyEvents = RandomUtils.generateRandomOrder(EVENTS);
             }
 
             LocalDateTime scheduledDailyEvent;
@@ -132,6 +139,13 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         return scheduledEvents;
     }
 
+    /**
+     * On schedule le prochain événement à venir.
+     * - On cherche la prochaine heure, en faisant gaffe si l'heure est passée, dans ce cas on schedule pour demain
+     * - Apres la prochaine heure on lance les taches associés à l'événement (tache pour avant le commencement,
+     * et pour le lancement de l'événement et la planification du prochain
+     * @return la tache de lancement de l'événement, qui sera executé à l'heure exacte du début de l'événement
+     */
     public static BukkitTask scheduleNextEventTask() {
         LocalDateTime now = DateUtils.getLocalDateTime();
         // * On cherche la prochaine heure
@@ -163,12 +177,10 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         return new NextEventTask().runTaskLater(OMCPlugin.getInstance(), delayTicks);
     }
 
-    private static List<DailyEvent> generateRandomOrder() {
-        List<DailyEvent> copyEvents = new ArrayList<>(EVENTS);
-        Collections.shuffle(copyEvents);
-        return copyEvents;
-    }
-
+    /**
+     * Méthode plus claire afin de dire s'il y a un evenement journalier actif ou non
+     * @return un boolean
+     */
     public static boolean isActiveDailyEvent() {
         return outgoingEvent != null;
     }
