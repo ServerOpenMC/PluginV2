@@ -18,8 +18,8 @@ import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventA
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.tasks.ScheduleNextEventTask;
-import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventToastTask;
+import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
+import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
@@ -34,7 +34,6 @@ import java.util.Set;
 
 //todo: ajouter des javadocs et commentaires sur certaines parties
 //todo: tester les toasts lorsqu'ils refonctionneront (before, start, end)
-//todo: faire des broadcast like Contest et Mayor, broadcast customisable? (before, start, end)
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners {
     // * Constantes
@@ -48,7 +47,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             9, 13, 16, 19, 21
     ));
 
-    public static final int SHOW_BEGINNING_TOAST_DELAY = 60; // en secondes
+    public static final int SHOW_BEGINNING_DELAY = 60; // en secondes
 
     // * Données à propos de la gestion des daily event
     public static ScheduleDailyEvent outgoingEvent = null;
@@ -156,10 +155,12 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
                 .map(s->s.getDailyEvent().getClass().getSimpleName()).toList());
         OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertSecondToTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
 
-        new ShowBeginningEventToastTask()
-                .runTaskLater(OMCPlugin.getInstance(), delayTicks - SHOW_BEGINNING_TOAST_DELAY * 20L);
+        // * Programation de la tâche qui s'executera peu avant le commencement
+        new ShowBeginningEventTask()
+                .runTaskLater(OMCPlugin.getInstance(), delayTicks - SHOW_BEGINNING_DELAY * 20L);
 
-        return new ScheduleNextEventTask().runTaskLater(OMCPlugin.getInstance(), delayTicks);
+        // * Renvoie la tache qui executera le début de l'evenement
+        return new NextEventTask().runTaskLater(OMCPlugin.getInstance(), delayTicks);
     }
 
     private static List<DailyEvent> generateRandomOrder() {

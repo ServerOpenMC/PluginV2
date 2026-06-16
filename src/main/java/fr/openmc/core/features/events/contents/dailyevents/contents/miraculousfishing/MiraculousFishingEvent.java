@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient {
+public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -63,7 +64,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     public CustomToastData getStartToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                TranslationManager.translation("feature.dailyevents.toast.miraculousfishing.start"),
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.toast.start"),
                 AdvancementType.CHALLENGE
         );
     }
@@ -72,13 +73,23 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     public CustomToastData getEndToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                TranslationManager.translation("feature.dailyevents.toast.miraculousfishing.end"),
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.toast.end"),
                 AdvancementType.GOAL
         );
     }
 
     @Override
     public CustomAmbient getAmbient() {
-        return OMCRegistry.CUSTOM_AMBIENTS.DARK; // todo: make new custom ambients
+        return OMCRegistry.CUSTOM_AMBIENTS.BLESSED;
+    }
+
+    @Override
+    public Component getStartBroadcast() {
+        return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.start");
+    }
+
+    @Override
+    public Component getEndBroadcast() {
+        return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.end");
     }
 }

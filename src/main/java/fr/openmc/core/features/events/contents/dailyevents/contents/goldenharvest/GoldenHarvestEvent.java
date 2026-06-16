@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbient {
+public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast {
     @Override
     public String getEventId() {
         return "golden_harvest";
@@ -63,7 +64,7 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     public CustomToastData getStartToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                TranslationManager.translation("feature.dailyevents.toast.goldenharvest.start"),
+                TranslationManager.translation("feature.dailyevents.goldenharvest.toast.start"),
                 AdvancementType.CHALLENGE
         );
     }
@@ -72,13 +73,23 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     public CustomToastData getEndToastData() {
         return new CustomToastData(
                 this.getIcon(),
-                TranslationManager.translation("feature.dailyevents.toast.goldenharvest.end"),
+                TranslationManager.translation("feature.dailyevents.goldenharvest.toast.end"),
                 AdvancementType.GOAL
         );
     }
 
     @Override
     public CustomAmbient getAmbient() {
-        return OMCRegistry.CUSTOM_AMBIENTS.DARK; // todo: make new custom ambients
+        return OMCRegistry.CUSTOM_AMBIENTS.GOLDEN;
+    }
+
+    @Override
+    public Component getStartBroadcast() {
+        return TranslationManager.translation("feature.dailyevents.goldenharvest.broadcast.start");
+    }
+
+    @Override
+    public Component getEndBroadcast() {
+        return TranslationManager.translation("feature.dailyevents.goldenharvest.broadcast.end");
     }
 }
