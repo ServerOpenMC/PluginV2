@@ -5,6 +5,7 @@ import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
+import fr.openmc.core.utils.nms.WeatherType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -44,7 +45,8 @@ public class BlessedAmbient extends CustomAmbient {
                         .waterColor("#43d5ee"))
                 .defaultClock("overworld")
                 .timelines("#minecraft:in_overworld")
-                .hasFixedTime(true, 200);
+                .hasFixedTime(true, 200)
+                .hasPrecipitation(true, WeatherType.NONE);
     }
 
     @Override

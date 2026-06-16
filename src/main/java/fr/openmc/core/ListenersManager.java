@@ -5,6 +5,7 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
+import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
 import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
 import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
 import org.bukkit.Bukkit;
@@ -37,7 +38,8 @@ public class ListenersManager {
                 new ArmorListener(),
                 new BlockBreakListener(),
                 new CustomAmbientListener(),
-                new BiomesOnChunkLoad()
+                new BiomesOnChunkLoad(),
+                new AmbientWeatherListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {

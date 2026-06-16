@@ -10,6 +10,7 @@ import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
 import fr.openmc.api.datapacks.injectors.TimelinesInjector;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
+import fr.openmc.core.utils.nms.WeatherType;
 import lombok.Getter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -32,8 +33,8 @@ public class AmbientBuilder {
     @Getter
     private Integer timeFixed = null;
 
-    // todo attribut weatherFixed (bool)
-    // todo attribut weather (str) (si true)
+    @Getter
+    private WeatherType weatherFixed = null;
 
     public AmbientBuilder(String namepace, String id) {
         this.namespace = namepace;
@@ -131,6 +132,13 @@ public class AmbientBuilder {
     public AmbientBuilder hasPrecipitation(Boolean bool) {
         if (biomeBuilder == null) biomeBuilder = new BiomeBuilder();
         this.biomeBuilder.hasPrecipitation(bool);
+        return this;
+    }
+
+    public AmbientBuilder hasPrecipitation(Boolean bool, WeatherType type) {
+        if (biomeBuilder == null) biomeBuilder = new BiomeBuilder();
+        this.biomeBuilder.hasPrecipitation(bool);
+        this.weatherFixed = type;
         return this;
     }
 

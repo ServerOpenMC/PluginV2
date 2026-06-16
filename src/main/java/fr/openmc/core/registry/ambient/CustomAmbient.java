@@ -8,6 +8,7 @@ import fr.openmc.core.utils.MathUtils;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
 import fr.openmc.core.utils.nms.PlayerRespawnNMS;
 import fr.openmc.core.utils.nms.PlayerSetTimeNMS;
+import fr.openmc.core.utils.nms.PlayerWeatherNMS;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -60,6 +61,10 @@ public abstract class CustomAmbient {
 
         if (this.getAmbientBuilder().getTimeFixed() != null) {
             PlayerSetTimeNMS.sendPacketSetTime(player, this.getAmbientBuilder().getTimeFixed());
+        }
+
+        if (this.getAmbientBuilder().getWeatherFixed() != null) {
+            PlayerWeatherNMS.setWeather(player, this.getAmbientBuilder().getWeatherFixed());
         }
 
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
