@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.ambient.contents;
 
-import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
+import fr.openmc.api.datapacks.builders.sounds.AmbientSoundBuilder;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
@@ -36,10 +36,15 @@ public class GoldenAmbient extends CustomAmbient {
                             obj.addProperty("visual/cloud_color", "#4cffde50");
                         })
                         .particleDustColorTransition(16776172, 16766720, 2, 0.01)
+                        .ambientSounds(new AmbientSoundBuilder()
+                                .additions(new AmbientSoundBuilder.AdditionsBuilder()
+                                        .sound("minecraft:block.amethyst_block.step")
+                                        .tickChance(0.1)
+                                )
+                        )
                 )
                 .skybox(DimensionType.Skybox.OVERWORLD)
                 .hasSkylight(true)
-                .biomes(new BiomeBuilder())
                 .defaultClock("overworld")
                 .timelines("#minecraft:in_overworld")
                 .hasFixedTime(true, 6000)

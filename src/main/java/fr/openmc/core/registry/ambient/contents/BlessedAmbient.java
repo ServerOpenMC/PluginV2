@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.ambient.contents;
 
-import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
+import fr.openmc.api.datapacks.builders.sounds.AmbientSoundBuilder;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
@@ -37,16 +37,21 @@ public class BlessedAmbient extends CustomAmbient {
                         })
                         .ambientParticles(Particle.OMINOUS_SPAWNING, 0.01)
                         .ambientParticles(Particle.FISHING, 0.004)
+                        .ambientSounds(new AmbientSoundBuilder()
+                                .additions(new AmbientSoundBuilder.AdditionsBuilder()
+                                        .sound("minecraft:ambient.underwater.loop.additions.rare")
+                                        .tickChance(0.001)
+                                )
+                        )
                 )
                 .ambientLight(0.2f)
                 .skybox(DimensionType.Skybox.OVERWORLD)
                 .hasSkylight(true)
-                .biomes(new BiomeBuilder()
-                        .waterColor("#43d5ee"))
+                .waterColor("#43d5ee")
                 .defaultClock("overworld")
                 .timelines("#minecraft:in_overworld")
                 .hasFixedTime(true, 200)
-                .hasPrecipitation(true, WeatherType.NONE);
+                .hasPrecipitation(true, WeatherType.RAIN);
     }
 
     @Override

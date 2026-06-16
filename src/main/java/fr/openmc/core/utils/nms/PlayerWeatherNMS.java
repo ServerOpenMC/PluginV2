@@ -10,8 +10,11 @@ public class PlayerWeatherNMS {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         switch (type) {
-            case NONE ->
+            case NONE -> {
                     send(nmsPlayer, ClientboundGameEventPacket.STOP_RAINING, 0.0f);
+                    send(nmsPlayer, ClientboundGameEventPacket.RAIN_LEVEL_CHANGE, 0.0f);
+                    send(nmsPlayer, ClientboundGameEventPacket.THUNDER_LEVEL_CHANGE, 0.0f);
+            }
             case RAIN -> {
                 send(nmsPlayer, ClientboundGameEventPacket.START_RAINING, 0.0f);
                 send(nmsPlayer, ClientboundGameEventPacket.RAIN_LEVEL_CHANGE, 1.0f);
