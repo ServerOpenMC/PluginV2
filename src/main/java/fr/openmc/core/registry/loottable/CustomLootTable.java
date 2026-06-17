@@ -1,6 +1,9 @@
 package fr.openmc.core.registry.loottable;
 
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -15,62 +18,47 @@ public abstract class CustomLootTable {
 
     public double getChanceOf(ItemStack item) {
         return this.getLoots().stream()
-                .filter(loot -> loot.items().stream()
+                .filter(loot -> loot instanceof ItemLoot)
+                .map(loot -> (ItemLoot) loot)
+                .filter(loot -> loot.getItems().stream()
                         .anyMatch(lootItem -> ItemUtils.isSimilar(lootItem, item)))
-                .mapToDouble(CustomLoot::chance)
+                .mapToDouble(CustomLoot::getChance)
                 .sum();
     }
 
-    /**
-     * Rolls the loot table and returns a list of ItemStacks based on the defined chances.
-     * The method calculates the total chance of all loots, generates a random number,
-     * and iterates through the loots to determine which one(s) to drop based on their chances.
-     * @return A list of ItemStacks representing the rolled loot.
-     */
-    public List<ItemStack> rollLoots() {
-        List<ItemStack> result = new ArrayList<>();
+    public List<CustomLoot> rollLoots(Player receiver) {
+        List<CustomLoot> result = new ArrayList<>();
 
         double totalChance = this.getLoots().stream()
-                .mapToDouble(CustomLoot::chance)
+                .mapToDouble(CustomLoot::getChance)
                 .sum();
 
         double roll = Math.random() * totalChance;
         double sumChance = 0.0;
 
         for (CustomLoot loot : this.getLoots()) {
-            sumChance += loot.chance();
+            sumChance += loot.getChance();
             if (roll <= sumChance) {
-                for (ItemStack lootItem : loot.items()) {
-                    ItemStack item = lootItem.clone();
-                    item.setAmount(loot.getRandomAmount());
-                    result.add(item);
-                }
+                loot.run(receiver);
+                result.add(loot);
                 break;
             }
         }
 
         if (result.isEmpty()) {
             CustomLoot next = this.getLoots().iterator().next();
-            for (ItemStack lootItem : next.items()) {
-                ItemStack item = lootItem.clone();
-                item.setAmount(next.getRandomAmount());
-                result.add(item);
-            }
+            next.run(receiver);
+            result.add(next);
         }
 
         return result;
     }
 
-    /**
-     * Rolls the loot table and returns a list of ItemStacks based on the defined chances, but with a specified amount for each loot.
-     * @param amountRoll The amount to set for each rolled loot. This will override the random amount defined in the CustomLoot.
-     * @return A list of ItemStacks representing the rolled loot with the specified amount.
-     */
-    public List<ItemStack> rollLootsWithAmount(int amountRoll) {
-        List<ItemStack> loot = new ArrayList<>();
+    public List<CustomLoot> rollLootsWithAmount(Player receiver, int amountRoll) {
+        List<CustomLoot> loot = new ArrayList<>();
 
         for (int i = 0; i < amountRoll; i++) {
-            loot.addAll(rollLoots());
+            loot.addAll(rollLoots(receiver));
         }
 
         return loot;
@@ -78,17 +66,17 @@ public abstract class CustomLootTable {
 
     public CustomLoot selectRandomLoot() {
         double totalChance = this.getLoots().stream()
-                .mapToDouble(CustomLoot::chance)
+                .mapToDouble(CustomLoot::getChance)
                 .sum();
 
         double random = ThreadLocalRandom.current().nextDouble(totalChance);
         double cumulative = 0;
 
-        for (CustomLoot item : this.getLoots()) {
-            cumulative += item.chance();
+        for (CustomLoot loot : this.getLoots()) {
+            cumulative += loot.getChance();
 
             if (random <= cumulative) {
-                return item;
+                return loot;
             }
         }
 
@@ -97,10 +85,10 @@ public abstract class CustomLootTable {
 
     public List<CustomLoot> generateWeightedPool() {
         List<CustomLoot> pool = new ArrayList<>();
-        for (CustomLoot item : this.getLoots()) {
-            int count = Math.max(1, (int) (item.chance() * 2));
+        for (CustomLoot loot : this.getLoots()) {
+            int count = Math.max(1, (int) (loot.getChance() * 2));
             for (int i = 0; i < count; i++) {
-                pool.add(item);
+                pool.add(loot);
             }
         }
         Collections.shuffle(pool);

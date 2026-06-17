@@ -11,6 +11,8 @@ import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -86,18 +88,22 @@ public class PlayerObtainOrb implements Listener {
     public void onMetalDetectorLoot(MetalDetectorLootEvent event) {
         Player player = event.getPlayer();
 
-        for (ItemStack item : event.getLoot()) {
-            DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+        for (CustomLoot loot : event.getLoot()) {
+            if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-            if (dreamItem == null) continue;
-            if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;
+            for (ItemStack item : itemLoot.getItems()) {
+                DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
 
-            setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
+                if (dreamItem == null) continue;
+                if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;
 
-            // * SFX
-            player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5,  null);
-            break;
+                setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
+
+                // * SFX
+                player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+                ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5, null);
+                break;
+            }
         }
     }
 

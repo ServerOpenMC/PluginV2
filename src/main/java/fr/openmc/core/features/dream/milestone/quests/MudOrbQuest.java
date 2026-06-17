@@ -10,9 +10,12 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -50,12 +53,18 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 	public void onGetOrb(MetalDetectorLootEvent e) {
 		Player player = e.getPlayer();
 		if (!DreamUtils.isInDreamWorld(player)) return;
-		
-		DreamItem item = DreamItemRegistry.getByItemStack(e.getLoot().getFirst());
-		if (item == null) return;
-		if (item instanceof MudOrb) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
-			this.incrementProgressInDream(player.getUniqueId());
+
+		for (CustomLoot loot : e.getLoot()) {
+			if (!(loot instanceof ItemLoot itemLoot)) continue;
+
+			for (ItemStack item : itemLoot.getItems()) {
+				DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+				if (dreamItem == null) return;
+				if (dreamItem instanceof MudOrb) {
+					if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+					this.incrementProgressInDream(player.getUniqueId());
+				}
+			}
 		}
 	}
 }

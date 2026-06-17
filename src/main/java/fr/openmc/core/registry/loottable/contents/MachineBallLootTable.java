@@ -1,9 +1,9 @@
 package fr.openmc.core.registry.loottable.contents;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.registry.loottable.CustomLootTable;
-import fr.openmc.core.registry.loottable.LootItem;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ public class MachineBallLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return Set.of(
-                new LootItem(
+                new ItemLoot(
                         Set.of(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest()),
                         new ItemBuilder(
                             OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY,
@@ -34,7 +34,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1,
                         1
                 ),
-                new LootItem(
+                new ItemLoot(
                         Set.of(new ItemStack(Material.DIAMOND, 3)),
                         new ItemBuilder(
                             Material.DIAMOND,
@@ -47,7 +47,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1,
                         1
                 ),
-                new LootItem(
+                new ItemLoot(
                         Set.of(new ItemStack(Material.IRON_INGOT, 10)),
                         new ItemBuilder(
                                 Material.IRON_INGOT,
@@ -60,7 +60,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1,
                         1
                 ),
-                new LootItem(
+                new ItemLoot(
                         Set.of(new ItemStack(Material.NETHERITE_INGOT)),
                         new ItemBuilder(
                                 Material.NETHERITE_INGOT,
@@ -73,7 +73,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1,
                         1
                 ),
-                new LootItem(
+                new ItemLoot(
                         Set.of(new ItemStack(Material.OAK_LOG, 32)),
                         new ItemBuilder(
                                 Material.OAK_LOG,
@@ -86,7 +86,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1,
                         1
                 ),
-                new LootItem(
+                new ItemLoot(
                         Set.of(new ItemStack(Material.COOKED_BEEF, 16)),
                         new ItemBuilder(
                                 Material.COOKED_BEEF,
@@ -99,7 +99,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1,
                         1
                 ),
-                new LootItem(
+                new ItemLoot(
                         Set.of(new ItemStack(Material.COAL, 16)),
                         new ItemBuilder(
                                 Material.COAL,

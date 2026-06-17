@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Bukkit;
@@ -41,7 +41,7 @@ public class CrazyFrog extends DreamMob<Frog> implements Listener {
                 0L,
                 RandomUtils.randomBetween(0.2, 0.4),
                 RandomUtils.randomBetween(3, 2.3),
-                List.of(new CustomLoot(
+                List.of(new ItemLoot(
                         DreamItemRegistry.METAL_DETECTOR,
                         0.5,
                         1,

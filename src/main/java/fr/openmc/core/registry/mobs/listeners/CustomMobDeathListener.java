@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.mobs.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.damage.DamageSource;
@@ -33,10 +33,10 @@ public class CustomMobDeathListener implements Listener {
         customMob.onDeath(customMob, event);
 
         if (customMob.getLoots() == null) return;
-        for (CustomLoot loot : customMob.getLoots()) {
-            if (Math.random() >= loot.chance()) return;
+        for (ItemLoot loot : customMob.getLoots()) {
+            if (Math.random() >= loot.getChance()) return;
 
-            int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
+            int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
             ItemStack drop = loot.getFirstLoot().asQuantity(amount);
             entity.getWorld().dropItemNaturally(entity.getLocation(), drop);
         }

@@ -1,14 +1,30 @@
-package fr.openmc.core.registry.loottable;
+package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
+import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.Set;
 
-public record LootItem(Set<ItemStack> items, ItemStack displayedItem, double chance, int minAmount, int maxAmount) implements CustomLoot {
+@Getter
+public class ItemLoot implements CustomLoot {
+    private final double chance;
+    private final Set<ItemStack> items;
+    private final ItemStack displayedItem;
+    private final int minAmount;
+    private final int maxAmount;
 
-    public LootItem(ItemStack item, double chance, int minAmount, int maxAmount) {
+    public ItemLoot(Set<ItemStack> items, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+        this.chance = chance;
+        this.items = items;
+        this.displayedItem = displayedItem;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
+    }
+
+    public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
         this(Collections.singleton(item),
                 null,
                 chance,
@@ -16,7 +32,7 @@ public record LootItem(Set<ItemStack> items, ItemStack displayedItem, double cha
                 maxAmount);
     }
 
-    public LootItem(CustomItem item, double chance, int minAmount, int maxAmount) {
+    public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
         if (item == null) {
             throw new IllegalArgumentException("CustomItem cannot be null");
         }
@@ -27,7 +43,7 @@ public record LootItem(Set<ItemStack> items, ItemStack displayedItem, double cha
                 maxAmount);
     }
 
-    public LootItem(ItemStack item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+    public ItemLoot(ItemStack item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this(Collections.singleton(item),
                 displayedItem,
                 chance,
@@ -35,7 +51,7 @@ public record LootItem(Set<ItemStack> items, ItemStack displayedItem, double cha
                 maxAmount);
     }
 
-    public LootItem(CustomItem item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+    public ItemLoot(CustomItem item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         if (item == null) {
             throw new IllegalArgumentException("CustomItem cannot be null");
         }
@@ -55,5 +71,14 @@ public record LootItem(Set<ItemStack> items, ItemStack displayedItem, double cha
 
     public int getRandomAmount() {
         return minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+    }
+
+    @Override
+    public void run(Player receiver) {
+        for (ItemStack lootItem : this.getItems()) {
+            ItemStack item = lootItem.clone();
+            item.setAmount(this.getRandomAmount());
+            receiver.getInventory().addItem(item);
+        }
     }
 }
