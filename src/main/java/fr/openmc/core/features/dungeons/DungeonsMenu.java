@@ -69,7 +69,7 @@ public class DungeonsMenu extends Menu {
             final int level = i;
             for (Rarity rarity : Rarity.values()) {
                 if (rarity == Rarity.ABSOLUTE_MASTER) continue;
-                Key key = (Key) OMCRegistry.CUSTOM_ITEMS.getOrThrow("omc_dungeons:key_level_" + i + "_rarity_" + rarity.name().toLowerCase());
+                Key key = (Key) OMCRegistry.CUSTOM_ITEMS.getOrThrow("omc_dungeons:key_level_" + i + "_" + rarity.name().toLowerCase());
                 map.put(2 * i + rarity.ordinal() * 9 - 1, new ItemMenuBuilder(this, key.getBest(), itemMeta -> {
                     itemMeta.lore(List.of(
                             Component.text("§fLevel " + level),

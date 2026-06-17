@@ -1,31 +1,147 @@
 info:
   namespace: omc_dungeons
 items:
-  key_level_1:
+  key_level_1_common:
     display_name: §l§aForêt Elfique
     resource:
       generate: false
       model_path: "minecraft:item/tripwire_hook"
       material: TRIPWIRE_HOOK
-  key_level_2:
+
+  key_level_1_rare:
+    display_name: §l§aForêt Elfique
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_1_epic:
+    display_name: §l§aForêt Elfique
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_1_legendary:
+    display_name: §l§aForêt Elfique
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_1_master:
+    display_name: §l§aForêt Elfique
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_2_common:
     display_name: §l§cCroisade Ardente
     resource:
       generate: false
       model_path: "minecraft:item/tripwire_hook"
       material: TRIPWIRE_HOOK
-  key_level_3:
+
+  key_level_2_rare:
+    display_name: §l§cCroisade Ardente
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_2_epic:
+    display_name: §l§cCroisade Ardente
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_2_legendary:
+    display_name: §l§cCroisade Ardente
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_2_master:
+    display_name: §l§cCroisade Ardente
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_3_common:
     display_name: §l§9Forêt des Elfs de la Nuits
     resource:
       generate: false
       model_path: "minecraft:item/tripwire_hook"
       material: TRIPWIRE_HOOK
-  key_level_4:
+
+  key_level_3_rare:
+    display_name: §l§9Forêt des Elfs de la Nuits
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_3_epic:
+    display_name: §l§9Forêt des Elfs de la Nuits
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_3_legendary:
+    display_name: §l§9Forêt des Elfs de la Nuits
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_3_master:
+    display_name: §l§9Forêt des Elfs de la Nuits
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_4_common:
     display_name: §l§3Aether
     resource:
       generate: false
       model_path: "minecraft:item/tripwire_hook"
       material: TRIPWIRE_HOOK
-  key_level_5:
+
+  key_level_4_rare:
+    display_name: §l§3Aether
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_4_epic:
+    display_name: §l§3Aether
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_4_legendary:
+    display_name: §l§3Aether
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_4_master:
+    display_name: §l§3Aether
+    resource:
+      generate: false
+      model_path: "minecraft:item/tripwire_hook"
+      material: TRIPWIRE_HOOK
+
+  key_level_5_absolute_master:
     display_name: §l§4Paralysie du Sommeil
     resource:
       generate: false

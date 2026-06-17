@@ -15,7 +15,7 @@ public class Key extends CustomItem {
 
 
     public Key(int level, Rarity rarity) {
-        super("omc_dungeons:key_level_" + level + "_rarity_" + rarity.name().toLowerCase());
+        super("omc_dungeons:key_level_" + level + "_" + rarity.name().toLowerCase());
         this.level = level;
         this.rarity = rarity;
     }
