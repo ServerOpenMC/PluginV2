@@ -8,9 +8,11 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
@@ -35,10 +37,10 @@ import java.util.Set;
 
 //todo: tester les toasts lorsqu'ils refonctionneront (before, start, end)
 @Credit(developers = {"iambibi_"})
-public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners {
+public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners, HasCommands {
     // * Constantes
     public static final List<DailyEvent> EVENTS = List.of(
-        new MiraculousFishingEvent(),
+            new MiraculousFishingEvent(),
             new GoldenHarvestEvent(),
             new BloodyNightEvent()
     );
@@ -51,6 +53,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     // * Données à propos de la gestion des daily event
     public static ScheduleDailyEvent outgoingEvent = null;
+    public static BukkitTask endEventTask = null;
     public static BukkitTask nextEventTask;
     public static List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
 
@@ -87,8 +90,16 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         return listeners;
     }
 
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new DailyEventCommand()
+        );
+    }
+
     /**
      * Charge les données de la DB, généralement pdt le démarrage
+     *
      * @return les données des daily event (ordre actuel)
      */
     public static IncomingEventsDB loadIncomingEventsDB() {
@@ -106,6 +117,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     /**
      * Sauvegarde les données des Daily Event dans la DB, généralement pdt l'arrêt du serveur
+     *
      * @param data les données des daily events
      */
     public static void saveIncomingEventsDB(IncomingEventsDB data) {
@@ -119,6 +131,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     /**
      * On charge les evenements à venir
      * Lors du premier chargement, on remplit directement notre liste de taille identique à nos slots horaires.
+     *
      * @return la liste prévue des x prochains évenements
      */
     public static List<ScheduleDailyEvent> loadIncomingEvents() {
@@ -136,9 +149,9 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
             LocalDateTime scheduledDailyEvent;
             if (hourSlot > now.getHour()) {
-                scheduledDailyEvent=now.withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
+                scheduledDailyEvent = now.withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
             } else {
-                scheduledDailyEvent=now.plusDays(1)
+                scheduledDailyEvent = now.plusDays(1)
                         .withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
             }
             scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), scheduledDailyEvent));
@@ -152,6 +165,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      * - On cherche la prochaine heure, en faisant gaffe si l'heure est passée, dans ce cas on schedule pour demain
      * - Apres la prochaine heure on lance les taches associés à l'événement (tache pour avant le commencement,
      * et pour le lancement de l'événement et la planification du prochain
+     *
      * @return la tache de lancement de l'événement, qui sera executé à l'heure exacte du début de l'événement
      */
     public static BukkitTask scheduleNextEventTask() {
@@ -174,7 +188,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         long delayTicks = DateUtils.getDelayBetweenNow(scheduleTime) * 20;
 
         OMCLogger.infoFormatted("Les prochains evenement : " + incomingEvents.stream()
-                .map(s->s.getDailyEvent().getClass().getSimpleName()).toList());
+                .map(s -> s.getDailyEvent().getClass().getSimpleName()).toList());
         OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertSecondToTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
 
         // * Programation de la tâche qui s'executera peu avant le commencement
@@ -187,6 +201,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     /**
      * Méthode plus claire afin de dire s'il y a un evenement journalier actif ou non
+     *
      * @return un boolean
      */
     public static boolean isActiveDailyEvent() {
@@ -195,9 +210,17 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     /**
      * Méthode plus claire afin de dire renvoyer l'evenement journalier actif
+     *
      * @return un daily event
      */
     public static DailyEvent getActiveDailyEvent() {
         return outgoingEvent.getDailyEvent();
+    }
+
+    public static DailyEvent getDailyEvent(String id) {
+        return EVENTS.stream()
+                .filter(event -> event.getEventId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 }
