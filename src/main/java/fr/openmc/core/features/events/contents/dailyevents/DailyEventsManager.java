@@ -28,6 +28,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -74,9 +75,16 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     @Override
     public Set<Listener> getListeners() {
-        return Set.of(
+        Set<Listener> listeners = new HashSet<>(Set.of(
                 new DailyEventAmbientListeners()
-        );
+        ));
+
+        for (DailyEvent event : EVENTS) {
+            if (!(event instanceof HasListeners hasListeners)) continue;
+            listeners.addAll(hasListeners.getListeners());
+        }
+
+        return listeners;
     }
 
     /**
@@ -183,5 +191,13 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      */
     public static boolean isActiveDailyEvent() {
         return outgoingEvent != null;
+    }
+
+    /**
+     * Méthode plus claire afin de dire renvoyer l'evenement journalier actif
+     * @return un daily event
+     */
+    public static DailyEvent getActiveDailyEvent() {
+        return outgoingEvent.getDailyEvent();
     }
 }

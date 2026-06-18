@@ -26,7 +26,7 @@ public abstract class CustomLootTable {
                 .sum();
     }
 
-    public List<CustomLoot> rollLoots(Player receiver) {
+    public List<CustomLoot> rollLoots(Player receiver, boolean giveLoots) {
         List<CustomLoot> result = new ArrayList<>();
 
         double totalChance = this.getLoots().stream()
@@ -39,7 +39,8 @@ public abstract class CustomLootTable {
         for (CustomLoot loot : this.getLoots()) {
             sumChance += loot.getChance();
             if (roll <= sumChance) {
-                loot.run(receiver);
+                if (giveLoots)
+                    loot.run(receiver);
                 result.add(loot);
                 break;
             }
@@ -47,11 +48,16 @@ public abstract class CustomLootTable {
 
         if (result.isEmpty()) {
             CustomLoot next = this.getLoots().iterator().next();
-            next.run(receiver);
+            if (giveLoots)
+                next.run(receiver);
             result.add(next);
         }
 
         return result;
+    }
+
+    public List<CustomLoot> rollLoots(Player receiver) {
+        return rollLoots(receiver, true);
     }
 
     public List<CustomLoot> rollLootsWithAmount(Player receiver, int amountRoll) {

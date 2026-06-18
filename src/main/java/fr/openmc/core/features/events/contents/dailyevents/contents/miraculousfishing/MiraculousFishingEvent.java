@@ -1,6 +1,9 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerFishListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerNotPickUpListener;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
@@ -11,11 +14,13 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 
-public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast {
+public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast, HasListeners {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -91,5 +96,13 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     @Override
     public Component getEndBroadcast() {
         return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.end");
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new PlayerFishListener(),
+                new PlayerNotPickUpListener()
+        );
     }
 }
