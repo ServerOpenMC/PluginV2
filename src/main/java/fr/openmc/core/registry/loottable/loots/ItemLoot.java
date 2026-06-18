@@ -2,6 +2,7 @@ package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -43,6 +44,22 @@ public class ItemLoot implements CustomLoot {
                 maxAmount);
     }
 
+    public ItemLoot(Material item, Material displayedItem, double chance, int minAmount, int maxAmount) {
+        this(ItemStack.of(item),
+                ItemStack.of(displayedItem),
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(ItemStack item, Material displayedItem, double chance, int minAmount, int maxAmount) {
+        this(item,
+                ItemStack.of(displayedItem),
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
     public ItemLoot(ItemStack item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this(Collections.singleton(item),
                 displayedItem,
@@ -57,6 +74,17 @@ public class ItemLoot implements CustomLoot {
         }
         this(Collections.singleton(item.getBest()),
                 displayedItem,
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(CustomItem item, CustomItem displayedItem, double chance, int minAmount, int maxAmount) {
+        if (item == null) throw new IllegalArgumentException("CustomItem cannot be null");
+        if (displayedItem == null) throw new IllegalArgumentException("CustomItem cannot be null");
+
+        this(Collections.singleton(item.getBest()),
+                displayedItem.getBest(),
                 chance,
                 minAmount,
                 maxAmount);
