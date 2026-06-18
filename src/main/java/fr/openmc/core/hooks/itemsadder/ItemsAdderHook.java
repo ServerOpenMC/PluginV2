@@ -91,6 +91,8 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
             File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
             File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents
 
+            FilesUtils.deleteDirectory(contentDir);
+
             if (!FilesUtils.createDirectoryIfNotExists(contentDir)) {
                 OMCLogger.error("Impossible de créer le dossier {}", contentDir.getAbsolutePath());
                 return;
