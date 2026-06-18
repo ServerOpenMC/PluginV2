@@ -11,6 +11,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,23 +25,26 @@ public class OpenQuestMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenQuestMenuQuest() {
         super(
-                "Ouvrir le menu des quêtes",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.open_quest.name"),
                 List.of(
-                        "§fTapez §d/quests §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu et voir quelles quêtes vous pouvez accomplir",
-                        "§8§oCela va pouvoir vous lancer dans l'aventure et vous donner des défis afin de vous diversifier !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_quest.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_quest.description.2")
                 ),
                 Material.GOLDEN_AXE,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.OPEN_QUEST,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_QUEST.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.OPEN_QUEST,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.open_quest.reward",
+                                        Component.text(TutorialSteps.OPEN_QUEST.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 

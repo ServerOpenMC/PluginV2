@@ -8,6 +8,7 @@ import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -22,15 +23,24 @@ public class MailboxMenuManager {
                     new PendingMailbox(player).open();
                     MessagesManager.sendMessage(
                             player,
-                            Component.text("Vous avez annulé la mailbox #" + letter.getLetterId(), NamedTextColor.GREEN),
+                            TranslationManager.translation(
+                                    "feature.mailboxes.menu.cancel.success",
+                                    Component.text(letter.getLetterId()).color(NamedTextColor.GREEN)
+                            ).color(NamedTextColor.GREEN),
                             Prefix.MAILBOX,
                             MessageType.SUCCESS,
                             false
                     );
                 },
                 player::closeInventory,
-                List.of(Component.text("Confirmer l'annulation de la mailbox #" + letter.getLetterId(), NamedTextColor.RED)),
-                List.of(Component.text("Annuler l'annulation de la mailbox #" + letter.getLetterId(), NamedTextColor.GREEN))
+                List.of(TranslationManager.translation(
+                        "feature.mailboxes.menu.cancel.confirm",
+                        Component.text(letter.getLetterId()).color(NamedTextColor.RED)
+                ).color(NamedTextColor.RED)),
+                List.of(TranslationManager.translation(
+                        "feature.mailboxes.menu.cancel.cancel",
+                        Component.text(letter.getLetterId()).color(NamedTextColor.GREEN)
+                ).color(NamedTextColor.GREEN))
         ).open();
     }
 }

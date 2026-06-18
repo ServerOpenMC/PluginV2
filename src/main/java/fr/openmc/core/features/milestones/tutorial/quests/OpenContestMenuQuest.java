@@ -14,6 +14,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,48 +32,51 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenContestMenuQuest() {
         super(
-                "Ouvrez le menu des contests",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.open_contest.name"),
                 List.of(
-                        "§fTapez §d/contest §fou bien aller dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
-                        "§8§oUne méthode compétitive pour gagner des grosses récompenses !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_contest.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_contest.description.2")
                 ),
-                OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.OPEN_CONTEST,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(1000),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_CONTEST.ordinal() + 1) + " §f! Les §6contests§f opposent 2 groupes sur un thème, les gagnants remportent une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §9mailbox§f, un système de lettre pour recevoir ou bien envoyer des lettres !",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        ),
-				        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), 30),
-				        new QuestMethodsReward(
-						        player -> {
-							        List<ItemStack> items = new ArrayList<>();
-							        
-							        FileConfiguration config = OMCPlugin.getConfigs();
-							        if (config != null) {
-								        LocalDate today = LocalDate.now();
-								        LocalDate limitDate = LocalDate.of(
-										        config.getInt("features.aywen_pelush.year", 2025),
-										        config.getInt("features.aywen_pelush.month", 11),
-										        config.getInt("features.aywen_pelush.day", 3)
-								        );
-								        
-								        if (!limitDate.isBefore(today)) {
-									        ItemStack aywenPlush = OMCRegistry.CUSTOM_ITEMS.PELUCHE_AWYEN.getBest();
-									        items.add(aywenPlush);
-								        }
-							        }
-							        
-							        ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
-							        
-							        MailboxManager.sendItems(player, player, itemsArray);
-						        }
-				        )
-		        )
+				OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
+                MilestoneType.TUTORIAL,
+                TutorialSteps.OPEN_CONTEST,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(1000),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.open_contest.reward",
+                                        Component.text(TutorialSteps.OPEN_CONTEST.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        ),
+                        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), 30),
+						new QuestMethodsReward(
+								player -> {
+									List<ItemStack> items = new ArrayList<>();
+
+									FileConfiguration config = OMCPlugin.getConfigs();
+									if (config != null) {
+										LocalDate today = LocalDate.now();
+										LocalDate limitDate = LocalDate.of(
+												config.getInt("features.aywen_pelush.year", 2025),
+												config.getInt("features.aywen_pelush.month", 11),
+												config.getInt("features.aywen_pelush.day", 3)
+										);
+
+										if (!limitDate.isBefore(today)) {
+											ItemStack aywenPlush = OMCRegistry.CUSTOM_ITEMS.PELUCHE_AWYEN.getBest();
+											items.add(aywenPlush);
+										}
+									}
+
+									ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
+
+									MailboxManager.sendItems(player, player, itemsArray);
+								}
+						)
+                )
         );
     }
 

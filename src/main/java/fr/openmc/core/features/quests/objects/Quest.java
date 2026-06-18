@@ -10,6 +10,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -309,7 +310,14 @@ public class Quest {
                         reward.giveReward(player);
                     } else {
                         addPendingRewards(uuid, tierIndex, tier.getRewards());
-                        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour recevoir la récompense !"), Prefix.QUEST, MessageType.WARNING, false);
+                        MessagesManager.sendMessage(
+                                player,
+                                TranslationManager.translation("feature.quests.message.inventory_full_reward")
+                                        .color(NamedTextColor.RED),
+                                Prefix.QUEST,
+                                MessageType.WARNING,
+                                false
+                        );
                     }
                 }
 
@@ -317,16 +325,27 @@ public class Quest {
                     Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player, this));
                 });
 
-                Component titleMain = Component.text(
-                                "✦ ", TextColor.color(15770808))
-                        .append(Component.text(isLastTier
-                                        ? "Quête terminée !"
-                                        : "Palier " + (tierIndex + 1) + " terminé !",
-                                TextColor.color(6216131)))
+                Component titleLabel = isLastTier
+                        ? TranslationManager.translation("feature.quests.title.completed")
+                        : TranslationManager.translation(
+                                "feature.quests.title.tier_completed",
+                                Component.text(tierIndex + 1).color(TextColor.color(6216131))
+                        );
+                Component titleMain = Component.text("✦ ", TextColor.color(15770808))
+                        .append(titleLabel.color(TextColor.color(6216131)))
                         .append(Component.text(" ✦", TextColor.color(15770808)));
 
                 Component titleSub = Component.text(this.name, TextColor.color(8087790));
-                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + getName(uuid) + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
+                Component message = isLastTier
+                        ? TranslationManager.translation(
+                                "feature.quests.message.completed",
+                                Component.text(getName(uuid)).color(NamedTextColor.YELLOW)
+                        )
+                        : TranslationManager.translation(
+                                "feature.quests.message.tier_completed",
+                                Component.text(tierIndex + 1).color(NamedTextColor.YELLOW),
+                                Component.text(this.name).color(NamedTextColor.YELLOW)
+                        );
 
                 player.showTitle(Title.title(
                         titleMain,
@@ -335,7 +354,7 @@ public class Quest {
                 );
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.2F);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.1F);
-                MessagesManager.sendMessage(player, Component.text(message), Prefix.QUEST, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(player, message.color(NamedTextColor.GREEN), Prefix.QUEST, MessageType.SUCCESS, true);
             } else {
                 addPendingRewards(uuid, tierIndex, tier.getRewards());
             }
@@ -425,12 +444,24 @@ public class Quest {
                     pendingRewards.remove(playerUUID);
                 }
             }
-            MessagesManager.sendMessage(player, Component.text("Vous avez récupéré toutes les récompenses du palier " + (tierIndex + 1) + " de la quête " + this.name + " !"), Prefix.QUEST, MessageType.SUCCESS, true);
+            Component message = TranslationManager.translation(
+                    "feature.quests.message.rewards_claimed",
+                    Component.text(tierIndex + 1).color(NamedTextColor.YELLOW),
+                    Component.text(this.name).color(NamedTextColor.YELLOW)
+            ).color(NamedTextColor.GREEN);
+            MessagesManager.sendMessage(player, message, Prefix.QUEST, MessageType.SUCCESS, true);
         } else {
             if (playerPendingRewards != null && !remainingRewards.isEmpty()) {
                 playerPendingRewards.put(tierIndex, remainingRewards);
             }
-            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour récupérer toutes les récompenses. Libérez de l'espace et réessayez."), Prefix.QUEST, MessageType.WARNING, true);
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation("feature.quests.message.inventory_full_claim")
+                            .color(NamedTextColor.RED),
+                    Prefix.QUEST,
+                    MessageType.WARNING,
+                    true
+            );
         }
 
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
@@ -459,10 +490,12 @@ public class Quest {
         if (step.isCompleted(playerUUID)) {
 
             int tierIndex = getCurrentTierIndex(playerUUID);
-            String stepName = "Étape " + (stepIndex + 1);
-
-            String message = "§a✓ §7" + stepName + " §7de §e" + this.name + " §avalidée !";
-            MessagesManager.sendMessage(player, Component.text(message), Prefix.QUEST, MessageType.SUCCESS, true);
+            Component message = TranslationManager.translation(
+                    "feature.quests.message.step_completed",
+                    Component.text(stepIndex + 1).color(NamedTextColor.YELLOW),
+                    Component.text(this.name).color(NamedTextColor.YELLOW)
+            ).color(NamedTextColor.GREEN);
+            MessagesManager.sendMessage(player, message, Prefix.QUEST, MessageType.SUCCESS, true);
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 2.0F);
 
             if (currentTier.areStepsCompleted(playerUUID) && currentTier.isRequireStepsCompletion()) {
@@ -552,7 +585,9 @@ public class Quest {
                         Component actionBar = Component.text()
                                 .append(Prefix.QUEST.getPrefix())
                                 .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
-                                .append(Component.text("Progression de la quête ", NamedTextColor.GRAY))
+                                .append(TranslationManager.translation("feature.quests.actionbar.progress_label")
+                                        .color(NamedTextColor.GRAY))
+                                .append(Component.space())
                                 .append(Component.text(this.name, NamedTextColor.WHITE))
                                 .append(Component.text(" : ", NamedTextColor.GRAY))
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))

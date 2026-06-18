@@ -2,6 +2,7 @@ package fr.openmc.core.features.mainmenu.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mainmenu.MainMenu;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -51,7 +52,7 @@ public class MainMenuListener implements Listener {
         // Rien de très important ici, on crée justes les instances nécessaires pour le packet avec le minimum requis.
         DisplayInfo displayInfo = new DisplayInfo(
                 ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(getInvisibleItem())),
-                Component.literal("Chargement..."),
+                Component.literal(TranslationManager.translationString("feature.mainmenu.advancements.loading")),
                 Component.empty(),
                 Optional.empty(),
                 AdvancementType.GOAL,

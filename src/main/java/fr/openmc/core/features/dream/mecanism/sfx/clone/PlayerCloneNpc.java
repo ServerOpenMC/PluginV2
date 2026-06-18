@@ -1,4 +1,4 @@
-package fr.openmc.core.features.dream.mecanism.sfx;
+package fr.openmc.core.features.dream.mecanism.sfx.clone;
 
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;

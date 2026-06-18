@@ -8,6 +8,8 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
+import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,7 +32,7 @@ public class PlayerMailbox extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Boite aux lettres");
+        return TranslationManager.translation("feature.mailboxes.menu.title.player");
     }
 
     @Override

@@ -11,6 +11,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,24 +24,27 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
 
     public HomeUpgradeQuest() {
         super(
-                "Améliorer votre limite de homes",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.name"),
                 List.of(
-                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes)",
-                        "§fpour pouvoir améliorer votre limite de homes",
-                        "§8§oCela vous permettra d'avoir plus de homes !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.2"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.3")
                 ),
                 OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.HOME_UPGRADE,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.HOME_UPGRADE.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous déplacer rapidement entre vos bases ! maintenant, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.HOME_UPGRADE,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.home_upgrade.reward",
+                                        Component.text(TutorialSteps.HOME_UPGRADE.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 

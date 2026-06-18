@@ -6,6 +6,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,8 +20,8 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
 
     public CraftTheMixtureQuest() {
         super(
-                "The Mixture",
-                List.of("Fabriquer {target} The Mixture{s}"),
+                TranslationManager.translationString("feature.quests.craft_the_mixture.name"),
+                List.of(TranslationManager.translationString("feature.quests.craft_the_mixture.description")),
                 OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE
         );
 

@@ -12,6 +12,7 @@ import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -41,22 +42,27 @@ public class MailboxCommand {
         OfflinePlayer receiverPlayer = Bukkit.getPlayerExact(receiver);
         if (receiverPlayer == null) receiverPlayer = Bukkit.getOfflinePlayerIfCached(receiver);
         if (receiverPlayer == null || !(receiverPlayer.hasPlayedBefore() || receiverPlayer.isOnline())) {
-            Component message = Component.text("Le joueur ", NamedTextColor.DARK_RED)
-                                         .append(Component.text(receiver, NamedTextColor.RED))
-                                         .append(Component.text(" n'existe pas ou ne s'est jamais connecté !", NamedTextColor.DARK_RED));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.player_not_found",
+                    Component.text(receiver).color(NamedTextColor.RED)
+            ).color(NamedTextColor.DARK_RED);
             MessagesManager.sendMessage(player, message, Prefix.MAILBOX, MessageType.ERROR, true);
             return;
         }
         if (receiverPlayer.getUniqueId() == player.getUniqueId()) {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas vous envoyer à vous-même !", NamedTextColor.DARK_RED), Prefix.MAILBOX, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.mailboxes.message.send_to_self")
+                            .color(NamedTextColor.DARK_RED),
+                    Prefix.MAILBOX, MessageType.ERROR, true);
             return;
         }
         if (!MailboxManager.canSend(player, receiverPlayer)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas les droits pour envoyer à ", NamedTextColor.DARK_RED)
-                            .append(Component.text(receiverPlayer.getName(), NamedTextColor.RED))
-                            .append(Component.text(" !", NamedTextColor.DARK_RED)),
+                    TranslationManager.translation(
+                            "feature.mailboxes.message.cannot_send",
+                            Component.text(receiverPlayer.getName()).color(NamedTextColor.RED)
+                    ).color(NamedTextColor.DARK_RED),
                     Prefix.MAILBOX,
                     MessageType.ERROR,
                     true
@@ -98,9 +104,10 @@ public class MailboxCommand {
         if (letter == null) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                            .append(Component.text(id, NamedTextColor.RED))
-                            .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED)),
+                    TranslationManager.translation(
+                            "feature.mailboxes.message.letter_not_found",
+                            Component.text(id).color(NamedTextColor.RED)
+                    ).color(NamedTextColor.DARK_RED),
                     Prefix.MAILBOX,
                     MessageType.ERROR,
                     true

@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,8 +17,8 @@ public class ChickenThrowerQuest extends Quest implements Listener {
 
     public ChickenThrowerQuest() {
         super(
-                "Lanceur de poules",
-                List.of("Lancer {target} oeufs"),
+                TranslationManager.translationString("feature.quests.chicken_thrower.name"),
+                List.of(TranslationManager.translationString("feature.quests.chicken_thrower.description")),
                 new ItemStack(Material.EGG)
         );
 

@@ -14,6 +14,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -27,31 +30,34 @@ public class CityCreateQuest extends MilestoneQuest implements Listener {
 
     public CityCreateQuest() {
         super(
-                "Créer/Rejoindre une ville",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.city_create.name"),
                 List.of(
-                        "§fFaites §d/city §fpour commencer à créer votre ville",
-                        "§fou bien rejoindre une ville à l'aide d'une invitation !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_create.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_create.description.2")
                 ),
                 Material.OAK_DOOR,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.CITY_CREATE,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.CITY_CREATE.ordinal() + 1) + " §f! Cette version d'OpenMC est centrée autour des villes. Vous y trouverez une §emilestone spéciale pour les villes §f (/city milestone) qui vous guidera dans cette aventure singulière ! Et si vous passiez votre ville au §3niveau 2 §f?",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        ),
-				        new QuestMethodsReward(
-						        player -> {
-							        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-							        if (playerCity.getLevel() >= 2) {
-								        TutorialSteps.CITY_LEVEL_2.getQuest().incrementProgress(player.getUniqueId());
-							        }
-						        }
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.CITY_CREATE,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.city_create.reward",
+                                        Component.text(TutorialSteps.CITY_CREATE.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        ),
+                        new QuestMethodsReward(
+                                player -> {
+                                    City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                                    if (playerCity.getLevel() >= 2) {
+                                        TutorialSteps.CITY_LEVEL_2.getQuest().incrementProgress(player.getUniqueId());
+                                    }
+                                }
+                        )
+                )
         );
     }
 

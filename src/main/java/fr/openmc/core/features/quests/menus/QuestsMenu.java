@@ -13,9 +13,12 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
@@ -60,7 +63,7 @@ public class QuestsMenu extends Menu {
     }
 
     public @NotNull Component getName() {
-        return Component.text("Menu des quêtes");
+        return TranslationManager.translation("feature.quests.menu.title");
     }
 
     @Override
@@ -117,13 +120,15 @@ public class QuestsMenu extends Menu {
 
         if (this.currentPage > 0) {
             content.put(19, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.QUESTS_LEFT_ARROW, meta ->
-                    meta.displayName(Component.text("Page précédente").decoration(TextDecoration.ITALIC, false))
+                    meta.displayName(TranslationManager.translation("feature.quests.menu.page.previous")
+                            .decoration(TextDecoration.ITALIC, false))
             ));
         }
 
         if (this.currentPage < this.totalPages - 1) {
             content.put(25, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.QUESTS_RIGHT_ARROW, meta ->
-                    meta.displayName(Component.text("Page suivante").decoration(TextDecoration.ITALIC, false))
+                    meta.displayName(TranslationManager.translation("feature.quests.menu.page.next")
+                            .decoration(TextDecoration.ITALIC, false))
             ));
         }
 
@@ -184,40 +189,68 @@ public class QuestsMenu extends Menu {
             item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.ENCHANTMENTS).build());
         }
 
-        Component bar = Component.text("§8§m                                §r");
+        Component bar = Component.text("                                ")
+                .color(NamedTextColor.DARK_GRAY)
+                .decorate(TextDecoration.STRIKETHROUGH)
+                .decoration(TextDecoration.ITALIC, false);
         int tierIndex = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
-        String tierDisplay = "§7[§f" + tierIndex + "§8/§f" + tiersTotal + "§7]";
+        Component tierDisplay = TranslationManager.translation(
+                "feature.quests.menu.tier_display",
+                Component.text(tierIndex).color(NamedTextColor.WHITE),
+                Component.text(tiersTotal).color(NamedTextColor.WHITE)
+        ).color(NamedTextColor.GRAY);
 
-        String nameIcon;
-        if (hasPendingRewards)
-            nameIcon = "§d⚑";
-        else if (isCompleted)
-            nameIcon = "§a✓";
-        else
-            nameIcon = "§6➤";
+        Component nameIcon = hasPendingRewards
+                ? Component.text("⚑", NamedTextColor.LIGHT_PURPLE)
+                : isCompleted
+                ? Component.text("✓", NamedTextColor.GREEN)
+                : Component.text("➤", NamedTextColor.GOLD);
 
-        meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
+        Component displayName = TranslationManager.translation(
+                "feature.quests.menu.quest_item.name",
+                nameIcon,
+                Component.text(quest.getName()).color(NamedTextColor.YELLOW),
+                tierDisplay
+        ).decoration(TextDecoration.ITALIC, false);
+        meta.displayName(displayName);
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
         quest.getDescription(playerUUID).forEach(string -> {
-            lore.add(Component.text("§7" + string));
+            lore.add(Component.text(string, NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false));
         });
         lore.add(bar);
 
         if (hasPendingRewards) {
-            lore.add(Component.text("§d✶ §dRécompenses en attente:"));
+            lore.add(Component.text("✶ ", NamedTextColor.LIGHT_PURPLE)
+                    .append(TranslationManager.translation("feature.quests.menu.pending_rewards.title")
+                            .color(NamedTextColor.LIGHT_PURPLE))
+                    .decoration(TextDecoration.ITALIC, false));
             for (Integer ti : pendingQuestIndexes) {
                 if (ti < quest.getTiers().size()) {
                     QuestTier tier = quest.getTiers().get(ti);
-                    lore.add(Component.text("  §5➤ §dPalier " + (ti + 1) + ":"));
+                    lore.add(Component.text("  ➤ ", NamedTextColor.DARK_PURPLE)
+                            .append(TranslationManager.translation(
+                                    "feature.quests.menu.pending_rewards.tier",
+                                    Component.text(ti + 1).color(NamedTextColor.LIGHT_PURPLE)
+                            ).color(NamedTextColor.LIGHT_PURPLE))
+                            .decoration(TextDecoration.ITALIC, false));
 
                     for (QuestReward reward : tier.getRewards()) {
                         if (reward instanceof QuestItemReward itemReward) {
                             ItemStack rewardItem = itemReward.getItemStack();
                             String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
-                            lore.add(Component.text("    §7- §f" + itemName + " §7x" + itemReward.getAmount()));
+                            lore.add(Component.text("    - ", NamedTextColor.DARK_GRAY)
+                                    .append(Component.text(itemName, NamedTextColor.WHITE))
+                                    .append(Component.space())
+                                    .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
+                                    .decoration(TextDecoration.ITALIC, false));
                         } else if (reward instanceof QuestMoneyReward(double amount)) {
-                            lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(amount) + " §f" + EconomyManager.getEconomyIcon()));
+                            lore.add(Component.text("    - ", NamedTextColor.DARK_GRAY)
+                                    .append(Component.text(EconomyManager.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                                    .append(Component.space())
+                                    .append(Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.WHITE))
+                                    .decoration(TextDecoration.ITALIC, false));
                         }
                     }
                 }
@@ -225,66 +258,107 @@ public class QuestsMenu extends Menu {
         }
 
         if (currentTier != null) {
-            lore.add(Component.text("§6➤ §eRécompenses:"));
+            lore.add(Component.text("➤ ", NamedTextColor.GOLD)
+                    .append(TranslationManager.translation("feature.quests.menu.rewards.title")
+                            .color(NamedTextColor.YELLOW))
+                    .decoration(TextDecoration.ITALIC, false));
             for (QuestReward reward : currentTier.getRewards()) {
                 if (reward instanceof QuestItemReward itemReward) {
                     ItemStack rewardItem = itemReward.getItemStack();
                     String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
-                    lore.add(Component.text("  §7- §f" + itemName + " §7x" + itemReward.getAmount()));
+                    lore.add(Component.text("  - ", NamedTextColor.DARK_GRAY)
+                            .append(Component.text(itemName, NamedTextColor.WHITE))
+                            .append(Component.space())
+                            .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
+                            .decoration(TextDecoration.ITALIC, false));
                 } else if (reward instanceof QuestMoneyReward(double amount)) {
-                    lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(amount) + " §f" + EconomyManager.getEconomyIcon()));
+                    lore.add(Component.text("  - ", NamedTextColor.DARK_GRAY)
+                            .append(Component.text(EconomyManager.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                            .append(Component.space())
+                            .append(Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.WHITE))
+                            .decoration(TextDecoration.ITALIC, false));
                 }
             }
             lore.add(Component.empty());
         }
 
         if (isCompleted) {
-            lore.add(Component.text("  §aQuête complétée !  "));
+            lore.add(TranslationManager.translation("feature.quests.menu.completed")
+                    .color(NamedTextColor.GREEN)
+                    .decoration(TextDecoration.ITALIC, false));
         } else if (currentTier != null) {
             int progressPercent = (int) Math.min(100.0F, Math.floor((double) progress / target * 100.0F));
             int barLength = 26;
             int filledLength = (int)((double)barLength * ((double)progress / (double)target));
-            StringBuilder progressBar = new StringBuilder();
-            progressBar.append("§8[§m");
+            Component progressBar = Component.text("[", NamedTextColor.DARK_GRAY)
+                    .decoration(TextDecoration.ITALIC, false);
 
-            for(int i = 0; i < barLength; ++i) {
-                progressBar.append(i < filledLength ? "§a§m " : "§8§m ");
+            for (int i = 0; i < barLength; ++i) {
+                NamedTextColor segmentColor = i < filledLength ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY;
+                progressBar = progressBar.append(Component.text(" ", segmentColor)
+                        .decoration(TextDecoration.STRIKETHROUGH, true)
+                        .decoration(TextDecoration.ITALIC, false));
             }
 
-            progressBar.append("§m§8]");
+            progressBar = progressBar.append(Component.text("]", NamedTextColor.DARK_GRAY)
+                    .decoration(TextDecoration.ITALIC, false));
 
-            lore.add(Component.text("§fProgrès: §e" + progress + "§6/§e" + target + " §7(" + progressPercent + "%)"));
-            lore.add(Component.text(progressBar.toString()));
+            lore.add(TranslationManager.translation(
+                            "feature.quests.menu.progress",
+                            Component.text(progress).color(NamedTextColor.YELLOW),
+                            Component.text(target).color(NamedTextColor.YELLOW),
+                            Component.text(progressPercent).color(NamedTextColor.GRAY)
+                    ).color(NamedTextColor.WHITE)
+                            .decoration(TextDecoration.ITALIC, false));
+            lore.add(progressBar);
             lore.add(Component.empty());
-            lore.add(Component.text("§6➤ §eObjectif actuel:"));
+            lore.add(Component.text("➤ ", NamedTextColor.GOLD)
+                    .append(TranslationManager.translation("feature.quests.menu.current_objective")
+                            .color(NamedTextColor.YELLOW))
+                    .decoration(TextDecoration.ITALIC, false));
             quest.getDescription(playerUUID).forEach(string -> {
-                lore.add(Component.text("  §f" + string));
+                lore.add(Component.text("  " + string, NamedTextColor.WHITE)
+                        .decoration(TextDecoration.ITALIC, false));
             });
             lore.addAll(quest.getAdditionalLore());
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.empty());
-                lore.add(Component.text("§6◆ §eAvancement:"));
+                lore.add(Component.text("◆ ", NamedTextColor.GOLD)
+                        .append(TranslationManager.translation("feature.quests.menu.steps.title")
+                                .color(NamedTextColor.YELLOW))
+                        .decoration(TextDecoration.ITALIC, false));
 
                 for (int i = 0; i < currentTier.getSteps().size(); i++) {
                     QuestStep step = currentTier.getSteps().get(i);
                     boolean stepCompleted = step.isCompleted(playerUUID);
 
-                    String stepIcon = stepCompleted ? "§a✅" : "§c❌";
+                    Component stepIcon = Component.text(stepCompleted ? "✅" : "❌", stepCompleted ? NamedTextColor.GREEN : NamedTextColor.RED);
                     String stepDescription = step.getDescription();
-                    lore.add(Component.text("  §7* " + stepDescription + " " + stepIcon));
+                    lore.add(Component.text("  * ", NamedTextColor.GRAY)
+                            .append(Component.text(stepDescription, NamedTextColor.GRAY))
+                            .append(Component.space())
+                            .append(stepIcon)
+                            .decoration(TextDecoration.ITALIC, false));
                 }
             }
 
             if (currentTierIndex < tiersTotal - 1) {
                 QuestTier nextTier = quest.getTiers().get(currentTierIndex + 1);
                 lore.add(bar);
-                lore.add(Component.text("§7◇ §8Prochain tier:"));
-                lore.add(Component.text("  §8" + quest.getNextTierDescription(playerUUID)));
+                lore.add(Component.text("◇ ", NamedTextColor.GRAY)
+                        .append(TranslationManager.translation("feature.quests.menu.next_tier.title")
+                                .color(NamedTextColor.DARK_GRAY))
+                        .decoration(TextDecoration.ITALIC, false));
+                quest.getNextTierDescription(playerUUID).forEach(description -> {
+                    lore.add(Component.text("  " + description, NamedTextColor.DARK_GRAY)
+                            .decoration(TextDecoration.ITALIC, false));
+                });
 
                 if (nextTier.getSteps() != null && !nextTier.getSteps().isEmpty()) {
                     for (int i = 0; i < nextTier.getSteps().size(); i++) {
                         QuestStep step = nextTier.getSteps().get(i);
-                        lore.add(Component.text("  §8▪ " + step.getDescription()));
+                        lore.add(Component.text("  ▪ " + step.getDescription(), NamedTextColor.DARK_GRAY)
+                                .decoration(TextDecoration.ITALIC, false));
                     }
                 }
             }

@@ -14,6 +14,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -38,7 +39,7 @@ public class PendingMailbox extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Courriers en attente d'annulation");
+        return TranslationManager.translation("feature.mailboxes.menu.title.pending");
     }
 
     @Override
@@ -109,9 +110,10 @@ public class PendingMailbox extends PaginatedMenu {
     public static void cancelLetter(Player player, int id) {
         Letter letter = MailboxManager.getById(player, id);
         if (letter == null) {
-            Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                    .append(Component.text(id, NamedTextColor.RED))
-                    .append(Component.text(" n'a pas été trouvée.", NamedTextColor.DARK_RED));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.letter_not_found",
+                    Component.text(id).color(NamedTextColor.RED)
+            ).color(NamedTextColor.DARK_RED);
             MessagesManager.sendMessage(
                     player,
                     message,
@@ -129,10 +131,12 @@ public class PendingMailbox extends PaginatedMenu {
             if (sender != null)
                 MailboxManager.cancelLetter(sender);
             MailboxManager.givePlayerItems(sender, items);
-            Component message = Component.text(player.getName(), NamedTextColor.DARK_GREEN)
-                    .append(Component.text(" a annulé la lettre. Vous avez reçu ", NamedTextColor.DARK_GREEN))
-                    .append(Component.text(itemsCount, NamedTextColor.GREEN))
-                    .append(Component.text(pluralize(" item", itemsCount), NamedTextColor.DARK_GREEN));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.cancel_success_sender",
+                    Component.text(player.getName()).color(NamedTextColor.DARK_GREEN),
+                    Component.text(itemsCount).color(NamedTextColor.GREEN),
+                    Component.text(pluralize(" item", itemsCount)).color(NamedTextColor.DARK_GREEN)
+            ).color(NamedTextColor.DARK_GREEN);
 
             MessagesManager.sendMessage(
                     sender,

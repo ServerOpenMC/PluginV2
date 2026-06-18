@@ -12,6 +12,7 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -61,7 +62,8 @@ public class SendingLetter extends Menu {
         if (items.length == 0) {
             MessagesManager.sendMessage(
                     getOwner(),
-                    Component.text("Vous ne pouvez pas envoyer de lettre vide", NamedTextColor.DARK_RED),
+                    TranslationManager.translation("feature.mailboxes.message.empty_letter")
+                            .color(NamedTextColor.DARK_RED),
                     Prefix.MAILBOX,
                     MessageType.ERROR,
                     true
@@ -84,7 +86,11 @@ public class SendingLetter extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Envoyer une lettre à " + receiver.getName());
+        String receiverName = receiver.getName() == null ? "" : receiver.getName();
+        return TranslationManager.translation(
+                "feature.mailboxes.menu.title.sending",
+                Component.text(receiverName)
+        );
     }
 
     @Override

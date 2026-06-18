@@ -11,6 +11,9 @@ import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.features.settings.menu.PlayerSettingsMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,24 +25,26 @@ public class OpenSettingsMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenSettingsMenuQuest() {
         super(
-                "Ouvrir le menu des paramètres",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.open_settings.name"),
                 List.of(
-                        "§fTapez §d/settings §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
-                        "§8§oCela va vous permettre de configurer votre expérience de jeu !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_settings.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_settings.description.2")
                 ),
                 Material.COMPARATOR,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.OPEN_SETTINGS,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.OPEN_SETTINGS.ordinal() + 1) + " §f! Les §9paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, ..." +
-								        " Sujet à part, vous pouvez passer en mode compétition grâce aux §6contests§f, une sorte de concours hebdomadaire !",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.OPEN_SETTINGS,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.open_settings.reward",
+                                        Component.text(TutorialSteps.OPEN_SETTINGS.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 

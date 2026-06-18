@@ -2,6 +2,7 @@ package fr.openmc.core.utils.bukkit;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import fr.openmc.core.utils.cache.CachePlayerProfile;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.kyori.adventure.text.Component;
@@ -27,7 +28,7 @@ public class SkullUtils {
      */
     public static ItemStack getPlayerSkull(UUID playerUUID) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        PlayerProfile profile = Bukkit.createProfile(playerUUID);
+        PlayerProfile profile = CachePlayerProfile.getPlayerProfile(playerUUID);
         skull.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
         return skull;
     }
