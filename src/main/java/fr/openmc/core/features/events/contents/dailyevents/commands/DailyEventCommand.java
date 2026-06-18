@@ -21,6 +21,7 @@ public class DailyEventCommand {
         if (DailyEventsManager.outgoingEvent != null) {
             // * On arrete l'evenement en cours
             DailyEventsManager.endEventTask.cancel();
+            DailyEventsManager.endEventTask = null;
             DailyEventsManager.outgoingEvent.getDailyEvent().end();
         }
 
