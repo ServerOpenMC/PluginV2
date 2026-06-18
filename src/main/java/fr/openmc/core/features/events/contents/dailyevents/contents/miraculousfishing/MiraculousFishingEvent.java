@@ -88,6 +88,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
         return OMCRegistry.CUSTOM_AMBIENTS.BLESSED;
     }
 
+    //todo marquer effets de la peche miraculeuse ds broadcast
     @Override
     public Component getStartBroadcast() {
         return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.start");

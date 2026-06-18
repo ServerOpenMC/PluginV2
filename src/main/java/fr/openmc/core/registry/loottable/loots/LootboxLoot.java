@@ -2,6 +2,7 @@ package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 @Getter
@@ -12,6 +13,11 @@ public class LootboxLoot implements CustomLoot {
     public LootboxLoot(CustomLootbox lootbox, double chance) {
         this.chance = chance;
         this.lootbox = lootbox;
+    }
+
+    @Override
+    public Component getDisplayText() {
+        return lootbox.getName();
     }
 
     @Override

@@ -6,6 +6,15 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.MethodLoot;
+import fr.openmc.core.registry.loottable.loots.MoneyLoot;
+import fr.openmc.core.registry.loottable.loots.TableLoot;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
@@ -48,8 +57,20 @@ public class PlayerFishListener implements Listener {
 
                 // * SFX
                 // todo: sfx particle
+                MessagesManager.sendMessage(player, TranslationManager.translation(
+                        "feature.dailyevents.miraculousfishing.loottable.get",
+                        Component.text(loots.size()).color(NamedTextColor.YELLOW)
+                ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
+
                 for (CustomLoot loot : loots) {
+                    if (loot.getDisplayText() != null)
+                        player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
+                                .append(loot.getDisplayText()));
                     MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
+
+                    if (loot instanceof MoneyLoot || loot instanceof MethodLoot || loot instanceof TableLoot) {
+                        loot.run(player);
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -99,6 +100,12 @@ public class ItemLoot implements CustomLoot {
 
     public int getRandomAmount() {
         return minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+    }
+
+    @Override
+    public Component getDisplayText() {
+        System.out.println(getFirstLoot());
+        return getFirstLoot().displayName();
     }
 
     @Override
