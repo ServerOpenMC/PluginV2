@@ -3,18 +3,21 @@ package fr.openmc.core.registry.loottable.loots;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 
 @Getter
-public class MethodLoot implements CustomLoot {
+public class MethodLoot implements CustomLoot, RepresentedItem {
+    private final ItemStack representativeItem;
     private final Component text;
     private final double chance;
     private final Consumer<Player> receiverAction;
 
-    public MethodLoot(Component text, Consumer<Player> receiverAction, double chance) {
+    public MethodLoot(ItemStack representativeItem, Component text, Consumer<Player> receiverAction, double chance) {
+        this.representativeItem = representativeItem;
         this.text = text;
         this.chance = chance;
         this.receiverAction = receiverAction;

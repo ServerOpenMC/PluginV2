@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 public class EpicFishingTreasureLootbox extends CustomLootbox {
     public EpicFishingTreasureLootbox() {
         super(
+                OMCRegistry.CUSTOM_ITEMS.EPIC_FISHING_TREASURE,
                 "omc_daily_events:epic_fishing_treasure",
                 TranslationManager.translation("feature.dailyevents.miraculousfishing.lootbox.epic_fishing_treasure.name"),
                 OMCRegistry.CUSTOM_LOOT_TABLES.EPIC_FISHING_TREASURE,

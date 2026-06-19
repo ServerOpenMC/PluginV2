@@ -1,8 +1,10 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.registry.loottable.loots.*;
-import fr.openmc.core.utils.bukkit.SkullUtils;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.MoneyLoot;
+import fr.openmc.core.registry.loottable.loots.RepresentedItem;
+import fr.openmc.core.registry.loottable.loots.TableLoot;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.FishHook;
@@ -57,24 +59,18 @@ public class MiraculousFishingManager {
      * @return un item stack en fonction du loot
      */
     private static ItemStack getLaunchedItem(CustomLoot loot) {
-        if (loot instanceof ItemLoot itemLoot) {
-            ItemStack item = itemLoot.getItems().iterator().next();
-            item.setAmount(itemLoot.getRandomAmount());
-            return item;
-        } else if (loot instanceof MoneyLoot) {
-            ItemStack base = SkullUtils.getCustomHead(
-                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWFmMGQ4ZDc5NGEzYTRhNWUyMGE1MjkyZWQyNTUxMzRmNzZkNGYzYTU1NTZmYzdmNDI2ZDI3YjI0NzQ3NGQ2NyJ9fX0=",
-                    "§6§lAywenito");
-            if (base != null)
-                base.editPersistentDataContainer(c ->
-                        c.set(NOT_PICKUP_KEY, PersistentDataType.BOOLEAN, true));
-            return base;
-        } else if (loot instanceof LootboxLoot lootboxLoot
-                && lootboxLoot.getLootbox().getItemDisplayed() != null) {
-            return lootboxLoot.getLootbox().getItemDisplayed();
-        } else if (loot instanceof TableLoot tableLoot) {
+        // * SI c'est un loot provenant d'une sous loot table, on roll puis on le renvoie
+        if (loot instanceof TableLoot tableLoot) {
             List<CustomLoot> loots = tableLoot.getLootTable().rollLoots(null, false);
             return getLaunchedItem(loots.getFirst());
+        // * Si c'est une loot qui peut être représenter par un item
+        } else if (loot instanceof RepresentedItem itemDisplayed) {
+            ItemStack item = itemDisplayed.getRepresentativeItem();
+            // * et que si c'est une item, qui ne doit pas etre donné (ex Money)
+            if (loot instanceof MoneyLoot)
+                item.editPersistentDataContainer(c ->
+                        c.set(NOT_PICKUP_KEY, PersistentDataType.BOOLEAN, true));
+            else return item;
         }
 
         return null;

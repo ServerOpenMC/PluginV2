@@ -63,12 +63,12 @@ public class PlayerFishListener implements Listener {
                         Component.text(loots.size()).color(NamedTextColor.YELLOW)
                 ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
-                sendMessagesLoot(player, hook, loots);
+                sendLoot(player, hook, loots);
             }
         }
     }
 
-    private void sendMessagesLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
+    private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
             if (loot.getDisplayText() != null)
                 player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
@@ -77,7 +77,7 @@ public class PlayerFishListener implements Listener {
 
             // * Si y'a des sous loots, alors on affiche les sous loots obtenu
             if (loot instanceof TableLoot)
-                sendMessagesLoot(player, hook, loot.run(player));
+                sendLoot(player, hook, loot.run(player));
             // * Si c'est un loot de type MoneyLoot ou MethodLoot,
                 // on exécute le loot, car on ne le donne va via un item
             else if (loot instanceof MoneyLoot || loot instanceof MethodLoot)

@@ -4,12 +4,13 @@ import fr.openmc.core.registry.lootboxes.CustomLootbox;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.Set;
 
 @Getter
-public class LootboxLoot implements CustomLoot {
+public class LootboxLoot implements CustomLoot, RepresentedItem {
     private final double chance;
     private final CustomLootbox lootbox;
 
@@ -27,5 +28,10 @@ public class LootboxLoot implements CustomLoot {
     public Set<CustomLoot> run(Player receiver) {
         lootbox.open(receiver);
         return Collections.singleton(this);
+    }
+
+    @Override
+    public ItemStack getRepresentativeItem() {
+        return lootbox.getItemDisplayed();
     }
 }

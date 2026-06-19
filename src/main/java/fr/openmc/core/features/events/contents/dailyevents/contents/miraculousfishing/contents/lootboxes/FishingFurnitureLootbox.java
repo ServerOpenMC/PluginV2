@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 public class FishingFurnitureLootbox extends CustomLootbox {
     public FishingFurnitureLootbox() {
         super(
+                OMCRegistry.CUSTOM_ITEMS.FISHING_FURNITURE_BOX,
                 "omc_daily_events:fishing_furniture",
                 TranslationManager.translation("feature.dailyevents.miraculousfishing.lootbox.fishing_furniture.name"),
                 OMCRegistry.CUSTOM_LOOT_TABLES.FISHING_FURNITURE,

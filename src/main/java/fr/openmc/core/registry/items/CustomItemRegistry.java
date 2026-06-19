@@ -119,6 +119,9 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem LEGENDARY_FISHING_TREASURE = register("omc_daily_events:legendary_fishing_treasure_lootbox", Material.GLASS);
     public final CustomItem FISHING_FURNITURE_BOX = register("omc_daily_events:fishing_furniture_lootbox", Material.GLASS);
 
+    public final CustomItem COIN = register("omc_daily_events:coin", Material.GOLD_INGOT);
+
+
     @Override
     public void postInit() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());

@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.lootboxes;
 
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -34,6 +35,14 @@ public abstract class CustomLootbox {
         this.namespace = namespace;
         this.name = name;
         this.lootTable = lootTable;
+    }
+
+    public CustomLootbox(CustomItem itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
+        this.itemDisplayed = itemDisplayed.getBest();
+        this.namespace = namespace;
+        this.name = name;
+        this.lootTable = lootTable;
+        this.options = options;
     }
 
     public CustomLootbox(ItemStack itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {

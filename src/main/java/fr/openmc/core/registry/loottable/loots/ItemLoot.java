@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Set;
 
 @Getter
-public class ItemLoot implements CustomLoot {
+public class ItemLoot implements CustomLoot, RepresentedItem {
     private final double chance;
     private final Set<ItemStack> items;
     private final ItemStack displayedItem;
@@ -125,5 +125,10 @@ public class ItemLoot implements CustomLoot {
             receiver.getInventory().addItem(item);
         }
         return Collections.singleton(this);
+    }
+
+    @Override
+    public ItemStack getRepresentativeItem() {
+        return getFirstLoot();
     }
 }
