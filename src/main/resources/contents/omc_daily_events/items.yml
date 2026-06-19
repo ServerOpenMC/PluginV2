@@ -1,0 +1,36 @@
+info:
+  namespace: omc_daily_events
+
+items:
+  tenders:
+    display_name: "Cuisse de poulet"
+    resource:
+      generate: true
+      textures:
+        - other/tenders
+      material: COOKED_CHICKEN
+    lore:
+      - "§7§oMhh le poulet eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeett"
+
+  bob_sponge:
+    display_name: "<yellow>Bob l'éponge</yellow>"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: "minecraft:item/sponge"
+    lore:
+      - "§7§oBOB L'ÉPONGE CARRÉ"
+    glint: true
+
+  kebab_fermented:
+    display_name: "Kebab fermenté"
+    resource:
+      material: SPONGE
+      generate: false
+      model_path: "omc_foods:items/kebab"
+    lore:
+      - "§7§ol'originel, une légende raconte qu'il existait avant la kebaberie"
+    glint: true
+    attribute_modifiers:
+      mainhand:
+        luck: 1.1

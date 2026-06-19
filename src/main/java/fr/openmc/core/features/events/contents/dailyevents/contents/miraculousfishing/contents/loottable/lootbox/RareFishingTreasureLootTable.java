@@ -23,7 +23,6 @@ public class RareFishingTreasureLootTable extends CustomLootTable {
                 new ItemLoot(Material.TROPICAL_FISH, Material.TROPICAL_FISH, 0.3, 32, 64),
                 new ItemLoot(Material.PUFFERFISH, Material.PUFFERFISH, 0.3, 15, 32),
                 new ItemLoot(Material.NAUTILUS_SHELL, Material.NAUTILUS_SHELL, 0.15, 2, 4),
-                // todo add ampoule
                 new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.EPIC_FISHING_TREASURE, 0.1)
 
         );

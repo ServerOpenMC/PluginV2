@@ -24,8 +24,20 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return Set.of(
                 new ItemLoot(generateEnchantedBook(), Material.ENCHANTED_BOOK, 0.2, 1, 2),
-                //new ItemLoot(OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED, OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED, 0.1, 1, 3),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK, OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK, 0.07, 2, 6),
+                new ItemLoot(
+                        OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
+                        OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
+                        0.1,
+                        1,
+                        3
+                ),
+                new ItemLoot(
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,
+                        0.07,
+                        2,
+                        6
+                ),
                 new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.LEGENDARY_FISHING_TREASURE, 0.1)
         );
     }

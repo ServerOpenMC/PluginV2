@@ -86,6 +86,39 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem DIAMOND_HAMMER = register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
     public final CustomItem NETHERITE_HAMMER = register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
 
+    /* Daily Event */
+    public final CustomItem TENDERS = register("omc_daily_events:tenders", Material.COOKED_CHICKEN);
+    public final CustomItem SPONGE_BOB = register("omc_daily_events:bob_sponge", Material.SPONGE);
+    public final CustomItem KEBAB_FERMENTED = register("omc_daily_events:kebab_fermented", Material.COOKED_BEEF);
+
+    public final CustomItem ANCIENT_FISHER_HELMET = register("omc_daily_events:ancient_fishing_helmet", Material.IRON_HELMET);
+    public final CustomItem ANCIENT_FISHER_CHESTPLATE = register("omc_daily_events:ancient_fishing_chestplate", Material.IRON_CHESTPLATE);
+    public final CustomItem ANCIENT_FISHER_LEGGINGS = register("omc_daily_events:ancient_fishing_leggings", Material.IRON_LEGGINGS);
+    public final CustomItem ANCIENT_FISHER_BOOTS = register("omc_daily_events:ancient_fishing_boots", Material.IRON_BOOTS);
+
+    public final CustomItem FISHERMAN_BLUE_FISH = register("omc_daily_events:fisherman_blue_fish", Material.PAPER);
+    public final CustomItem FISHERMAN_CYAN_FISH = register("omc_daily_events:fisherman_cyan_fish", Material.PAPER);
+    public final CustomItem FISHERMAN_ORANGE_FISH = register("omc_daily_events:fisherman_orange_fish", Material.PAPER);
+    public final CustomItem FISHERMAN_RED_FISH = register("omc_daily_events:fisherman_red_fish", Material.PAPER);
+    public final CustomItem FISHERMAN_BOAT = register("omc_daily_events:fisherman_boat", Material.PAPER);
+    public final CustomItem FISHERMAN_CHAIR = register("omc_daily_events:fisherman_chair", Material.PAPER);
+    public final CustomItem FISHERMAN_FISH_BOX = register("omc_daily_events:fisherman_fish_box", Material.PAPER);
+    public final CustomItem FISHERMAN_FISH_RACK = register("omc_daily_events:fisherman_fish_rack", Material.PAPER);
+    public final CustomItem FISHERMAN_FISHING_POLE = register("omc_daily_events:fisherman_fishing_pole", Material.PAPER);
+    public final CustomItem FISHERMAN_FISHINGPOLE_RACK = register("omc_daily_events:fisherman_fishingpole_rack", Material.PAPER);
+    public final CustomItem FISHERMAN_FLOATIE = register("omc_daily_events:fisherman_floatie", Material.PAPER);
+    public final CustomItem FISHERMAN_HANGING_FISH = register("omc_daily_events:fisherman_hanging_fish", Material.PAPER);
+    public final CustomItem FISHERMAN_LANDING_NET = register("omc_daily_events:fisherman_landing_net", Material.PAPER);
+    public final CustomItem FISHERMAN_LARGE_FISHNET = register("omc_daily_events:fisherman_large_fishnet", Material.PAPER);
+    public final CustomItem FISHERMAN_LOBSTER_TRAP = register("omc_daily_events:fisherman_lobster_trap", Material.PAPER);
+    public final CustomItem FISHERMAN_STAND = register("omc_daily_events:fisherman_stand", Material.PAPER);
+    public final CustomItem FISHERMAN_TABLE = register("omc_daily_events:fisherman_table", Material.PAPER);
+
+    public final CustomItem RARE_FISHING_TREASURE = register("omc_daily_events:rare_fishing_treasure_lootbox", Material.GLASS);
+    public final CustomItem EPIC_FISHING_TREASURE = register("omc_daily_events:epic_fishing_treasure_lootbox", Material.GLASS);
+    public final CustomItem LEGENDARY_FISHING_TREASURE = register("omc_daily_events:legendary_fishing_treasure_lootbox", Material.GLASS);
+    public final CustomItem FISHING_FURNITURE_BOX = register("omc_daily_events:fishing_furniture_lootbox", Material.GLASS);
+
     @Override
     public void postInit() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
