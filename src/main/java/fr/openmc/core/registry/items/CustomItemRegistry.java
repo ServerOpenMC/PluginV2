@@ -120,6 +120,9 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem FISHING_FURNITURE_BOX = register("omc_daily_events:fishing_furniture_lootbox", Material.GLASS);
 
     public final CustomItem COIN = register("omc_daily_events:coin", Material.GOLD_INGOT);
+    public final CustomItem POISSON_STEVE_HEAD = register("omc_daily_events:poisson_steve_head", Material.PLAYER_HEAD);
+    public final CustomItem KRAKEN_HEAD = register("omc_daily_events:kraken_head", Material.PLAYER_HEAD);
+    public final CustomItem LEVIATHAN_HEAD = register("omc_daily_events:leviathan_head", Material.PLAYER_HEAD);
 
 
     @Override

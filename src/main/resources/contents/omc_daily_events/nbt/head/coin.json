@@ -1,10 +1,10 @@
 {
-  "components":{
-    "minecraft:profile": {
+  "components": {
+    "profile": {
       "properties": [
         {
-          "name":"textures",
-          "value":"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmYwYTY3Njg0NjlhZDZlMGFiMDI0YzNhNTI1ZDQ4MWVhMDdmNTZhMjNkZTZhOTAyYmQ4ZDg4NzVmY2MwMTZjNSJ9fX0="
+          "name": "textures",
+          "value": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE2MjBkYzcxYTMwMjBjOGVmMmJiOTNkZTIxMzhkOTExZTEyMmJjYTczZGQxZjdkNDYxYTY0NjU1YTBmNjFiOCJ9fX0="
         }
       ]
     }
