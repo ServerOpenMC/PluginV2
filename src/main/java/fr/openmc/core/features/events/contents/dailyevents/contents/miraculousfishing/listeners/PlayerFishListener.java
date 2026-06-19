@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
+import java.util.Collection;
 import java.util.List;
 
 public class PlayerFishListener implements Listener {
@@ -42,7 +43,7 @@ public class PlayerFishListener implements Listener {
             case FISHING -> {
                 // * SFX
                 // todo sfx
-                player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 1f, 0.3f);
+                player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 1f, 0.7f);
             }
 
             case CAUGHT_FISH -> {
@@ -62,17 +63,25 @@ public class PlayerFishListener implements Listener {
                         Component.text(loots.size()).color(NamedTextColor.YELLOW)
                 ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
-                for (CustomLoot loot : loots) {
-                    if (loot.getDisplayText() != null)
-                        player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
-                                .append(loot.getDisplayText()));
-                    MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
-
-                    if (loot instanceof MoneyLoot || loot instanceof MethodLoot || loot instanceof TableLoot) {
-                        loot.run(player);
-                    }
-                }
+                sendMessagesLoot(player, hook, loots);
             }
+        }
+    }
+
+    private void sendMessagesLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
+        for (CustomLoot loot : loots) {
+            if (loot.getDisplayText() != null)
+                player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
+                        .append(loot.getDisplayText()));
+            MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
+
+            // * Si y'a des sous loots, alors on affiche les sous loots obtenu
+            if (loot instanceof TableLoot)
+                sendMessagesLoot(player, hook, loot.run(player));
+            // * Si c'est un loot de type MoneyLoot ou MethodLoot,
+                // on exécute le loot, car on ne le donne va via un item
+            else if (loot instanceof MoneyLoot || loot instanceof MethodLoot)
+                loot.run(player);
         }
     }
 }

@@ -4,6 +4,8 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Getter
@@ -24,7 +26,8 @@ public class MethodLoot implements CustomLoot {
     }
 
     @Override
-    public void run(Player receiver) {
+    public Set<CustomLoot> run(Player receiver) {
         receiverAction.accept(receiver);
+        return Collections.singleton(this);
     }
 }

@@ -17,6 +17,7 @@ public class ItemLoot implements CustomLoot {
     private final ItemStack displayedItem;
     private final int minAmount;
     private final int maxAmount;
+    private final int amount;
 
     public ItemLoot(Set<ItemStack> items, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this.chance = chance;
@@ -24,6 +25,7 @@ public class ItemLoot implements CustomLoot {
         this.displayedItem = displayedItem;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
+        this.amount = getRandomAmount();
     }
 
     public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
@@ -95,7 +97,15 @@ public class ItemLoot implements CustomLoot {
         if (items.size() == 1) {
             return items.iterator().next();
         }
-        return items.stream().findFirst().orElse(null);
+
+        ItemStack item = items.stream().findFirst().orElse(null);
+
+        if (item != null) {
+            item.setAmount(this.getRandomAmount());
+            return item;
+        }
+
+        return null;
     }
 
     public int getRandomAmount() {
@@ -104,16 +114,16 @@ public class ItemLoot implements CustomLoot {
 
     @Override
     public Component getDisplayText() {
-        System.out.println(getFirstLoot());
         return getFirstLoot().displayName();
     }
 
     @Override
-    public void run(Player receiver) {
+    public Set<CustomLoot> run(Player receiver) {
         for (ItemStack lootItem : this.getItems()) {
             ItemStack item = lootItem.clone();
             item.setAmount(this.getRandomAmount());
             receiver.getInventory().addItem(item);
         }
+        return Collections.singleton(this);
     }
 }

@@ -5,6 +5,9 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+import java.util.Set;
+
 @Getter
 public class LootboxLoot implements CustomLoot {
     private final double chance;
@@ -21,7 +24,8 @@ public class LootboxLoot implements CustomLoot {
     }
 
     @Override
-    public void run(Player receiver) {
+    public Set<CustomLoot> run(Player receiver) {
         lootbox.open(receiver);
+        return Collections.singleton(this);
     }
 }
