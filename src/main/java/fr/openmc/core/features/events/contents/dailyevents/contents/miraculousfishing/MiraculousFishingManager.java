@@ -50,6 +50,8 @@ public class MiraculousFishingManager {
         // * Revient à faire le vecteur vitesse entre 2 vecteur (xp - xh, yp - yh, zp - zh)
         Vector velocity = player.getEyeLocation().toVector().subtract(hookLocation.toVector());
         velocity.multiply(0.1);
+        velocity.setY(velocity.getY() + Math.sqrt(Math.sqrt(
+                velocity.getX()*2 + velocity.getY()*2 + velocity.getZ()*2)) * 0.08);
         itemEntity.setVelocity(velocity);
     }
 
