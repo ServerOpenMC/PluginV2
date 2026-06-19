@@ -4,7 +4,5 @@ info:
 items:
   coin:
     display_name: "Aywenito"
-    resource:
-      generate: false
-      components_nbt_file: "nbt/head/coin.json"
-      material: PLAYER_HEAD
+    components_nbt_file: "nbt/head/coin.json"
+    material: PLAYER_HEAD
