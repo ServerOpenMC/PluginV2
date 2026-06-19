@@ -4,6 +4,10 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.EpicFishingTreasureLootbox;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
@@ -114,10 +118,10 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem FISHERMAN_STAND = register("omc_daily_events:fisherman_stand", Material.PAPER);
     public final CustomItem FISHERMAN_TABLE = register("omc_daily_events:fisherman_table", Material.PAPER);
 
-    public final CustomItem RARE_FISHING_TREASURE = register("omc_daily_events:rare_fishing_treasure_lootbox", Material.GLASS);
-    public final CustomItem EPIC_FISHING_TREASURE = register("omc_daily_events:epic_fishing_treasure_lootbox", Material.GLASS);
-    public final CustomItem LEGENDARY_FISHING_TREASURE = register("omc_daily_events:legendary_fishing_treasure_lootbox", Material.GLASS);
-    public final CustomItem FISHING_FURNITURE_BOX = register("omc_daily_events:fishing_furniture_lootbox", Material.GLASS);
+    public final CustomItem RARE_FISHING_TREASURE = register(new RareFishingTreasureLootbox("omc_daily_events:rare_fishing_treasure_lootbox"));
+    public final CustomItem EPIC_FISHING_TREASURE = register(new EpicFishingTreasureLootbox("omc_daily_events:epic_fishing_treasure_lootbox"));
+    public final CustomItem LEGENDARY_FISHING_TREASURE = register(new LegendaryFishingTreasureLootbox("omc_daily_events:legendary_fishing_treasure_lootbox"));
+    public final CustomItem FISHING_FURNITURE_BOX = register(new FishingFurnitureLootbox("omc_daily_events:fishing_furniture_lootbox"));
 
     public final CustomItem COIN = register("omc_daily_events:coin", Material.GOLD_INGOT);
     public final CustomItem POISSON_STEVE_HEAD = register("omc_daily_events:poisson_steve_head", Material.PLAYER_HEAD);
