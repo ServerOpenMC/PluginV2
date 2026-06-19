@@ -10,9 +10,9 @@ public class PlayerNotPickUpListener implements Listener {
     @EventHandler
     public void onPickUp(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
-        if (event.getItem().getItemStack().getPersistentDataContainer().has(MiraculousFishingManager.NOT_PICKUP_KEY)) {
-            event.getItem().remove();
-        }
+        if (!event.getItem().getItemStack().getPersistentDataContainer().has(MiraculousFishingManager.NOT_PICKUP_KEY)) return;
 
+        event.getItem().remove();
+        event.setCancelled(true);
     }
 }
