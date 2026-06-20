@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.EatKebabFermentedListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerFishListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerNotPickUpListener;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
@@ -103,7 +104,8 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     public Set<Listener> getListeners() {
         return Set.of(
                 new PlayerFishListener(),
-                new PlayerNotPickUpListener()
+                new PlayerNotPickUpListener(),
+                new EatKebabFermentedListener()
         );
     }
 }
