@@ -13,6 +13,7 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -87,7 +88,7 @@ public class LootboxOpenMenu extends Menu {
 
             items.put(box.getOptions().rewardSlot(), new ItemMenuBuilder(this, displayedItem, meta -> {
                 meta.displayName(Component.text("§6§l✦ ")
-                        .append(displayedItem.effectiveName())
+                        .append(displayedItem.effectiveName().decoration(TextDecoration.ITALIC, false))
                         .append(Component.text(" §6§l✦")));
                 List<Component> lore = new ArrayList<>();
                 lore.add(Component.text("§e§lFÉLICITATIONS !"));
@@ -108,7 +109,7 @@ public class LootboxOpenMenu extends Menu {
             if (!(loot instanceof ItemLoot itemLoot)) continue;
 
             items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemLoot.getDisplayedItem(), meta -> {
-                meta.displayName(winningLoot.getRepresentativeItem().effectiveName());
+                meta.displayName(winningLoot.getRepresentativeItem().effectiveName().decoration(TextDecoration.ITALIC, false));
                 meta.lore(itemLoot.getDisplayedItem().lore());
             }));
         }
@@ -212,7 +213,7 @@ public class LootboxOpenMenu extends Menu {
                             Component.text("§6§l✦ §e§lFÉLICITATIONS §r§eà ")
                                     .append(Component.text(getOwner().getName()))
                                     .append(Component.text(" §equi vient de gagner "))
-                                    .append(winningLoot.getRepresentativeItem().effectiveName())
+                                    .append(winningLoot.getRepresentativeItem().effectiveName().decoration(TextDecoration.ITALIC, false))
                                     .append(Component.text(" §eà "))
                                     .append(box.getName())
                                     .append(Component.text(" §e! §6§l✦")),
@@ -253,7 +254,7 @@ public class LootboxOpenMenu extends Menu {
             }
 
             inv.setItem(displaySlots.get(i), new ItemMenuBuilder(this, itemToShow, meta -> {
-                meta.displayName(itemToShow.effectiveName());
+                meta.displayName(itemToShow.effectiveName().decoration(TextDecoration.ITALIC, false));
                 meta.lore(itemToShow.lore());
             }));
         }
