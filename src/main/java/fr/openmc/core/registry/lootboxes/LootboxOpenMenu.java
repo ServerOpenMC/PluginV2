@@ -106,11 +106,15 @@ public class LootboxOpenMenu extends Menu {
             int lootIndex = (itemOffset + i) % weightedPool.size();
             CustomLoot loot = weightedPool.get(lootIndex);
 
-            if (!(loot instanceof ItemLoot itemLoot)) continue;
+            ItemStack itemDisplay = loot.getRepresentativeItem();
+            if (loot instanceof ItemLoot itemLoot) {
+                itemDisplay = itemLoot.getDisplayedItem();
+            }
 
-            items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemLoot.getDisplayedItem(), meta -> {
+            ItemStack finalItemDisplay = itemDisplay;
+            items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemDisplay, meta -> {
                 meta.displayName(winningLoot.getRepresentativeItem().effectiveName().decoration(TextDecoration.ITALIC, false));
-                meta.lore(itemLoot.getDisplayedItem().lore());
+                meta.lore(finalItemDisplay.lore());
             }));
         }
 
