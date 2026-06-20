@@ -25,7 +25,7 @@ items:
   kebab_fermented:
     display_name: "Kebab fermenté"
     resource:
-      material: PAPER
+      material: COOKED_BEEF
       generate: true
       textures:
         - "omc_foods:items/kebab"
