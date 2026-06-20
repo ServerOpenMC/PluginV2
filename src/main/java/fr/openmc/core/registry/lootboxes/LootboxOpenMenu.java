@@ -107,13 +107,25 @@ public class LootboxOpenMenu extends Menu {
             CustomLoot loot = weightedPool.get(lootIndex);
 
             ItemStack itemDisplay = loot.getRepresentativeItem();
-            if (loot instanceof ItemLoot itemLoot) {
+
+            if (loot instanceof ItemLoot itemLoot && itemLoot.getDisplayedItem() != null) {
                 itemDisplay = itemLoot.getDisplayedItem();
             }
 
+            if (itemDisplay == null) continue;
+
             ItemStack finalItemDisplay = itemDisplay;
+
             items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemDisplay, meta -> {
-                meta.displayName(winningLoot.getRepresentativeItem().effectiveName().decoration(TextDecoration.ITALIC, false));
+                Component name = finalItemDisplay.effectiveName().decoration(TextDecoration.ITALIC, false);
+
+                if (loot instanceof ItemLoot itemLoot
+                        && itemLoot.getMinAmount() != itemLoot.getMaxAmount()) {
+                    name = Component.text("§7" + itemLoot.getMinAmount() + "-" + itemLoot.getMaxAmount() + " ")
+                            .append(name);
+                }
+
+                meta.displayName(name);
                 meta.lore(finalItemDisplay.lore());
             }));
         }
@@ -249,17 +261,30 @@ public class LootboxOpenMenu extends Menu {
         for (int i = 0; i < displaySlots.size(); i++) {
             int index;
             ItemStack itemToShow;
+            CustomLoot currentLoot;
 
             if (animationTick > maxAnimationTicks - 10 && i == displaySlots.indexOf(box.getOptions().rewardSlot())) {
                 itemToShow = winningLoot.getRepresentativeItem();
+                currentLoot = winningLoot;
             } else {
                 index = (itemOffset + i) % pool.size();
-                itemToShow = pool.get(index).getRepresentativeItem();
+                currentLoot = pool.get(index);
+                itemToShow = currentLoot.getRepresentativeItem();
             }
 
+            ItemStack finalItemToShow = itemToShow;
+            CustomLoot finalCurrentLoot = currentLoot;
             inv.setItem(displaySlots.get(i), new ItemMenuBuilder(this, itemToShow, meta -> {
-                meta.displayName(itemToShow.effectiveName().decoration(TextDecoration.ITALIC, false));
-                meta.lore(itemToShow.lore());
+                Component name = finalItemToShow.effectiveName().decoration(TextDecoration.ITALIC, false);
+
+                if (finalCurrentLoot instanceof ItemLoot itemLoot
+                        && itemLoot.getMinAmount() != itemLoot.getMaxAmount()) {
+                    name = Component.text("§7" + itemLoot.getMinAmount() + "-" + itemLoot.getMaxAmount() + " ")
+                            .append(name);
+                }
+
+                meta.displayName(name);
+                meta.lore(finalItemToShow.lore());
             }));
         }
 

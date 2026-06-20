@@ -17,7 +17,6 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     private final ItemStack displayedItem;
     private final int minAmount;
     private final int maxAmount;
-    private final int amount;
 
     public ItemLoot(Set<ItemStack> items, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this.chance = chance;
@@ -25,7 +24,6 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         this.displayedItem = displayedItem;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
-        this.amount = getRandomAmount();
     }
 
     public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
