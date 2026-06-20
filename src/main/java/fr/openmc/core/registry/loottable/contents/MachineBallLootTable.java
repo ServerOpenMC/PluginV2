@@ -35,7 +35,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1
                 ),
                 new ItemLoot(
-                        Set.of(new ItemStack(Material.DIAMOND, 3)),
+                        Set.of(ItemStack.of(Material.DIAMOND)),
                         new ItemBuilder(
                             Material.DIAMOND,
                             meta -> {
@@ -44,11 +44,11 @@ public class MachineBallLootTable extends CustomLootTable {
                             }
                         ),
                         0.15,
-                        1,
-                        1
+                        3,
+                        3
                 ),
                 new ItemLoot(
-                        Set.of(new ItemStack(Material.IRON_INGOT, 10)),
+                        Set.of(ItemStack.of(Material.IRON_INGOT)),
                         new ItemBuilder(
                                 Material.IRON_INGOT,
                                 meta -> {
@@ -57,11 +57,11 @@ public class MachineBallLootTable extends CustomLootTable {
                                 }
                         ),
                         0.2,
-                        1,
-                        1
+                        10,
+                        10
                 ),
                 new ItemLoot(
-                        Set.of(new ItemStack(Material.NETHERITE_INGOT)),
+                        Set.of(ItemStack.of(Material.NETHERITE_INGOT)),
                         new ItemBuilder(
                                 Material.NETHERITE_INGOT,
                                 meta -> {
@@ -74,7 +74,7 @@ public class MachineBallLootTable extends CustomLootTable {
                         1
                 ),
                 new ItemLoot(
-                        Set.of(new ItemStack(Material.OAK_LOG, 32)),
+                        Set.of(ItemStack.of(Material.OAK_LOG)),
                         new ItemBuilder(
                                 Material.OAK_LOG,
                                 meta -> {
@@ -83,11 +83,11 @@ public class MachineBallLootTable extends CustomLootTable {
                                 }
                         ),
                         0.25,
-                        1,
-                        1
+                        32,
+                        32
                 ),
                 new ItemLoot(
-                        Set.of(new ItemStack(Material.COOKED_BEEF, 16)),
+                        Set.of(ItemStack.of(Material.COOKED_BEEF)),
                         new ItemBuilder(
                                 Material.COOKED_BEEF,
                                 meta -> {
@@ -96,11 +96,11 @@ public class MachineBallLootTable extends CustomLootTable {
                                 }
                         ),
                         0.15,
-                        1,
-                        1
+                        16,
+                        16
                 ),
                 new ItemLoot(
-                        Set.of(new ItemStack(Material.COAL, 16)),
+                        Set.of(ItemStack.of(Material.COAL)),
                         new ItemBuilder(
                                 Material.COAL,
                                 meta -> {
@@ -109,8 +109,8 @@ public class MachineBallLootTable extends CustomLootTable {
                                 }
                         ),
                         0.145,
-                        1,
-                        1
+                        16,
+                        16
                 )
         );
     }

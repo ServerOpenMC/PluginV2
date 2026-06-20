@@ -272,6 +272,8 @@ public class LootboxOpenMenu extends Menu {
                 itemToShow = currentLoot.getRepresentativeItem();
             }
 
+            if (itemToShow == null) continue;
+
             ItemStack finalItemToShow = itemToShow;
             CustomLoot finalCurrentLoot = currentLoot;
             inv.setItem(displaySlots.get(i), new ItemMenuBuilder(this, itemToShow, meta -> {

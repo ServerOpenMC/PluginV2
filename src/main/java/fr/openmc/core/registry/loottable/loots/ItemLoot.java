@@ -150,6 +150,9 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public ItemStack getRepresentativeItem() {
-        return getFirstLoot();
+        if (this.displayedItem != null)
+            return this.getDisplayedItem();
+        else
+            return getFirstLoot();
     }
 }
