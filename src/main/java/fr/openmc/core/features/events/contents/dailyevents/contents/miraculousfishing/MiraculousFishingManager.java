@@ -72,7 +72,7 @@ public class MiraculousFishingManager {
             if (loot instanceof MoneyLoot)
                 item.editPersistentDataContainer(c ->
                         c.set(NOT_PICKUP_KEY, PersistentDataType.BOOLEAN, true));
-            else return item;
+            return item;
         }
 
         return null;
