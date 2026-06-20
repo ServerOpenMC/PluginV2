@@ -30,7 +30,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                 meta.lore(List.of(Component.text("§7Une petite peluche comme Seinyy !")));
                             }
                         ),
-                        10.0,
+                        0.1,
                         1,
                         1
                 ),
@@ -43,7 +43,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                 meta.lore(List.of(Component.text("§7Ohhhh mais qu'est ce que c'est précieux ce truc !?")));
                             }
                         ),
-                        15.0,
+                        0.15,
                         1,
                         1
                 ),
@@ -56,7 +56,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                     meta.lore(List.of(Component.text("§7Simplement du fer, rien de fou quoi...")));
                                 }
                         ),
-                        20.0,
+                        0.2,
                         1,
                         1
                 ),
@@ -69,7 +69,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                     meta.lore(List.of(Component.text("§7Le truc le plus rare du jeu !")));
                                 }
                         ),
-                        0.5,
+                        0.05,
                         1,
                         1
                 ),
@@ -82,7 +82,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                     meta.lore(List.of(Component.text("§7De quoi te faire une petite maison hihi")));
                                 }
                         ),
-                        25,
+                        0.25,
                         1,
                         1
                 ),
@@ -95,7 +95,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                     meta.lore(List.of(Component.text("§7Miam miam, de la bonne viande !")));
                                 }
                         ),
-                        15,
+                        0.15,
                         1,
                         1
                 ),
@@ -108,7 +108,7 @@ public class MachineBallLootTable extends CustomLootTable {
                                     meta.lore(List.of(Component.text("§7De quoi faire du feu")));
                                 }
                         ),
-                        14.5,
+                        0.145,
                         1,
                         1
                 )

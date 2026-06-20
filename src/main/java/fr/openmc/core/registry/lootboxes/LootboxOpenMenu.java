@@ -192,7 +192,7 @@ public class LootboxOpenMenu extends Menu {
                     return;
                 }
                 getOwner().closeInventory();
-                if (winningLoot.getChance() <= 10.0) {
+                if (winningLoot.getChance() <= 0.1) {
                     getOwner().playSound(Sound.sound(Key.key("minecraft", "entity.firework_rocket.launch"),
                             Sound.Source.BLOCK, 1f, 1f));
 
