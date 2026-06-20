@@ -33,6 +33,7 @@ public class ListenersManager {
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new InteractListener(),
+                new BlockPlaceListener(),
                 new EquipableItemListener(),
                 new NoMoreRabbit(),
                 new ArmorListener(),

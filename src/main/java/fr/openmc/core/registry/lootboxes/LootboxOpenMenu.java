@@ -46,7 +46,7 @@ public class LootboxOpenMenu extends Menu {
     private final CustomLootbox box;
 
     private int itemOffset = 0;
-    private ItemLoot winningItem = null;
+    private CustomLoot winningLoot = null;
     private boolean finished = false;
 
     public LootboxOpenMenu(@NotNull Player owner, CustomLootbox box) {
@@ -79,21 +79,24 @@ public class LootboxOpenMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> items = fill(Material.GRAY_STAINED_GLASS_PANE);
 
-
         if (!isAnimating && !finished)
             startAnimation();
 
-        if (finished && winningItem != null) {
-            items.put(22, new ItemMenuBuilder(this, winningItem.getDisplayedItem().getType(), meta -> {
+        if (finished && winningLoot != null && winningLoot.getRepresentativeItem() != null) {
+            ItemStack displayedItem = winningLoot.getRepresentativeItem();
+
+            items.put(box.getOptions().rewardSlot(), new ItemMenuBuilder(this, displayedItem, meta -> {
                 meta.displayName(Component.text("§6§l✦ ")
-                        .append(winningItem.getDisplayedItem().effectiveName())
+                        .append(displayedItem.effectiveName())
                         .append(Component.text(" §6§l✦")));
                 List<Component> lore = new ArrayList<>();
                 lore.add(Component.text("§e§lFÉLICITATIONS !"));
                 lore.add(Component.text(" "));
-                lore.addAll(winningItem.getDisplayedItem().lore());
+                if (displayedItem.lore() != null)
+                    lore.addAll(displayedItem.lore());
                 meta.lore(lore);
             }));
+
             return items;
         }
 
@@ -104,8 +107,8 @@ public class LootboxOpenMenu extends Menu {
 
             if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-            items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemLoot.getDisplayedItem().getType(), meta -> {
-                meta.displayName(winningItem.getDisplayedItem().effectiveName());
+            items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemLoot.getDisplayedItem(), meta -> {
+                meta.displayName(winningLoot.getRepresentativeItem().effectiveName());
                 meta.lore(itemLoot.getDisplayedItem().lore());
             }));
         }
@@ -144,16 +147,9 @@ public class LootboxOpenMenu extends Menu {
         getOwner().playSound(Sound.sound(Key.key("minecraft", "block.note_block.pling"),
                 Sound.Source.BLOCK, 1f, 1f));
 
-        if (box.getLootTable().selectRandomLoot() instanceof ItemLoot itemLoot) {
-            winningItem = itemLoot;
-        } else {
-            winningItem = null;
-        }
+        winningLoot = box.getLootTable().selectRandomLoot();
 
-        List<ItemLoot> weightedPool = box.getLootTable().generateWeightedPool()
-                .stream()
-                .filter(item -> item instanceof ItemLoot)
-                .map(item -> (ItemLoot) item).toList();
+        List<CustomLoot> weightedPool = box.getLootTable().generateWeightedPool();
 
         animationTask = new BukkitRunnable() {
             @Override
@@ -178,11 +174,7 @@ public class LootboxOpenMenu extends Menu {
     }
 
     private void finishAnimation(boolean withLatency) {
-        if (box.getLootTable().selectRandomLoot() instanceof ItemLoot itemLoot) {
-            winningItem = itemLoot;
-        } else {
-            winningItem = null;
-        }
+        winningLoot = box.getLootTable().selectRandomLoot();
 
         finished = true;
 
@@ -194,13 +186,13 @@ public class LootboxOpenMenu extends Menu {
         new BukkitRunnable() {
             @Override
             public void run() {
-                boolean cancelled = giveReward(winningItem);
+                boolean cancelled = giveReward(winningLoot);
                 if (cancelled) {
                     cancel();
                     return;
                 }
                 getOwner().closeInventory();
-                if (winningItem.getChance() <= 10.0) {
+                if (winningLoot.getChance() <= 10.0) {
                     getOwner().playSound(Sound.sound(Key.key("minecraft", "entity.firework_rocket.launch"),
                             Sound.Source.BLOCK, 1f, 1f));
 
@@ -215,11 +207,12 @@ public class LootboxOpenMenu extends Menu {
                         firework.setFireworkMeta(meta);
                         firework.detonate();
                     });
+
                     MessagesManager.broadcastMessage(
                             Component.text("§6§l✦ §e§lFÉLICITATIONS §r§eà ")
                                     .append(Component.text(getOwner().getName()))
                                     .append(Component.text(" §equi vient de gagner "))
-                                    .append(winningItem.getDisplayedItem().effectiveName())
+                                    .append(winningLoot.getRepresentativeItem().effectiveName())
                                     .append(Component.text(" §eà "))
                                     .append(box.getName())
                                     .append(Component.text(" §e! §6§l✦")),
@@ -229,45 +222,39 @@ public class LootboxOpenMenu extends Menu {
         }.runTaskLater(OMCPlugin.getInstance(), withLatency ? 60L : 0L);
     }
 
-    private boolean giveReward(ItemLoot wonItem) {
+    private boolean giveReward(CustomLoot wonItem) {
         LootboxRewardEvent rewardEvent = new LootboxRewardEvent(getOwner(), box, wonItem);
         Bukkit.getPluginManager().callEvent(rewardEvent);
         if (rewardEvent.isCancelled()) return true;
 
-        for (ItemStack reward : wonItem.getItems()) {
-            if (getOwner().getInventory().firstEmpty() != -1) {
-                getOwner().getInventory().addItem(reward);
-            } else {
-                getOwner().getWorld().dropItemNaturally(getOwner().getLocation(), reward);
-            }
-        }
+        wonItem.run(getOwner());
 
         MessagesManager.sendMessage(getOwner(),
                 Component.text("§aVous avez gagné : ")
-                        .append(wonItem.getDisplayedItem().displayName())
+                        .append(wonItem.getRepresentativeItem().displayName())
                         .append(Component.text(" §a!")),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         return false;
     }
 
-    private void refreshAnimated(List<ItemLoot> pool) {
+    private void refreshAnimated(List<CustomLoot> pool) {
         if (!(getOwner().getOpenInventory().getTopInventory().getHolder() instanceof LootboxOpenMenu)) return;
         Inventory inv = getOwner().getOpenInventory().getTopInventory();
 
         for (int i = 0; i < displaySlots.size(); i++) {
             int index;
-            ItemLoot itemToShow;
+            ItemStack itemToShow;
 
             if (animationTick > maxAnimationTicks - 10 && i == displaySlots.indexOf(box.getOptions().rewardSlot())) {
-                itemToShow = winningItem;
+                itemToShow = winningLoot.getRepresentativeItem();
             } else {
                 index = (itemOffset + i) % pool.size();
-                itemToShow = pool.get(index);
+                itemToShow = pool.get(index).getRepresentativeItem();
             }
 
-            inv.setItem(displaySlots.get(i), new ItemMenuBuilder(this, itemToShow.getDisplayedItem().getType(), meta -> {
-                meta.displayName(itemToShow.getDisplayedItem().effectiveName());
-                meta.lore(itemToShow.getDisplayedItem().lore());
+            inv.setItem(displaySlots.get(i), new ItemMenuBuilder(this, itemToShow, meta -> {
+                meta.displayName(itemToShow.effectiveName());
+                meta.lore(itemToShow.lore());
             }));
         }
 
