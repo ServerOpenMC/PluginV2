@@ -75,7 +75,7 @@ public class PlayerFishListener implements Listener {
                 player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
                         .append(Component.text(loot.getRepresentativeItem().getAmount() + "x "))
                         .append(loot.getDisplayText())
-                        .append(Component.text(" ("+ Math.round(loot.getChance() * 1000.0) +"% ★)", NamedTextColor.AQUA))
+                        .append(Component.text(" ("+ Math.round(loot.getChance() * 100.0) +"% ★)", NamedTextColor.AQUA))
                 );
 
             RngUtils.sendSoundRng(player, loot.getChance());
