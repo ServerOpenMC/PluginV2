@@ -4,7 +4,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.loottable.loots.RepresentedItem;
-import fr.openmc.core.registry.loottable.loots.TableLoot;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.FishHook;
@@ -13,8 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
-
-import java.util.List;
 
 public class MiraculousFishingManager {
 
@@ -61,12 +58,8 @@ public class MiraculousFishingManager {
      * @return un item stack en fonction du loot
      */
     private static ItemStack getLaunchedItem(CustomLoot loot) {
-        // * SI c'est un loot provenant d'une sous loot table, on roll puis on le renvoie
-        if (loot instanceof TableLoot tableLoot) {
-            List<CustomLoot> loots = tableLoot.getLootTable().rollLoots(null, false);
-            return getLaunchedItem(loots.getFirst());
         // * Si c'est une loot qui peut être représenter par un item
-        } else if (loot instanceof RepresentedItem itemDisplayed) {
+        if (loot instanceof RepresentedItem itemDisplayed) {
             ItemStack item = itemDisplayed.getRepresentativeItem();
             // * et que si c'est une item, qui ne doit pas etre donné (ex Money)
             if (loot instanceof MoneyLoot)
