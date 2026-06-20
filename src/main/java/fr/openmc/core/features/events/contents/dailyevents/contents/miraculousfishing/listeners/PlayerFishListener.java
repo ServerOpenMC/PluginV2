@@ -9,6 +9,7 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MethodLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.loottable.loots.TableLoot;
+import fr.openmc.core.utils.RngUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -72,7 +73,13 @@ public class PlayerFishListener implements Listener {
         for (CustomLoot loot : loots) {
             if (loot.getDisplayText() != null)
                 player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
-                        .append(loot.getDisplayText()));
+                        .append(Component.text(loot.getRepresentativeItem().getAmount() + "x "))
+                        .append(loot.getDisplayText())
+                        .append(Component.text(" ("+ Math.round(loot.getChance() * 1000.0) +"% ★)", NamedTextColor.AQUA))
+                );
+
+            RngUtils.sendSoundRng(player, loot.getChance());
+
             MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
 
             // * Si y'a des sous loots, alors on affiche les sous loots obtenu
