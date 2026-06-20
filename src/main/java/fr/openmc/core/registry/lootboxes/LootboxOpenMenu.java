@@ -116,7 +116,7 @@ public class LootboxOpenMenu extends Menu {
 
             ItemStack finalItemDisplay = itemDisplay;
 
-            items.put(displaySlots.get(i), new ItemMenuBuilder(this, itemDisplay, meta -> {
+            ItemMenuBuilder itemMenuBuilder = new ItemMenuBuilder(this, finalItemDisplay, meta -> {
                 Component name = finalItemDisplay.effectiveName().decoration(TextDecoration.ITALIC, false);
 
                 if (loot instanceof ItemLoot itemLoot
@@ -127,7 +127,14 @@ public class LootboxOpenMenu extends Menu {
 
                 meta.displayName(name);
                 meta.lore(finalItemDisplay.lore());
-            }));
+            });
+
+            if (loot instanceof ItemLoot itemLoot
+                    && itemLoot.getMinAmount() == itemLoot.getMaxAmount()) {
+                itemMenuBuilder.setAmount(itemLoot.getMinAmount());
+            }
+
+            items.put(displaySlots.get(i), itemMenuBuilder);
         }
 
         return items;
@@ -276,7 +283,7 @@ public class LootboxOpenMenu extends Menu {
 
             ItemStack finalItemToShow = itemToShow;
             CustomLoot finalCurrentLoot = currentLoot;
-            inv.setItem(displaySlots.get(i), new ItemMenuBuilder(this, itemToShow, meta -> {
+            ItemMenuBuilder itemMenuBuilder = new ItemMenuBuilder(this, itemToShow, meta -> {
                 Component name = finalItemToShow.effectiveName().decoration(TextDecoration.ITALIC, false);
 
                 if (finalCurrentLoot instanceof ItemLoot itemLoot
@@ -287,7 +294,14 @@ public class LootboxOpenMenu extends Menu {
 
                 meta.displayName(name);
                 meta.lore(finalItemToShow.lore());
-            }));
+            });
+
+            if (finalCurrentLoot instanceof ItemLoot itemLoot
+                    && itemLoot.getMinAmount() == itemLoot.getMaxAmount()) {
+                itemMenuBuilder.setAmount(itemLoot.getMinAmount());
+            }
+
+            inv.setItem(displaySlots.get(i), itemMenuBuilder);
         }
 
         if (animationTick >= maxAnimationTicks) {
