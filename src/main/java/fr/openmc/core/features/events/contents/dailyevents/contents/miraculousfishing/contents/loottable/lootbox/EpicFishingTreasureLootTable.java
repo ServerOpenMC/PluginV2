@@ -4,7 +4,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
-import fr.openmc.core.registry.loottable.loots.LootboxLoot;
 import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -23,7 +22,7 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return Set.of(
-                new ItemLoot(generateEnchantedBook(), Material.ENCHANTED_BOOK, 0.2, 1, 2),
+                new ItemLoot(this::generateEnchantedBook, Material.ENCHANTED_BOOK, 0.2, 1, 2),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
                         OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
@@ -38,7 +37,7 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
                         2,
                         6
                 ),
-                new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.LEGENDARY_FISHING_TREASURE, 0.1)
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_FISHING_TREASURE, 0.1, 1, 1)
         );
     }
 

@@ -9,11 +9,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Getter
 public class ItemLoot implements CustomLoot, RepresentedItem {
     private final double chance;
     private final Set<ItemStack> items;
+    private Supplier<ItemStack> itemSupplier = null;
     private final ItemStack displayedItem;
     private final int minAmount;
     private final int maxAmount;
@@ -24,6 +26,19 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         this.displayedItem = displayedItem;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
+    }
+
+    public ItemLoot(Supplier<ItemStack> itemSupplier, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+        this.chance = chance;
+        this.items = Collections.emptySet();
+        this.itemSupplier = itemSupplier;
+        this.displayedItem = displayedItem;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
+    }
+
+    public ItemLoot(Supplier<ItemStack> itemSupplier, Material displayedItem, double chance, int minAmount, int maxAmount) {
+        this(itemSupplier, ItemStack.of(displayedItem), chance, minAmount, maxAmount);
     }
 
     public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
@@ -117,11 +132,19 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public Set<CustomLoot> run(Player receiver) {
+        if (itemSupplier != null) {
+            ItemStack item = itemSupplier.get();
+            item.setAmount(this.getRandomAmount());
+            receiver.getInventory().addItem(item);
+            return Collections.singleton(this);
+        }
+
         for (ItemStack lootItem : this.getItems()) {
             ItemStack item = lootItem.clone();
             item.setAmount(this.getRandomAmount());
             receiver.getInventory().addItem(item);
         }
+
         return Collections.singleton(this);
     }
 
