@@ -9,6 +9,7 @@ import java.util.Set;
 public interface CustomLoot {
     Component getDisplayText();
     double getChance();
+    void setChance(double chance);
     Set<CustomLoot> run(Player receiver);
 
     default ItemStack getRepresentativeItem() {

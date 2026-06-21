@@ -2,6 +2,7 @@ package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,7 +14,8 @@ import java.util.function.Supplier;
 
 @Getter
 public class ItemLoot implements CustomLoot, RepresentedItem {
-    private final double chance;
+    @Setter
+    private double chance;
     private final Set<ItemStack> items;
     private Supplier<ItemStack> itemSupplier = null;
     private final ItemStack displayedItem;
@@ -44,6 +46,13 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
         this(Collections.singleton(item),
                 null,
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(Material item, double chance, int minAmount, int maxAmount) {
+        this(ItemStack.of(item),
                 chance,
                 minAmount,
                 maxAmount);
@@ -107,18 +116,12 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     public ItemStack getFirstLoot() {
-        if (items.size() == 1) {
-            return items.iterator().next();
-        }
-
         ItemStack item = items.stream().findFirst().orElse(null);
+        if (item == null) return null;
 
-        if (item != null) {
-            item.setAmount(this.getRandomAmount());
-            return item;
-        }
-
-        return null;
+        item = item.clone();
+        item.setAmount(this.getRandomAmount());
+        return item;
     }
 
     public int getRandomAmount() {

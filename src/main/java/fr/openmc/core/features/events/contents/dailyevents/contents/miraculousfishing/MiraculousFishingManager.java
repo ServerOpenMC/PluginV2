@@ -49,7 +49,11 @@ public class MiraculousFishingManager {
      * @param loot le CustomLoot qui sera utilisé pour déterminer l'item à lancer
      */
     public static void simulateLaunchLoot(Player player, Location hookLocation, CustomLoot loot) {
+        // * Gestion spécial pour les Sea Creature
         if (loot instanceof SeaCreatureLoot seaCreatureLoot) {
+            // * On envoie le message de loot
+            sendLootMessage(player, loot, -1);
+
             Entity entity = seaCreatureLoot.getSeaCreatureMob().spawn(hookLocation);
 
             entity.setInvulnerable(true);
@@ -65,14 +69,16 @@ public class MiraculousFishingManager {
         ItemStack displayItem = getLaunchedItem(loot);
         if (displayItem == null) return;
 
-        // * On envoie le message de loot
-        sendLootMessage(player, loot, displayItem.getAmount());
 
         // * Spawn de l'entité Item
         Item itemEntity = hookLocation.getWorld().dropItem(hookLocation, displayItem);
         itemEntity.setCanPlayerPickup(true);
         itemEntity.setCanMobPickup(true);
         itemEntity.setGlowing(true);
+
+        // * On envoie le message de loot
+        System.out.println(itemEntity.getItemStack().getAmount());
+        sendLootMessage(player, loot, itemEntity.getItemStack().getAmount());
 
         applyVelocity(hookLocation, player.getEyeLocation(), itemEntity);
     }

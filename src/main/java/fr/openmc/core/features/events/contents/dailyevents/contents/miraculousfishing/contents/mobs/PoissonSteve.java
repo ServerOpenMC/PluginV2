@@ -21,9 +21,9 @@ public class PoissonSteve extends CustomMob<Mannequin> {
                 67,
                 RandomUtils.randomBetween(0.1, 0.1),
                 List.of(
-                        new ItemLoot(Material.TROPICAL_FISH, Material.TROPICAL_FISH,
+                        new ItemLoot(Material.TROPICAL_FISH,
                                 1, 10, 20),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD, OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD,
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD,
                                 0.5, 1, 1)
                 )
         );

@@ -21,7 +21,7 @@ public class SeaGuard extends CustomMob<Drowned> {
                 10,
                 RandomUtils.randomBetween(0.2, 0.3),
                 List.of(
-                        new ItemLoot(Material.ROTTEN_FLESH, Material.ROTTEN_FLESH,
+                        new ItemLoot(Material.ROTTEN_FLESH,
                                 1, 3, 20)
                 ) // todo: XpLoot
         );

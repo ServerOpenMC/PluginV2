@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.mobs.CustomMobEntry;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -11,7 +12,8 @@ import java.util.Set;
 
 @Getter
 public class SeaCreatureLoot implements CustomLoot {
-    private final double chance;
+    @Setter
+    private double chance;
     private final CustomMobEntry seaCreatureMob;
 
     public SeaCreatureLoot(CustomMobEntry seaCreatureMob, double chance) {

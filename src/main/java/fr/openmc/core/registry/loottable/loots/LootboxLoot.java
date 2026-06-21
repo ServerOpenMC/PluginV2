@@ -2,6 +2,7 @@ package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +12,8 @@ import java.util.Set;
 
 @Getter
 public class LootboxLoot implements CustomLoot, RepresentedItem {
-    private final double chance;
+    @Setter
+    private double chance;
     private final CustomLootbox lootbox;
 
     public LootboxLoot(CustomLootbox lootbox, double chance) {

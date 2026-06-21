@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class PlayerFishListener implements Listener {
 
@@ -75,9 +76,17 @@ public class PlayerFishListener implements Listener {
 
             MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
 
-            // * Si y'a des sous loots, alors on affiche les sous loots obtenu
-            if (loot instanceof TableLoot)
-                sendLoot(player, hook, loot.run(player));
+            // * Si y'a des sous loots, alors on affiche les sous loots obtenu,
+            // en modiant leur probabilité corresponde à la réalité
+            if (loot instanceof TableLoot) {
+                Set<CustomLoot> subLoots = loot.run(player);
+
+                for (CustomLoot subLoot : subLoots) {
+                    subLoot.setChance(loot.getChance() * subLoot.getChance());
+                }
+
+                sendLoot(player, hook, subLoots);
+            }
             // * Si c'est un loot de type MoneyLoot ou MethodLoot,
                 // on exécute le loot, car on ne le donne va via un item
             else if (loot instanceof MoneyLoot || loot instanceof MethodLoot)

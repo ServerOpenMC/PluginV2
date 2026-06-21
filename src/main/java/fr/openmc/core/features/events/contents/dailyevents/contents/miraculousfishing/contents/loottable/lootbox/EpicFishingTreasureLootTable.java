@@ -25,13 +25,11 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
                 new ItemLoot(this::generateEnchantedBook, Material.ENCHANTED_BOOK, 0.2, 1, 2),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
-                        OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
                         0.1,
                         1,
                         3
                 ),
                 new ItemLoot(
-                        OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,
                         OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,
                         0.07,
                         2,
