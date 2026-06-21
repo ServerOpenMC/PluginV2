@@ -3,6 +3,10 @@ package fr.openmc.core.registry.mobs;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.AncientVillager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.ChickenJockey;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.PoissonSteve;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.SeaGuard;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -15,12 +19,25 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
             new NamespacedKey("openmc", "custom_mob");
 
     // ** REGISTER MOBS **
-    /* ex :
-    public static final CustomMobEntry BREEZY = create(new CustomMobEntry(
-            "omc_dream:breezy",
-            Breezy::new
+    public final CustomMobEntry SEA_GUARD = register(new CustomMobEntry(
+            "omc_daily_events:sea_guard",
+            SeaGuard::new
     ));
-     */
+
+    public final CustomMobEntry CHICKEN_JOCKEY = register(new CustomMobEntry(
+            "omc_daily_events:chicken_jockey",
+            ChickenJockey::new
+    ));
+
+    public final CustomMobEntry ANCIENT_VILLAGER = register(new CustomMobEntry(
+            "omc_daily_events:ancient_villager",
+            AncientVillager::new
+    ));
+
+    public final CustomMobEntry POISSON_STEVE = register(new CustomMobEntry(
+            "omc_daily_events:poisson_steve",
+            PoissonSteve::new
+    ));
 
     @Override
     public String key(CustomMobEntry registryObject) {

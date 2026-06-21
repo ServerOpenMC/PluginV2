@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtils {
-    private static final Random random = new Random();
+    private static final Random random = ThreadLocalRandom.current();
 
     /**
      * Retourne un double aléatoire entre min et max.

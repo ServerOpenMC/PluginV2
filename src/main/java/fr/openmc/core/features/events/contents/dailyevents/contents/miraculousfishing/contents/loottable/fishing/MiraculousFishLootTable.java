@@ -19,8 +19,8 @@ public class MiraculousFishLootTable extends CustomLootTable  {
                 new MoneyLoot(50, 250, 0.3),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SPONGE_BOB, 0.1, 1, 1),
                 new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.FISHING_FURNITURE, 0.08),
-                new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.RARE_FISHING_TREASURE, 0.1)
-                // new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.SEA_CREATURE, 0.2)
+                new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.RARE_FISHING_TREASURE, 0.1),
+                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.SEA_CREATURE, 0.2)
         );
     }
 }

@@ -71,13 +71,6 @@ public class PlayerFishListener implements Listener {
 
     private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
-            if (loot.getDisplayText() != null)
-                player.sendMessage(Component.text(" - ", NamedTextColor.GRAY)
-                        .append(Component.text(loot.getRepresentativeItem().getAmount() + "x "))
-                        .append(loot.getDisplayText())
-                        .append(Component.text(" ("+ Math.round(loot.getChance() * 100.0) +"% ★)", NamedTextColor.AQUA))
-                );
-
             RngUtils.sendSoundRng(player, loot.getChance());
 
             MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
