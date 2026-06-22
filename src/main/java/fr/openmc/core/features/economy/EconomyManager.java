@@ -9,6 +9,8 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
@@ -16,6 +18,8 @@ import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -30,6 +34,10 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     private static Map<UUID, EconomyPlayer> balances;
 
     private static Dao<EconomyPlayer, String> playersDao;
+    private static final Set<UUID> dirtyBalances = new HashSet<>();
+    private static final Object balancesLock = new Object();
+    private static final long AUTO_SAVE_INTERVAL_TICKS = 20L * 60L * 5L;
+    private static BukkitTask autoSaveTask;
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static final NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
@@ -43,6 +51,8 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     @Override
     public void init() {
         balances = loadAllBalances();
+        dirtyBalances.clear();
+        startAutoSaveTask();
     }
 
     @Override
@@ -61,9 +71,17 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }
 
+    @Override
+    protected void save() {
+        stopAutoSaveTask();
+        saveAllBalances();
+    }
+
     public static double getBalance(UUID playerUUID) {
-        EconomyPlayer bank = getPlayerBank(playerUUID);
-        return bank.getBalance();
+        synchronized (balancesLock) {
+            EconomyPlayer bank = getPlayerBank(playerUUID);
+            return bank.getBalance();
+        }
     }
 
     public static void addBalance(UUID playerUUID, double amount) {
@@ -71,8 +89,11 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     public static void addBalance(UUID playerUUID, double amount, @Nullable String reason) {
-        EconomyPlayer bank = getPlayerBank(playerUUID);
-        bank.deposit(amount);
+        synchronized (balancesLock) {
+            EconomyPlayer bank = getPlayerBank(playerUUID);
+            bank.deposit(amount);
+            savePlayerBank(bank);
+        }
 
         if (reason != null) {
             TransactionsManager.registerTransaction(new Transaction(
@@ -83,7 +104,6 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
             ));
         }
 
-        savePlayerBank(bank);
     }
 
     public static boolean withdrawBalance(UUID playerUUID, double amount) {
@@ -91,24 +111,26 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     public static boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
-        EconomyPlayer bank = getPlayerBank(playerUUID);
+        synchronized (balancesLock) {
+            EconomyPlayer bank = getPlayerBank(playerUUID);
 
-        if (bank.withdraw(amount)) {
-            if (reason != null) {
-                TransactionsManager.registerTransaction(new Transaction(
-                    "CONSOLE",
-                    playerUUID.toString(),
-                    amount,
-                    reason
-                ));
+            if (!bank.withdraw(amount)) {
+                return false;
             }
 
             savePlayerBank(bank);
-
-            return true;
         }
 
-        return false;
+        if (reason != null) {
+            TransactionsManager.registerTransaction(new Transaction(
+                "CONSOLE",
+                playerUUID.toString(),
+                amount,
+                reason
+            ));
+        }
+
+        return true;
     }
 
     /**
@@ -152,10 +174,11 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     public static void setBalance(UUID playerUUID, double amount) {
-        EconomyPlayer bank = getPlayerBank(playerUUID);
-        bank.withdraw(bank.getBalance());
-        bank.deposit(amount);
-        savePlayerBank(bank);
+        synchronized (balancesLock) {
+            EconomyPlayer bank = getPlayerBank(playerUUID);
+            bank.setBalance(amount);
+            savePlayerBank(bank);
+        }
     }
 
     public static String getMiniBalance(UUID playerUUID) {
@@ -165,19 +188,51 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     public static void savePlayerBank(EconomyPlayer player) {
-        try {
+        synchronized (balancesLock) {
             balances.put(player.getPlayerUUID(), player);
-            playersDao.createOrUpdate(player);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            dirtyBalances.add(player.getPlayerUUID());
         }
     }
 
     public static EconomyPlayer getPlayerBank(UUID playerUUID) {
-        EconomyPlayer bank = balances.get(playerUUID);
-        if (bank != null)
-            return bank;
-        return new EconomyPlayer(playerUUID);
+        synchronized (balancesLock) {
+            return balances.computeIfAbsent(playerUUID, EconomyPlayer::new);
+        }
+    }
+
+    public static void saveAllBalances() {
+        List<EconomyPlayer> playersToSave;
+
+        synchronized (balancesLock) {
+            if (dirtyBalances.isEmpty()) {
+                return;
+            }
+
+            playersToSave = dirtyBalances.stream()
+                    .map(balances::get)
+                    .filter(Objects::nonNull)
+                    .map(player -> new EconomyPlayer(player.getPlayerUUID(), player.getBalance()))
+                    .toList();
+            dirtyBalances.clear();
+        }
+
+        try {
+            playersDao.callBatchTasks(() -> {
+                for (EconomyPlayer player : playersToSave) {
+                    playersDao.createOrUpdate(player);
+                }
+
+                return null;
+            });
+        } catch (Exception e) {
+            synchronized (balancesLock) {
+                for (EconomyPlayer player : playersToSave) {
+                    dirtyBalances.add(player.getPlayerUUID());
+                }
+            }
+
+            OMCLogger.error("Failed to save economy balances", e);
+        }
     }
 
     public static Map<UUID, EconomyPlayer> loadAllBalances() {
@@ -192,6 +247,28 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         }
 
         return balances;
+    }
+
+    private static void startAutoSaveTask() {
+        if (OMCPlugin.isUnitTestVersion() || autoSaveTask != null) {
+            return;
+        }
+
+        autoSaveTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
+                OMCPlugin.getInstance(),
+                EconomyManager::saveAllBalances,
+                AUTO_SAVE_INTERVAL_TICKS,
+                AUTO_SAVE_INTERVAL_TICKS
+        );
+    }
+
+    private static void stopAutoSaveTask() {
+        if (autoSaveTask == null) {
+            return;
+        }
+
+        autoSaveTask.cancel();
+        autoSaveTask = null;
     }
 
     public static String getFormattedBalance(UUID playerUUID) {

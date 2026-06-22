@@ -24,6 +24,11 @@ public class EconomyPlayer {
         this.balance = 0;
     }
 
+    public EconomyPlayer(UUID playerUUID, double balance) {
+        this.playerUUID = playerUUID;
+        this.balance = balance;
+    }
+
     public void deposit(double amount) {
         balance += amount;
     }
@@ -34,5 +39,9 @@ public class EconomyPlayer {
             return true;
         }
         return false;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }
