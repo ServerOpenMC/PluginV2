@@ -75,6 +75,14 @@ public class EconomyManagerTest {
     }
 
     @Test
+    public void testGetBalanceDoesNotCreateCachedAccount() {
+        UUID unknownPlayerUUID = UUID.randomUUID();
+
+        assertEquals(0.0, EconomyManager.getBalance(unknownPlayerUUID));
+        assertFalse(EconomyManager.getBalances().containsKey(unknownPlayerUUID));
+    }
+
+    @Test
     public void testBalanceChangesAreSavedOnSaveAll() {
         UUID playerUUID = player1.getUniqueId();
 

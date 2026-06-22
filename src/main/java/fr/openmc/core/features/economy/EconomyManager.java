@@ -36,6 +36,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     private static Dao<EconomyPlayer, String> playersDao;
     private static final Set<UUID> dirtyBalances = new HashSet<>();
     private static final Object balancesLock = new Object();
+    private static final Object saveLock = new Object();
     private static final long AUTO_SAVE_INTERVAL_TICKS = 20L * 60L * 5L;
     private static BukkitTask autoSaveTask;
 
@@ -79,8 +80,8 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static double getBalance(UUID playerUUID) {
         synchronized (balancesLock) {
-            EconomyPlayer bank = getPlayerBank(playerUUID);
-            return bank.getBalance();
+            EconomyPlayer bank = balances.get(playerUUID);
+            return bank == null ? 0 : bank.getBalance();
         }
     }
 
@@ -90,7 +91,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static void addBalance(UUID playerUUID, double amount, @Nullable String reason) {
         synchronized (balancesLock) {
-            EconomyPlayer bank = getPlayerBank(playerUUID);
+            EconomyPlayer bank = getOrCreatePlayerBank(playerUUID);
             bank.deposit(amount);
             savePlayerBank(bank);
         }
@@ -112,7 +113,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
         synchronized (balancesLock) {
-            EconomyPlayer bank = getPlayerBank(playerUUID);
+            EconomyPlayer bank = getOrCreatePlayerBank(playerUUID);
 
             if (!bank.withdraw(amount)) {
                 return false;
@@ -175,7 +176,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static void setBalance(UUID playerUUID, double amount) {
         synchronized (balancesLock) {
-            EconomyPlayer bank = getPlayerBank(playerUUID);
+            EconomyPlayer bank = getOrCreatePlayerBank(playerUUID);
             bank.setBalance(amount);
             savePlayerBank(bank);
         }
@@ -196,42 +197,49 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static EconomyPlayer getPlayerBank(UUID playerUUID) {
         synchronized (balancesLock) {
-            return balances.computeIfAbsent(playerUUID, EconomyPlayer::new);
+            EconomyPlayer bank = balances.get(playerUUID);
+            return bank == null ? new EconomyPlayer(playerUUID) : bank;
         }
     }
 
+    private static EconomyPlayer getOrCreatePlayerBank(UUID playerUUID) {
+        return balances.computeIfAbsent(playerUUID, EconomyPlayer::new);
+    }
+
     public static void saveAllBalances() {
-        List<EconomyPlayer> playersToSave;
+        synchronized (saveLock) {
+            List<EconomyPlayer> playersToSave;
 
-        synchronized (balancesLock) {
-            if (dirtyBalances.isEmpty()) {
-                return;
-            }
-
-            playersToSave = dirtyBalances.stream()
-                    .map(balances::get)
-                    .filter(Objects::nonNull)
-                    .map(player -> new EconomyPlayer(player.getPlayerUUID(), player.getBalance()))
-                    .toList();
-            dirtyBalances.clear();
-        }
-
-        try {
-            playersDao.callBatchTasks(() -> {
-                for (EconomyPlayer player : playersToSave) {
-                    playersDao.createOrUpdate(player);
-                }
-
-                return null;
-            });
-        } catch (Exception e) {
             synchronized (balancesLock) {
-                for (EconomyPlayer player : playersToSave) {
-                    dirtyBalances.add(player.getPlayerUUID());
+                if (dirtyBalances.isEmpty()) {
+                    return;
                 }
+
+                playersToSave = dirtyBalances.stream()
+                        .map(balances::get)
+                        .filter(Objects::nonNull)
+                        .map(player -> new EconomyPlayer(player.getPlayerUUID(), player.getBalance()))
+                        .toList();
+                dirtyBalances.clear();
             }
 
-            OMCLogger.error("Failed to save economy balances", e);
+            try {
+                playersDao.callBatchTasks(() -> {
+                    for (EconomyPlayer player : playersToSave) {
+                        playersDao.createOrUpdate(player);
+                    }
+
+                    return null;
+                });
+            } catch (Exception e) {
+                synchronized (balancesLock) {
+                    for (EconomyPlayer player : playersToSave) {
+                        dirtyBalances.add(player.getPlayerUUID());
+                    }
+                }
+
+                OMCLogger.error("Failed to save economy balances", e);
+            }
         }
     }
 
