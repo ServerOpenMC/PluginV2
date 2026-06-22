@@ -66,6 +66,25 @@ public class EconomyManagerDirtySaveTest {
         assertEquals(700.0, persistedBalances.get(secondPlayerUUID));
     }
 
+    @Test
+    public void testFinalSaveFlushesSameBalanceDirtiedDuringSave() throws Exception {
+        UUID playerUUID = UUID.randomUUID();
+        Map<UUID, Double> persistedBalances = new HashMap<>();
+        AtomicBoolean dirtiedDuringSave = new AtomicBoolean(false);
+
+        replacePlayersDao(createPlayersDao(persistedBalances, () -> {
+            if (dirtiedDuringSave.compareAndSet(false, true)) {
+                EconomyManager.setBalance(playerUUID, 700.0);
+            }
+        }));
+
+        EconomyManager.setBalance(playerUUID, 500.0);
+
+        saveAllBalances(true);
+
+        assertEquals(700.0, persistedBalances.get(playerUUID));
+    }
+
     @SuppressWarnings("unchecked")
     private static Dao<EconomyPlayer, String> createPlayersDao(Map<UUID, Double> persistedBalances, Runnable onCreateOrUpdate) {
         return (Dao<EconomyPlayer, String>) Proxy.newProxyInstance(

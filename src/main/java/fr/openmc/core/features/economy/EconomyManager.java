@@ -204,7 +204,9 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     /**
-     * @deprecated Use {@link #markPlayerBankDirty(EconomyPlayer)}.
+     * @deprecated Use {@link #markPlayerBankDirty(EconomyPlayer)}. This method
+     * only updates the in-memory cache and marks the balance dirty; persistence is
+     * deferred to {@link #saveAllBalances()} or the shutdown save.
      */
     @Deprecated(since = "2.5.0", forRemoval = false)
     public static void savePlayerBank(EconomyPlayer player) {
