@@ -101,7 +101,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         synchronized (balancesLock) {
             EconomyPlayer bank = getOrCreatePlayerBank(playerUUID);
             bank.deposit(amount);
-            savePlayerBank(bank);
+            markPlayerBankDirty(bank);
         }
 
         if (reason != null) {
@@ -127,7 +127,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
                 return false;
             }
 
-            savePlayerBank(bank);
+            markPlayerBankDirty(bank);
         }
 
         if (reason != null) {
@@ -186,7 +186,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         synchronized (balancesLock) {
             EconomyPlayer bank = getOrCreatePlayerBank(playerUUID);
             bank.setBalance(amount);
-            savePlayerBank(bank);
+            markPlayerBankDirty(bank);
         }
     }
 
@@ -196,7 +196,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         return getFormattedSimplifiedNumber(balance);
     }
 
-    public static void savePlayerBank(EconomyPlayer player) {
+    public static void markPlayerBankDirty(EconomyPlayer player) {
         synchronized (balancesLock) {
             balances.put(player.getPlayerUUID(), copyPlayer(player));
             dirtyBalances.add(player.getPlayerUUID());

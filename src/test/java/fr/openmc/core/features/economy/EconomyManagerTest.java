@@ -110,10 +110,10 @@ public class EconomyManagerTest {
     }
 
     @Test
-    public void testSavePlayerBankStoresSnapshot() {
+    public void testMarkPlayerBankDirtyStoresSnapshot() {
         EconomyPlayer bank = new EconomyPlayer(player1.getUniqueId(), 100.0);
 
-        EconomyManager.savePlayerBank(bank);
+        EconomyManager.markPlayerBankDirty(bank);
         bank.setBalance(50.0);
 
         assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
