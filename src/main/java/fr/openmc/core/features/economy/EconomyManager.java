@@ -17,7 +17,6 @@ import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -30,7 +29,6 @@ import java.util.*;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class EconomyManager extends Feature implements DatabaseFeature, HasCommands {
-    @Getter
     private static Map<UUID, EconomyPlayer> balances;
 
     private static Dao<EconomyPlayer, String> playersDao;
@@ -82,6 +80,12 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         synchronized (balancesLock) {
             EconomyPlayer bank = balances.get(playerUUID);
             return bank == null ? 0 : bank.getBalance();
+        }
+    }
+
+    public static Map<UUID, EconomyPlayer> getBalances() {
+        synchronized (balancesLock) {
+            return Collections.unmodifiableMap(new HashMap<>(balances));
         }
     }
 

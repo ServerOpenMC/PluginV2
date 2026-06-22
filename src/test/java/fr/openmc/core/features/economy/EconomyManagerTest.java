@@ -2,6 +2,7 @@ package fr.openmc.core.features.economy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -80,6 +81,16 @@ public class EconomyManagerTest {
 
         assertEquals(0.0, EconomyManager.getBalance(unknownPlayerUUID));
         assertFalse(EconomyManager.getBalances().containsKey(unknownPlayerUUID));
+    }
+
+    @Test
+    public void testBalancesSnapshotCannotBeMutated() {
+        EconomyManager.setBalance(player1.getUniqueId(), 100.0);
+
+        Map<UUID, EconomyPlayer> balances = EconomyManager.getBalances();
+
+        assertThrows(UnsupportedOperationException.class, () -> balances.remove(player1.getUniqueId()));
+        assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
     }
 
     @Test
