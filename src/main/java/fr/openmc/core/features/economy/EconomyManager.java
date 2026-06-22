@@ -203,6 +203,14 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         }
     }
 
+    /**
+     * Returns a snapshot of a player's economy data.
+     * <p>
+     * Mutating the returned {@link EconomyPlayer} does not update the cache or mark
+     * the balance dirty. Use {@link #setBalance(UUID, double)},
+     * {@link #addBalance(UUID, double)} or {@link #withdrawBalance(UUID, double)}
+     * to change a player's balance.
+     */
     public static EconomyPlayer getPlayerBank(UUID playerUUID) {
         synchronized (balancesLock) {
             EconomyPlayer bank = balances.get(playerUUID);
