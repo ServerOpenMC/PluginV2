@@ -90,6 +90,19 @@ public class EconomyManagerTest {
         Map<UUID, EconomyPlayer> balances = EconomyManager.getBalances();
 
         assertThrows(UnsupportedOperationException.class, () -> balances.remove(player1.getUniqueId()));
+
+        balances.get(player1.getUniqueId()).setBalance(50.0);
+
+        assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
+    }
+
+    @Test
+    public void testGetPlayerBankReturnsSnapshot() {
+        EconomyManager.setBalance(player1.getUniqueId(), 100.0);
+
+        EconomyPlayer bank = EconomyManager.getPlayerBank(player1.getUniqueId());
+        bank.setBalance(50.0);
+
         assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
     }
 

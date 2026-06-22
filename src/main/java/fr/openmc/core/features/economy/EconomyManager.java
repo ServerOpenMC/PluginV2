@@ -73,7 +73,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     @Override
     protected void save() {
         stopAutoSaveTask();
-        saveAllBalances();
+        saveAllBalances(true);
     }
 
     public static double getBalance(UUID playerUUID) {
@@ -85,7 +85,11 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static Map<UUID, EconomyPlayer> getBalances() {
         synchronized (balancesLock) {
-            return Collections.unmodifiableMap(new HashMap<>(balances));
+            Map<UUID, EconomyPlayer> snapshot = new HashMap<>();
+
+            balances.forEach((playerUUID, player) -> snapshot.put(playerUUID, copyPlayer(player)));
+
+            return Collections.unmodifiableMap(snapshot);
         }
     }
 
@@ -202,7 +206,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     public static EconomyPlayer getPlayerBank(UUID playerUUID) {
         synchronized (balancesLock) {
             EconomyPlayer bank = balances.get(playerUUID);
-            return bank == null ? new EconomyPlayer(playerUUID) : bank;
+            return bank == null ? new EconomyPlayer(playerUUID) : copyPlayer(bank);
         }
     }
 
@@ -211,6 +215,10 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     public static void saveAllBalances() {
+        saveAllBalances(false);
+    }
+
+    private static void saveAllBalances(boolean finalSave) {
         synchronized (saveLock) {
             List<EconomyPlayer> playersToSave;
 
@@ -222,7 +230,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
                 playersToSave = dirtyBalances.stream()
                         .map(balances::get)
                         .filter(Objects::nonNull)
-                        .map(player -> new EconomyPlayer(player.getPlayerUUID(), player.getBalance()))
+                        .map(EconomyManager::copyPlayer)
                         .toList();
                 dirtyBalances.clear();
             }
@@ -242,9 +250,17 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
                     }
                 }
 
-                OMCLogger.error("Failed to save economy balances", e);
+                if (finalSave) {
+                    OMCLogger.error("CRITICAL: Failed to save economy balances during shutdown. Unsaved balances may be lost if the server stops.", e);
+                } else {
+                    OMCLogger.error("Failed to save economy balances. Dirty balances will be retried on the next save.", e);
+                }
             }
         }
+    }
+
+    private static EconomyPlayer copyPlayer(EconomyPlayer player) {
+        return new EconomyPlayer(player.getPlayerUUID(), player.getBalance());
     }
 
     public static Map<UUID, EconomyPlayer> loadAllBalances() {
@@ -268,7 +284,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
         autoSaveTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 OMCPlugin.getInstance(),
-                EconomyManager::saveAllBalances,
+                () -> EconomyManager.saveAllBalances(),
                 AUTO_SAVE_INTERVAL_TICKS,
                 AUTO_SAVE_INTERVAL_TICKS
         );
