@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.mobs.listeners;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class CustomMobDeathListener implements Listener {
 
@@ -25,7 +25,7 @@ public class CustomMobDeathListener implements Listener {
         event.getDrops().clear();
         event.setDroppedExp(0);
 
-        if (!(source.getCausingEntity() instanceof Player)) return;
+        if (!(source.getCausingEntity() instanceof Player player)) return;
 
         CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
         if (customMob == null) return;
@@ -33,12 +33,13 @@ public class CustomMobDeathListener implements Listener {
         customMob.onDeath(customMob, event);
 
         if (customMob.getLoots() == null) return;
-        for (ItemLoot loot : customMob.getLoots()) {
+        for (CustomLoot loot : customMob.getLoots()) {
             if (Math.random() >= loot.getChance()) return;
-
-            int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
-            ItemStack drop = loot.getFirstLoot().asQuantity(amount);
-            entity.getWorld().dropItemNaturally(entity.getLocation(), drop);
+            if (loot instanceof ItemLoot itemLoot) {
+                entity.getWorld().dropItemNaturally(entity.getLocation(), itemLoot.getFirstLoot());
+            } else {
+                loot.run(player);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 package fr.openmc.core.registry.mobs;
 
-import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -21,7 +21,7 @@ public abstract class CustomMob<T extends LivingEntity> {
     private final String name;
     private final Class<T> entityClass;
     private final Set<CustomMobAttribute> baseAttributes = new HashSet<>();
-    private final List<ItemLoot> loots = new ArrayList<>();
+    private final List<CustomLoot> loots = new ArrayList<>();
 
     public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, CustomMobAttribute... baseAttributes) {
         this.id = id;
@@ -42,7 +42,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, double speed, List<ItemLoot> loots, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, double speed, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -53,7 +53,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.loots.addAll(loots);
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, List<ItemLoot> loots, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;

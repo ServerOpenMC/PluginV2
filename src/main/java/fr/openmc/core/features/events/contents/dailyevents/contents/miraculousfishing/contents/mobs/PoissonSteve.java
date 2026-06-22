@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
@@ -24,7 +25,8 @@ public class PoissonSteve extends CustomMob<Mannequin> {
                         new ItemLoot(Material.TROPICAL_FISH,
                                 1, 10, 20),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD,
-                                0.5, 1, 1)
+                                0.5, 1, 1),
+                        new XpLoot(20, 35, 1)
                 )
         );
     }

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs;
 
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.Location;
@@ -22,8 +23,9 @@ public class SeaGuard extends CustomMob<Drowned> {
                 RandomUtils.randomBetween(0.2, 0.3),
                 List.of(
                         new ItemLoot(Material.ROTTEN_FLESH,
-                                1, 3, 20)
-                ) // todo: XpLoot
+                                1, 3, 20),
+                        new XpLoot(10, 30, 1)
+                )
         );
     }
 

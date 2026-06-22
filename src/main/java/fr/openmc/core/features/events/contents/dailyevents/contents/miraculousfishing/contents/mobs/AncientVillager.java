@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs;
 
+import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.Location;
@@ -16,7 +17,9 @@ public class AncientVillager extends CustomMob<ZombieVillager> {
                 100,
                 67,
                 RandomUtils.randomBetween(0.1, 0.1),
-                List.of()
+                List.of(
+                        new XpLoot(100, 150, 0.5)
+                )
         );
     }
 
