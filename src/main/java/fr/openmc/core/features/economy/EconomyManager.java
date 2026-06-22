@@ -198,7 +198,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static void savePlayerBank(EconomyPlayer player) {
         synchronized (balancesLock) {
-            balances.put(player.getPlayerUUID(), player);
+            balances.put(player.getPlayerUUID(), copyPlayer(player));
             dirtyBalances.add(player.getPlayerUUID());
         }
     }
