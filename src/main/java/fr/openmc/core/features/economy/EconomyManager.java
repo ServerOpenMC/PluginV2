@@ -204,6 +204,14 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     /**
+     * @deprecated Use {@link #markPlayerBankDirty(EconomyPlayer)}.
+     */
+    @Deprecated(since = "2.5.0", forRemoval = false)
+    public static void savePlayerBank(EconomyPlayer player) {
+        markPlayerBankDirty(player);
+    }
+
+    /**
      * Returns a snapshot of a player's economy data.
      * <p>
      * Mutating the returned {@link EconomyPlayer} does not update the cache or mark
@@ -228,42 +236,46 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     private static void saveAllBalances(boolean finalSave) {
         synchronized (saveLock) {
-            List<EconomyPlayer> playersToSave;
+            do {
+                List<EconomyPlayer> playersToSave;
 
-            synchronized (balancesLock) {
-                if (dirtyBalances.isEmpty()) {
+                synchronized (balancesLock) {
+                    if (dirtyBalances.isEmpty()) {
+                        return;
+                    }
+
+                    playersToSave = dirtyBalances.stream()
+                            .map(balances::get)
+                            .filter(Objects::nonNull)
+                            .map(EconomyManager::copyPlayer)
+                            .toList();
+                    dirtyBalances.clear();
+                }
+
+                try {
+                    playersDao.callBatchTasks(() -> {
+                        for (EconomyPlayer player : playersToSave) {
+                            playersDao.createOrUpdate(player);
+                        }
+
+                        return null;
+                    });
+                } catch (Exception e) {
+                    synchronized (balancesLock) {
+                        for (EconomyPlayer player : playersToSave) {
+                            dirtyBalances.add(player.getPlayerUUID());
+                        }
+                    }
+
+                    if (finalSave) {
+                        OMCLogger.error("CRITICAL: Failed to save economy balances during shutdown. Unsaved balances may be lost if the server stops.", e);
+                    } else {
+                        OMCLogger.error("Failed to save economy balances. Dirty balances will be retried on the next save.", e);
+                    }
+
                     return;
                 }
-
-                playersToSave = dirtyBalances.stream()
-                        .map(balances::get)
-                        .filter(Objects::nonNull)
-                        .map(EconomyManager::copyPlayer)
-                        .toList();
-                dirtyBalances.clear();
-            }
-
-            try {
-                playersDao.callBatchTasks(() -> {
-                    for (EconomyPlayer player : playersToSave) {
-                        playersDao.createOrUpdate(player);
-                    }
-
-                    return null;
-                });
-            } catch (Exception e) {
-                synchronized (balancesLock) {
-                    for (EconomyPlayer player : playersToSave) {
-                        dirtyBalances.add(player.getPlayerUUID());
-                    }
-                }
-
-                if (finalSave) {
-                    OMCLogger.error("CRITICAL: Failed to save economy balances during shutdown. Unsaved balances may be lost if the server stops.", e);
-                } else {
-                    OMCLogger.error("Failed to save economy balances. Dirty balances will be retried on the next save.", e);
-                }
-            }
+            } while (finalSave);
         }
     }
 
