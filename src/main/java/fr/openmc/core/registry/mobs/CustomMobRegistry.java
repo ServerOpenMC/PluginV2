@@ -41,6 +41,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
             Leviathan::new
     ));
 
+    public final CustomMobEntry ANGRY_WITCH = register(new CustomMobEntry(
+            "omc_daily_events:angry_witch",
+            AngryWitch::new
+    ));
+
     @Override
     public String key(CustomMobEntry registryObject) {
         return registryObject.id();
