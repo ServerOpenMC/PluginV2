@@ -1,8 +1,9 @@
-package fr.openmc.core.features.events.commands.calendar;
+package fr.openmc.core.features.events;
 
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.features.events.commands.CalendarCommand;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;

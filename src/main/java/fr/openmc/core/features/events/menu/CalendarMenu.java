@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.commands.calendar;
+package fr.openmc.core.features.events.menu;
 
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.OpenMenu;
@@ -9,7 +9,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.CalendarManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
