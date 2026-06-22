@@ -3,10 +3,7 @@ package fr.openmc.core.registry.mobs;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.AncientVillager;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.ChickenJockey;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.PoissonSteve;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.SeaGuard;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -37,6 +34,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public final CustomMobEntry POISSON_STEVE = register(new CustomMobEntry(
             "omc_daily_events:poisson_steve",
             PoissonSteve::new
+    ));
+
+    public final CustomMobEntry LEVIATHAN = register(new CustomMobEntry(
+            "omc_daily_events:leviathan",
+            Leviathan::new
     ));
 
     @Override
