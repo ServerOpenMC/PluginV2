@@ -31,8 +31,6 @@ public final class OMCRegistry {
             new RegistryContext(
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),
-            new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
-                    RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
@@ -44,6 +42,8 @@ public final class OMCRegistry {
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 
