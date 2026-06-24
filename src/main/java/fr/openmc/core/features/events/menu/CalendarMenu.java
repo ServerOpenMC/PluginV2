@@ -9,7 +9,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.events.CalendarManager;
+import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -59,7 +59,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        for (Event event : CalendarManager.getUpcomingEvents(14)) {
+        for (Event event : EventsManager.getUpcomingEvents(14)) {
             ItemMenuBuilder itemBuilder = new ItemMenuBuilder(this, event.getIcon(), meta -> {
                 meta.customName(event.getName().decoration(TextDecoration.ITALIC, false));
                 meta.lore(getEventLore(event));
@@ -118,7 +118,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
 
     @Override
     public int getSizeOfItems() {
-        return CalendarManager.getUpcomingEvents(14).size();
+        return EventsManager.getUpcomingEvents(14).size();
     }
 
     @Override

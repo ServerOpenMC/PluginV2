@@ -28,7 +28,7 @@ import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.features.events.CalendarManager;
+import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
@@ -111,7 +111,7 @@ public class OMCPlugin extends JavaPlugin {
             ContestManager::new,
             WeeklyEventsManager::new,
             DailyEventsManager::new,
-            CalendarManager::new,
+            EventsManager::new,
             DreamManager::new,
             MultiBlockManager::new,
             MilestonesManager::new,

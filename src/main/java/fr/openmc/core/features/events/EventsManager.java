@@ -4,6 +4,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.events.commands.CalendarCommand;
+import fr.openmc.core.features.events.commands.EventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
@@ -23,11 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasCommands {
+public class EventsManager extends Feature implements LoadAfterItemsAdder, HasCommands {
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new CalendarCommand()
+                new CalendarCommand(),
+                new EventCommand()
         );
     }
 
@@ -125,5 +127,11 @@ public class CalendarManager extends Feature implements LoadAfterItemsAdder,HasC
                     .atTime(firstPhase.getStartHour(), firstPhase.getStartMinutes());
         }
         return null;
+    }
+
+    public static List<Event> getAllEventsRegistred() {
+        List<Event> events = new ArrayList<>(DailyEventsManager.EVENTS);
+        events.addAll(WeeklyEventsManager.EVENTS);
+        return events;
     }
 }
