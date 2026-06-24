@@ -12,6 +12,8 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.util.Optional;
+
 @Command({"custommobs", "cm"})
 @CommandPermission("omc.admins.commands.custommobs")
 public class CustomMobsCommands {
@@ -21,7 +23,7 @@ public class CustomMobsCommands {
             Player player,
             @SuggestWith(CustomMobsAutoComplete.class) String name
     ) {
-        java.util.Optional<CustomMobEntry> mob = OMCRegistry.CUSTOM_MOBS.get(name);
+        Optional<CustomMobEntry> mob = OMCRegistry.CUSTOM_MOBS.get(name);
 
         if (mob.isEmpty()) {
             MessagesManager.sendMessage(player, Component.text("Ce mob n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);

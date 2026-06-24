@@ -16,7 +16,6 @@ public class CustomMobsAutoComplete implements SuggestionProvider<BukkitCommandA
         return OMCRegistry.CUSTOM_MOBS.values()
                 .stream()
                 .map(CustomMobEntry::id)
-                .map(id -> id.split(":")[1])
                 .toList();
     }
 }
