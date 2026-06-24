@@ -43,6 +43,11 @@ public class Leviathan extends CustomMob<Nautilus> {
             drowned.setBaby();
         drowned.setAggressive(true);
         drowned.getEquipment().setItemInMainHand(new ItemStack(Material.TRIDENT));
+
+        AttributeInstance maxHealth = drowned.getAttribute(Attribute.MAX_HEALTH);
+        if (maxHealth != null)
+            maxHealth.setBaseValue(this.getHealth());
+
         drowned.setHealth(this.getHealth());
 
         AttributeInstance attackSpeed = drowned.getAttribute(Attribute.ATTACK_SPEED);
