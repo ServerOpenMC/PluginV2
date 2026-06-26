@@ -36,8 +36,7 @@ public class MiraculousFishingManager {
             base = base.append(Component.text(amount + "x "));
 
         if (loot.getDisplayText() != null &&
-                !(loot instanceof TableLoot) &&
-                !(loot instanceof SeaCreatureLoot)) {
+                !(loot instanceof TableLoot)) {
             base = base.append(loot.getDisplayText())
                     .append(Component.text(" ("+ Math.round(loot.getChance() * 100.0) +"% ★)", NamedTextColor.AQUA));
 
