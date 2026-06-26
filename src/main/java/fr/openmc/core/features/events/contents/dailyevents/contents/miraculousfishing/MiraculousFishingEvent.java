@@ -17,7 +17,9 @@ import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.AdvancementType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +46,11 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     @Override
     public Runnable onStart() {
         return () -> {
-            System.out.println("MIRACULOUS FISHING START");
+            World world = Bukkit.getWorld(getWorldEvent());
+
+            if (world == null) return;
+
+            world.setWeatherDuration(getDuration() * 20 * 20);
         };
     }
 
