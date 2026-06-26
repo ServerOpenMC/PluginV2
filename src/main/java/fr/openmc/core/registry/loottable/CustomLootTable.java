@@ -2,7 +2,9 @@ package fr.openmc.core.registry.loottable;
 
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class CustomLootTable {
+    public abstract Component getName();
     public abstract String getNamespace();
     public abstract Set<CustomLoot> getLoots();
 
@@ -99,5 +102,9 @@ public abstract class CustomLootTable {
         }
         Collections.shuffle(pool);
         return pool;
+    }
+
+    public void openMenu(Player player) {
+        new LootsInfoMenu(player, this.getName(), this.getLoots()).open();
     }
 }

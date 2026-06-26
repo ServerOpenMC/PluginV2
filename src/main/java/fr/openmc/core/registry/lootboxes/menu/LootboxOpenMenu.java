@@ -1,10 +1,12 @@
-package fr.openmc.core.registry.lootboxes;
+package fr.openmc.core.registry.lootboxes.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.events.LootboxRewardEvent;
+import fr.openmc.core.registry.lootboxes.CustomLootbox;
+import fr.openmc.core.registry.lootboxes.LootboxOptions;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.MessageType;

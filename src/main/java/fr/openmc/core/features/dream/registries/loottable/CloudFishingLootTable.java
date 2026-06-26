@@ -4,16 +4,25 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CloudFishingLootTable extends CustomLootTable {
+    @Override
+    public Component getName() {
+        return TranslationManager.translation("feature.dream.loot_table.cloud_fishing");
+    }
+
     @Override
     public String getNamespace() { return "omc_dream:cloud_fishing"; }
 
     @Override
     public Set<CustomLoot> getLoots() {
-        return Set.of(
+        return new LinkedHashSet<>(List.of(
                 new ItemLoot(
                         DreamItemRegistry.METEO_WAND,
                         0.05,
@@ -50,6 +59,6 @@ public class CloudFishingLootTable extends CustomLootTable {
                         1,
                         1
                 )
-        );
+        ));
     }
 }

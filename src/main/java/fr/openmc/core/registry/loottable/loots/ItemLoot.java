@@ -4,6 +4,7 @@ import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -131,6 +132,18 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     @Override
     public Component getDisplayText() {
         return getFirstLoot().displayName();
+    }
+
+    /**
+     * Renvoie un nom d'item simple, sans crochet et sans hover
+     * @return un component contenant le nouveau nom du loot
+     */
+    public Component getSimpleText() {
+        return Component.text(PlainTextComponentSerializer.plainText()
+                .serialize(getDisplayText())
+                .replace("[", "").replace("]", ""))
+                .color(getDisplayText().color())
+                .decorations(getDisplayText().decorations());
     }
 
     @Override

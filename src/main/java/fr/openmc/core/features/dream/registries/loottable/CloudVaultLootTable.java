@@ -5,16 +5,25 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CloudVaultLootTable extends CustomLootTable {
+    @Override
+    public Component getName() {
+        return TranslationManager.translation("feature.dream.loot_table.cloud_vault");
+    }
+
     @Override
     public String getNamespace() { return "omc_dream:cloud_vault"; }
 
     @Override
     public Set<CustomLoot> getLoots() {
-        return Set.of(
+        return new LinkedHashSet<>(List.of(
                 new ItemLoot(
                         DreamItemRegistry.CLOUD_HELMET,
                         0.125,
@@ -57,6 +66,6 @@ public class CloudVaultLootTable extends CustomLootTable {
                         1,
                         1
                 )
-        );
+        ));
     }
 }

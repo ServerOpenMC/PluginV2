@@ -5,15 +5,22 @@ import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.RandomUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public class EpicFishingTreasureLootTable extends CustomLootTable {
+    @Override
+    public Component getName() {
+        return OMCRegistry.CUSTOM_LOOTBOXES.EPIC_FISHING_TREASURE.getName();
+    }
+
     @Override
     public String getNamespace() {
         return "omc_daily_events:epic_fishing_treasure";
@@ -21,8 +28,9 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
 
     @Override
     public Set<CustomLoot> getLoots() {
-        return Set.of(
+        return new LinkedHashSet<>(List.of(
                 new ItemLoot(this::generateEnchantedBook, Material.ENCHANTED_BOOK, 0.2, 1, 2),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_FISHING_TREASURE, 0.1, 1, 1),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
                         0.1,
@@ -34,9 +42,8 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
                         0.07,
                         2,
                         6
-                ),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_FISHING_TREASURE, 0.1, 1, 1)
-        );
+                )
+        ));
     }
 
     private final List<Enchantment> ENCHANTMENT_AVAILABLE = List.of(

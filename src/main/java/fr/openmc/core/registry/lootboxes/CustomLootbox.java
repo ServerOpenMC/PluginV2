@@ -2,7 +2,9 @@ package fr.openmc.core.registry.lootboxes;
 
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.lootboxes.menu.LootboxOpenMenu;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -63,5 +65,9 @@ public abstract class CustomLootbox {
 
     public void open(Player player) {
         new LootboxOpenMenu(player, this).open();
+    }
+
+    public void openInfo(Player player) {
+        new LootsInfoMenu(player, this.getName(), this.getLootTable().getLoots()).open();
     }
 }

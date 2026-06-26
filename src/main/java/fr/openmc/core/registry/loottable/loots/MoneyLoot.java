@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,7 +33,8 @@ public class MoneyLoot implements CustomLoot, RepresentedItem {
     public Component getDisplayText() {
         return Component.text(money, NamedTextColor.GOLD)
                 .appendSpace()
-                .append(Component.text(EconomyManager.getEconomyIcon()));
+                .append(Component.text(EconomyManager.getEconomyIcon()))
+                .decoration(TextDecoration.ITALIC, false);
     }
 
     @Override

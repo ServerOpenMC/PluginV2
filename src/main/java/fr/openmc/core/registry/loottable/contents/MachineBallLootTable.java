@@ -9,10 +9,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public class MachineBallLootTable extends CustomLootTable {
+    @Override
+    public Component getName() {
+        return OMCRegistry.CUSTOM_LOOTBOXES.MACHINE_BALL.getName();
+    }
+
     @Override
     public String getNamespace() {
         return "omc:machine_ball";
@@ -20,7 +26,7 @@ public class MachineBallLootTable extends CustomLootTable {
 
     @Override
     public Set<CustomLoot> getLoots() {
-        return Set.of(
+        return new LinkedHashSet<>(List.of(
                 new ItemLoot(
                         Set.of(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest()),
                         new ItemBuilder(
@@ -112,6 +118,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         16,
                         16
                 )
-        );
+        ));
     }
 }

@@ -3,10 +3,20 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.*;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MiraculousFishLootTable extends CustomLootTable  {
+    @Override
+    public Component getName() {
+        return TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.miraculous_fishing");
+    }
+
     @Override
     public String getNamespace() {
         return "omc_daily_events:miraculous_fishing";
@@ -14,12 +24,13 @@ public class MiraculousFishLootTable extends CustomLootTable  {
 
     @Override
     public Set<CustomLoot> getLoots() {
-        return Set.of(
-                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.BASIC_FISHING, 0.6, false), // gerer par simulateLaunchLoot
+        return new LinkedHashSet<>(List.of(
+                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.BASIC_FISHING, Material.COD, 0.6, false), // gerer par simulateLaunchLoot
                 new MoneyLoot(50, 250, 0.3),
+                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.SEA_CREATURE, Material.DROWNED_SPAWN_EGG, 0.2, false),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SPONGE_BOB, 0.1, 1, 1),
-                new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.RARE_FISHING_TREASURE, 0.1),
-                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.SEA_CREATURE, 0.2, false)
-        );
+                new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.RARE_FISHING_TREASURE, 0.1)
+
+        ));
     }
 }

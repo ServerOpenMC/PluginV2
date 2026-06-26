@@ -61,7 +61,7 @@ public class PlayerFishListener implements Listener {
                 // * SFX
                 // todo: sfx particle
                 MessagesManager.sendMessage(player, TranslationManager.translation(
-                        "feature.dailyevents.miraculousfishing.loottable.get",
+                        "feature.dailyevents.miraculousfishing.loot_table.get",
                         Component.text(loots.size()).color(NamedTextColor.YELLOW)
                 ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
