@@ -39,7 +39,6 @@ public class PoissonSteve extends CustomMob<Mannequin> {
                 .uuid(UUID.fromString("d715d08e-c54c-45e6-b6d0-fe6caf2716a7"))
                 .build());
         mannequin.getEquipment().setHelmet(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD.getBest());
-        mannequin.getEquipment().setHelmetDropChance(0f);
 
         return mannequin;
     }
