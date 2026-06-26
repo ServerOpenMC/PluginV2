@@ -5,6 +5,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.loottable.loots.RepresentedItem;
+import fr.openmc.core.registry.loottable.loots.TableLoot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -34,7 +35,9 @@ public class MiraculousFishingManager {
         if (amount != -1)
             base = base.append(Component.text(amount + "x "));
 
-        if (loot.getDisplayText() != null) {
+        if (loot.getDisplayText() != null &&
+                !(loot instanceof TableLoot) &&
+                !(loot instanceof SeaCreatureLoot)) {
             base = base.append(loot.getDisplayText())
                     .append(Component.text(" ("+ Math.round(loot.getChance() * 100.0) +"% ★)", NamedTextColor.AQUA));
 
@@ -77,7 +80,6 @@ public class MiraculousFishingManager {
         itemEntity.setGlowing(true);
 
         // * On envoie le message de loot
-        System.out.println(itemEntity.getItemStack().getAmount());
         sendLootMessage(player, loot, itemEntity.getItemStack().getAmount());
 
         applyVelocity(hookLocation, player.getEyeLocation(), itemEntity);

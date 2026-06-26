@@ -4,7 +4,7 @@ import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -121,7 +121,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         if (item == null) return null;
 
         item = item.clone();
-        item.setAmount(this.getRandomAmount());
+        item.setAmount(Math.min(this.getRandomAmount(), 99));
         return item;
     }
 
@@ -139,11 +139,8 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
      * @return un component contenant le nouveau nom du loot
      */
     public Component getSimpleText() {
-        return Component.text(PlainTextComponentSerializer.plainText()
-                .serialize(getDisplayText())
-                .replace("[", "").replace("]", ""))
-                .color(getDisplayText().color())
-                .decorations(getDisplayText().decorations());
+        return getFirstLoot().effectiveName().asHoverEvent().value()
+                .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     @Override

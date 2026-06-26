@@ -1,9 +1,12 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry;
 
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.RepresentedItem;
+import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import fr.openmc.core.registry.mobs.CustomMobEntry;
 import fr.openmc.core.utils.EnumUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -21,10 +24,26 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
     @Setter
     private double chance;
     private final CustomMobEntry seaCreatureMob;
+    private final ItemStack item;
 
     public SeaCreatureLoot(CustomMobEntry seaCreatureMob, double chance) {
         this.chance = chance;
         this.seaCreatureMob = seaCreatureMob;
+        this.item = ItemStack.of(EnumUtils.match(seaCreatureMob.getMobSnapshot().getEntityType().name() + "_SPAWN_EGG", Material.class, Material.BARRIER));
+    }
+
+    public SeaCreatureLoot(CustomMobEntry seaCreatureMob, ItemStack item, double chance) {
+        this.chance = chance;
+        this.seaCreatureMob = seaCreatureMob;
+        this.item = item;
+    }
+
+    public SeaCreatureLoot(CustomMobEntry seaCreatureMob, Material item, double chance) {
+        this(seaCreatureMob, ItemStack.of(item), chance);
+    }
+
+    public SeaCreatureLoot(CustomMobEntry seaCreatureMob, CustomItem item, double chance) {
+        this(seaCreatureMob, item.getBest(), chance);
     }
 
     @Override
@@ -35,12 +54,20 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public ItemStack getRepresentativeItem() {
-        return ItemStack.of(EnumUtils.match(seaCreatureMob.getMobSnapshot().getEntityType().name() + "_SPAWN_EGG", Material.class, Material.BARRIER));
+        return item;
     }
 
     @Override
     public Set<CustomLoot> run(Player receiver) {
         // déjà lancé dans MiraculousFishingManager.simulateLaunchLoot
         return Collections.singleton(this);
+    }
+
+    public void showLoot(Player player) {
+        new LootsInfoMenu(
+                player,
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.menu.loot_info.sea_creature"),
+                seaCreatureMob.getMob().getLoots()
+        ).open();
     }
 }

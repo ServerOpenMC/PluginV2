@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry.SeaCreatureLoot;
 import fr.openmc.core.registry.loottable.loots.*;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -59,12 +60,21 @@ public class LootsInfoMenu extends PaginatedMenu {
                         "registries.menu.chance",
                         Component.text(String.format("%.2f", loot.getChance() * 100) + "%", NamedTextColor.AQUA)
                 ));
+
+                if (loot instanceof TableLoot ||
+                        loot instanceof LootboxLoot ||
+                        loot instanceof SeaCreatureLoot) {
+                    lore.add(TranslationManager.translation("registries.menu.sub_loots.click_here"));
+                }
+
                 meta.lore(lore);
             }).setOnClick(_ -> {
                 if (loot instanceof TableLoot subLootTable) {
                     subLootTable.getLootTable().openMenu(getOwner());
                 } else if (loot instanceof LootboxLoot lootboxLoot) {
                     lootboxLoot.getLootbox().openInfo(getOwner());
+                } else if (loot instanceof SeaCreatureLoot seaCreatureLoot) {
+                    seaCreatureLoot.showLoot(getOwner());
                 }
             }));
         }
