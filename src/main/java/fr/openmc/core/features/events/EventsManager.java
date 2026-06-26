@@ -7,6 +7,7 @@ import fr.openmc.core.features.events.commands.CalendarCommand;
 import fr.openmc.core.features.events.commands.EventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -133,5 +134,14 @@ public class EventsManager extends Feature implements LoadAfterItemsAdder, HasCo
         List<Event> events = new ArrayList<>(DailyEventsManager.EVENTS);
         events.addAll(WeeklyEventsManager.EVENTS);
         return events;
+    }
+
+    public static Component getEventTypeName(Event event) {
+        if (event instanceof ScheduleDailyEvent || event instanceof DailyEvent) {
+            return TranslationManager.translation("feature.events.calendar.daily_event_name");
+        } else if (event instanceof WeeklyEvent) {
+            return TranslationManager.translation("feature.events.calendar.weekend_event_name");
+        }
+        return TranslationManager.translation("feature.events.calendar.unknown_name");
     }
 }

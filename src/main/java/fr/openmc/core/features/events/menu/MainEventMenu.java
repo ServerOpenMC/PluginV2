@@ -47,8 +47,11 @@ public class MainEventMenu extends PaginatedMenu {
             items.add(new ItemMenuBuilder(this, event.getIcon(), meta -> {
                 meta.displayName(event.getName());
 
-                List<Component> lore = new ArrayList<>(event.getDescription());
+                List<Component> lore = new ArrayList<>();
 
+                lore.add(EventsManager.getEventTypeName(event));
+
+                lore.addAll(event.getDescription());
                 if (event instanceof HasMenu) {
                     lore.add(TranslationManager.translation("feature.events.menu.main_event.event.click_here"));
                 }
