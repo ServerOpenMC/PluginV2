@@ -72,7 +72,6 @@ public class MiraculousFishingManager {
         ItemStack displayItem = getLaunchedItem(loot);
         if (displayItem == null) return;
 
-
         // * Spawn de l'entité Item
         Item itemEntity = hookLocation.getWorld().dropItem(hookLocation, displayItem);
         itemEntity.setCanPlayerPickup(true);
@@ -91,7 +90,10 @@ public class MiraculousFishingManager {
      * @return un item stack en fonction du loot
      */
     private static ItemStack getLaunchedItem(CustomLoot loot) {
-        // * Si c'est une loot qui peut être représenter par un item
+        // * Si c'est un loot qui ne doit pas etre lancé
+        if (loot instanceof TableLoot || loot instanceof SeaCreatureLoot) return null;
+
+        // * Si c'est un loot qui peut être représenter par un item
         if (loot instanceof RepresentedItem itemDisplayed) {
             ItemStack item = itemDisplayed.getRepresentativeItem();
             // * et que si c'est une item, qui ne doit pas etre donné (ex Money)
