@@ -3,7 +3,6 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
-import fr.openmc.core.registry.loottable.loots.LootboxLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
@@ -35,7 +34,7 @@ public class Leviathan extends CustomMob<Nautilus> {
                 List.of(
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEVIATHAN_HEAD,
                                 0.25, 1, 1),
-                        new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.FISHING_FURNITURE, 0.2),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.FISHING_FURNITURE_BOX, 0.1, 1, 1),
                         new XpLoot(30, 60, 1)
                 )
         );
