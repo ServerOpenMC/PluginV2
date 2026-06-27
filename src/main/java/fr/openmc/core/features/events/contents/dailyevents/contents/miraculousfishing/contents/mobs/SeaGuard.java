@@ -46,6 +46,7 @@ public class SeaGuard extends CustomMob<Drowned> {
             drowned.getEquipment().setItemInMainHand(ItemStack.of(Material.TRIDENT));
 
         drowned.setAggressive(true);
+        drowned.setShouldBurnInDay(false);
 
         return drowned;
     }
