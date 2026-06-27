@@ -25,7 +25,7 @@ public class AncientVillager extends CustomMob<ZombieVillager> {
 
     @Override
     public ZombieVillager spawn(Location spawnLocation) {
-        ZombieVillager zombieVillager = spawnLocation.getWorld().spawn(spawnLocation, ZombieVillager.class);
+        ZombieVillager zombieVillager = this.getPreBuildMob(spawnLocation);
 
         zombieVillager.setVillagerProfession(Villager.Profession.FISHERMAN);
         zombieVillager.setVillagerType(Villager.Type.SWAMP);

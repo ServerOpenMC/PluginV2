@@ -13,6 +13,7 @@ import org.bukkit.entity.Mannequin;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("UnstableApiUsage")
 public class PoissonSteve extends CustomMob<Mannequin> {
     public PoissonSteve(String id) {
         super(id,
@@ -33,7 +34,7 @@ public class PoissonSteve extends CustomMob<Mannequin> {
 
     @Override
     public Mannequin spawn(Location spawnLocation) {
-        Mannequin mannequin = spawnLocation.getWorld().spawn(spawnLocation, Mannequin.class);
+        Mannequin mannequin = this.getPreBuildMob(spawnLocation);
 
         mannequin.setProfile(ResolvableProfile.resolvableProfile()
                 .uuid(UUID.fromString("d715d08e-c54c-45e6-b6d0-fe6caf2716a7"))

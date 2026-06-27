@@ -33,7 +33,7 @@ public class ChickenJockey extends CustomMob<Chicken> {
 
     @Override
     public Chicken spawn(Location spawnLocation) {
-        Chicken chicken = spawnLocation.getWorld().spawn(spawnLocation, Chicken.class);
+        Chicken chicken = this.getPreBuildMob(spawnLocation);
 
         Zombie babyZombie = spawnLocation.getWorld().spawn(spawnLocation, Zombie.class);
         babyZombie.setBaby();

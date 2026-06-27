@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class CustomMobDeathListener implements Listener {
 
@@ -34,9 +35,11 @@ public class CustomMobDeathListener implements Listener {
 
         if (customMob.getLoots() == null) return;
         for (CustomLoot loot : customMob.getLoots()) {
-            if (Math.random() >= loot.getChance()) return;
+            if (Math.random() >= loot.getChance()) continue;
             if (loot instanceof ItemLoot itemLoot) {
-                entity.getWorld().dropItemNaturally(entity.getLocation(), itemLoot.getFirstLoot());
+                for (ItemStack lootItem : itemLoot.getItems()) {
+                    event.getDrops().add(lootItem);
+                }
             } else {
                 loot.run(player);
             }

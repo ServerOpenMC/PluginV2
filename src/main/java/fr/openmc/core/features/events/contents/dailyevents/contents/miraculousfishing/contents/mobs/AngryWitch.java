@@ -32,7 +32,7 @@ public class AngryWitch extends CustomMob<Witch> {
 
     @Override
     public Witch spawn(Location spawnLocation) {
-        Witch witch = spawnLocation.getWorld().spawn(spawnLocation, Witch.class);
+        Witch witch = this.getPreBuildMob(spawnLocation);
 
         startPotionLaunch(witch);
 

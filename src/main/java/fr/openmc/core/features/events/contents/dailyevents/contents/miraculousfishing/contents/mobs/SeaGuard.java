@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SeaGuard extends CustomMob<Drowned> {
     public SeaGuard(String id) {
         super(id,
-                "Guardien des mers",
+                "Gardien des mers",
                 Drowned.class,
                 30,
                 10,
@@ -31,7 +31,7 @@ public class SeaGuard extends CustomMob<Drowned> {
 
     @Override
     public Drowned spawn(Location spawnLocation) {
-        Drowned drowned = spawnLocation.getWorld().spawn(spawnLocation, Drowned.class);
+        Drowned drowned = this.getPreBuildMob(spawnLocation);
 
         Random random = ThreadLocalRandom.current();
         if (random.nextBoolean())
