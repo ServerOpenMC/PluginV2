@@ -62,8 +62,10 @@ public class MiraculousFishingManager {
             applyVelocity(hookLocation, player.getEyeLocation(), entity);
             entity.setInvulnerable(false);
 
-            if (entity instanceof Mob mob)
+            if (entity instanceof Mob mob) {
+                mob.setAggressive(true);
                 mob.setTarget(player);
+            }
 
             return;
         }

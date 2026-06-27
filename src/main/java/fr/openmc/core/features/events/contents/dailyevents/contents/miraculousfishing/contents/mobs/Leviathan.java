@@ -41,6 +41,7 @@ public class Leviathan extends CustomMob<Nautilus> {
         Drowned drowned = spawnLocation.getWorld().spawn(spawnLocation, Drowned.class);
         if (ThreadLocalRandom.current().nextFloat() < 0.1f)
             drowned.setBaby();
+        drowned.setShouldBurnInDay(false);
         drowned.setAggressive(true);
         drowned.getEquipment().setItemInMainHand(new ItemStack(Material.TRIDENT));
 
@@ -55,6 +56,7 @@ public class Leviathan extends CustomMob<Nautilus> {
             attackSpeed.setBaseValue(6);
 
         nautilus.addPassenger(drowned);
+
         return nautilus;
     }
 }
