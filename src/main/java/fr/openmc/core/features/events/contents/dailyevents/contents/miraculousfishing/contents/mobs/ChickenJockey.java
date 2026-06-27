@@ -35,12 +35,12 @@ public class ChickenJockey extends CustomMob<Chicken> {
     public Chicken spawn(Location spawnLocation) {
         Chicken chicken = this.getPreBuildMob(spawnLocation);
 
-        Zombie babyZombie = spawnLocation.getWorld().spawn(spawnLocation, Zombie.class);
-        babyZombie.setBaby();
-        babyZombie.getEquipment().setHelmet(ItemStack.of(Material.DIAMOND_HELMET));
-
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
-                chicken.addPassenger(babyZombie), 1L);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            Zombie babyZombie = spawnLocation.getWorld().spawn(chicken.getLocation(), Zombie.class);
+            babyZombie.setBaby();
+            babyZombie.getEquipment().setHelmet(ItemStack.of(Material.DIAMOND_HELMET));
+            chicken.addPassenger(babyZombie);
+        }, 2L);
 
         return chicken;
     }
