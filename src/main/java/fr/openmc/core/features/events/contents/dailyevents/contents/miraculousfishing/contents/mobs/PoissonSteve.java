@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Mannequin;
@@ -35,6 +36,8 @@ public class PoissonSteve extends CustomMob<Mannequin> {
     @Override
     public Mannequin spawn(Location spawnLocation) {
         Mannequin mannequin = this.getPreBuildMob(spawnLocation);
+
+        mannequin.setDescription(Component.empty());
 
         mannequin.setProfile(ResolvableProfile.resolvableProfile()
                 .uuid(UUID.fromString("d715d08e-c54c-45e6-b6d0-fe6caf2716a7"))

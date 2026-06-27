@@ -59,7 +59,7 @@ public class MiraculousFishingManager {
             Entity entity = seaCreatureLoot.getSeaCreatureMob().spawn(hookLocation);
 
             entity.setInvulnerable(true);
-            applyVelocity(hookLocation, player.getEyeLocation(), entity);
+            applyVelocity(hookLocation, player.getEyeLocation(), entity, 0.2);
             entity.setInvulnerable(false);
 
             if (entity instanceof Mob mob) {
@@ -82,7 +82,7 @@ public class MiraculousFishingManager {
         // * On envoie le message de loot
         sendLootMessage(player, loot, itemEntity.getItemStack().getAmount());
 
-        applyVelocity(hookLocation, player.getEyeLocation(), itemEntity);
+        applyVelocity(hookLocation, player.getEyeLocation(), itemEntity, 0.1);
     }
 
     /**
@@ -113,10 +113,10 @@ public class MiraculousFishingManager {
      * @param destination la position de destination
      * @param entity l'entité à qui appliquer la vélocité
      */
-    private static void applyVelocity(Location origin, Location destination, Entity entity) {
+    private static void applyVelocity(Location origin, Location destination, Entity entity, double force) {
         // * Revient à faire le vecteur vitesse entre 2 vecteur (xp - xh, yp - yh, zp - zh)
         Vector velocity = destination.toVector().subtract(origin.toVector());
-        velocity.multiply(0.1);
+        velocity.multiply(force);
         velocity.setY(velocity.getY() + Math.sqrt(Math.sqrt(
                 velocity.getX()*2 + velocity.getY()*2 + velocity.getZ()*2)) * 0.08);
         entity.setVelocity(velocity);
