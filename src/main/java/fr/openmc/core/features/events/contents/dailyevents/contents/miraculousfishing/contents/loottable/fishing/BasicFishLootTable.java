@@ -25,10 +25,10 @@ public class BasicFishLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.COD,0.6, 2, 4),
+                new ItemLoot(Material.COD,0.4, 2, 4),
                 new ItemLoot(Material.SALMON, 0.25, 2, 4),
                 new ItemLoot(Material.PUFFERFISH, 0.13, 2, 4),
-                new ItemLoot(Material.TROPICAL_FISH, 0.02, 2, 4)
+                new ItemLoot(Material.TROPICAL_FISH, 0.08, 2, 4)
         ));
     }
 }
