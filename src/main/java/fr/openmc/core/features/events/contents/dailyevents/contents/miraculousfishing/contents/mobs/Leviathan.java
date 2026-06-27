@@ -1,20 +1,27 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.LootboxLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Drowned;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Nautilus;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Leviathan extends CustomMob<Nautilus> {
@@ -36,7 +43,7 @@ public class Leviathan extends CustomMob<Nautilus> {
 
     @Override
     public Nautilus spawn(Location spawnLocation) {
-        Nautilus nautilus = spawnLocation.getWorld().spawn(spawnLocation, Nautilus.class);
+        Nautilus nautilus = this.getPreBuildMob(spawnLocation);
 
         Drowned drowned = spawnLocation.getWorld().spawn(spawnLocation, Drowned.class);
         if (ThreadLocalRandom.current().nextFloat() < 0.1f)
@@ -57,6 +64,27 @@ public class Leviathan extends CustomMob<Nautilus> {
 
         nautilus.addPassenger(drowned);
 
+        startDashAi(nautilus);
+
         return nautilus;
+    }
+
+    private void startDashAi(Nautilus nautilus) {
+        Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), task -> {
+            if (nautilus.isDead()) {
+                task.cancel();
+                return;
+            }
+
+            Optional<Player> target = nautilus.getLocation().getNearbyPlayers(16).stream()
+                    .min(Comparator.comparingDouble(p -> p.getLocation().distanceSquared(nautilus.getLocation())));
+
+            target.ifPresent(t -> triggerDash(nautilus, t));
+        }, 20L, 60L);
+    }
+
+    private void triggerDash(Nautilus nautilus, LivingEntity target) {
+        nautilus.setMemory(MemoryKey.ANGRY_AT, target.getUniqueId());
+        nautilus.setMemory(MemoryKey.ATTACK_TARGET_COOLDOWN, null);
     }
 }
