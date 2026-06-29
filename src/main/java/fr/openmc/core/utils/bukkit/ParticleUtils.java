@@ -333,4 +333,26 @@ public class ParticleUtils {
                 data
         );
     }
+
+    public static <T> void spawnCubeParticles(Location center, Particle particle, double sizeX,
+                                              double sizeY, double sizeZ, int count, double radius,
+                                              T data) {
+        World world = center.getWorld();
+        if (world == null) return;
+
+        Collection<Player> receivers = center.getNearbyEntitiesByType(Player.class, radius);
+        if (receivers.isEmpty()) return;
+
+        for (int i = 0; i < count; i++) {
+            double x = (Math.random() * 2 - 1) * sizeX;
+            double y = (Math.random() * 2 - 1) * sizeY;
+            double z = (Math.random() * 2 - 1) * sizeZ;
+
+            Location particleLoc = center.clone().add(x, y, z);
+
+            for (Player player : receivers) {
+                sendParticlePacket(player, particle, particleLoc, 1, 0.0, 0.0, 0.0, 0.0, data);
+            }
+        }
+    }
 }

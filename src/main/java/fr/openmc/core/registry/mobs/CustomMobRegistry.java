@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -44,6 +45,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public final CustomMobEntry ANGRY_WITCH = register(new CustomMobEntry(
             "omc_daily_events:angry_witch",
             AngryWitch::new
+    ));
+
+    public final CustomMobEntry KRAKEN = register(new CustomMobEntry(
+            "omc_daily_events:kraken",
+            Kraken::new
     ));
 
     @Override
