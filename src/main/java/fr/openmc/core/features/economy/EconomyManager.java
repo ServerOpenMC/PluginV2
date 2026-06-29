@@ -260,9 +260,9 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
                     }
 
                     if (finalSave) {
-                        OMCLogger.error("CRITICAL: Failed to save economy balances during shutdown. Unsaved balances may be lost if the server stops.", e);
+                        OMCLogger.error("CRITIQUE: Impossible de sauvegarder les soldes de l'economie pendant l'arret. Des soldes non sauvegardes peuvent etre perdus si le serveur s'arrete.", e);
                     } else {
-                        OMCLogger.error("Failed to save economy balances. Dirty balances will be retried on the next save.", e);
+                        OMCLogger.error("Impossible de sauvegarder les soldes de l'economie. Les soldes modifies seront reessayes a la prochaine sauvegarde.", e);
                     }
 
                     return;
