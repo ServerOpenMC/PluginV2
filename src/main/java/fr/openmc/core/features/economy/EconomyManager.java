@@ -35,7 +35,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     private static final Set<UUID> dirtyBalances = new HashSet<>();
     private static final Object balancesLock = new Object();
     private static final Object saveLock = new Object();
-    private static final long AUTO_SAVE_INTERVAL_TICKS = 20L * 60L * 5L;
+    private static final long AUTO_SAVE_INTERVAL_TICKS = 20L * 60L * 5L; // 5 minutes
     private static BukkitTask autoSaveTask;
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
