@@ -60,6 +60,17 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 maxAmount);
     }
 
+    public ItemLoot(CustomItem item, double chance, int amount) {
+        if (item == null) {
+            throw new IllegalArgumentException("CustomItem cannot be null");
+        }
+        this(Collections.singleton(item.getBest()),
+                null,
+                chance,
+                amount,
+                amount);
+    }
+
     public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
         if (item == null) {
             throw new IllegalArgumentException("CustomItem cannot be null");

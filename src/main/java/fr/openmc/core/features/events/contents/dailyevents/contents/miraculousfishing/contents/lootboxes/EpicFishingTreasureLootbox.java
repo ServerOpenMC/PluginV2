@@ -17,7 +17,7 @@ public class EpicFishingTreasureLootbox extends CustomLootbox {
                 OMCRegistry.CUSTOM_LOOT_TABLES.EPIC_FISHING_TREASURE,
                 new LootboxOptions(
                         InventorySize.NORMAL,
-                        60,
+                        40,
                         IntStream.range(10, 17).boxed().toList(),
                         13
                 )

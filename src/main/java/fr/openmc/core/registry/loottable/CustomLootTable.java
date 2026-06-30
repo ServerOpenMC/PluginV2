@@ -95,7 +95,7 @@ public abstract class CustomLootTable {
     public List<CustomLoot> generateWeightedPool() {
         List<CustomLoot> pool = new ArrayList<>();
         for (CustomLoot loot : this.getLoots()) {
-            int count = Math.max(1, (int) (loot.getChance() * 2));
+            int count = Math.max(1, (int) (loot.getChance() * 100 * 2));
             for (int i = 0; i < count; i++) {
                 pool.add(loot);
             }

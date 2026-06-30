@@ -21,7 +21,7 @@ public class GiantElderGuardian extends CustomMob<ElderGuardian> implements List
                 100,
                 4,
                 List.of(
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_CHESTPLATE, 0.3, 1, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_CHESTPLATE, 0.3, 1),
                         new XpLoot(100, 120, 1)
                 ),
                 new CustomMobAttribute(Attribute.SCALE, 7)

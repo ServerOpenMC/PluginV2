@@ -30,13 +30,13 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(this::generateEnchantedBook, Material.ENCHANTED_BOOK, 0.2, 1, 2),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_FISHING_TREASURE, 0.1, 1, 1),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
                         0.1,
                         1,
                         3
                 ),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_FISHING_TREASURE, 0.7, 1),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,
                         0.07,

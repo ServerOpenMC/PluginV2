@@ -27,103 +27,86 @@ public class FishingFurnitureLootTable extends CustomLootTable {
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_BLUE_FISH,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_CYAN_FISH,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_ORANGE_FISH,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_RED_FISH,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_BOAT,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_CHAIR,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_FISH_BOX,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_FISH_RACK,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_FISHING_POLE,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_FISHINGPOLE_RACK,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_FLOATIE,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_HANGING_FISH,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_LANDING_NET,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_LARGE_FISHNET,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_LOBSTER_TRAP,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_STAND,
                         0.2,
-                        1,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.FISHERMAN_TABLE,
                         0.2,
-                        1,
                         1
                 )
         ));

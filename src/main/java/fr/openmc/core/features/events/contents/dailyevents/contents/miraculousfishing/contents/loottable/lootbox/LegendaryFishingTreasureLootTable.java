@@ -25,9 +25,9 @@ public class LegendaryFishingTreasureLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_HELMET, 0.10, 1, 1),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_BOOTS, 0.10, 1, 1),
-                new ItemLoot(DreamItemRegistry.EWENITE_BLOCK, 0.006, 1, 1)
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_HELMET, 0.10, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_BOOTS, 0.10, 1),
+                new ItemLoot(DreamItemRegistry.EWENITE_BLOCK, 0.006, 1)
         ));
     }
 }

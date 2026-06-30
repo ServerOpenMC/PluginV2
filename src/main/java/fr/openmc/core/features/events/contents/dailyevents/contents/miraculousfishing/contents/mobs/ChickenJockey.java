@@ -25,7 +25,7 @@ public class ChickenJockey extends CustomMob<Chicken> {
                 RandomUtils.randomBetween(0.4, 0.5),
                 List.of(
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.TENDERS,
-                                0.7, 1, 1),
+                                0.7, 1),
                         new XpLoot(10, 30, 1)
                 )
         );

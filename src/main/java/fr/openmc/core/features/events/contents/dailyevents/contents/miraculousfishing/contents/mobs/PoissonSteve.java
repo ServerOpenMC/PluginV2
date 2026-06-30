@@ -27,7 +27,7 @@ public class PoissonSteve extends CustomMob<Mannequin> {
                         new ItemLoot(Material.TROPICAL_FISH,
                                 1, 10, 20),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD,
-                                0.5, 1, 1),
+                                0.5, 1),
                         new XpLoot(20, 35, 1)
                 )
         );
