@@ -25,17 +25,28 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final CustomMobEntry seaCreatureMob;
     private final ItemStack item;
+    private boolean throwCreature = true;
 
     public SeaCreatureLoot(CustomMobEntry seaCreatureMob, double chance) {
+        this(seaCreatureMob, chance, true);
+    }
+
+    public SeaCreatureLoot(CustomMobEntry seaCreatureMob, double chance, boolean throwCreature) {
         this.chance = chance;
         this.seaCreatureMob = seaCreatureMob;
         this.item = ItemStack.of(EnumUtils.match(seaCreatureMob.getMobSnapshot().getEntityType().name() + "_SPAWN_EGG", Material.class, Material.BARRIER));
+        this.throwCreature = throwCreature;
     }
 
     public SeaCreatureLoot(CustomMobEntry seaCreatureMob, ItemStack item, double chance) {
+        this(seaCreatureMob, item, chance, true);
+    }
+
+    public SeaCreatureLoot(CustomMobEntry seaCreatureMob, ItemStack item, double chance, boolean throwCreature) {
         this.chance = chance;
         this.seaCreatureMob = seaCreatureMob;
         this.item = item;
+        this.throwCreature = throwCreature;
     }
 
     public SeaCreatureLoot(CustomMobEntry seaCreatureMob, Material item, double chance) {
@@ -44,6 +55,10 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
 
     public SeaCreatureLoot(CustomMobEntry seaCreatureMob, CustomItem item, double chance) {
         this(seaCreatureMob, item.getBest(), chance);
+    }
+
+    public SeaCreatureLoot(CustomMobEntry seaCreatureMob, CustomItem item, double chance, boolean throwCreature) {
+        this(seaCreatureMob, item.getBest(), chance, throwCreature);
     }
 
     @Override
