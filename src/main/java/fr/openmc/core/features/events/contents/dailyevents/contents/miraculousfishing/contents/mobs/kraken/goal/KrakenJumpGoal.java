@@ -26,7 +26,7 @@ public class KrakenJumpGoal implements Goal<Squid> {
 
     private static final long COOLDOWN = 20 * 10; // 10 secondes, en tick
     private static final double LAND_RADIUS = 20;
-    private static final double LAND_DAMAGE = 30.0;
+    private static final double LAND_DAMAGE = 15.0;
 
     public KrakenJumpGoal(Squid kraken) {
         this.kraken = kraken;
