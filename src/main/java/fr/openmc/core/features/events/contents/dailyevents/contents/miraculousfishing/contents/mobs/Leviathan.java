@@ -50,6 +50,8 @@ public class Leviathan extends CustomMob<Nautilus> {
         drowned.setShouldBurnInDay(false);
         drowned.setAggressive(true);
         drowned.getEquipment().setItemInMainHand(new ItemStack(Material.TRIDENT));
+        drowned.getEquipment().setHelmet(OMCRegistry.CUSTOM_ITEMS.LEVIATHAN_HEAD.getBest());
+        drowned.getEquipment().setHelmetDropChance(0f);
 
         AttributeInstance maxHealth = drowned.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealth != null)
