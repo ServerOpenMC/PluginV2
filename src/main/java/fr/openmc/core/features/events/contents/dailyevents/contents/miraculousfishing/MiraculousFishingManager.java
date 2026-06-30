@@ -10,7 +10,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
@@ -18,16 +21,6 @@ import org.bukkit.util.Vector;
 public class MiraculousFishingManager {
 
     public static final NamespacedKey NOT_PICKUP_KEY = new NamespacedKey(OMCPlugin.getInstance(), "not_pickup");
-    public static final double FISHING_SPEED_MODIFIER = 0.4;
-
-    /**
-     * Applique un modificateur de vitesse de pêche à un FishHook.
-     * @param hook le hook qui aura son temps réduit
-     */
-    public static void applyFishingSpeedModifier(FishHook hook) {
-        hook.setWaitTime((int) (hook.getMinWaitTime() * FISHING_SPEED_MODIFIER),
-                (int) (hook.getMaxWaitTime() * FISHING_SPEED_MODIFIER));
-    }
 
     public static void sendLootMessage(Player player, CustomLoot loot, int amount) {
         Component base = Component.text(" - ", NamedTextColor.GRAY);

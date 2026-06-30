@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.FishingAttributeManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
 import fr.openmc.core.registry.loottable.CustomLootTable;
@@ -39,7 +40,7 @@ public class PlayerFishListener implements Listener {
         Player player = event.getPlayer();
         FishHook hook = event.getHook();
 
-        MiraculousFishingManager.applyFishingSpeedModifier(hook);
+        FishingAttributeManager.applyFishingSpeedModifier(player, hook);
 
         switch (event.getState()) {
             case FISHING -> {
@@ -58,14 +59,20 @@ public class PlayerFishListener implements Listener {
 
                 List<CustomLoot> loots = fishingLootTable.rollLoots(player, false);
 
+                List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
+
                 // * SFX
                 // todo: sfx particle
                 MessagesManager.sendMessage(player, TranslationManager.translation(
                         "feature.dailyevents.miraculousfishing.loot_table.get",
-                        Component.text(loots.size()).color(NamedTextColor.YELLOW)
+                        Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
                 ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
-                sendLoot(player, hook, loots);
+                if (loots.size()*2 == finalLoots.size()) {
+                    player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
+                }
+
+                sendLoot(player, hook, finalLoots);
             }
         }
     }
