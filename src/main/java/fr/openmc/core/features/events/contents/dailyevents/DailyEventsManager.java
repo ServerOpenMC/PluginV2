@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Set;
 
 
-//todo: tester les toasts lorsqu'ils refonctionneront (before, start, end)
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners, HasCommands {
     // * Constantes

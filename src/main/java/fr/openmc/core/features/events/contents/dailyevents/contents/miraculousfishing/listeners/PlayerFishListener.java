@@ -11,12 +11,14 @@ import fr.openmc.core.registry.loottable.loots.MethodLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.loottable.loots.TableLoot;
 import fr.openmc.core.utils.RngUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
@@ -45,7 +47,7 @@ public class PlayerFishListener implements Listener {
         switch (event.getState()) {
             case FISHING -> {
                 // * SFX
-                // todo sfx
+                ParticleUtils.sendParticlePacket(player, Particle.POOF, hook.getLocation(), 5, 0.1, 0.1, 0.1, 0.01, null);
                 player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 1f, 0.7f);
             }
 
@@ -62,7 +64,11 @@ public class PlayerFishListener implements Listener {
                 List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
 
                 // * SFX
-                // todo: sfx particle
+                ParticleUtils.spawnDispersingParticles(player,
+                        Particle.CLOUD,
+                        hook.getLocation(),
+                        35, 0.1D, null);
+
                 MessagesManager.sendMessage(player, TranslationManager.translation(
                         "feature.dailyevents.miraculousfishing.loot_table.get",
                         Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)

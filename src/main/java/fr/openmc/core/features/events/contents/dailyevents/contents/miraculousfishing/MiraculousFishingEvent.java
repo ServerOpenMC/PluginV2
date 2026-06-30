@@ -16,6 +16,7 @@ import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -99,10 +100,10 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
         return OMCRegistry.CUSTOM_AMBIENTS.BLESSED;
     }
 
-    //todo marquer effets de la peche miraculeuse ds broadcast
     @Override
     public Component getStartBroadcast() {
-        return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.start");
+        return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.start",
+                Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100, NamedTextColor.AQUA));
     }
 
     @Override
