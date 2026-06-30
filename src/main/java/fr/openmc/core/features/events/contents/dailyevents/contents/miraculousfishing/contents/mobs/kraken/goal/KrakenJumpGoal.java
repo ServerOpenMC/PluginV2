@@ -5,15 +5,18 @@ import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Squid;
 import org.bukkit.util.Vector;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.EnumSet;
 
 public class KrakenJumpGoal implements Goal<Squid> {
@@ -23,7 +26,7 @@ public class KrakenJumpGoal implements Goal<Squid> {
 
     private static final long COOLDOWN = 20 * 10; // 10 secondes, en tick
     private static final double LAND_RADIUS = 20;
-    private static final double LAND_DAMAGE = 20.0;
+    private static final double LAND_DAMAGE = 30.0;
 
     public KrakenJumpGoal(Squid kraken) {
         this.kraken = kraken;
@@ -33,7 +36,7 @@ public class KrakenJumpGoal implements Goal<Squid> {
     public boolean shouldActivate() {
         long currentTick = kraken.getWorld().getGameTime();
         if (currentTick - lastJumpTick < COOLDOWN) return false;
-        return findNearestPlayer() != null;
+        return kraken.getTarget() != null;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class KrakenJumpGoal implements Goal<Squid> {
 
     @Override
     public void start() {
-        Player target = findNearestPlayer();
+        LivingEntity target = kraken.getTarget();
         if (target == null) return;
 
         Location from = kraken.getLocation();
@@ -107,15 +110,6 @@ public class KrakenJumpGoal implements Goal<Squid> {
                 0.1,
                 null
         );
-    }
-
-    private Player findNearestPlayer() {
-        return kraken.getLocation().getNearbyPlayers(32)
-                .stream()
-                .filter(p -> p.getGameMode() != GameMode.CREATIVE
-                        && p.getGameMode() != GameMode.SPECTATOR)
-                .min(Comparator.comparingDouble(p -> p.getLocation().distanceSquared(kraken.getLocation())))
-                .orElse(null);
     }
 
     @Override

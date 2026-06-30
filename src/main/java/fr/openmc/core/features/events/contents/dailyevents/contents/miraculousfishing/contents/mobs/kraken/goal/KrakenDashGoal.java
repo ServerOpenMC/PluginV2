@@ -22,7 +22,7 @@ public class KrakenDashGoal implements Goal<Squid> {
     private int dashTicks = 0;
     private Vector dashDirection;
 
-    private static final long COOLDOWN = 20 * 5; // 5 secondes, en tick
+    private static final long COOLDOWN = 20 * 7; // 5 secondes, en tick
 
     public KrakenDashGoal(Squid kraken) {
         this.kraken = kraken;

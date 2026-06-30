@@ -10,19 +10,21 @@ import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.utils.RandomUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Squid;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.util.Vector;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 
 public class Kraken extends CustomMob<Squid> implements Listener {
     public Kraken(String id) {
@@ -31,7 +33,6 @@ public class Kraken extends CustomMob<Squid> implements Listener {
                 Squid.class,
                 100,
                 20,
-                RandomUtils.randomBetween(0.3, 0.5),
                 List.of(
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.KRAKEN_HEAD,
                                 0.25, 1, 1),
@@ -52,6 +53,28 @@ public class Kraken extends CustomMob<Squid> implements Listener {
         startTargetUpdate(squid);
 
         return squid;
+    }
+
+    @Override
+    public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {
+        Location center = event.getEntity().getLocation().add(0, 1, 0);
+        World world = center.getWorld();
+
+        world.playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 2.0F, 0.6F);
+        world.spawnParticle(Particle.EXPLOSION, center, 1);
+
+        int squidCount = 10;
+
+        for (int i = 0; i < squidCount; i++) {
+            Vector velocity = new Vector(
+                    RandomUtils.randomBetween(-1, 1),
+                    RandomUtils.randomBetween(0, 1),
+                    RandomUtils.randomBetween(-1, 1));
+
+            Squid squid = world.spawn(center, Squid.class);
+
+            squid.setVelocity(velocity);
+        }
     }
 
     private void startTargetUpdate(Squid kraken) {
