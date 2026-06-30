@@ -45,6 +45,10 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             new BloodyNightEvent()
     );
 
+    public static final DailyEvent MIRACULOUS_FISHING = getDailyEvent("miraculous_fishing");
+    public static final DailyEvent GOLDEN_HARVEST = getDailyEvent("golden_harvest");
+    public static final DailyEvent BLOODY_NIGHT = getDailyEvent("bloody_night");
+
     private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
             9, 13, 16, 19, 21
     ));
