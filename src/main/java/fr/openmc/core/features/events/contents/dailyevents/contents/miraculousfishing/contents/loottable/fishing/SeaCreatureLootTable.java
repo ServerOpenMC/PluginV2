@@ -25,8 +25,8 @@ public class SeaCreatureLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.CHICKEN_JOCKEY, 0.6),
-                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.SEA_GUARD, 0.4),
+                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.SEA_GUARD, 0.6),
+                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.CHICKEN_JOCKEY, 0.5),
                 new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.POISSON_STEVE, OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD, 0.3),
                 new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.ANGRY_WITCH, 0.2),
                 new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.ANCIENT_VILLAGER, 0.1),

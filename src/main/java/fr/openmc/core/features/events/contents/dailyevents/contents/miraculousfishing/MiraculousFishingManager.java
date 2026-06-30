@@ -51,13 +51,15 @@ public class MiraculousFishingManager {
 
             Entity entity = seaCreatureLoot.getSeaCreatureMob().spawn(hookLocation);
 
-            entity.setInvulnerable(true);
-            applyVelocity(hookLocation, player.getEyeLocation(), entity, 0.2);
-            entity.setInvulnerable(false);
+            if (seaCreatureLoot.isThrowCreature()) {
+                entity.setInvulnerable(true);
+                applyVelocity(hookLocation, player.getEyeLocation(), entity, 0.2);
+                entity.setInvulnerable(false);
 
-            if (entity instanceof Mob mob) {
-                mob.setAggressive(true);
-                mob.setTarget(player);
+                if (entity instanceof Mob mob) {
+                    mob.setAggressive(true);
+                    mob.setTarget(player);
+                }
             }
 
             return;

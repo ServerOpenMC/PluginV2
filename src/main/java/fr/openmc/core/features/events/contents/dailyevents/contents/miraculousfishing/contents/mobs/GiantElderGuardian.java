@@ -19,7 +19,7 @@ public class GiantElderGuardian extends CustomMob<ElderGuardian> implements List
                 "Géant Elder Gardian",
                 ElderGuardian.class,
                 100,
-                6,
+                4,
                 List.of(
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_CHESTPLATE, 0.3, 1, 1),
                         new XpLoot(100, 120, 1)
@@ -32,7 +32,7 @@ public class GiantElderGuardian extends CustomMob<ElderGuardian> implements List
     public ElderGuardian spawn(Location spawnLocation) {
         ElderGuardian elderGuardian = this.getPreBuildMob(spawnLocation);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             spawnLocation.getWorld().spawn(spawnLocation, Guardian.class);
         }
 

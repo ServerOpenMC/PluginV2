@@ -33,8 +33,8 @@ public class Leviathan extends CustomMob<Nautilus> {
                 RandomUtils.randomBetween(0.3, 0.5),
                 List.of(
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEVIATHAN_HEAD,
-                                0.25, 1, 1),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.FISHING_FURNITURE_BOX, 0.1, 1, 1),
+                                0.50, 1, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.FISHING_FURNITURE_BOX, 0.20, 1, 1),
                         new XpLoot(30, 60, 1)
                 )
         );
