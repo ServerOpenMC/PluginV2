@@ -33,7 +33,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     public ItemLoot(Supplier<ItemStack> itemSupplier, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this.chance = chance;
-        this.items = Collections.emptySet();
+        this.items = Collections.singleton(displayedItem);
         this.itemSupplier = itemSupplier;
         this.displayedItem = displayedItem;
         this.minAmount = minAmount;

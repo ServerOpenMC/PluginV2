@@ -4,7 +4,9 @@ import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.options.LootboxBlock;
 import fr.openmc.core.registry.items.options.UsableBlock;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,6 +25,10 @@ public class BlockPlaceListener implements Listener {
 
         if (item.get() instanceof UsableBlock usable) {
             usable.onFurniturePlace(player, event);
+        } else if (item.get() instanceof LootboxBlock lootboxBlock) {
+            event.setCancelled(true);
+            ItemUtils.removeItemsFromInventory(player, item.get().getBest(), 1);
+            lootboxBlock.getLootbox().open(player);
         }
     }
 

@@ -19,7 +19,7 @@ public class SeaGuard extends CustomMob<Drowned> {
                 "Gardien des mers",
                 Drowned.class,
                 30,
-                10,
+                7,
                 RandomUtils.randomBetween(0.2, 0.3),
                 List.of(
                         new ItemLoot(Material.ROTTEN_FLESH,

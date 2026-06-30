@@ -5,7 +5,10 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry.SeaCreatureLoot;
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.options.LootboxBlock;
 import fr.openmc.core.registry.loottable.loots.*;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -63,7 +66,8 @@ public class LootsInfoMenu extends PaginatedMenu {
 
                 if (loot instanceof TableLoot ||
                         loot instanceof LootboxLoot ||
-                        loot instanceof SeaCreatureLoot) {
+                        loot instanceof SeaCreatureLoot ||
+                        isLootItemLinkedToLootbox(loot)) {
                     lore.add(TranslationManager.translation("registries.menu.sub_loots.click_here"));
                 }
 
@@ -75,6 +79,13 @@ public class LootsInfoMenu extends PaginatedMenu {
                     lootboxLoot.getLootbox().openInfo(getOwner());
                 } else if (loot instanceof SeaCreatureLoot seaCreatureLoot) {
                     seaCreatureLoot.showLoot(getOwner());
+                } else if (isLootItemLinkedToLootbox(loot)) {
+                    if (!(loot instanceof ItemLoot itemLoot)) return;
+                    ItemStack item = itemLoot.getFirstLoot();
+                    Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(item);
+                    if (customItem.isPresent() && customItem.get() instanceof LootboxBlock lootboxBlock) {
+                        lootboxBlock.getLootbox().openInfo(getOwner());
+                    }
                 }
             }));
         }
@@ -124,5 +135,15 @@ public class LootsInfoMenu extends PaginatedMenu {
     @Override
     public void onClose(InventoryCloseEvent event) {
         //empty
+    }
+
+    private boolean isLootItemLinkedToLootbox(CustomLoot loot) {
+        if (!(loot instanceof ItemLoot itemLoot)) return false;
+
+        ItemStack item = itemLoot.getFirstLoot();
+        Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(item);
+        if (customItem.isEmpty()) return false;
+
+        return customItem.get() instanceof LootboxBlock;
     }
 }

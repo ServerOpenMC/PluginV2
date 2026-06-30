@@ -27,7 +27,7 @@ public class MiraculousFishLootTable extends CustomLootTable  {
         return new LinkedHashSet<>(List.of(
                 new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.BASIC_FISHING, Material.COD, 0.7, false), // gerer par simulateLaunchLoot
                 new MoneyLoot(50, 250, 0.4),
-                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.SEA_CREATURE, Material.DROWNED_SPAWN_EGG, 0.2, false),
+                new TableLoot(OMCRegistry.CUSTOM_LOOT_TABLES.SEA_CREATURE, Material.DROWNED_SPAWN_EGG, 0.3, false),
                 new LootboxLoot(OMCRegistry.CUSTOM_LOOTBOXES.RARE_FISHING_TREASURE, 0.1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SPONGE_BOB, 0.07, 1, 1)
 
