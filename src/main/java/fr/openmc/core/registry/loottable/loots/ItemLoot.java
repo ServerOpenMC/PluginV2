@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -148,14 +149,25 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         if (itemSupplier != null) {
             ItemStack item = itemSupplier.get();
             item.setAmount(this.getRandomAmount());
-            receiver.getInventory().addItem(item);
+
+            if (ItemUtils.hasEnoughSpace(receiver, item)) {
+                receiver.getInventory().addItem(item);
+            } else {
+                receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+            }
+
             return Collections.singleton(this);
         }
 
         for (ItemStack lootItem : this.getItems()) {
             ItemStack item = lootItem.clone();
             item.setAmount(this.getRandomAmount());
-            receiver.getInventory().addItem(item);
+
+            if (ItemUtils.hasEnoughSpace(receiver, item)) {
+                receiver.getInventory().addItem(item);
+            } else {
+                receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+            }
         }
 
         return Collections.singleton(this);

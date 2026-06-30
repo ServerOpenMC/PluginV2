@@ -30,7 +30,7 @@ public class RareFishingTreasureLootTable extends CustomLootTable {
                 new ItemLoot(Material.TROPICAL_FISH, 0.3, 32, 64),
                 new ItemLoot(Material.PUFFERFISH, 0.3, 15, 32),
                 new ItemLoot(Material.NAUTILUS_SHELL,0.25, 2, 4),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.EPIC_FISHING_TREASURE, 0.15, 1, 1)
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.EPIC_FISHING_TREASURE, 0.20, 1, 1)
 
         ));
     }
