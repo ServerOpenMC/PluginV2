@@ -5,8 +5,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.FishingAttributeManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -57,7 +57,7 @@ public class MiraculousFishingMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.miraculousfishing.menu.info.fishing_speed.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.dailyevents.miraculousfishing.menu.info.fishing_speed.lore",
-                    Component.text(MiraculousFishingManager.FISHING_SPEED_MODIFIER * 100).color(NamedTextColor.AQUA)
+                    Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100).color(NamedTextColor.AQUA)
             ));
             itemMeta.setEnchantmentGlintOverride(isActived);
         }));
