@@ -55,9 +55,8 @@ public class FishingAttributeManager {
         for (ItemStack item : armor) {
             Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(item);
 
-            if (ci.isPresent() && FISHER_ARMOR.stream()
-                    .anyMatch(customItem -> customItem.getId().equals(ci.get().getId()))) {
-                base += 0.015;
+            if (ci.isPresent() && FISHER_ARMOR.contains(ci.get())) {
+                base += 0.05;
             }
         }
 
@@ -84,9 +83,8 @@ public class FishingAttributeManager {
         for (ItemStack item : armor) {
             Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(item);
 
-            if (ci.isPresent() && FISHER_ARMOR.stream()
-                    .anyMatch(customItem -> customItem.getId().equals(ci.get().getId()))) {
-                base += 0.025;
+            if (ci.isPresent() && FISHER_ARMOR.contains(ci.get())) {
+                base += 0.03;
             }
         }
 
