@@ -75,7 +75,7 @@ public class ShopStatsMenu extends Menu {
 		map.put(15, new ItemMenuBuilder(this, Material.BARREL, itemMeta ->
 				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.stocks.title", Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.AQUA)))));
 		
-		map.put(18, ItemMenuTemplate.BTN_CANCEL.apply(this).setOnClick(_ -> new ShopMenu(getOwner(), shop).open()));
+		map.put(18, ItemMenuTemplate.BTN_CANCEL.apply(this).setBackButton());
 		
 		return map;
 	}

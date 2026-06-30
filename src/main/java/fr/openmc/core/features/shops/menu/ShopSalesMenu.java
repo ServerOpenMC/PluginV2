@@ -60,7 +60,7 @@ public class ShopSalesMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         List<ShopSale> sales = this.shop.getSales();
         sales.forEach(s -> {
-            ItemStack item = s.getItem().getItemStack();
+            ItemStack item = s.getItem().getItemStack().clone();
             item.editMeta(itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.item.name", Component.text(s.getBuyer().getName()).color(NamedTextColor.GOLD)));
                 itemMeta.lore(List.of(
@@ -76,7 +76,7 @@ public class ShopSalesMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        map.put(45, ItemMenuTemplate.BTN_CANCEL.apply(this).setOnClick(_ -> new ShopMenu(getOwner(), shop).open()));
+        map.put(45, ItemMenuTemplate.BTN_CANCEL.apply(this).setBackButton());
         map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
         map.put(49, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.get_turnover.name"));
@@ -84,7 +84,10 @@ public class ShopSalesMenu extends PaginatedMenu {
                     TranslationManager.translation("feature.shop.menu.sales.get_turnover.lore1", Component.text(this.shop.getTurnover() * 0.8 + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)),
                     TranslationManager.translation("feature.shop.menu.sales.get_turnover.lore2")
             ));
-        }).setOnClick(_ -> this.shop.withdrawTurnover()));
+        }).setOnClick(_ -> {
+            this.shop.withdrawTurnover();
+            update();
+        }));
         map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
         return map;
     }

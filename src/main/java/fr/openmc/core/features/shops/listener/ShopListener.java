@@ -103,7 +103,7 @@ public class ShopListener implements Listener {
     public void onFurnitureBreak(FurnitureBreakEvent e) {
         CustomFurniture furniture = e.getFurniture();
         
-        if (furniture != null && furniture.getNamespacedID().equals("omc_company:caisse")) e.setCancelled(true);
+        if (furniture != null && furniture.getNamespacedID().equals("omc_shops:caisse")) e.setCancelled(true);
     }
     
     @EventHandler
@@ -112,7 +112,7 @@ public class ShopListener implements Listener {
 		
         if (furniture == null) return;
         
-        if (!furniture.getNamespacedID().equals("omc_company:caisse")) return;
+        if (!furniture.getNamespacedID().equals("omc_shops:caisse")) return;
         
         Player player = e.getPlayer();
 	    if (furniture.getEntity() == null) {

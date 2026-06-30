@@ -200,12 +200,20 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
         Block stockBlock = world.getBlockAt(multiblock.stockBlockLoc());
 
         if (ItemsAdderHook.isEnable()) {
-            if (!ShopFurniture.hasFurniture(cashBlock)) {
-	            if (!ShopFurniture.removeShopFurniture(cashBlock)) return false;
+            if (ShopFurniture.hasFurniture(cashBlock)) {
+				if (!ShopFurniture.removeShopFurniture(cashBlock)) {
+					OMCLogger.warn("Cannot remove furniture for " + shop.getName());
+					return false;
+				}
+            } else if ((cashBlock.getType() != Material.OAK_SIGN && cashBlock.getType() != Material.BARRIER) || stockBlock.getType() != Material.BARREL) {
+				OMCLogger.warn("Bad multiblock for " + shop.getName());
+				return false;
             }
-            else if ((cashBlock.getType() != Material.OAK_SIGN && cashBlock.getType() != Material.BARRIER) || stockBlock.getType() != Material.BARREL) return false;
+			else OMCLogger.warn(shop.getName() + " has no furniture detected.");
+        } else if ((cashBlock.getType() != Material.OAK_SIGN && cashBlock.getType() != Material.BARRIER) || stockBlock.getType() != Material.BARREL) {
+	        OMCLogger.warn("Bad multiblock for " + shop.getName());
+			return false;
         }
-        else if ((cashBlock.getType() != Material.OAK_SIGN && cashBlock.getType() != Material.BARRIER) || stockBlock.getType() != Material.BARREL) return false;
 	    cashBlock.setType(Material.AIR); // Remove sign or furniture block
         stockBlock.setType(Material.AIR); // Remove barrel block
         

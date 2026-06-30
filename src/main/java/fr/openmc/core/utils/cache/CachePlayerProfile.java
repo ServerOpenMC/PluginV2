@@ -11,7 +11,7 @@ public class CachePlayerProfile {
     private static final Object2ObjectMap<UUID, PlayerProfile> playerProfileCache = new Object2ObjectOpenHashMap<>();
 
     /**
-     * Donne l'PlayerProfile s'il est déjà mis en cache, sinon il exécute la méthode basique
+     * Donne le PlayerProfile s'il est déjà mis en cache, sinon il exécute la méthode basique
      */
     public static PlayerProfile getPlayerProfile(UUID uuid) {
         return playerProfileCache.computeIfAbsent(uuid, key -> Bukkit.createProfile(uuid));

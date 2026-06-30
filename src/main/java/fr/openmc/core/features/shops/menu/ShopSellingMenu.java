@@ -2,8 +2,10 @@ package fr.openmc.core.features.shops.menu;
 
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.features.shops.manager.PlayerShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -11,6 +13,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -62,24 +65,41 @@ public class ShopSellingMenu extends Menu {
 	public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
 		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
-		List<ItemStack> items = getUniqueItemStacks(barrelInventory.getContents()).stream().toList();
+		List<ItemStack> items = getUniqueItemStacks(barrelInventory.getContents());
 		for (int i = 0; i < items.size(); i++) {
 			ItemStack item = items.get(i);
-			map.put(i, new ItemMenuBuilder(this, item, itemMeta -> {
+			map.put(9 + i, new ItemMenuBuilder(this, item, itemMeta -> {
 				if (itemMeta.hasLore()) itemMeta.lore().add(TranslationManager.translation("feature.shop.menu.selling.item_lore"));
 				else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.selling.item_lore")));
 			}).setOnClick(_ -> DialogInput.send(getOwner(),
 					TranslationManager.translation("feature.shop.menu.selling.price_input"),
 					Integer.MAX_VALUE,
 					s -> {
-						double price = Double.parseDouble(s);
-						if (Double.isNaN(price)) return;
-						if (price <= 0) return;
-						shop.setItem(new ShopItem(shop.getShopUUID(), item, price));
+						double pricePerItem = Double.parseDouble(s);
+						if (Double.isNaN(pricePerItem)) return;
+						if (pricePerItem <= 0) return;
+						shop.setItem(new ShopItem(shop.getShopUUID(), item, pricePerItem));
 						new ShopMenu(getOwner(), shop).open();
 						MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.selling.added_item"), Prefix.SHOP, MessageType.SUCCESS, true);
 					})));
 		}
+		
+		map.put(49, new ItemMenuBuilder(this, Material.RED_DYE, itemMeta -> {
+			itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.delete.btn.title"));
+			itemMeta.lore(List.of(
+					TranslationManager.translation("feature.shop.menu.main.delete.btn.lore2")
+			));
+		}).setOnClick(_ -> new ConfirmMenu(
+				getOwner(),
+				() -> {
+					getOwner().closeInventory();
+					PlayerShopManager.deleteShop(getOwner(), shop);
+				},
+				() -> new ShopSellingMenu(getOwner(), shop).open(),
+				List.of(TranslationManager.translation("feature.shop.menu.main.delete.confirm.accept")),
+				List.of(TranslationManager.translation("feature.shop.menu.main.delete.confirm.refuse"))
+		).open()));
+		
 		return map;
 	}
 	
@@ -88,12 +108,12 @@ public class ShopSellingMenu extends Menu {
 		return List.of();
 	}
 	
-	private Set<ItemStack> getUniqueItemStacks(ItemStack[] items) {
+	private List<ItemStack> getUniqueItemStacks(ItemStack[] items) {
 		Set<ItemStack> itemStacks = new HashSet<>();
 		for (ItemStack item : items) {
 			if (item == null) continue;
 			itemStacks.add(item.asOne());
 		}
-		return itemStacks;
+		return itemStacks.stream().toList();
 	}
 }

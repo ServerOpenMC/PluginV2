@@ -34,19 +34,20 @@ public class ShopSale {
         // required for ORMLite
     }
     
-    public ShopSale(UUID shopUUID, UUID buyerUUID, double price, int amount, Timestamp date) {
+    public ShopSale(UUID shopUUID, UUID buyerUUID, ShopItem item, Timestamp date) {
         this.saleUUID = UUID.randomUUID();
         this.shopUUID = shopUUID;
         this.buyerUUID = buyerUUID;
-        this.price = price;
-        this.amount = amount;
+        this.price = item.getPrice();
+        this.amount = item.getAmount();
         this.date = date;
+        this.item = item;
         
         registerVariables();
     }
     
     public ShopSale(UUID shopUUID, UUID buyerUUID, ShopItem item) {
-        this(shopUUID, buyerUUID, item.getPrice(), item.getAmount(), Timestamp.valueOf(LocalDateTime.now()));
+        this(shopUUID, buyerUUID, item, Timestamp.valueOf(LocalDateTime.now()));
     }
     
     public Shop getShop() {
@@ -55,7 +56,7 @@ public class ShopSale {
     
     public ShopSale registerVariables() {
         if (this.buyer == null) this.buyer = CacheOfflinePlayer.getOfflinePlayer(this.buyerUUID).getPlayer();
-        if (this.item == null) this.item = getShop().getItem().setAmount(this.amount);
+        if (this.item == null) this.item = getShop().getItem().clone().setAmount(this.amount);
         return this;
     }
 }

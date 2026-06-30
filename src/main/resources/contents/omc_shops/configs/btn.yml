@@ -1,5 +1,5 @@
 info:
-  namespace: omc_company
+  namespace: omc_shops
 items:
   10_btn:
     display_name: 10

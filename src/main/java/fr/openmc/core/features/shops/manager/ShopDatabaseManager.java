@@ -27,7 +27,7 @@ public class ShopDatabaseManager {
 	/**
 	 * Init the Database of the shops
 	 *
-	 * @param connectionSource the connection the to DB
+	 * @param connectionSource the connection to the DB
 	 * @throws SQLException if init failed
 	 */
 	public static void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -44,8 +44,8 @@ public class ShopDatabaseManager {
 	/**
 	 * Queries shops from DB
 	 *
-	 * @return the map of each shop and it location
-	 * @throws SQLException if query failed
+	 * @return the map of each shop and its location
+	 * @throws SQLException if the query failed
 	 */
 	public static @NonNull Map<Location, Shop> loadDBShops() throws SQLException {
 		Map<Location, Shop> shopsByLocation = new HashMap<>();
@@ -66,7 +66,7 @@ public class ShopDatabaseManager {
 	/**
 	 * Queries shop items from DB
 	 *
-	 * @throws SQLException if query failed
+	 * @throws SQLException if the query failed
 	 */
 	public static void loadDBShopItems() throws SQLException {
 		List<ShopItem> shopItems = shopItemDao.queryForAll();
@@ -83,7 +83,7 @@ public class ShopDatabaseManager {
 	/**
 	 * Queries shop sales from DB
 	 *
-	 * @throws SQLException if query failed
+	 * @throws SQLException if the query failed
 	 */
 	public static void loadDBShopSales() throws SQLException {
 		List<ShopSale> shopSales = shopSaleDao.queryForAll();

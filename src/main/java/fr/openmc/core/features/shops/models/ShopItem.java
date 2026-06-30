@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Getter
 @DatabaseTable(tableName = "shop_items")
-public class ShopItem {
+public class ShopItem implements Cloneable {
     
     @DatabaseField(id = true, columnName = "shop_uuid", canBeNull = false)
     private UUID shopUUID;
@@ -38,12 +38,12 @@ public class ShopItem {
         this.shopUUID = shopUUID;
         this.itemStack = itemStack.clone();
         this.pricePerItem = pricePerItem;
-        this.price = pricePerItem * amount;
         this.amount = 0;
+        this.price = pricePerItem * amount;
     }
 
     /**
-     * get the name of an item
+     * Set the amount of the ShopItem
      *
      * @param amount the new amount of the item
      * @return default the ShopItem
@@ -54,10 +54,15 @@ public class ShopItem {
         return this;
     }
     
-    public ShopItem addAmout(int amount) {
+    public void addAmount(int amount) {
         this.amount += amount;
         this.price = pricePerItem * this.amount;
-        return this;
+    }
+    
+    public void removeAmount(int amount) {
+        if (this.amount - amount <= 0) this.amount = 0;
+        else this.amount -= amount;
+        this.price = pricePerItem * this.amount;
     }
 
     /**
@@ -98,4 +103,18 @@ public class ShopItem {
         this.itemStack = ItemStack.deserializeBytes(this.itemBytes);
         return this;
     }
+	
+	@Override
+	public ShopItem clone() {
+		try {
+			ShopItem clone = (ShopItem) super.clone();
+            
+            if (this.itemBytes != null) clone.itemBytes = this.itemBytes.clone();
+            if (this.itemStack != null) clone.itemStack = this.itemStack.clone();
+            
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
+	}
 }

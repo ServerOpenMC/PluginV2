@@ -59,7 +59,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem SUIT_CHESTPLATE = register("omc_items:suit_chestplate", Material.IRON_CHESTPLATE);
     public final CustomItem SUIT_LEGGINGS = register("omc_items:suit_leggings", Material.IRON_LEGGINGS);
     public final CustomItem SUIT_BOOTS = register("omc_items:suit_boots", Material.IRON_BOOTS);
-    public final CustomItem COMPANY_BOX = register("omc_company:company_box", Material.CHEST);
+    public final CustomItem COMPANY_BOX = register("omc_shops:company_box", Material.CHEST);
     public final CustomItem HOMES_ICON_BIN_RED = register("omc_homes:omc_homes_icon_bin_red", Material.CHEST);
     public final CustomItem HOMES_ICON_BIN = register("omc_homes:omc_homes_icon_bin", Material.CHEST);
     public final CustomItem HOMES_ICON_INFORMATION = register("omc_homes:omc_homes_icon_information", Material.CHEST);

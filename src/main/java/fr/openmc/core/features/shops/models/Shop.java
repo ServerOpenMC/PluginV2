@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -66,8 +67,8 @@ public class Shop {
 		this.multiblock = new Multiblock(this.location, this.location.clone().add(0, 1, 0));
     }
     
-    public Player getOwner() {
-        return CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getPlayer();
+    public OfflinePlayer getOwner() {
+        return CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
     }
 
     public String getName() {
@@ -92,7 +93,6 @@ public class Shop {
     }
     
     public void registerSale(ShopSale sale) {
-        ShopItem item = sale.getShop().getItem().setAmount(sale.getAmount());
         this.sales.add(sale);
     }
     
@@ -112,10 +112,10 @@ public class Shop {
     }
     
     public void buy(Player player, int amount) {
-        if (isOwner(player)) {
+        /*if (isOwner(player)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
             return;
-        }
+        }*/
         if (this.item.getAmount() < amount) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
             return;
@@ -129,9 +129,10 @@ public class Shop {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_money"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
-        addSale(player, item.setAmount(amount));
+        player.give(ItemUtils.splitAmountIntoStack(item.clone().getItemStack(), amount));
+        addSale(player, this.item.clone().setAmount(amount));
         addTurnover(totalPrice);
-        player.give(item.getItemStack().asQuantity(amount));
+        this.item.removeAmount(amount);
     }
 
     /**
@@ -165,7 +166,7 @@ public class Shop {
     
     public void setItem(ShopItem item) {
         if (this.item != null) return;
-        if (item.getPrice() < 0) return;
+        if (item.getPricePerItem() < 0) return;
         if (item.getItemStack() == null) return;
         this.item = item;
     }
@@ -178,6 +179,10 @@ public class Shop {
     
     public boolean hasItem() {
         return this.item != null;
+    }
+    
+    public void emptyShop() {
+        this.getItem().setAmount(0);
     }
 
     public record Multiblock(Location stockBlockLoc, Location cashBlockLoc) {}

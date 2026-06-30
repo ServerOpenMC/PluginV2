@@ -20,7 +20,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @CommandPermission("omc.admins.commands.shop")
 public class ShopAdminCommand {
 	
-	/@Subcommand("multiblock set")
+	@Subcommand("multiblock set")
 	public void setShopMultiblock(Player player, @Named("playerShop") @SuggestWith(ShopAdminCommandPlayerAutocomplete.class) OfflinePlayer playerShop, @Named("barrelLoc") Location barrelLoc) {
 		if (playerShop == null) return;
 		
