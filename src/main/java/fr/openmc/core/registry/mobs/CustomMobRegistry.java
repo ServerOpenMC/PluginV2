@@ -52,6 +52,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
             Kraken::new
     ));
 
+    public final CustomMobEntry GIANT_ELDER_GUARDIAN = register(new CustomMobEntry(
+            "omc_daily_events:giant_elder_guardian",
+            GiantElderGuardian::new
+    ));
+
     @Override
     public String key(CustomMobEntry registryObject) {
         return registryObject.id();

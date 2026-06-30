@@ -31,7 +31,8 @@ public class SeaCreatureLootTable extends CustomLootTable {
                 new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.ANGRY_WITCH, 0.2),
                 new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.ANCIENT_VILLAGER, 0.1),
                 new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.LEVIATHAN, OMCRegistry.CUSTOM_ITEMS.LEVIATHAN_HEAD, 0.1),
-                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.KRAKEN, OMCRegistry.CUSTOM_ITEMS.KRAKEN_HEAD, 0.01)
+                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.GIANT_ELDER_GUARDIAN, 0.05),
+                new SeaCreatureLoot(OMCRegistry.CUSTOM_MOBS.KRAKEN, OMCRegistry.CUSTOM_ITEMS.KRAKEN_HEAD, 0.03)
         ));
     }
 }

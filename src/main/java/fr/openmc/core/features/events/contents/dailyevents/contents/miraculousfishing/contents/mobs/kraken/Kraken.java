@@ -35,8 +35,8 @@ public class Kraken extends CustomMob<Squid> implements Listener {
                 20,
                 List.of(
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.KRAKEN_HEAD,
-                                0.25, 1, 1),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_LEGGINGS, 0.1, 1, 1),
+                                0.35, 1, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_LEGGINGS, 0.2, 1, 1),
                         new XpLoot(120, 150, 1)
                 ),
                 new CustomMobAttribute(Attribute.SCALE, 90)
