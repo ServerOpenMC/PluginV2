@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
+/**
+ * Wrapper sous forme d'interface afin d'implementer les ambiences dans les événnements.
+ */
 public interface HasAmbient {
     CustomAmbient getAmbient();
 

@@ -45,13 +45,17 @@ public class Leviathan extends CustomMob<Nautilus> {
     public Nautilus spawn(Location spawnLocation) {
         Nautilus nautilus = this.getPreBuildMob(spawnLocation);
 
-        spawnPassager(nautilus, spawnLocation);
+        spawnPassager(nautilus);
 
         startDashAi(nautilus);
 
         return nautilus;
     }
 
+    /**
+     * Lance le scheduler qui fait dash le nautilus, sur le joueur
+     * @param nautilus le nautilus ciblé
+     */
     private void startDashAi(Nautilus nautilus) {
         Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), task -> {
             if (nautilus.isDead()) {
@@ -66,13 +70,22 @@ public class Leviathan extends CustomMob<Nautilus> {
         }, 20L, 60L);
     }
 
+    /**
+     * Procédure trouvé afin d'activer le dash vanilla du nautilus
+     * @param nautilus le nautilus ciblé
+     * @param target la target du dash, le joueur le plus proche
+     */
     private void triggerDash(Nautilus nautilus, LivingEntity target) {
         nautilus.setMemory(MemoryKey.ANGRY_AT, target.getUniqueId());
         nautilus.setMemory(MemoryKey.ATTACK_TARGET_COOLDOWN, null);
     }
 
-    private void spawnPassager(Nautilus nautilus, Location spawnLocation) {
-        Drowned drowned = spawnLocation.getWorld().spawn(spawnLocation, Drowned.class);
+    /**
+     * Spawn le passager du nautils, un drowned pouvant varier
+     * @param nautilus le nautilus ciblé
+     */
+    private void spawnPassager(Nautilus nautilus) {
+        Drowned drowned = nautilus.getWorld().spawn(nautilus.getLocation(), Drowned.class);
         if (ThreadLocalRandom.current().nextFloat() < 0.1f)
             drowned.setBaby();
         drowned.setShouldBurnInDay(false);
@@ -94,6 +107,10 @@ public class Leviathan extends CustomMob<Nautilus> {
         nautilus.addPassenger(drowned);
     }
 
+    /**
+     * Donne un trident ayant des echantement aléatoire
+     * @return l'item trident
+     */
     private ItemStack getDrownedTrident() {
         ItemStack trident = new ItemStack(Material.TRIDENT);
 

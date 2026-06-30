@@ -16,6 +16,9 @@ import org.bukkit.util.Vector;
 
 import java.util.Optional;
 
+/**
+ * Classe implémentant le /prout initial, un peu modifié en gardant le même principe
+ */
 public class EatKebabFermentedListener implements Listener {
 
     @EventHandler

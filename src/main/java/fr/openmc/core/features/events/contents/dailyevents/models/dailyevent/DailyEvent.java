@@ -41,11 +41,17 @@ public abstract class DailyEvent extends Event {
      */
     public abstract Runnable onEnd();
 
+    /**
+     * Procédure complète de lancement de l'évenement, qui s'occupe de tout (broadcast, toast, ambiance, etc...)
+     */
     public void start() {
         Collection<Player> receivers = Bukkit.getOnlinePlayers()
                 .stream()
                 .filter(p -> p.getWorld().getName().equals(this.getWorldEvent()))
                 .collect(Collectors.toSet());
+
+        // * Lancement de l'evenement
+        this.onStart().run();
 
         // * Application de l'ambience
         if (this instanceof HasAmbient ambient) {
@@ -68,6 +74,9 @@ public abstract class DailyEvent extends Event {
                         DailyEventsManager.outgoingEvent.getDailyEvent().getDuration() * 60L * 20L);
     }
 
+    /**
+     * Procédure complète de fin d'évenement (toast, ambient, broadcast, ...)
+     */
     public void end() {
         Collection<Player> receivers = Bukkit.getOnlinePlayers()
                 .stream()
@@ -76,6 +85,9 @@ public abstract class DailyEvent extends Event {
 
         DailyEventsManager.outgoingEvent = null;
         DailyEventsManager.endEventTask = null;
+
+        // * Arret de l'evenement
+        this.onEnd().run();
 
         // * Suppression de la l'ambience
         if (this instanceof HasAmbient ambient) {

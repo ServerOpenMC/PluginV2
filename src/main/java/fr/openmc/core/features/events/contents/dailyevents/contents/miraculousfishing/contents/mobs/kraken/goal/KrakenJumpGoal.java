@@ -72,6 +72,9 @@ public class KrakenJumpGoal implements Goal<Squid> {
         }
     }
 
+    /**
+     * Applique les dégats sur les entités proche du kraken
+     */
     private void damageOnLand() {
         Location loc = kraken.getLocation();
         for (Entity entity : kraken.getNearbyEntities(LAND_RADIUS, LAND_RADIUS, LAND_RADIUS)) {
@@ -88,6 +91,10 @@ public class KrakenJumpGoal implements Goal<Squid> {
         kraken.getWorld().playSound(loc, Sound.ENTITY_GENERIC_BIG_FALL, 1.0F, 0.8F);
     }
 
+    /**
+     * Affiche des particules aux joueurs proche de l'impact du kraken
+     * @param center le centre du kraken
+     */
     private void spawnImpactParticles(Location center) {
         Collection<Player> receivers = center.getNearbyEntitiesByType(Player.class, 20)
                 .stream()

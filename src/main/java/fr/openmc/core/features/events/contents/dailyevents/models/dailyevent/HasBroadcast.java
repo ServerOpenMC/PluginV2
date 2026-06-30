@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
+/**
+ * Interface implémentant la gestion de Broadcast
+ */
 public interface HasBroadcast {
     Component getStartBroadcast();
     Component getEndBroadcast();

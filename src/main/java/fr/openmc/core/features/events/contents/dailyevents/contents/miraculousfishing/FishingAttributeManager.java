@@ -31,10 +31,15 @@ public class FishingAttributeManager {
      */
     public static void applyFishingSpeedModifier(Player player, FishHook hook) {
         double fishingSpeed = getFishingSpped(player);
-        hook.setWaitTime((int) fishingSpeed,
-                (int) fishingSpeed);
+        hook.setWaitTime((int) (hook.getMinWaitTime() * (1 - fishingSpeed)),
+                (int) (hook.getMaxWaitTime() * (1 - fishingSpeed)));
     }
 
+    /**
+     * Donne la fishing speed d'un joueur en prenant compte des modifieurs de la peche miraculeuse
+     * @param player le joueur ciblé
+     * @return le pourcentage d'augmentation de vitesse de pêche
+     */
     public static double getFishingSpped(Player player) {
         double base = FISHING_SPEED_MODIFIER;
 
@@ -59,6 +64,11 @@ public class FishingAttributeManager {
         return base;
     }
 
+    /**
+     * Donne la chance de pouvoir avoir une double prise
+     * @param player le joueur ciblé
+     * @return la chance associé au joueur
+     */
     public static double getDoubleHookChance(Player player) {
         double base = DOUBLE_HOOK_MODIFIER;
 
@@ -83,8 +93,16 @@ public class FishingAttributeManager {
         return base;
     }
 
+    /**
+     * Applique le modifier de double prise
+     * @param player le joueur ciblé
+     * @param loots les loots initiaux
+     * @return les loots finaux
+     */
     public static List<CustomLoot> applyDoubleHookChance(Player player, List<CustomLoot> loots) {
-        if (ThreadLocalRandom.current().nextDouble() >= getDoubleHookChance(player)) return loots;
+        double doubleHookChance = getDoubleHookChance(player);
+        if (doubleHookChance == 0) return loots;
+        if (ThreadLocalRandom.current().nextDouble() >= doubleHookChance) return loots;
 
         List<CustomLoot> doubledLoots = new ArrayList<>(loots);
         doubledLoots.addAll(loots);

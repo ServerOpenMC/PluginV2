@@ -31,6 +31,10 @@ public class IncomingEventsDB {
                 .toArray(String[]::new);
     }
 
+    /**
+     * Converti notre liste d'id, en daily event
+     * @return liste de daily event
+     */
     public List<DailyEvent> getDailyEventsIncomings() {
         return Arrays.stream(dailyEventsIdIncomings)
                 .map(id -> DailyEventsManager.EVENTS.stream()

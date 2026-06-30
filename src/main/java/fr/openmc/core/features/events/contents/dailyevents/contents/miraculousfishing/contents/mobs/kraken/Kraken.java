@@ -77,6 +77,10 @@ public class Kraken extends CustomMob<Squid> implements Listener {
         }
     }
 
+    /**
+     * Mets à jour la cible du kraken toutes les 3 secondes
+     * @param kraken l'entité représentant le kraken
+     */
     private void startTargetUpdate(Squid kraken) {
         Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), task -> {
             if (kraken.isDead()) {

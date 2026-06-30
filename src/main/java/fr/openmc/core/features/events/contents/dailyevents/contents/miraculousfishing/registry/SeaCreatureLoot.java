@@ -19,6 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Classe représentant le Loot étant une Sea Creature, donc un mob péchable
+ */
 @Getter
 public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
     @Setter

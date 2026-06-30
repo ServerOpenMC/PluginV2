@@ -57,9 +57,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
 
     @Override
     public Runnable onEnd() {
-        return () -> {
-            System.out.println("MIRACULOUS FISHING END");
-        };
+        return () -> {};
     }
 
     @Override

@@ -220,6 +220,11 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         return outgoingEvent.getDailyEvent();
     }
 
+    /**
+     * Permet d'obtenir un DailyEvent via l'id dans le registre des Evenements Journalier
+     * @param id l'id de l'event
+     * @return l'event
+     */
     public static DailyEvent getDailyEvent(String id) {
         return EVENTS.stream()
                 .filter(event -> event.getEventId().equals(id))

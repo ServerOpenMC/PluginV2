@@ -39,6 +39,10 @@ public class AngryWitch extends CustomMob<Witch> {
         return witch;
     }
 
+    /**
+     * Lance le scheduler qui fait lancer des potions à la sorcière toutes les 2 secondes
+     * @param witch l'entité associé pour lancer les potions
+     */
     public void startPotionLaunch(Witch witch) {
         Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(),task -> {
             if (witch.isDead() || !witch.isValid()) {

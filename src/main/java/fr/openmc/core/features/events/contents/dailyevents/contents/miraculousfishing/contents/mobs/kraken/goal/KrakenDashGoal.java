@@ -67,6 +67,9 @@ public class KrakenDashGoal implements Goal<Squid> {
         spawnInkTrail();
     }
 
+    /**
+     * Spawn une trainée d'encre, empoisonné
+     */
     private void spawnInkTrail() {
         Location loc = kraken.getLocation();
 

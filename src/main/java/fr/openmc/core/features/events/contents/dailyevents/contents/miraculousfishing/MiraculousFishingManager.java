@@ -22,6 +22,12 @@ public class MiraculousFishingManager {
 
     public static final NamespacedKey NOT_PICKUP_KEY = new NamespacedKey(OMCPlugin.getInstance(), "not_pickup");
 
+    /**
+     * Envoie le message de loot contenant, le nom du loot et la chance du loot
+     * @param player le joueur a qui envoyé le message
+     * @param loot le loot obtenu
+     * @param amount le nombre de loot
+     */
     public static void sendLootMessage(Player player, CustomLoot loot, int amount) {
         Component base = Component.text(" - ", NamedTextColor.GRAY);
 

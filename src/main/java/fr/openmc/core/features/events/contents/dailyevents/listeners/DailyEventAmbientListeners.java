@@ -8,6 +8,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+/**
+ * Classe gérant l'application des ambiences dans les événements journalier
+ */
 public class DailyEventAmbientListeners implements Listener {
 
     @EventHandler

@@ -52,6 +52,10 @@ public class SeaGuard extends CustomMob<Drowned> {
         return drowned;
     }
 
+    /**
+     * Donne un trident ayant des echantement aléatoire
+     * @return l'item trident
+     */
     private ItemStack getDrownedTrident() {
         ItemStack trident = new ItemStack(Material.TRIDENT);
 

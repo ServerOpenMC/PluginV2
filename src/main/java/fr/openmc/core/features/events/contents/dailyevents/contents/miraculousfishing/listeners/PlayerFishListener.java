@@ -83,6 +83,12 @@ public class PlayerFishListener implements Listener {
         }
     }
 
+    /**
+     * Gère l'envoie des loots obtenu, du hook vers le joueur
+     * @param player le joueur ciblé
+     * @param hook le hook lancé par le joueur
+     * @param loots les loots obtenus par le joueur
+     */
     private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
             RngUtils.sendSoundRng(player, loot.getChance());
