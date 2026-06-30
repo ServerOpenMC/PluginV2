@@ -13,6 +13,7 @@ import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.commands.ShopCommand;
 import fr.openmc.core.features.shops.listener.ShopListener;
 import fr.openmc.core.features.shops.models.Shop;
+import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.world.WorldUtils;
 import lombok.Getter;
@@ -41,12 +42,14 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	protected void init() {
 		loadShops();
 		loadShopItems();
+		loadSalesItems();
 	}
 	
 	@Override
 	protected void save() {
 		saveShops();
 		saveShopItems();
+		saveShopSales();
 	}
 	
 	@Override
@@ -67,7 +70,7 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	/**
 	 * Load shops in the map from DB
 	 *
-	 * @return true if shop are successfully loaded, false otherwise
+	 * @return true if shops are successfully loaded, false otherwise
 	 */
 	public static boolean loadShops() {
 		if (shopsByLocation != null) shopsByLocation.clear();
@@ -79,19 +82,17 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 		}
 		
 		shopsByLocation.values().forEach(shop -> setUUIDShop(shop.getShopUUID(), shop));
-		OMCLogger.info("Successfully loaded {} shops from database.", shops.size());
 		return true;
 	}
 	
 	/**
 	 * Load shops items from DB
 	 *
-	 * @return true if shop are successfully loaded, false otherwise
+	 * @return true if items are successfully loaded, false otherwise
 	 */
 	public static boolean loadShopItems() {
 		try {
 			ShopDatabaseManager.loadDBShopItems();
-			OMCLogger.info("Successfully loaded shop items from database.");
 			return true;
 		} catch (SQLException e) {
 			OMCLogger.error("Cannot save shop items from database:\n" + e.getMessage());
@@ -100,32 +101,54 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	}
 	
 	/**
-	 * Save shops to DB
+	 * Load shops sales from DB
 	 *
-	 * @return true if shop are successfully saved, false otherwise
+	 * @return true if sales are successfully loaded, false otherwise
 	 */
-	public static boolean saveShops() {
-		for (Shop shop : shops.values()) {
-			if (!ShopDatabaseManager.saveDBShop(shop)) {
-				OMCLogger.error("Failed to save " + shop.getName() + " to database.");
-			}
+	public static boolean loadSalesItems() {
+		try {
+			ShopDatabaseManager.loadDBShopSales();
+			return true;
+		} catch (SQLException e) {
+			OMCLogger.error("Cannot save shop sales from database:\n" + e.getMessage());
+			return false;
 		}
-		return true;
+	}
+	
+	/**
+	 * Save shops to DB
+	 */
+	public static void saveShops() {
+		for (Shop shop : shops.values()) {
+			if (ShopDatabaseManager.saveDBShop(shop)) continue;
+			OMCLogger.error("Failed to save " + shop.getName() + " to database.");
+		}
 	}
 	
 	/**
 	 * Save shops items to DB
-	 *
-	 * @return true if shop are successfully saved, false otherwise
 	 */
-	public static boolean saveShopItems() {
+	public static void saveShopItems() {
 		for (Shop shop : shops.values()) {
 			if (!shop.hasItem()) continue;
-			if (!ShopDatabaseManager.saveDBShopItem(shop.getItem())) {
-				OMCLogger.error("Failed to save " + shop.getName() + " item to database.");
-			}
+			if (ShopDatabaseManager.saveDBShopItem(shop.getItem())) continue;
+			OMCLogger.error("Failed to save " + shop.getName() + " item to database.");
 		}
-		return true;
+	}
+	
+	/**
+	 * Save shops items to DB
+	 */
+	public static void saveShopSales() {
+		for (Shop shop : shops.values()) {
+			if (shop.getSales().isEmpty()) continue;
+			boolean error = false;
+			for (ShopSale s : shop.getSales()) {
+				if (ShopDatabaseManager.saveDBShopSale(s)) continue;
+				error = true;
+			}
+			if (error) OMCLogger.error("Failed to save " + shop.getName() + " sales to database.");
+		}
 	}
 
     /**

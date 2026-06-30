@@ -93,7 +93,8 @@ public class ShopDatabaseManager {
 				OMCLogger.error("Shop for sale with shopUUID " + sale.getShopUUID() + " is null, sale not assigned");
 				continue;
 			}
-			shop.registerSale(sale.registerVariables());
+			sale.registerVariables();
+			shop.registerSale(sale);
 		}
 	}
 	
@@ -136,6 +137,8 @@ public class ShopDatabaseManager {
 	public static boolean deleteDBShop(Shop shop) {
 		try {
 			shopDao.delete(shop);
+			shopItemDao.delete(shop.getItem());
+			shopSaleDao.delete(shop.getSales());
 			return true;
 		} catch (SQLException e) {
 			OMCLogger.error("Failed to delete shop for owner UUID: {}\nCause: {}", shop.getOwnerUUID(), e.getMessage());

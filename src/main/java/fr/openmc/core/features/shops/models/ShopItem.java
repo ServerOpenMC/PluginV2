@@ -49,6 +49,7 @@ public class ShopItem implements Cloneable {
      * @return default the ShopItem
      */
     public ShopItem setAmount(int amount) {
+        if (amount > 28 * itemStack.getMaxStackSize()) amount = 28 * itemStack.getMaxStackSize();
         this.amount = amount;
         this.price = pricePerItem * amount;
         return this;
@@ -56,6 +57,7 @@ public class ShopItem implements Cloneable {
     
     public void addAmount(int amount) {
         this.amount += amount;
+        if (this.amount > 28 * itemStack.getMaxStackSize()) this.amount = 28 * itemStack.getMaxStackSize();
         this.price = pricePerItem * this.amount;
     }
     

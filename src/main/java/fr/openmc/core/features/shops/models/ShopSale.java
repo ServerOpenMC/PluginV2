@@ -5,7 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.shops.manager.ShopManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import lombok.Getter;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class ShopSale {
     @DatabaseField(canBeNull = false)
     private int amount;
     
-    private Player buyer;
+    private OfflinePlayer buyer;
     private ShopItem item;
 
     ShopSale() {
@@ -54,9 +54,9 @@ public class ShopSale {
         return ShopManager.getShopByUUID(this.shopUUID);
     }
     
-    public ShopSale registerVariables() {
-        if (this.buyer == null) this.buyer = CacheOfflinePlayer.getOfflinePlayer(this.buyerUUID).getPlayer();
-        if (this.item == null) this.item = getShop().getItem().clone().setAmount(this.amount);
-        return this;
+    public void registerVariables() {
+        if (this.buyer == null) this.buyer = CacheOfflinePlayer.getOfflinePlayer(this.buyerUUID);
+        ShopItem shopItem = getShop().getItem();
+        if (this.item == null && shopItem != null) this.item = shopItem.clone().setAmount(this.amount);
     }
 }

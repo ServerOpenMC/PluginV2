@@ -24,13 +24,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class ShopListener implements Listener {
-
-    private final Map<UUID, Boolean> inShopBarrel = new HashMap<>();
 
     @EventHandler
     public void onShopBreak(BlockBreakEvent e) {
@@ -64,8 +58,15 @@ public class ShopListener implements Listener {
         if (shop == null) return;
         
         e.setCancelled(true);
-        if (shop.hasItem()) new ShopMenu(e.getPlayer(), shop).open();
-        else new ShopSellingMenu(e.getPlayer(), shop).open();
+        if (shop.isMenuOpened()) return;
+        if (shop.hasItem()) {
+            new ShopMenu(e.getPlayer(), shop).open();
+            shop.setMenuOpened(true);
+        }
+        else {
+            new ShopSellingMenu(e.getPlayer(), shop).open();
+            shop.setMenuOpened(true);
+        }
     }
 
     @EventHandler
@@ -127,7 +128,14 @@ public class ShopListener implements Listener {
 	    }
 	    
 	    e.setCancelled(true);
-	    if (shop.hasItem()) new ShopMenu(player, shop).open();
-        else new ShopSellingMenu(player, shop).open();
+        if (shop.isMenuOpened()) return;
+	    if (shop.hasItem()) {
+            new ShopMenu(player, shop).open();
+            shop.setMenuOpened(true);
+        }
+        else {
+            new ShopSellingMenu(player, shop).open();
+            shop.setMenuOpened(true);
+        }
     }
 }

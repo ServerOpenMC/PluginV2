@@ -1,10 +1,12 @@
 package fr.openmc.core.features.shops.menu;
 
 import fr.openmc.api.input.dialog.DialogInput;
-import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.shops.manager.PlayerShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
@@ -21,10 +23,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ShopSellingMenu extends Menu {
+public class ShopSellingMenu extends PaginatedMenu {
 	
 	private final Shop shop;
 	private final Inventory barrelInventory;
@@ -52,23 +55,37 @@ public class ShopSellingMenu extends Menu {
 	}
 	
 	@Override
+	public int getSizeOfItems() {
+		return getItems().size();
+	}
+	
+	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
 	
 	}
 	
 	@Override
 	public void onClose(InventoryCloseEvent event) {
-	
+		this.shop.setMenuOpened(false);
 	}
 	
 	@Override
-	public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
-		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+	public @Nullable Material getBorderMaterial() {
+		return null;
+	}
+	
+	@Override
+	public @NotNull List<Integer> getStaticSlots() {
+		return StaticSlots.getStandardSlots(getInventorySize());
+	}
+	
+	@Override
+	public @NotNull List<ItemStack> getItems() {
+		List<ItemStack> list = new ArrayList<>();
 		
 		List<ItemStack> items = getUniqueItemStacks(barrelInventory.getContents());
-		for (int i = 0; i < items.size(); i++) {
-			ItemStack item = items.get(i);
-			map.put(9 + i, new ItemMenuBuilder(this, item, itemMeta -> {
+		for (ItemStack item : items) {
+			list.add(new ItemMenuBuilder(this, item, itemMeta -> {
 				if (itemMeta.hasLore()) itemMeta.lore().add(TranslationManager.translation("feature.shop.menu.selling.item_lore"));
 				else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.selling.item_lore")));
 			}).setOnClick(_ -> DialogInput.send(getOwner(),
@@ -83,8 +100,22 @@ public class ShopSellingMenu extends Menu {
 						MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.selling.added_item"), Prefix.SHOP, MessageType.SUCCESS, true);
 					})));
 		}
+		return list;
+	}
+	
+	@Override
+	public Map<Integer, ItemMenuBuilder> getButtons() {
+		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
-		map.put(49, new ItemMenuBuilder(this, Material.RED_DYE, itemMeta -> {
+		map.put(8, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFO.getBest(), itemMeta -> {
+			itemMeta.displayName(TranslationManager.translation("feature.shop.menu.selling.info.title"));
+			itemMeta.lore(List.of(
+					TranslationManager.translation("feature.shop.menu.selling.info.lore1"),
+					TranslationManager.translation("feature.shop.menu.selling.info.lore2")
+			));
+		}));
+		
+		map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.delete.btn.title"));
 			itemMeta.lore(List.of(
 					TranslationManager.translation("feature.shop.menu.main.delete.btn.lore2")

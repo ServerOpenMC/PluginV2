@@ -10,6 +10,7 @@ import fr.openmc.core.features.shops.manager.PlayerShopManager;
 import fr.openmc.core.features.shops.manager.ShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -50,9 +51,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        String name = this.shop.getOwner().getName();
-        if (name == null) name = "";
-        return TranslationManager.translation("feature.shop.menu.main.title", Component.text(name));
+        return TranslationManager.translation("feature.shop.menu.main.title", PlayerNameCache.name(getOwner().getUniqueId()));
     }
 
     @Override
@@ -71,7 +70,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-
+        this.shop.setMenuOpened(false);
     }
 
     @Override
@@ -116,21 +115,24 @@ public class ShopMenu extends Menu {
             
             map.put(3, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.sells.title"));
-                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stats.lore")));
+                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stats.lore.error")));
+                else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.sells.lore.success", Component.text(this.shop.getSales().size()).color(NamedTextColor.DARK_PURPLE))));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopSalesMenu(getOwner(), this.shop).open();
             }));
             
             map.put(4, new ItemMenuBuilder(this, Material.GOLD_INGOT, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.stats.title"));
-                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stats.lore")));
+                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.sells.lore.error")));
+                else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stats.lore.success", Component.text(this.shop.getTurnover() + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD))));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopStatsMenu(getOwner(), this.shop).open();
             }));
             
             map.put(5, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.stocks.title"));
-                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stocks.lore")));
+                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stocks.lore.error")));
+                else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stocks.lore.success", Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.BLUE))));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopStocksMenu(getOwner(), shop).open();
             }));
@@ -193,6 +195,7 @@ public class ShopMenu extends Menu {
             ));
         }).setOnClick(_ -> {
             this.shop.buy(getOwner(), this.amountToBuy);
+            getOwner().closeInventory();
         }));
         
         return map;
@@ -207,17 +210,15 @@ public class ShopMenu extends Menu {
         if (this.item == null || this.item.getAmount() == 0) return;
         if (amount <= 0) return;
         if ((amountToBuy + amount) > this.item.getAmount()) amountToBuy = this.item.getAmount();
-        
-        this.amountToBuy += amount;
+        else this.amountToBuy += amount;
         new ShopMenu(getOwner(), this.shop, this.amountToBuy).open();
     }
     
     private void removeAmount(int amount) {
-        if (this.item == null || this.item.getAmount() == 0) return;
+        if (this.item == null) return;
         if (amount <= 0) return;
         if (amountToBuy <= amount) amountToBuy = 1;
-        
-        this.amountToBuy -= amount;
+        else this.amountToBuy -= amount;
         new ShopMenu(getOwner(), this.shop, this.amountToBuy).open();
     }
 }

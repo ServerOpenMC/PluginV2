@@ -39,15 +39,16 @@ public class Shop {
     private int y;
     @DatabaseField(canBeNull = false)
     private int z;
+    @DatabaseField(canBeNull = false)
+    @Setter private double turnover = 0;
     
     private ShopItem item;
     private final List<ShopSale> sales = new ArrayList<>();
 	
     private Location location;
 	private Multiblock multiblock;
-
-    @Setter
-    private double turnover = 0;
+    
+    @Setter private boolean menuOpened;
     
     Shop() {
         // required for ORMLite
@@ -107,7 +108,7 @@ public class Shop {
         if (getTurnover() <= 0) return;
         double tempTurnover = getTurnover();
         EconomyManager.addBalance(player.getUniqueId(), tempTurnover * 0.8, "turnover");
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.get_turnover", Component.text(tempTurnover + " " + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.get_turnover", Component.text(tempTurnover * 0.8 + " " + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
         setTurnover(0);
     }
     

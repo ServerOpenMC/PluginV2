@@ -2,7 +2,6 @@ package fr.openmc.core.features.shops.commands;
 
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.manager.PlayerShopManager;
-import fr.openmc.core.features.shops.menu.ShopSearchMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -26,11 +25,5 @@ public class ShopCommand {
             return;
         }
         PlayerShopManager.startCreatingShop(player);
-    }
-
-    @Subcommand("search")
-    @Description("Recherche un shop")
-    public void searchShop(Player player){
-        new ShopSearchMenu(player).open();
     }
 }

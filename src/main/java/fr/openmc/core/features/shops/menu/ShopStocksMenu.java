@@ -85,7 +85,7 @@ public class ShopStocksMenu extends PaginatedMenu {
             ContainerUtils.removeItemsFromInventory((Barrel) this.shop.getMultiblock().stockBlockLoc().getBlock().getState(), item.getItemStack(), amountToAdd);
             item.addAmount(amountToAdd);
             MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.stocks.fill.success"), Prefix.SHOP, MessageType.SUCCESS, true);
-            update();
+            new ShopStocksMenu(getOwner(), shop).open();
         }));
         map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.COMPANY_BOX.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stocks.empty.name"));
@@ -124,7 +124,7 @@ public class ShopStocksMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-
+        this.shop.setMenuOpened(false);
     }
 
     @Override

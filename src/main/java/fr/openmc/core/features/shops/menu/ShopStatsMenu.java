@@ -57,7 +57,7 @@ public class ShopStatsMenu extends Menu {
 	
 	@Override
 	public void onClose(InventoryCloseEvent event) {
-	
+		this.shop.setMenuOpened(false);
 	}
 	
 	@Override

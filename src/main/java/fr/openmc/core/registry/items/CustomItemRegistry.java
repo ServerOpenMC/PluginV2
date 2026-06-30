@@ -81,6 +81,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem HOMES_ICON_SANDBLOCK = register("omc_homes:omc_homes_icon_sandblock", Material.CHEST);
     public final CustomItem HOMES_ICON_SHOP = register("omc_homes:omc_homes_icon_shop", Material.CHEST);
     public final CustomItem HOMES_ICON_XERNAS = register("omc_homes:omc_homes_icon_xernas", Material.CHEST);
+    public final CustomItem HOMES_ICON_INFO = register("omc_homes:omc_homes_icon_information", Material.CHEST);
 
     /* Hammer */
     public final CustomItem IRON_HAMMER = register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
