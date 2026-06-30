@@ -6,6 +6,7 @@ import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Drowned;
 import org.bukkit.inventory.ItemStack;
 
@@ -43,11 +44,22 @@ public class SeaGuard extends CustomMob<Drowned> {
         if (random.nextBoolean())
             drowned.getEquipment().setBoots(ItemStack.of(Material.COPPER_BOOTS));
         if (random.nextBoolean())
-            drowned.getEquipment().setItemInMainHand(ItemStack.of(Material.TRIDENT));
+            drowned.getEquipment().setItemInMainHand(getDrownedTrident());
 
         drowned.setAggressive(true);
         drowned.setShouldBurnInDay(false);
 
         return drowned;
+    }
+
+    private ItemStack getDrownedTrident() {
+        ItemStack trident = new ItemStack(Material.TRIDENT);
+
+        if (ThreadLocalRandom.current().nextBoolean())
+            trident.addEnchantment(Enchantment.IMPALING, 3);
+        if (ThreadLocalRandom.current().nextBoolean())
+            trident.addEnchantment(Enchantment.RIPTIDE, 3);
+
+        return trident;
     }
 }

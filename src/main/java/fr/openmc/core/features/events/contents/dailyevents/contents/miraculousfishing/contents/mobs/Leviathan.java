@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Drowned;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Nautilus;
@@ -44,26 +45,7 @@ public class Leviathan extends CustomMob<Nautilus> {
     public Nautilus spawn(Location spawnLocation) {
         Nautilus nautilus = this.getPreBuildMob(spawnLocation);
 
-        Drowned drowned = spawnLocation.getWorld().spawn(spawnLocation, Drowned.class);
-        if (ThreadLocalRandom.current().nextFloat() < 0.1f)
-            drowned.setBaby();
-        drowned.setShouldBurnInDay(false);
-        drowned.setAggressive(true);
-        drowned.getEquipment().setItemInMainHand(new ItemStack(Material.TRIDENT));
-        drowned.getEquipment().setHelmet(OMCRegistry.CUSTOM_ITEMS.LEVIATHAN_HEAD.getBest());
-        drowned.getEquipment().setHelmetDropChance(0f);
-
-        AttributeInstance maxHealth = drowned.getAttribute(Attribute.MAX_HEALTH);
-        if (maxHealth != null)
-            maxHealth.setBaseValue(this.getHealth());
-
-        drowned.setHealth(this.getHealth());
-
-        AttributeInstance attackSpeed = drowned.getAttribute(Attribute.ATTACK_SPEED);
-        if (attackSpeed != null)
-            attackSpeed.setBaseValue(6);
-
-        nautilus.addPassenger(drowned);
+        spawnPassager(nautilus, spawnLocation);
 
         startDashAi(nautilus);
 
@@ -87,5 +69,39 @@ public class Leviathan extends CustomMob<Nautilus> {
     private void triggerDash(Nautilus nautilus, LivingEntity target) {
         nautilus.setMemory(MemoryKey.ANGRY_AT, target.getUniqueId());
         nautilus.setMemory(MemoryKey.ATTACK_TARGET_COOLDOWN, null);
+    }
+
+    private void spawnPassager(Nautilus nautilus, Location spawnLocation) {
+        Drowned drowned = spawnLocation.getWorld().spawn(spawnLocation, Drowned.class);
+        if (ThreadLocalRandom.current().nextFloat() < 0.1f)
+            drowned.setBaby();
+        drowned.setShouldBurnInDay(false);
+        drowned.setAggressive(true);
+        drowned.getEquipment().setItemInMainHand(getDrownedTrident());
+        drowned.getEquipment().setHelmet(OMCRegistry.CUSTOM_ITEMS.LEVIATHAN_HEAD.getBest());
+        drowned.getEquipment().setHelmetDropChance(0f);
+
+        AttributeInstance maxHealth = drowned.getAttribute(Attribute.MAX_HEALTH);
+        if (maxHealth != null)
+            maxHealth.setBaseValue(this.getHealth());
+
+        drowned.setHealth(this.getHealth());
+
+        AttributeInstance attackSpeed = drowned.getAttribute(Attribute.ATTACK_SPEED);
+        if (attackSpeed != null)
+            attackSpeed.setBaseValue(6);
+
+        nautilus.addPassenger(drowned);
+    }
+
+    private ItemStack getDrownedTrident() {
+        ItemStack trident = new ItemStack(Material.TRIDENT);
+
+        if (ThreadLocalRandom.current().nextBoolean())
+            trident.addEnchantment(Enchantment.LOYALTY, 1);
+        if (ThreadLocalRandom.current().nextBoolean())
+            trident.addEnchantment(Enchantment.CHANNELING, 1);
+
+        return trident;
     }
 }
