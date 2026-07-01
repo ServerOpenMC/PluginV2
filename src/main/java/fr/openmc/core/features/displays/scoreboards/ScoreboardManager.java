@@ -113,9 +113,10 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
         scoreboards.sort(Comparator.comparingInt(BaseScoreboard::priority).reversed());
     }
 
-    public static void cleanupPlayer(UUID playerUUID) {
-        lastUpdate.remove(playerUUID);
-        boardCache.delete(playerUUID);
-        globalTeamManager.handlePlayerQuit(playerUUID);
+    public static void cleanupPlayer(Player player) {
+        UUID uuid = player.getUniqueId();
+        lastUpdate.remove(uuid);
+        boardCache.delete(uuid);
+        if (globalTeamManager !=null) globalTeamManager.handlePlayerQuit(player);
     }
 }

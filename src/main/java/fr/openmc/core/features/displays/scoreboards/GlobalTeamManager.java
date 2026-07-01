@@ -11,6 +11,7 @@ import net.luckperms.api.event.group.GroupDataRecalculateEvent;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -23,8 +24,9 @@ public class GlobalTeamManager {
     private LuckPerms luckPerms = null;
     private final ObjectCacheRepository<SternalBoard> boardCache;
     private final Map<String, Component> groupToPrefixCache = new ConcurrentHashMap<>();
-
-    private final Map<UUID, Map<String, Component>> clientTeamState = new ConcurrentHashMap<>();
+    private record TeamState(Set<String> members, Component prefix) {}
+    private final Map<String, TeamState> teams = new ConcurrentHashMap<>();
+    private final Map<UUID, String> playerTeam = new ConcurrentHashMap<>();
 
     public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache) {
         this.boardCache = boardCache;
@@ -52,6 +54,9 @@ public class GlobalTeamManager {
     public void updatePlayerTeam(Player player) {
         if (player == null || luckPerms == null) return;
 
+        UUID uuid = player.getUniqueId();
+        boolean firstSync = !playerTeam.containsKey(uuid);
+
         Group playerGroup = getPlayerHighestWeightGroup(player);
         if (playerGroup == null) return;
 
@@ -60,46 +65,95 @@ public class GlobalTeamManager {
                 _ -> LuckPermsHook.getFormattedPAPIPrefix(playerGroup)
         );
 
+        int weight = playerGroup.getWeight().orElse(0);
+        String newTeamName = "lp_%05d_%s".formatted(10000 - weight, playerGroup.getName());
+        String entry = player.getName();
+
+        if (firstSync) syncExistingTeamsTo(player);
+
+        String oldTeamName = playerTeam.get(uuid);
+        if (oldTeamName != null && !oldTeamName.equals(newTeamName)) {
+            removePlayerFromTeam(oldTeamName, entry);
+        }
+
+        TeamState state = teams.get(newTeamName);
+
+        if (state == null) {
+            Set<String> members = ConcurrentHashMap.newKeySet();
+            members.add(entry);
+            teams.put(newTeamName, new TeamState(members, prefix));
+            broadcastCreateTeam(newTeamName, prefix, entry);
+        } else if (!state.members().contains(entry)) {
+            state.members().add(entry);
+            broadcastAddPlayerToTeam(newTeamName, prefix, entry);
+        } else if (!state.prefix().equals(prefix)) {
+            teams.put(newTeamName, new TeamState(state.members(), prefix));
+            broadcastUpdateTeamPrefix(newTeamName, prefix);
+        }
+
+        playerTeam.put(uuid, newTeamName);
+
         updateScoreboardSidebar(player, prefix);
-        updateTabListTeamPacket(player, prefix, playerGroup);
     }
 
-    private void updateTabListTeamPacket(Player player, Component prefix, Group group) {
-        int weight = group.getWeight().orElse(0);
-        String teamName = "lp_%05d_%s".formatted(10000 - weight, group.getName());
+    private void removePlayerFromTeam(String teamName, String entry) {
+        TeamState state = teams.get(teamName);
+        if (state == null) return;
 
-        clientTeamState.putIfAbsent(player.getUniqueId(), new ConcurrentHashMap<>());
-        Map<String, Component> playerState = clientTeamState.get(player.getUniqueId());
+        state.members().remove(entry);
 
-        Component lastPrefix = playerState.get(teamName);
+        PlayerTeam team = new PlayerTeam(new Scoreboard(), teamName);
+        broadcast(ClientboundSetPlayerTeamPacket.createPlayerPacket(team, entry, ClientboundSetPlayerTeamPacket.Action.REMOVE));
 
-        if (lastPrefix == null) {
-            sendTeamPacket(player, teamName, prefix, true, player.getName()); // player inclus dans le create
-            playerState.put(teamName, prefix);
-        } else if (!lastPrefix.equals(prefix)) {
-            sendTeamPacket(player, teamName, prefix, false, null);
-            playerState.put(teamName, prefix);
+        if (state.members().isEmpty()) {
+            teams.remove(teamName);
+            broadcast(ClientboundSetPlayerTeamPacket.createRemovePacket(team));
         }
     }
 
-    private void sendTeamPacket(Player viewer, String teamName, Component prefix, boolean create, String entryToAdd) {
+    private void broadcastCreateTeam(String teamName, Component prefix, String entry) {
         PlayerTeam team = new PlayerTeam(new Scoreboard(), teamName);
         team.setPlayerPrefix(PaperAdventure.asVanilla(prefix));
+        team.getPlayers().add(entry);
+        broadcast(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
+    }
 
-        var connection = ((CraftPlayer) viewer).getHandle().connection;
+    private void broadcastAddPlayerToTeam(String teamName, Component prefix, String entry) {
+        PlayerTeam team = new PlayerTeam(new Scoreboard(), teamName);
+        team.setPlayerPrefix(PaperAdventure.asVanilla(prefix));
+        broadcast(ClientboundSetPlayerTeamPacket.createPlayerPacket(team, entry, ClientboundSetPlayerTeamPacket.Action.ADD));
+    }
 
-        if (create) {
-            if (entryToAdd != null) {
-                team.getPlayers().add(entryToAdd);
-            }
+    private void broadcastUpdateTeamPrefix(String teamName, Component prefix) {
+        PlayerTeam team = new PlayerTeam(new Scoreboard(), teamName);
+        team.setPlayerPrefix(PaperAdventure.asVanilla(prefix));
+        broadcast(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false));
+    }
+
+    private void syncExistingTeamsTo(Player player) {
+        var connection = ((CraftPlayer) player).getHandle().connection;
+
+        for (var entry : teams.entrySet()) {
+            TeamState state = entry.getValue();
+            if (state.members().isEmpty()) continue;
+
+            PlayerTeam team = new PlayerTeam(new Scoreboard(), entry.getKey());
+            team.setPlayerPrefix(PaperAdventure.asVanilla(state.prefix()));
+            team.getPlayers().addAll(state.members());
+
             connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
-        } else {
-            connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false));
         }
     }
 
-    public void handlePlayerQuit(UUID playerUUuid) {
-        clientTeamState.remove(playerUUuid);
+    private void broadcast(ClientboundSetPlayerTeamPacket packet) {
+        MinecraftServer.getServer().getPlayerList().broadcastAll(packet);
+    }
+
+    public void handlePlayerQuit(Player player) {
+        String teamName = playerTeam.remove(player.getUniqueId());
+        if (teamName != null) {
+            removePlayerFromTeam(teamName, player.getName());
+        }
     }
 
     private void updateScoreboardSidebar(Player player, Component prefix) {
