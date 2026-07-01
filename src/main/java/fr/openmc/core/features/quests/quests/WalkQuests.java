@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,12 @@ import java.util.List;
 
 public class WalkQuests extends Quest implements Listener {
     public WalkQuests() {
-        super("Le randonneur", List.of("Marcher {target} blocs"), Material.LEATHER_BOOTS, true);
+        super(
+                TranslationManager.translationString("feature.quests.walk.name"),
+                List.of(TranslationManager.translationString("feature.quests.walk.description")),
+                Material.LEATHER_BOOTS,
+                true
+        );
 
         this.addTiers(
                 new QuestTier(4000, new QuestMoneyReward(300)),

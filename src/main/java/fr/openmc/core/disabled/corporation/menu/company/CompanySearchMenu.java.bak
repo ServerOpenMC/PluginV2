@@ -89,11 +89,11 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+        map.put(48, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                 .setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
+        map.put(50, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
                 .setNextPageButton());
         if (CompanyManager.isInCompany(getOwner().getUniqueId())) {
             map.put(4, new ItemBuilder(this, CompanyManager.getCompany(getOwner().getUniqueId()).getHead(), itemMeta -> {

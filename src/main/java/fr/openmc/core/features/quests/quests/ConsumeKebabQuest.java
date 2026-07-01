@@ -4,6 +4,8 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,7 +17,11 @@ import java.util.List;
 public class ConsumeKebabQuest extends Quest implements Listener {
 
     public ConsumeKebabQuest() {
-        super("Miam miam", List.of("Manger {target} kebab{s}"), OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest());
+        super(
+                TranslationManager.translationString("feature.quests.consume_kebab.name"),
+                List.of(TranslationManager.translationString("feature.quests.consume_kebab.description")),
+                OMCRegistry.CUSTOM_ITEMS.KEBAB
+        );
 
         this.addTiers(
                 new QuestTier(10, new QuestMoneyReward(30)),
@@ -28,7 +34,7 @@ public class ConsumeKebabQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        if (item.isSimilar(OMCRegistry.CUSTOM_ITEMS.get("omc_foods:kebab").getBest())) {
+        if (item.isSimilar(OMCRegistry.CUSTOM_ITEMS.KEBAB.getBest())) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }

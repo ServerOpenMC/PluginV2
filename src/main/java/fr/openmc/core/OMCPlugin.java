@@ -5,7 +5,8 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.features.FeatureFactory;
+import fr.openmc.core.bootstrap.features.FeatureLoadingType;
 import fr.openmc.core.bootstrap.hooks.Hooks;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.bootstrap.integration.ErrorReporter;
@@ -24,7 +25,6 @@ import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
@@ -77,46 +77,49 @@ public class OMCPlugin extends JavaPlugin {
     public static final String VANISH_META_KEY = "omcstaff.vanished";
 
     // ** Registry of OMC Features
-    public final List<Feature> REGISTRY_FEATURE = new ArrayList<>(List.of(
-            new TicketManager(new File(this.getDataFolder(), "data/stats")),
-            new PrivateMessageManager(),
-            new SocialSpyManager(),
-            new SpawnManager(),
-            new UpdateManager(),
-            new EconomyManager(),
-            new BankManager(),
-            new ScoreboardManager(),
-            new HomesManager(),
-            new TPAManager(),
-            new FreezeManager(),
-            new TransactionsManager(),
-            new AnalyticsManager(),
-            new FriendManager(),
-            new TabList(),
-            new AdminShopManager(),
-            new HelpConfigManager(),
-            new BossbarManager(),
-            new AnimationsManager(),
-            new HalloweenManager(),
-            new QuestProgressSaveManager(),
-            new MotdUtils(),
-            new MascotsManager(),
-            new PlayerSettingsManager(),
-            new MailboxManager(),
-            new QuestsManager(),
-            new CityManager(),
-            new DynamicCooldownManager(),
-            new ContestManager(),
-            new WeeklyEventsManager(),
-            new CalendarManager(),
-            new DreamManager(),
-            new MultiBlockManager(),
-            new MilestonesManager(),
-            new LeaderboardManager(),
-            new MainMenu(),
-            new HologramLoader(),
-            new HomeIconCacheManager()
+    // () -> nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
+    public final List<FeatureFactory> REGISTRY_FEATURE = new ArrayList<>(List.of(
+            () -> new TicketManager(new File(this.getDataFolder(), "data/stats")),
+            PrivateMessageManager::new,
+            SocialSpyManager::new,
+            SpawnManager::new,
+            UpdateManager::new,
+            EconomyManager::new,
+            BankManager::new,
+            ScoreboardManager::new,
+            HomesManager::new,
+            TPAManager::new,
+            FreezeManager::new,
+            TransactionsManager::new,
+            AnalyticsManager::new,
+            FriendManager::new,
+            () -> new TabList(),
+            AdminShopManager::new,
+            HelpConfigManager::new,
+            BossbarManager::new,
+            () -> new AnimationsManager(),
+            () -> new HalloweenManager(),
+            QuestProgressSaveManager::new,
+            MotdUtils::new,
+            MascotsManager::new,
+            PlayerSettingsManager::new,
+            MailboxManager::new,
+            QuestsManager::new,
+            CityManager::new,
+            DynamicCooldownManager::new,
+            ContestManager::new,
+            WeeklyEventsManager::new,
+            CalendarManager::new,
+            DreamManager::new,
+            MultiBlockManager::new,
+            MilestonesManager::new,
+            () -> new LeaderboardManager(),
+            () -> new MainMenu(),
+            () -> new HologramLoader(),
+            HomeIconCacheManager::new
     ));
+
+    public final List<Feature> loadedFeature = new ArrayList<>();
 
     // ** Registry of OMC Plugin Hooks
     public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
@@ -176,9 +179,15 @@ public class OMCPlugin extends JavaPlugin {
         OMCRegistry.initAll();
 
         /* FEATURES */
-        REGISTRY_FEATURE.stream()
-                .filter(f -> !(f instanceof LoadAfterItemsAdder))
-                .forEachOrdered(Feature::startInit);
+        REGISTRY_FEATURE
+                .forEach(f -> {
+                    Feature feature = f.create(FeatureLoadingType.RUNTIME);
+
+                    if (feature != null) {
+                        feature.startInit();
+                        loadedFeature.add(feature);
+                    }
+                });
 
         // * Si ItemsAdder est pas présent, alors on charge les dernieres features maintenant
         if (!ItemsAdderHook.isEnable()) {
@@ -197,12 +206,15 @@ public class OMCPlugin extends JavaPlugin {
         OMCRegistry.postInitAll();
 
         /* FEATURES */
-        REGISTRY_FEATURE.stream()
-                .filter(f -> f instanceof LoadAfterItemsAdder)
-                .forEachOrdered(Feature::startInit);
+        REGISTRY_FEATURE
+                .forEach(f -> {
+                    Feature feature = f.create(FeatureLoadingType.AFTER_IA);
 
-        // todo: sera supprimé dans https://github.com/ServerOpenMC/PluginV2/pull/1168
-        DreamDimensionManager.postInit();
+                    if (feature != null) {
+                        feature.startInit();
+                        loadedFeature.add(feature);
+                    }
+                });
 
         if (WorldGuardHook.isEnable()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
@@ -215,7 +227,7 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // ** SAVE **
-        for (Feature feature : REGISTRY_FEATURE) {
+        for (Feature feature : loadedFeature) {
             feature.startSave();
         }
 

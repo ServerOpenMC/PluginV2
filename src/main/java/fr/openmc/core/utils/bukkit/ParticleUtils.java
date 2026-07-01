@@ -38,7 +38,9 @@ public class ParticleUtils {
     public static Color color1;
     public static Color color2;
 
-    // based on org.bukkit.craftbukkit.CraftParticle
+    /**
+     * based on {@link org.bukkit.craftbukkit.CraftParticle}
+      */
     private static final Map<String, Supplier<Object>> PARTICLE_FALLBACKS;
 
     static {
@@ -113,9 +115,11 @@ public class ParticleUtils {
     }
 
     public static void sendParticlePacket(Particle particle, Location loc, int radius) {
-        Collection<Player> players = loc.getNearbyEntitiesByType(Player.class, radius);
+        sendParticlePacket(particle, loc, loc.getNearbyEntitiesByType(Player.class, radius));
+    }
 
-        for (Player player : players) {
+    public static void sendParticlePacket(Particle particle, Location loc, Collection<Player> receivers) {
+        for (Player player : receivers) {
             sendParticlePacket(player, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, null);
         }
     }
@@ -264,9 +268,9 @@ public class ParticleUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 1L);
     }
 
-    public static void spawnCloudParticles(Location center, Particle particle, int count, double radius, double height) {
-        for (Player player : center.getNearbyEntitiesByType(Player.class, radius)) {
-            spawnCloudParticles(player, particle, center, count, radius, height);
+    public static void spawnCloudParticlesToAll(Location center, Particle particle, int count, double radiusCloud, double height, Collection<Player> receivers) {
+        for (Player player : receivers) {
+            spawnCloudParticles(player, particle, center, count, radiusCloud, height);
         }
     }
 

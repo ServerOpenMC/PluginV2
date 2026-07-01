@@ -2,9 +2,11 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
@@ -14,8 +16,10 @@ import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -28,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
@@ -38,7 +41,10 @@ public class LetterMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Lettre de " + letterHead.displayName());
+        return TranslationManager.translation(
+                "feature.mailboxes.menu.title.letter",
+                letterHead.displayName()
+        );
     }
 
     @Override
@@ -58,9 +64,10 @@ public class LetterMenu extends Menu {
             if (letter.refuse()) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("Vous avez refusé la lettre #", NamedTextColor.DARK_GREEN)
-                                .append(Component.text(id, NamedTextColor.GREEN))
-                                .append(Component.text(".", NamedTextColor.DARK_GREEN)),
+                        TranslationManager.translation(
+                                "feature.mailboxes.message.refuse_success",
+                                Component.text(id).color(NamedTextColor.GREEN)
+                        ).color(NamedTextColor.DARK_GREEN),
                         Prefix.MAILBOX,
                         MessageType.SUCCESS,
                         true
@@ -69,9 +76,10 @@ public class LetterMenu extends Menu {
             }
         }
 
-        Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                .append(Component.text(id, NamedTextColor.RED))
-                .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
+        Component message = TranslationManager.translation(
+                "feature.mailboxes.message.letter_not_found",
+                Component.text(id).color(NamedTextColor.RED)
+        ).color(NamedTextColor.DARK_RED);
         MessagesManager.sendMessage(
                 player,
                 message,
@@ -93,9 +101,11 @@ public class LetterMenu extends Menu {
 
             MessagesManager.sendMessage(
                     getOwner(),
-                    Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                            .append(Component.text(letterHead.getItemsCount(), NamedTextColor.GREEN))
-                            .append(Component.text(" " + pluralize("item", letterHead.getItemsCount()), NamedTextColor.DARK_GREEN)),
+                    TranslationManager.translation(
+                            "feature.mailboxes.message.items_received",
+                            Component.text(letterHead.getItemsCount()).color(NamedTextColor.GREEN),
+                            Component.text(pluralize("item", letterHead.getItemsCount())).color(NamedTextColor.DARK_GREEN)
+                    ).color(NamedTextColor.DARK_GREEN),
                     Prefix.MAILBOX,
                     MessageType.SUCCESS,
                     true
@@ -107,9 +117,10 @@ public class LetterMenu extends Menu {
 
 
         } else {
-            Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                    .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
-                    .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.letter_not_found",
+                    Component.text(letterHead.getLetterId()).color(NamedTextColor.RED)
+            ).color(NamedTextColor.DARK_RED);
             MessagesManager.sendMessage(
                     getOwner(),
                     message,
@@ -133,8 +144,8 @@ public class LetterMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         ItemStack[] items = getLetterItems();
 
@@ -144,13 +155,26 @@ public class LetterMenu extends Menu {
         }
 
         for (int i = 0; i < items.length; i++)
-            content.put(i + 9, new ItemBuilder(this, items[i]));
+            content.put(i + 9, new ItemMenuBuilder(this, items[i]));
 
-        content.put(45, homeBtn(this));
-        content.put(48, acceptBtn(this).setOnClick(e -> accept()));
-        content.put(49, new ItemBuilder(this, letterHead));
-        content.put(50, refuseBtn(this).setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
-        content.put(53, cancelBtn(this).setOnClick(e -> cancel()));
+        content.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
+        content.put(48, ItemMenuTemplate.BTN_MAILBOX_ACCEPT.apply(this)
+                .setOnClick(_ -> accept()));
+        content.put(49, new ItemMenuBuilder(this, letterHead));
+        content.put(50, ItemMenuTemplate.btn(
+                this,
+                        "✘",
+                        "feature.mailboxes.menu.button.refuse",
+                        List.of(
+                                TranslationManager.translation("feature.mailboxes.menu.refuse_warning")
+                                        .color(NamedTextColor.RED)
+                                        .decorate(TextDecoration.BOLD)
+                                        .decoration(TextDecoration.ITALIC, false)
+                        ),
+                        OMCRegistry.CUSTOM_ITEMS.MAILBOX_REFUSE_BTN, NamedTextColor.DARK_RED, true)
+                .setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
+        content.put(53, ItemMenuTemplate.BTN_CLOSE.apply(this)
+                .setOnClick(_ -> cancel()));
 
         return content;
     }
@@ -159,9 +183,10 @@ public class LetterMenu extends Menu {
         getOwner().closeInventory();
         MessagesManager.sendMessage(
                 getOwner(),
-                Component.text("Vous avez annulé la lettre #", NamedTextColor.DARK_RED)
-                        .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
-                        .append(Component.text(".", NamedTextColor.DARK_RED)),
+                TranslationManager.translation(
+                        "feature.mailboxes.message.cancel_letter",
+                        Component.text(letterHead.getLetterId()).color(NamedTextColor.RED)
+                ).color(NamedTextColor.DARK_RED),
                 Prefix.MAILBOX,
                 MessageType.ERROR,
                 true

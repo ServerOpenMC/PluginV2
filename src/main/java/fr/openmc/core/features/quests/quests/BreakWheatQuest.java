@@ -4,6 +4,7 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
@@ -19,8 +20,8 @@ public class BreakWheatQuest extends Quest implements Listener {
 
     public BreakWheatQuest() {
         super(
-                "Fermier dévoué",
-                List.of("Récolter {target} blé"),
+                TranslationManager.translationString("feature.quests.break_wheat.name"),
+                List.of(TranslationManager.translationString("feature.quests.break_wheat.description")),
                 new ItemStack(Material.WHEAT)
         );
 

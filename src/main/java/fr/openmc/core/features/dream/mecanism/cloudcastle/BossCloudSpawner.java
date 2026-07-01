@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.dream.registries.mobs.Breezy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ public class BossCloudSpawner implements Listener {
         if (block.getState() instanceof TrialSpawner spawner) {
             TrialSpawnerConfiguration normal = spawner.getNormalConfiguration();
 
-            normal.setSpawnedEntity(OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:breezy").getMobSnapshot());
+            normal.setSpawnedEntity(DreamMobsRegistry.BREEZY.getMobSnapshot());
 
             NamespacedKey lootKey = new NamespacedKey("openmc", "cloud_castle/boss_spawner");
             LootTable lootTable = Bukkit.getLootTable(lootKey);

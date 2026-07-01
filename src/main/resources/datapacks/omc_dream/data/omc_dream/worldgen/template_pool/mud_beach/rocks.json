@@ -1,0 +1,67 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_1",
+        "processors": "omc_dream:mud_beach/rocks_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_2",
+        "processors": "omc_dream:mud_beach/big_rocks_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_3",
+        "processors": "omc_dream:mud_beach/rocks_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_4",
+        "processors": "omc_dream:mud_beach/rocks_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_5",
+        "processors": "omc_dream:mud_beach/big_rocks_processor"
+      }
+    },{
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_6",
+        "processors": "omc_dream:mud_beach/rocks_processor"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "omc_dream:mud_beach/rock_7",
+        "processors": "omc_dream:mud_beach/big_rocks_processor"
+      }
+    }
+  ]
+}

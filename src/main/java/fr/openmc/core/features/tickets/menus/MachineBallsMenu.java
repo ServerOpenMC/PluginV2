@@ -2,7 +2,8 @@ package fr.openmc.core.features.tickets.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.tickets.PlayerStats;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -45,13 +46,13 @@ public class MachineBallsMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> items = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
         PlayerStats stats = TicketManager.getPlayerStats(getOwner().getUniqueId());
         int tickets = stats != null ? stats.getTicketRemaining() : 0;
 
-        items.put(2, new ItemBuilder(
+        items.put(2, new ItemMenuBuilder(
                 this,
                 Material.PAPER,
                 itemMeta -> {
@@ -84,7 +85,7 @@ public class MachineBallsMenu extends Menu {
                 }
         ));
 
-        items.put(6, new ItemBuilder(
+        items.put(6, new ItemMenuBuilder(
                 this,
                 Material.NETHER_STAR,
                 itemMeta -> {
@@ -102,8 +103,10 @@ public class MachineBallsMenu extends Menu {
                         MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.not_enough_tickets"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
-                    MachineBallsOpenMenu menu = new MachineBallsOpenMenu(getOwner());
-                    menu.open();
+
+                    if (TicketManager.useTicket(getOwner().getUniqueId())) {
+                        OMCRegistry.CUSTOM_LOOTBOXES.MACHINE_BALL.open(getOwner());
+                    }
                 }
         ));
 

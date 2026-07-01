@@ -20,7 +20,7 @@ public class DreamSpider extends DreamMob<Spider> {
                 RandomUtils.randomBetween(0.2, 0.3),
                 RandomUtils.randomBetween(1.5, 2.0),
                 List.of(new CustomLoot(
-                        DreamItemRegistry.getByName("corrupted_string"),
+                        DreamItemRegistry.CORRUPTED_STRING,
                         0.80,
                         1,
                         3

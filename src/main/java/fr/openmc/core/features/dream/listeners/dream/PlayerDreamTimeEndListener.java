@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
-import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
+import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

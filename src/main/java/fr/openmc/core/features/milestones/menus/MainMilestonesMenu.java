@@ -2,7 +2,7 @@ package fr.openmc.core.features.milestones.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.NoCityMenu;
@@ -10,7 +10,9 @@ import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,7 +33,7 @@ public class MainMilestonesMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des milestones - Plus d'info");
+        return TranslationManager.translation("feature.milestones.menu.title.main");
     }
 
     @Override
@@ -50,13 +52,13 @@ public class MainMilestonesMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
         
         Milestone tutoMilestone = MilestoneType.TUTORIAL.getMilestone();
         
-        inventory.put(10, new ItemBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
+        inventory.put(10, new ItemMenuBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
             itemMeta.displayName(Component.text(tutoMilestone.getName()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(tutoMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
@@ -64,24 +66,28 @@ public class MainMilestonesMenu extends Menu {
         
 	    List<Component> loreMilestoneVille = new ArrayList<>();
         
-        loreMilestoneVille.add(Component.text("§7Découvrez l'intégralité §3des villes"));
-        loreMilestoneVille.add(Component.text("§7Via cette §3route de progression §7!"));
+        loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.intro_1"));
+        loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.intro_2"));
         loreMilestoneVille.add(Component.empty());
-        loreMilestoneVille.add(Component.text("§8§oLes claims, Les mascottes, Les maires, Les guerres, ..."));
+        loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.details"));
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             loreMilestoneVille.add(Component.empty());
-            loreMilestoneVille.add(Component.text("§cCréez ou rejoignez une ville pour accéder à cela !"));
+            loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.need_city"));
         } else {
             loreMilestoneVille.add(Component.empty());
-            loreMilestoneVille.add(Component.text("§7Level de votre ville : §3" + playerCity.getLevel()));
+            loreMilestoneVille.add(TranslationManager.translation(
+                    "feature.milestones.menu.city.lore.level",
+                    Component.text(playerCity.getLevel()).color(NamedTextColor.DARK_AQUA)
+            ).color(NamedTextColor.GRAY));
             loreMilestoneVille.add(Component.empty());
-            loreMilestoneVille.add(Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A VOTRE MILESTONE"));
+            loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.click"));
         }
 
-        inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
-            itemMeta.displayName(Component.text("§3Milestone des villes").decoration(TextDecoration.ITALIC, false));
+        inventory.put(12, new ItemMenuBuilder(this, Material.SEA_LANTERN, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.city.name")
+                    .decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(loreMilestoneVille);
         }).setOnClick(inventoryClickEvent -> {
             if (playerCity == null) {
@@ -93,15 +99,15 @@ public class MainMilestonesMenu extends Menu {
         
         Milestone dreamMilestone = MilestoneType.DREAM.getMilestone();
         
-        inventory.put(14, new ItemBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
+        inventory.put(14, new ItemMenuBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
             itemMeta.displayName(Component.text(dreamMilestone.getName()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(dreamMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
         }).setOnClick(inventoryClickEvent -> dreamMilestone.getMenu(player).open()));
 
-        inventory.put(16, new ItemBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(Component.text(" §ks §cComming soon §ke"))));
+        inventory.put(16, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.coming_soon"))));
 
-        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
+        inventory.put(35, new ItemMenuBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.back")), true));
 
         return inventory;
     }

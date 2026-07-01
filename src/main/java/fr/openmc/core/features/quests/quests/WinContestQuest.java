@@ -5,6 +5,8 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.eve
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
+import fr.openmc.core.registry.items.CustomItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,12 +18,12 @@ public class WinContestQuest extends Quest implements Listener {
 
     public WinContestQuest() {
         super(
-                "Choisir son camp",
-                List.of("Gagne {target} contest"),
+                TranslationManager.translationString("feature.quests.win_contest.name"),
+                List.of(TranslationManager.translationString("feature.quests.win_contest.description")),
                 Material.NAUTILUS_SHELL
         );
         
-        this.addTier(new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.get("omc_contest:contest_shell").getBest(), 5)));
+        this.addTier(new QuestTier(1, new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, 5)));
     }
     
     @EventHandler

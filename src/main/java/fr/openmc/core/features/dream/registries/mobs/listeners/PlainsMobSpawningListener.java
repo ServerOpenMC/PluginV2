@@ -1,8 +1,7 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
@@ -40,17 +39,17 @@ public class PlainsMobSpawningListener implements Listener {
         World world = spawningLoc.getWorld();
         if (!DreamUtils.isDreamWorld(world)) return;
         e.setCancelled(true);
-        if (!world.getBiome(spawningLoc).equals(DreamBiome.SCULK_PLAINS.getBiome())) return;
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.SCULK_PLAINS)) return;
 
         if (e.getEntity().getType().equals(EntityType.CREAKING)) {
             e.setCancelled(false);
-            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_creaking").apply(e.getEntity());
+            DreamMobsRegistry.DREAM_CREAKING.apply(e.getEntity());
             return;
         }
 
         double choice = Math.random();
         if (choice < DREAM_SPIDER_PROBABILITY) {
-            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:dream_spider").spawn(spawningLoc);
+            DreamMobsRegistry.DREAM_SPIDER.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

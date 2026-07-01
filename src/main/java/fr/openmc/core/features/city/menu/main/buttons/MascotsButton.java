@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class MascotsButton {
-    public static void init(Menu menu, Map<Integer, ItemBuilder> contents, City city, int[] slots) {
+    public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
         Mascot mascot = city.getMascot();
 
@@ -46,8 +46,8 @@ public class MascotsButton {
         }
     }
 
-    private static Supplier<ItemBuilder> getItemSupplier(Menu menu, City city, Mascot mascot, LivingEntity mob, Player player) {
-        return () -> new ItemBuilder(menu, Material.PAPER, itemMeta -> {
+    private static Supplier<ItemMenuBuilder> getItemSupplier(Menu menu, City city, Mascot mascot, LivingEntity mob, Player player) {
+        return () -> new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.mascots.title"));
             itemMeta.lore(getDynamicLore(city, mascot, mob));
             itemMeta.setItemModel(NamespacedKey.minecraft("air"));

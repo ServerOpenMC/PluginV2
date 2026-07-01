@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.CityRequirement;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -54,6 +55,17 @@ public class ItemDepositRequirement implements CityRequirement {
      */
     public ItemDepositRequirement(ItemStack itemType, int amountRequired) {
         this.itemType = itemType;
+        this.amountRequired = amountRequired;
+    }
+
+    /**
+     * Crée une condition de dépôt en spécifiant directement un CustomItem.
+     *
+     * @param customItem       l'CustomItem requis
+     * @param amountRequired le nombre d'items requis
+     */
+    public ItemDepositRequirement(CustomItem customItem, int amountRequired) {
+        this.itemType = customItem.getBest();
         this.amountRequired = amountRequired;
     }
 

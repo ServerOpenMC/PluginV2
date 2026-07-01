@@ -8,43 +8,43 @@ import java.util.Set;
 
 public class CloudFishingLootTable extends CustomLootTable {
     @Override
-    public String getName() { return "omc_dream:cloud_fishing"; }
+    public String getNamespace() { return "omc_dream:cloud_fishing"; }
 
     @Override
     public Set<CustomLoot> getLoots() {
         return Set.of(
                 new CustomLoot(
-                        DreamItemRegistry.getByName("meteo_wand"),
+                        DreamItemRegistry.METEO_WAND,
                         0.05,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("poissonion"),
+                        DreamItemRegistry.POISSONION,
                         0.5,
                         1,
                         2
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("moon_fish"),
+                        DreamItemRegistry.MOON_FISH,
                         0.5,
                         1,
                         2
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("sun_fish"),
+                        DreamItemRegistry.SUN_FISH,
                         0.5,
                         1,
                         2
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("dockerfish"),
+                        DreamItemRegistry.DOCKER_FISH,
                         0.1,
                         1,
                         1
                 ),
                 new CustomLoot(
-                        DreamItemRegistry.getByName("somnifere"),
+                        DreamItemRegistry.SOMNIFERE,
                         0.4,
                         1,
                         1

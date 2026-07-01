@@ -3,7 +3,7 @@ package fr.openmc.core.features.adminshop.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopCategory;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -44,12 +44,12 @@ public class AdminShopMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         int slot = 10;
         for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
-            content.put(slot, new ItemBuilder(this, category.material(), meta ->
+            content.put(slot, new ItemMenuBuilder(this, category.material(), meta ->
                     meta.displayName(category.name().decoration(TextDecoration.ITALIC, false)
             )).setItemId(category.id())
                     .setOnClick(e -> {

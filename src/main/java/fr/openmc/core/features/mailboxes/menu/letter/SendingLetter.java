@@ -2,16 +2,17 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -61,7 +62,8 @@ public class SendingLetter extends Menu {
         if (items.length == 0) {
             MessagesManager.sendMessage(
                     getOwner(),
-                    Component.text("Vous ne pouvez pas envoyer de lettre vide", NamedTextColor.DARK_RED),
+                    TranslationManager.translation("feature.mailboxes.message.empty_letter")
+                            .color(NamedTextColor.DARK_RED),
                     Prefix.MAILBOX,
                     MessageType.ERROR,
                     true
@@ -84,7 +86,11 @@ public class SendingLetter extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Envoyer une lettre à " + receiver.getName());
+        String receiverName = receiver.getName() == null ? "" : receiver.getName();
+        return TranslationManager.translation(
+                "feature.mailboxes.menu.title.sending",
+                Component.text(receiverName)
+        );
     }
 
     @Override
@@ -107,8 +113,8 @@ public class SendingLetter extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> items = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
         List<Integer> slots =
                 IntStream.rangeClosed(0, 53)
@@ -117,13 +123,13 @@ public class SendingLetter extends Menu {
                         .toList();
 
         for (int slot : slots) {
-            items.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
+            items.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
-        items.put(49, new ItemBuilder(this, getHead(receiver)).setOnClick(e -> {}));
-        items.put(45, new ItemBuilder(this, MailboxMenuManager.homeBtn(this)));
-        items.put(48, new ItemBuilder(this, MailboxMenuManager.sendBtn(this)).setOnClick(e -> sendLetter(e.getInventory())));
-        items.put(50, new ItemBuilder(this, MailboxMenuManager.cancelBtn(this)).setOnClick(e -> getOwner().closeInventory()));
+        items.put(49, new ItemMenuBuilder(this, getHead(receiver)));
+        items.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
+        items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this).setOnClick(e -> sendLetter(e.getInventory())));
+        items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this).setOnClick(_ -> getOwner().closeInventory()));
 
         return items;
     }

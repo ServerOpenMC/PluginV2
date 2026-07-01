@@ -5,6 +5,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -44,20 +45,23 @@ public class BreakLogQuest extends Quest implements Listener {
 
         for (var entry : logWeights.entrySet()) {
             lore.add(Component.text("- ").color(NamedTextColor.DARK_GRAY)
-                    .append(ItemUtils.getItemTranslation(entry.getKey()))
-                    .append(Component.text(" : "))
-                    .append(Component.text(entry.getValue()).color(NamedTextColor.AQUA))
-                    .append(Component.text(" points"))
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.GRAY)
-            );
+                    .append(TranslationManager.translation(
+                            "feature.quests.break_log.lore.line",
+                            ItemUtils.getItemTranslation(entry.getKey()),
+                            Component.text(entry.getValue()).color(NamedTextColor.AQUA)
+                    ).color(NamedTextColor.GRAY))
+                    .decoration(TextDecoration.ITALIC, false));
         }
 
         return lore;
     }
 
     public BreakLogQuest() {
-        super("Bûcheron de l'extrême", List.of("Casser {target} bûches"), new ItemStack(Material.IRON_AXE));
+        super(
+                TranslationManager.translationString("feature.quests.break_log.name"),
+                List.of(TranslationManager.translationString("feature.quests.break_log.description")),
+                new ItemStack(Material.IRON_AXE)
+        );
 
         this.setAdditionalLore(getLore());
         this.addTiers(

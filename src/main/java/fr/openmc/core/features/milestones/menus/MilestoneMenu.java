@@ -2,11 +2,15 @@ package fr.openmc.core.features.milestones.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -49,7 +53,10 @@ public class MilestoneMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des milestones - " + milestone.getName());
+        return TranslationManager.translation(
+                "feature.milestones.menu.title.milestone",
+                Component.text(milestone.getName())
+        );
     }
 
     @Override
@@ -68,8 +75,8 @@ public class MilestoneMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         Player player = getOwner();
         int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
 
@@ -86,14 +93,18 @@ public class MilestoneMenu extends Menu {
             boolean active = stepIndex == currentStep;
 
             List<Component> stepLore = new ArrayList<>();
-            quest.getDescription(player.getUniqueId()).forEach(line -> stepLore.add(Component.text(line)));
+            quest.getDescription(player.getUniqueId()).forEach(line -> stepLore.add(
+                    LegacyComponentSerializer.legacySection().deserialize(line)
+                            .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+            ));
 
 
             int slot = snake.nodes.get(i);
-            content.put(slot, new ItemBuilder(this, quest.getIcon(), meta -> {
-                meta.displayName(Component.text(
-                        (completed ? "§a" : active ? "§e" : "§7") + quest.getName()
-                ));
+            NamedTextColor nameColor = completed ? NamedTextColor.GREEN : active ? NamedTextColor.YELLOW : NamedTextColor.GRAY;
+            content.put(slot, new ItemMenuBuilder(this, quest.getIcon(), meta -> {
+                meta.displayName(Component.text(quest.getName())
+                        .color(nameColor)
+                        .decoration(TextDecoration.ITALIC, false));
                 meta.lore(stepLore);
                 meta.setEnchantmentGlintOverride(completed || active);
             }));
@@ -120,14 +131,15 @@ public class MilestoneMenu extends Menu {
                     ? Material.LIME_STAINED_GLASS_PANE
                     : Material.GRAY_STAINED_GLASS_PANE;
 
-            content.put(a, new ItemBuilder(this, linkMat).hideTooltip(true));
+            content.put(a, new ItemMenuBuilder(this, linkMat).hideTooltip(true));
         }
 
-        content.put(45, new ItemBuilder(this, Material.ARROW, true));
+        content.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
         if (offset > 0) {
-            content.put(48, new ItemBuilder(this, Material.ARROW,
-                    meta -> meta.displayName(Component.text("§e◀ Page précédente")))
+            content.put(48, new ItemMenuBuilder(this, Material.ARROW,
+                    meta -> meta.displayName(TranslationManager.translation("feature.milestones.menu.page.previous")
+                            .decoration(TextDecoration.ITALIC, false)))
                     .setOnClick(c -> {
                         offset = Math.max(0, offset - MAX_VISIBLE_NODES);
                         open();
@@ -135,16 +147,18 @@ public class MilestoneMenu extends Menu {
         }
 
         if (offset + visible < steps.size()) {
-            content.put(50, new ItemBuilder(this, Material.ARROW,
-                    meta -> meta.displayName(Component.text("§ePage suivante ▶")))
+            content.put(50, new ItemMenuBuilder(this, Material.ARROW,
+                    meta -> meta.displayName(TranslationManager.translation("feature.milestones.menu.page.next")
+                            .decoration(TextDecoration.ITALIC, false)))
                     .setOnClick(c -> {
                         offset = Math.min(steps.size() - 1, offset + MAX_VISIBLE_NODES);
                         open();
                     }));
         }
 
-        content.put(53, new ItemBuilder(this, Material.BARRIER,
-                meta -> meta.displayName(Component.text("§cFermer"))).setCloseButton());
+        content.put(53, new ItemMenuBuilder(this, Material.BARRIER,
+                meta -> meta.displayName(TranslationManager.translation("feature.milestones.menu.close")
+                        .decoration(TextDecoration.ITALIC, false))).setCloseButton());
 
         return content;
     }

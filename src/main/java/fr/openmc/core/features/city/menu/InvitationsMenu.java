@@ -2,10 +2,10 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
@@ -20,7 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InvitationsMenu extends PaginatedMenu {
 
@@ -78,7 +81,7 @@ public class InvitationsMenu extends PaginatedMenu {
                     Component.text(inviterCity.getName()).color(NamedTextColor.GRAY)
             );
 
-            items.add(new ItemBuilder(this, Material.PAPER, itemMeta -> {
+            items.add(new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
                 itemMeta.itemName(invitationName);
                 itemMeta.lore(invitationLore);
             }).setOnClick(InventoryClickEvent -> {
@@ -115,26 +118,13 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.back"));
-            itemMeta.lore(List.of(TranslationManager.translation("messages.menus.back_lore")));
-        }, true));
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
 
-        map.put(49, new ItemBuilder(this, OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_cancel").getBest(), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
-        }).setOnClick(inventoryClickEvent ->
-                getOwner().closeInventory()
-        ));
-
-        map.put(48,
-                new ItemBuilder(this,
-                        Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_back_orange")).getBest(),
-                        itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
-        map.put(50,
-                new ItemBuilder(this, Objects.requireNonNull(OMCRegistry.CUSTOM_ITEMS.get("_iainternal:icon_next_orange")).getBest(),
-                        itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
+        map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
+        map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
 
         return map;
     }

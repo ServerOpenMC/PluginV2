@@ -4,6 +4,7 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.registry.items.contents.UseHammerEvent;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -18,7 +19,11 @@ import java.util.List;
 public class BreakStoneQuest extends Quest implements Listener {
 
     public BreakStoneQuest() {
-        super("Casseur de pierres", List.of("Miner {target} blocs de pierre"), new ItemStack(Material.DIAMOND_PICKAXE));
+        super(
+                TranslationManager.translationString("feature.quests.break_stone.name"),
+                List.of(TranslationManager.translationString("feature.quests.break_stone.description")),
+                new ItemStack(Material.DIAMOND_PICKAXE)
+        );
 
         this.addTiers(
                 new QuestTier(10000, new QuestMoneyReward(500)),

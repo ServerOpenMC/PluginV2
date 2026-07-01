@@ -11,6 +11,9 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,23 +26,26 @@ public class CityLevelTwoQuest extends MilestoneQuest implements Listener {
     
     public CityLevelTwoQuest() {
         super(
-                "Avoir une ville niveau 2",
+                TranslationManager.translationString("feature.milestones.tutorial.quest.city_level_two.name"),
                 List.of(
-                        "§fFaites §d/city milestone §fpour en savoir plus comment",
-                        "§faméliorer votre ville !"
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_level_two.description.1"),
+                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_level_two.description.2")
                 ),
                 Material.NETHER_STAR,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.CITY_LEVEL_2,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(500),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.CITY_LEVEL_2.ordinal() + 1) + " §f! Vous êtes bien parti pour découvrir toutes les features qu'ils se cachent dans les villes ! Mais avant cela, je voudrais que vous posiez un §2home§f.",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.CITY_LEVEL_2,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(500),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.city_level_two.reward",
+                                        Component.text(TutorialSteps.CITY_LEVEL_2.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 

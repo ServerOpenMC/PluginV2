@@ -42,9 +42,9 @@ public class DreamMobDamageListener implements Listener {
         if (!(damager instanceof LivingEntity livingEntity)) return;
         if (!CustomMobRegistry.isCustomMob(livingEntity)) return;
 
-        CustomMob customMob = OMCRegistry.CUSTOM_MOBS.getMob(livingEntity);
+        CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(livingEntity);
         if (customMob == null) return;
-        if (!(customMob instanceof DreamMob dreamMob)) return;
+        if (!(customMob instanceof DreamMob<?> dreamMob)) return;
 
         event.setCancelled(true);
 	    if (MilestoneDialog.isInMilestoneDialog(p)) return;

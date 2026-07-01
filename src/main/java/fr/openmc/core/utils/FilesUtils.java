@@ -10,6 +10,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -45,6 +46,8 @@ public class FilesUtils {
                 .forEach(path -> {
                     try {
                         Files.delete(path);
+                    } catch (NoSuchFileException e) {
+                        OMCLogger.warn("Impossible de supprimer (fichier manquant): {}", path, e.getMessage());
                     } catch (IOException e) {
                         OMCLogger.warn("Impossible de supprimer: {}", path, e);
                     }

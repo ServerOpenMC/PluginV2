@@ -4,7 +4,9 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,9 +24,13 @@ public record QuestMoneyReward(double amount) implements QuestReward {
     @Override
     public void giveReward(Player player) {
         EconomyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
+        Component amountComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(amount) + " " + EconomyManager.getEconomyIcon())
+                .color(NamedTextColor.YELLOW);
+        Component message = TranslationManager.translation("feature.quests.message.money_reward", amountComponent)
+                .color(NamedTextColor.GREEN);
         MessagesManager.sendMessage(
                 player,
-                Component.text("§aVous avez reçu §e" + amount + EconomyManager.getEconomyIcon()),
+                message,
                 Prefix.QUEST,
                 MessageType.SUCCESS,
                 false

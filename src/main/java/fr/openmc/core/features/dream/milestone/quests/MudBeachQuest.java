@@ -2,8 +2,8 @@ package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.PlayerEnterBiomeEvent;
-import fr.openmc.core.features.dream.generation.DreamBiome;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;

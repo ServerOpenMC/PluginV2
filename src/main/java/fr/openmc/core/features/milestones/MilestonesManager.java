@@ -148,7 +148,9 @@ public class MilestonesManager extends Feature implements DatabaseFeature, LoadA
      * @return the step of the milestone for the player
      */
     public static int getPlayerStep(MilestoneType type, UUID playerUUID) {
-        return getMilestoneData(type).get(playerUUID).getStep();
+        var data = getMilestoneData(type);
+        if (data == null) return 0;
+        return data.get(playerUUID).getStep();
     }
 
     /**

@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.hooks.WorldGuardHook;
-import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -69,12 +68,7 @@ public class CityCreateAction {
     }
 
     private static ItemStack getMascotStick() {
-        ItemStack stick;
-        CustomItem mascotStick = OMCRegistry.CUSTOM_ITEMS.get("omc_items:mascot_stick");
-        if (mascotStick != null)
-            stick = mascotStick.getBest();
-        else
-            stick = new ItemStack(Material.STICK);
+        ItemStack stick = OMCRegistry.CUSTOM_ITEMS.MASCOT_STICK.getBest();
 
         ItemMeta meta = stick.getItemMeta();
         if (meta != null) {

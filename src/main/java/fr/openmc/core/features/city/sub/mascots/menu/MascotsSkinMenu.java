@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mascots.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -66,8 +66,8 @@ public class MascotsSkinMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemBuilder> getContent() {
-        Map<Integer, ItemBuilder> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
         City playerCity = CityManager.getPlayerCity(getOwner().getUniqueId());
 
@@ -77,10 +77,7 @@ public class MascotsSkinMenu extends Menu {
             map.put(mascotType.getSlot(), createMascotButton(playerCity, mascotType));
         }
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
-            meta.displayName(TranslationManager.translation("messages.menus.back"));
-            meta.lore(TranslationManager.translationLore("messages.menus.back_lore"));
-        }, true));
+        map.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 
         return map;
     }
@@ -95,7 +92,7 @@ public class MascotsSkinMenu extends Menu {
         return List.of();
     }
 
-    private ItemBuilder createMascotButton(City city, MascotType type) {
+    private ItemMenuBuilder createMascotButton(City city, MascotType type) {
         List<Component> loreMascots = new ArrayList<>();
 
         if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
@@ -110,7 +107,7 @@ public class MascotsSkinMenu extends Menu {
             ));
         }
 
-        return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())),
+        return new ItemMenuBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())),
                 meta -> meta.lore(loreMascots))
                 .setOnClick(event -> {
                     if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
@@ -119,7 +116,7 @@ public class MascotsSkinMenu extends Menu {
                     }
                     if (!egg.equals(type.getSpawnEgg())) {
                         int aywenite = type.getPrice();
-                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.get("omc_items:aywenite").getBest();
+                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                         if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
                             changeMascotsSkin(mascots, type.getEntityType(), getOwner(), aywenite);
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);

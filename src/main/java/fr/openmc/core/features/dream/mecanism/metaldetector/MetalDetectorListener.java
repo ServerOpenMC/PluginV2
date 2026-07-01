@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.metaldetector;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ public class MetalDetectorListener implements Listener {
         Player player = event.getPlayer();
         Location loc = player.getLocation();
 
-        if (loc.getBlock().getBiome().equals(DreamBiome.MUD_BEACH.getBiome())) {
+        if (DreamBiome.isInDreamBiome(player, DreamBiome.MUD_BEACH)) {
             if (!hiddenChests.containsKey(player.getUniqueId())) {
                 Location chestLoc = findRandomChestLocation(loc);
                 MetalDetectorTask task = new MetalDetectorTask(player, chestLoc);
@@ -67,7 +67,7 @@ public class MetalDetectorListener implements Listener {
             int y = world.getHighestBlockYAt(tryLoc);
             tryLoc.setY(y);
 
-            if (world.getBiome(tryLoc).equals(DreamBiome.MUD_BEACH.getBiome())) {
+            if (DreamBiome.isDreamBiome(tryLoc, DreamBiome.MUD_BEACH)) {
                 return tryLoc;
             }
         }

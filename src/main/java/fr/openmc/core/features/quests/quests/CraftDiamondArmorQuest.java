@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestBuilder;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,17 +19,21 @@ public class CraftDiamondArmorQuest extends Quest implements Listener {
 
     public CraftDiamondArmorQuest() {
         super(
-                "Armure précieuse",
-                List.of("Fabriquer une armure complète en diamant"),
+                TranslationManager.translationString("feature.quests.craft_diamond_armor.name"),
+                List.of(TranslationManager.translationString("feature.quests.craft_diamond_armor.description")),
                 new ItemStack(Material.DIAMOND_CHESTPLATE)
         );
 
-        Quest quest = new QuestBuilder("Armure précieuse", List.of("Fabriquer une armure complète en diamant"), new ItemStack(Material.DIAMOND_CHESTPLATE))
-                .tier(4, "Fabriquer une armure complète en diamant",  new QuestItemReward(Material.DIAMOND, 10))
-                .step("Casque en diamant", 1)
-                .step("Plastron en diamant", 1)
-                .step("Pantalon en diamant", 1)
-                .step("Bottes en diamant", 1)
+        Quest quest = new QuestBuilder(
+                TranslationManager.translationString("feature.quests.craft_diamond_armor.name"),
+                List.of(TranslationManager.translationString("feature.quests.craft_diamond_armor.description")),
+                new ItemStack(Material.DIAMOND_CHESTPLATE)
+        )
+                .tier(4, TranslationManager.translationString("feature.quests.craft_diamond_armor.description"), new QuestItemReward(Material.DIAMOND, 10))
+                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.helmet"), 1)
+                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.chestplate"), 1)
+                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.leggings"), 1)
+                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.boots"), 1)
                 .requireAllSteps(true)
                 .build();
 

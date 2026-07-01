@@ -82,10 +82,10 @@ public class NPCManager implements Listener {
             String mayorDisplayName = "<gold>" + TranslationManager.translationString("feature.city.mayor.npc.display.mayor", Component.text(mayorName)) + "</gold>";
             dataMayor.setDisplayName(mayorDisplayName);
 
-            dataMayor.addEquipment(NpcEquipmentSlot.HEAD, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_helmet").getBest());
-            dataMayor.addEquipment(NpcEquipmentSlot.CHEST, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_chestplate").getBest());
-            dataMayor.addEquipment(NpcEquipmentSlot.LEGS, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_leggings").getBest());
-            dataMayor.addEquipment(NpcEquipmentSlot.FEET, OMCRegistry.CUSTOM_ITEMS.get("omc_items:suit_boots").getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.HEAD, OMCRegistry.CUSTOM_ITEMS.SUIT_HELMET.getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.CHEST, OMCRegistry.CUSTOM_ITEMS.SUIT_CHESTPLATE.getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.LEGS, OMCRegistry.CUSTOM_ITEMS.SUIT_LEGGINGS.getBest());
+            dataMayor.addEquipment(NpcEquipmentSlot.FEET, OMCRegistry.CUSTOM_ITEMS.SUIT_BOOTS.getBest());
         } else {
             dataMayor.setSkin("https://s.namemc.com/i/1971f3c39cb8e3ef.png");
             String unknownDisplayName = "<dark_gray>" + TranslationManager.translationString("feature.city.mayor.npc.display.unknown") + "</dark_gray>";

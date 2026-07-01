@@ -26,7 +26,7 @@ public class MetalDetectorQuest extends MilestoneQuest implements Listener {
 						"§fRécupérer le §ddétecteur à métaux",
 						"§8§oPourquoi les têtards sont aussi gros ?"
 				),
-				DreamItemRegistry.getByName("omc_dream:metal_detector").getBest(),
+				DreamItemRegistry.METAL_DETECTOR,
 				MilestoneType.DREAM,
 				DreamSteps.METAL_DETECTOR,
 				new QuestTier(1),

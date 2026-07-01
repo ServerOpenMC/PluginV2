@@ -2,14 +2,14 @@ package fr.openmc.core.features.dream.mecanism.singularity;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.TakeFromSingularityEvent;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import org.bukkit.Bukkit;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -74,7 +74,7 @@ public class SingularityMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
+    public Map<Integer, ItemMenuBuilder> getButtons() {
         return Collections.emptyMap();
     }
 
@@ -105,8 +105,8 @@ public class SingularityMenu extends PaginatedMenu {
         DreamItem cursorDream = DreamItemRegistry.getByItemStack(cursor);
         DreamItem currentDream = DreamItemRegistry.getByItemStack(current);
 
-        if ((cursorDream != null && cursorDream.getId().equals("omc_dream:singularity"))
-                || (currentDream != null && currentDream.getId().equals("omc_dream:singularity"))) {
+        if ((cursorDream != null && cursorDream.getId().equals(DreamItemRegistry.SINGULARITY.getId()))
+                || (currentDream != null && currentDream.getId().equals(DreamItemRegistry.SINGULARITY.getId()))) {
             event.setCancelled(true);
             return;
         }

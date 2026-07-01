@@ -2,8 +2,9 @@ package fr.openmc.core.features.mailboxes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
-import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -13,6 +14,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -37,7 +39,7 @@ public class PendingMailbox extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Courriers en attente d'annulation");
+        return TranslationManager.translation("feature.mailboxes.menu.title.pending");
     }
 
     @Override
@@ -69,11 +71,13 @@ public class PendingMailbox extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemBuilder> getButtons() {
-        Map<Integer, ItemBuilder> buttons = new HashMap<>();
+    public Map<Integer, ItemMenuBuilder> getButtons() {
+        Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, MailboxMenuManager.homeBtn(this));
-        buttons.putAll(MailboxMenuManager.getPaginatedButtons(this));
+        buttons.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
+        buttons.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
+        buttons.put(49, ItemMenuTemplate.BTN_CLOSE.apply(this));
+        buttons.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_WHITE.apply(this));
 
         return buttons;
     }
@@ -106,9 +110,10 @@ public class PendingMailbox extends PaginatedMenu {
     public static void cancelLetter(Player player, int id) {
         Letter letter = MailboxManager.getById(player, id);
         if (letter == null) {
-            Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                    .append(Component.text(id, NamedTextColor.RED))
-                    .append(Component.text(" n'a pas été trouvée.", NamedTextColor.DARK_RED));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.letter_not_found",
+                    Component.text(id).color(NamedTextColor.RED)
+            ).color(NamedTextColor.DARK_RED);
             MessagesManager.sendMessage(
                     player,
                     message,
@@ -126,10 +131,12 @@ public class PendingMailbox extends PaginatedMenu {
             if (sender != null)
                 MailboxManager.cancelLetter(sender);
             MailboxManager.givePlayerItems(sender, items);
-            Component message = Component.text(player.getName(), NamedTextColor.DARK_GREEN)
-                    .append(Component.text(" a annulé la lettre. Vous avez reçu ", NamedTextColor.DARK_GREEN))
-                    .append(Component.text(itemsCount, NamedTextColor.GREEN))
-                    .append(Component.text(pluralize(" item", itemsCount), NamedTextColor.DARK_GREEN));
+            Component message = TranslationManager.translation(
+                    "feature.mailboxes.message.cancel_success_sender",
+                    Component.text(player.getName()).color(NamedTextColor.DARK_GREEN),
+                    Component.text(itemsCount).color(NamedTextColor.GREEN),
+                    Component.text(pluralize(" item", itemsCount)).color(NamedTextColor.DARK_GREEN)
+            ).color(NamedTextColor.DARK_GREEN);
 
             MessagesManager.sendMessage(
                     sender,

@@ -12,6 +12,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,8 +37,7 @@ public class TransferableObjectQuest extends MilestoneQuest implements Listener 
 				DreamSteps.TRANSFERABLE_OBJECT,
 				new QuestTier(
 						1,
-						new QuestTextReward("Il y a bien un lien entre cette dimension et le monde réel. " +
-								"Et ce n'est que le début d'une nouvelle aventure !", Prefix.DREAM, MessageType.SUCCESS)
+						new QuestTextReward(Component.text("Il y a bien un lien entre cette dimension et le monde réel. Et ce n'est que le début d'une nouvelle aventure !"), Prefix.DREAM, MessageType.SUCCESS)
 				)
 		);
 	}

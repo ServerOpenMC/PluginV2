@@ -7,7 +7,7 @@ import fr.openmc.core.features.cube.events.EnterCubeZoneEvent;
 import fr.openmc.core.features.cube.events.ExitCubeZoneEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
-import fr.openmc.core.features.dream.generation.DreamDimensionManager;
+import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -114,7 +114,7 @@ public class CubeListener implements Listener {
 
     public void updatePlayerBubbleState(Player player) {
         if (!player.getLocation().getWorld().getName().equals("world")
-                && !player.getLocation().getWorld().getName().equals(DreamDimensionManager.DIMENSION_NAME)) return;
+                && !DreamUtils.isInDreamWorld(player)) return;
 
         UUID uuid = player.getUniqueId();
 

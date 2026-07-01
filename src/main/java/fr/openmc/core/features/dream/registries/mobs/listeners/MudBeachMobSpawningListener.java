@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.generation.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamBiome;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -39,11 +39,11 @@ public class MudBeachMobSpawningListener implements Listener {
 
         e.setCancelled(true);
 
-        if (!world.getBiome(spawningLoc).equals(DreamBiome.MUD_BEACH.getBiome())) return;
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.MUD_BEACH)) return;
 
         double choice = Math.random();
         if (choice < CORRUPTED_TADPOLE_PROBABILITY) {
-            OMCRegistry.CUSTOM_MOBS.getMob("omc_dream:corrupted_tadpole").spawn(spawningLoc);
+            DreamMobsRegistry.CORRUPTED_TADPOLE.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }
