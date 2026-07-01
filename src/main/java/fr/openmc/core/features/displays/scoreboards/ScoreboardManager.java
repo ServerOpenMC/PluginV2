@@ -116,5 +116,6 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
     public static void cleanupPlayer(UUID playerUUID) {
         lastUpdate.remove(playerUUID);
         boardCache.delete(playerUUID);
+        globalTeamManager.handlePlayerQuit(playerUUID);
     }
 }
