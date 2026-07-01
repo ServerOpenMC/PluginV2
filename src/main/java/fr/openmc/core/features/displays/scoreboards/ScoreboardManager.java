@@ -69,7 +69,7 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
 
             Map<BaseScoreboard, Long> playerUpdates = lastUpdate.computeIfAbsent(
                     player.getUniqueId(),
-                    k -> new HashMap<>()
+                    _ -> new HashMap<>()
             );
 
             long last = playerUpdates.getOrDefault(active, 0L);

@@ -33,9 +33,11 @@ public class GlobalTeamManager {
             this.luckPerms = LuckPermsHook.getApi();
             initSortedGroups();
 
-            this.luckPerms.getEventBus().subscribe(OMCPlugin.getInstance(), GroupDataRecalculateEvent.class, e -> {
-                groupToPrefixCache.remove(e.getGroup().getName());
-            });
+            this.luckPerms.getEventBus().subscribe(
+                    OMCPlugin.getInstance(),
+                    GroupDataRecalculateEvent.class,
+                    e -> groupToPrefixCache.remove(e.getGroup().getName())
+            );
         }
     }
 
