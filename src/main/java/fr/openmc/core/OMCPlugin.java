@@ -93,7 +93,7 @@ public class OMCPlugin extends JavaPlugin {
             TransactionsManager::new,
             AnalyticsManager::new,
             FriendManager::new,
-            () -> new TabList(),
+            TabList::new,
             AdminShopManager::new,
             HelpConfigManager::new,
             BossbarManager::new,
