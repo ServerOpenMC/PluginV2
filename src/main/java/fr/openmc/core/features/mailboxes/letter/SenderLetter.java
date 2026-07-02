@@ -29,7 +29,7 @@ public class SenderLetter extends ItemStack {
         lore.add(getPlayerName(player));
         lore.add(colorText(TranslationManager.translationString(
                 "feature.mailboxes.letter.sent_info",
-                Component.text(formatRelativeDate(sentAt)),
+                formatRelativeDate(sentAt),
                 Component.text(itemsCount),
                 Component.text(pluralize("item", itemsCount))
         ), NamedTextColor.DARK_GRAY, true));
