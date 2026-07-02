@@ -40,7 +40,8 @@ public class SingularityCraftListener implements Listener {
 
         MessagesManager.broadcastMessage(TranslationManager.translation(
                 "feature.dream.singularity.message.crafted",
-                Component.text(player.getName())
+                Component.text(player.getName()),
+                TranslationManager.translation("feature.dream.singularity.menu.name")
         ), Prefix.DREAM, MessageType.INFO);
     }
 }
