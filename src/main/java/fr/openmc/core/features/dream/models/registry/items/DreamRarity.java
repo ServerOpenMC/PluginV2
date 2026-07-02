@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
+import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -19,5 +20,9 @@ public enum DreamRarity {
     DreamRarity(Component templateLore, NamedTextColor color) {
         this.templateLore = templateLore;
         this.color = color;
+    }
+
+    public String toLegacyColor() {
+        return ColorUtils.getColorCode(color);
     }
 }
