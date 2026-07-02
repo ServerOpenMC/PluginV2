@@ -140,19 +140,19 @@ public class GlaciteTradeMenu extends Menu {
         if (tradeGlacite > 0) {
             cost = cost.append(TranslationManager.translation(
                     "feature.dream.trader.message.cost.glacite",
-                    Component.text(tradeGlacite).color(NamedTextColor.AQUA)
-            ));
+                    Component.text(tradeGlacite)
+            ).color(NamedTextColor.AQUA));
         }
         if (tradeEwenite > 0) {
             if (tradeGlacite > 0) {
                 cost = cost.appendSpace()
-                        .append(TranslationManager.translation("feature.dream.trader.message.cost.separator"))
+                        .append(TranslationManager.translation("feature.dream.trader.message.cost.separator").color(NamedTextColor.GREEN))
                         .appendSpace();
             }
             cost = cost.append(TranslationManager.translation(
                     "feature.dream.trader.message.cost.ewenite",
-                    Component.text(tradeEwenite).color(NamedTextColor.DARK_PURPLE)
-            ));
+                    Component.text(tradeEwenite)
+            ).color(NamedTextColor.DARK_PURPLE));
         }
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
