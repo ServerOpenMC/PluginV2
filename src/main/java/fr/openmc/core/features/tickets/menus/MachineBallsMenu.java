@@ -93,7 +93,8 @@ public class MachineBallsMenu extends Menu {
                     itemMeta.lore(
                         List.of(
                             TranslationManager.translation("feature.tickets.menu.open_ticket.lore1"),
-                            TranslationManager.translation("feature.tickets.menu.open_ticket.lore2", Component.text(tickets))
+                            TranslationManager.translation("feature.tickets.menu.open_ticket.lore2",
+                                    Component.text(tickets).color(NamedTextColor.YELLOW))
                     ));
                 }
         ).setOnClick(
