@@ -26,4 +26,13 @@ public class MathUtils {
         return (r << 16) | (g << 8) | b;
     }
 
+    /**
+     * Convertit une hexa en entier, utilise la méthode de Integer
+     * @param hexa un héxadécimal (ex #000000)
+     * @return un entier representant l'hexa décimal
+     */
+    public static int hexToInt(String hexa) {
+        return Integer.parseInt(hexa.replace("#", ""), 16);
+    }
+
 }

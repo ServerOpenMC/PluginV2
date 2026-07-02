@@ -11,6 +11,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -68,10 +69,10 @@ public class MetalDetector extends DreamItem implements UsableItem {
                 CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
                 if (lootTable == null) return;
 
-                List<ItemStack> rewards = lootTable.rollLoots();
+                List<CustomLoot> rewards = lootTable.rollLoots(player);
 
-                for (ItemStack item : rewards) {
-                    player.getInventory().addItem(item);
+                for (CustomLoot loot : rewards) {
+                    if (!(loot instanceof ItemStack item)) continue;
 
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                             Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))

@@ -13,6 +13,8 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.DirectionUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -21,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
@@ -69,12 +72,18 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 	public void onPickUp(MetalDetectorLootEvent e) {
 		Player player = e.getPlayer();
 		if (!DreamUtils.isInDreamWorld(player)) return;
-		
-		DreamItem item = DreamItemRegistry.getByItemStack(e.getLoot().getFirst());
-		if (item == null) return;
-		if (item instanceof CrystalizedPickaxe) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
-			this.incrementProgressInDream(player.getUniqueId());
+
+		for (CustomLoot loot : e.getLoot()) {
+			if (!(loot instanceof ItemLoot itemLoot)) continue;
+
+			for (ItemStack item : itemLoot.getItems()) {
+				DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+				if (dreamItem == null) return;
+				if (dreamItem instanceof CrystalizedPickaxe) {
+					if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
+					this.incrementProgressInDream(player.getUniqueId());
+				}
+			}
 		}
 	}
 	

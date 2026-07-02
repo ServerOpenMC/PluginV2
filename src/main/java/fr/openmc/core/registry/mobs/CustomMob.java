@@ -1,6 +1,6 @@
 package fr.openmc.core.registry.mobs;
 
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

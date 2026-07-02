@@ -16,6 +16,7 @@ import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
+import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -81,7 +82,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
     private static boolean sendLetter(Player sender, OfflinePlayer receiver, ItemStack[] items) {
         String receiverName = receiver.getName();
         int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
-        LocalDateTime sent = LocalDateTime.now();
+        LocalDateTime sent = DateUtils.getLocalDateTime();
 
         try {
             byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
@@ -125,7 +126,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
                 byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
 
                 Letter letter = new Letter(nextLetterId++, player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
-                        Timestamp.valueOf(LocalDateTime.now()), false);
+                        Timestamp.valueOf(DateUtils.getLocalDateTime()), false);
                 letters.add(letter);
             }
         } catch (IOException e) {

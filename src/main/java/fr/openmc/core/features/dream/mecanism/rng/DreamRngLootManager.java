@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.rng;
 
+import fr.openmc.core.utils.RngUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -9,9 +10,6 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DreamRngLootManager {
     public static void sendMessageLoot(DreamRngLootEvent event) {
@@ -50,22 +48,6 @@ public class DreamRngLootManager {
         double chance = event.getChance() != null ? event.getChance() : 0.0;
         Player player = event.getPlayer();
 
-        List<Sound> sounds = new ArrayList<>();
-        if (chance <= 0.001) { // 0.1%
-            sounds.add(Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 2f, 0.1f));
-            player.getWorld().playSound(player.getLocation(), "minecraft:entity.ender_dragon.death", 1f, 0.1f);
-        } else if (chance <= 0.05) { // 5%
-            sounds.add(Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 2f, 0.5f));
-        } else if (chance <= 0.1) { // 10%
-            sounds.add(Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 2f, 1.0f));
-        } else if (chance <= 0.25) { // 25%
-            sounds.add(Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 2f, 1.3f));
-        } else {
-            sounds.add(Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 2f, 2f));
-        }
-
-        for (Sound sound : sounds) {
-            player.playSound(sound);
-        }
+        RngUtils.sendSoundRng(player, chance);
     }
 }

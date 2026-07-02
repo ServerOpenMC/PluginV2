@@ -25,7 +25,6 @@ import java.util.*;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class TranslationManager {
-    /** Traductions de fallback (langue par défaut du serveur - Français) */
     public static Map<String, String> fallbackTranslations = new HashMap<>();
 
     private static final Gson GSON = new GsonBuilder()
@@ -46,7 +45,7 @@ public class TranslationManager {
         // * Generate resource pack
         Path resourcePackFolder;
         try {
-            resourcePackFolder=ResourcePacksGenerator.generateBase(context, "generated-rp-langs");
+            resourcePackFolder = ResourcePacksGenerator.generateBase(context, "generated-rp-langs");
             Files.createDirectories(resourcePackFolder.resolve("assets/minecraft/lang"));
             OMCLogger.successFormatted("Génération du resource pack de langues !");
         } catch (Exception e) {

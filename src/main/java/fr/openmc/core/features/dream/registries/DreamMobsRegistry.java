@@ -8,7 +8,6 @@ import fr.openmc.core.features.dream.registries.mobs.listeners.MudBeachMobSpawni
 import fr.openmc.core.features.dream.registries.mobs.listeners.PlainsMobSpawningListener;
 import fr.openmc.core.features.dream.registries.mobs.listeners.SoulForestMobSpawningListener;
 import fr.openmc.core.registry.mobs.CustomMobEntry;
-import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,7 +74,6 @@ public class DreamMobsRegistry {
                 new PlainsMobSpawningListener(),
                 new SoulForestMobSpawningListener(),
                 new MudBeachMobSpawningListener(),
-                new CustomMobDeathListener(),
                 new DreamMobDamageListener()
         );
 

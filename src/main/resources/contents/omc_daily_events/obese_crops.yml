@@ -1,0 +1,318 @@
+# assets from https://github.com/0rc1nus/Overweight-Farming
+
+# todo: obese crops, peeled versions
+info:
+  namespace: omc_daily_events
+items:
+  # --- Potato ---
+  obese_potato:
+    display_name: Patate obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/potato/obese_potato_side
+        south: obese_crops/basic/potato/obese_potato_side
+        east: obese_crops/basic/potato/obese_potato_side
+        west: obese_crops/basic/potato/obese_potato_side
+        up: obese_crops/basic/potato/obese_potato_top
+        down: obese_crops/basic/potato/obese_potato_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_potato_stem
+        hardness: 5
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+        events_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+    events:
+      placed_block:
+        interact:
+          play_sound:
+            name: item.axe.strip
+            volume: 1.0
+            pitch: 0.6
+            category: MASTER
+            stop_previous: false
+          replace_block:
+            delay: 5
+            from: omc_daily_events:obese_potato
+            to: omc_daily_events:peeled_obese_potato
+          replace_near_blocks:
+            radius: 2
+            delay: 5
+            from: omc_daily_events:obese_potato_stem
+            to: air
+
+  obese_poisonous_potato:
+    display_name: Patate empoisonnée obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/poisonous_potato/obese_poisonous_potato_side
+        south: obese_crops/basic/poisonous_potato/obese_poisonous_potato_side
+        east: obese_crops/basic/poisonous_potato/obese_poisonous_potato_side
+        west: obese_crops/basic/poisonous_potato/obese_poisonous_potato_side
+        up: obese_crops/basic/poisonous_potato/obese_poisonous_potato_top
+        down: obese_crops/basic/poisonous_potato/obese_poisonous_potato_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_potato_stem
+
+  obese_potato_stem:
+    display_name: Tige de patate obèse
+    graphics:
+      icon: obese_crops/basic/potato/obese_potato_stem
+      parent: block/cross
+      textures:
+        cross: obese_crops/basic/potato/obese_potato_stem
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_WIRE
+          break_particles: ITEM
+        drop_when_mined: false
+
+  # --- Baked potato ---
+  obese_baked_potato:
+    display_name: Patate cuite obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/baked_potato/obese_baked_potato_side_2
+        south: obese_crops/basic/baked_potato/obese_baked_potato_side_1
+        east: obese_crops/basic/baked_potato/obese_baked_potato_side_2
+        west: obese_crops/basic/baked_potato/obese_baked_potato_side_1
+        up: obese_crops/basic/baked_potato/obese_baked_potato_top
+        down: obese_crops/basic/baked_potato/obese_baked_potato_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+
+
+  # --- Carrot ---
+  obese_carrot:
+    display_name: Carotte obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/carrot/obese_carrot_side
+        south: obese_crops/basic/carrot/obese_carrot_side
+        east: obese_crops/basic/carrot/obese_carrot_side
+        west: obese_crops/basic/carrot/obese_carrot_side
+        up: obese_crops/basic/carrot/obese_carrot_top
+        down: obese_crops/basic/carrot/obese_carrot_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_carrot_stem
+    
+
+
+  obese_carrot_stem:
+    display_name: Tige de carotte obèse
+    graphics:
+      icon: obese_crops/basic/carrot/obese_carrot_stem
+      parent: block/cross
+      textures:
+        cross: obese_crops/basic/carrot/obese_carrot_stem
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_WIRE
+          break_particles: ITEM
+        drop_when_mined: false
+
+  # --- Beetroot ---
+  obese_beetroot:
+    display_name: Bétrave obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/beetroot/obese_beetroot_side
+        south: obese_crops/basic/beetroot/obese_beetroot_side
+        east: obese_crops/basic/beetroot/obese_beetroot_side
+        west: obese_crops/basic/beetroot/obese_beetroot_side
+        up: obese_crops/basic/beetroot/obese_beetroot_top
+        down: obese_crops/basic/beetroot/obese_beetroot_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_beetroot_stem
+
+  obese_beetroot_stem:
+    display_name: Tige de bétrave obèse
+    graphics:
+      icon: obese_crops/basic/beetroot/obese_beetroot_stem
+      parent: block/cross
+      textures:
+        cross: obese_crops/basic/beetroot/obese_beetroot_stem
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_WIRE
+          break_particles: ITEM
+        drop_when_mined: false
+
+  # --- Nether Wart ---
+  obese_nether_wart:
+    display_name: Verrue du nether obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/nether_wart/obese_nether_wart_side
+        south: obese_crops/basic/nether_wart/obese_nether_wart_side
+        east: obese_crops/basic/nether_wart/obese_nether_wart_side
+        west: obese_crops/basic/nether_wart/obese_nether_wart_side
+        up: obese_crops/basic/nether_wart/obese_nether_wart_top
+        down: obese_crops/basic/nether_wart/obese_nether_wart_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_nether_wart_stem
+
+  obese_nether_wart_stem:
+    display_name: Tige de verrue du nether obèse
+    graphics:
+      icon: obese_crops/basic/nether_wart/obese_nether_wart_stem
+      parent: block/cross
+      textures:
+        cross: obese_crops/basic/nether_wart/obese_nether_wart_stem
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_WIRE
+          break_particles: ITEM
+        drop_when_mined: false
+
+  # --- Onion ---
+  obese_onion:
+    display_name: Oignon obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/onion/obese_onion_side
+        south: obese_crops/basic/onion/obese_onion_side
+        east: obese_crops/basic/onion/obese_onion_side
+        west: obese_crops/basic/onion/obese_onion_side
+        up: obese_crops/basic/onion/obese_onion_top
+        down: obese_crops/basic/onion/obese_onion_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+
+  # --- Golden Apple ---
+  obese_golden_apple:
+    display_name: Pomme dorée obèse
+    graphics:
+      textures:
+        north: obese_crops/basic/golden_apple/obese_golden_apple_side
+        south: obese_crops/basic/golden_apple/obese_golden_apple_side
+        east: obese_crops/basic/golden_apple/obese_golden_apple_side
+        west: obese_crops/basic/golden_apple/obese_golden_apple_side
+        up: obese_crops/basic/golden_apple/obese_golden_apple_top
+        down: obese_crops/basic/golden_apple/obese_golden_apple_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        up_block: omc_daily_events:obese_golden_apple_stem
+
+  obese_golden_apple_stem:
+    display_name: Tige de pomme dorée obèse
+    graphics:
+      icon: obese_crops/basic/golden_apple/obese_golden_apple_stem
+      parent: block/cross
+      textures:
+        cross: obese_crops/basic/golden_apple/obese_golden_apple_stem
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_WIRE
+          break_particles: ITEM
+        drop_when_mined: false
+
+  # PEELED VERSIONS
+  # --- Peeled Potato ---
+  peeled_obese_potato:
+    display_name: Patate épluchée obèse
+    graphics:
+      textures:
+        north: obese_crops/peeled/potato/peeled_obese_potato
+        south: obese_crops/peeled/potato/peeled_obese_potato
+        east: obese_crops/peeled/potato/peeled_obese_potato
+        west: obese_crops/peeled/potato/peeled_obese_potato
+        up: obese_crops/peeled/potato/peeled_obese_potato
+        down: obese_crops/peeled/potato/peeled_obese_potato
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+
+  # --- Peeled Beetroot---
+  peeled_beetroot_potato:
+    display_name: Bétrave épluchée obèse
+    graphics:
+      textures:
+        north: obese_crops/peeled/beetroot/peeled_obese_beetroot
+        south: obese_crops/peeled/beetroot/peeled_obese_beetroot
+        east: obese_crops/peeled/beetroot/peeled_obese_beetroot
+        west: obese_crops/peeled/beetroot/peeled_obese_beetroot
+        up: obese_crops/peeled/beetroot/peeled_obese_beetroot
+        down: obese_crops/peeled/beetroot/peeled_obese_beetroot
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+
+  # --- Peeled Carrot---
+  peeled_carrot_potato:
+    display_name: Carotte épluchée obèse
+    graphics:
+      textures:
+        north: obese_crops/peeled/carrot/peeled_obese_carrot_side
+        south: obese_crops/peeled/carrot/peeled_obese_carrot_side
+        east: obese_crops/peeled/carrot/peeled_obese_carrot_side
+        west: obese_crops/peeled/carrot/peeled_obese_carrot_side
+        up: obese_crops/peeled/carrot/peeled_obese_carrot_top
+        down: obese_crops/peeled/carrot/peeled_obese_carrot_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+
+  # --- Peeled Onion---
+  peeled_onion_potato:
+    display_name: Oignon épluché obèse
+    graphics:
+      textures:
+        north: obese_crops/peeled/onion/peeled_obese_onion_side
+        south: obese_crops/peeled/onion/peeled_obese_onion_side
+        east: obese_crops/peeled/onion/peeled_obese_onion_side
+        west: obese_crops/peeled/onion/peeled_obese_onion_side
+        up: obese_crops/peeled/onion/peeled_obese_onion_top
+        down: obese_crops/peeled/onion/peeled_obese_onion_bottom
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
