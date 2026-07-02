@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.registries;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
@@ -19,15 +20,15 @@ import java.util.Collection;
 public enum DreamStructure {
 
     BASE_CAMP(
-            Component.text("§bCamp de Grotte"),
+            TranslationManager.translation("feature.dream.structure.base_camp"),
             NamespacedKey.fromString("omc_dream:glacite_grotto/base_camp")
     ),
     CUBE_TEMPLE(
-            Component.text("§5Temple du Cube"),
+            TranslationManager.translation("feature.dream.structure.cube_temple"),
             NamespacedKey.fromString("omc_dream:soul_forest/cube_temple")
     ),
     CLOUD_CASTLE(
-            Component.text("§7Château des Nuages"),
+            TranslationManager.translation("feature.dream.structure.cloud_castle"),
             NamespacedKey.fromString("omc_dream:cloud_land/cloud_castle")
     )
     ;

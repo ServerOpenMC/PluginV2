@@ -4,7 +4,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,14 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class ConsumeKebabQuest extends Quest implements Listener {
 
     public ConsumeKebabQuest() {
         super(
-                TranslationManager.translationString("feature.quests.consume_kebab.name"),
-                List.of(TranslationManager.translationString("feature.quests.consume_kebab.description")),
+                TranslationManager.translation("feature.quests.consume_kebab.name"),
+                TranslationManager.translationLore("feature.quests.consume_kebab.description"),
                 OMCRegistry.CUSTOM_ITEMS.KEBAB
         );
 

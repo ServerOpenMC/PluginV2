@@ -10,6 +10,7 @@ import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -38,7 +39,9 @@ public class TicketListener implements Listener, NotInUnitTest {
 
         String pelushKey = "omc_plush:peluche_seinyy";
 
-        boolean hasLootPelucheSeinyy = event.getLoot().items().stream()
+        if (!(event.getLoot() instanceof ItemLoot itemLoot)) return;
+
+        boolean hasLootPelucheSeinyy = itemLoot.getItems().stream()
                 .filter(loot -> OMCRegistry.CUSTOM_ITEMS.get(loot).isPresent())
                 .anyMatch(loot -> OMCRegistry.CUSTOM_ITEMS.getOrThrow(loot).getId().equals(pelushKey));
 

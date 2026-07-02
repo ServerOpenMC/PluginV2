@@ -9,36 +9,24 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 
-import java.util.List;
-
 public class CreakingHeartQuest extends MilestoneQuest implements Listener {
 	
 	public CreakingHeartQuest() {
 		super(
-				"La résine n'a pas de coeur",
-				List.of(
-						"§fRécupérer un §dCoeur de Creaking",
-						"§8§oOn cherche la résine ou le coeur ?"
-				),
+				TranslationManager.translation("feature.dream.milestone.quest.creaking_heart.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.creaking_heart.description"),
 				Material.RESIN_CLUMP,
 				MilestoneType.DREAM,
 				DreamSteps.CREAKING_HEART,
 				new QuestTier(1),
-				List.of(
-						"§6Ah ! Mais c'est vrai qu'ils protègent leurs cœurs.",
-						"§3Voyageur : Oui, et ceux-ci nous seront utiles par la suite, les crafts de ce monde en utilisent beaucoup. " +
-								"Que ce soit pour les outils, armures, ou objets divers de ce monde. Commence par te faire une §dhache§3.",
-						"§6Mais quel est le but de ce monde ??",
-						"§3Voyageur : Je t'expliquerai bientôt, je n'ai pas envie que tu finisses comme moi...",
-						"§6Comment ça \"finir comme toi\" ?",
-						"§3Voyageur : Tu comprendras. Pour éviter cela, il faut continuer, fais-toi une hache pour le moment."
-				)
+				TranslationManager.translationLore("feature.dream.milestone.quest.creaking_heart.dialog")
 		);
 	}
 	

@@ -5,7 +5,10 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
+import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
+import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
 import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
@@ -31,11 +34,15 @@ public class ListenersManager {
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new InteractListener(),
+                new BlockPlaceListener(),
                 new EquipableItemListener(),
                 new NoMoreRabbit(),
+                new CustomMobDeathListener(),
                 new ArmorListener(),
                 new BlockBreakListener(),
-                new CustomAmbientListener()
+                new CustomAmbientListener(),
+                new BiomesOnChunkLoad(),
+                new AmbientWeatherListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {

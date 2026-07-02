@@ -6,8 +6,7 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -21,7 +20,7 @@ public class DreamItemDropsListener implements Listener {
 
         if (DreamItemRegistry.getByItemStack(item) instanceof DreamItem dreamItem && dreamItem.getRarity().equals(DreamRarity.ONIRISIME)) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(event.getPlayer(), Component.text("Vous ne pouvez pas jeter cet objet !", NamedTextColor.RED), Prefix.DREAM, MessageType.WARNING, true);
+            MessagesManager.sendMessage(event.getPlayer(), TranslationManager.translation("feature.dream.item.message.cannot_drop"), Prefix.DREAM, MessageType.WARNING, true);
         }
     }
 }

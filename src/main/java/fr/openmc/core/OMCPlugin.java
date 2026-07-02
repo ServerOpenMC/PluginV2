@@ -28,7 +28,8 @@ import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.features.events.commands.calendar.CalendarManager;
+import fr.openmc.core.features.events.EventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -109,7 +110,8 @@ public class OMCPlugin extends JavaPlugin {
             DynamicCooldownManager::new,
             ContestManager::new,
             WeeklyEventsManager::new,
-            CalendarManager::new,
+            DailyEventsManager::new,
+            EventsManager::new,
             DreamManager::new,
             MultiBlockManager::new,
             MilestonesManager::new,
@@ -230,6 +232,9 @@ public class OMCPlugin extends JavaPlugin {
         for (Feature feature : loadedFeature) {
             feature.startSave();
         }
+
+        /* REGISTRIES */
+        OMCRegistry.stopAll();
 
         // - Close all inventories
         for (Player player : Bukkit.getOnlinePlayers()) {

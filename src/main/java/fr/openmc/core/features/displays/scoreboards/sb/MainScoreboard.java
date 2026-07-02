@@ -115,7 +115,9 @@ public class MainScoreboard extends BaseScoreboard {
 
         if (FancyNpcsHook.isEnable()) {
             NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
-            Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
+            Npc halloweenNPC = null;
+            if (npcManager != null)
+                halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
             if (halloweenNPC != null) {
                 String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)

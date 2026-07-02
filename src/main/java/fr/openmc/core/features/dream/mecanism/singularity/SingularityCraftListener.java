@@ -7,6 +7,7 @@ import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -37,6 +38,10 @@ public class SingularityCraftListener implements Listener {
         ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.FLASH, 5, 15, 0.05,  null);
         world.playSound(player.getLocation(), "minecraft:entity.wither.death", 1f, 0.1f);
 
-        MessagesManager.broadcastMessage(Component.text(player.getName() + " a crafté une Singularité !"), Prefix.DREAM, MessageType.INFO);
+        MessagesManager.broadcastMessage(TranslationManager.translation(
+                "feature.dream.singularity.message.crafted",
+                Component.text(player.getName()),
+                TranslationManager.translation("feature.dream.singularity.menu.name")
+        ), Prefix.DREAM, MessageType.INFO);
     }
 }

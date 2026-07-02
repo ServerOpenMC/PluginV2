@@ -10,7 +10,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -41,12 +43,12 @@ public class MeteoWand extends DreamItem implements UsableItem {
     public void onRightClick(Player player, PlayerInteractEvent event) {
         World world = player.getWorld();
         if (!world.getName().equals("world")) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez être dans l'overworld pour utiliser cet objet"), Prefix.OPENMC, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.must_be_overworld"), Prefix.OPENMC, MessageType.WARNING, false);
             return;
         }
 
         if (!DynamicCooldownManager.isReady(player.getUniqueId(), "player:meteo_wand")) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "player:meteo_wand")) + " pour changer de temps du monde"), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.cooldown", Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "player:meteo_wand"))).color(NamedTextColor.GREEN)), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -68,7 +70,7 @@ public class MeteoWand extends DreamItem implements UsableItem {
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
 
-        MessagesManager.sendMessage(player, Component.text("Le temps du monde a bien été changé"), Prefix.OPENMC, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.success"), Prefix.OPENMC, MessageType.SUCCESS, false);
         DynamicCooldownManager.use(player.getUniqueId(), "player:meteo_wand", COOLDOWN_METEO_WAND);
     }
 }

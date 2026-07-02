@@ -13,15 +13,18 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.DirectionUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.List;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
 	
@@ -31,21 +34,15 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 
 	public CrystallizedPickaxeQuest() {
 		super(
-				"Bonne pioche",
-				List.of(
-						"§fObtenir la §dPioche Cristallisée",
-						"§8§oParfois, il faut savoir se creuser la tête"
-				),
+				TranslationManager.translation("feature.dream.milestone.quest.crystallized_pickaxe.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.crystallized_pickaxe.description"),
 				DreamItemRegistry.CRYSTALIZED_PICKAXE,
 				MilestoneType.DREAM,
 				DreamSteps.CRYSTALLIZED_PICKAXE,
 				new QuestTier(1),
-				List.of(
-						"§3Voyageur : Celle-ci sera ta meilleure amie dans les §dgrottes§3, en remplacement de ta hache.",
-						"§3Voyageur : À partir de maintenant, tu vas devoir principalement miner. Les profondeurs de ce monde regorgent de §dminerais utiles " +
-								"§3pour la §ddernière étape §3de cette quête.",
-						"§6Alors ne traînons pas, partons en grotte.",
-						"§3Voyageur : Non ! Avant d'aller chercher le dernier orbe, fais un détour aux coordonnées §cX: " + cubeX + " §9Z: " + cubeZ + "§3. Comme promis, je te dois des explications."
+				TranslationManager.translationLore("feature.dream.milestone.quest.crystallized_pickaxe.dialog",
+						Component.text(cubeX).color(NamedTextColor.RED),
+						Component.text(cubeZ).color(NamedTextColor.BLUE)
 				),
 				(player) -> new BukkitRunnable() {
 					@Override
@@ -61,7 +58,11 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 						}
 						int distance = (int) player.getLocation().distance(CrystallizedPickaxeQuest.cubeLoc);
 						String direction = DirectionUtils.getDirectionArrow(player, CrystallizedPickaxeQuest.cubeLoc);
-						player.sendActionBar(Component.text("§b【Cube】 §eDistance : §6" + distance + " blocs §7(" + direction + ")"));
+						player.sendActionBar(TranslationManager.translation(
+								"feature.dream.actionbar.cube_distance",
+								Component.text(distance).color(NamedTextColor.GOLD),
+								Component.text(direction)
+						));
 					}
 				}.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L)
 		);
@@ -71,12 +72,18 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 	public void onPickUp(MetalDetectorLootEvent e) {
 		Player player = e.getPlayer();
 		if (!DreamUtils.isInDreamWorld(player)) return;
-		
-		DreamItem item = DreamItemRegistry.getByItemStack(e.getLoot().getFirst());
-		if (item == null) return;
-		if (item instanceof CrystalizedPickaxe) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
-			this.incrementProgressInDream(player.getUniqueId());
+
+		for (CustomLoot loot : e.getLoot()) {
+			if (!(loot instanceof ItemLoot itemLoot)) continue;
+
+			for (ItemStack item : itemLoot.getItems()) {
+				DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+				if (dreamItem == null) return;
+				if (dreamItem instanceof CrystalizedPickaxe) {
+					if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
+					this.incrementProgressInDream(player.getUniqueId());
+				}
+			}
 		}
 	}
 	

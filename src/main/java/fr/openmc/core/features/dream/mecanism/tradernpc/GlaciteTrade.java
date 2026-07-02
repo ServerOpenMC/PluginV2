@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.mecanism.tradernpc;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
@@ -12,31 +13,31 @@ public enum GlaciteTrade {
             DreamItemRegistry.GLACITE_ORB,
             200,
             15,
-            Component.text("§bOrbe de Glacite")
+            TranslationManager.translation("feature.dream.trader.trade.glacite_orb")
     ),
     SOULBOUND_BOOK(
             (DreamItem) OMCRegistry.CUSTOM_ENCHANTS.SOULBOUND.getEnchantedBookItem(2),
             150,
             5,
-            Component.text("§bLivre d'enchantement : Soulbound II")
+            TranslationManager.translation("feature.dream.trader.trade.soulbound_book")
     ),
     SOMNIFERE(
             DreamItemRegistry.SOMNIFERE,
             20,
             0,
-            Component.text("§bSomnifère")
+            TranslationManager.translation("feature.dream.trader.trade.somnifere")
     ),
     ETERNAL_CAMPFIRE(
             DreamItemRegistry.ETERNAL_CAMPFIRE,
             0,
             2,
-            Component.text("§bFeu de camp éternel")
+            TranslationManager.translation("feature.dream.trader.trade.eternal_campfire")
     ),
     EWENITE(
             DreamItemRegistry.EWENITE,
             80,
             0,
-            Component.text("§bEwenite")
+            TranslationManager.translation("feature.dream.trader.trade.ewenite")
     );
     private final DreamItem result;
     private final int glaciteCost;

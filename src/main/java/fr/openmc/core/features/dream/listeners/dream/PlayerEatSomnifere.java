@@ -6,6 +6,7 @@ import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +26,7 @@ public class PlayerEatSomnifere implements Listener {
         event.setItem(null);
 
         if (DreamUtils.isInDreamWorld(player)) {
-            AttributeInstance attribute = player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);
+            AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
 
             if (attribute == null) return;
 

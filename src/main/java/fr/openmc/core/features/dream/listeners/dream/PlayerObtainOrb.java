@@ -11,10 +11,13 @@ import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -86,18 +89,22 @@ public class PlayerObtainOrb implements Listener {
     public void onMetalDetectorLoot(MetalDetectorLootEvent event) {
         Player player = event.getPlayer();
 
-        for (ItemStack item : event.getLoot()) {
-            DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+        for (CustomLoot loot : event.getLoot()) {
+            if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-            if (dreamItem == null) continue;
-            if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;
+            for (ItemStack item : itemLoot.getItems()) {
+                DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
 
-            setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
+                if (dreamItem == null) continue;
+                if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;
 
-            // * SFX
-            player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
-            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5,  null);
-            break;
+                setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
+
+                // * SFX
+                player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+                ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5, null);
+                break;
+            }
         }
     }
 
@@ -141,29 +148,34 @@ public class PlayerObtainOrb implements Listener {
     }
 
     private static void sendBroadcastMessageOrb(Player player, int progressionOrb) {
-        String strOrb;
-        switch (progressionOrb) {
-            case 1 -> strOrb = "l'Orbe de Domination";
-            case 2 -> strOrb = "l'Orbe des Ames";
-            case 3 -> strOrb = "l'Orbe des Nuages";
-            case 4 -> strOrb = "l'Orbe de Boue";
-            case 5 -> strOrb = "l'Orbe Glaciale";
-            default -> strOrb = "une Orbe Inconnu";
-        }
+        Component orb = switch (progressionOrb) {
+            case 1 -> TranslationManager.translation("feature.dream.item.domination_orb.name");
+            case 2 -> TranslationManager.translation("feature.dream.item.ame_orb.name");
+            case 3 -> TranslationManager.translation("feature.dream.item.cloud_orb.name");
+            case 4 -> TranslationManager.translation("feature.dream.item.mud_orb.name");
+            case 5 -> TranslationManager.translation("feature.dream.item.glacite_orb.name");
+            default -> TranslationManager.translation("feature.dream.item.unknown_orb.name");
+        };
 
-        MessagesManager.broadcastMessage(player.getWorld(), Component.text(player.getName() + " a obtenu " + strOrb + " !"), Prefix.DREAM, MessageType.INFO);
+        MessagesManager.broadcastMessage(player.getWorld(), TranslationManager.translation(
+                "feature.dream.orb.message.obtained",
+                Component.text(player.getName()),
+                orb
+        ), Prefix.DREAM, MessageType.INFO);
     }
 
     private static void sendMessageProgression(Player player, DreamBiome biome) {
-        String strBiome;
-        switch (biome) {
-            case SOUL_FOREST -> strBiome = "la Forêt des Âmes";
-            case CLOUD_LAND -> strBiome = "le Château des Nuages";
-            case MUD_BEACH -> strBiome = "la Plage de Boue";
-            case GLACITE_GROTTO -> strBiome = "la Grotte de Glacite";
-            default -> strBiome = "Inconnu";
-        }
+        Component biomeName = switch (biome) {
+            case SOUL_FOREST -> TranslationManager.translation("feature.dream.biome.progression.soul_forest");
+            case CLOUD_LAND -> TranslationManager.translation("feature.dream.biome.progression.cloud_land");
+            case MUD_BEACH -> TranslationManager.translation("feature.dream.biome.progression.mud_beach");
+            case GLACITE_GROTTO -> TranslationManager.translation("feature.dream.biome.progression.glacite_grotto");
+            default -> TranslationManager.translation("feature.dream.biome.progression.unknown");
+        };
 
-        MessagesManager.sendMessage(player, Component.text("Vous avez débloqué " + strBiome + " !"), Prefix.DREAM, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.dream.biome.message.unlocked",
+                biomeName
+        ), Prefix.DREAM, MessageType.SUCCESS, false);
     }
 }

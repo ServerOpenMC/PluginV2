@@ -19,18 +19,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.List;
 import java.util.UUID;
 
 public class CityLevelTwoQuest extends MilestoneQuest implements Listener {
     
     public CityLevelTwoQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.city_level_two.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_level_two.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_level_two.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.city_level_two.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.city_level_two.description"),
                 Material.NETHER_STAR,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.CITY_LEVEL_2,

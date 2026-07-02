@@ -1,7 +1,7 @@
 package fr.openmc.core.events;
 
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
