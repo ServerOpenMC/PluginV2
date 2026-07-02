@@ -14,14 +14,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class FishingQuest extends Quest implements Listener {
 
     public FishingQuest() {
         super(
-                TranslationManager.translationString("feature.quests.fishing.name"),
-                List.of(TranslationManager.translationString("feature.quests.fishing.description")),
+                TranslationManager.translation("feature.quests.fishing.name"),
+                TranslationManager.translationLore("feature.quests.fishing.description"),
                 new ItemStack(Material.FISHING_ROD)
         );
 

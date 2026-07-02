@@ -14,9 +14,9 @@ import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -56,7 +56,7 @@ public class DreamPlayer {
         if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.GREAT_DREAM.getId())) {
             this.dreamTime = (long) (this.dreamTime * 1.6);
             MessagesManager.sendMessage(player,
-                    Component.text("Vous avez reçu §360% §fde temps en plus !"), Prefix.MAYOR, MessageType.INFO, false
+                    TranslationManager.translation("feature.dream.message.great_dream_bonus"), Prefix.MAYOR, MessageType.INFO, false
             );
         }
 

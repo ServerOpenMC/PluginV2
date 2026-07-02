@@ -58,8 +58,8 @@ public class BreakLogQuest extends Quest implements Listener {
 
     public BreakLogQuest() {
         super(
-                TranslationManager.translationString("feature.quests.break_log.name"),
-                List.of(TranslationManager.translationString("feature.quests.break_log.description")),
+                TranslationManager.translation("feature.quests.break_log.name"),
+                TranslationManager.translationLore("feature.quests.break_log.description"),
                 new ItemStack(Material.IRON_AXE)
         );
 

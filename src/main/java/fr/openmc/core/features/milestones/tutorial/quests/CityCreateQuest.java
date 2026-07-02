@@ -24,17 +24,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class CityCreateQuest extends MilestoneQuest implements Listener {
 
     public CityCreateQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.city_create.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_create.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.city_create.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.city_create.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.city_create.description"),
                 Material.OAK_DOOR,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.CITY_CREATE,

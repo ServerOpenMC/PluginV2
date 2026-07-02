@@ -18,17 +18,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class FinishQuestQuest extends MilestoneQuest implements Listener {
 
     public FinishQuestQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.finish_quest.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.finish_quest.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.finish_quest.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.finish_quest.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.finish_quest.description"),
                 Material.DIAMOND,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.FINISH_QUEST,

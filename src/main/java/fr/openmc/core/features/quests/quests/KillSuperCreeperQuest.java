@@ -12,14 +12,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.List;
-
 public class KillSuperCreeperQuest extends Quest implements Listener {
 
     public KillSuperCreeperQuest() {
         super(
-                TranslationManager.translationString("feature.quests.kill_super_creeper.name"),
-                List.of(TranslationManager.translationString("feature.quests.kill_super_creeper.description")),
+                TranslationManager.translation("feature.quests.kill_super_creeper.name"),
+                TranslationManager.translationLore("feature.quests.kill_super_creeper.description"),
                 Material.CREEPER_HEAD
         );
 

@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholder;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class DreamItemNamePlaceholder implements IAPlaceholder {
     private static final String PLACEHOLDER_NAME = "dream_item_name";
@@ -21,6 +22,6 @@ public class DreamItemNamePlaceholder implements IAPlaceholder {
 
         if (item == null || !(item.getMeta() instanceof DreamItemMeta d)) return null;
 
-        return d.getRarity().getLegacyColor() + d.getName();
+        return LegacyComponentSerializer.legacySection().serialize(d.getNameComponent().color(d.getRarity().getColor()));
     }
 }

@@ -14,14 +14,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class BreakWheatQuest extends Quest implements Listener {
 
     public BreakWheatQuest() {
         super(
-                TranslationManager.translationString("feature.quests.break_wheat.name"),
-                List.of(TranslationManager.translationString("feature.quests.break_wheat.description")),
+                TranslationManager.translation("feature.quests.break_wheat.name"),
+                TranslationManager.translationLore("feature.quests.break_wheat.description"),
                 new ItemStack(Material.WHEAT)
         );
 

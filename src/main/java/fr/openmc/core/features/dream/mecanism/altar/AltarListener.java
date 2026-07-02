@@ -6,7 +6,7 @@ import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class AltarListener implements Listener {
         ItemStack handItem = player.getInventory().getItemInMainHand();
         if (handItem.getType().isAir()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Vous devez tenir un objet dans la main"),
+                    TranslationManager.translation("feature.dream.altar.message.must_hold_item"),
                     Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
@@ -49,7 +49,7 @@ public class AltarListener implements Listener {
 
         if (dreamItem == null) {
             MessagesManager.sendMessage(player,
-                    Component.text("Cet objet ne peut pas être utilisé dans l'§5Altar"),
+                    TranslationManager.translation("feature.dream.altar.message.unusable_item"),
                     Prefix.DREAM, MessageType.ERROR, false);
             return;
         }

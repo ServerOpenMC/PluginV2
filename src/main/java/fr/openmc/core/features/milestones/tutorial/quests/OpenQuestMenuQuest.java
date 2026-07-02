@@ -19,17 +19,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class OpenQuestMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenQuestMenuQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.open_quest.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_quest.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_quest.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.open_quest.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.open_quest.description"),
                 Material.GOLDEN_AXE,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.OPEN_QUEST,

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.enchantements;
 
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import io.papermc.paper.registry.tag.TagKey;
@@ -24,7 +25,7 @@ public class Experientastic extends DreamEnchantment implements Listener {
 
     @Override
     public Component getName() {
-        return Component.text("Experientastic");
+        return TranslationManager.translation("feature.dream.enchantment.experientastic.name");
     }
 
     @Override
