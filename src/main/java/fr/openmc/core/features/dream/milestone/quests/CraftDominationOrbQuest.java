@@ -9,33 +9,23 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class CraftDominationOrbQuest extends MilestoneQuest implements Listener {
 	public CraftDominationOrbQuest() {
 		super(
-				"Dominer, c'est cool",
-				List.of(
-						"§fFabriquer l'§dOrbe de Domination",
-						"§8§o1 sur 5 pour les dominer tous !"
-				),
+				TranslationManager.translation("feature.dream.milestone.quest.craft_domination_orb.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.craft_domination_orb.description"),
 				DreamItemRegistry.DOMINATION_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_DOMINATION_ORB,
 				new QuestTier(1),
-				List.of(
-						"§6Voilà l'orbe, que dois-je faire avec ?",
-						"§3Voyageur : Cet orbe est la première d'une série de §d5§3 éparpillées dans ce monde. Chaque orbe est unique et possède la capacité de te " +
-								"faire avancer dans le monde et dans ma... notre quête !",
-						"§6Il nous faut donc explorer la nouvelle zone débloquée par l'orbe ?",
-						"§3Voyageur : C'est exact ! Il va falloir trouver le §dTemple §3du maître des lieux. Tu ne devrais pas le louper, je pense..."
-				)
+				TranslationManager.translationLore("feature.dream.milestone.quest.craft_domination_orb.dialog")
 		);
 	}
 	

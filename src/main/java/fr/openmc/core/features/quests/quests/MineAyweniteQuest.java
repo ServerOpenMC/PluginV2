@@ -16,14 +16,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class MineAyweniteQuest extends Quest implements Listener {
 
     public MineAyweniteQuest() {
         super(
-                TranslationManager.translationString("feature.quests.mine_aywenite.name"),
-                List.of(TranslationManager.translationString("feature.quests.mine_aywenite.description")),
+                TranslationManager.translation("feature.quests.mine_aywenite.name"),
+                TranslationManager.translationLore("feature.quests.mine_aywenite.description"),
                 OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest()
         );
 

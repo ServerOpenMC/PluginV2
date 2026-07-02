@@ -11,14 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class ChickenThrowerQuest extends Quest implements Listener {
 
     public ChickenThrowerQuest() {
         super(
-                TranslationManager.translationString("feature.quests.chicken_thrower.name"),
-                List.of(TranslationManager.translationString("feature.quests.chicken_thrower.description")),
+                TranslationManager.translation("feature.quests.chicken_thrower.name"),
+                TranslationManager.translationLore("feature.quests.chicken_thrower.description"),
                 new ItemStack(Material.EGG)
         );
 

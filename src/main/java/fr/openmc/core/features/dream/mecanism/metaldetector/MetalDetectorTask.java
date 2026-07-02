@@ -4,9 +4,11 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.DirectionUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -44,7 +46,11 @@ public class MetalDetectorTask extends BukkitRunnable {
         double distance = player.getLocation().distance(chestLocation);
         String direction = DirectionUtils.getDirectionArrow(player, chestLocation);
         player.sendActionBar(
-                Component.text("§eDistance : §6" + (int) distance + " blocs §7(" + direction + ")")
+                TranslationManager.translation(
+                        "feature.dream.actionbar.distance",
+                        Component.text((int) distance).color(NamedTextColor.GOLD),
+                        Component.text(direction)
+                )
         );
 
         if (distance <= 3) {

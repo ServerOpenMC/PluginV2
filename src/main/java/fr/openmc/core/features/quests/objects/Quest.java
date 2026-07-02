@@ -16,6 +16,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -32,8 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class Quest {
 
-    private final String name;
-    private final List<String> baseDescription;
+    private final Component name;
+    private final List<Component> baseDescription;
     @Setter
     private List<Component> additionalLore;
     private final ItemStack icon;
@@ -52,7 +53,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - ItemStack
      */
-    public Quest(String name, List<String> baseDescription, ItemStack icon) {
+    public Quest(Component name, List<Component> baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.additionalLore = List.of();
@@ -67,7 +68,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - CustomItem
      */
-    public Quest(String name, List<String> baseDescription, CustomItem icon) {
+    public Quest(Component name, List<Component> baseDescription, CustomItem icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.additionalLore = List.of();
@@ -82,7 +83,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - Material
      */
-    public Quest(String name, List<String> baseDescription, Material icon) {
+    public Quest(Component name, List<Component> baseDescription, Material icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.additionalLore = List.of();
@@ -98,7 +99,7 @@ public class Quest {
      * @param icon            The icon representing the quest - ItemStack
      * @param isLargeActionBar If true, the quest will be displayed in the large action bar
      */
-    public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
+    public Quest(Component name, List<Component> baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.additionalLore = List.of();
@@ -114,7 +115,7 @@ public class Quest {
      * @param icon            The icon representing the quest - Material
      * @param isLargeActionBar If true, the quest will be displayed in the large action bar
      */
-    public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
+    public Quest(Component name, List<Component> baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.additionalLore = List.of();
@@ -233,13 +234,11 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the name of the quest for the player
      */
-    public String getName(UUID playerUUID) {
+    public Component getName(UUID playerUUID) {
         int target = this.getCurrentTarget(playerUUID);
         String s = target > 1 ? "s" : "";
 
-        return this.name
-                .replace("{target}", String.valueOf(target))
-                .replace("{s}", s);
+        return formattedQuestComponent(name, String.valueOf(target), s);
     }
 
     /**
@@ -250,14 +249,12 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the description of the quest for the player
      */
-    public List<String> getDescription(UUID playerUUID) {
+    public List<Component> getDescription(UUID playerUUID) {
         int target = this.getCurrentTarget(playerUUID);
         String s = target > 1 ? "s" : "";
 
         return this.baseDescription.stream()
-                .map(line -> line
-                        .replace("{target}", String.valueOf(target))
-                        .replace("{s}", s))
+                .map(line -> formattedQuestComponent(line, String.valueOf(target), s))
                 .toList();
     }
 
@@ -269,14 +266,12 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the next tier description of the quest for the player
      */
-    public List<String> getNextTierDescription(UUID playerUUID) {
+    public List<Component> getNextTierDescription(UUID playerUUID) {
         int target = this.getNextTierTarget(playerUUID);
         String s = this.getNextTierTarget(playerUUID) > 1 ? "s" : "";
 
         return this.baseDescription.stream()
-                .map(line -> line
-                        .replace("{target}", String.valueOf(target))
-                        .replace("{s}", s))
+                .map(line -> formattedQuestComponent(line, String.valueOf(target), s))
                 .toList();
     }
 
@@ -335,16 +330,16 @@ public class Quest {
                         .append(titleLabel.color(TextColor.color(6216131)))
                         .append(Component.text(" ✦", TextColor.color(15770808)));
 
-                Component titleSub = Component.text(this.name, TextColor.color(8087790));
+                Component titleSub = this.name.color(TextColor.color(8087790));
                 Component message = isLastTier
                         ? TranslationManager.translation(
                                 "feature.quests.message.completed",
-                                Component.text(getName(uuid)).color(NamedTextColor.YELLOW)
+                                getName(uuid).color(NamedTextColor.YELLOW)
                         )
                         : TranslationManager.translation(
                                 "feature.quests.message.tier_completed",
                                 Component.text(tierIndex + 1).color(NamedTextColor.YELLOW),
-                                Component.text(this.name).color(NamedTextColor.YELLOW)
+                                this.name.color(NamedTextColor.YELLOW)
                         );
 
                 player.showTitle(Title.title(
@@ -447,7 +442,7 @@ public class Quest {
             Component message = TranslationManager.translation(
                     "feature.quests.message.rewards_claimed",
                     Component.text(tierIndex + 1).color(NamedTextColor.YELLOW),
-                    Component.text(this.name).color(NamedTextColor.YELLOW)
+                    this.name.color(NamedTextColor.YELLOW)
             ).color(NamedTextColor.GREEN);
             MessagesManager.sendMessage(player, message, Prefix.QUEST, MessageType.SUCCESS, true);
         } else {
@@ -493,7 +488,7 @@ public class Quest {
             Component message = TranslationManager.translation(
                     "feature.quests.message.step_completed",
                     Component.text(stepIndex + 1).color(NamedTextColor.YELLOW),
-                    Component.text(this.name).color(NamedTextColor.YELLOW)
+                    this.name.color(NamedTextColor.YELLOW)
             ).color(NamedTextColor.GREEN);
             MessagesManager.sendMessage(player, message, Prefix.QUEST, MessageType.SUCCESS, true);
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 2.0F);
@@ -588,7 +583,7 @@ public class Quest {
                                 .append(TranslationManager.translation("feature.quests.actionbar.progress_label")
                                         .color(NamedTextColor.GRAY))
                                 .append(Component.space())
-                                .append(Component.text(this.name, NamedTextColor.WHITE))
+                                .append(this.name.color(NamedTextColor.WHITE))
                                 .append(Component.text(" : ", NamedTextColor.GRAY))
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
                                 .build();
@@ -645,7 +640,7 @@ public class Quest {
             List<QuestStep> steps = tier.getSteps();
             for (int i = 0; i < steps.size(); i++) {
                 QuestStep step = steps.get(i);
-                if (step.getDescription().equals(stepDescription)) {
+                if (PlainTextComponentSerializer.plainText().serialize(step.getDescription()).equals(stepDescription)) {
                     step.incrementProgress(playerUUID, amount);
                     if (step.isCompleted(playerUUID)) {
                         completeStep(playerUUID, i);
@@ -654,5 +649,15 @@ public class Quest {
                 }
             }
         }
+    }
+
+    private Component formattedQuestComponent(Component initial, String target, String s) {
+        return initial.replaceText(b -> {
+            b.matchLiteral("{target}");
+            b.replacement(String.valueOf(target));
+        }).replaceText(b -> {
+            b.matchLiteral("{s}");
+            b.replacement(s);
+        });
     }
 }

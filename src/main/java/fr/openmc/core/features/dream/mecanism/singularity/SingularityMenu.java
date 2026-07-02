@@ -8,6 +8,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.TakeFromSingularityEvent;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -80,7 +81,7 @@ public class SingularityMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Votre Singularité");
+        return TranslationManager.translation("feature.dream.singularity.menu.name");
     }
 
     @Override

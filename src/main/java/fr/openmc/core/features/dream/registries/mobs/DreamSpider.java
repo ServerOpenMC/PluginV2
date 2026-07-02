@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Spider;
 
@@ -13,7 +14,7 @@ public class DreamSpider extends DreamMob<Spider> {
 
     public DreamSpider(String id) {
         super(id,
-                "Arraignée Infestée",
+                TranslationManager.translationString("feature.dream.mob.dream_spider"),
                 Spider.class,
                 8.0,
                 1L,

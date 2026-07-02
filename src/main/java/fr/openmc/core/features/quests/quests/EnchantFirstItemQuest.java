@@ -11,14 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class EnchantFirstItemQuest extends Quest implements Listener {
 
     public EnchantFirstItemQuest() {
         super(
-                TranslationManager.translationString("feature.quests.enchant_first_item.name"),
-                List.of(TranslationManager.translationString("feature.quests.enchant_first_item.description")),
+                TranslationManager.translation("feature.quests.enchant_first_item.name"),
+                TranslationManager.translationLore("feature.quests.enchant_first_item.description"),
                 Material.ENCHANTING_TABLE
         );
 

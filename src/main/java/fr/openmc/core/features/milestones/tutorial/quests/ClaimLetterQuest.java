@@ -18,17 +18,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class ClaimLetterQuest extends MilestoneQuest implements Listener {
 
     public ClaimLetterQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.claim_letter.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.claim_letter.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.claim_letter.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.claim_letter.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.claim_letter.description"),
                 Material.PAPER,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.CLAIM_LETTER,
