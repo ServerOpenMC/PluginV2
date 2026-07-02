@@ -30,7 +30,7 @@ public class MilestoneDialog {
 	 * @param step l'enum de l'étape du milestone
 	 * @param dialogs le texte du dialogue
 	 */
-	public static void send(Player player, Enum<? extends MilestoneStep> step, List<String> dialogs) {
+	public static void send(Player player, Enum<? extends MilestoneStep> step, List<Component> dialogs) {
 		send(player, step, dialogs, 1);
 	}
 
@@ -41,18 +41,17 @@ public class MilestoneDialog {
 	 * @param dialogs le texte du dialogue
 	 * @param messageStep l'incrément pour les étapes du dialogues
 	 */
-	public static void send(Player player, Enum<? extends MilestoneStep> step, List<String> dialogs, int messageStep) {
+	public static void send(Player player, Enum<? extends MilestoneStep> step, List<Component> dialogs, int messageStep) {
 		List<DialogBody> body = new ArrayList<>();
 
 		for (int i = 0; i < messageStep; i++) {
-			String d = dialogs.get(i);
-			body.add(DialogBody.plainMessage(Component.text(d), 500));
+			body.add(DialogBody.plainMessage(dialogs.get(i), 500));
 		}
 		
 		ButtonType btn = (dialogs.size() <= messageStep) ? ButtonType.FINISH : ButtonType.NEXT;
 		
 		Dialog dialog = Dialog.create(builder -> builder.empty()
-				.base(DialogBase.builder(Component.text(((MilestoneStep) step).getQuest().getName()))
+				.base(DialogBase.builder(((MilestoneStep) step).getQuest().getName())
 						.body(body)
 						.canCloseWithEscape(true)
 						.build()

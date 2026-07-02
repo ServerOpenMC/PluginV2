@@ -1,23 +1,28 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
+import fr.openmc.core.utils.text.ColorUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 
 @Getter
 public enum DreamRarity {
-    COMMON(Component.text("ITEM COMMUN", NamedTextColor.WHITE, TextDecoration.BOLD), "§f"),
-    RARE(Component.text("ITEM RARE", NamedTextColor.BLUE, TextDecoration.BOLD), "§9"),
-    EPIC(Component.text("ITEM EPIQUE", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD), "§5"),
-    LEGENDARY(Component.text("ITEM LEGENDAIRE", NamedTextColor.GOLD, TextDecoration.BOLD), "§6"),
-    ONIRISIME(Component.text("ITEM ONIRISME", NamedTextColor.AQUA, TextDecoration.BOLD), "§b");
+    COMMON(TranslationManager.translation("feature.dream.item.rarity.common"), NamedTextColor.WHITE),
+    RARE(TranslationManager.translation("feature.dream.item.rarity.rare"), NamedTextColor.BLUE),
+    EPIC(TranslationManager.translation("feature.dream.item.rarity.epic"), NamedTextColor.DARK_PURPLE),
+    LEGENDARY(TranslationManager.translation("feature.dream.item.rarity.legendary"), NamedTextColor.GOLD),
+    ONIRISIME(TranslationManager.translation("feature.dream.item.rarity.onirisme"), NamedTextColor.AQUA);
 
     private final Component templateLore;
-    private final String legacyColor;
+    private final NamedTextColor color;
 
-    DreamRarity(Component templateLore, String legacyColor) {
+    DreamRarity(Component templateLore, NamedTextColor color) {
         this.templateLore = templateLore;
-        this.legacyColor = legacyColor;
+        this.color = color;
+    }
+
+    public String toLegacyColor() {
+        return ColorUtils.getColorCode(color);
     }
 }

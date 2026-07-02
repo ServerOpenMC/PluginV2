@@ -12,6 +12,7 @@ import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -55,13 +56,13 @@ public class AdminDreamCommands {
         try {
             quest = DreamSteps.valueOf(stepName).getQuest();
         } catch (IllegalArgumentException e) {
-            MessagesManager.sendMessage(player, Component.text("§cLe nom de l'étape n'est pas valide !"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.admin.commands.showdialog.invalid_step"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
-        List<String> dialogs = quest.getDialogs();
+        List<Component> dialogs = quest.getDialogs();
         if (dialogs == null || dialogs.isEmpty()) {
-            MessagesManager.sendMessage(player, Component.text("§cCette étape n'a pas de dialogs !"), Prefix.DREAM, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.admin.commands.showdialog.no_dialogs"), Prefix.DREAM, MessageType.WARNING, false);
             return;
         }
 

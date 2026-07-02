@@ -6,7 +6,7 @@ import fr.openmc.core.features.dream.events.DreamEndEvent;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -18,7 +18,7 @@ public class DreamCommands {
     @CommandPermission("omc.commands.dream.leave")
     public void leave(Player player) {
         if (!DreamUtils.isInDream(player)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas dans un rêve"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.commands.leave.not_in_dream"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -26,7 +26,7 @@ public class DreamCommands {
                 Bukkit.getServer().getPluginManager().callEvent(new DreamEndEvent(player))
         );
 
-        MessagesManager.sendMessage(player, Component.text("Vous avez quitté votre rêve avec succès."), Prefix.DREAM, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.commands.leave.success"), Prefix.DREAM, MessageType.SUCCESS, false);
     }
 
     @Command("crafts")

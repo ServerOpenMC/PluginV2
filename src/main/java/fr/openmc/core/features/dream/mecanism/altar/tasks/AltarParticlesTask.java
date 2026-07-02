@@ -3,10 +3,7 @@ package fr.openmc.core.features.dream.mecanism.altar.tasks;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
 import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -65,7 +62,7 @@ public class AltarParticlesTask extends BukkitRunnable {
                     y,
                     z + vec.getZ(),
                     1,
-                    new Particle.DustOptions(org.bukkit.Color.ORANGE, 1.5f)
+                    new Particle.DustOptions(Color.ORANGE, 1.5f)
             );
         }
     }

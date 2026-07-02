@@ -14,8 +14,8 @@ import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,7 +91,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         World world = player.getWorld();
         if (!DreamUtils.isDreamWorld(world)) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez être dans la dimension des rêves pour reset la position du coffre"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.metal_detector.message.must_be_dream"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -103,7 +103,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
         if (item == null) return;
 
         if (player.hasCooldown(item)) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de reset la position du coffre"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.metal_detector.message.reset_cooldown"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
