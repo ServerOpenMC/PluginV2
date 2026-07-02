@@ -8,6 +8,8 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -65,8 +67,12 @@ public class SocialSpyManager extends Feature implements HasCommands  {
      * @param message The message being sent.
      */
     public static void broadcastToSocialSpy(Player sender, Player receiver, String message) {
-        String socialSpyMessage =
-                "§8[§6SPY§8] §7" + sender.getName() + " §6→ §7" + receiver.getName() + "§8: §7" + message;
+        Component socialSpyMessage = TranslationManager.translation(
+                "feature.privatemessage.socialspy.format",
+                Component.text(sender.getName()).color(NamedTextColor.GRAY),
+                Component.text(receiver.getName()).color(NamedTextColor.GRAY),
+                Component.text(message).color(NamedTextColor.GRAY)
+        );
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer.equals(sender) || onlinePlayer.equals(receiver)) {

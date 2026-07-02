@@ -265,7 +265,7 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
                 "feature.mailboxes.message.send_success",
                 Component.text(numItems).color(NamedTextColor.GREEN),
                 Component.text(pluralize("item", numItems)).color(NamedTextColor.DARK_GREEN),
-                Component.text(pluralize("envoyé", numItems)).color(NamedTextColor.DARK_GREEN),
+                Component.text(pluralize(TranslationManager.translationString("feature.mailboxes.message.sent_word"), numItems)).color(NamedTextColor.DARK_GREEN),
                 Component.text(receiverName).color(NamedTextColor.GREEN)
         ).color(NamedTextColor.DARK_GREEN);
 

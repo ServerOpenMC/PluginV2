@@ -31,11 +31,14 @@ public class SocialSpyCommand {
     ) {
         SocialSpyManager.toggleSocialSpy(target);
 
-        String status = SocialSpyManager.hasSocialSpyEnabled(target)
-                ? "activé" : "désactivé";
+        Component status = SocialSpyManager.hasSocialSpyEnabled(target)
+                ? TranslationManager.translation("feature.privatemessage.socialspy.status.enabled")
+                : TranslationManager.translation("feature.privatemessage.socialspy.status.disabled");
 
         MessagesManager.sendMessage(admin,
-                Component.text("§aSocial Spy " + status + " pour " + target.getName() + "."),
+                TranslationManager.translation("feature.privatemessage.socialspy.status_changed",
+                        status,
+                        Component.text(target.getName())),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
     }
 

@@ -183,7 +183,8 @@ public abstract class Menu implements InventoryHolder {
 			inventory.setItem(slot, new ItemMenuBuilder(this, item, itemMeta -> {
 				itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
 				itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
-				itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : Component.text("Menu Précédent")));
+				itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ?
+						MenuLib.getLastMenu(player).getName() : TranslationManager.translation("api.menulib.menu.back")));
 			}, true));
 			return;
 		}
