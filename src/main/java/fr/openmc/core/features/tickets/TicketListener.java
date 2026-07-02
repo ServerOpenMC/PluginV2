@@ -9,14 +9,14 @@ import fr.openmc.core.events.LootboxRewardEvent;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;
-import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -52,8 +52,8 @@ public class TicketListener implements Listener, NotInUnitTest {
 
         if (hasLootPelucheSeinyy && alreadyWon >= 1) {
             MessagesManager.sendMessage(player,
-                    Component.text("§cVous avez déjà atteint la limite de cet item : ")
-                            .append(Component.text("Peluche Seinyy")),
+                    TranslationManager.translation("feature.tickets.loot.limit_reached")
+                            .append(OMCRegistry.CUSTOM_ITEMS.getOrThrow(pelushKey).getBest().displayName().color(NamedTextColor.RED)),
                     Prefix.OPENMC, MessageType.ERROR, true);
             event.setCancelled(true);
             return;

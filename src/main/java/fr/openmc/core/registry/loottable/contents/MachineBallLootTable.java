@@ -6,6 +6,8 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ItemBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,8 +34,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                             OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY,
                             meta -> {
-                                meta.displayName(Component.text("§d§lPeluche Seinyy"));
-                                meta.lore(List.of(Component.text("§7Une petite peluche comme Seinyy !")));
+                                meta.displayName(Component.text("Peluche Seinyy", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD));
+                                meta.lore(List.of(Component.text("Une petite peluche comme Seinyy !", NamedTextColor.GRAY)));
                             }
                         ),
                         0.1,
@@ -45,8 +47,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                             Material.DIAMOND,
                             meta -> {
-                                meta.displayName(Component.text("§b§lDiamants"));
-                                meta.lore(List.of(Component.text("§7Ohhhh mais qu'est ce que c'est précieux ce truc !?")));
+                                meta.displayName(Component.text("Diamants", NamedTextColor.AQUA, TextDecoration.BOLD));
+                                meta.lore(List.of(Component.text("Ohhhh mais qu'est ce que c'est précieux ce truc !?", NamedTextColor.GRAY)));
                             }
                         ),
                         0.15,
@@ -58,8 +60,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.IRON_INGOT,
                                 meta -> {
-                                    meta.displayName(Component.text("§7§lLingots de Fer"));
-                                    meta.lore(List.of(Component.text("§7Simplement du fer, rien de fou quoi...")));
+                                    meta.displayName(Component.text("Lingots de Fer", NamedTextColor.GRAY, TextDecoration.BOLD));
+                                    meta.lore(List.of(Component.text("Simplement du fer, rien de fou quoi...", NamedTextColor.GRAY)));
                                 }
                         ),
                         0.2,
@@ -71,8 +73,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.NETHERITE_INGOT,
                                 meta -> {
-                                    meta.displayName(Component.text("§4§lLingot De Netherite"));
-                                    meta.lore(List.of(Component.text("§7Le truc le plus rare du jeu !")));
+                                    meta.displayName(Component.text("Lingot De Netherite", NamedTextColor.DARK_RED, TextDecoration.BOLD));
+                                    meta.lore(List.of(Component.text("Le truc le plus rare du jeu !", NamedTextColor.GRAY)));
                                 }
                         ),
                         0.05,
@@ -84,8 +86,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.OAK_LOG,
                                 meta -> {
-                                    meta.displayName(Component.text("§6§lBûches de Chêne"));
-                                    meta.lore(List.of(Component.text("§7De quoi te faire une petite maison hihi")));
+                                    meta.displayName(Component.text("Bûches de Chêne", NamedTextColor.GOLD, TextDecoration.BOLD));
+                                    meta.lore(List.of(Component.text("De quoi te faire une petite maison hihi", NamedTextColor.GRAY)));
                                 }
                         ),
                         0.25,
@@ -97,8 +99,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.COOKED_BEEF,
                                 meta -> {
-                                    meta.displayName(Component.text("§c§lSteaks"));
-                                    meta.lore(List.of(Component.text("§7Miam miam, de la bonne viande !")));
+                                    meta.displayName(Component.text("Steaks", NamedTextColor.RED, TextDecoration.BOLD));
+                                    meta.lore(List.of(Component.text("Miam miam, de la bonne viande !", NamedTextColor.GRAY)));
                                 }
                         ),
                         0.15,
@@ -110,8 +112,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.COAL,
                                 meta -> {
-                                    meta.displayName(Component.text("§8§lCharbon"));
-                                    meta.lore(List.of(Component.text("§7De quoi faire du feu")));
+                                    meta.displayName(Component.text("Charbon", NamedTextColor.DARK_GRAY, TextDecoration.BOLD));
+                                    meta.lore(List.of(Component.text("De quoi faire du feu", NamedTextColor.GRAY)));
                                 }
                         ),
                         0.145,

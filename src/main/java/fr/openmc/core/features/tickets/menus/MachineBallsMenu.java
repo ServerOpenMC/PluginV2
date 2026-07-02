@@ -32,7 +32,7 @@ public class MachineBallsMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Machine à boules");
+        return TranslationManager.translation("feature.tickets.machine.title");
     }
 
     @Override
