@@ -57,7 +57,7 @@ public class MilestoneDialog {
 						.build()
 				)
 				.type(DialogType.notice(
-						ActionButton.builder(Component.text(btn.getLabel()))
+						ActionButton.builder(btn.getLabelComponent())
 								.action(DialogAction.customClick((response, audience) -> {
 									player.closeInventory();
 									if (dialogs.size() <= messageStep) {
