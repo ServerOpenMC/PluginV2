@@ -1,6 +1,8 @@
 package fr.openmc.core.features.quests.objects;
 
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -8,8 +10,8 @@ import java.util.List;
 
 
 public class QuestBuilder {
-    private final String name;
-    private final List<String> description;
+    private final Component name;
+    private final List<Component> description;
     private final ItemStack icon;
     private final List<QuestTier> tiers = new ArrayList<>();
     private int currentTierTarget;
@@ -18,7 +20,7 @@ public class QuestBuilder {
     private final List<QuestStep> currentTierSteps = new ArrayList<>();
     private boolean currentTierRequireSteps = false;
 
-    public QuestBuilder(String name, List<String> description, ItemStack icon) {
+    public QuestBuilder(Component name, List<Component> description, ItemStack icon) {
         this.name = name;
         this.description = description;
         this.icon = icon;
@@ -39,12 +41,12 @@ public class QuestBuilder {
         return this;
     }
 
-    public QuestBuilder step(String description, int target) {
+    public QuestBuilder step(String descriptionKey, int target) {
         if (currentTierDescription == null) {
             throw new IllegalStateException("Must define a tier before adding steps");
         }
 
-        currentTierSteps.add(new QuestStep(description, target));
+        currentTierSteps.add(new QuestStep(TranslationManager.translation(descriptionKey), target));
         return this;
     }
 

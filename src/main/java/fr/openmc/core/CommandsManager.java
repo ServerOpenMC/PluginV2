@@ -11,6 +11,7 @@ import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.commands.utils.Socials;
 import fr.openmc.core.features.credits.CreditsCommand;
 import fr.openmc.core.registry.ambient.commands.CustomAmbientCommands;
+import fr.openmc.core.registry.mobs.commands.CustomMobsCommands;
 import lombok.Getter;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
@@ -48,6 +49,7 @@ public class CommandsManager {
                 new CreditsCommand(),
                 new CustomItemCommand(),
                 new CustomAmbientCommands(),
+                new CustomMobsCommands(),
                 new ToastCommand()
         );
     }

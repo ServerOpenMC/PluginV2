@@ -23,17 +23,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.List;
-
 public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
 
     public BreakAyweniteQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.break_aywenite.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.break_aywenite.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.break_aywenite.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.break_aywenite.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.break_aywenite.description"),
                 OMCRegistry.CUSTOM_ITEMS.AYWENITE,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.BREAK_AYWENITE,

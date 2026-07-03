@@ -9,13 +9,14 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class SoulsQuest extends MilestoneQuest implements Listener {
 	
@@ -23,22 +24,16 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 	
 	public SoulsQuest() {
 		super(
-				"Mes amis viennent de l'au-delà",
-				List.of(
-						"§fRécuérer §d" + SOULS + " §fâmes",
-						"§8§oIl me semble avoir vu des créatures",
-						"§8§ovolantes rôder vers les grands arbres sombres."
+				TranslationManager.translation("feature.dream.milestone.quest.souls.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.souls.description",
+						Component.text(SOULS).color(NamedTextColor.LIGHT_PURPLE)
 				),
 				DreamItemRegistry.SOUL,
 				MilestoneType.DREAM,
 				DreamSteps.SOULS,
 				new QuestTier(SOULS),
-				List.of(
-						"§6Et de " + SOULS + " ! Que dois-je faire maintenant ? Il y a un craft spécifique de l'orbe à faire ?",
-						"§3Voyageur : Non, il faut simplement répéter l'incantation suivante 2 fois : §dAshkara no thari fu laq to",
-						"§6Ashkara no thari fu laq to ! Ashkara no thari fu laq to !",
-						"§6...pas facile à dire...",
-						"§3Voyageur : Ahah, en réalité, il te faut simplement intéragir à nouveau avec l'§dOrbe de Domination sur l'§dAltar§3."
+				TranslationManager.translationLore("feature.dream.milestone.quest.souls.dialog",
+						Component.text(SOULS).color(NamedTextColor.GOLD)
 				)
 		);
 	}

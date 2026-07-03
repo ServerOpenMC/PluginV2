@@ -8,7 +8,7 @@ import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -44,7 +44,7 @@ public class PlayerDreamStructureListener implements Listener {
                                     from.getChunk().getZ()
                             ).stream().findFirst().orElse(null);
 
-            MessagesManager.sendMessage(player, Component.text("§7Vous sortez de : ").append(oldStructure.getName()),
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.structure.message.exit", oldStructure.getName()),
                     Prefix.DREAM, MessageType.INFO, true);
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
@@ -57,7 +57,7 @@ public class PlayerDreamStructureListener implements Listener {
                                     to.getChunk().getZ()
                             ).stream().findFirst().orElse(null);
 
-            MessagesManager.sendMessage(player, Component.text("§7Vous entrez dans : ").append(newStructure.getName()),
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.structure.message.enter", newStructure.getName()),
                     Prefix.DREAM, MessageType.INFO, true
             );
 

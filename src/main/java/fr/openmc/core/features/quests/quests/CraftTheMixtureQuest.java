@@ -14,14 +14,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class CraftTheMixtureQuest extends Quest implements Listener {
 
     public CraftTheMixtureQuest() {
         super(
-                TranslationManager.translationString("feature.quests.craft_the_mixture.name"),
-                List.of(TranslationManager.translationString("feature.quests.craft_the_mixture.description")),
+                TranslationManager.translation("feature.quests.craft_the_mixture.name"),
+                TranslationManager.translationLore("feature.quests.craft_the_mixture.description"),
                 OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE
         );
 

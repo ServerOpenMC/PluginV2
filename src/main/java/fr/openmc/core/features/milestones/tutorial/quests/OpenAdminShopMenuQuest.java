@@ -19,17 +19,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class OpenAdminShopMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenAdminShopMenuQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.open_adminshop.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_adminshop.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_adminshop.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.open_adminshop.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.open_adminshop.description"),
                 Material.EMERALD,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.OPEN_ADMINSHOP,

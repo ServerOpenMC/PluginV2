@@ -12,28 +12,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.UUID;
 
 public class CraftDiamondArmorQuest extends Quest implements Listener {
 
     public CraftDiamondArmorQuest() {
         super(
-                TranslationManager.translationString("feature.quests.craft_diamond_armor.name"),
-                List.of(TranslationManager.translationString("feature.quests.craft_diamond_armor.description")),
+                TranslationManager.translation("feature.quests.craft_diamond_armor.name"),
+                TranslationManager.translationLore("feature.quests.craft_diamond_armor.description"),
                 new ItemStack(Material.DIAMOND_CHESTPLATE)
         );
 
         Quest quest = new QuestBuilder(
-                TranslationManager.translationString("feature.quests.craft_diamond_armor.name"),
-                List.of(TranslationManager.translationString("feature.quests.craft_diamond_armor.description")),
+                TranslationManager.translation("feature.quests.craft_diamond_armor.name"),
+                TranslationManager.translationLore("feature.quests.craft_diamond_armor.description"),
                 new ItemStack(Material.DIAMOND_CHESTPLATE)
         )
-                .tier(4, TranslationManager.translationString("feature.quests.craft_diamond_armor.description"), new QuestItemReward(Material.DIAMOND, 10))
-                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.helmet"), 1)
-                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.chestplate"), 1)
-                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.leggings"), 1)
-                .step(TranslationManager.translationString("feature.quests.craft_diamond_armor.step.boots"), 1)
+                .tier(4, "feature.quests.craft_diamond_armor.description", new QuestItemReward(Material.DIAMOND, 10))
+                .step("feature.quests.craft_diamond_armor.step.helmet", 1)
+                .step("feature.quests.craft_diamond_armor.step.chestplate", 1)
+                .step("feature.quests.craft_diamond_armor.step.leggings", 1)
+                .step("feature.quests.craft_diamond_armor.step.boots", 1)
                 .requireAllSteps(true)
                 .build();
 

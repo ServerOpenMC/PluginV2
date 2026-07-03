@@ -10,14 +10,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 
-import java.util.List;
-
 public class CraftCakeQuest extends Quest implements Listener {
 
     public CraftCakeQuest() {
         super(
-                TranslationManager.translationString("feature.quests.craft_cake.name"),
-                List.of(TranslationManager.translationString("feature.quests.craft_cake.description")),
+                TranslationManager.translation("feature.quests.craft_cake.name"),
+                TranslationManager.translationLore("feature.quests.craft_cake.description"),
                 Material.CAKE
         );
 

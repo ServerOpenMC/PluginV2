@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -54,13 +55,14 @@ public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCo
      * @param quest the quest to register
      */
     public static void registerQuest(Quest quest) {
-        if (!quests.containsKey(quest.getName())) {
-            quests.put(quest.getName(), quest);
+        String questName = PlainTextComponentSerializer.plainText().serialize(quest.getName());
+        if (!quests.containsKey(questName)) {
+            quests.put(questName, quest);
             if (quest instanceof Listener questL) {
                 Bukkit.getPluginManager().registerEvents(questL, OMCPlugin.getInstance());
             }
         } else {
-            OMCLogger.warn("Quest {} is already registered.", quest.getName(), new Exception());
+            OMCLogger.warn("Quest {} is already registered.", questName, new Exception());
         }
     }
 

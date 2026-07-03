@@ -10,14 +10,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
-import java.util.List;
-
 public class SaveTheEarthQuest extends Quest implements Listener {
 
     public SaveTheEarthQuest() {
         super(
-                TranslationManager.translationString("feature.quests.save_the_earth.name"),
-                List.of(TranslationManager.translationString("feature.quests.save_the_earth.description")),
+                TranslationManager.translation("feature.quests.save_the_earth.name"),
+                TranslationManager.translationLore("feature.quests.save_the_earth.description"),
                 Material.OAK_SAPLING
         );
 

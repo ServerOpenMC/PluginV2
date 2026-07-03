@@ -1,0 +1,520 @@
+info:
+  namespace: omc_daily_events
+
+items:
+  fisherman_blue_fish:
+    enabled: true
+    permission: ""
+    display_name: "Blue fish"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_blue_fish
+      model_id: 2510051
+  fisherman_cyan_fish:
+    enabled: true
+    permission: ""
+    display_name: "Cyan fish"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_cyan_fish
+      model_id: 2510052
+  fisherman_orange_fish:
+    enabled: true
+    permission: ""
+    display_name: "Orange fish"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_orange_fish
+      model_id: 2510053
+  fisherman_red_fish:
+    enabled: true
+    permission: ""
+    display_name: "Red fish"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_red_fish
+      model_id: 2510054
+  fisherman_boat:
+    enabled: true
+    permission: ""
+    display_name: "Boat"
+    behaviours:
+      furniture:
+        entity: item_display
+        small: false
+        solid: true
+        fixed_rotation: true
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        hitbox:
+          height: 1
+          width: 3
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+        display_transformation:
+          transform: FIXED
+          translation:
+            x: 0
+            y: -0.5
+            z: 0
+          scale:
+            x: 1
+            y: 1
+            z: 1
+          right_rotation:
+            axis_angle:
+              angle: -90
+              axis:
+                x: 1
+                y: 0
+                z: 0
+      furniture_sit:
+        sit_height: 0.7
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_boat
+      model_id: 2510055
+  fisherman_chair:
+    enabled: true
+    permission: ""
+    display_name: "Fisherman stool"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: true
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+      furniture_sit:
+        sit_height: 1
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_chair
+      model_id: 2510056
+  fisherman_fish_box:
+    enabled: true
+    permission: ""
+    display_name: "Fish box"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: true
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_fish_box
+      model_id: 2510057
+  fisherman_fish_rack:
+    enabled: true
+    permission: ""
+    display_name: "Fish rack"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: true
+        fixed_rotation: true
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        hitbox:
+          height: 1
+          width: 2
+          width_offset: -0.5
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_fish_rack
+      model_id: 2510058
+  fisherman_fishing_pole:
+    enabled: true
+    permission: ""
+    display_name: "Fishing pole"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: true
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_fishing_pole
+      model_id: 2510059
+  fisherman_fishingpole_rack:
+    enabled: true
+    permission: ""
+    display_name: "Fishing pole rack"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: true
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_fishingpole_rack
+      model_id: 2510060
+  fisherman_floatie:
+    enabled: true
+    permission: ""
+    display_name: "Floatie"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: true
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_floatie
+      model_id: 2510061
+  fisherman_hanging_fish:
+    enabled: true
+    permission: ""
+    display_name: "Hanging fish"
+    behaviours:
+      furniture:
+        entity: item_display
+        small: false
+        solid: true
+        fixed_rotation: true
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: true
+        hitbox:
+          height: 1
+          width: 3
+          length: 1
+          height_offset: 2
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+        display_transformation:
+          transform: FIXED
+          translation:
+            x: 0
+            y: -0.5
+            z: 0
+          scale:
+            x: 1
+            y: 1
+            z: 1
+          right_rotation:
+            axis_angle:
+              angle: -90
+              axis:
+                x: 1
+                y: 0
+                z: 0
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_hanging_fish
+      model_id: 2510062
+  fisherman_landing_net:
+    enabled: true
+    permission: ""
+    display_name: "Landing net"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_landing_net
+      model_id: 2510063
+  fisherman_large_fishnet:
+    enabled: true
+    permission: ""
+    display_name: "Large fishnet"
+    behaviours:
+      furniture:
+        entity: item_display
+        small: false
+        solid: true
+        fixed_rotation: true
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: true
+        hitbox:
+          height: 3
+          width: 3
+          length: 1
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+        display_transformation:
+          transform: FIXED
+          translation:
+            x: 0
+            y: -0.5
+            z: 0
+          scale:
+            x: 1
+            y: 1
+            z: 1
+          right_rotation:
+            axis_angle:
+              angle: -90
+              axis:
+                x: 1
+                y: 0
+                z: 0
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_large_fishnet
+      model_id: 2510064
+  fisherman_lobster_trap:
+    enabled: true
+    permission: ""
+    display_name: "Lobster trap"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: false
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_lobster_trap
+      model_id: 2510065
+  fisherman_stand:
+    enabled: true
+    permission: ""
+    display_name: "Fisherman stand"
+    behaviours:
+      furniture:
+        entity: item_display
+        small: false
+        solid: false
+        fixed_rotation: true
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: true
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+        display_transformation:
+          transform: FIXED
+          translation:
+            x: 0
+            y: -0.5
+            z: 0
+          scale:
+            x: 1
+            y: 1
+            z: 1
+          right_rotation:
+            axis_angle:
+              angle: -90
+              axis:
+                x: 1
+                y: 0
+                z: 0
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_stand
+      model_id: 2510066
+  fisherman_table:
+    enabled: true
+    permission: ""
+    display_name: "Table"
+    behaviours:
+      furniture:
+        entity: item_frame
+        small: false
+        solid: true
+        fixed_rotation: false
+        placeable_on:
+          floor: true
+          ceiling: false
+          walls: false
+        opposite_direction: false
+        hitbox:
+          width: 2
+          width_offset: -0.5
+        sound:
+          place:
+            name: block.wood.place
+          break:
+            name: block.wood.break
+    resource:
+      material: PAPER
+      generate: false
+      model_path: fisherman_props/fisherman_table
+      model_id: 2510067
