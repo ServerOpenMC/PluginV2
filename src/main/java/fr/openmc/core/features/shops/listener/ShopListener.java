@@ -22,7 +22,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class ShopListener implements Listener {
 
@@ -88,16 +87,6 @@ public class ShopListener implements Listener {
             e.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_him_shop"), Prefix.SHOP, MessageType.WARNING, true);
         }
-    }
-
-    /**
-     * check if an item is valid
-     *
-     * @param item the item to check
-     * @return true if it's a valid item
-     */
-    private boolean isValidItem(ItemStack item) {
-        return item != null && item.getType() != Material.AIR;
     }
     
     @EventHandler

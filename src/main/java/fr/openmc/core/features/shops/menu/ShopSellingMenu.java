@@ -139,6 +139,13 @@ public class ShopSellingMenu extends PaginatedMenu {
 		return List.of();
 	}
 	
+	/**
+	 * Filters the provided array of {@code ItemStack} objects to return a list of unique item stacks,
+	 * with each stack reduced to a single item version.
+	 *
+	 * @param items an array of {@code ItemStack} objects to process.
+	 * @return a {@code List} of unique {@code ItemStack} objects, each representing a single item stack.
+	 */
 	private List<ItemStack> getUniqueItemStacks(ItemStack[] items) {
 		Set<ItemStack> itemStacks = new HashSet<>();
 		for (ItemStack item : items) {

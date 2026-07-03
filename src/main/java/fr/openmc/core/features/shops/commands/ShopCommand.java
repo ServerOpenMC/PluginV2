@@ -5,6 +5,7 @@ import fr.openmc.core.features.shops.manager.PlayerShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -21,7 +22,7 @@ public class ShopCommand {
     @Description("Create a shop")
     public void createShop(Player player) {
         if (!EconomyManager.hasEnoughMoney(player.getUniqueId(), 500)) {
-            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent pour créer un shop (500" + EconomyManager.getEconomyIcon() + " nécessaires)"), Prefix.SHOP, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money", Component.text("500 " + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         PlayerShopManager.startCreatingShop(player);

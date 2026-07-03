@@ -22,12 +22,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerShopManager {
-
-
+    
     /**
-     * Create a shop if the player has enough money and does not already have one
+     * Initiates the shop creation process for the specified player.
      *
-     * @param player the player who creates it
+     * @param player The player who is initiating the shop creation process.
      */
     public static void startCreatingShop(Player player) {
         if (!EconomyManager.withdrawBalance(player.getUniqueId(), 500)) {
@@ -53,6 +52,13 @@ public class PlayerShopManager {
         );
     }
     
+    /**
+     * Creates a shop for the specified player at the given location.
+     *
+     * @param player   The player who is creating the shop.
+     * @param location The location where the shop is to be created.
+     * @return true if the shop creation is successful, false otherwise.
+     */
     private static boolean createShop(Player player, Location location) {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
         
@@ -95,11 +101,13 @@ public class PlayerShopManager {
             return false;
         }
     }
-
+    
     /**
-     * Delete a shop if it is empty
+     * Deletes the specified shop for the given player.
      *
-     * @param player The player who deletes the shop
+     * @param player The player attempting to delete the shop.
+     * @param shop   The shop to be deleted. If the shop is null or not empty, the deletion
+     *               process will be aborted with a warning message.
      */
     public static void deleteShop(Player player, Shop shop) {
         if (shop == null) {

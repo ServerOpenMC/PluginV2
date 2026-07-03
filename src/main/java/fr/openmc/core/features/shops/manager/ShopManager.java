@@ -42,7 +42,7 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	protected void init() {
 		loadShops();
 		loadShopItems();
-		loadSalesItems();
+		loadShopSales();
 	}
 	
 	@Override
@@ -67,56 +67,49 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 		return Set.of(new ShopListener());
 	}
 	
+	// LOADING
+	
 	/**
-	 * Load shops in the map from DB
-	 *
-	 * @return true if shops are successfully loaded, false otherwise
+	 * Loads all shops from the database and initializes them into memory.
 	 */
-	public static boolean loadShops() {
+	public static void loadShops() {
 		if (shopsByLocation != null) shopsByLocation.clear();
 		try {
 			shopsByLocation = ShopDatabaseManager.loadDBShops();
 		} catch (SQLException e) {
-			OMCLogger.error("Cannot save shops from database:\n" + e.getMessage());
-			return false;
+			OMCLogger.error("Cannot load shops from the database:\n" + e.getMessage());
+			return;
 		}
 		
 		shopsByLocation.values().forEach(shop -> setUUIDShop(shop.getShopUUID(), shop));
-		return true;
 	}
 	
 	/**
 	 * Load shops items from DB
-	 *
-	 * @return true if items are successfully loaded, false otherwise
 	 */
-	public static boolean loadShopItems() {
+	public static void loadShopItems() {
 		try {
 			ShopDatabaseManager.loadDBShopItems();
-			return true;
 		} catch (SQLException e) {
-			OMCLogger.error("Cannot save shop items from database:\n" + e.getMessage());
-			return false;
+			OMCLogger.error("Cannot load shop items from the database:\n" + e.getMessage());
 		}
 	}
 	
 	/**
 	 * Load shops sales from DB
-	 *
-	 * @return true if sales are successfully loaded, false otherwise
 	 */
-	public static boolean loadSalesItems() {
+	public static void loadShopSales() {
 		try {
 			ShopDatabaseManager.loadDBShopSales();
-			return true;
 		} catch (SQLException e) {
-			OMCLogger.error("Cannot save shop sales from database:\n" + e.getMessage());
-			return false;
+			OMCLogger.error("Cannot load shop sales from the database:\n" + e.getMessage());
 		}
 	}
 	
+	// SAVING
+	
 	/**
-	 * Save shops to DB
+	 * Saves all registered shops to the database.
 	 */
 	public static void saveShops() {
 		for (Shop shop : shops.values()) {
@@ -126,18 +119,18 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	}
 	
 	/**
-	 * Save shops items to DB
+	 * Saves all shop items to the database.
 	 */
 	public static void saveShopItems() {
 		for (Shop shop : shops.values()) {
 			if (!shop.hasItem()) continue;
 			if (ShopDatabaseManager.saveDBShopItem(shop.getItem())) continue;
-			OMCLogger.error("Failed to save " + shop.getName() + " item to database.");
+			OMCLogger.error("Failed to save " + shop.getName() + " item to a database.");
 		}
 	}
 	
 	/**
-	 * Save shops items to DB
+	 * Saves the sales data of all shops to the database.
 	 */
 	public static void saveShopSales() {
 		for (Shop shop : shops.values()) {
@@ -147,9 +140,11 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 				if (ShopDatabaseManager.saveDBShopSale(s)) continue;
 				error = true;
 			}
-			if (error) OMCLogger.error("Failed to save " + shop.getName() + " sales to database.");
+			if (error) OMCLogger.error("Failed to save " + shop.getName() + " sales to a database.");
 		}
 	}
+	
+	// UTILITY
 
     /**
      * Retrieves a shop located at a given location.
@@ -257,6 +252,12 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 		return Set.copyOf(shops.values());
 	}
 	
+	/**
+	 * Retrieves a shop by its unique UUID.
+	 *
+	 * @param shopUUID The unique identifier (UUID) of the shop to retrieve.
+	 * @return The shop associated with the specified UUID, or null if no shop is found.
+	 */
 	public static Shop getShopByUUID(UUID shopUUID) {
 		return shops.get(shopUUID);
 	}

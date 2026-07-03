@@ -206,6 +206,13 @@ public class ShopMenu extends Menu {
         return List.of();
     }
     
+    /**
+     * Adds the specified amount to the current amount to buy.
+     * If the operation is successful, the menu is reopened with the updated amount.
+     *
+     * @param amount the amount to add to the current amount to buy. Must be greater than zero
+     *               and less than or equal to the remaining stock of the item.
+     */
     private void addAmount(int amount) {
         if (this.item == null || this.item.getAmount() == 0) return;
         if (amount <= 0) return;
@@ -214,6 +221,12 @@ public class ShopMenu extends Menu {
         new ShopMenu(getOwner(), this.shop, this.amountToBuy).open();
     }
     
+    /**
+     * Reduces the current amount to buy by the specified value while ensuring that the amount
+     * remains within valid bounds. If the operation is valid, the menu is reopened with the updated value.
+     *
+     * @param amount the amount to subtract from the current amount to buy. Must be greater than zero.
+     */
     private void removeAmount(int amount) {
         if (this.item == null) return;
         if (amount <= 0) return;

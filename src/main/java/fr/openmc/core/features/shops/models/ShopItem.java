@@ -4,13 +4,8 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.shops.manager.ShopManager;
-import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.UUID;
 
@@ -41,12 +36,15 @@ public class ShopItem implements Cloneable {
         this.amount = 0;
         this.price = pricePerItem * amount;
     }
-
+    
     /**
-     * Set the amount of the ShopItem
+     * Sets the amount of the ShopItem. If the specified amount exceeds
+     * the maximum allowable value (28 full stacks of the item), the amount
+     * is capped at the maximum. Also updates the total price based on the
+     * new amount.
      *
-     * @param amount the new amount of the item
-     * @return default the ShopItem
+     * @param amount the desired amount to set for the ShopItem
+     * @return the updated ShopItem instance
      */
     public ShopItem setAmount(int amount) {
         if (amount > 28 * itemStack.getMaxStackSize()) amount = 28 * itemStack.getMaxStackSize();
@@ -55,33 +53,32 @@ public class ShopItem implements Cloneable {
         return this;
     }
     
+    /**
+     * Adjusts the amount of the ShopItem by adding the specified value.
+     * If the resulting amount exceeds the maximum permissible value (28 stacks),
+     * it is capped at that maximum. Updates the total price based on the new amount.
+     *
+     * @param amount the amount to be added to the current amount of the item
+     */
     public void addAmount(int amount) {
         this.amount += amount;
         if (this.amount > 28 * itemStack.getMaxStackSize()) this.amount = 28 * itemStack.getMaxStackSize();
         this.price = pricePerItem * this.amount;
     }
     
+    /**
+     * Reduces the amount of this ShopItem by the specified value. If the
+     * resulting amount is zero or less, the amount is set to zero. Also
+     * updates the total price based on the new amount.
+     *
+     * @param amount the amount to be subtracted from the current amount
+     */
     public void removeAmount(int amount) {
         if (this.amount - amount <= 0) this.amount = 0;
         else this.amount -= amount;
         this.price = pricePerItem * this.amount;
     }
-
-    /**
-     * Get the name of an item, either custom or default
-     *
-     * @param itemStack the item to get the name from
-     * @return the name of the item
-     */
-    public static Component getItemName(ItemStack itemStack) {
-        if (itemStack.hasItemMeta()) {
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta.hasDisplayName()) return itemMeta.displayName();
-        }
-        // If no custom name, return default name
-        return ItemUtils.getItemTranslation(itemStack).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD);
-    }
-
+    
     /**
      * Get the price of an item based on the amount
      *
@@ -92,20 +89,48 @@ public class ShopItem implements Cloneable {
         return pricePerItem * amount;
     }
     
+    /**
+     * Retrieves the Shop instance associated with this ShopItem.
+     *
+     * @return the Shop object corresponding to the shopUUID of this ShopItem
+     */
     public Shop getShop() {
         return ShopManager.getShopByUUID(this.shopUUID);
     }
     
+    /**
+     * Serializes the itemStack of this ShopItem into a byte array
+     * and stores it in the itemBytes field. Returns the updated
+     * ShopItem instance.
+     *
+     * @return the updated ShopItem instance, with the itemBytes field
+     *         containing the serialized state of the itemStack
+     */
     public ShopItem serialize() {
         this.itemBytes = this.itemStack.serializeAsBytes();
         return this;
     }
     
+    /**
+     * Deserializes the byte array stored in the itemBytes field of this ShopItem
+     * into an ItemStack object and assigns it to the itemStack field.
+     * Returns the updated ShopItem instance.
+     *
+     * @return the updated ShopItem instance with the deserialized ItemStack.
+     */
     public ShopItem deserialize() {
         this.itemStack = ItemStack.deserializeBytes(this.itemBytes);
         return this;
     }
-	
+    
+    /**
+     * Creates and returns a copy of this ShopItem object. This method ensures that
+     * deep copies of mutable fields, such as itemBytes and itemStack, are also created
+     * to avoid unintended side effects from shared references.
+     *
+     * @return a deep clone of this ShopItem instance
+     * @throws AssertionError if the ShopItem object does not support cloning
+     */
 	@Override
 	public ShopItem clone() {
 		try {

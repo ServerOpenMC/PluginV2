@@ -8,6 +8,15 @@ import org.bukkit.block.Block;
 
 public class ShopFurniture {
 	
+	/**
+	 * Places a specific type of shop furniture at the given block location using ItemsAdder API, oriented
+	 * according to the player's yaw direction.
+	 *
+	 * @param block The block where the shop furniture should be placed. Must be of type AIR.
+	 * @param playerYaw The yaw direction of the player, used to determine the orientation
+	 *                  of the furniture.
+	 * @return true if the furniture was successfully placed, false otherwise.
+	 */
 	public static boolean placeShopFurniture(Block block, Yaw playerYaw) {
 		CustomStack customFurniture = CustomFurniture.getInstance("omc_shops:caisse");
 		if (customFurniture == null || block.getType() != Material.AIR) return false;
@@ -17,6 +26,12 @@ public class ShopFurniture {
 		return true;
 	}
 	
+	/**
+	 * Removes a specific type of shop furniture at the given block location using ItemsAdder API.
+	 *
+	 * @param block The block where the shop furniture is placed.
+	 * @return true if the furniture was successfully removed, false otherwise.
+	 */
 	public static boolean removeShopFurniture(Block block) {
 		CustomStack placed = CustomFurniture.byAlreadySpawned(block);
 		if (placed == null || !placed.getNamespacedID().equals("omc_shops:caisse"))
@@ -26,6 +41,12 @@ public class ShopFurniture {
 		return true;
 	}
 	
+	/**
+	 * Checks if the specified block contains a specific type of shop furniture.
+	 *
+	 * @param block The block to check for shop furniture. Must not be null.
+	 * @return true if the block contains the shop furniture, false otherwise.
+	 */
 	public static boolean hasFurniture(Block block) {
 		CustomStack placed = CustomFurniture.byAlreadySpawned(block);
 		return placed != null && placed.getNamespacedID().equals("omc_shops:caisse");

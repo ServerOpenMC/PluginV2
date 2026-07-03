@@ -50,10 +50,19 @@ public class ShopSale {
         this(shopUUID, buyerUUID, item, Timestamp.valueOf(LocalDateTime.now()));
     }
     
+    /**
+     * Retrieves the associated {@code Shop} object for this sale.
+     *
+     * @return the {@code Shop} corresponding to the {@code shopUUID} of this sale
+     */
     public Shop getShop() {
         return ShopManager.getShopByUUID(this.shopUUID);
     }
     
+    /**
+     * Initializes or updates the state of certain member variables in the {@code ShopSale} instance.
+     * This method ensures that the following variables are properly assigned:
+     */
     public void registerVariables() {
         if (this.buyer == null) this.buyer = CacheOfflinePlayer.getOfflinePlayer(this.buyerUUID);
         ShopItem shopItem = getShop().getItem();

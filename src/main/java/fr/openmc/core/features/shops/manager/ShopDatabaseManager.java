@@ -42,10 +42,10 @@ public class ShopDatabaseManager {
 	}
 	
 	/**
-	 * Queries shops from DB
+	 * Loads all shops from the database and organizes them by their location.
 	 *
-	 * @return the map of each shop and its location
-	 * @throws SQLException if the query failed
+	 * @return A map where each location is associated with its corresponding shop.
+	 * @throws SQLException if there is an error during the database query.
 	 */
 	public static @NonNull Map<Location, Shop> loadDBShops() throws SQLException {
 		Map<Location, Shop> shopsByLocation = new HashMap<>();
@@ -64,9 +64,9 @@ public class ShopDatabaseManager {
 	}
 	
 	/**
-	 * Queries shop items from DB
+	 * Loads all shop items from the database and associates them with their corresponding shops.
 	 *
-	 * @throws SQLException if the query failed
+	 * @throws SQLException if a database access error occurs during querying or processing.
 	 */
 	public static void loadDBShopItems() throws SQLException {
 		List<ShopItem> shopItems = shopItemDao.queryForAll();
@@ -81,9 +81,9 @@ public class ShopDatabaseManager {
 	}
 	
 	/**
-	 * Queries shop sales from DB
+	 * Loads all shop sales from the database and associates them with their corresponding shops.
 	 *
-	 * @throws SQLException if the query failed
+	 * @throws SQLException if a database access error occurs while querying sales.
 	 */
 	public static void loadDBShopSales() throws SQLException {
 		List<ShopSale> shopSales = shopSaleDao.queryForAll();
@@ -101,8 +101,8 @@ public class ShopDatabaseManager {
 	/**
 	 * Saves a shop in DB
 	 *
-	 * @param shop the shop to save
-	 * @return true if the shop was saved, false otherwise
+	 * @param shop shop to save
+	 * @return true if the shop was saved, false if a database exception occurred
 	 */
 	public static boolean saveDBShop(Shop shop) {
 		try {
@@ -114,6 +114,14 @@ public class ShopDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Saves the given shop item object to the database.
+	 * The ShopItem is serialized before being persisted.
+	 *
+	 * @param item the shop item instance to save in the database
+	 * @return true if the shop item was successfully saved, false if a database
+	 *         exception occurred
+	 */
 	public static boolean saveDBShopItem(ShopItem item) {
 		try {
 			shopItemDao.createOrUpdate(item.serialize());
@@ -124,6 +132,12 @@ public class ShopDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Saves a sale in DB
+	 *
+	 * @param sale the sale to save
+	 * @return true if the sale was saved, false if a database exception occurred
+	 */
 	public static boolean saveDBShopSale(ShopSale sale) {
 		try {
 			shopSaleDao.createOrUpdate(sale);
@@ -134,6 +148,12 @@ public class ShopDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Deletes a shop and its associated data (items and sales) from the database.
+	 *
+	 * @param shop the shop instance to be deleted, including its related items and sales
+	 * @return true if the shop and its associated data were successfully deleted, false if a database exception occurred
+	 */
 	public static boolean deleteDBShop(Shop shop) {
 		try {
 			shopDao.delete(shop);

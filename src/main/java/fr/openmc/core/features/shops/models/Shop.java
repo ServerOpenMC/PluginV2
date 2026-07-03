@@ -2,8 +2,6 @@ package fr.openmc.core.features.shops.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -68,39 +66,75 @@ public class Shop {
 		this.multiblock = new Multiblock(this.location, this.location.clone().add(0, 1, 0));
     }
     
+    /**
+     * Retrieves the owner of the shop as an OfflinePlayer.
+     *
+     * @return the OfflinePlayer instance representing the shop's owner,
+     *         retrieved from the cached or default mechanism based on the owner's UUID.
+     */
     public OfflinePlayer getOwner() {
         return CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
     }
-
+    
+    /**
+     * Retrieves the name of the shop by combining the owner's name with a descriptor.
+     *
+     * @return the name of the shop in the format "<owner's name>'s Shop"
+     */
     public String getName() {
         return getOwner().getName() + "'s Shop";
     }
 
     /**
-     * know if the uuid is the shop owner
+     * Know if the UUID is the shop owner UUID
      *
-     * @param uuid the uuid we check
+     * @param uuid the UUID to check
      */
     public boolean isOwner(UUID uuid) {
         return ownerUUID.equals(uuid);
     }
     
+    /**
+     * Know if the player is the shop owner
+     *
+     * @param player the UUID to check
+     */
     public boolean isOwner(Player player) {
         return isOwner(player.getUniqueId());
     }
     
+    /**
+     * Records a new sale in the shop by adding a {@code ShopSale} entry.
+     *
+     * @param player the player who made the purchase
+     * @param item   the shop item being purchased
+     */
     public void addSale(Player player, ShopItem item) {
         this.sales.add(new ShopSale(this.shopUUID, player.getUniqueId(), item));
     }
     
+    /**
+     * Registers a new sale in the shop by adding the given {@code ShopSale} entry.
+     *
+     * @param sale the {@code ShopSale} instance representing the sale to be recorded
+     */
     public void registerSale(ShopSale sale) {
         this.sales.add(sale);
     }
     
+    /**
+     * Adds the specified amount to the shop's turnover.
+     *
+     * @param amount the amount to be added to the turnover
+     */
     public void addTurnover(double amount) {
         this.turnover += amount;
     }
     
+    /**
+     * Withdraws the current turnover of the shop and adds a percentage of the turnover
+     * to the owner's balance.
+     */
     public void withdrawTurnover() {
         Player player = CacheOfflinePlayer.getOfflinePlayer(getOwnerUUID()).getPlayer();
         if (player == null) return;
@@ -112,11 +146,18 @@ public class Shop {
         setTurnover(0);
     }
     
+    /**
+     * Handles the purchase process for a given player, allowing them to buy a specified number
+     * of items from the shop.
+     *
+     * @param player the player attempting to make the purchase
+     * @param amount the quantity of items the player wants to buy
+     */
     public void buy(Player player, int amount) {
         /*if (isOwner(player)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
             return;
-        }*/
+        }*/ //TODO retirer le com
         if (this.item.getAmount() < amount) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
             return;
@@ -135,26 +176,13 @@ public class Shop {
         addTurnover(totalPrice);
         this.item.removeAmount(amount);
     }
-
-    /**
-     * get the shop Icon
-     *
-     * @param menu the menu
-     * @param fromShopMenu know if it from shopMenu
-     */
-    public ItemMenuBuilder getIcon(Menu menu, boolean fromShopMenu) {
-        return new ItemMenuBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
-            itemMeta.displayName(Component.text("§e§l" + (fromShopMenu ? "Informations" : getName())));
-            
-            List<Component> lore = new ArrayList<>(List.of(
-                    Component.text("§7■ Chiffre d'affaires : " + EconomyManager.getFormattedNumber(turnover)),
-                    Component.text("§7■ Ventes : §f" + sales.size())
-            ));
-            if (!fromShopMenu) lore.add(Component.text("§7■ Cliquez pour accéder au shop")); //TODO a voir si on garde
-            itemMeta.lore(lore);
-        });
-    }
     
+    /**
+     * Sets the multiblock for the shop, ensuring the required block types and configurations are met.
+     *
+     * @param multiblock the {@code Multiblock} instance representing the structure associated with the shop
+     * @return {@code true} if the multiblock configuration is valid and successfully set, {@code false} otherwise
+     */
     public boolean setMultiblock(Multiblock multiblock) {
         if (multiblock.stockBlockLoc.getBlock().getType() != Material.BARREL
             || (multiblock.cashBlockLoc.getBlock().getType() != Material.OAK_SIGN
@@ -165,6 +193,11 @@ public class Shop {
         return true;
     }
     
+    /**
+     * Sets the specified {@code ShopItem} as the shop's item if it meets certain conditions.
+     *
+     * @param item the {@code ShopItem} to be set in the shop.
+     */
     public void setItem(ShopItem item) {
         if (this.item != null) return;
         if (item.getPricePerItem() < 0) return;
@@ -172,17 +205,29 @@ public class Shop {
         this.item = item;
     }
     
+    /**
+     * Removes the shop's current item if it meets specific conditions.
+     */
     public void removeItem() {
-        if (this.item == null) return;
+        if (!hasItem()) return;
         if (this.item.getAmount() > 0) return;
         this.item = null;
     }
     
+    /**
+     * Checks whether the shop currently has an item set.
+     *
+     * @return {@code true} if the shop has an item, {@code false} otherwise
+     */
     public boolean hasItem() {
         return this.item != null;
     }
     
+    /**
+     * Empties the shop by setting the amount of the associated shop item to zero.
+     */
     public void emptyShop() {
+        if (!hasItem()) return;
         this.getItem().setAmount(0);
     }
 
