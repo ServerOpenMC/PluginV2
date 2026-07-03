@@ -290,7 +290,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     }
 
     private static void startAutoSaveTask() {
-        if (OMCPlugin.isUnitTestVersion() || autoSaveTask != null) {
+        if (OMCPlugin.getInstance() == null || OMCPlugin.isUnitTestVersion() || autoSaveTask != null) {
             return;
         }
 
