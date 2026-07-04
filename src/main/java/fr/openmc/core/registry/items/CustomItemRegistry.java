@@ -127,6 +127,8 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem POISSON_STEVE_HEAD = register("omc_daily_events:poisson_steve_head", Material.PLAYER_HEAD);
     public final CustomItem KRAKEN_HEAD = register("omc_daily_events:kraken_head", Material.PLAYER_HEAD);
     public final CustomItem LEVIATHAN_HEAD = register("omc_daily_events:leviathan_head", Material.PLAYER_HEAD);
+    public final CustomItem VAMPIRE_HEAD = register("omc_daily_events:vampire_head", Material.PLAYER_HEAD);
+
 
 
     @Override
