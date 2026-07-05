@@ -89,6 +89,8 @@ public class Vampirism extends DreamEnchantment implements Listener {
             AttributeInstance maxHealthAttr = player.getAttribute(Attribute.MAX_HEALTH);
             if (maxHealthAttr == null) return;
 
+            if (maxHealthAttr.getModifier(MAX_HEALTH_MODIFIER_KEY) != null) return;
+
             maxHealthAttr.addModifier(new AttributeModifier(
                     MAX_HEALTH_MODIFIER_KEY,
                     max - maxHealthAttr.getValue(),
