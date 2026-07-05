@@ -29,6 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -230,5 +231,17 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
                 .filter(event -> event.getEventId().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Permet d'obtenir le temps restant d'un evenement journalier en secondes
+     * @param event l'event
+     * @return le temps restant en secondes
+     */
+    public static double getRemainingTime(DailyEvent event) {
+        if (!isActiveDailyEvent()) return -1;
+        if (getActiveDailyEvent() != event) return -1;
+
+        return outgoingEvent.getScheduledStartDate().until(DateUtils.getLocalDateTime(), ChronoUnit.SECONDS);
     }
 }

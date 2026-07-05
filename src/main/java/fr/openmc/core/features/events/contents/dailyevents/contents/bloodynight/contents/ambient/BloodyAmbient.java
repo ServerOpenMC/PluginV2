@@ -1,4 +1,4 @@
-package fr.openmc.core.registry.ambient.contents;
+package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient;
 
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.Particle;
 
+// todo: tester fixed time qd on dort / qd on change de time
 public class BloodyAmbient extends CustomAmbient {
     @Override
     public String getId() {

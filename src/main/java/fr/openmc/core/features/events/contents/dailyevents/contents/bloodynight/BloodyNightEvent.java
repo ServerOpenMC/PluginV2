@@ -1,6 +1,9 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnLIstener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.PlayerKillMonsterListener;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
@@ -11,11 +14,13 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 
-public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast {
+public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast, HasListeners {
     @Override
     public String getEventId() {
         return "bloody_night";
@@ -33,16 +38,12 @@ public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient
 
     @Override
     public Runnable onStart() {
-        return () -> {
-            System.out.println("BLOODY NIGHT START");
-        };
+        return () -> BloodyNightManager.start(this);
     }
 
     @Override
     public Runnable onEnd() {
-        return () -> {
-            System.out.println("BLOODY NIGHT END");
-        };
+        return () -> BloodyNightManager.stop(this);
     }
 
     @Override
@@ -91,5 +92,13 @@ public class BloodyNightEvent extends DailyEvent implements HasToast, HasAmbient
     @Override
     public Component getEndBroadcast() {
         return TranslationManager.translation("feature.dailyevents.bloodynight.broadcast.end");
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new PlayerKillMonsterListener(),
+                new MonsterSpawnLIstener()
+        );
     }
 }
