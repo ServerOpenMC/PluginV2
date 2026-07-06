@@ -9,16 +9,15 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.CommandPlaceholder;
 import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("shop")
-@Description("Manage shops")
 @CommandPermission("omc.commands.shop")
 public class ShopCommand {
     
-    @Subcommand("create")
+    @CommandPlaceholder
     @Description("Create a shop")
     public void createShop(Player player) {
         if (!EconomyManager.hasEnoughMoney(player.getUniqueId(), 500)) {

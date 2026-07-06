@@ -107,7 +107,7 @@ public class ShopSellingMenu extends PaginatedMenu {
 	public Map<Integer, ItemMenuBuilder> getButtons() {
 		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
-		map.put(8, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFO.getBest(), itemMeta -> {
+		map.put(8, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFORMATION.getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.shop.menu.selling.info.title"));
 			itemMeta.lore(List.of(
 					TranslationManager.translation("feature.shop.menu.selling.info.lore1"),
