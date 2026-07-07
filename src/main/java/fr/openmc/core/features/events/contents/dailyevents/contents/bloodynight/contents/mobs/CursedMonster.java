@@ -3,6 +3,8 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.bukkit.EntityUtils;
+import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
+import net.minecraft.ChatFormatting;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -72,5 +74,7 @@ public class CursedMonster extends CustomMob<Monster> {
         EntityUtils.removeModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
+
+        EntityGlowNMS.setGlowingColor(entity, ChatFormatting.DARK_PURPLE);
     }
 }
