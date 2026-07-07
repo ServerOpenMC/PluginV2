@@ -59,7 +59,7 @@ public class PlayerFishListener implements Listener {
 
                 CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
 
-                List<CustomLoot> loots = fishingLootTable.rollLoots(player, false);
+                List<CustomLoot> loots = fishingLootTable.rollLoots();
 
                 List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
 

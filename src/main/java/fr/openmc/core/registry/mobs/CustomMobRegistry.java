@@ -3,6 +3,10 @@ package fr.openmc.core.registry.mobs;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.AncientMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CorruptedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CursedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.EnragedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
 import org.bukkit.NamespacedKey;
@@ -55,6 +59,26 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public final CustomMobEntry GIANT_ELDER_GUARDIAN = register(new CustomMobEntry(
             "omc_daily_events:giant_elder_guardian",
             GiantElderGuardian::new
+    ));
+
+    public final CustomMobEntry ANCIENT_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:ancient_monster",
+            AncientMonster::new
+    ));
+
+    public final CustomMobEntry CURSED_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:cursed_monster",
+            CursedMonster::new
+    ));
+
+    public final CustomMobEntry ENRAGED_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:enraged_monster",
+            EnragedMonster::new
+    ));
+
+    public final CustomMobEntry CORRUPTED_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:corrupted_monster",
+            CorruptedMonster::new
     ));
 
     @Override
