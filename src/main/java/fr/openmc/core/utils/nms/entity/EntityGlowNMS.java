@@ -8,41 +8,50 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
-public class EntityGlowNMS {
+import java.util.HashMap;
+import java.util.Map;
+
+public class EntityGlowNMS implements Listener {
     private static final Scoreboard NMS_SCOREBOARD = new Scoreboard();
+    private static final Map<ChatFormatting, PlayerTeam> TEAM_MAP = new HashMap<>();
+
+    public EntityGlowNMS() {
+        for (ChatFormatting color : ChatFormatting.values()) {
+            if (!color.isColor()) continue;
+
+            PlayerTeam team = new PlayerTeam(NMS_SCOREBOARD, "omc_glow_" + color.getName());
+
+            team.setColor(color);
+            team.setSeeFriendlyInvisibles(false);
+            team.setNameTagVisibility(PlayerTeam.Visibility.NEVER);
+
+            TEAM_MAP.put(color, team);
+        }
+    }
 
     public static void setGlowingColor(Entity entity, ChatFormatting color) {
         entity.setGlowing(true);
 
-        String teamName = "omc_glow_" + color.getName();
-        PlayerTeam team = new PlayerTeam(NMS_SCOREBOARD, teamName);
-
-        team.setColor(color);
-        team.setSeeFriendlyInvisibles(false);
-        team.setNameTagVisibility(PlayerTeam.Visibility.NEVER);
-
+        PlayerTeam team = TEAM_MAP.get(color);
         String entry = entity.getUniqueId().toString();
-
-        ClientboundSetPlayerTeamPacket createPacket = ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(
-                team, true);
 
         ClientboundSetPlayerTeamPacket addEntityPacket = ClientboundSetPlayerTeamPacket.createPlayerPacket(
                         team,
                         entry,
                         ClientboundSetPlayerTeamPacket.Action.ADD
-                );
+        );
 
-        sendPacket(createPacket);
         sendPacket(addEntityPacket);
     }
 
     public static void removeGlowing(Entity entity, ChatFormatting color) {
         entity.setGlowing(false);
 
-        String teamName = "omc_glow_" + color.getName();
-        PlayerTeam team = new PlayerTeam(NMS_SCOREBOARD, teamName);
-
+        PlayerTeam team = TEAM_MAP.get(color);
         String entry = entity.getUniqueId().toString();
 
         ClientboundSetPlayerTeamPacket removeEntityPacket = ClientboundSetPlayerTeamPacket.createPlayerPacket(
@@ -67,6 +76,18 @@ public class EntityGlowNMS {
     private static void sendPacket(ClientboundSetPlayerTeamPacket packet) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             ((CraftPlayer) player).getHandle().connection.send(packet);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        for (ChatFormatting color : ChatFormatting.values()) {
+            if (!color.isColor()) continue;
+
+            PlayerTeam team = TEAM_MAP.get(color);
+            if (team == null) continue;
+
+            sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
         }
     }
 }
