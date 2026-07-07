@@ -29,6 +29,12 @@ public class EntityUtils {
     public static void addModifierIfPresent(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
         AttributeInstance attr = entity.getAttribute(attribute);
         if (attr == null) return;
+
+        NamespacedKey modifierKey = modifier.getKey();
+        if (attr.getModifier(modifierKey) != null) {
+            attr.removeModifier(modifierKey);
+        }
+
         attr.addModifier(modifier);
     }
 

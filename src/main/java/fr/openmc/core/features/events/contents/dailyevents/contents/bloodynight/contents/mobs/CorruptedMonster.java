@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.bukkit.EntityUtils;
-import fr.openmc.core.utils.nms.EntityGlowNMS;
+import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 import net.minecraft.ChatFormatting;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;

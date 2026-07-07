@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.nms;
+package fr.openmc.core.utils.nms.entity;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
@@ -13,8 +13,6 @@ public class EntityGlowNMS {
     private static final Scoreboard NMS_SCOREBOARD = new Scoreboard();
 
     public static void setGlowingColor(Entity entity, ChatFormatting color) {
-        removeGlowing(entity);
-
         entity.setGlowing(true);
 
         String teamName = "omc_glow_" + color.getName();
