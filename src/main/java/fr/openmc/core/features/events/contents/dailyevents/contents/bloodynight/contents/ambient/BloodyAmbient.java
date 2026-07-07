@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.Particle;
 
-// todo: tester fixed time qd on dort / qd on change de time
 public class BloodyAmbient extends CustomAmbient {
     @Override
     public String getId() {
