@@ -4,9 +4,9 @@ import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
@@ -56,8 +56,10 @@ public class BloodyNightRaidManager {
 
     private static void spawnRandomMonster(Location location) {
         EntityType type = getRandomRaidMonsterType();
-        Entity entity = location.getWorld().spawnEntity(location, type);
-        entity.getPersistentDataContainer().set(BloodyNightManager.RAID_MONSTER_KEY, PersistentDataType.BOOLEAN, true);
+        location.getWorld().spawnEntity(location, type, CreatureSpawnEvent.SpawnReason.CUSTOM,s ->
+                s.getPersistentDataContainer().set(
+                        BloodyNightManager.RAID_MONSTER_KEY, PersistentDataType.BOOLEAN, true));
+
     }
 
     private static EntityType getRandomRaidMonsterType() {

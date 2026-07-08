@@ -25,13 +25,13 @@ public class BloodyMobLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.IRON_INGOT,0.3, 1, 5),
-                new ItemLoot(Material.GOLD_INGOT,0.2, 2, 4),
-                new ItemLoot(Material.DIAMOND,0.1, 1, 2),
-                new ItemLoot(Material.IRON_BLOCK,0.08, 1, 2),
-                new ItemLoot(Material.GOLD_BLOCK,0.06, 1, 2),
-                new ItemLoot(Material.DIAMOND_BLOCK,0.03, 1),
-                new ItemLoot(Material.NETHERITE_INGOT,0.004, 1)
+                new ItemLoot(Material.IRON_INGOT,0.3, 1, 4),
+                new ItemLoot(Material.GOLD_INGOT,0.2, 1, 3),
+                new ItemLoot(Material.DIAMOND,0.07, 1, 2),
+                new ItemLoot(Material.IRON_BLOCK,0.08, 1),
+                new ItemLoot(Material.GOLD_BLOCK,0.06, 1),
+                new ItemLoot(Material.DIAMOND_BLOCK,0.01, 1),
+                new ItemLoot(Material.NETHERITE_SCRAP,0.004, 1)
         ));
     }
 }

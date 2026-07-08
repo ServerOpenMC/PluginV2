@@ -84,7 +84,7 @@ public class BloodyNightManager {
      * Désactive le mob et le remet à son état normal
      * @param entity l'entité ciblé à désactiver
      */
-    public static void  desactivateCorruptedMonster(Entity entity) {
+    public static void desactivateCorruptedMonster(Entity entity) {
         if (!(entity instanceof Monster monster)) return;
 
         CustomMob<?> cm = OMCRegistry.CUSTOM_MOBS.getMob(monster);
@@ -123,6 +123,9 @@ public class BloodyNightManager {
     public static void applyBloodyMonster(LivingEntity entity) {
         double random = ThreadLocalRandom.current().nextDouble();
 
+        System.out.println(random);
+
+        //todo: sfx particule
         if (random < 0.60) {
             OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(entity);
         } else if (random < 0.90) {

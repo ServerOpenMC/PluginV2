@@ -21,23 +21,18 @@ public class MonsterSpawnLIstener implements Listener {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent)) return;
         if (!(event.getEntity() instanceof Monster monster)) return;
-        if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) return;
+        System.out.println("e");
+        if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
+            System.out.println("b");
+            BloodyNightManager.applyBloodyMonster(monster);
+        } else {
+            System.out.println("a");
+            ParticleUtils.spawnDispersingParticles(event.getLocation(),
+                    Particle.DAMAGE_INDICATOR,
+                    10, 35, 0.1D, null);
 
-        ParticleUtils.spawnDispersingParticles(event.getLocation(),
-                Particle.DAMAGE_INDICATOR,
-                10, 35, 0.1D, null);
-
-        OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(monster);
-    }
-
-    @EventHandler
-    public void onRaidMonsterSpawn(EntitySpawnEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent)) return;
-        if (!(event.getEntity() instanceof Monster monster)) return;
-        if (!(monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY))) return;
-
-        BloodyNightManager.applyBloodyMonster(monster);
+            OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(monster);
+        }
     }
 
     @EventHandler
