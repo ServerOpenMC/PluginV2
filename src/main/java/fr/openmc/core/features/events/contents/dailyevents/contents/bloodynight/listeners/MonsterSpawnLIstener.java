@@ -43,11 +43,10 @@ public class MonsterSpawnLIstener implements Listener {
                 && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
         if (!(event.getEntity() instanceof Monster monster)) return;
 
-        if (!monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
+        if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
             monster.remove();
         }
 
         BloodyNightManager.desactivateCorruptedMonster(monster);
-
     }
 }
