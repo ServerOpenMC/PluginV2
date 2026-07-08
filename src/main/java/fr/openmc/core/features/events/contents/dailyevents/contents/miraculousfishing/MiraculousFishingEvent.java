@@ -101,7 +101,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     @Override
     public Component getStartBroadcast() {
         return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.start",
-                Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100, NamedTextColor.AQUA));
+                Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100 + "%", NamedTextColor.AQUA));
     }
 
     @Override
