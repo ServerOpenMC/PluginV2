@@ -14,10 +14,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class EntityGlowNMS implements Listener {
     private static final Scoreboard NMS_SCOREBOARD = new Scoreboard();
     private static final Map<ChatFormatting, PlayerTeam> TEAM_MAP = new HashMap<>();
+    private static final Map<UUID, ChatFormatting> entitiesGlowing = new HashMap<>();
+
 
     public EntityGlowNMS() {
         for (ChatFormatting color : ChatFormatting.values()) {
@@ -34,6 +37,17 @@ public class EntityGlowNMS implements Listener {
     }
 
     public static void setGlowingColor(Entity entity, ChatFormatting color) {
+        ChatFormatting previous = entitiesGlowing.get(entity.getUniqueId());
+        if (previous != null && previous != color) {
+            PlayerTeam previousTeam = TEAM_MAP.get(previous);
+            sendPacket(ClientboundSetPlayerTeamPacket.createPlayerPacket(
+                    previousTeam, entity.getUniqueId().toString(), ClientboundSetPlayerTeamPacket.Action.REMOVE
+            ));
+        } else if (previous == color) {
+            entity.setGlowing(true);
+            return;
+        }
+
         entity.setGlowing(true);
 
         PlayerTeam team = TEAM_MAP.get(color);
@@ -46,31 +60,25 @@ public class EntityGlowNMS implements Listener {
         );
 
         sendPacket(addEntityPacket);
-    }
-
-    public static void removeGlowing(Entity entity, ChatFormatting color) {
-        entity.setGlowing(false);
-
-        PlayerTeam team = TEAM_MAP.get(color);
-        String entry = entity.getUniqueId().toString();
-
-        ClientboundSetPlayerTeamPacket removeEntityPacket = ClientboundSetPlayerTeamPacket.createPlayerPacket(
-                        team,
-                        entry,
-                        ClientboundSetPlayerTeamPacket.Action.REMOVE
-                );
-
-        sendPacket(removeEntityPacket);
+        entitiesGlowing.put(entity.getUniqueId(), color);
     }
 
     public static void removeGlowing(Entity entity) {
         entity.setGlowing(false);
+        ChatFormatting current = entitiesGlowing.remove(entity.getUniqueId());
 
-        for (ChatFormatting color : ChatFormatting.values()) {
-            if (!color.isColor()) continue;
+        if (current == null) return;
 
-            removeGlowing(entity, color);
-        }
+        PlayerTeam team = TEAM_MAP.get(current);
+        String entry = entity.getUniqueId().toString();
+
+        ClientboundSetPlayerTeamPacket removeEntityPacket = ClientboundSetPlayerTeamPacket.createPlayerPacket(
+                team,
+                entry,
+                ClientboundSetPlayerTeamPacket.Action.REMOVE
+        );
+
+        sendPacket(removeEntityPacket);
     }
 
     private static void sendPacket(ClientboundSetPlayerTeamPacket packet) {

@@ -64,6 +64,6 @@ public class CorruptedMonster extends CustomMob<Monster> {
         EntityUtils.removeModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
 
-        EntityGlowNMS.removeGlowing(entity, ChatFormatting.DARK_RED);
+        EntityGlowNMS.removeGlowing(entity);
     }
 }

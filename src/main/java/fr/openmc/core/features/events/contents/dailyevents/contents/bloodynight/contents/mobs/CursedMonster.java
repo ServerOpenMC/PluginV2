@@ -77,6 +77,6 @@ public class CursedMonster extends CustomMob<Monster> {
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
 
-        EntityGlowNMS.removeGlowing(entity, ChatFormatting.DARK_PURPLE);
+        EntityGlowNMS.removeGlowing(entity);
     }
 }
