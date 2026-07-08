@@ -59,13 +59,11 @@ public class CorruptedMonster extends CustomMob<Monster> {
     public void resetToDefault(Monster entity) {
         unregisterAsCustomMob(entity);
 
-        entity.setCustomNameVisible(true);
-
         EntityUtils.removeModifierIfPresent(entity, Attribute.MAX_HEALTH, HEALTH_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
 
-        EntityGlowNMS.setGlowingColor(entity, ChatFormatting.DARK_RED);
+        EntityGlowNMS.removeGlowing(entity, ChatFormatting.DARK_RED);
     }
 }

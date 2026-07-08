@@ -7,11 +7,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 
 public class AmbientFixedTimeListener implements Listener {
     @EventHandler
     public void onPlayerKill(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+        reapplyTime(player);
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         reapplyTime(player);
     }

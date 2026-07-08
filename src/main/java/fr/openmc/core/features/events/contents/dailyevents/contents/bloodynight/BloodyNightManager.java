@@ -6,6 +6,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CursedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.EnragedMonster;
+import fr.openmc.core.registry.mobs.CustomMob;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.NamespacedKey;
@@ -83,16 +84,17 @@ public class BloodyNightManager {
      * Désactive le mob et le remet à son état normal
      * @param entity l'entité ciblé à désactiver
      */
-    public static void desactivateCorruptedMonster(Entity entity) {
+    public static void  desactivateCorruptedMonster(Entity entity) {
         if (!(entity instanceof Monster monster)) return;
 
-        if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof CorruptedMonster corruptedMonster) {
+        CustomMob<?> cm = OMCRegistry.CUSTOM_MOBS.getMob(monster);
+        if (cm instanceof CorruptedMonster corruptedMonster) {
             corruptedMonster.resetToDefault(monster);
-        } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof CursedMonster cursedMonster) {
+        } else if (cm instanceof CursedMonster cursedMonster) {
             cursedMonster.resetToDefault(monster);
-        } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof EnragedMonster enragedMonster) {
+        } else if (cm instanceof EnragedMonster enragedMonster) {
             enragedMonster.resetToDefault(monster);
-        } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof AncientMonster ancientMonster) {
+        } else if (cm instanceof AncientMonster ancientMonster) {
             ancientMonster.resetToDefault(monster);
         }
     }
