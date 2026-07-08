@@ -7,8 +7,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.scores.DisplaySlot;
-import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.*;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -64,8 +63,6 @@ public abstract class SternalBoardHandler<T> {
     private static final MethodHandle SEND_PACKET;
     private static final SternalReflection.PacketConstructor PACKET_SB_OBJ;
     private static final SternalReflection.PacketConstructor PACKET_SB_DISPLAY_OBJ;
-    private static final SternalReflection.PacketConstructor PACKET_SB_TEAM;
-    private static final SternalReflection.PacketConstructor PACKET_SB_SERIALIZABLE_TEAM;
     private static final MethodHandle PACKET_SB_SET_SCORE;
     private static final MethodHandle PACKET_SB_RESET_SCORE;
     private static final MethodHandle FIXED_NUMBER_FORMAT;
@@ -79,12 +76,6 @@ public abstract class SternalBoardHandler<T> {
 
             PACKET_SB_OBJ = SternalReflection.findPacketConstructor(ClientboundSetObjectivePacket.class, lookup);
             PACKET_SB_DISPLAY_OBJ = SternalReflection.findPacketConstructor(ClientboundSetDisplayObjectivePacket.class, lookup);
-            PACKET_SB_TEAM = SternalReflection.findPacketConstructor(ClientboundSetPlayerTeamPacket.class, lookup);
-
-            Class<?> sbTeamClass = SternalReflection.innerClass(ClientboundSetPlayerTeamPacket.class,
-                    innerClass -> !innerClass.isEnum());
-            PACKET_SB_SERIALIZABLE_TEAM = sbTeamClass != null ?
-                    SternalReflection.findPacketConstructor(sbTeamClass, lookup) : null;
 
             PACKET_SB_SET_SCORE = lookup.findConstructor(ClientboundSetScorePacket.class,
                     MethodType.methodType(void.class, String.class, String.class, int.class,
@@ -98,7 +89,7 @@ public abstract class SternalBoardHandler<T> {
 
             for (Class<?> clazz : Arrays.asList(ClientboundSetObjectivePacket.class,
                     ClientboundSetDisplayObjectivePacket.class, ClientboundSetScorePacket.class,
-                    ClientboundSetPlayerTeamPacket.class, sbTeamClass)) {
+                    ClientboundSetPlayerTeamPacket.class)) {
                 if (clazz == null) continue;
 
                 Field[] fields = Arrays.stream(clazz.getDeclaredFields())
@@ -414,52 +405,31 @@ public abstract class SternalBoardHandler<T> {
             throw new UnsupportedOperationException();
         }
 
-        Object packet = PACKET_SB_TEAM.invoke();
-
-        setField(packet, String.class, this.id + ':' + score);
-        setField(packet, int.class, mode.ordinal(), 0);
+        PlayerTeam team = createPlayerTeam(score, prefix, suffix);
 
         if (mode == TeamMode.REMOVE) {
-            sendPacket(packet);
+            sendPacket(ClientboundSetPlayerTeamPacket.createRemovePacket(team));
             return;
         }
 
-        Object team = PACKET_SB_SERIALIZABLE_TEAM.invoke();
+        sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team,
+                mode == TeamMode.CREATE));
+    }
 
-        // Set component fields
-        setComponentField(team, null, 0);           // displayName
-        setComponentField(team, prefix, 1);          // prefix
-        setComponentField(team, suffix, 2);          // suffix
+    private PlayerTeam createPlayerTeam(int score, T prefix, T suffix) throws Throwable {
+        Scoreboard scoreboard = new Scoreboard();
+        PlayerTeam team = scoreboard.addPlayerTeam(this.id + ':' + score);
 
-        // Set String fields (nametagVisibility and collisionRule)
-        setField(team, String.class, "always", 0);
-        setField(team, String.class, "always", 1);
+        team.setDisplayName((net.minecraft.network.chat.Component) toMinecraftComponent(null));
+        team.setPlayerPrefix((net.minecraft.network.chat.Component) toMinecraftComponent(prefix));
+        team.setPlayerSuffix((net.minecraft.network.chat.Component) toMinecraftComponent(suffix));
+        team.setNameTagVisibility(Team.Visibility.ALWAYS);
+        team.setCollisionRule(Team.CollisionRule.ALWAYS);
+        team.setColor(Optional.of(TeamColor.WHITE));
+        team.unpackOptions((byte) 0x00);
+        scoreboard.addPlayerToTeam(COLOR_CODES[score], team);
 
-        // Set enum fields - only set each once (not twice)
-        setField(team, Team.Visibility.class, Team.Visibility.ALWAYS, 0);
-        setField(team, Team.CollisionRule.class, Team.CollisionRule.ALWAYS, 0);
-
-        // Try to set NamedTextColor if it exists
-        try {
-            setField(team, net.minecraft.ChatFormatting.class, net.minecraft.ChatFormatting.WHITE, 0);
-        } catch (Exception ignored) {
-            // Field might not exist or be different type
-        }
-
-        // Try to set int flags if they exist
-        try {
-            setField(team, int.class, 0x00, 0);
-        } catch (Exception ignored) {
-            // Field might not exist
-        }
-
-        setField(packet, Optional.class, Optional.of(team));
-
-        if (mode == TeamMode.CREATE) {
-            setField(packet, Collection.class, Collections.singletonList(COLOR_CODES[score]));
-        }
-
-        sendPacket(packet);
+        return team;
     }
 
     private void sendPacket(Object packet) throws Throwable {
