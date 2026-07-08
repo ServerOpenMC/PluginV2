@@ -23,6 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BloodyNightManager {
     public static final NamespacedKey RAID_MONSTER_KEY = new NamespacedKey("omc_daily_events", "raid_monster");
     private static BukkitTask raidTask;
+    private static long lastTime;
 
     public static void start(BloodyNightEvent event) {
         World world = Bukkit.getWorld(event.getWorldEvent());
@@ -40,6 +41,9 @@ public class BloodyNightManager {
         applyCorruptedMonsters(world);
 
         // * Gamerules personalisée
+        lastTime = world.getTime();
+        world.setTime(21000);
+        world.setGameRule(GameRules.ADVANCE_TIME, false);
         world.setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, false);
     }
 
@@ -54,12 +58,14 @@ public class BloodyNightManager {
         }
 
         // * Supression des monstres devant etre supprimé (ex ceux qui vient des raids)
-        deleteMonstersToRemove(world);
+        deleteRaidMonsters(world);
 
         // * Modification des monstres déjà présent dans le monde (uniquement ceux chargé)
         desactivateCorruptedMonsters(world);
 
         // * Gamerules personalisée
+        world.setTime(lastTime);
+        world.setGameRule(GameRules.ADVANCE_TIME, true);
         world.setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, true);
     }
 
@@ -69,17 +75,25 @@ public class BloodyNightManager {
      */
     private static void desactivateCorruptedMonsters(World world) {
         for (Entity entity : world.getEntities()) {
-            if (!(entity instanceof Monster monster)) continue;
+            desactivateCorruptedMonster(entity);
+        }
+    }
 
-            if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof CorruptedMonster corruptedMonster) {
-                corruptedMonster.resetToDefault(monster);
-            } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof CursedMonster cursedMonster) {
-                cursedMonster.resetToDefault(monster);
-            } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof EnragedMonster enragedMonster) {
-                enragedMonster.resetToDefault(monster);
-            } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof AncientMonster ancientMonster) {
-                ancientMonster.resetToDefault(monster);
-            }
+    /**
+     * Désactive le mob et le remet à son état normal
+     * @param entity l'entité ciblé à désactiver
+     */
+    public static void desactivateCorruptedMonster(Entity entity) {
+        if (!(entity instanceof Monster monster)) return;
+
+        if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof CorruptedMonster corruptedMonster) {
+            corruptedMonster.resetToDefault(monster);
+        } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof CursedMonster cursedMonster) {
+            cursedMonster.resetToDefault(monster);
+        } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof EnragedMonster enragedMonster) {
+            enragedMonster.resetToDefault(monster);
+        } else if (OMCRegistry.CUSTOM_MOBS.getMob(monster) instanceof AncientMonster ancientMonster) {
+            ancientMonster.resetToDefault(monster);
         }
     }
 
@@ -87,7 +101,7 @@ public class BloodyNightManager {
      * Supprime tout les monstres spawné par les raids
      * @param world le monde ciblé par la nuit sanglante
      */
-    private static void deleteMonstersToRemove(World world) {
+    private static void deleteRaidMonsters(World world) {
         for (Entity entity : world.getEntities()) {
             if (!(entity instanceof Monster monster)) continue;
             if (!(entity.getPersistentDataContainer().has(RAID_MONSTER_KEY))) continue;

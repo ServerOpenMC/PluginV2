@@ -71,6 +71,10 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     @Override
     public void save() {
+        if (outgoingEvent != null) {
+            outgoingEvent.getDailyEvent().end();
+        }
+
         saveIncomingEventsDB(new IncomingEventsDB(incomingEvents));
     }
 

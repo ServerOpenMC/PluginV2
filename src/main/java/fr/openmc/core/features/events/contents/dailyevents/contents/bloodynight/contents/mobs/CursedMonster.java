@@ -62,6 +62,8 @@ public class CursedMonster extends CustomMob<Monster> {
         EntityUtils.addModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
+
+        EntityGlowNMS.setGlowingColor(entity, ChatFormatting.DARK_PURPLE);
     }
 
     public void resetToDefault(Monster entity) {

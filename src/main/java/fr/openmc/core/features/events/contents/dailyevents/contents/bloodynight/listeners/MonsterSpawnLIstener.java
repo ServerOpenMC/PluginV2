@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
@@ -34,5 +35,19 @@ public class MonsterSpawnLIstener implements Listener {
         if (!(monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY))) return;
 
         BloodyNightManager.applyBloodyMonster(monster);
+    }
+
+    @EventHandler
+    public void onMonsterLoaded(EntityAddToWorldEvent event) {
+        if (DailyEventsManager.isActiveDailyEvent()
+                && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
+        if (!(event.getEntity() instanceof Monster monster)) return;
+
+        if (!monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
+            monster.remove();
+        }
+
+        BloodyNightManager.desactivateCorruptedMonster(monster);
+
     }
 }

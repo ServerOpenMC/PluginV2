@@ -69,5 +69,7 @@ public class AncientMonster extends CustomMob<Monster> {
         EntityUtils.removeModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
+
+        EntityGlowNMS.removeGlowing(entity, ChatFormatting.YELLOW);
     }
 }
