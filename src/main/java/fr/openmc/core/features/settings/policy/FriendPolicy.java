@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum FriendPolicy implements Policy {
-    EVERYONE("§aTout le monde", "Accepter les demandes d'amis de tous les joueurs"),
-    CITY_MEMBERS_ONLY("§6Membres de ma ville", "Accepter uniquement les demandes des membres de ma ville"),
-    NOBODY("§cPersonne", "Refuser toutes les demandes d'amis");
+    EVERYONE("feature.settings.policy.friend.everyone.name", "feature.settings.policy.friend.everyone.description"),
+    CITY_MEMBERS_ONLY("feature.settings.policy.friend.city_members_only.name", "feature.settings.policy.friend.city_members_only.description"),
+    NOBODY("feature.settings.policy.friend.nobody.name", "feature.settings.policy.friend.nobody.description");
 
     private final String displayName;
     private final String description;

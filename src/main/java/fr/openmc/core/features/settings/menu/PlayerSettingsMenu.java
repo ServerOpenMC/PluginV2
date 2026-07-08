@@ -14,6 +14,7 @@ import fr.openmc.core.features.settings.policy.Policy;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -65,25 +66,25 @@ public class PlayerSettingsMenu extends PaginatedMenu {
         Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
         buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED, meta -> {
-            meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
+            meta.displayName(TranslationManager.translation("feature.settings.reset.title")
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(_ ->
                 new ConfirmMenu(getOwner(), () -> {
                     settings.resetAllSettings();
                     this.refresh();
                     MessagesManager.sendMessage(getOwner(),
-                            Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
+                            TranslationManager.translation("feature.settings.reset.success")
                                     .decoration(TextDecoration.ITALIC, false),
                             Prefix.SETTINGS, MessageType.SUCCESS, true);
                     },
                     this::open,
                     List.of(
-                        Component.text("Êtes-vous sûr de vouloir réinitialiser tous les paramètres ?",
-                                NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
-                        Component.text("Cette action est irréversible.", NamedTextColor.YELLOW)
+                        TranslationManager.translation("feature.settings.reset.confirm_message")
+                                .decoration(TextDecoration.ITALIC, false),
+                        TranslationManager.translation("feature.settings.reset.warning")
                                 .decoration(TextDecoration.ITALIC, false)),
                     List.of(
-                        Component.text("Cliquez pour annuler", NamedTextColor.GRAY)
+                        TranslationManager.translation("feature.settings.reset.cancel")
                                 .decoration(TextDecoration.ITALIC, false))
                 ).open()
         ));
@@ -97,7 +98,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Menu des paramètres");
+        return TranslationManager.translation("feature.settings.menu.title");
     }
 
     @Override
@@ -130,24 +131,24 @@ public class PlayerSettingsMenu extends PaginatedMenu {
         Material material = currentValue ? settingType.getEnabledMaterial() : settingType.getDisabledMaterial();
 
         return new ItemMenuBuilder(this, material, meta -> {
-            meta.displayName(Component.text(settingType.getName(), NamedTextColor.AQUA)
+            meta.displayName(TranslationManager.translation(settingType.getName()).color(NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text(currentValue ? "Activé" : "Désactivé",
-                            currentValue ? NamedTextColor.GREEN : NamedTextColor.RED)
+            lore.add(TranslationManager.translation(currentValue ? "feature.settings.item.status_enabled" : "feature.settings.item.status_disabled")
                     .decoration(TextDecoration.ITALIC, false));
             lore.add(Component.empty());
-            lore.add(Component.text("Clique pour changer", NamedTextColor.GRAY)
+            lore.add(TranslationManager.translation("feature.settings.item.change")
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).hide(settingType.getDataComponentType()).setOnClick(e -> {
             settings.setSetting(settingType, !currentValue);
             this.refresh();
 
-            String statusText = currentValue ? "désactivé" : "activé";
             MessagesManager.sendMessage(getOwner(),
-                    Component.text(settingType.getName() + " " + statusText, NamedTextColor.GREEN)
+                    TranslationManager.translation("feature.settings.item.changed",
+                            TranslationManager.translation(settingType.getName()),
+                            TranslationManager.translation(currentValue ? "feature.settings.item.status_disabled" : "feature.settings.item.status_enabled"))
                             .decoration(TextDecoration.ITALIC, false),
                     Prefix.SETTINGS, MessageType.SUCCESS, true);
         });
@@ -155,22 +156,22 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     private ItemStack createEnumItem(SettingType settingType, Object currentValue) {
         return new ItemMenuBuilder(this, settingType.getEnabledMaterial(), meta -> {
-            meta.displayName(Component.text(settingType.getName(), NamedTextColor.AQUA)
+            meta.displayName(TranslationManager.translation(settingType.getName()).color(NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 
             List<Component> lore = new ArrayList<>();
             if (settingType.getEnumDescription() != null) {
-                lore.add(Component.text(settingType.getEnumDescription(), NamedTextColor.YELLOW)
+                lore.add(TranslationManager.translation(settingType.getEnumDescription()).color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false));
             }
 
             addEnumOptions(lore, settingType, currentValue);
 
             lore.add(Component.empty());
-            lore.add(Component.text(getEnumDescription(currentValue), NamedTextColor.GRAY)
+            lore.add(getEnumDescription(currentValue).color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
             lore.add(Component.empty());
-            lore.add(Component.text("Clique pour changer", NamedTextColor.GRAY)
+            lore.add(TranslationManager.translation("feature.settings.item.change")
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).setOnClick(e -> {
@@ -179,7 +180,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             this.refresh();
 
             MessagesManager.sendMessage(getOwner(),
-                    Component.text(settingType.getName() + " mis à jour.", NamedTextColor.GREEN)
+                    TranslationManager.translation("feature.settings.item.updated", TranslationManager.translation(settingType.getName()))
                             .decoration(TextDecoration.ITALIC, false),
                     Prefix.SETTINGS, MessageType.SUCCESS, true);
         });
@@ -192,8 +193,8 @@ public class PlayerSettingsMenu extends PaginatedMenu {
                     ? Component.text(" → ", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)
                     : Component.text("    ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
 
-            lore.add(prefix.append(Component.text(getEnumDisplayName(value),
-                            value.equals(currentValue) ? NamedTextColor.WHITE : NamedTextColor.GRAY)
+            lore.add(prefix.append(getEnumDisplayName(value)
+                            .color(value.equals(currentValue) ? NamedTextColor.WHITE : NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)));
         }
     }
@@ -212,18 +213,18 @@ public class PlayerSettingsMenu extends PaginatedMenu {
         return values[0]; // Fallback
     }
 
-    private String getEnumDisplayName(Object enumValue) {
+    private Component getEnumDisplayName(Object enumValue) {
         if (enumValue instanceof Policy policy) {
-            return policy.getDisplayName();
+            return TranslationManager.translation(policy.getDisplayName());
         }
-        return enumValue.toString();
+        return Component.text(enumValue.toString());
     }
 
-    private String getEnumDescription(Object enumValue) {
+    private Component getEnumDescription(Object enumValue) {
         if (enumValue instanceof Policy policy) {
-            return policy.getDescription();
+            return TranslationManager.translation(policy.getDescription());
         }
-        return "";
+        return Component.empty();
     }
 
     private void refresh() {

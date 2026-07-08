@@ -5,6 +5,7 @@ import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ItemBuilder;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -32,8 +33,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                             OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY,
                             meta -> {
-                                meta.displayName(Component.text("§d§lPeluche Seinyy"));
-                                meta.lore(List.of(Component.text("§7Une petite peluche comme Seinyy !")));
+                                meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.seinyy.name"));
+                                meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.seinyy.lore"));
                             }
                         ),
                         0.1,
@@ -45,8 +46,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                             Material.DIAMOND,
                             meta -> {
-                                meta.displayName(Component.text("§b§lDiamants"));
-                                meta.lore(List.of(Component.text("§7Ohhhh mais qu'est ce que c'est précieux ce truc !?")));
+                                meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.diamond.name"));
+                                meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.diamond.lore"));
                             }
                         ),
                         0.15,
@@ -58,8 +59,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.IRON_INGOT,
                                 meta -> {
-                                    meta.displayName(Component.text("§7§lLingots de Fer"));
-                                    meta.lore(List.of(Component.text("§7Simplement du fer, rien de fou quoi...")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.iron.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.iron.lore"));
                                 }
                         ),
                         0.2,
@@ -71,8 +72,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.NETHERITE_INGOT,
                                 meta -> {
-                                    meta.displayName(Component.text("§4§lLingot De Netherite"));
-                                    meta.lore(List.of(Component.text("§7Le truc le plus rare du jeu !")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.netherite.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.netherite.lore"));
                                 }
                         ),
                         0.05,
@@ -84,8 +85,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.OAK_LOG,
                                 meta -> {
-                                    meta.displayName(Component.text("§6§lBûches de Chêne"));
-                                    meta.lore(List.of(Component.text("§7De quoi te faire une petite maison hihi")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.oak_log.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.oak_log.lore"));
                                 }
                         ),
                         0.25,
@@ -97,8 +98,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.COOKED_BEEF,
                                 meta -> {
-                                    meta.displayName(Component.text("§c§lSteaks"));
-                                    meta.lore(List.of(Component.text("§7Miam miam, de la bonne viande !")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.steak.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.steak.lore"));
                                 }
                         ),
                         0.15,
@@ -110,8 +111,8 @@ public class MachineBallLootTable extends CustomLootTable {
                         new ItemBuilder(
                                 Material.COAL,
                                 meta -> {
-                                    meta.displayName(Component.text("§8§lCharbon"));
-                                    meta.lore(List.of(Component.text("§7De quoi faire du feu")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.coal.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.coal.lore"));
                                 }
                         ),
                         0.145,

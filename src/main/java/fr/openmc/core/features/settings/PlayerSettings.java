@@ -6,7 +6,9 @@ import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
 import fr.openmc.core.features.settings.policy.GlobalPolicy;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -76,7 +78,8 @@ public class PlayerSettings {
         } catch (Exception e) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null) {
-                player.sendMessage("§cErreur: " + e.getMessage());
+                player.sendMessage(TranslationManager.translation("feature.settings.error.set",
+                        Component.text(e.getMessage())));
             }
             throw new RuntimeException(e);
         }
@@ -96,7 +99,8 @@ public class PlayerSettings {
         } catch (Exception e) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null) {
-                player.sendMessage("§cErreur lors du parsing: " + e.getMessage());
+                player.sendMessage(TranslationManager.translation("feature.settings.error.parse",
+                        Component.text(e.getMessage())));
             }
             throw new RuntimeException(e);
         }

@@ -5,6 +5,7 @@ import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,11 +31,14 @@ public class SocialSpyCommand {
     ) {
         SocialSpyManager.toggleSocialSpy(target);
 
-        String status = SocialSpyManager.hasSocialSpyEnabled(target)
-                ? "activé" : "désactivé";
+        Component status = SocialSpyManager.hasSocialSpyEnabled(target)
+                ? TranslationManager.translation("feature.privatemessage.socialspy.status.enabled")
+                : TranslationManager.translation("feature.privatemessage.socialspy.status.disabled");
 
         MessagesManager.sendMessage(admin,
-                Component.text("§aSocial Spy " + status + " pour " + target.getName() + "."),
+                TranslationManager.translation("feature.privatemessage.socialspy.status_changed",
+                        status,
+                        Component.text(target.getName())),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
     }
 
@@ -43,22 +47,23 @@ public class SocialSpyCommand {
     @CommandPermission("omc.admin.commands.privatemessage.socialspy.admin")
     public void listSocialSpyPlayers(Player admin) {
         int spyCount = 0;
-        StringBuilder spyList = new StringBuilder("§6Joueurs avec Social Spy activé:\n");
+        StringBuilder spyList = new StringBuilder();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (SocialSpyManager.hasSocialSpyEnabled(onlinePlayer)) {
-                spyList.append("§7- §a").append(onlinePlayer.getName()).append("\n");
+                spyList.append(TranslationManager.translationString("feature.privatemessage.socialspy.list_item", Component.text(onlinePlayer.getName()))).append("\n");
                 spyCount++;
             }
         }
 
         if (spyCount == 0) {
             MessagesManager.sendMessage(admin,
-                    Component.text("§cAucun joueur n'a le social spy activé."),
+                    TranslationManager.translation("feature.privatemessage.socialspy.no_players"),
                     Prefix.OPENMC, MessageType.INFO, true);
         } else {
-            spyList.append("§6Total: §e").append(spyCount).append(" joueur(s)");
+            admin.sendMessage(TranslationManager.translationString("feature.privatemessage.socialspy.list_title"));
             admin.sendMessage(spyList.toString());
+            admin.sendMessage(TranslationManager.translationString("feature.privatemessage.socialspy.list_total", Component.text(spyCount)));
         }
     }
 }

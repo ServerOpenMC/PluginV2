@@ -6,7 +6,9 @@ import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -32,18 +34,21 @@ public class TPAcceptCommand {
 			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player") Player player
 	) {
 		if (!TPAManager.hasPendingRequest(target)) {
-			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (TPAManager.hasMultipleRequests(target)) {
 			if (player == null) {
-				MessagesManager.sendMessage(target, Component.text("§4Vous avez plusieurs demandes de téléportation en cours, utilisez §6/tpaccept <joueur>"), Prefix.OPENMC, MessageType.ERROR, false);
+				MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
 			if (!TPAManager.getRequesters(target).contains(player)) {
-				MessagesManager.sendMessage(target, Component.text("§4Vous n'avez pas de demande de téléportation de la part de §6" + player.getName()), Prefix.OPENMC, MessageType.ERROR, false);
+				MessagesManager.sendMessage(target, TranslationManager.translation(
+						"feature.tpa.accept.no_request_from",
+						Component.text(player.getName()).color(NamedTextColor.GOLD)
+				), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 		} else {
@@ -51,13 +56,13 @@ public class TPAcceptCommand {
 		}
 		
 		if (target.getFallDistance() > 0) {
-			MessagesManager.sendMessage(target, Component.text("§4Le joueur est en train de tomber, téléportation impossible"), Prefix.OPENMC, MessageType.ERROR, true);
-			MessagesManager.sendMessage(player, Component.text("§4Vous êtes en train de tomber, téléportation impossible"), Prefix.OPENMC, MessageType.ERROR, true);
+			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.falling"), Prefix.OPENMC, MessageType.ERROR, true);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.accept.you_falling"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
 		if (!player.isOnline()) {
-			MessagesManager.sendMessage(target, Component.text("§4Le joueur n'est pas en ligne ou n'existe pas"), Prefix.OPENMC, MessageType.ERROR, true);
+			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
@@ -69,8 +74,8 @@ public class TPAcceptCommand {
 	private void teleport(Player requester, Player target) {
 		Location loc = target.getLocation();
 		PlayerUtils.sendFadeTitleTeleport(requester, loc);
-		MessagesManager.sendMessage(target, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
-		MessagesManager.sendMessage(requester, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(requester, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
 		TPAManager.removeRequest(requester, target);
 	}
 }

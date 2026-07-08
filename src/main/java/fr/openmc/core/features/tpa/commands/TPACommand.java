@@ -6,9 +6,11 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
@@ -30,23 +32,27 @@ public class TPACommand {
 			@Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target
 	) {
 		if (TPAManager.requesterHasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, Component.text("§4Vous avez déjà une demande de téléportation en attente\n")
-					.append(Component.text("§3Tapez §5/tpacancel §3pour annuler votre demande de tp en cours").clickEvent(ClickEvent.runCommand("/tpacancel")).hoverEvent(HoverEvent.showText(Component.text("Annuler la demande de TP")))
-					), Prefix.OPENMC, MessageType.ERROR, true);
+			MessagesManager.sendMessage(player,
+					TranslationManager.translation("feature.tpa.already_pending")
+							.append(Component.text("\n"))
+							.append(TranslationManager.translation("feature.tpa.already_pending_usage")
+									.clickEvent(ClickEvent.runCommand("/tpacancel"))
+									.hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.tpa.request.hover.cancel")))),
+					Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		if (target == null) {
-			MessagesManager.sendMessage(player, Component.text("§4Le joueur n'existe pas ou n'est pas en ligne"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.player_not_found"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (player == target) {
-			MessagesManager.sendMessage(player, Component.text("§4Vous ne pouvez pas vous envoyer de demande de téléportation à vous même"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cannot_tp_yourself"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (TPAManager.hasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, Component.text("§4Vous avez déjà une demande de téléportation en attente de votre acceptation"), Prefix.OPENMC, MessageType.ERROR, true);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.already_have_pending"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
@@ -57,15 +63,24 @@ public class TPACommand {
 		TPAManager.addRequest(player, target);
 		
 		MessagesManager.sendMessage(target,
-				Component.text("§3Le joueur §6" + player.getName() + " §3 veut se téléporter à vous\n")
-						.append(Component.text("§3Tapez §5/tpaccept §3pour accepter").clickEvent(ClickEvent.runCommand("/tpaccept")).hoverEvent(HoverEvent.showText(Component.text("Accepter la demande de TP")))
-						.append(Component.text("§3 et §5/tpadeny §3pour refuser").clickEvent(ClickEvent.runCommand("/tpadeny")).hoverEvent(HoverEvent.showText(Component.text("Refuser la demande de TP")))
-						)),
-				Prefix.OPENMC, MessageType.INFO, true);
-		MessagesManager.sendMessage(player, Component.text("§2Vous avez envoyé une demande de téléportation à §6" + target.getName() + " \n")
-				.append(Component.text("§3Tapez §5/tpacancel §3pour annuler votre demande de tp").clickEvent(ClickEvent.runCommand("/tpacancel")).hoverEvent(HoverEvent.showText(Component.text("Annuler la demande de TP")))
-				), Prefix.OPENMC, MessageType.SUCCESS, true);
-		
+				TranslationManager.translation("feature.tpa.request.target_message", Component.text(player.getName()).color(NamedTextColor.GOLD))
+						.append(Component.text("\n"))
+						.append(TranslationManager.translation("feature.tpa.request.target_accept")
+								.clickEvent(ClickEvent.runCommand("/tpaccept"))
+								.hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.tpa.request.hover.accept"))))
+						.append(Component.text(" "))
+						.append(TranslationManager.translation("feature.tpa.request.target_deny")
+								.clickEvent(ClickEvent.runCommand("/tpadeny"))
+								.hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.tpa.request.hover.deny"))))
+				, Prefix.OPENMC, MessageType.INFO, true);
+		MessagesManager.sendMessage(player,
+				TranslationManager.translation("feature.tpa.request.sender_message", Component.text(target.getName()).color(NamedTextColor.GOLD))
+						.append(Component.text("\n"))
+						.append(TranslationManager.translation("feature.tpa.request.sender_cancel")
+								.clickEvent(ClickEvent.runCommand("/tpacancel"))
+								.hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.tpa.request.hover.cancel"))))
+				, Prefix.OPENMC, MessageType.SUCCESS, true);
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
