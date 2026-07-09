@@ -4,6 +4,7 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -65,10 +66,13 @@ public class PlayerShopManager {
     private static boolean createShop(Player player, Location location) {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
         
-        if (CityManager.isChunkClaimed(location.getChunk()) && !CityManager.getPlayerCity(player.getUniqueId()).equals(CityManager.getCityFromChunk(location.getChunk()))) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
-            return false;
+        if (!ProtectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
+            if (CityManager.isChunkClaimed(location.getChunk()) && !CityManager.getPlayerCity(player.getUniqueId()).equals(CityManager.getCityFromChunk(location.getChunk()))) {
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
+                return false;
+            }
         }
+        
         
         Block barrel = shop.getMultiblock().stockBlockLoc().getBlock();
         Block cashBlock = shop.getMultiblock().cashBlockLoc().getBlock();

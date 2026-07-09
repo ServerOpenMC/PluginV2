@@ -34,8 +34,7 @@ public class ShopFurniture {
 	 */
 	public static boolean removeShopFurniture(Block block) {
 		CustomStack placed = CustomFurniture.byAlreadySpawned(block);
-		if (placed == null || !placed.getNamespacedID().equals("omc_shops:caisse"))
-			return false;
+		if (placed == null || !placed.getNamespacedID().equals("omc_shops:caisse")) return false;
 		
 		CustomFurniture.remove(CustomFurniture.byAlreadySpawned(block).getEntity(), false);
 		return true;
