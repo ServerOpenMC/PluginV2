@@ -29,8 +29,6 @@ import java.util.*;
 @Credit(developers = {"gab400", "Nocolm", "Xernas78"}, graphist = {"Gexary"})
 public class ShopManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners, HasCommands {
 	
-	//TODO changer prix items
-	
 	@Getter
 	private static final Map<UUID, Shop> shops = new HashMap<>();
     private static Map<Location, Shop> shopsByLocation;
