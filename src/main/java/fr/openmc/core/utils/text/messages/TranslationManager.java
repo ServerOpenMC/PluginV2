@@ -128,19 +128,23 @@ public class TranslationManager {
      * @return Une liste de composants, un par ligne (italique désactivé)
      */
     public static List<Component> translationLore(String key, ComponentLike... componentsArgs) {
-        String fallback = fallbackTranslations.getOrDefault(key, key);
-
+        String fallback = getFallbackTranslation(key);
         ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(componentsArgs);
-        TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
+        String[] lines = fallback.split("\n");
 
-        String legacy = LegacyComponentSerializer.legacySection().serialize(translatable);
-
-        String[] lines = legacy.split("\n");
+        if (lines.length == 1) {
+            TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
+            return List.of(translatable.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        }
 
         List<Component> lore = new ArrayList<>();
 
-        for (String line : lines) {
-            lore.add(LegacyComponentSerializer.legacySection().deserialize(line).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        for (int i = 0; i < lines.length; i++) {
+            lore.add(Component.translatable(
+                    getLoreLineKey(key, i),
+                    lines[i],
+                    normalizedArgs
+            ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         }
 
         return lore;
@@ -188,11 +192,24 @@ public class TranslationManager {
 
         for (Map.Entry<String, String> entry : translations.entrySet()) {
             root.addProperty(entry.getKey(), entry.getValue());
+
+            String[] lines = entry.getValue().split("\n");
+            if (lines.length == 1) {
+                continue;
+            }
+
+            for (int i = 0; i < lines.length; i++) {
+                root.addProperty(getLoreLineKey(entry.getKey(), i), lines[i]);
+            }
         }
 
         Files.writeString(
                 langFolder.resolve(minecraftLocale + ".json"),
                 GSON.toJson(root)
         );
+    }
+
+    private static String getLoreLineKey(String key, int line) {
+        return key + "." + line;
     }
 }
