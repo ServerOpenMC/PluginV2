@@ -14,6 +14,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 
 public class ShopListener implements Listener {
 
@@ -53,18 +57,31 @@ public class ShopListener implements Listener {
         
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         
-        Shop shop = ShopManager.getShopAt(block.getLocation().subtract(0, 1, 0));
+        Shop shop = ShopManager.getShopAt(block.getLocation());
         if (shop == null) return;
         
         e.setCancelled(true);
-        if (shop.isMenuOpened()) return;
-        if (shop.hasItem()) {
-            new ShopMenu(e.getPlayer(), shop).open();
-            shop.setMenuOpened(true);
+        Player player = e.getPlayer();
+        if (shop.isMenuOpened()) {
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, true);
+            return;
         }
-        else {
-            new ShopSellingMenu(e.getPlayer(), shop).open();
-            shop.setMenuOpened(true);
+        if (shop.isOwner(player)) {
+            if (shop.hasItem()) {
+                new ShopMenu(player, shop).open();
+                shop.setMenuOpened(true);
+            }
+            else {
+                new ShopSellingMenu(player, shop).open();
+                shop.setMenuOpened(true);
+            }
+        } else {
+            if (shop.hasItem()) {
+                new ShopMenu(player, shop).open();
+                shop.setMenuOpened(true);
+            } else {
+                MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
+            }
         }
     }
 
@@ -93,38 +110,67 @@ public class ShopListener implements Listener {
     public void onFurnitureBreak(FurnitureBreakEvent e) {
         CustomFurniture furniture = e.getFurniture();
         
-        if (furniture != null && furniture.getNamespacedID().equals("omc_shops:caisse")) e.setCancelled(true);
+        if (furniture == null || !furniture.getNamespacedID().equals("omc_shops:caisse")) return;
+        
+        Entity furnitureEntity = furniture.getEntity();
+        if (furnitureEntity == null) return;
+        if (ShopManager.getShopAt(furnitureEntity.getLocation().toBlockLocation()) == null) return;
+        e.setCancelled(true);
     }
     
     @EventHandler
     public void onFurnitureInteract(FurnitureInteractEvent e) {
 		CustomFurniture furniture = e.getFurniture();
-		
-        if (furniture == null) return;
         
-        if (!furniture.getNamespacedID().equals("omc_shops:caisse")) return;
+        if (furniture == null || !furniture.getNamespacedID().equals("omc_shops:caisse")) return;
         
         Player player = e.getPlayer();
-	    if (furniture.getEntity() == null) {
+        Entity furnitureEntity = furniture.getEntity();
+	    if (furnitureEntity == null) {
 		    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.entity_is_null"), Prefix.SHOP, MessageType.ERROR, true);
 		    return;
 	    }
 	    
-	    Shop shop = ShopManager.getShopAt(furniture.getEntity().getLocation().subtract(0, 1, 0).toBlockLocation());
+	    Shop shop = ShopManager.getShopAt(furnitureEntity.getLocation().toBlockLocation());
 	    if (shop == null) {
 		    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.shop_is_null"), Prefix.SHOP, MessageType.ERROR, true);
 			return;
 	    }
 	    
 	    e.setCancelled(true);
-        if (shop.isMenuOpened()) return;
-	    if (shop.hasItem()) {
-            new ShopMenu(player, shop).open();
-            shop.setMenuOpened(true);
+        if (shop.isMenuOpened()) {
+            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, true);
+            return;
         }
-        else {
-            new ShopSellingMenu(player, shop).open();
-            shop.setMenuOpened(true);
+        if (shop.isOwner(player)) {
+            if (shop.hasItem()) {
+                new ShopMenu(player, shop).open();
+                shop.setMenuOpened(true);
+            }
+            else {
+                new ShopSellingMenu(player, shop).open();
+                shop.setMenuOpened(true);
+            }
+        } else {
+            if (shop.hasItem()) {
+                new ShopMenu(player, shop).open();
+                shop.setMenuOpened(true);
+            } else {
+                MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
+            }
         }
+    }
+    
+    @EventHandler
+    public void onHopperPickUpItem(InventoryMoveItemEvent e) {
+        Inventory source = e.getSource();
+        if (source.getLocation() == null) return;
+	    if (ShopManager.getShopAt(source.getLocation().toBlockLocation()) == null) return;
+        e.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+	    ShopManager.shopBypass.remove(e.getPlayer().getUniqueId());
     }
 }

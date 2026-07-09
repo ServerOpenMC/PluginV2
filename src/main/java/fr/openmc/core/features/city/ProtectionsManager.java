@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.protections.*;
 import fr.openmc.core.features.city.sub.war.War;
+import fr.openmc.core.features.shops.manager.ShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -52,6 +53,8 @@ public class ProtectionsManager {
     public static boolean canInteract(Player player, Location loc) {
         if (!player.getWorld().getName().equals("world")) return true;
 		
+	    if (ShopManager.getShopAt(loc) != null) return true;
+		
         if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
@@ -82,7 +85,7 @@ public class ProtectionsManager {
     public static void checkCity(Player player, Cancellable event, City city) {
         if (!player.getWorld().getName().equals("world")) return;
         
-        if (city == null) return; // Pas de ville, pas de protection
+		if (city == null) return; // Pas de ville, pas de protection
 	    
 	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 	    
@@ -90,12 +93,14 @@ public class ProtectionsManager {
 
         if (!city.isMember(player)) {
             event.setCancelled(true);
-            cancelMessage(player);
+			cancelMessage(player);
         }
     }
 	
 	public static void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
+		
+		if (ShopManager.getShopAt(loc) != null) return;
 		
 		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
 		if (city == null || city.isInWar()) return;

@@ -19,6 +19,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +49,7 @@ public class Shop {
 	private Multiblock multiblock;
     
     @Setter private boolean menuOpened;
+    private Timestamp lastWithdrawal;
     
     Shop() {
         // required for ORMLite
@@ -229,6 +232,14 @@ public class Shop {
     public void emptyShop() {
         if (!hasItem()) return;
         this.getItem().setAmount(0);
+    }
+    
+    /**
+     * Updates the timestamp of the last withdrawal made from the shop.
+     * The method sets the {@code lastWithdrawal} field to the current date and time.
+     */
+    public void setLastWithdrawalToNow() {
+        this.lastWithdrawal = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public record Multiblock(Location stockBlockLoc, Location cashBlockLoc) {}

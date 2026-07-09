@@ -81,13 +81,16 @@ public class ShopSalesMenu extends PaginatedMenu {
         map.put(45, ItemMenuTemplate.BTN_CANCEL.apply(this).setBackButton());
         map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
         map.put(49, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+            String lastRemoval = this.shop.getLastWithdrawal() == null ? "Jamais" : this.shop.getLastWithdrawal().toLocalDateTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.get_turnover.name"));
             itemMeta.lore(List.of(
                     TranslationManager.translation("feature.shop.menu.sales.get_turnover.lore1", Component.text(this.shop.getTurnover() * 0.8 + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)),
-                    TranslationManager.translation("feature.shop.menu.sales.get_turnover.lore2")
+                    TranslationManager.translation("feature.shop.menu.sales.get_turnover.lore2"),
+                    TranslationManager.translation("feature.shop.menu.sales.get_turnover.lore.last", Component.text(lastRemoval).color(NamedTextColor.LIGHT_PURPLE))
             ));
         }).setOnClick(_ -> {
             this.shop.withdrawTurnover();
+            this.shop.setLastWithdrawalToNow();
             update();
         }));
         map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));

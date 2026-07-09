@@ -25,6 +25,8 @@ public class ShopItem implements Cloneable {
     private double price;
     private ItemStack itemStack;
     
+    private int maxAmount;
+    
     ShopItem() {
         // required for ORMLite
     }
@@ -35,6 +37,7 @@ public class ShopItem implements Cloneable {
         this.pricePerItem = pricePerItem;
         this.amount = 0;
         this.price = pricePerItem * amount;
+        initMaxAmount();
     }
     
     /**
@@ -47,7 +50,7 @@ public class ShopItem implements Cloneable {
      * @return the updated ShopItem instance
      */
     public ShopItem setAmount(int amount) {
-        if (amount > 28 * itemStack.getMaxStackSize()) amount = 28 * itemStack.getMaxStackSize();
+        if (amount > this.maxAmount) amount = this.maxAmount;
         this.amount = amount;
         this.price = pricePerItem * amount;
         return this;
@@ -79,6 +82,21 @@ public class ShopItem implements Cloneable {
         this.price = pricePerItem * this.amount;
     }
     
+    public ShopItem initMaxAmount() {
+        this.maxAmount = 28 * itemStack.getMaxStackSize();
+        return this;
+    }
+    
+    /**
+     * Set a new price per item for this shop item
+     *
+     * @param pricePerItem the new price per item
+     */
+    public void setPricePerItem(double pricePerItem) {
+        this.pricePerItem = pricePerItem;
+        this.price = pricePerItem * amount;
+    }
+    
     /**
      * Get the price of an item based on the amount
      *
@@ -96,6 +114,17 @@ public class ShopItem implements Cloneable {
      */
     public Shop getShop() {
         return ShopManager.getShopByUUID(this.shopUUID);
+    }
+    
+    /**
+     * Checks whether the current ShopItem instance has reached its maximum allowable
+     * stock capacity.
+     *
+     * @return true if the current amount of the ShopItem is greater than or equal to
+     *         the maximum capacity (28 stacks); false otherwise.
+     */
+    public boolean isFull() {
+        return this.amount >= maxAmount;
     }
     
     /**

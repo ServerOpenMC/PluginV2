@@ -33,12 +33,12 @@ public class ShopStocksMenu extends PaginatedMenu {
     
     private final Shop shop;
     private final ShopItem item;
-    private final int barrelStocks;
+    private int barrelStocks;
     
     public ShopStocksMenu(Player owner, Shop shop) {
         super(owner);
         this.shop = shop;
-        this.barrelStocks = ContainerUtils.getTotalItemsIn((Barrel) this.shop.getMultiblock().stockBlockLoc().getBlock().getState(), this.shop.getItem().getItemStack());
+        reloadBarrelStocks();
         this.item = shop.getItem();
     }
     
@@ -64,7 +64,6 @@ public class ShopStocksMenu extends PaginatedMenu {
 
     @Override
     public List<ItemStack> getItems() {
-        ShopItem item = this.shop.getItem();
         if (item == null || item.getAmount() <= 0) return List.of();
         return ItemUtils.splitAmountIntoStack(item.getItemStack(), item.getAmount());
     }
@@ -75,26 +74,31 @@ public class ShopStocksMenu extends PaginatedMenu {
         
         map.put(45, ItemMenuTemplate.BTN_CANCEL.apply(this).setBackButton());
         map.put(48, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stocks.fill.name", Component.text(barrelStocks).color(NamedTextColor.GREEN)));
+            itemMeta.displayName(item.isFull() ?
+                    TranslationManager.translation("feature.shop.menu.stocks.fill.name.full") :
+                    TranslationManager.translation("feature.shop.menu.stocks.fill.name.not_full", Component.text(barrelStocks).color(NamedTextColor.GREEN)));
         }).setOnClick(_ -> {
             if (barrelStocks == 0) return;
-            ShopItem item = this.shop.getItem();
-            int amountToAdd = 28 * item.getItemStack().getMaxStackSize() - item.getAmount();
+            if (item.isFull()) return;
+            
+            int amountToAdd = item.getMaxAmount() - item.getAmount();
             if (amountToAdd <= 0) return;
             if (amountToAdd > barrelStocks) amountToAdd = barrelStocks;
+            
             ContainerUtils.removeItemsFromInventory((Barrel) this.shop.getMultiblock().stockBlockLoc().getBlock().getState(), item.getItemStack(), amountToAdd);
             item.addAmount(amountToAdd);
+            
             MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.stocks.fill.success"), Prefix.SHOP, MessageType.SUCCESS, true);
             new ShopStocksMenu(getOwner(), shop).open();
         }));
         map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.COMPANY_BOX.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stocks.empty.name"));
             itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.stocks.empty.lore", Component.text(this.item.getAmount()).color(NamedTextColor.GRAY))
+                    TranslationManager.translation("feature.shop.menu.stocks.empty.lore", Component.text(item.getAmount()).color(NamedTextColor.GRAY))
             ));
         }).setOnClick(_ -> {
-            if (this.item.getAmount() <= 0) return;
-            if (!ItemUtils.hasEnoughSpace(getOwner(), this.item.getItemStack(), this.item.getAmount())) {
+            if (item.getAmount() <= 0) return;
+            if (!ItemUtils.hasEnoughSpace(getOwner(), item.getItemStack(), item.getAmount())) {
                 MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.stocks.empty.not_enough_space"), Prefix.SHOP, MessageType.ERROR, true);
                 return;
             }
@@ -130,5 +134,9 @@ public class ShopStocksMenu extends PaginatedMenu {
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();
+    }
+    
+    private void reloadBarrelStocks() {
+        this.barrelStocks = ContainerUtils.getTotalItemsIn((Barrel) this.shop.getMultiblock().stockBlockLoc().getBlock().getState(), this.shop.getItem().getItemStack());
     }
 }

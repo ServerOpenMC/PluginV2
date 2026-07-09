@@ -3,6 +3,7 @@ package fr.openmc.core.features.shops.manager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -15,6 +16,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
@@ -61,6 +64,11 @@ public class PlayerShopManager {
      */
     private static boolean createShop(Player player, Location location) {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
+        
+        if (CityManager.isChunkClaimed(location.getChunk()) && !CityManager.getPlayerCity(player.getUniqueId()).equals(CityManager.getCityFromChunk(location.getChunk()))) {
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
+            return false;
+        }
         
         Block barrel = shop.getMultiblock().stockBlockLoc().getBlock();
         Block cashBlock = shop.getMultiblock().cashBlockLoc().getBlock();
@@ -117,6 +125,20 @@ public class PlayerShopManager {
         
         if (shop.getItem() != null && shop.getItem().getAmount() > 0) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_empty"), Prefix.SHOP, MessageType.WARNING, false);
+            return;
+        }
+        
+        World world = Bukkit.getWorld("world");
+        if (world == null) return;
+        
+        if (world.getBlockAt(shop.getMultiblock().stockBlockLoc()).getState() instanceof Barrel barrel) {
+            if (!barrel.getInventory().isEmpty()) {
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.barrel_is_not_empty"), Prefix.SHOP, MessageType.WARNING, false);
+                return;
+            }
+        } else {
+            OMCLogger.error("Barrel block is not an instance of barrel");
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.barrel"), Prefix.SHOP, MessageType.WARNING, false);
             return;
         }
         

@@ -76,7 +76,7 @@ public class ShopDatabaseManager {
 				OMCLogger.error("Shop for item with shopUUID " + item.getShopUUID() + " is null, item not assigned");
 				continue;
 			}
-			shop.setItem(item.deserialize());
+			shop.setItem(item.deserialize().initMaxAmount());
 		}
 	}
 	

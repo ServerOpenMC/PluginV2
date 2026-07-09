@@ -10,6 +10,7 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.shops.ShopFurniture;
+import fr.openmc.core.features.shops.commands.ShopAdminCommand;
 import fr.openmc.core.features.shops.commands.ShopCommand;
 import fr.openmc.core.features.shops.listener.ShopListener;
 import fr.openmc.core.features.shops.models.Shop;
@@ -17,26 +18,23 @@ import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.world.WorldUtils;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Credit(developers = {"gab400", "Nocolm", "Xernas78"}, graphist = {"Gexary"})
 public class ShopManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners, HasCommands {
 	
+	//TODO changer prix items
+	
 	@Getter
 	private static final Map<UUID, Shop> shops = new HashMap<>();
     private static Map<Location, Shop> shopsByLocation;
+	public static final Set<UUID> shopBypass = new HashSet<>();
 	
 	@Override
 	protected void init() {
@@ -59,7 +57,7 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	
 	@Override
 	public Set<Object> getCommands() {
-		return Set.of(new ShopCommand());
+		return Set.of(new ShopCommand(), new ShopAdminCommand());
 	}
 	
 	@Override
@@ -119,7 +117,7 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	}
 	
 	/**
-	 * Saves all shop items to the database.
+	 * Saves all shop items to the database.finite
 	 */
 	public static void saveShopItems() {
 		for (Shop shop : shops.values()) {
@@ -153,7 +151,12 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
      * @return The shop found at that location, or null if none exists.
      */
     public static Shop getShopAt(Location location) {
-        return shopsByLocation.get(location.setRotation(0, 0));
+		if (location == null) return null;
+		location.setRotation(0, 0);
+	    Shop shop1 = shopsByLocation.get(location);
+	    Shop shop2 = shopsByLocation.get(location.subtract(0, 1, 0));
+	    if (shop1 != null) return shop1;
+		else return shop2;
     }
 	
 	/**
@@ -165,7 +168,18 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	 * @return The shop found at that location, or null if none exists.
 	 */
 	public static Shop getShopAt(int x, int y, int z) {
-		return shopsByLocation.get(new Location(Bukkit.getWorld("world"), x, y, z));
+		return getShopAt(new Location(Bukkit.getWorld("world"), x, y, z));
+	}
+	
+	/**
+	 * Check if the chunk contains a shop.
+	 *
+	 * @param chunk the chunk to check
+	 * @return true if a shop is found, false otherwise.
+	 */
+	public static boolean hasShopInChunk(Chunk chunk) {
+		for (Shop shop : shops.values()) if (shop.getLocation().getChunk().equals(chunk)) return true;
+		return false;
 	}
 
     /**
@@ -237,7 +251,7 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
         
         // Async cleanup of location mappings
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-			        shopsByLocation.entrySet().removeIf(entry -> entry.getValue().getOwnerUUID().equals(shop.getOwnerUUID()));
+			        shopsByLocation.entrySet().removeIf(entry -> entry.getValue().getShopUUID().equals(shop.getShopUUID()));
 					shops.remove(shop.getShopUUID());
 		        });
         return true;

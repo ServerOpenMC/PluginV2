@@ -1,26 +1,16 @@
 package fr.openmc.core.features.shops.commands;
 
-import fr.openmc.core.features.shops.ShopFurniture;
-import fr.openmc.core.features.shops.commands.autocomplete.ShopAdminCommandPlayerAutocomplete;
-import fr.openmc.core.features.shops.manager.PlayerShopManager;
 import fr.openmc.core.features.shops.manager.ShopManager;
-import fr.openmc.core.features.shops.models.Shop;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("shopadmin")
 @CommandPermission("omc.admins.commands.shop")
 public class ShopAdminCommand {
 	
-	@Subcommand("multiblock set")
+	/*@Subcommand("multiblock set")
 	public void setShopMultiblock(Player player, @Named("playerShop") @SuggestWith(ShopAdminCommandPlayerAutocomplete.class) OfflinePlayer playerShop, @Named("barrelLoc") Location barrelLoc) {
 		if (playerShop == null) return;
 		
@@ -79,9 +69,9 @@ public class ShopAdminCommand {
 		
 		shop.setMultiblock(new Shop.Multiblock(shopBarrelLoc, shopCashLoc));
 		MessagesManager.sendMessage(player, Component.text("§aMultiblock associé au shop."), Prefix.SHOP, MessageType.SUCCESS, false);
-	}
+	}*/
 	
-	@Subcommand("removeshop")
+	/*@Subcommand("removeshop")
 	public void removeShop(Player player, @Named("playerShop") @SuggestWith(ShopAdminCommandPlayerAutocomplete.class) OfflinePlayer target) {
 		if (target == null) {
 			MessagesManager.sendMessage(player, Component.text("§cLe joueur spécifié est introuvable"), Prefix.SHOP, MessageType.ERROR, false);
@@ -105,5 +95,11 @@ public class ShopAdminCommand {
 		}
 		
 		PlayerShopManager.adminDeleteShop(target, player);
+	}*/
+	
+	@Subcommand("bypass")
+	public void bypass(Player player) {
+		if (!ShopManager.shopBypass.contains(player.getUniqueId())) ShopManager.shopBypass.add(player.getUniqueId());
+		else ShopManager.shopBypass.remove(player.getUniqueId());
 	}
 }

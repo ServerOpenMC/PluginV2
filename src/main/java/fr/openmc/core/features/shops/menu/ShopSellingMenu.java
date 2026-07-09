@@ -31,7 +31,6 @@ public class ShopSellingMenu extends PaginatedMenu {
 	
 	private final Shop shop;
 	private final Inventory barrelInventory;
-	private double price;
 	
 	public ShopSellingMenu(Player owner, Shop shop) {
 		super(owner);
@@ -92,7 +91,13 @@ public class ShopSellingMenu extends PaginatedMenu {
 					TranslationManager.translation("feature.shop.menu.selling.price_input"),
 					Integer.MAX_VALUE,
 					s -> {
-						double pricePerItem = Double.parseDouble(s);
+						if (s == null) return;
+						double pricePerItem;
+						try {
+							pricePerItem = Double.parseDouble(s);
+						} catch (NumberFormatException e) {
+							return;
+						}
 						if (Double.isNaN(pricePerItem)) return;
 						if (pricePerItem <= 0) return;
 						shop.setItem(new ShopItem(shop.getShopUUID(), item, pricePerItem));

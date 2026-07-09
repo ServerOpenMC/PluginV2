@@ -1,5 +1,6 @@
 package fr.openmc.core.features.shops.menu;
 
+import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -11,6 +12,9 @@ import fr.openmc.core.features.shops.manager.ShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
 import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -43,7 +47,7 @@ public class ShopMenu extends Menu {
         super(owner);
         this.shop = shop;
         this.item = shop.getItem();
-        this.isShopOwner = ShopManager.isShopOwner(owner, shop);
+        this.isShopOwner = ShopManager.isShopOwner(owner, shop) || ShopManager.shopBypass.contains(owner.getUniqueId());
         this.size = isShopOwner ? InventorySize.LARGER : InventorySize.LARGE;
         this.texture = isShopOwner ? "shop_menu" : "sell_shop_menu";
         this.amountToBuy = amountToBuy;
@@ -138,6 +142,27 @@ public class ShopMenu extends Menu {
             }));
             
             map.put(8, new ItemMenuBuilder(this, Material.GREEN_BANNER, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.yours"))));
+            
+            map.put(31, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_SHOP, itemMeta ->
+                    itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.modify_price.title"))).setOnClick(_ ->
+                    DialogInput.send(getOwner(),
+                            TranslationManager.translation("feature.shop.menu.selling.price_input"),
+                            Integer.MAX_VALUE,
+                            s -> {
+                                if (s == null) return;
+                                double pricePerItem;
+                                try {
+                                    pricePerItem = Double.parseDouble(s);
+                                } catch (NumberFormatException e) {
+                                    return;
+                                }
+                                if (Double.isNaN(pricePerItem)) return;
+                                if (pricePerItem <= 0) return;
+                                shop.getItem().setPricePerItem(pricePerItem);
+                                new ShopMenu(getOwner(), shop).open();
+                                MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.main.modify_price.message"), Prefix.SHOP, MessageType.SUCCESS, true);
+                            })
+            ));
         }
 		
         map.put(isShopOwner ? 19 : 10, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.BTN_64.getBest(), itemMeta -> {
@@ -178,7 +203,7 @@ public class ShopMenu extends Menu {
             ));
         }).setOnClick(_ -> addAmount(64)));
         
-        map.put(22, new ItemMenuBuilder(this, this.item.getItemStack().asOne()));
+        map.put(isShopOwner ? 22 : 13, new ItemMenuBuilder(this, this.item.getItemStack().asOne()));
         
         map.put(isShopOwner ? 30 : 21, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.refuse.title"));
