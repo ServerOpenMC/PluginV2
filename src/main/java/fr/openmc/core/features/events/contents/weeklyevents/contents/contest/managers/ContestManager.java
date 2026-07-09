@@ -412,7 +412,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
                             .appendNewline()
                             .append(TranslationManager.translation("feature.events.contest.mail.click"))
                             .clickEvent(ClickEvent.runCommand("mailbox"))
-                            .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.events.contest.mail.hover")))
+                            .hoverEvent(getHoverEvent(TranslationManager.translation("feature.events.contest.mail.hover")))
                             .append(TranslationManager.translation("feature.events.contest.mail.open_mailbox"));
 
                     player.sendMessage(messageMail);

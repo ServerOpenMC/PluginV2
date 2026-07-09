@@ -128,6 +128,8 @@ public class FriendCommand {
     ) {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
+            String playerName = target.getName() != null ? target.getName() : "null";
+
             if (!target.hasPlayedBefore()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
@@ -140,14 +142,14 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            String targetDisplayName = target.getName() != null
-                    ? target.getName()
-                    : TranslationManager.translationString("feature.friend.unknown_player");
+           Component targetDisplayName = target.getName() != null
+                    ? Component.text(playerName)
+                    : TranslationManager.translation("feature.friend.unknown_player");
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation(
                             "feature.friend.remove.success",
-                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
+                            targetDisplayName.color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
@@ -218,9 +220,10 @@ public class FriendCommand {
             for (int i = startIndex; i < endIndex; i++) {
                 UUID friendUUID = friendsList.get(i);
                 OfflinePlayer friend = CacheOfflinePlayer.getOfflinePlayer(friendUUID);
-                String friendName = friend.getName() != null
-                        ? friend.getName()
-                        : TranslationManager.translationString("feature.friend.unknown_player");
+                String friendName = friend.getName() != null ? friend.getName() : "null";
+                Component friendNameComponent = friend.getName() != null
+                        ? Component.text(friendName)
+                        : TranslationManager.translation("feature.friend.unknown_player");
 
                 try {
                     Timestamp timestamp = FriendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
@@ -230,7 +233,8 @@ public class FriendCommand {
 
                     City city = CityManager.getPlayerCity(friend.getUniqueId());
                     String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
-                    Component cityComponent = Component.text(city != null ? city.getName() : TranslationManager.translationString("feature.friend.list.city.none")).color(NamedTextColor.YELLOW);
+                    Component cityComponent = city != null ? Component.text(city.getName()).color(NamedTextColor.YELLOW) :
+                            TranslationManager.translation("feature.friend.list.city.none").color(NamedTextColor.YELLOW);
                     Component moneyComponent = Component.text(formattedMoney).color(NamedTextColor.YELLOW);
                     Component statusComponent = isOnline
                             ? TranslationManager.translation("feature.friend.status.online").color(NamedTextColor.GREEN)
@@ -238,7 +242,7 @@ public class FriendCommand {
 
                     TextComponent friendComponent = Component.text("  " + (i+1) + ". ")
                             .color(NamedTextColor.GRAY)
-                            .append(Component.text(friendName)
+                            .append(friendNameComponent
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
@@ -342,14 +346,14 @@ public class FriendCommand {
                 return;
             }
             FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
-            String targetDisplayName = target.getName() != null
-                    ? target.getName()
-                    : TranslationManager.translationString("feature.friend.unknown_player");
+            Component targetDisplayName = target.getName() != null
+                    ? Component.text(targetName)
+                    : TranslationManager.translation("feature.friend.unknown_player");
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation(
                             "feature.friend.request.accepted",
-                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
+                            targetDisplayName.color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
@@ -390,14 +394,14 @@ public class FriendCommand {
                 return;
             }
             FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId()));
-            String targetDisplayName = target.getName() != null
-                    ? target.getName()
-                    : TranslationManager.translationString("feature.friend.unknown_player");
+            Component targetDisplayName = target.getName() != null
+                    ? Component.text(target.getName())
+                    : TranslationManager.translation("feature.friend.unknown_player");
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation(
                             "feature.friend.request.denied",
-                            Component.text(targetDisplayName).color(NamedTextColor.YELLOW)
+                            targetDisplayName.color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,

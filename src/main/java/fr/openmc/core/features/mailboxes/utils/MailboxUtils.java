@@ -41,8 +41,8 @@ public class MailboxUtils {
         return name.decoration(TextDecoration.ITALIC, false);
     }
 
-    public static @NotNull HoverEvent<Component> getHoverEvent(String message) {
-        return HoverEvent.showText(Component.text(message, NamedTextColor.GRAY));
+    public static @NotNull HoverEvent<Component> getHoverEvent(Component message) {
+        return HoverEvent.showText(message.color(NamedTextColor.GRAY));
     }
 
     public static ItemStack getHead(OfflinePlayer player) {

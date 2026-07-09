@@ -153,18 +153,18 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
 
         if (count == 0) return;
 
-        String countLabel = count > 1
-                ? Long.toString(count)
-                : TranslationManager.translationString("feature.mailboxes.message.one_letter");
+        Component countLabel = count > 1
+                ? Component.text(count)
+                : TranslationManager.translation("feature.mailboxes.message.one_letter");
         Component line1 = TranslationManager.translation(
                 "feature.mailboxes.message.new_letters.line1",
-                Component.text(countLabel).color(NamedTextColor.GREEN),
-                Component.text(pluralize("lettre", count)).color(NamedTextColor.DARK_GREEN)
+                countLabel.color(NamedTextColor.GREEN),
+                pluralize(TranslationManager.translation("feature.mailboxes.letter"), count).color(NamedTextColor.DARK_GREEN)
         ).color(NamedTextColor.DARK_GREEN);
         Component clickComponent = TranslationManager.translation("feature.mailboxes.message.new_letters.click")
                 .color(NamedTextColor.YELLOW)
                 .clickEvent(ClickEvent.runCommand("/mailbox"))
-                .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.mailboxes.message.new_letters.hover")));
+                .hoverEvent(getHoverEvent(TranslationManager.translation("feature.mailboxes.message.new_letters.hover")));
         Component line2 = clickComponent
                 .append(Component.space())
                 .append(TranslationManager.translation("feature.mailboxes.message.new_letters.suffix")
@@ -219,13 +219,14 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
         Component line1 = TranslationManager.translation(
                 "feature.mailboxes.message.letter_received.line1",
                 Component.text(numItems).color(NamedTextColor.GREEN),
-                Component.text(pluralize(" item", numItems)).color(NamedTextColor.DARK_GREEN),
+                pluralize(Component.space()
+                                .append(TranslationManager.translation("global.item")), numItems).color(NamedTextColor.DARK_GREEN),
                 Component.text(name).color(NamedTextColor.GREEN)
         ).color(NamedTextColor.DARK_GREEN);
         Component clickComponent = TranslationManager.translation("feature.mailboxes.message.letter_received.click")
                 .color(NamedTextColor.YELLOW)
                 .clickEvent(ClickEvent.runCommand("/mailbox open " + id))
-                .hoverEvent(getHoverEvent(TranslationManager.translationString(
+                .hoverEvent(getHoverEvent(TranslationManager.translation(
                         "feature.mailboxes.message.letter_received.hover",
                         Component.text(id)
                 )));
@@ -253,7 +254,8 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
                 "feature.mailboxes.title.new_letter.subtitle",
                 Component.text(name).color(NamedTextColor.GOLD),
                 Component.text(numItems).color(NamedTextColor.GOLD),
-                Component.text(pluralize(" item", numItems)).color(NamedTextColor.YELLOW)
+                pluralize(Component.space()
+                        .append(TranslationManager.translation("global.item")), numItems).color(NamedTextColor.YELLOW)
         ).color(NamedTextColor.YELLOW);
         Component title = TranslationManager.translation("feature.mailboxes.title.new_letter")
                 .color(NamedTextColor.GREEN);
@@ -264,8 +266,8 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
         Component message = TranslationManager.translation(
                 "feature.mailboxes.message.send_success",
                 Component.text(numItems).color(NamedTextColor.GREEN),
-                Component.text(pluralize("item", numItems)).color(NamedTextColor.DARK_GREEN),
-                Component.text(pluralize(TranslationManager.translationString("feature.mailboxes.message.sent_word"), numItems)).color(NamedTextColor.DARK_GREEN),
+                pluralize(TranslationManager.translation("global.item"), numItems).color(NamedTextColor.DARK_GREEN),
+                pluralize(TranslationManager.translation("feature.mailboxes.message.sent_word"), numItems).color(NamedTextColor.DARK_GREEN),
                 Component.text(receiverName).color(NamedTextColor.GREEN)
         ).color(NamedTextColor.DARK_GREEN);
 

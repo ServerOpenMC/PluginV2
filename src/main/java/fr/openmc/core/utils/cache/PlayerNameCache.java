@@ -17,7 +17,7 @@ public class PlayerNameCache {
     public static String getName(UUID uuid) {
         return nameCache.computeIfAbsent(uuid, id -> {
             OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer((UUID) id);
-            return player.getName() != null ? player.getName() : "Inconnu";
+            return player.getName() != null ? player.getName() : "null";
         });
     }
 
