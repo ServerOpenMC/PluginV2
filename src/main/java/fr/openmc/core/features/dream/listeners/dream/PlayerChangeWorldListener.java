@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
-import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
+import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;

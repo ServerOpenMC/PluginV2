@@ -6,6 +6,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,7 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
     private static final NamespacedKey BREEZY_WIND_CHARGE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "breezy_wind_charge");
     public Breezy(String id) {
         super(id,
-                "Breezy",
+                TranslationManager.translationString("feature.dream.mob.breezy"),
                 Breeze.class,
                 100.0,
                 5L,

@@ -11,6 +11,9 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,33 +21,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class KillBreezyQuest extends MilestoneQuest implements Listener {
 	public KillBreezyQuest() {
 		super(
-				"L'air du vent",
-				List.of(
-						"§fBattre §dBreezy",
-						"§8§oOn va dompter un des esprits de la montagne",
-						"§8§ode Poncahontas, ou alors c'est Elsa ?"
-				),
+				TranslationManager.translation("feature.dream.milestone.quest.kill_breezy.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.kill_breezy.description"),
 				Material.WIND_CHARGE,
 				MilestoneType.DREAM,
 				DreamSteps.KILL_BREEZY,
 				new QuestTier(1),
-				List.of(
-						"§6Mais c'est qu'il est balèze ce Breeze !!",
-						"§3Voyageur : Oui, c'est ce que je craignais... même ici, tout a été corrompu.",
-						"§6Comment ça corrompu ?",
-						"§3Voyageur : Les explications arriveront en temps et en heures. Pour le moment, redescends sur terre, et dirige-toi vers les §dplages§3. " +
-								"J'aimerais pouvoir dire de sable fin...",
-						"§3Voyageur : Mais avant de partir, tu peux récupérer dans les coffres du château l'§dArmure des Nuages§3, qui te donnera §d" +
-								((DreamEquipableItem) DreamItemRegistry.CLOUD_CHESTPLATE).getAdditionalMaxTime() +
-								" secondes §3de temps supplémentaire par pièces d'armure. Tu peux également récupérer une §dcanne à pêche des nuages§3, et un §dlivre enchanté§3.",
-						"§6Une canne à pêche ? Mais pour pêcher quoi ? Des gouttelettes de nuage ?!",
-						"§3Voyageur : Exactement ! Celle-ci te permettra de pêcher dans les nuages comme si c'était un lac. Tu pourras notamment récupérer des " +
-								"§dsomnifères §3qui te permettent de rester plus longtemps endormi, ou de t'endormir efficacement, dans le cas où tu es éveillé."
+				TranslationManager.translationLore("feature.dream.milestone.quest.kill_breezy.dialog",
+						Component.text(((DreamEquipableItem) DreamItemRegistry.CLOUD_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
 				)
 		);
 	}

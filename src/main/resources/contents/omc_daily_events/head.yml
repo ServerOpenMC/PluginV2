@@ -1,0 +1,44 @@
+info:
+  namespace: omc_daily_events
+
+items:
+  coin:
+    display_name: "Aywenito"
+    components_nbt_file: "nbt/head/coin.json"
+    material: PLAYER_HEAD
+
+  poisson_steve_head:
+    display_name: "Tete du Poisson Steve"
+    lore:
+      - "§7§oSteve, le (Poi-)"
+      - "§7§oLe poisson Steve"
+      - "§7§o(Poisson Steve)"
+      - "§7§oIl est orange (ooh-ooh)"
+      - "§7§oIl a des bras"
+      - "§7§oEt des jambes"
+      - "§7§oLe poisson Steve"
+      - "§7§oPa-la-la, pa-la-la"
+      - "§7§oLa-la, la-la, la-la-la"
+      - "§7§oLa-la, la-la, la-la-la"
+      - "§7§oLa-la, la-la, la-la, la-la"
+      - "§7§oPa-la-la, pa-la-la"
+      - "§7§oLe poisson Steve (Poi-)"
+      - "§7§oIl est vraiment très beau"
+      - "§7§o(Poisson Steve)"
+      - "§7§oIl peut nager sur la Terre (ooh-ah, ooh-ah)"
+      - "§7§oIl peut marcher dans l'eau"
+      - "§7§oLe poisson Steve"
+      - "§7§oIl sent forcément mauvais"
+      - "§7§oMais on l'aime bien"
+    components_nbt_file: "nbt/head/poisson_steve.json"
+    material: PLAYER_HEAD
+
+  kraken_head:
+    display_name: "Tete de Kraken"
+    components_nbt_file: "nbt/head/kraken.json"
+    material: PLAYER_HEAD
+
+  leviathan_head:
+    display_name: "Tete de Léviathan"
+    components_nbt_file: "nbt/head/leviathan.json"
+    material: PLAYER_HEAD

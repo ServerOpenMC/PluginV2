@@ -5,7 +5,9 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,7 +37,7 @@ public class DreamUtils {
         if (dreamPlayer == null) return;
         dreamPlayer.addTime(timeToAdd);
         if (sendMessage)
-            MessagesManager.sendMessage(player, Component.text("Vous avez perdu §a" + DateUtils.convertSecondToTime(timeToAdd) + " §fcar vous avez pris des dégats !"), Prefix.DREAM, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.message.time_lost_damage", Component.text(DateUtils.convertSecondToTime(timeToAdd)).color(NamedTextColor.GREEN)), Prefix.DREAM, MessageType.WARNING, false);
 
     }
 
@@ -45,6 +47,6 @@ public class DreamUtils {
 		if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         dreamPlayer.removeTime(timeToRemove);
         if (sendMessage)
-            MessagesManager.sendMessage(player, Component.text("Vous avez perdu §a" + DateUtils.convertSecondToTime(timeToRemove) + " §fcar vous avez pris des dégats !"), Prefix.DREAM, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.message.time_lost_damage", Component.text(DateUtils.convertSecondToTime(timeToRemove)).color(NamedTextColor.GREEN)), Prefix.DREAM, MessageType.WARNING, false);
     }
 }

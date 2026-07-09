@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Tadpole;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -12,7 +13,7 @@ public class CorruptedTadpole extends DreamMob<Tadpole> {
 
     public CorruptedTadpole(String id) {
         super(id,
-                "Tétard Corrompu",
+                TranslationManager.translationString("feature.dream.mob.corrupted_tadpole"),
                 Tadpole.class,
                 25.0,
                 0L,

@@ -1,8 +1,10 @@
 package fr.openmc.core.features.quests.objects;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -11,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Getter
 public class QuestStep {
-    private final String description;
+    private final Component description;
     private final int target;
     private final Map<UUID, Integer> progress = new ConcurrentHashMap<>();
 
@@ -21,7 +23,7 @@ public class QuestStep {
      * @param description The description of the step
      * @param target      The target number to reach for this step
      */
-    public QuestStep(String description, int target) {
+    public QuestStep(Component description, int target) {
         this.description = description;
         this.target = target;
     }
@@ -32,8 +34,11 @@ public class QuestStep {
      * The description can contain the placeholder {target} which will be replaced by the target number.
      * @return The description of the step with the target number replaced
      */
-    public String getDescription() {
-        return this.description.replace("{target}", String.valueOf(this.target));
+    public Component getDescription() {
+        return this.description.replaceText(b -> {
+            b.matchLiteral("{target}");
+            b.replacement(String.valueOf(this.target));
+        });
     }
 
     /**

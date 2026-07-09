@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -11,14 +12,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.List;
-
 public class KillSuperCreeperQuest extends Quest implements Listener {
 
     public KillSuperCreeperQuest() {
         super(
-                "Le boss des creepers",
-                List.of("Tuer {target} creepers super chargés"),
+                TranslationManager.translation("feature.quests.kill_super_creeper.name"),
+                TranslationManager.translationLore("feature.quests.kill_super_creeper.description"),
                 Material.CREEPER_HEAD
         );
 

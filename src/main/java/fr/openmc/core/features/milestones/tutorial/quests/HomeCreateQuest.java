@@ -13,35 +13,36 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class HomeCreateQuest extends MilestoneQuest implements Listener {
 
     public HomeCreateQuest() {
         super(
-                "Poser un home",
-                List.of(
-                        "§fTapez §d/sethome §fen étant là où vous voulez poser votre home",
-                        "§8§oC'est très utile d'en faire un pour se téléporter à sa base !"
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.home_create.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.home_create.description"),
                 Material.ENDER_PEARL,
-		        MilestoneType.TUTORIAL,
-		        TutorialSteps.HOME_CREATE,
-		        new QuestTier(
-				        1,
-				        new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
-				        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
-				        new QuestTextReward(
-						        "Bien joué ! Vous avez fini l'§6étape " + (TutorialSteps.HOME_CREATE.ordinal() + 1) + " §f! Les homes sont souvent utilisés pour pas perdre votre base ! Vous êtes limité à avoir que 1 home au début. Il va falloir penser à les améliorer...",
-						        Prefix.MILLESTONE,
-						        MessageType.SUCCESS
-				        )
-		        )
+                MilestoneType.TUTORIAL,
+                TutorialSteps.HOME_CREATE,
+                new QuestTier(
+                        1,
+                        new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
+                        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
+                        new QuestTextReward(
+                                TranslationManager.translation(
+                                        "feature.milestones.tutorial.quest.home_create.reward",
+                                        Component.text(TutorialSteps.HOME_CREATE.ordinal() + 1).color(NamedTextColor.GOLD)
+                                ),
+                                Prefix.MILLESTONE,
+                                MessageType.SUCCESS
+                        )
+                )
         );
     }
 

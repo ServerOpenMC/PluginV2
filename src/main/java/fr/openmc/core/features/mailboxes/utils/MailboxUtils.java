@@ -1,8 +1,9 @@
 package fr.openmc.core.features.mailboxes.utils;
 
 
-import net.kyori.adventure.text.event.HoverEvent;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -14,8 +15,11 @@ import org.jetbrains.annotations.NotNull;
 public class MailboxUtils {
     public static Component getPlayerName(OfflinePlayer player) {
         String pName = player.getName();
+        Component displayName = pName == null
+                ? TranslationManager.translation("feature.mailboxes.player.unknown")
+                : Component.text(pName);
         return Component.text("⬤ ", player.isConnected() ? NamedTextColor.DARK_GREEN : NamedTextColor.DARK_RED)
-                        .append(Component.text(pName == null ? "Unknown" : pName, NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .append(displayName.color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD))
                         .decoration(TextDecoration.ITALIC, false);
     }
 

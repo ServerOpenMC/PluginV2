@@ -64,6 +64,7 @@ public class DreamItemRegistry {
     public static final DreamItem CRAFTING_TABLE = create(new CraftingTable());
     public static final DreamItem ETERNAL_CAMPFIRE = create(new EternalCampFire());
     public static final DreamItem EWENITE = create(new Ewenite());
+    public static final DreamItem EWENITE_BLOCK = create(new EweniteBlock());
 
     public static final DreamItem SOMNIFERE = create(new Somnifere());
     public static final DreamItem CHIPS_AYWEN = create(new ChipsAywen());

@@ -8,6 +8,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -307,7 +308,9 @@ public class ItemUtils {
         if (!hasEnoughItems(player, aywenite, amount)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas assez d'§dAywenite §f(" + amount + " nécessaires)"),
+                    TranslationManager.translation("core.utils.aywenite.not_enough",
+                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(amount)),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true
@@ -328,7 +331,9 @@ public class ItemUtils {
         if (!hasEnoughSpace(player, aywenite)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas assez de place dans votre inventaire pour recevoir " + amount + " d'§dAywenite§f. L'aywenite est disponible dans votre mailbox"),
+                    TranslationManager.translation("core.utils.aywenite.not_enough_space",
+                            Component.text(amount),
+                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE)),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true

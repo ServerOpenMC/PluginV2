@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,14 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.List;
-
 public class KillPlayersQuest extends Quest implements Listener {
 
     public KillPlayersQuest() {
         super(
-                "Tueur à gage",
-                List.of("Tuer {target} joueurs"),
+                TranslationManager.translation("feature.quests.kill_players.name"),
+                TranslationManager.translationLore("feature.quests.kill_players.description"),
                 Material.IRON_SWORD
         );
 

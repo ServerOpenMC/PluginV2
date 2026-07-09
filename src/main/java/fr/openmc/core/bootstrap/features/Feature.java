@@ -61,7 +61,7 @@ public abstract class Feature {
         } catch (Exception e) {
             initialize = false;
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
-            throw e;
+            OMCLogger.error(e.getMessage());
         } catch (NoClassDefFoundError e) {
             OMCLogger.errorFormatted("Plugin has failed to start feature because " + e.getMessage() + " does not exist.");
         }

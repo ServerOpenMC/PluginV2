@@ -2,8 +2,8 @@ package fr.openmc.core.features.itemsadder;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -40,7 +40,7 @@ public class SpawnerExtractorListener implements Listener {
             return;
 
         if (ThreadLocalRandom.current().nextDouble() < FAILURE_CHANCE) {
-            player.sendActionBar(Component.text("L'extraction a échoué ! Le spawner s'est brisé.", NamedTextColor.RED));
+            player.sendActionBar(TranslationManager.translation("feature.itemsadder.spawner_extractor.fail"));
             return;
         }
 
@@ -50,16 +50,19 @@ public class SpawnerExtractorListener implements Listener {
 
         ItemStack spawnerItem = ItemStack.of(Material.SPAWNER);
         spawnerItem.editMeta(meta -> {
-            meta.displayName(Component.text("Spawner à ", NamedTextColor.YELLOW)
-                    .append(Component.translatable(entityType.translationKey())));
+            meta.displayName(TranslationManager.translation(
+                    "feature.itemsadder.spawner_extractor.display_name",
+                    Component.translatable(entityType.translationKey())
+            ));
 
             meta.getPersistentDataContainer().set(KEY_SPAWNER_MOB, PersistentDataType.STRING, entityType.name());
         });
 
         block.getWorld().dropItemNaturally(block.getLocation(), spawnerItem);
-        player.sendActionBar(Component.text("Vous avez extrait un spawner à ", NamedTextColor.GREEN)
-                .append(Component.translatable(entityType.translationKey()))
-                .append(Component.text(" !")));
+        player.sendActionBar(TranslationManager.translation(
+                "feature.itemsadder.spawner_extractor.success_extract",
+                Component.translatable(entityType.translationKey())
+        ));
     }
 
     @EventHandler
@@ -81,8 +84,9 @@ public class SpawnerExtractorListener implements Listener {
         spawner.setSpawnedType(entityType);
         spawner.update();
 
-        event.getPlayer().sendActionBar(Component.text("Spawner à ", NamedTextColor.GREEN)
-                .append(Component.translatable(entityType.translationKey()))
-                .append(Component.text(" placé !")));
+        event.getPlayer().sendActionBar(TranslationManager.translation(
+                "feature.itemsadder.spawner_extractor.success_place",
+                Component.translatable(entityType.translationKey())
+        ));
     }
 }

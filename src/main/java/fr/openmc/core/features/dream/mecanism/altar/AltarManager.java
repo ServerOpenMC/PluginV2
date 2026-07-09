@@ -11,7 +11,9 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -41,13 +43,13 @@ public class AltarManager {
     public static void bindItem(Player player, Location altarLoc, ItemStack item) {
         DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
         if (dreamItem == null) {
-            MessagesManager.sendMessage(player, Component.text("Cet objet ne peut pas être utilisé dans l'§5Altar."), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.unusable_item"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
         AltarRecipes recipe = AltarRecipes.match(dreamItem);
         if (recipe == null) {
-            MessagesManager.sendMessage(player, Component.text("§cAucune recette ne correspond à cet objet."), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.no_recipe"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -62,7 +64,7 @@ public class AltarManager {
         boundPlayers.put(altarLoc, player.getUniqueId());
 
 		Bukkit.getPluginManager().callEvent(new AltarBindEvent(player, dreamItem, recipe, altarLoc));
-        MessagesManager.sendMessage(player, Component.text("§aVotre objet est lié à l'§5Altar"), Prefix.DREAM, MessageType.ERROR, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.bound"), Prefix.DREAM, MessageType.ERROR, false);
     }
 
     public static void unbind(Location altarLoc) {
@@ -74,13 +76,13 @@ public class AltarManager {
     public static void tryRitual(Player player, Location altarLoc) {
         if (!boundPlayers.containsKey(altarLoc)) return;
         if (!boundPlayers.get(altarLoc).equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Cet §5Altar §fappartient déjà à un autre joueur"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.already_bound"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
         ItemStack hand = player.getInventory().getItemInMainHand();
         if (ItemUtils.getTag(hand, "altar_bound") == null) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez tenir l’objet lié à l'§5Altar §fdans votre main"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.must_hold_bound_item"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -92,14 +94,17 @@ public class AltarManager {
         DreamItem soulOrb = DreamItemRegistry.SOUL;
 
         if (soulOrb == null) {
-            MessagesManager.sendMessage(player, Component.text("Erreur : omc_dream:soul pas trouvé"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.soul_not_found"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
         int required = recipe.getSoulsRequired();
 
         if (!ItemUtils.hasEnoughItems(player, soulOrb.getBest(), required)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n’avez pas assez d’§5Âmes nécessaires ! §f(§5" + required + " Ames §fnéccessaire)"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.dream.altar.message.not_enough_souls",
+                    Component.text(required).color(NamedTextColor.DARK_PURPLE)
+            ), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -113,7 +118,7 @@ public class AltarManager {
         );
 
         unbind(altarLoc);
-        MessagesManager.sendMessage(player, Component.text("§5Rituel accompli !"), Prefix.DREAM, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.ritual_complete"), Prefix.DREAM, MessageType.SUCCESS, false);
         player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 2.0f, 1.0f);
     }
 }

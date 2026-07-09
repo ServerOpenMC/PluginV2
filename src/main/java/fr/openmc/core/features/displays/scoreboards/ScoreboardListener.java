@@ -21,6 +21,6 @@ public class ScoreboardListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        cleanupPlayer(event.getPlayer().getUniqueId());
+        cleanupPlayer(event.getPlayer());
     }
 }

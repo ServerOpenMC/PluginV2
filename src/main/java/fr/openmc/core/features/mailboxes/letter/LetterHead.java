@@ -18,6 +18,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 import static fr.openmc.core.utils.text.DateUtils.formatRelativeDate;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
+import static fr.openmc.core.utils.text.messages.TranslationManager.translation;
 
 @Getter
 @SuppressWarnings("UnstableApiUsage")
@@ -35,10 +36,12 @@ public class LetterHead extends ItemStack {
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getPlayerName(player));
         skullMeta.lore(List.of(
-                nonItalic(Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY)),
-                nonItalic(Component.text("➤ Contient ", NamedTextColor.DARK_GREEN)
-                        .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
-                        .append(Component.text(pluralize(" item", itemsCount), NamedTextColor.DARK_GREEN)))
+                nonItalic(formatRelativeDate(sentAt).color(NamedTextColor.DARK_GRAY)),
+                nonItalic(translation(
+                        "feature.mailboxes.letter.contains",
+                        Component.text(itemsCount).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),
+                        Component.text(pluralize("item", itemsCount)).color(NamedTextColor.DARK_GREEN)
+                ).color(NamedTextColor.DARK_GREEN))
         ));
         TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(
                 DataComponentTypes.PROFILE

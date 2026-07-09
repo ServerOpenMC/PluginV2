@@ -8,6 +8,7 @@ import fr.openmc.core.features.milestones.menus.MilestoneMenu;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,16 +31,16 @@ public class TutorialMilestone implements Milestone<TutorialSteps> {
 
     @Override
     public String getName() {
-        return "§7Tutoriel d'OpenMC";
+        return TranslationManager.translationString("feature.milestones.tutorial.name");
     }
 
     @Override
     public List<Component> getDescription() {
         return List.of(
-                Component.text("§7Découvrez §dOpenMC §7!"),
-                Component.text("§7Passez en revue les §dfeatures"),
-                Component.text("§8§oLes villes, les contests, l'adminshop, les quêtes, ..."),
-                Component.text("§7Idéal pour se lancer dans l'aventure !")
+                TranslationManager.translation("feature.milestones.tutorial.description.1"),
+                TranslationManager.translation("feature.milestones.tutorial.description.2"),
+                TranslationManager.translation("feature.milestones.tutorial.description.3"),
+                TranslationManager.translation("feature.milestones.tutorial.description.4")
         );
     }
 

@@ -1,0 +1,82 @@
+info:
+  namespace: omc_daily_events
+items:
+  rare_fishing_treasure_lootbox:
+    display_name: <blue><bold>Trésor de pêche rare</bold></blue>
+    resource:
+      material: PAPER
+      generate: false
+      model_path: lootbox/rare_box
+    behaviours:
+      furniture:
+        small: false
+        solid: true
+        entity: armor_stand
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          length_offset: 0
+          width_offset: 0
+          height_offset: 0
+
+  epic_fishing_treasure_lootbox:
+    display_name: <dark_purple><bold>Trésor de pêche épique</bold></dark_purple>
+    resource:
+      material: PAPER
+      generate: false
+      model_path: lootbox/epic_box
+    behaviours:
+      furniture:
+        small: false
+        solid: true
+        entity: armor_stand
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          length_offset: 0
+          width_offset: 0
+          height_offset: 0
+
+  legendary_fishing_treasure_lootbox:
+    display_name: <gold><bold>Trésor de pêche légendaire</bold></gold>
+    resource:
+      material: PAPER
+      generate: false
+      model_path: lootbox/legendary_box
+    behaviours:
+      furniture:
+        small: false
+        solid: true
+        entity: armor_stand
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          length_offset: 0
+          width_offset: 0
+          height_offset: 0
+
+  fishing_furniture_lootbox:
+    display_name: <dark_aqua><bold>Boîte d'équipement de pêche</bold></dark_aqua>
+    resource:
+      material: PAPER
+      generate: false
+      model_path: lootbox/fishing_furniture_chest
+    behaviours:
+      furniture:
+        solid: true
+        fixed_rotation: true
+        entity: item_frame
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          length_offset: 0
+          width_offset: 0
+          height_offset: 0
+        placeable_on:
+          walls: false
+          ceiling: false
+          floor: true

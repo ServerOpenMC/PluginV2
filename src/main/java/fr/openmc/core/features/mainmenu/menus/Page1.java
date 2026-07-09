@@ -30,6 +30,7 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -70,15 +71,19 @@ public class Page1 implements Menu {
         ItemStack cityItem = new ItemStack(Material.PAPER);
         cityItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.lore(List.of(Component.text("/city", NamedTextColor.DARK_GRAY)));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.city.lore")
+                    .color(NamedTextColor.DARK_GRAY)));
         });
 
         if (playerCity != null) {
             title = Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_1:"));
-            cityItem.editMeta(meta -> meta.itemName(Component.text("Ville : " + playerCity.getName(), NamedTextColor.YELLOW)));
+            Component cityName = Component.text(playerCity.getName()).color(NamedTextColor.YELLOW);
+            cityItem.editMeta(meta -> meta.itemName(TranslationManager.translation("feature.mainmenu.item.city.name", cityName)
+                    .color(NamedTextColor.YELLOW)));
         } else {
             title = Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_1_sans_ville:"));
-            cityItem.editMeta(meta -> meta.itemName(Component.text("Vous ne faites pas partie d'une ville.", NamedTextColor.GRAY)));
+            cityItem.editMeta(meta -> meta.itemName(TranslationManager.translation("feature.mainmenu.item.city.no_city")
+                    .color(NamedTextColor.GRAY)));
         }
 
         content = new HashMap<>();
@@ -86,7 +91,8 @@ public class Page1 implements Menu {
         ItemStack advancementsItem = new ItemStack(Material.PAPER);
         advancementsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Afficher les progrès", NamedTextColor.YELLOW));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.advancements.name")
+                    .color(NamedTextColor.YELLOW));
         });
         content.put(ADVANCEMENTS_SLOT, advancementsItem);
 
@@ -95,17 +101,24 @@ public class Page1 implements Menu {
         ItemStack questsItem = new ItemStack(Material.PAPER);
         questsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Quêtes", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/quest", NamedTextColor.DARK_GRAY)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.quests.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.quests.lore")
+                    .color(NamedTextColor.DARK_GRAY)));
         });
         QUEST_SLOTS.forEach(slot -> content.put(slot, questsItem));
 
         ItemStack milestonesItem = new ItemStack(Material.PAPER);
         milestonesItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Milestones", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("Découvrez les features dans des routes de progressions !", NamedTextColor.WHITE),
-                    Component.text("/milestones", NamedTextColor.DARK_GRAY)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.milestones.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(
+                    TranslationManager.translation("feature.mainmenu.item.milestones.lore")
+                            .color(NamedTextColor.WHITE),
+                    TranslationManager.translation("feature.mainmenu.item.milestones.command")
+                            .color(NamedTextColor.DARK_GRAY)
+            ));
         });
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));
 
@@ -116,17 +129,23 @@ public class Page1 implements Menu {
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
                 meta.itemName(data.getCampVSComponent());
+                Component timeComponent = Component.text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY))
+                        .color(NamedTextColor.RED);
                 meta.lore(List.of(
-                                Component.text("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)),
-                                Component.text("/contest", NamedTextColor.DARK_GRAY)
+                                TranslationManager.translation("feature.mainmenu.item.contest.ends_in", timeComponent)
+                                        .color(NamedTextColor.RED),
+                                TranslationManager.translation("feature.mainmenu.item.contest.command")
+                                        .color(NamedTextColor.DARK_GRAY)
                         )
                 );
             });
         } else {
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
-                meta.itemName(Component.text("Concours", NamedTextColor.YELLOW));
-                meta.lore(List.of(Component.text("/contest", NamedTextColor.DARK_GRAY)));
+                meta.itemName(TranslationManager.translation("feature.mainmenu.item.contest.name")
+                        .color(NamedTextColor.YELLOW));
+                meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.contest.command")
+                        .color(NamedTextColor.DARK_GRAY)));
             });
         }
         CONTEST_SLOTS.forEach(slot -> content.put(slot, contestItem));
@@ -134,24 +153,30 @@ public class Page1 implements Menu {
         ItemStack shopItem = new ItemStack(Material.PAPER);
         shopItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Boutique", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/adminshop", NamedTextColor.DARK_GRAY)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.shop.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.shop.command")
+                    .color(NamedTextColor.DARK_GRAY)));
         });
         SHOP_SLOTS.forEach(slot -> content.put(slot, shopItem));
 
         ItemStack homeItem = new ItemStack(Material.PAPER);
         homeItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Homes", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/home", NamedTextColor.DARK_GRAY)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.home.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.home.command")
+                    .color(NamedTextColor.DARK_GRAY)));
         });
         HOME_SLOTS.forEach(slot -> content.put(slot, homeItem));
 
         ItemStack profilItem = new ItemStack(Material.PAPER);
         profilItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Profil", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("En développement", NamedTextColor.RED)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.profile.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.profile.lore")
+                    .color(NamedTextColor.RED)));
         });
         PROFILE_SLOTS.forEach(slot -> {
             if (slot != 60)
@@ -160,8 +185,11 @@ public class Page1 implements Menu {
 
         ItemStack playerHeadProfilItem = CustomStack.getInstance("omc_main_menu:player_head").getItemStack();
         playerHeadProfilItem.editMeta(meta -> {
-            meta.customName(Component.text("Profil", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-            meta.lore(List.of(Component.text("En développement", NamedTextColor.RED)));
+            meta.customName(TranslationManager.translation("feature.mainmenu.item.profile.name")
+                    .color(NamedTextColor.YELLOW)
+                    .decoration(TextDecoration.ITALIC, false));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.profile.lore")
+                    .color(NamedTextColor.RED)));
             if (meta instanceof org.bukkit.inventory.meta.SkullMeta skullMeta) {
                 skullMeta.setOwningPlayer(player);
             }
@@ -171,23 +199,28 @@ public class Page1 implements Menu {
         ItemStack rightArrowItem = new ItemStack(Material.PAPER);
         rightArrowItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Page suivante", NamedTextColor.YELLOW));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.next_page")
+                    .color(NamedTextColor.YELLOW));
         });
         content.put(RIGHT_ARROW_SLOT, rightArrowItem);
 
         ItemStack settingsItem = new ItemStack(Material.PAPER);
         settingsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Paramètres", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/settings", NamedTextColor.DARK_GRAY)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.settings.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.settings.command")
+                    .color(NamedTextColor.DARK_GRAY)));
         });
         SETTINGS_SLOTS.forEach(slot -> content.put(slot, settingsItem));
 
         ItemStack mailboxItem = new ItemStack(Material.PAPER);
         mailboxItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Boîte aux lettres", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/mailbox home", NamedTextColor.DARK_GRAY)));
+            meta.itemName(TranslationManager.translation("feature.mainmenu.item.mailbox.name")
+                    .color(NamedTextColor.YELLOW));
+            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.mailbox.command")
+                    .color(NamedTextColor.DARK_GRAY)));
         });
         MAILBOX_SLOTS.forEach(slot -> content.put(slot, mailboxItem));
     }
@@ -221,7 +254,10 @@ public class Page1 implements Menu {
 
         if (DreamUtils.isInDreamWorld(player)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas interagir avec le menu principal depuis le monde des rêves.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.mainmenu.message.dream_world")
+                            .color(NamedTextColor.RED),
+                    Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
@@ -240,7 +276,8 @@ public class Page1 implements Menu {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les profils des joueurs sont toujours en développement :sad:."), NamedTextColor.RED));
+            String rawMessage = TranslationManager.translationString("feature.mainmenu.message.profile_dev");
+            MessagesManager.sendMessage(player, Component.text(FontImageWrapper.replaceFontImages(rawMessage), NamedTextColor.RED), Prefix.OPENMC, MessageType.INFO, true);
         } else if (RIGHT_ARROW_SLOT == slot) {
             PacketMenuLib.openMenu(new Page2(), player);
         } else if (SETTINGS_SLOTS.contains(slot)) {
@@ -257,9 +294,10 @@ public class Page1 implements Menu {
 
                 nmsPlayer.connection.send(packet);
                 MainMenuListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
-                Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
-                        .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
-                        .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
+                Component message = TranslationManager.translation(
+                        "feature.mainmenu.message.advancements_hint",
+                        Component.keybind("key.advancements").color(NamedTextColor.YELLOW)
+                ).color(NamedTextColor.GREEN);
                 player.sendActionBar(message);
             });
         }

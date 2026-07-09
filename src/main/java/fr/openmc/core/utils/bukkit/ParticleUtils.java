@@ -38,7 +38,9 @@ public class ParticleUtils {
     public static Color color1;
     public static Color color2;
 
-    // based on org.bukkit.craftbukkit.CraftParticle
+    /**
+     * based on {@link org.bukkit.craftbukkit.CraftParticle}
+      */
     private static final Map<String, Supplier<Object>> PARTICLE_FALLBACKS;
 
     static {
@@ -113,9 +115,11 @@ public class ParticleUtils {
     }
 
     public static void sendParticlePacket(Particle particle, Location loc, int radius) {
-        Collection<Player> players = loc.getNearbyEntitiesByType(Player.class, radius);
+        sendParticlePacket(particle, loc, loc.getNearbyEntitiesByType(Player.class, radius));
+    }
 
-        for (Player player : players) {
+    public static void sendParticlePacket(Particle particle, Location loc, Collection<Player> receivers) {
+        for (Player player : receivers) {
             sendParticlePacket(player, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, null);
         }
     }
@@ -264,9 +268,9 @@ public class ParticleUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 1L);
     }
 
-    public static void spawnCloudParticles(Location center, Particle particle, int count, double radius, double height) {
-        for (Player player : center.getNearbyEntitiesByType(Player.class, radius)) {
-            spawnCloudParticles(player, particle, center, count, radius, height);
+    public static void spawnCloudParticlesToAll(Location center, Particle particle, int count, double radiusCloud, double height, Collection<Player> receivers) {
+        for (Player player : receivers) {
+            spawnCloudParticles(player, particle, center, count, radiusCloud, height);
         }
     }
 
@@ -328,5 +332,27 @@ public class ParticleUtils {
                 speed,
                 data
         );
+    }
+
+    public static <T> void spawnCubeParticles(Location center, Particle particle, double sizeX,
+                                              double sizeY, double sizeZ, int count, double radius,
+                                              T data) {
+        World world = center.getWorld();
+        if (world == null) return;
+
+        Collection<Player> receivers = center.getNearbyEntitiesByType(Player.class, radius);
+        if (receivers.isEmpty()) return;
+
+        for (int i = 0; i < count; i++) {
+            double x = (Math.random() * 2 - 1) * sizeX;
+            double y = (Math.random() * 2 - 1) * sizeY;
+            double z = (Math.random() * 2 - 1) * sizeZ;
+
+            Location particleLoc = center.clone().add(x, y, z);
+
+            for (Player player : receivers) {
+                sendParticlePacket(player, particle, particleLoc, 1, 0.0, 0.0, 0.0, 0.0, data);
+            }
+        }
     }
 }
