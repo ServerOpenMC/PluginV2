@@ -36,7 +36,8 @@ public class ExplodeProtection implements Listener {
             EntityType.WITHER,
             EntityType.END_CRYSTAL,
             EntityType.TNT_MINECART,
-            EntityType.DRAGON_FIREBALL
+            EntityType.DRAGON_FIREBALL,
+            EntityType.SULFUR_CUBE
     );
 
     @EventHandler(ignoreCancelled = true)
