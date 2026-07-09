@@ -45,8 +45,7 @@ import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.shops.manager.ShopManager;
-import fr.openmc.core.features.shops.manager.ShopManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
@@ -120,8 +119,8 @@ public class OMCPlugin extends JavaPlugin {
             () -> new LeaderboardManager(),
             () -> new MainMenu(),
             () -> new HologramLoader(),
-            HomeIconCacheManager::new,
-		    ShopManager::new
+            ShopManager::new,
+            HomeIconCacheManager::new
     ));
 
     public final List<Feature> loadedFeature = new ArrayList<>();

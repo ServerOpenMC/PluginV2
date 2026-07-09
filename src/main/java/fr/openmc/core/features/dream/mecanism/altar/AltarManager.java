@@ -108,8 +108,8 @@ public class AltarManager {
             return;
         }
 
-        ItemUtils.removeItemsFromInventory(player, soulOrb.getBest(), required);
-        ItemUtils.removeItemsFromInventory(player, hand, 1);
+        ItemUtils.removeItemsFromPlayerInventory(player, soulOrb.getBest(), required);
+        ItemUtils.removeItemsFromPlayerInventory(player, hand, 1);
 
         player.getInventory().addItem(recipe.getOutput().getBest());
 

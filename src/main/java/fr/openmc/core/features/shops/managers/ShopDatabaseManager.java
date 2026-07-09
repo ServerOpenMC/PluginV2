@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.manager;
+package fr.openmc.core.features.shops.managers;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;

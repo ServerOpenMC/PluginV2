@@ -2,7 +2,7 @@ package fr.openmc.core.features.shops.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.features.shops.manager.ShopManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import lombok.Getter;
 import org.bukkit.OfflinePlayer;

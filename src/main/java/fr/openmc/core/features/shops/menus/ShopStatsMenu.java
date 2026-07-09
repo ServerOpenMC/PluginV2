@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.menu;
+package fr.openmc.core.features.shops.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;

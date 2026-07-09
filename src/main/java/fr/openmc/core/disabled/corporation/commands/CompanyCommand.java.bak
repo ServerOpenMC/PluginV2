@@ -7,7 +7,7 @@ import fr.openmc.core.features.shops.MethodState;
 import fr.openmc.core.disabled.corporation.company.Company;
 import fr.openmc.core.disabled.corporation.company.CompanyOwner;
 import fr.openmc.core.disabled.corporation.CompanyManager;
-import fr.openmc.core.features.shops.manager.PlayerShopManager;
+import fr.openmc.core.features.shops.managers.PlayerShopManager;
 import fr.openmc.core.disabled.corporation.menu.company.CompanyBaltopMenu;
 import fr.openmc.core.disabled.corporation.menu.company.CompanyMenu;
 import fr.openmc.core.disabled.corporation.menu.company.CompanySearchMenu;

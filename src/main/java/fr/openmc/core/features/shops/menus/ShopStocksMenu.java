@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.menu;
+package fr.openmc.core.features.shops.menus;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
@@ -85,7 +85,7 @@ public class ShopStocksMenu extends PaginatedMenu {
             if (amountToAdd <= 0) return;
             if (amountToAdd > barrelStocks) amountToAdd = barrelStocks;
             
-            ContainerUtils.removeItemsFromInventory((Barrel) this.shop.getMultiblock().stockBlockLoc().getBlock().getState(), item.getItemStack(), amountToAdd);
+            ContainerUtils.removeItemsFromContainerInventory((Barrel) this.shop.getMultiblock().stockBlockLoc().getBlock().getState(), item.getItemStack(), amountToAdd);
             item.addAmount(amountToAdd);
             
             MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.stocks.fill.success"), Prefix.SHOP, MessageType.SUCCESS, true);
@@ -93,9 +93,7 @@ public class ShopStocksMenu extends PaginatedMenu {
         }));
         map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.COMPANY_BOX.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stocks.empty.name"));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.stocks.empty.lore", Component.text(item.getAmount()).color(NamedTextColor.GRAY))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.stocks.empty.lore", Component.text(item.getAmount()).color(NamedTextColor.GRAY)));
         }).setOnClick(_ -> {
             if (item.getAmount() <= 0) return;
             if (!ItemUtils.hasEnoughSpace(getOwner(), item.getItemStack(), item.getAmount())) {

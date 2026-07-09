@@ -6,7 +6,7 @@ import fr.openmc.core.features.shops.MethodState;
 import fr.openmc.core.features.shops.data.MerchantData;
 import fr.openmc.core.features.shops.data.TransactionData;
 import fr.openmc.core.disabled.corporation.CompanyManager;
-import fr.openmc.core.features.shops.manager.ShopManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.disabled.corporation.models.DBCompany;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;

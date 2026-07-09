@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.menu;
+package fr.openmc.core.features.shops.menus;
 
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
@@ -7,9 +7,10 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.shops.manager.PlayerShopManager;
+import fr.openmc.core.features.shops.managers.PlayerShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
+import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -85,21 +86,20 @@ public class ShopSellingMenu extends PaginatedMenu {
 		List<ItemStack> items = getUniqueItemStacks(barrelInventory.getContents());
 		for (ItemStack item : items) {
 			list.add(new ItemMenuBuilder(this, item, itemMeta -> {
-				if (itemMeta.hasLore()) itemMeta.lore().add(TranslationManager.translation("feature.shop.menu.selling.item_lore"));
-				else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.selling.item_lore")));
+				if (itemMeta.hasLore()) itemMeta.lore().addAll(TranslationManager.translationLore("feature.shop.menu.selling.item_lore"));
+				else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.selling.item_lore"));
 			}).setOnClick(_ -> DialogInput.send(getOwner(),
 					TranslationManager.translation("feature.shop.menu.selling.price_input"),
 					Integer.MAX_VALUE,
 					s -> {
-						if (s == null) return;
-						double pricePerItem;
-						try {
-							pricePerItem = Double.parseDouble(s);
-						} catch (NumberFormatException e) {
+						if (!InputUtils.isInputMoney(s)) {
+							MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.selling.invalid_enter"), Prefix.SHOP, MessageType.SUCCESS, true);
 							return;
 						}
-						if (Double.isNaN(pricePerItem)) return;
+						
+						double pricePerItem = InputUtils.convertToMoneyValue(s);
 						if (pricePerItem <= 0) return;
+						
 						shop.setItem(new ShopItem(shop.getShopUUID(), item, pricePerItem));
 						new ShopMenu(getOwner(), shop).open();
 						MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.selling.added_item"), Prefix.SHOP, MessageType.SUCCESS, true);
@@ -114,17 +114,12 @@ public class ShopSellingMenu extends PaginatedMenu {
 		
 		map.put(8, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFORMATION.getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.shop.menu.selling.info.title"));
-			itemMeta.lore(List.of(
-					TranslationManager.translation("feature.shop.menu.selling.info.lore1"),
-					TranslationManager.translation("feature.shop.menu.selling.info.lore2")
-			));
+			itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.selling.info.lore"));
 		}));
 		
 		map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.delete.btn.title"));
-			itemMeta.lore(List.of(
-					TranslationManager.translation("feature.shop.menu.main.delete.btn.lore2")
-			));
+			itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.delete.btn.lore"));
 		}).setOnClick(_ -> new ConfirmMenu(
 				getOwner(),
 				() -> {
@@ -132,8 +127,8 @@ public class ShopSellingMenu extends PaginatedMenu {
 					PlayerShopManager.deleteShop(getOwner(), shop);
 				},
 				() -> new ShopSellingMenu(getOwner(), shop).open(),
-				List.of(TranslationManager.translation("feature.shop.menu.main.delete.confirm.accept")),
-				List.of(TranslationManager.translation("feature.shop.menu.main.delete.confirm.refuse"))
+				TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.accept"),
+				TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.refuse")
 		).open()));
 		
 		return map;

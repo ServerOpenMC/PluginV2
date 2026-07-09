@@ -2,6 +2,7 @@ package fr.openmc.core.features.shops;
 
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.world.Yaw;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,10 +19,10 @@ public class ShopFurniture {
 	 * @return true if the furniture was successfully placed, false otherwise.
 	 */
 	public static boolean placeShopFurniture(Block block, Yaw playerYaw) {
-		CustomStack customFurniture = CustomFurniture.getInstance("omc_shops:caisse");
+		CustomStack customFurniture = CustomFurniture.getInstance(OMCRegistry.CUSTOM_ITEMS.CAISSE.getId());
 		if (customFurniture == null || block.getType() != Material.AIR) return false;
 		
-		CustomFurniture furniture = CustomFurniture.spawn("omc_shops:caisse", block);
+		CustomFurniture furniture = CustomFurniture.spawn(OMCRegistry.CUSTOM_ITEMS.CAISSE.getId(), block);
 		furniture.getEntity().setRotation(playerYaw.getPlayerYaw(), 0);
 		return true;
 	}
@@ -34,7 +35,7 @@ public class ShopFurniture {
 	 */
 	public static boolean removeShopFurniture(Block block) {
 		CustomStack placed = CustomFurniture.byAlreadySpawned(block);
-		if (placed == null || !placed.getNamespacedID().equals("omc_shops:caisse")) return false;
+		if (placed == null || !placed.getNamespacedID().equals(OMCRegistry.CUSTOM_ITEMS.CAISSE.getId())) return false;
 		
 		CustomFurniture.remove(CustomFurniture.byAlreadySpawned(block).getEntity(), false);
 		return true;
@@ -48,7 +49,7 @@ public class ShopFurniture {
 	 */
 	public static boolean hasFurniture(Block block) {
 		CustomStack placed = CustomFurniture.byAlreadySpawned(block);
-		return placed != null && placed.getNamespacedID().equals("omc_shops:caisse");
+		return placed != null && placed.getNamespacedID().equals(OMCRegistry.CUSTOM_ITEMS.CAISSE.getId());
 	}
 	
 }

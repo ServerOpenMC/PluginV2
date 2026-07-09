@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.menu;
+package fr.openmc.core.features.shops.menus;
 
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
@@ -7,11 +7,12 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.shops.manager.PlayerShopManager;
-import fr.openmc.core.features.shops.manager.ShopManager;
+import fr.openmc.core.features.shops.managers.PlayerShopManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
 import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -84,10 +85,7 @@ public class ShopMenu extends Menu {
         if (this.isShopOwner) {
             map.put(0, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.delete.btn.title"));
-                itemMeta.lore(List.of(
-                        TranslationManager.translation("feature.shop.menu.main.delete.btn.lore1"),
-                        TranslationManager.translation("feature.shop.menu.main.delete.btn.lore2")
-                ));
+                itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.delete.btn.lore"));
             }).setOnClick(_ -> new ConfirmMenu(
                     getOwner(),
                     () -> {
@@ -95,16 +93,13 @@ public class ShopMenu extends Menu {
                         PlayerShopManager.deleteShop(getOwner(), shop);
                     },
                     () -> new ShopMenu(getOwner(), shop).open(),
-                    List.of(TranslationManager.translation("feature.shop.menu.main.delete.confirm.accept")),
-                    List.of(TranslationManager.translation("feature.shop.menu.main.delete.confirm.refuse"))
+                    TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.accept"),
+                    TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.refuse")
             ).open()));
             
             map.put(1, new ItemMenuBuilder(this, Material.RED_DYE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.remove_item.btn.title"));
-                itemMeta.lore(List.of(
-                        TranslationManager.translation("feature.shop.menu.main.remove_item.btn.lore1"),
-                        TranslationManager.translation("feature.shop.menu.main.remove_item.btn.lore2")
-                ));
+                itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.remove_item.btn.lore"));
             }).setOnClick(_ -> new ConfirmMenu(
                     getOwner(),
                     () -> {
@@ -113,22 +108,22 @@ public class ShopMenu extends Menu {
                         this.shop.removeItem();
                     },
                     () -> new ShopMenu(getOwner(), shop).open(),
-                    List.of(TranslationManager.translation("feature.shop.menu.main.remove_item.confirm.accept")),
-                    List.of(TranslationManager.translation("feature.shop.menu.main.remove_item.confirm.refuse"))
+                    TranslationManager.translationLore("feature.shop.menu.main.remove_item.confirm.accept"),
+                    TranslationManager.translationLore("feature.shop.menu.main.remove_item.confirm.refuse")
             ).open()));
             
             map.put(3, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.sells.title"));
                 if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stats.lore.error")));
-                else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.sells.lore.success", Component.text(this.shop.getSales().size()).color(NamedTextColor.DARK_PURPLE))));
+                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.sells.lore.success", Component.text(this.shop.getSales().size()).color(NamedTextColor.DARK_PURPLE)));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopSalesMenu(getOwner(), this.shop).open();
             }));
             
             map.put(4, new ItemMenuBuilder(this, Material.GOLD_INGOT, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.stats.title"));
-                if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.sells.lore.error")));
-                else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stats.lore.success", Component.text(this.shop.getTurnover() + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD))));
+                if (this.item == null) itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.sells.lore.error"));
+                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.stats.lore.success", Component.text(this.shop.getTurnover() + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopStatsMenu(getOwner(), this.shop).open();
             }));
@@ -136,7 +131,7 @@ public class ShopMenu extends Menu {
             map.put(5, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.stocks.title"));
                 if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stocks.lore.error")));
-                else itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stocks.lore.success", Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.BLUE))));
+                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.stocks.lore.success", Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.BLUE)));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopStocksMenu(getOwner(), shop).open();
             }));
@@ -149,15 +144,14 @@ public class ShopMenu extends Menu {
                             TranslationManager.translation("feature.shop.menu.selling.price_input"),
                             Integer.MAX_VALUE,
                             s -> {
-                                if (s == null) return;
-                                double pricePerItem;
-                                try {
-                                    pricePerItem = Double.parseDouble(s);
-                                } catch (NumberFormatException e) {
+                                if (!InputUtils.isInputMoney(s)) {
+                                    MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.selling.invalid_enter"), Prefix.SHOP, MessageType.SUCCESS, true);
                                     return;
                                 }
-                                if (Double.isNaN(pricePerItem)) return;
+                                
+                                double pricePerItem = InputUtils.convertToMoneyValue(s);
                                 if (pricePerItem <= 0) return;
+                                
                                 shop.getItem().setPricePerItem(pricePerItem);
                                 new ShopMenu(getOwner(), shop).open();
                                 MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.shop.menu.main.modify_price.message"), Prefix.SHOP, MessageType.SUCCESS, true);
@@ -167,57 +161,41 @@ public class ShopMenu extends Menu {
 		
         map.put(isShopOwner ? 19 : 10, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.BTN_64.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.remove.title", Component.text(64).color(NamedTextColor.RED)));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.remove.lore", Component.text(64).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.remove.lore", Component.text(64).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)));
         }).setOnClick(_ -> removeAmount(64)));
         map.put(isShopOwner ? 20 : 11, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.BTN_10.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.remove.title", Component.text(10).color(NamedTextColor.RED)));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.remove.lore", Component.text(10).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.remove.lore", Component.text(10).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)));
         }).setOnClick(_ -> removeAmount(10)));
         map.put(isShopOwner ? 21 : 12, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.MINUS_BTN.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.remove.title", Component.text(1).color(NamedTextColor.RED)));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.remove.lore", Component.text(1).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.remove.lore", Component.text(1).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)));
         }).setOnClick(_ -> removeAmount(1)));
         
         map.put(isShopOwner ? 23 : 14, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.PLUS_BTN.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.add.title", Component.text(1).color(NamedTextColor.GREEN)));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.add.lore", Component.text(1).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.add.lore", Component.text(1).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)));
         }).setOnClick(_ -> addAmount(1)));
         map.put(isShopOwner ? 24 : 15, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.BTN_10.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.add.title", Component.text(10).color(NamedTextColor.GREEN)));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.add.lore", Component.text(10).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.add.lore", Component.text(10).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)));
         }).setOnClick(_ -> addAmount(10)));
         map.put(isShopOwner ? 25 : 16, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.BTN_64.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.add.title", Component.text(64).color(NamedTextColor.GREEN)));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.add.lore", Component.text(64).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.add.lore", Component.text(64).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD)));
         }).setOnClick(_ -> addAmount(64)));
         
         map.put(isShopOwner ? 22 : 13, new ItemMenuBuilder(this, this.item.getItemStack().asOne()));
         
         map.put(isShopOwner ? 30 : 21, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.refuse.title"));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.refuse.lore1", Component.text(this.amountToBuy).color(NamedTextColor.GOLD)),
-                    TranslationManager.translation("feature.shop.menu.main.refuse.lore2")
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.refuse.lore", Component.text(this.amountToBuy).color(NamedTextColor.GOLD)));
         }).setCloseButton());
         map.put(isShopOwner ? 32 : 23, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.accept.title"));
-            itemMeta.lore(List.of(
-                    TranslationManager.translation("feature.shop.menu.main.accept.lore1", Component.text(this.item.getPrice(this.amountToBuy) + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD), Component.text(this.amountToBuy).color(NamedTextColor.GOLD)),
-                    TranslationManager.translation("feature.shop.menu.main.accept.lore2")
-            ));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.accept.lore",
+                    Component.text(this.item.getPrice(this.amountToBuy) + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                    Component.text(this.amountToBuy).color(NamedTextColor.GOLD)));
         }).setOnClick(_ -> {
             this.shop.buy(getOwner(), this.amountToBuy);
             getOwner().closeInventory();

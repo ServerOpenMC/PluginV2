@@ -3,7 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.protections.*;
 import fr.openmc.core.features.city.sub.war.War;
-import fr.openmc.core.features.shops.manager.ShopManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

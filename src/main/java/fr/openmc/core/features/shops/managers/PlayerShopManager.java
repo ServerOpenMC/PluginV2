@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.manager;
+package fr.openmc.core.features.shops.managers;
 
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
@@ -40,7 +40,7 @@ public class PlayerShopManager {
         
         ItemInteraction.runLocationInteraction(
                 player,
-                new ItemStack(Material.BARREL),
+                ItemStack.of(Material.BARREL),
                 "shops:shop_creator",
                 300,
                 TranslationManager.translation("feature.shop.player.creating_begin"),
@@ -72,7 +72,6 @@ public class PlayerShopManager {
                 return false;
             }
         }
-        
         
         Block barrel = shop.getMultiblock().stockBlockLoc().getBlock();
         Block cashBlock = shop.getMultiblock().cashBlockLoc().getBlock();
@@ -163,25 +162,4 @@ public class PlayerShopManager {
         EconomyManager.addBalance(player.getUniqueId(), 400);
         MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.pay_back", Component.text("400 " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GREEN)), Prefix.SHOP, MessageType.SUCCESS, true);
     }
-    
-    /* public static void adminDeleteShop(OfflinePlayer player, Player admin) {
-        Shop shop = ShopManager.getPlayerShop(player.getUniqueId());
-        if (shop == null) return;
-        
-        if (!ShopManager.removeShop(shop)) {
-            MessagesManager.sendMessage(admin, Component.text("§cShop introuvable"), Prefix.SHOP, MessageType.ERROR, false);
-            return;
-        }
-        ShopManager.getPlayerShops().remove(player.getUniqueId());
-        
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            if (!ShopDatabaseManager.deleteDBShop(shop)) {
-                MessagesManager.sendMessage(admin, Component.text("§cErreur lors de la suppression du shop dans la db"), Prefix.SHOP, MessageType.ERROR, false);
-            }
-        });
-        
-        MessagesManager.sendMessage(admin, Component.text("§6Le shop a bien été supprimé !"), Prefix.SHOP, MessageType.SUCCESS, false);
-        EconomyManager.addBalance(player.getUniqueId(), 400);
-        MessagesManager.sendMessage(player, Component.text("§a400" + EconomyManager.getEconomyIcon() + " remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.SUCCESS, true);
-    } */
 }

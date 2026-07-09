@@ -1,11 +1,12 @@
-package fr.openmc.core.features.shops.listener;
+package fr.openmc.core.features.shops;
 
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
-import fr.openmc.core.features.shops.manager.ShopManager;
-import fr.openmc.core.features.shops.menu.ShopMenu;
-import fr.openmc.core.features.shops.menu.ShopSellingMenu;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.shops.managers.ShopManager;
+import fr.openmc.core.features.shops.menus.ShopMenu;
+import fr.openmc.core.features.shops.menus.ShopSellingMenu;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -66,22 +67,15 @@ public class ShopListener implements Listener {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, true);
             return;
         }
-        if (shop.isOwner(player)) {
-            if (shop.hasItem()) {
-                new ShopMenu(player, shop).open();
-                shop.setMenuOpened(true);
-            }
-            else {
-                new ShopSellingMenu(player, shop).open();
-                shop.setMenuOpened(true);
-            }
+        
+        if (shop.hasItem()) {
+            new ShopMenu(player, shop).open();
+            shop.setMenuOpened(true);
+        } else if (shop.isOwner(player)) {
+            new ShopSellingMenu(player, shop).open();
+            shop.setMenuOpened(true);
         } else {
-            if (shop.hasItem()) {
-                new ShopMenu(player, shop).open();
-                shop.setMenuOpened(true);
-            } else {
-                MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
-            }
+            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
         }
     }
 
@@ -110,7 +104,7 @@ public class ShopListener implements Listener {
     public void onFurnitureBreak(FurnitureBreakEvent e) {
         CustomFurniture furniture = e.getFurniture();
         
-        if (furniture == null || !furniture.getNamespacedID().equals("omc_shops:caisse")) return;
+        if (furniture == null || !furniture.getNamespacedID().equals(OMCRegistry.CUSTOM_ITEMS.CAISSE.getId())) return;
         
         Entity furnitureEntity = furniture.getEntity();
         if (furnitureEntity == null) return;
@@ -122,7 +116,7 @@ public class ShopListener implements Listener {
     public void onFurnitureInteract(FurnitureInteractEvent e) {
 		CustomFurniture furniture = e.getFurniture();
         
-        if (furniture == null || !furniture.getNamespacedID().equals("omc_shops:caisse")) return;
+        if (furniture == null || !furniture.getNamespacedID().equals(OMCRegistry.CUSTOM_ITEMS.CAISSE.getId())) return;
         
         Player player = e.getPlayer();
         Entity furnitureEntity = furniture.getEntity();
@@ -142,22 +136,14 @@ public class ShopListener implements Listener {
             MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, true);
             return;
         }
-        if (shop.isOwner(player)) {
-            if (shop.hasItem()) {
-                new ShopMenu(player, shop).open();
-                shop.setMenuOpened(true);
-            }
-            else {
-                new ShopSellingMenu(player, shop).open();
-                shop.setMenuOpened(true);
-            }
+        if (shop.hasItem()) {
+            new ShopMenu(player, shop).open();
+            shop.setMenuOpened(true);
+        } else if (shop.isOwner(player)) {
+            new ShopSellingMenu(player, shop).open();
+            shop.setMenuOpened(true);
         } else {
-            if (shop.hasItem()) {
-                new ShopMenu(player, shop).open();
-                shop.setMenuOpened(true);
-            } else {
-                MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
-            }
+            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
         }
     }
     

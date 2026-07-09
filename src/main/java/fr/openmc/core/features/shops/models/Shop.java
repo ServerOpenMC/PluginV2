@@ -6,6 +6,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -85,7 +86,7 @@ public class Shop {
      * @return the name of the shop in the format "<owner's name>'s Shop"
      */
     public String getName() {
-        return getOwner().getName() + "'s Shop";
+        return PlayerNameCache.getName(getOwnerUUID()) + "'s Shop";
     }
 
     /**

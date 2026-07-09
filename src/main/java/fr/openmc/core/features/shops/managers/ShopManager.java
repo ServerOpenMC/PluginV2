@@ -1,4 +1,4 @@
-package fr.openmc.core.features.shops.manager;
+package fr.openmc.core.features.shops.managers;
 
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
@@ -10,9 +10,9 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.shops.ShopFurniture;
+import fr.openmc.core.features.shops.ShopListener;
 import fr.openmc.core.features.shops.commands.ShopAdminCommand;
 import fr.openmc.core.features.shops.commands.ShopCommand;
-import fr.openmc.core.features.shops.listener.ShopListener;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
