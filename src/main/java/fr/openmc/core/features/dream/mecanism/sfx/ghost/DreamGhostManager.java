@@ -8,7 +8,7 @@ import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.nms.SkullNMS;
 import fr.openmc.core.utils.nms.entity.*;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -102,7 +102,7 @@ public class DreamGhostManager {
     }
 
     private static void sendGhostTo(Player receiver, Player ghostOf, int entityId, ArmorStand stand) {
-        EntitySpawnNMS.sendSpawnPacket(receiver, EntityType.ARMOR_STAND, entityId, stand.getUUID(), ghostOf.getLocation());
+        EntitySpawnNMS.sendSpawnPacket(receiver, EntityTypes.ARMOR_STAND, entityId, stand.getUUID(), ghostOf.getLocation());
         EntitySpawnNMS.sendMetaDataEntity(receiver, stand);
         EntityEquipmentNMS.sendHelmetPacket(receiver, entityId, SkullNMS.getPlayerSkullNMS(ghostOf));
     }

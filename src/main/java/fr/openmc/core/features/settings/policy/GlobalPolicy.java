@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum GlobalPolicy implements Policy {
-    EVERYONE("§aTout le monde", "Visible par tous les joueurs"),
-    FRIENDS("§dAmis uniquement", "Visible uniquement par mes amis"),
-    CITY_MEMBERS("§6Membres de ma ville", "Visible par les membres de ma ville"),
-    NOBODY("§cPersonne", "Information cachée à tous");
+    EVERYONE("feature.settings.policy.global.everyone.name", "feature.settings.policy.global.everyone.description"),
+    FRIENDS("feature.settings.policy.global.friends.name", "feature.settings.policy.global.friends.description"),
+    CITY_MEMBERS("feature.settings.policy.global.city_members.name", "feature.settings.policy.global.city_members.description"),
+    NOBODY("feature.settings.policy.global.nobody.name", "feature.settings.policy.global.nobody.description");
 
     private final String displayName;
     private final String description;

@@ -5,6 +5,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -25,11 +26,15 @@ public class PlayerDeathListener implements Listener {
 
         double balance = getBalance(player.getUniqueId());
 
-        if (balance>0 && !DreamUtils.isInDreamWorld(player)) {
-            withdrawBalance(player.getUniqueId(), balance * LOSS_MONEY);
-            MessagesManager.sendMessage(player, Component.text("Vous venez de mourrir avec §6" + getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon() + "§f, vous avez perdu §6" + getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon() + "\n§8*pensez à mettre votre argent dans la banque*"), Prefix.OPENMC, MessageType.INFO, false);
-        }
-        
+         if (balance>0 && !DreamUtils.isInDreamWorld(player)) {
+             withdrawBalance(player.getUniqueId(), balance * LOSS_MONEY);
+              MessagesManager.sendMessage(player, TranslationManager.translation(
+                      "core.player.death.message",
+                      Component.text(getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                      Component.text(getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
+              ), Prefix.OPENMC, MessageType.INFO, false);
+         }
+
         Component deathMessage = event.deathMessage();
         if (deathMessage == null) return;
         MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);

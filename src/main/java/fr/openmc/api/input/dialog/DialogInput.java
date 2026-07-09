@@ -40,11 +40,11 @@ public class DialogInput {
                         .build()
                 )
                 .type(DialogType.confirmation(
-                                ActionButton.builder(Component.text(ButtonType.CONFIRM.getLabel()))
+                                ActionButton.builder(ButtonType.CONFIRM.getLabelComponent())
                                         .action(DialogAction.customClick((response, audience) ->
                                                 callback.accept(response.getText("inputtextomc")), ClickCallback.Options.builder().build()))
                                         .build(),
-                        ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
+                        ActionButton.builder(ButtonType.CANCEL.getLabelComponent())
                                 .action(DialogAction.customClick((response, audience) ->
                                         callback.accept(null), ClickCallback.Options.builder().build()))
                                 .build()
@@ -79,11 +79,11 @@ public class DialogInput {
                         .build()
                 )
                 .type(DialogType.confirmation(
-                                ActionButton.builder(Component.text(ButtonType.CONFIRM.getLabel()))
+                                ActionButton.builder(ButtonType.CONFIRM.getLabelComponent())
                                         .action(DialogAction.customClick((response, audience) ->
                                                 callback.accept(response.getFloat("inputfloatomc")), ClickCallback.Options.builder().build()))
                                         .build(),
-                                ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
+                                ActionButton.builder(ButtonType.CANCEL.getLabelComponent())
                                         .action(DialogAction.customClick((response, audience) ->
                                                 callback.accept(null), ClickCallback.Options.builder().build()))
                                         .build()

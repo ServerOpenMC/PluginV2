@@ -12,10 +12,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Brightness;
-import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,7 +36,7 @@ public class TextDisplay {
     public TextDisplay(Component text, Location location, Vector3f scale) {
         this.location = location;
 
-        textDisplay = new Display.TextDisplay(EntityType.TEXT_DISPLAY, ((CraftWorld) location.getWorld()).getHandle());
+        textDisplay = new Display.TextDisplay(EntityTypes.TEXT_DISPLAY, ((CraftWorld) location.getWorld()).getHandle());
         textDisplay.setPos(location.getX(), location.getY(), location.getZ());
         textDisplay.setRot(location.getYaw(), location.getPitch());
         textDisplay.setBillboardConstraints(Display.BillboardConstraints.CENTER);
@@ -72,7 +69,7 @@ public class TextDisplay {
                 textDisplay.getZ(),
                 textDisplay.getXRot(),
                 textDisplay.getYRot(),
-                EntityType.TEXT_DISPLAY,
+                EntityTypes.TEXT_DISPLAY,
                 0,
                 Vec3.ZERO,
                 0

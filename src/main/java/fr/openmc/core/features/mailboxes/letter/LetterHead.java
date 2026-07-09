@@ -36,7 +36,7 @@ public class LetterHead extends ItemStack {
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getPlayerName(player));
         skullMeta.lore(List.of(
-                nonItalic(Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY)),
+                nonItalic(formatRelativeDate(sentAt).color(NamedTextColor.DARK_GRAY)),
                 nonItalic(translation(
                         "feature.mailboxes.letter.contains",
                         Component.text(itemsCount).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),

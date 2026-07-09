@@ -12,9 +12,11 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -93,7 +95,7 @@ public class LootboxOpenMenu extends Menu {
                         .append(displayedItem.effectiveName().decoration(TextDecoration.ITALIC, false))
                         .append(Component.text(" §6§l✦")));
                 List<Component> lore = new ArrayList<>();
-                lore.add(Component.text("§e§lFÉLICITATIONS !"));
+                lore.add(TranslationManager.translation("feature.tickets.loot.gg"));
                 lore.add(Component.text(" "));
                 if (displayedItem.lore() != null)
                     lore.addAll(displayedItem.lore());
@@ -234,14 +236,13 @@ public class LootboxOpenMenu extends Menu {
                         firework.detonate();
                     });
 
-                    MessagesManager.broadcastMessage(
-                            Component.text("§6§l✦ §e§lFÉLICITATIONS §r§eà ")
-                                    .append(Component.text(getOwner().getName()))
-                                    .append(Component.text(" §equi vient de gagner "))
-                                    .append(winningLoot.getRepresentativeItem().effectiveName().decoration(TextDecoration.ITALIC, false))
-                                    .append(Component.text(" §eà "))
-                                    .append(box.getName())
-                                    .append(Component.text(" §e! §6§l✦")),
+                    MessagesManager.broadcastMessage(TranslationManager.translation("feature.tickets.loot.broadcast",
+                            Component.text(getOwner().getName(), NamedTextColor.YELLOW),
+                            winningLoot.getRepresentativeItem().effectiveName()
+                                    .decoration(TextDecoration.ITALIC, false)
+                                    .color(NamedTextColor.YELLOW),
+                            box.getName().color(NamedTextColor.YELLOW)
+                            ),
                             Prefix.OPENMC, MessageType.INFO);
                 }
             }
@@ -256,9 +257,9 @@ public class LootboxOpenMenu extends Menu {
         wonItem.run(getOwner());
 
         MessagesManager.sendMessage(getOwner(),
-                Component.text("§aVous avez gagné : ")
+                TranslationManager.translation("feature.tickets.loot.won")
                         .append(wonItem.getRepresentativeItem().displayName())
-                        .append(Component.text(" §a!")),
+                        .append(Component.text(" !", NamedTextColor.GREEN)),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         return false;
     }

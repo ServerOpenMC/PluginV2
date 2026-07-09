@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,6 +22,9 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InteractProtection implements Listener {
 
@@ -74,14 +77,20 @@ public class InteractProtection implements Listener {
         ProtectionsManager.verify(player, event, location);
     }
 
+    private final Set<EntityType> INTERACTION_REFUSED = new HashSet<>(Set.of(
+            EntityType.ITEM_FRAME,
+            EntityType.GLOW_ITEM_FRAME,
+            EntityType.SULFUR_CUBE
+    ));
+
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
         
         Entity rightClicked = event.getRightClicked();
         if (rightClicked instanceof Player) return;
-        if (!(rightClicked instanceof ItemFrame)) return;
         
+        if (!INTERACTION_REFUSED.contains(rightClicked.getType())) return;
         if (ShopManager.getShopAt(rightClicked.getLocation()) != null) return;
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;

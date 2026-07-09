@@ -5,7 +5,9 @@ import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
@@ -28,27 +30,36 @@ public class TPADenyCommand {
 			Player player
 	) {
 		if (!TPAManager.hasPendingRequest(target)) {
-			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.deny.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (TPAManager.hasMultipleRequests(target)) {
 			if (player == null) {
-				MessagesManager.sendMessage(target, Component.text("§4Vous avez plusieurs demandes de téléportation en cours, utilisez §6/tpadeny <joueur>"), Prefix.OPENMC, MessageType.ERROR, false);
+				MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.deny.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
 			if (!TPAManager.getRequesters(target).contains(player)) {
-				MessagesManager.sendMessage(target, Component.text("§4Vous n'avez pas de demande de téléportation de la part de §6" + player.getName()), Prefix.OPENMC, MessageType.ERROR, false);
+				MessagesManager.sendMessage(target, TranslationManager.translation(
+						"feature.tpa.deny.no_request_from",
+						Component.text(player.getName()).color(NamedTextColor.GOLD)
+				), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 		} else {
 			player = TPAManager.getRequesters(target).getFirst();
 		}
 		
-		MessagesManager.sendMessage(target, Component.text("§2Vous avez refusé la demande de téléportation de §6" + player.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
-		MessagesManager.sendMessage(player, Component.text("§6" + target.getName() + " §4a refusé votre demande de téléportation"), Prefix.OPENMC, MessageType.ERROR, false);
-		
+		MessagesManager.sendMessage(target, TranslationManager.translation(
+				"feature.tpa.deny.success",
+				Component.text(player.getName()).color(NamedTextColor.GOLD)
+		), Prefix.OPENMC, MessageType.SUCCESS, false);
+		MessagesManager.sendMessage(player, TranslationManager.translation(
+				"feature.tpa.deny.denied",
+				Component.text(target.getName()).color(NamedTextColor.GOLD)
+		), Prefix.OPENMC, MessageType.ERROR, false);
+
 		TPAManager.removeRequest(player, target);
 	}
 	
