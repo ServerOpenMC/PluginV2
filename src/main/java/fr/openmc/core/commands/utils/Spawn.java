@@ -11,7 +11,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.Optional;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Spawn {
@@ -27,12 +31,16 @@ public class Spawn {
         Location spawnLocation = SpawnManager.getSpawnLocation();
 
         if (sender instanceof Player player && (target == null || player.getUniqueId().equals(target.getUniqueId()))) {
-            PlayerUtils.sendFadeTitleTeleport(player, spawnLocation);
+            if (!PlayerUtils.sendFadeTitleTeleport(player, spawnLocation)) {
+                return;
+            }
             MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.spawn.got_sent"),
                     Prefix.OPENMC, MessageType.SUCCESS, true);
         } else {
             if(!(sender instanceof Player) || sender.hasPermission("omc.admin.commands.spawn.others")) {
-                PlayerUtils.sendFadeTitleTeleport(target, spawnLocation);
+                if (!PlayerUtils.sendFadeTitleTeleport(target, spawnLocation)) {
+                    return;
+                }
                 MessagesManager.sendMessage(sender, TranslationManager.translation("command.utils.spawn.have_sent",
                         Component.text(target.getName()).color(NamedTextColor.YELLOW)), Prefix.OPENMC, MessageType.SUCCESS, true);
                 MessagesManager.sendMessage(target, TranslationManager.translation("command.utils.spawn.have_sent_by",
