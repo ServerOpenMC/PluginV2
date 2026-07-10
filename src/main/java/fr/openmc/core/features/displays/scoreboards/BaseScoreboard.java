@@ -7,9 +7,8 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
-
-import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 
 public abstract class BaseScoreboard {
     protected static final boolean canShowLogo = ItemsAdderHook.isEnable();
@@ -74,7 +73,7 @@ public abstract class BaseScoreboard {
      * @return Un {@link Component} pour le footer
      */
     public static Component getFooter() {
-        String footerText = textToSmall(TranslationManager.translationString("feature.displays.scoreboard.footer.text"));
-        return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6>%s</gradient>".formatted(footerText));
+        Component footerText = TranslationManager.translation("feature.displays.scoreboard.footer.text.to_small");
+        return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6><name></gradient>", Placeholder.component("name", footerText));
     }
 }

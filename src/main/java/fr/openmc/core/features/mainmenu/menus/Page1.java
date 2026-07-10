@@ -276,8 +276,14 @@ public class Page1 implements Menu {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            String rawMessage = TranslationManager.translationString("feature.mainmenu.message.profile_dev");
-            MessagesManager.sendMessage(player, Component.text(FontImageWrapper.replaceFontImages(rawMessage), NamedTextColor.RED), Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.mainmenu.message.profile_dev",
+                            Component.text(FontImageWrapper.replaceFontImages(":sad:"))
+                    ).color(NamedTextColor.RED),
+                    Prefix.OPENMC,
+                    MessageType.INFO,
+                    true);
         } else if (RIGHT_ARROW_SLOT == slot) {
             PacketMenuLib.openMenu(new Page2(), player);
         } else if (SETTINGS_SLOTS.contains(slot)) {

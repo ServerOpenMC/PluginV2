@@ -47,11 +47,17 @@ public class SocialSpyCommand {
     @CommandPermission("omc.admin.commands.privatemessage.socialspy.admin")
     public void listSocialSpyPlayers(Player admin) {
         int spyCount = 0;
-        StringBuilder spyList = new StringBuilder();
+        Component spyList = Component.empty();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (SocialSpyManager.hasSocialSpyEnabled(onlinePlayer)) {
-                spyList.append(TranslationManager.translationString("feature.privatemessage.socialspy.list_item", Component.text(onlinePlayer.getName()))).append("\n");
+                if (spyCount > 0) {
+                    spyList = spyList.appendNewline();
+                }
+                spyList = spyList.append(TranslationManager.translation(
+                        "feature.privatemessage.socialspy.list_item",
+                        Component.text(onlinePlayer.getName())
+                ));
                 spyCount++;
             }
         }
@@ -61,9 +67,9 @@ public class SocialSpyCommand {
                     TranslationManager.translation("feature.privatemessage.socialspy.no_players"),
                     Prefix.OPENMC, MessageType.INFO, true);
         } else {
-            admin.sendMessage(TranslationManager.translationString("feature.privatemessage.socialspy.list_title"));
-            admin.sendMessage(spyList.toString());
-            admin.sendMessage(TranslationManager.translationString("feature.privatemessage.socialspy.list_total", Component.text(spyCount)));
+            admin.sendMessage(TranslationManager.translation("feature.privatemessage.socialspy.list_title"));
+            admin.sendMessage(spyList);
+            admin.sendMessage(TranslationManager.translation("feature.privatemessage.socialspy.list_total", Component.text(spyCount)));
         }
     }
 }

@@ -4,6 +4,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -46,8 +47,12 @@ public enum DreamBiome {
         this.biome = registry.get(biomeKey);
     }
 
-    public String getName() {
-        return TranslationManager.translationString(nameKey);
+    public Component getName() {
+        return TranslationManager.translation(nameKey);
+    }
+
+    public Component getSmallName() {
+        return TranslationManager.translation(nameKey + ".to_small");
     }
 
     public static boolean isDreamBiome(Location loc, DreamBiome dreamBiome) {

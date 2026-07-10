@@ -24,14 +24,15 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.messages.MessagesManager.keyToSmall;
 import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmallComponent;
 import static net.kyori.adventure.text.Component.*;
 
 public class MainScoreboard extends BaseScoreboard {
@@ -48,16 +49,18 @@ public class MainScoreboard extends BaseScoreboard {
         if (WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
             ContestData data = ContestManager.data;
             if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
-                lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FFB800:#F0DF49>%s</gradient>".formatted(
-                        keyToSmall("feature.displays.scoreboard.contest.title"))).decoration(TextDecoration.BOLD, true));
+                lines.add(MiniMessage.miniMessage().deserialize(
+                        "<gradient:#FFB800:#F0DF49><title></gradient>",
+                        Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.contest.title.to_small"))
+                ).decoration(TextDecoration.BOLD, true));
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                        .append(text(textToSmall(data.getCamp1()), data.getColor1AsNamedTextColor()))
+                        .append(textToSmallComponent(data.getCamp1()).color(data.getColor1AsNamedTextColor()))
                         .appendSpace()
-                        .append(text(keyToSmall("feature.displays.scoreboard.contest.vs"), NamedTextColor.GRAY))
-                        .append(text(textToSmall(data.getCamp2()), data.getColor2AsNamedTextColor()))
+                        .append(TranslationManager.translation("feature.displays.scoreboard.contest.vs.to_small").color(NamedTextColor.GRAY))
+                        .append(textToSmallComponent(data.getCamp2()).color(data.getColor2AsNamedTextColor()))
                 );
                 lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
-                        .append(Component.text(keyToSmall("feature.displays.scoreboard.contest.ends"), NamedTextColor.GRAY))
+                        .append(TranslationManager.translation("feature.displays.scoreboard.contest.ends.to_small").color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF8F06)))
                 );
@@ -73,16 +76,16 @@ public class MainScoreboard extends BaseScoreboard {
     public static List<Component> getDefaultLines(Player player) {
         Component rank = LuckPermsHook.isEnable()
                 ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
-                : Component.text(keyToSmall("feature.displays.scoreboard.rank.none")).color(TextColor.color(0xFF1FCC));
+                : TranslationManager.translation("feature.displays.scoreboard.rank.none.to_small").color(TextColor.color(0xFF1FCC));
 
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
         boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());
-        String location = isInRegion
-                ? TranslationManager.translationString("feature.displays.scoreboard.location.protected")
-                : TranslationManager.translationString("feature.displays.scoreboard.location.wilderness");
-        location = (chunkCity != null) ? chunkCity.getName() : location;
+        Component location = isInRegion
+                ? TranslationManager.translation("feature.displays.scoreboard.location.protected.to_small")
+                : TranslationManager.translation("feature.displays.scoreboard.location.wilderness.to_small");
+        location = (chunkCity != null) ? textToSmallComponent(chunkCity.getName()) : location;
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
 
@@ -91,26 +94,28 @@ public class MainScoreboard extends BaseScoreboard {
         lines.add(empty());
         lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FF45B9:#FF1FCC>%s</gradient>".formatted(textToSmall(player.getName()))).decoration(TextDecoration.BOLD, true));
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.rank.label"), NamedTextColor.GRAY))
+                .append(TranslationManager.translation("feature.displays.scoreboard.rank.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(rank)
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.city.label"), NamedTextColor.GRAY))
+                .append(TranslationManager.translation("feature.displays.scoreboard.city.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()
-                .append(text(textToSmall(city != null ? city.getName() : TranslationManager.translationString("feature.displays.scoreboard.city.none"))).color(TextColor.color(0xFF06DC)))
+                .append(city != null
+                        ? textToSmallComponent(city.getName()).color(TextColor.color(0xFF06DC))
+                        : TranslationManager.translation("feature.displays.scoreboard.city.none.to_small").color(TextColor.color(0xFF06DC)))
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.balance.label"), NamedTextColor.GRAY))
+                .append(TranslationManager.translation("feature.displays.scoreboard.balance.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()
-                .append(text(textToSmall(balance)).color(TextColor.color(0xFF06DC)))
+                .append(textToSmallComponent(balance).color(TextColor.color(0xFF06DC)))
                 .appendSpace()
                 .append(text(EconomyManager.getEconomyIcon()))
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.location.label"), NamedTextColor.GRAY))
+                .append(TranslationManager.translation("feature.displays.scoreboard.location.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()
-                .append(text(textToSmall(location)).color(TextColor.color(0xFF06DC)))
+                .append(location.color(TextColor.color(0xFF06DC)))
         );
 
         if (FancyNpcsHook.isEnable()) {
@@ -121,9 +126,9 @@ public class MainScoreboard extends BaseScoreboard {
             if (halloweenNPC != null) {
                 String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                        .append(text(keyToSmall("feature.displays.scoreboard.pumpkins.label"), NamedTextColor.GRAY))
+                        .append(TranslationManager.translation("feature.displays.scoreboard.pumpkins.label.to_small").color(NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(text(textToSmall(pumpkinCount)).color(TextColor.color(0xFF7518)))
+                        .append(textToSmallComponent(pumpkinCount).color(TextColor.color(0xFF7518)))
                 );
             }
         }

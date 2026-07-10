@@ -13,6 +13,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,6 +33,7 @@ public class TranslationManager {
             .create();
 
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     /**
      * Initialise le gestionnaire de traductions et génère les ressource packs.
@@ -110,6 +112,7 @@ public class TranslationManager {
 
     /**
      * Retourne une traduction sous forme de String au format legacy.
+     * ATTENTION RETOURNE DIRECTEMENT LE FALLBACK
      * 
      * @param key La clé de traduction
      * @param args Les arguments à interpoler
@@ -159,7 +162,15 @@ public class TranslationManager {
     private static Map<String, String> toLegacyMap(Map<String, String> miniMessageMap) {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, String> entry : miniMessageMap.entrySet()) {
-            result.put(entry.getKey(), MessageConvertor.toLegacy(entry.getValue()));
+            String key = entry.getKey();
+            if (key.endsWith(".to_small")) continue;
+
+            String value = MessageConvertor.toLegacy(entry.getValue());
+            result.put(key, value);
+
+            if (miniMessageMap.get(key + ".to_small").equalsIgnoreCase("true")) {
+                result.put(key + ".to_small", MessagesManager.textToSmall(value));
+            }
         }
         return result;
     }
@@ -191,15 +202,18 @@ public class TranslationManager {
         JsonObject root = new JsonObject();
 
         for (Map.Entry<String, String> entry : translations.entrySet()) {
-            root.addProperty(entry.getKey(), entry.getValue());
+            String key = entry.getKey();
+            String value = entry.getValue();
 
-            String[] lines = entry.getValue().split("\n");
+            root.addProperty(key, value);
+
+            String[] lines = value.split("\n");
             if (lines.length == 1) {
                 continue;
             }
 
             for (int i = 0; i < lines.length; i++) {
-                root.addProperty(getLoreLineKey(entry.getKey(), i), lines[i]);
+                root.addProperty(getLoreLineKey(key, i), lines[i]);
             }
         }
 

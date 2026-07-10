@@ -30,8 +30,8 @@ public class TutorialMilestone implements Milestone<TutorialSteps> {
     }
 
     @Override
-    public String getName() {
-        return TranslationManager.translationString("feature.milestones.tutorial.name");
+    public Component getName() {
+        return TranslationManager.translation("feature.milestones.tutorial.name");
     }
 
     @Override
