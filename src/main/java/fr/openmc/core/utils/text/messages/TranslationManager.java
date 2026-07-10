@@ -79,7 +79,6 @@ public class TranslationManager {
 
             translations.putAll(localeTranslations);
 
-
             try {
                 injectLangs(resourcePackFolder, translations, locale);
             } catch (Exception e) {
@@ -168,7 +167,8 @@ public class TranslationManager {
             String value = MessageConvertor.toLegacy(entry.getValue());
             result.put(key, value);
 
-            if (miniMessageMap.get(key + ".to_small").equalsIgnoreCase("true")) {
+            if (miniMessageMap.get(key + ".to_small") != null &&
+                    miniMessageMap.get(key + ".to_small").equalsIgnoreCase("true")) {
                 result.put(key + ".to_small", MessagesManager.textToSmall(value));
             }
         }
