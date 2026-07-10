@@ -8,7 +8,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.managers.PlayerShopManager;
-import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
 import fr.openmc.core.utils.cache.PlayerNameCache;
@@ -48,7 +47,7 @@ public class ShopMenu extends Menu {
         super(owner);
         this.shop = shop;
         this.item = shop.getItem();
-        this.isShopOwner = ShopManager.isShopOwner(owner, shop) || ShopManager.shopBypass.contains(owner.getUniqueId());
+        this.isShopOwner = shop.isOwner(owner);
         this.size = isShopOwner ? InventorySize.LARGER : InventorySize.LARGE;
         this.texture = isShopOwner ? "shop_menu" : "sell_shop_menu";
         this.amountToBuy = amountToBuy;

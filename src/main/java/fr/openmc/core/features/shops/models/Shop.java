@@ -4,6 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.ShopFurniture;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.cache.PlayerNameCache;
@@ -95,7 +96,7 @@ public class Shop {
      * @param uuid the UUID to check
      */
     public boolean isOwner(UUID uuid) {
-        return ownerUUID.equals(uuid);
+        return ownerUUID.equals(uuid) || ShopManager.shopBypass.contains(uuid);
     }
     
     /**
@@ -158,10 +159,10 @@ public class Shop {
      * @param amount the quantity of items the player wants to buy
      */
     public void buy(Player player, int amount) {
-        if (isOwner(player)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
-            return;
-        }
+//        if (isOwner(player)) {
+//            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
+//            return;
+//        }
         if (this.item.getAmount() < amount) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
             return;

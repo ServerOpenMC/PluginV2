@@ -9,6 +9,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -99,6 +100,7 @@ public class ProtectionsManager {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
 		if (ShopManager.getShopAt(loc) != null) {
+			if (loc.getBlock().getState() instanceof Barrel) return;
 			event.setCancelled(true);
 			return;
 		}

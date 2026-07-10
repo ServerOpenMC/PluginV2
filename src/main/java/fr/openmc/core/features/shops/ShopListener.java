@@ -88,16 +88,11 @@ public class ShopListener implements Listener {
         Shop shop = ShopManager.getShopAt(block.getLocation());
         if (shop == null) return;
         
-        if (shop.getOwnerUUID() == null) {
-            e.setCancelled(true);
-            return;
-        }
-        
         Player player = e.getPlayer();
-        if (!shop.getOwnerUUID().equals(player.getUniqueId())) {
-            e.setCancelled(true);
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_him_shop"), Prefix.SHOP, MessageType.ERROR, true);
-        }
+        if (shop.isOwner(player)) return;
+        
+        e.setCancelled(true);
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_him_shop"), Prefix.SHOP, MessageType.ERROR, true);
     }
     
     @EventHandler

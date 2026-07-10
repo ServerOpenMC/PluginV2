@@ -17,7 +17,10 @@ import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.world.WorldUtils;
 import lombok.Getter;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -167,17 +170,6 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	public static Shop getShopAt(int x, int y, int z) {
 		return getShopAt(new Location(Bukkit.getWorld("world"), x, y, z));
 	}
-	
-	/**
-	 * Check if the chunk contains a shop.
-	 *
-	 * @param chunk the chunk to check
-	 * @return true if a shop is found, false otherwise.
-	 */
-	public static boolean hasShopInChunk(Chunk chunk) {
-		for (Shop shop : shops.values()) if (shop.getLocation().getChunk().equals(chunk)) return true;
-		return false;
-	}
 
     /**
      * Places the shop block (sign or ItemsAdder furniture) in the world,
@@ -255,15 +247,6 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
     }
 	
 	/**
-	 * Returns all registered shops
-	 *
-	 * @return a set of shops
-	 */
-	public static Set<Shop> getAllShops() {
-		return Set.copyOf(shops.values());
-	}
-	
-	/**
 	 * Retrieves a shop by its unique UUID.
 	 *
 	 * @param shopUUID The unique identifier (UUID) of the shop to retrieve.
@@ -281,40 +264,5 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	 */
 	public static void setUUIDShop(UUID shopUUID, Shop shop) {
 		shops.put(shopUUID, shop);
-	}
-	
-	/**
-	 * Check if a player has a shop
-	 *
-	 * @param playerUUID the UUID of the player to check
-	 * @return true if a shop is found
-	 */
-	public static boolean hasShop(UUID playerUUID) {
-		for (Shop shop : shops.values()) {
-			if (shop.isOwner(playerUUID)) return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Verifies if the player is the owner of the shop
-	 *
-	 * @param player the player to verify
-	 * @param shop the shop to verify
-	 * @return true if the player is the owner of the shop, false otherwise
-	 */
-	public static boolean isShopOwner(Player player, Shop shop) {
-		return isShopOwner(player.getUniqueId(), shop);
-	}
-	
-	/**
-	 * Verifies if the player is the owner of the shop
-	 *
-	 * @param playerUUID the uuid of the player to verify
-	 * @param shop the shop to verify
-	 * @return true if the player is the owner of the shop, false otherwise
-	 */
-	public static boolean isShopOwner(UUID playerUUID, Shop shop) {
-		return shop.getOwnerUUID().equals(playerUUID);
 	}
 }
