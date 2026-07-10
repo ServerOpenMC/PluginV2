@@ -75,6 +75,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        if (event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
         this.shop.setMenuOpened(false);
     }
 
@@ -90,6 +91,7 @@ public class ShopMenu extends Menu {
                     getOwner(),
                     () -> {
                         getOwner().closeInventory();
+                        this.shop.setMenuOpened(false);
                         PlayerShopManager.deleteShop(getOwner(), shop);
                     },
                     () -> new ShopMenu(getOwner(), shop).open(),
@@ -104,6 +106,7 @@ public class ShopMenu extends Menu {
                     getOwner(),
                     () -> {
                         getOwner().closeInventory();
+                        this.shop.setMenuOpened(false);
                         if (this.shop.getItem().getAmount() != 0) return;
                         this.shop.removeItem();
                     },

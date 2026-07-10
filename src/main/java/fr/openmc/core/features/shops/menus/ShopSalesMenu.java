@@ -105,6 +105,7 @@ public class ShopSalesMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        if (event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
         this.shop.setMenuOpened(false);
     }
 

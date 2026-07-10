@@ -66,6 +66,7 @@ public class ShopSellingMenu extends PaginatedMenu {
 	
 	@Override
 	public void onClose(InventoryCloseEvent event) {
+		if (event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
 		this.shop.setMenuOpened(false);
 	}
 	
@@ -124,6 +125,7 @@ public class ShopSellingMenu extends PaginatedMenu {
 				getOwner(),
 				() -> {
 					getOwner().closeInventory();
+					this.shop.setMenuOpened(false);
 					PlayerShopManager.deleteShop(getOwner(), shop);
 				},
 				() -> new ShopSellingMenu(getOwner(), shop).open(),
