@@ -158,10 +158,10 @@ public class Shop {
      * @param amount the quantity of items the player wants to buy
      */
     public void buy(Player player, int amount) {
-        /*if (isOwner(player)) {
+        if (isOwner(player)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
             return;
-        }*/ //TODO retirer le com
+        }
         if (this.item.getAmount() < amount) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
             return;

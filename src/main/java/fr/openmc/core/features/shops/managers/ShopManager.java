@@ -9,10 +9,9 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.shops.ShopCommand;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.ShopListener;
-import fr.openmc.core.features.shops.commands.ShopAdminCommand;
-import fr.openmc.core.features.shops.commands.ShopCommand;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -55,7 +54,7 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 	
 	@Override
 	public Set<Object> getCommands() {
-		return Set.of(new ShopCommand(), new ShopAdminCommand());
+		return Set.of(new ShopCommand());
 	}
 	
 	@Override
