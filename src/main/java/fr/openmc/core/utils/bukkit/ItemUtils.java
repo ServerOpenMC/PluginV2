@@ -263,8 +263,8 @@ public class ItemUtils {
      * @param material       the item to remove, must be similar to the items in the inventory {@link Material}
      * @param amountToRemove the number of items to remove
      */
-    public static int removeItemsFromInventory(Player player, Material material, int amountToRemove) {
-        return removeItemsFromInventory(player, ItemStack.of(material), amountToRemove);
+    public static int removeItemsFromPlayerInventory(Player player, Material material, int amountToRemove) {
+        return removeItemsFromPlayerInventory(player, ItemStack.of(material), amountToRemove);
     }
 
     /**
@@ -274,31 +274,9 @@ public class ItemUtils {
      * @param item the item to remove, must be similar to the items in the inventory {@link ItemStack}
      * @param amountToRemove the number of items to remove
      */
-    public static int removeItemsFromInventory(Player player, ItemStack item, int amountToRemove) {
-        if (player == null || item == null || amountToRemove <= 0) return 0;
-
-        int removed = 0;
-        ItemStack[] contents = player.getInventory().getContents();
-
-        for (int i = 0; i < contents.length && removed < amountToRemove; i++) {
-            ItemStack stack = contents[i];
-            if (stack == null) continue;
-
-            if (isSimilar(stack, item)) {
-                int stackAmount = stack.getAmount();
-                int toRemove = Math.min(amountToRemove - removed, stackAmount);
-
-                removed += toRemove;
-
-                if (stackAmount <= toRemove) {
-                    player.getInventory().setItem(i, null);
-                } else {
-                    stack.setAmount(stackAmount - toRemove);
-                }
-            }
-        }
-
-        return removed;
+    public static int removeItemsFromPlayerInventory(Player player, ItemStack item, int amountToRemove) {
+        if (player == null) return 0;
+        return InventoryUtils.removeItemsFromInventory(player.getInventory(), item, amountToRemove);
     }
 
     public static boolean takeAywenite(Player player, int amount) {
@@ -318,7 +296,7 @@ public class ItemUtils {
             return false;
         }
 
-        removeItemsFromInventory(player, aywenite, amount);
+        removeItemsFromPlayerInventory(player, aywenite, amount);
         return true;
     }
 

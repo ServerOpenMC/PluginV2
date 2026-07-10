@@ -1,5 +1,5 @@
 info:
-  namespace: omc_company
+  namespace: omc_shops
 items:
   caisse:
     display_name: "§6§lCaisse"

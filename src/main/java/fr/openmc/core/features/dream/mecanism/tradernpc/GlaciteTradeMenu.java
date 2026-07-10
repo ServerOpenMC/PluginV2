@@ -91,7 +91,7 @@ public class GlaciteTradeMenu extends Menu {
                         return;
                     }
 
-                    ItemUtils.removeItemsFromInventory(player, eweniteItem, 1);
+                    ItemUtils.removeItemsFromPlayerInventory(player, eweniteItem, 1);
 
                     DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
                     if (dreamPlayer == null) return;
@@ -131,8 +131,8 @@ public class GlaciteTradeMenu extends Menu {
             return;
         }
 
-        ItemUtils.removeItemsFromInventory(player, glaciteItem, tradeGlacite);
-        ItemUtils.removeItemsFromInventory(player, eweniteItem, tradeEwenite);
+        ItemUtils.removeItemsFromPlayerInventory(player, glaciteItem, tradeGlacite);
+        ItemUtils.removeItemsFromPlayerInventory(player, eweniteItem, tradeEwenite);
 
         player.getInventory().addItem(trade.getResult().getBest());
 

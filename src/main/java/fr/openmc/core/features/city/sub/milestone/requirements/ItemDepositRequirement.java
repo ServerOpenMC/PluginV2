@@ -160,7 +160,7 @@ public class ItemDepositRequirement implements CityRequirement {
 
         int toRemove = e.isShiftClick() ? remaining : 1;
 
-        int removed = ItemUtils.removeItemsFromInventory(player, itemType, toRemove);
+        int removed = ItemUtils.removeItemsFromPlayerInventory(player, itemType, toRemove);
 
         if (removed > 0) {
             MessagesManager.sendMessage(player,

@@ -1,5 +1,5 @@
 info:
-    namespace: omc_company
+    namespace: omc_shops
 font_images:
     company_baltop_menu:
         permission: company.menu

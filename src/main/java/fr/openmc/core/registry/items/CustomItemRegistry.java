@@ -19,6 +19,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem SUIT_CHESTPLATE = register("omc_items:suit_chestplate", Material.IRON_CHESTPLATE);
     public final CustomItem SUIT_LEGGINGS = register("omc_items:suit_leggings", Material.IRON_LEGGINGS);
     public final CustomItem SUIT_BOOTS = register("omc_items:suit_boots", Material.IRON_BOOTS);
-    public final CustomItem COMPANY_BOX = register("omc_company:company_box", Material.CHEST);
+    public final CustomItem COMPANY_BOX = register("omc_shops:company_box", Material.CHEST);
     public final CustomItem HOMES_ICON_BIN_RED = register("omc_homes:omc_homes_icon_bin_red", Material.CHEST);
     public final CustomItem HOMES_ICON_BIN = register("omc_homes:omc_homes_icon_bin", Material.CHEST);
     public final CustomItem HOMES_ICON_INFORMATION = register("omc_homes:omc_homes_icon_information", Material.CHEST);
@@ -73,6 +74,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem PELUCHE_SEINYY = register("omc_plush:peluche_seinyy", Material.PAPER);
     public final CustomItem PELUCHE_AWYEN = register("omc_plush:peluche_awyen", Material.PAPER);
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
+    public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
 
     /* Homes icons */
     public final CustomItem HOMES_ICON_AXENQ = register("omc_homes:omc_homes_icon_axenq", Material.CHEST);
@@ -183,7 +185,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public CustomItem register(String name, ItemStack item) {
         return register(name, new CustomItem(name) {
             @Override
-            public ItemStack getVanilla() {
+            public @NotNull ItemStack getVanilla() {
                 return item;
             }
         });
@@ -196,7 +198,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public CustomItem register(String name, Material material, String displayName) {
         return register(new CustomItem(name) {
             @Override
-            public ItemStack getVanilla() {
+            public @NotNull ItemStack getVanilla() {
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = item.getItemMeta();
                 meta.displayName(Component.text(displayName).decoration(TextDecoration.ITALIC, false));
