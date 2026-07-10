@@ -67,21 +67,39 @@ public class ProfileMenu extends Menu {
     }
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
-        boolean selfProfile = isSelfProfile();
-        boolean friends = !selfProfile
-                && FriendManager.areFriends(getOwner().getUniqueId(), target.getUniqueId());
-        City city = CityManager.getPlayerCity(target.getUniqueId());
 
-        Component status = target.isOnline()
-                ? TranslationManager.translation("feature.profile.status.online")
-                        .color(NamedTextColor.GRAY)
-                : TranslationManager.translation("feature.profile.status.offline")
-                        .color(NamedTextColor.GRAY);
+        content.put(FRIENDS_SLOT, createFriendsItem());
+        content.put(MAILBOX_SLOT, createMailboxItem());
+        content.put(IDENTITY_SLOT, createIdentityItem());
+        content.put(CITY_SLOT, createCityItem());
+        content.put(PLAYTIME_SLOT, createPlaytimeItem());
+        content.put(CLOSE_SLOT, createCloseItem());
 
-        content.put(IDENTITY_SLOT, new ItemMenuBuilder(this, getHead(target), meta -> {
+        return content;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
+    public void onInventoryClick(InventoryClickEvent event) {}
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {}
+
+    @SuppressWarnings("UnstableApiUsage")
+    private ItemMenuBuilder createIdentityItem() {
+        Component status = TranslationManager.translation(
+                target.isOnline()
+                        ? "feature.profile.status.online"
+                        : "feature.profile.status.offline"
+        ).color(NamedTextColor.GRAY);
+
+        return new ItemMenuBuilder(this, getHead(target), meta -> {
             meta.displayName(Component.text(getTargetName(), NamedTextColor.GOLD)
                     .decorate(TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)
@@ -90,25 +108,16 @@ public class ProfileMenu extends Menu {
                     "feature.profile.item.identity.lore",
                     status
             ).stream().map(line -> line.color(NamedTextColor.GRAY)).toList());
-        }).hide(DataComponentTypes.PROFILE));
+        }).hide(DataComponentTypes.PROFILE);
+    }
 
-        Component friendsLore;
-        if (selfProfile) {
-            friendsLore = TranslationManager.translation("feature.profile.item.friends.self_lore")
-                    .color(NamedTextColor.GRAY);
-        } else if (friends) {
-            friendsLore = TranslationManager.translation(
-                    "feature.profile.item.friends.already_lore",
-                    Component.text(getTargetName(), NamedTextColor.GRAY)
-            ).color(NamedTextColor.GRAY);
-        } else {
-            friendsLore = TranslationManager.translation(
-                    "feature.profile.item.friends.add_lore",
-                    Component.text(getTargetName(), NamedTextColor.GRAY)
-            ).color(NamedTextColor.GRAY);
-        }
+    private ItemMenuBuilder createFriendsItem() {
+        boolean selfProfile = isSelfProfile();
+        boolean friends = !selfProfile
+                && FriendManager.areFriends(getOwner().getUniqueId(), target.getUniqueId());
+        Component lore = getFriendsLore(selfProfile, friends);
 
-        content.put(FRIENDS_SLOT, new ItemMenuBuilder(
+        return new ItemMenuBuilder(
                 this,
                 friends ? Material.LIME_DYE : Material.PLAYER_HEAD,
                 meta -> {
@@ -117,46 +126,83 @@ public class ProfileMenu extends Menu {
                             .decorate(TextDecoration.BOLD)
                             .decoration(TextDecoration.ITALIC, false)
                     );
-                    meta.lore(List.of(friendsLore));
+                    meta.lore(List.of(lore));
                 }
-        ).setOnClick(event -> {
-            if (selfProfile || friends) {
-                runCommand("friends list");
-            } else {
-                runCommand("friends add " + getTargetName());
-            }
-        }));
+        ).setOnClick(event -> openFriends(selfProfile, friends));
+    }
 
-        String mailboxLoreKey = selfProfile
-                ? "feature.profile.item.mailbox.self_lore"
-                : "feature.profile.item.mailbox.send_lore";
-        Component mailboxLore = selfProfile
-                ? TranslationManager.translation(mailboxLoreKey).color(NamedTextColor.GRAY)
-                : TranslationManager.translation(
-                        mailboxLoreKey,
-                        Component.text(getTargetName(), NamedTextColor.GRAY)
-                ).color(NamedTextColor.GRAY);
-        ItemStack mailboxIcon = selfProfile
+    private Component getFriendsLore(boolean selfProfile, boolean friends) {
+        if (selfProfile) {
+            return TranslationManager.translation("feature.profile.item.friends.self_lore")
+                    .color(NamedTextColor.GRAY);
+        }
+
+        String translationKey = friends
+                ? "feature.profile.item.friends.already_lore"
+                : "feature.profile.item.friends.add_lore";
+        return TranslationManager.translation(
+                translationKey,
+                Component.text(getTargetName(), NamedTextColor.GRAY)
+        ).color(NamedTextColor.GRAY);
+    }
+
+    private void openFriends(boolean selfProfile, boolean friends) {
+        if (selfProfile || friends) {
+            runCommand("friends list");
+            return;
+        }
+        runCommand("friends add " + getTargetName());
+    }
+
+    private ItemMenuBuilder createMailboxItem() {
+        boolean selfProfile = isSelfProfile();
+        ItemStack icon = selfProfile
                 ? new ItemStack(Material.CHEST)
                 : OMCRegistry.CUSTOM_ITEMS.MAILBOX_SEND.getBest();
+        Component lore = getMailboxLore(selfProfile);
 
-        content.put(MAILBOX_SLOT, new ItemMenuBuilder(this, mailboxIcon, meta -> {
+        return new ItemMenuBuilder(this, icon, meta -> {
             meta.displayName(TranslationManager.translation("feature.profile.item.mailbox.name")
                     .color(NamedTextColor.DARK_AQUA)
                     .decorate(TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)
             );
-            meta.lore(List.of(mailboxLore));
-        }).setOnClick(event -> {
+            meta.lore(List.of(lore));
+        }).setOnClick(event ->openMailbox(selfProfile));
+    }
+
+    private Component getMailboxLore(boolean selfProfile) {
+        String translationKey = selfProfile
+                ? "feature.profile.item.mailbox.self_lore"
+                : "feature.profile.item.mailbox.send_lore";
+        if (selfProfile) {
+            return TranslationManager.translation(translationKey)
+                    .color(NamedTextColor.GRAY);
+        }
+        return TranslationManager.translation(
+                translationKey,
+                Component.text(getTargetName(), NamedTextColor.GRAY)
+        ).color(NamedTextColor.GRAY);
+    }
+
+    private void openMailbox(boolean selfProfile) {
             if (selfProfile) {
                 new PlayerMailbox(getOwner()).open();
-            } else {
+            return;
+                }
                 new SendingLetter(getOwner(), target).open();
             }
-        }));
 
+    private ItemMenuBuilder createCityItem() {
+        City city = CityManager.getPlayerCity(target.getUniqueId());
         if (city == null) {
-            content.put(CITY_SLOT, new ItemMenuBuilder(
+            return createNoCityItem();
+        }
+        return createCityDetailsItem(city);
+    }
+
+    private ItemMenuBuilder createNoCityItem() {
+        return new ItemMenuBuilder(
                     this,
                     OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_CHATEAU,
                     meta -> {
@@ -170,9 +216,10 @@ public class ProfileMenu extends Menu {
                                         .color(NamedTextColor.GRAY)
                         ));
                     }
-            ));
-        } else {
-            content.put(CITY_SLOT, new ItemMenuBuilder(
+            );}
+
+    private ItemMenuBuilder createCityDetailsItem(City city) {
+        return new ItemMenuBuilder(
                     this,
                     OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_CHATEAU,
                     meta -> {
@@ -190,11 +237,12 @@ public class ProfileMenu extends Menu {
                                 )
                         ).stream().map(line -> line.color(NamedTextColor.GRAY)).toList());
                     }
-            ).setOnClick(event -> new CityListDetailsMenu(getOwner(), city).open()));
+            ).setOnClick(event -> new CityListDetailsMenu(getOwner(), city).open());
         }
 
+    private ItemMenuBuilder createPlaytimeItem() {
         long ticksPlayed = target.getStatistic(Statistic.PLAY_ONE_MINUTE);
-        content.put(PLAYTIME_SLOT, new ItemMenuBuilder(
+        return new ItemMenuBuilder(
                 this,
                 OMCRegistry.CUSTOM_ITEMS.MAILBOX_HOURGLASS,
                 meta -> {
@@ -213,9 +261,11 @@ public class ProfileMenu extends Menu {
                             ).color(NamedTextColor.GRAY)
                     ));
                 }
-        ));
+        );
+    }
 
-        content.put(CLOSE_SLOT, new ItemMenuBuilder(
+    private ItemMenuBuilder createCloseItem() {
+        return new ItemMenuBuilder(
                 this,
                 OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL,
                 meta -> meta.displayName(TranslationManager.translation("feature.profile.item.close")
@@ -223,21 +273,8 @@ public class ProfileMenu extends Menu {
                         .decorate(TextDecoration.BOLD)
                         .decoration(TextDecoration.ITALIC, false)
                 )
-        ).setCloseButton());
-
-        return content;
+        ).setCloseButton();
     }
-
-    @Override
-    public List<Integer> getTakableSlot() {
-        return List.of();
-    }
-
-    @Override
-    public void onInventoryClick(InventoryClickEvent event) {}
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {}
 
     private void runCommand(String command) {
         getOwner().closeInventory();
