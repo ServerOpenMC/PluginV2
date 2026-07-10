@@ -53,8 +53,6 @@ public class ProtectionsManager {
     public static boolean canInteract(Player player, Location loc) {
         if (!player.getWorld().getName().equals("world")) return true;
 		
-	    if (ShopManager.getShopAt(loc) != null) return true;
-		
         if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
@@ -100,7 +98,10 @@ public class ProtectionsManager {
 	public static void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
-		if (ShopManager.getShopAt(loc) != null) return;
+		if (ShopManager.getShopAt(loc) != null) {
+			event.setCancelled(true);
+			return;
+		}
 		
 		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
 		if (city == null || city.isInWar()) return;
@@ -109,6 +110,7 @@ public class ProtectionsManager {
 			if (canInteract(player, loc)) return;
 
 			event.setCancelled(true);
+			
 			cancelMessage(player);
 		} else {
 			event.setCancelled(true);

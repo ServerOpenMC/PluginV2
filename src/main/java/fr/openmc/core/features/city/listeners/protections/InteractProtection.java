@@ -52,7 +52,10 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            if (ShopManager.getShopAt(location) != null) return;
+            if (ShopManager.getShopAt(location) != null) {
+                event.setCancelled(true);
+                return;
+            }
             
             City city = CityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
             if (city == null) return;
@@ -91,7 +94,6 @@ public class InteractProtection implements Listener {
         if (rightClicked instanceof Player) return;
         
         if (!INTERACTION_REFUSED.contains(rightClicked.getType())) return;
-        if (ShopManager.getShopAt(rightClicked.getLocation()) != null) return;
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;
 

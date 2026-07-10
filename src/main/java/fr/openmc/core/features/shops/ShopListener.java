@@ -64,7 +64,7 @@ public class ShopListener implements Listener {
         e.setCancelled(true);
         Player player = e.getPlayer();
         if (shop.isMenuOpened()) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, false);
             return;
         }
         
@@ -75,7 +75,7 @@ public class ShopListener implements Listener {
             new ShopSellingMenu(player, shop).open();
             shop.setMenuOpened(true);
         } else {
-            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
+            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.ERROR, true);
         }
     }
 
@@ -96,7 +96,7 @@ public class ShopListener implements Listener {
         Player player = e.getPlayer();
         if (!shop.getOwnerUUID().equals(player.getUniqueId())) {
             e.setCancelled(true);
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_him_shop"), Prefix.SHOP, MessageType.WARNING, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_him_shop"), Prefix.SHOP, MessageType.ERROR, true);
         }
     }
     
@@ -133,7 +133,7 @@ public class ShopListener implements Listener {
 	    
 	    e.setCancelled(true);
         if (shop.isMenuOpened()) {
-            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, true);
+            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.menu.already_opened"), Prefix.SHOP, MessageType.WARNING, false);
             return;
         }
         if (shop.hasItem()) {
@@ -143,7 +143,7 @@ public class ShopListener implements Listener {
             new ShopSellingMenu(player, shop).open();
             shop.setMenuOpened(true);
         } else {
-            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.WARNING, true);
+            MessagesManager.sendMessage(e.getPlayer(), TranslationManager.translation("feature.shop.no_item"), Prefix.SHOP, MessageType.ERROR, true);
         }
     }
     
