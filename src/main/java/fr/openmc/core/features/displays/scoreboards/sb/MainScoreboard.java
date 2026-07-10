@@ -33,7 +33,8 @@ import java.util.List;
 
 import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmallComponent;
-import static net.kyori.adventure.text.Component.*;
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
 
 public class MainScoreboard extends BaseScoreboard {
     @Override
@@ -133,7 +134,7 @@ public class MainScoreboard extends BaseScoreboard {
             }
         }
 
-        lines.add(newline());
+        lines.add(empty());
 
         return lines;
     }
