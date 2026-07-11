@@ -110,15 +110,6 @@ public class OMCPlayer implements Player {
         return EconomyManager.transferBalance(getUniqueId(), targetUUID, amount, reason);
     }
 
-    @Nullable
-    public City getCity() {
-        return CityManager.getPlayerCity(getUniqueId());
-    }
-
-    public boolean hasCity() {
-        return getCity() != null;
-    }
-
     public void open(@NotNull Menu menu) {
         menu.open();
     }
@@ -223,7 +214,7 @@ public class OMCPlayer implements Player {
     }
 
     private final Message message = new Message();
-    private final City message = new City();
+    private final City city = new City();
 
     /**
      * Acces au namespace messages du joueur.
@@ -312,6 +303,7 @@ public class OMCPlayer implements Player {
     }
 
     public class City {
+        @Nullable
         public fr.openmc.core.features.city.City getCity() {
             return CityManager.getCity(player.getUniqueId());
         }
