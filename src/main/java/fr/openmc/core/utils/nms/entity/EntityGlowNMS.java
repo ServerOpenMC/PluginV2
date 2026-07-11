@@ -16,11 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityGlowNMS implements Listener {
     private static final Scoreboard NMS_SCOREBOARD = new Scoreboard();
     private static final Map<TeamColor, PlayerTeam> TEAM_MAP = new HashMap<>();
-    private static final Map<UUID, TeamColor> entitiesGlowing = new HashMap<>();
+    private static final Map<UUID, TeamColor> entitiesGlowing = new ConcurrentHashMap<>();
 
 
     public EntityGlowNMS() {
@@ -86,13 +87,26 @@ public class EntityGlowNMS implements Listener {
         }
     }
 
+    private static void sendPacketTo(Player player, ClientboundSetPlayerTeamPacket packet) {
+        ((CraftPlayer) player).getHandle().connection.send(packet);
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        Player joined = event.getPlayer();
         for (TeamColor color : TeamColor.values()) {
             PlayerTeam team = TEAM_MAP.get(color);
             if (team == null) continue;
 
-            sendPacket(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
+            sendPacketTo(joined, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
+        }
+
+        for (Map.Entry<UUID, TeamColor> entry : entitiesGlowing.entrySet()) {
+            PlayerTeam team = TEAM_MAP.get(entry.getValue());
+            if (team == null) continue;
+            sendPacketTo(joined, ClientboundSetPlayerTeamPacket.createPlayerPacket(
+                    team, entry.getKey().toString(), ClientboundSetPlayerTeamPacket.Action.ADD
+            ));
         }
     }
 }
