@@ -8,6 +8,7 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;
@@ -28,9 +29,9 @@ public class PlayerJoinListener implements Listener {
 
         int rankCity = NotationManager.getSortedNotationForWeek(DateUtils.getWeekFormat()).indexOf(notation) + 1;
         MessagesManager.sendMessage(player,
-                Component.text("§3§lNOTATION ! §7Votre ville a été notée et elle est placée n°" + rankCity + " des meilleures villes !")
+                TranslationManager.translation("feature.city.notation.join.message", Component.text(rankCity))
                         .clickEvent(ClickEvent.runCommand("city notation"))
-                        .hoverEvent(Component.text("§eCliquez pour voir la notation de votre ville !")),
+                        .hoverEvent(TranslationManager.translation("feature.city.notation.join.hover")),
                 Prefix.CITY, MessageType.INFO, false);
     }
 }

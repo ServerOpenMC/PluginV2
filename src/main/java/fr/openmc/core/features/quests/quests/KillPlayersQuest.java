@@ -11,14 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.List;
-
 public class KillPlayersQuest extends Quest implements Listener {
 
     public KillPlayersQuest() {
         super(
-                TranslationManager.translationString("feature.quests.kill_players.name"),
-                List.of(TranslationManager.translationString("feature.quests.kill_players.description")),
+                TranslationManager.translation("feature.quests.kill_players.name"),
+                TranslationManager.translationLore("feature.quests.kill_players.description"),
                 Material.IRON_SWORD
         );
 

@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -65,10 +66,10 @@ public class PlayerFishListener implements Listener {
                     CustomLootTable lootTable = CloudFishingManager.FISHING_LOOT_TABLE;
                     if (lootTable == null) return;
 
-                    List<ItemStack> rewards = lootTable.rollLoots();
+                    List<CustomLoot> rewards = lootTable.rollLoots(player);
 
-                    for (ItemStack item : rewards) {
-                        player.getInventory().addItem(item);
+                    for (CustomLoot loot : rewards) {
+                        if (!(loot instanceof ItemStack item)) continue;
 
                         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                                 Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))

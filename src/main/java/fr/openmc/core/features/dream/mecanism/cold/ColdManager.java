@@ -8,9 +8,8 @@ import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -70,10 +69,10 @@ public class ColdManager {
 
     public static void sendColdLevelMessage(Player player, int level) {
         Component message = switch (level) {
-            case 1 -> Component.text("*Vous ressentez le froid vous ralentir...*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
-            case 2 -> Component.text("*Le froid se disperse dans tout votre corps*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
-            case 3 -> Component.text("*Vous tremblez de froid*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
-            case 4 -> Component.text("*Vous êtes sur le point de mourir de froid*", NamedTextColor.DARK_GRAY, TextDecoration.ITALIC);
+            case 1 -> TranslationManager.translation("feature.dream.cold.message.level_1");
+            case 2 -> TranslationManager.translation("feature.dream.cold.message.level_2");
+            case 3 -> TranslationManager.translation("feature.dream.cold.message.level_3");
+            case 4 -> TranslationManager.translation("feature.dream.cold.message.level_4");
             default -> null;
         };
 

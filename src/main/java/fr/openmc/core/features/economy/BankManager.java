@@ -20,6 +20,7 @@ import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -283,7 +284,7 @@ public class BankManager extends Feature implements DatabaseFeature {
     }
 
     public static long getSecondsUntilInterest() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.getLocalDateTime();
         LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0)
                 .withSecond(0);
         // if it is after 2 AM, get the monday after

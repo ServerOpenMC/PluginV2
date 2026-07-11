@@ -73,13 +73,14 @@ public class BankCommands {
         BankManager.withdraw(player.getUniqueId(), input);
     }
 
-    @Subcommand({"balance", "bal"})
+    @Subcommand({ "balance", "bal" })
     void withdraw(OMCPlayer player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
-                    Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY
-            );
-            return;
+                    "feature.economy.bank.command.not_unlocked",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK)).color(NamedTextColor.YELLOW)
+            ), Prefix.CITY);
         }
 
         double balance = BankManager.getBankBalance(player.getUniqueId());

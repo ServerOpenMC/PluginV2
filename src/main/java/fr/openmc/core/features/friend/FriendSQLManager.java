@@ -7,10 +7,10 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.utils.text.DateUtils;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +50,7 @@ public class FriendSQLManager {
 
     public static boolean addInDatabase(UUID first, UUID second) {
         try {
-            return friendsDao.create(new Friend(first, second, Timestamp.valueOf(LocalDateTime.now()))) != 0;
+            return friendsDao.create(new Friend(first, second, Timestamp.valueOf(DateUtils.getLocalDateTime()))) != 0;
         } catch (SQLException e) {
             OMCLogger.error("Failed to add Friends in database", e);
             return false;

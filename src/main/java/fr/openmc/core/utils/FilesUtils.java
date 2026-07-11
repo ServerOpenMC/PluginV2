@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Stream;
 
 /**
  * Utilitaires pour la gestion des fichiers et dossiers
@@ -39,19 +40,23 @@ public class FilesUtils {
      * @throws IOException Si une erreur survient lors de la suppression
      */
     public static void deleteDirectory(File dir) throws IOException {
-        if (!dir.exists()) return;
+        if (!dir.exists()) {
+            OMCLogger.warn("Dossier introuvable : " + dir.getAbsolutePath());
+            return;
+        }
 
-        Files.walk(Paths.get(dir.getAbsolutePath()))
-                .sorted(Comparator.reverseOrder())
-                .forEach(path -> {
-                    try {
-                        Files.delete(path);
-                    } catch (NoSuchFileException e) {
-                        OMCLogger.warn("Impossible de supprimer (fichier manquant): {}", path, e.getMessage());
-                    } catch (IOException e) {
-                        OMCLogger.warn("Impossible de supprimer: {}", path, e);
-                    }
-                });
+        try (Stream<Path> stream = Files.walk(dir.toPath())) {
+            stream.sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (NoSuchFileException e) {
+                            OMCLogger.warn("Impossible de supprimer (fichier manquant): {}", path, e.getMessage());
+                        } catch (IOException e) {
+                            OMCLogger.warn("Impossible de supprimer: {}", path, e);
+                        }
+                    });
+        }
     }
 
     /**

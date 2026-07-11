@@ -10,14 +10,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 
-import java.util.List;
-
 public class SmeltIronQuest extends Quest implements Listener {
 
     public SmeltIronQuest() {
         super(
-                TranslationManager.translationString("feature.quests.smelt_iron.name"),
-                List.of(TranslationManager.translationString("feature.quests.smelt_iron.description")),
+                TranslationManager.translation("feature.quests.smelt_iron.name"),
+                TranslationManager.translationLore("feature.quests.smelt_iron.description"),
                 Material.IRON_ORE
         );
 

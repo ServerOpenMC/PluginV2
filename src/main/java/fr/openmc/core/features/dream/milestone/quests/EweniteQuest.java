@@ -10,33 +10,23 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 
-import java.util.List;
-
 public class EweniteQuest extends MilestoneQuest implements Listener {
 	
 	public EweniteQuest() {
 		super(
-				"Aywenite, Awyenito ou Ewenite ?",
-				List.of(
-						"§fObtenir de l'§dEwenite",
-						"§8§oUn nouveau minerai à exploiter.",
-						"§8§oBizarre, ce nom m'est familier."
-				),
+				TranslationManager.translation("feature.dream.milestone.quest.ewenite.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.ewenite.description"),
 				DreamItemRegistry.EWENITE,
 				MilestoneType.DREAM,
 				DreamSteps.EWENITE,
 				new QuestTier(1),
-				List.of(
-						"§6Le début de la richesse. Qu'il s'agisse de miner ou de les échanger, j'ai l'impression que la recherche va être longue.",
-						"§3Voyageur : Le minerai n'est pas commun, mais tu peux en trouver plusieurs rapidement.",
-						"§6N'y a-t-il pas moyen d'aller plus vite ?",
-						"§3Voyageur : Tu peux te fabriquer la §dPioche mécanique §3si tu le souhaites, ça sera plus rapide."
-				)
+				TranslationManager.translationLore("feature.dream.milestone.quest.ewenite.dialog")
 		);
 	}
 	

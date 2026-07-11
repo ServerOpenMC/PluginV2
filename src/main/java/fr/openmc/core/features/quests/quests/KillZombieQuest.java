@@ -12,14 +12,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.List;
-
 public class KillZombieQuest extends Quest implements Listener {
 
     public KillZombieQuest() {
         super(
-                TranslationManager.translationString("feature.quests.kill_zombie.name"),
-                List.of(TranslationManager.translationString("feature.quests.kill_zombie.description")),
+                TranslationManager.translation("feature.quests.kill_zombie.name"),
+                TranslationManager.translationLore("feature.quests.kill_zombie.description"),
                 Material.ZOMBIE_HEAD
         );
 

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.models.registry;
 
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
 import lombok.Getter;

@@ -11,13 +11,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.List;
-
 public class WalkQuests extends Quest implements Listener {
     public WalkQuests() {
         super(
-                TranslationManager.translationString("feature.quests.walk.name"),
-                List.of(TranslationManager.translationString("feature.quests.walk.description")),
+                TranslationManager.translation("feature.quests.walk.name"),
+                TranslationManager.translationLore("feature.quests.walk.description"),
                 Material.LEATHER_BOOTS,
                 true
         );

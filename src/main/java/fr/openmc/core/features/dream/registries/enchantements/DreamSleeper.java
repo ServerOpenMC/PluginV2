@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.scheduler.BukkitRunnable;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DreamSleeper extends DreamEnchantment implements Listener {
@@ -27,7 +28,7 @@ public class DreamSleeper extends DreamEnchantment implements Listener {
 
     @Override
     public Component getName() {
-        return Component.text("Endormant");
+        return TranslationManager.translation("feature.dream.enchantment.dream_sleeper.name");
     }
 
     @Override

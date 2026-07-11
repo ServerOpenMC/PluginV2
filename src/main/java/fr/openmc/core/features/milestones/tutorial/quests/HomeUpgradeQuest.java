@@ -18,18 +18,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
 
     public HomeUpgradeQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.2"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_upgrade.description.3")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.home_upgrade.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.home_upgrade.description"),
                 OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.HOME_UPGRADE,

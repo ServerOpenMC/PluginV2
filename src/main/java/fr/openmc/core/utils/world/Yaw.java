@@ -1,13 +1,14 @@
 package fr.openmc.core.utils.world;
 
+import lombok.Getter;
 import org.bukkit.block.BlockFace;
 
 public enum Yaw {
 
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST;
+    NORTH(180),
+    EAST(270),
+    SOUTH(0),
+    WEST(90);
 
     public Yaw getOpposite() {
         return switch (this) {
@@ -26,5 +27,11 @@ public enum Yaw {
             case WEST -> BlockFace.WEST;
         };
     }
-
+    
+    @Getter
+    final float playerYaw;
+    
+    Yaw (float playerYaw) {
+        this.playerYaw = playerYaw;
+    }
 }

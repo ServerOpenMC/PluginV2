@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.text;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 
@@ -78,31 +79,31 @@ public class ColorUtils {
         return NamedTextColor.NAMES.valueOr(color.toLowerCase(), NamedTextColor.WHITE);
     }
 
-    private static final Map<NamedTextColor, String> colorToName = new HashMap<>();
+    private static final Map<NamedTextColor, String> colorToNameKey = new HashMap<>();
     static {
-        colorToName.put(BLACK, "§0Noir");
-        colorToName.put(DARK_BLUE, "§1Bleu foncé");
-        colorToName.put(DARK_GREEN, "§2Vert foncé");
-        colorToName.put(DARK_AQUA, "§3Aqua foncé");
-        colorToName.put(DARK_RED, "§4Rouge foncé");
-        colorToName.put(DARK_PURPLE, "§5Violet");
-        colorToName.put(GOLD, "§6Orange");
-        colorToName.put(GRAY, "§7Gris");
-        colorToName.put(DARK_GRAY, "§8Gris foncé");
-        colorToName.put(BLUE, "§9Bleu");
-        colorToName.put(GREEN, "§aVert clair");
-        colorToName.put(AQUA, "§bBleu clair");
-        colorToName.put(RED, "§cRouge");
-        colorToName.put(LIGHT_PURPLE, "§dRose");
-        colorToName.put(YELLOW, "§eJaune");
-        colorToName.put(WHITE, "§fBlanc");
+        colorToNameKey.put(BLACK, "core.color.name.black");
+        colorToNameKey.put(DARK_BLUE, "core.color.name.dark_blue");
+        colorToNameKey.put(DARK_GREEN, "core.color.name.dark_green");
+        colorToNameKey.put(DARK_AQUA, "core.color.name.dark_aqua");
+        colorToNameKey.put(DARK_RED, "core.color.name.dark_red");
+        colorToNameKey.put(DARK_PURPLE, "core.color.name.dark_purple");
+        colorToNameKey.put(GOLD, "core.color.name.gold");
+        colorToNameKey.put(GRAY, "core.color.name.gray");
+        colorToNameKey.put(DARK_GRAY, "core.color.name.dark_gray");
+        colorToNameKey.put(BLUE, "core.color.name.blue");
+        colorToNameKey.put(GREEN, "core.color.name.green");
+        colorToNameKey.put(AQUA, "core.color.name.aqua");
+        colorToNameKey.put(RED, "core.color.name.red");
+        colorToNameKey.put(LIGHT_PURPLE, "core.color.name.light_purple");
+        colorToNameKey.put(YELLOW, "core.color.name.yellow");
+        colorToNameKey.put(WHITE, "core.color.name.white");
     }
 
     /**
-     * Retourne un String qui contient la couleur entrée
+     * Retourne une translation key qui contient la couleur entrée
      */
     public static String getNameFromColor(NamedTextColor c) {
-        return colorToName.getOrDefault(c, "Aucun");
+        return TranslationManager.translationString(colorToNameKey.getOrDefault(c, "core.color.name.none"));
     }
 
     private static final Map<NamedTextColor, String> colorCode = new HashMap<>();

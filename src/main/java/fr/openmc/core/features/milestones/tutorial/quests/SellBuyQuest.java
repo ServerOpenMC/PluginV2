@@ -20,17 +20,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class SellBuyQuest extends MilestoneQuest implements Listener {
 
     public SellBuyQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.sell_buy.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.sell_buy.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.sell_buy.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.sell_buy.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.sell_buy.description"),
                 Material.GOLD_INGOT,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.SELL_BUY_ADMINSHOP,

@@ -19,17 +19,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class SpareBankQuest extends MilestoneQuest implements Listener {
 
     public SpareBankQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.spare_bank.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.spare_bank.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.spare_bank.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.spare_bank.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.spare_bank.description"),
                 Material.DIAMOND_BLOCK,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.SPARE_BANK,

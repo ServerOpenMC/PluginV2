@@ -12,6 +12,15 @@
       "state": {
         "Name": "blue_ice"
       }
+    },
+    "can_place_feature": {
+      "type": "minecraft:true"
+    },
+    "can_replace_with_air_or_fluid": {
+      "type": "minecraft:true"
+    },
+    "can_replace_with_barrier": {
+      "type": "minecraft:true"
     }
   }
 }

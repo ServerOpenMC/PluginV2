@@ -13,7 +13,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
-import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
@@ -209,14 +208,14 @@ public class QuestsMenu extends Menu {
         Component displayName = TranslationManager.translation(
                 "feature.quests.menu.quest_item.name",
                 nameIcon,
-                Component.text(quest.getName()).color(NamedTextColor.YELLOW),
+                quest.getName(playerUUID).color(NamedTextColor.YELLOW),
                 tierDisplay
         ).decoration(TextDecoration.ITALIC, false);
         meta.displayName(displayName);
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        quest.getDescription(playerUUID).forEach(string -> {
-            lore.add(Component.text(string, NamedTextColor.GRAY)
+        quest.getDescription(playerUUID).forEach(description -> {
+            lore.add(description.color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         });
         lore.add(bar);
@@ -316,8 +315,9 @@ public class QuestsMenu extends Menu {
                     .append(TranslationManager.translation("feature.quests.menu.current_objective")
                             .color(NamedTextColor.YELLOW))
                     .decoration(TextDecoration.ITALIC, false));
-            quest.getDescription(playerUUID).forEach(string -> {
-                lore.add(Component.text("  " + string, NamedTextColor.WHITE)
+            quest.getDescription(playerUUID).forEach(description -> {
+                lore.add(Component.text("  ", NamedTextColor.WHITE)
+                        .append(description.color(NamedTextColor.WHITE))
                         .decoration(TextDecoration.ITALIC, false));
             });
             lore.addAll(quest.getAdditionalLore());
@@ -333,9 +333,9 @@ public class QuestsMenu extends Menu {
                     boolean stepCompleted = step.isCompleted(playerUUID);
 
                     Component stepIcon = Component.text(stepCompleted ? "✅" : "❌", stepCompleted ? NamedTextColor.GREEN : NamedTextColor.RED);
-                    String stepDescription = step.getDescription();
+                    Component stepDescription = step.getDescription();
                     lore.add(Component.text("  * ", NamedTextColor.GRAY)
-                            .append(Component.text(stepDescription, NamedTextColor.GRAY))
+                            .append(stepDescription.color(NamedTextColor.GRAY))
                             .append(Component.space())
                             .append(stepIcon)
                             .decoration(TextDecoration.ITALIC, false));
@@ -350,14 +350,16 @@ public class QuestsMenu extends Menu {
                                 .color(NamedTextColor.DARK_GRAY))
                         .decoration(TextDecoration.ITALIC, false));
                 quest.getNextTierDescription(playerUUID).forEach(description -> {
-                    lore.add(Component.text("  " + description, NamedTextColor.DARK_GRAY)
+                    lore.add(Component.text("  ", NamedTextColor.DARK_GRAY)
+                            .append(description.color(NamedTextColor.DARK_GRAY))
                             .decoration(TextDecoration.ITALIC, false));
                 });
 
                 if (nextTier.getSteps() != null && !nextTier.getSteps().isEmpty()) {
                     for (int i = 0; i < nextTier.getSteps().size(); i++) {
                         QuestStep step = nextTier.getSteps().get(i);
-                        lore.add(Component.text("  ▪ " + step.getDescription(), NamedTextColor.DARK_GRAY)
+                        lore.add(Component.text("  ▪ ", NamedTextColor.DARK_GRAY)
+                                .append(step.getDescription().color(NamedTextColor.DARK_GRAY))
                                 .decoration(TextDecoration.ITALIC, false));
                     }
                 }

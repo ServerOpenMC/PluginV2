@@ -2,13 +2,14 @@ package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Creaking;
 
 public class DreamCreaking extends DreamMob<Creaking> {
 
     public DreamCreaking(String id) {
         super(id,
-                "Creaking Insomiaque",
+                TranslationManager.translationString("feature.dream.mob.dream_creaking"),
                 Creaking.class,
                 1,
                 2L,
