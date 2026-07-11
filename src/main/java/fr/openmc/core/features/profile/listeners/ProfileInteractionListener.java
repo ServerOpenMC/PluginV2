@@ -11,9 +11,7 @@ public class ProfileInteractionListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
         Player viewer = event.getPlayer();
-        if (event.getHand() != EquipmentSlot.HAND || !viewer.isSneaking()) {
-            return;
-        }
+        if (event.getHand() != EquipmentSlot.HAND || !viewer.isSneaking()) return;
         if (!(event.getRightClicked() instanceof Player target)) {
             return;
         }
