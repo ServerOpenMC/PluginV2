@@ -5,8 +5,10 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -44,8 +46,6 @@ public class InteractProtection implements Listener {
         boolean isMinecart = isMinecart(itemType);
         boolean isTnt = itemType == Material.TNT;
 
-        Location loc = clickedBlock.getLocation();
-
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (inHand != null && inHand.getType().isEdible()) {
                 Material type = clickedBlock.getType();
@@ -53,7 +53,13 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            if (ShopManager.getShopAt(location) != null) {
+                if (clickedBlock.getState() instanceof Barrel) return;
+                event.setCancelled(true);
+                return;
+            }
+            
+            City city = CityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
             if (city == null) return;
             
             if (city.isMember(player)) {
@@ -88,6 +94,7 @@ public class InteractProtection implements Listener {
         
         Entity rightClicked = event.getRightClicked();
         if (rightClicked instanceof Player) return;
+        
         if (!INTERACTION_REFUSED.contains(rightClicked.getType())) return;
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;
