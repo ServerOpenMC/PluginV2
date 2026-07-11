@@ -2,6 +2,7 @@ package fr.openmc.core.features.displays.bossbar.contents;
 
 import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.entity.Player;
 
@@ -30,7 +31,7 @@ public class MainBossbar extends BaseBossbar {
     protected void update(Player player, BossBar bar) {
         indexMessage = (indexMessage + 1) % HelpConfigManager.getHelpMessages().size();
 
-        bar.name(HelpConfigManager.getHelpMessages().get(indexMessage));
+        bar.name(TranslationManager.translation(HelpConfigManager.getHelpMessages().get(indexMessage)));
     }
 
     @Override

@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ma
 
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -84,15 +85,9 @@ public class ContestPlayerManager  {
         MULTIPLICATOR_MONEY.put(10, 2.4);
     }
 
-    /**
-     * Retourne le nom du camp auquel appartient le joueur.
-     *
-     * @param player Le joueur dont on veut connaître le camp.
-     * @return Le nom du camp (camp1 ou camp2).
-     */
-    public static String getPlayerCampName(Player player) {
+    public static Component getPlayerCampComponent(Player player) {
         int campInteger = ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
-        return ContestManager.data.get("camp" + campInteger);
+        return ContestManager.data.getCampComponent(campInteger);
     }
 
     /**

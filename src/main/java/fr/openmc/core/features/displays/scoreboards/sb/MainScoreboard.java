@@ -55,10 +55,10 @@ public class MainScoreboard extends BaseScoreboard {
                         Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.contest.title.to_small"))
                 ).decoration(TextDecoration.BOLD, true));
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                        .append(textToSmallComponent(data.getCamp1()).color(data.getColor1AsNamedTextColor()))
+                        .append(data.getCamp1ToSmall())
                         .appendSpace()
                         .append(TranslationManager.translation("feature.displays.scoreboard.contest.vs.to_small").color(NamedTextColor.GRAY))
-                        .append(textToSmallComponent(data.getCamp2()).color(data.getColor2AsNamedTextColor()))
+                        .append(data.getCamp2ToSmall())
                 );
                 lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation("feature.displays.scoreboard.contest.ends.to_small").color(NamedTextColor.GRAY))
