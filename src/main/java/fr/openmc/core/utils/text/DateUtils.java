@@ -1,5 +1,11 @@
 package fr.openmc.core.utils.text;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -8,7 +14,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
 public class DateUtils {
-    
+
     private final static DateTimeFormatter foratterWeekFormat = DateTimeFormatter.ofPattern("u-w", Locale.FRENCH);
 
     public static LocalDateTime getLocalDateTime() {
@@ -134,25 +140,38 @@ public class DateUtils {
     /**
      * Renvoie une chaine de caractère en fonction du temps passé
      */
-    public static String formatRelativeDate(LocalDateTime dateTime) {
+    public static Component formatRelativeDate(LocalDateTime dateTime) {
         LocalDateTime now = DateUtils.getLocalDateTime();
         Duration duration = Duration.between(dateTime, now);
         long minutes = duration.toMinutes();
 
-        String repetMsg="Il y a ";
         if (minutes < 1) {
-            return "À l'instant";
+            return TranslationManager.translation("core.date.relative.just_now");
         } else if (minutes < 60) {
-            return repetMsg + minutes + " minute" + (minutes > 1 ? "s" : "");
+            return TranslationManager.translation(
+                    minutes > 1 ? "core.date.relative.minutes" : "core.date.relative.minute",
+                    Component.text(minutes)
+            );
         } else if (duration.toHours() < 24) {
             long hours = duration.toHours();
-            return repetMsg + hours + " heure" + (hours > 1 ? "s" : "");
+            return TranslationManager.translation(
+                    hours > 1 ? "core.date.relative.hours" : "core.date.relative.hour",
+                    Component.text(hours)
+            );
         } else if (duration.toDays() <= 5) {
             long days = duration.toDays();
-            return repetMsg + days + " jour" + (days > 1 ? "s" : "");
+            return TranslationManager.translation(
+                    days > 1 ? "core.date.relative.days" : "core.date.relative.day",
+                    Component.text(days)
+            );
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'Le' dd/MM/yyyy 'à' HH:mm");
-            return dateTime.format(formatter);
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            return TranslationManager.translation(
+                    "core.date.relative.absolute",
+                    Component.text(dateTime.format(dateFormatter)),
+                    Component.text(dateTime.format(timeFormatter))
+            );
         }
     }
 

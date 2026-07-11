@@ -63,7 +63,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
                 OMCLogger.error("Erreur survenue durant le build du datapack lors du runtime {}", e.getMessage());
             }
         } else {
-            OMCLogger.infoFormatted("Aucun ambient rajouté, innutile de redémarrer le serveur");
+            OMCLogger.infoFormatted("Aucun ambient rajouté, inutile de redémarrer le serveur");
         }
     }
 

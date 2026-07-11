@@ -45,6 +45,7 @@ import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
@@ -118,6 +119,7 @@ public class OMCPlugin extends JavaPlugin {
             () -> new LeaderboardManager(),
             () -> new MainMenu(),
             () -> new HologramLoader(),
+            ShopManager::new,
             HomeIconCacheManager::new
     ));
 
@@ -191,7 +193,7 @@ public class OMCPlugin extends JavaPlugin {
                     }
                 });
 
-        // * Si ItemsAdder est pas présent, alors on charge les dernieres features maintenant
+        // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
         if (!ItemsAdderHook.isEnable()) {
             loadAfterItemsAdder();
         }

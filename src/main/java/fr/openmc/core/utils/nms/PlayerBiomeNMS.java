@@ -138,7 +138,7 @@ public class PlayerBiomeNMS {
     public static LevelChunk getFakeChunk(LevelChunk original, ServerLevel level, Holder<Biome> biome) {
         LevelChunk fakeChunk = new LevelChunk(level, original.getPos());
 
-        Strategy<Holder<Biome>> idMap = Strategy.createForBiomes(original.level.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap());
+        Strategy<Holder<Biome>> idMap = Strategy.createForBiomes(original.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap());
 
         LevelChunkSection[] originalSections = original.getSections();
         LevelChunkSection[] fakeSections = fakeChunk.getSections();
@@ -172,10 +172,10 @@ public class PlayerBiomeNMS {
             LevelChunk original,
             String keyMappedBiome,
             Function<Identifier, Identifier> identifierModifier) {
-        LevelChunk fake = new LevelChunk(original.level, original.getPos());
+        LevelChunk fake = new LevelChunk(original.getLevel(), original.getPos());
 
-        Registry<Biome> registry = original.level.registryAccess().lookupOrThrow(Registries.BIOME);
-        Strategy<Holder<Biome>> idMap = Strategy.createForBiomes(original.level.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap());
+        Registry<Biome> registry = original.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+        Strategy<Holder<Biome>> idMap = Strategy.createForBiomes(original.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap());
         LevelChunkSection[] originalSections = original.getSections();
         LevelChunkSection[] fakeSections = fake.getSections();
 

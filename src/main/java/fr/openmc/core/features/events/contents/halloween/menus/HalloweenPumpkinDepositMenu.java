@@ -52,7 +52,7 @@ public class HalloweenPumpkinDepositMenu extends Menu {
                     meta.setEnchantmentGlintOverride(true);
                 }).setOnClick(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    int pumpkinCount = ItemUtils.removeItemsFromInventory(player, Material.PUMPKIN, Integer.MAX_VALUE);
+                    int pumpkinCount = ItemUtils.removeItemsFromPlayerInventory(player, Material.PUMPKIN, Integer.MAX_VALUE);
                     if (pumpkinCount == 0) {
                         MessagesManager.sendMessage(
                                 player,

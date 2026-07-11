@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id "com.gradleup.shadow" version "9.4.1"
+    id "com.gradleup.shadow" version "9.5.1"
     id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
     id("xyz.jpenilla.run-paper") version "3.0.2" // Will use ${minecraftVersion} for the paper version
 }
@@ -51,11 +51,17 @@ repositories {
 dependencies {
     paperweight.paperDevBundle "${minecraftVersion}.build.+"
 
-    compileOnly "com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}"
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}") {
+        exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
     compileOnly "dev.lone:api-itemsadder:${itemsAdderVersion}"
     compileOnly "net.luckperms:api:${luckpermsVersion}"
     compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
-    compileOnly "com.sk89q.worldedit:worldedit-bukkit:${worldeditVersion}"
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:${worldeditVersion}") {
+        exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
     compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
@@ -84,7 +90,7 @@ java {
 }
 
 paperweight {
-  addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
+    addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
 }
 
 tasks.withType(JavaCompile).configureEach {

@@ -136,7 +136,7 @@ public class NotationEditionDialog {
                         .build()
                 )
                 .type(DialogType.confirmation(
-                        ActionButton.builder(Component.text(ButtonType.SAVE.getLabel()))
+                        ActionButton.builder(ButtonType.SAVE.getLabelComponent())
                                 .action(DialogAction.customClick((response, audience) -> {
                                             float noteArchitectural = response.getFloat("input_note_architectural");
                                             float noteCoherence = response.getFloat("input_note_coherence");
@@ -173,7 +173,7 @@ public class NotationEditionDialog {
                                         ClickCallback.Options.builder().build()
                                 ))
                                 .build(),
-                        ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
+                        ActionButton.builder(ButtonType.CANCEL.getLabelComponent())
                                 .action(DialogAction.customClick((response, audience) -> {
                                             player.closeInventory();
                                         }, ClickCallback.Options.builder().build())

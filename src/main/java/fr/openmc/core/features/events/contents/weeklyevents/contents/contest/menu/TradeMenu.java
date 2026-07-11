@@ -156,7 +156,7 @@ public class TradeMenu extends Menu {
             sendNotEnoughMessage(player);
             return;
         }
-        ItemUtils.removeItemsFromInventory(player, item, itemsRemoved);
+        ItemUtils.removeItemsFromPlayerInventory(player, item, itemsRemoved);
         giveShells(player, shellsEarned);
         sendSuccessMessage(player, itemsRemoved, shellsEarned, tradeName);
     }
@@ -185,7 +185,7 @@ public class TradeMenu extends Menu {
                 .sum();
         int shellsEarned = (totalItems / amount) * amountShell;
         int itemsRemoved = (shellsEarned / amountShell) * amount;
-        ItemUtils.removeItemsFromInventory(player, item, itemsRemoved);
+        ItemUtils.removeItemsFromPlayerInventory(player, item, itemsRemoved);
         giveShells(player, shellsEarned);
         sendSuccessMessage(player, itemsRemoved, shellsEarned, tradeName);
     }

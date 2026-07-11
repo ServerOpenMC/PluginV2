@@ -1,6 +1,5 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -14,6 +13,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**

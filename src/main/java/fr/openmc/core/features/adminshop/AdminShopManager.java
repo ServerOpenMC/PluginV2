@@ -141,7 +141,7 @@ public class AdminShopManager extends Feature implements HasCommands {
         }
 
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
-        ItemUtils.removeItemsFromInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
+        ItemUtils.removeItemsFromPlayerInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
         EconomyManager.addBalance(player.getUniqueId(), totalPrice, "Vente AdminShop"); // Add money to the player's balance
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));

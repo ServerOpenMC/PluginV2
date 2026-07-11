@@ -22,8 +22,15 @@ items:
       generate: true
       textures:
         - 1_btn
-  64_btn:
+  10_btn:
     display_name: 10
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - 10_btn
+  64_btn:
+    display_name: 64
     resource:
       material: PAPER
       generate: true
@@ -37,7 +44,7 @@ items:
       textures:
         - plus_btn
   minus_btn:
-    display_name: plus
+    display_name: moins
     resource:
       material: PAPER
       generate: true
