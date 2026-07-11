@@ -34,7 +34,8 @@ public class PlayerShopManager {
      */
     public static void startCreatingShop(Player player) {
         if (!EconomyManager.withdrawBalance(player.getUniqueId(), 500)) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money", Component.text("500 " + EconomyManager.getEconomyIcon()).color(NamedTextColor.RED)), Prefix.SHOP, MessageType.ERROR, true);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money",
+                    Component.text("500 " + EconomyManager.getEconomyIcon(), NamedTextColor.RED)), Prefix.SHOP, MessageType.ERROR, true);
 			return;
         }
         
@@ -51,7 +52,8 @@ public class PlayerShopManager {
                 },
                 () -> {
                     EconomyManager.addBalance(player.getUniqueId(), 500, "Canceling shop creation");
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.cancelling_pay", Component.text("500 " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GREEN)), Prefix.SHOP, MessageType.INFO, true);
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.cancelling_pay",
+                            Component.text("500 " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GREEN)), Prefix.SHOP, MessageType.INFO, true);
                 }
         );
     }
