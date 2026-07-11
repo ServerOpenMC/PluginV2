@@ -99,8 +99,8 @@ public class MenuUtils {
 	 *
 	 * @return A list of integers representing the inventory item slots
 	 */
-	public static List<Integer> getInventoryItemSlots() {
-		return IntStream.rangeClosed(54, 89)
+	public static List<Integer> getInventoryItemSlots(int menuSize) {
+		return IntStream.rangeClosed(menuSize, menuSize + 35)
 				.boxed()
 				.toList();
 	}
