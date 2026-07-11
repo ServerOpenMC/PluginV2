@@ -4,7 +4,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.bukkit.EntityUtils;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.scores.TeamColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -63,7 +63,7 @@ public class CursedMonster extends CustomMob<Monster> {
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
 
-        EntityGlowNMS.setGlowingColor(entity, ChatFormatting.DARK_PURPLE);
+        EntityGlowNMS.setGlowingColor(entity, TeamColor.DARK_PURPLE);
     }
 
     public void resetToDefault(Monster entity) {
