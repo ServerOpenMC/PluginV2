@@ -1,5 +1,6 @@
 package fr.openmc.core.features.economy.commands;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -24,13 +25,11 @@ public class Money {
             CommandSender sender,
             @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target
     ) {
-        if (sender instanceof Player player && target == null) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation(
-                            "feature.economy.money.self",
-                            Component.text(EconomyManager.getFormattedBalance(player.getUniqueId())).color(NamedTextColor.YELLOW)
-                    ),
-                    Prefix.OPENMC, MessageType.INFO,  true);
+        if (sender instanceof OMCPlayer player && target == null) {
+            player.message().sendInfo(TranslationManager.translation(
+                    "feature.economy.money.self",
+                    Component.text(player.getFormattedBalance()).color(NamedTextColor.YELLOW)
+            ));
         } else {
             if (target == null) {
                 MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.missing_arg"), Prefix.OPENMC, MessageType.ERROR, true);
