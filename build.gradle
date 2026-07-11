@@ -133,6 +133,69 @@ tasks.shadowJar {
     relocate("revxrsal.commands", "fr.openmc.shaded.revxrsal.commands")
     relocate("com.j256.ormlite", "fr.openmc.shaded.com.j256.ormlite")
 }
+def serverJar = file("run/paper.jar")
+def paperUrl = "https://fill-data.papermc.io/v1/objects/8600cc3b91ea38d7e836d562550b31d0fa3ed785d14dffc1a6d9dc1d36c21fa5/paper-26.2-56.jar"
+
+tasks.register("runDevServer") {
+    dependsOn shadowJar
+
+    doLast {
+        mkdir("run")
+        mkdir("run/plugins")
+
+        if (!serverJar.exists()) {
+            println("Téléchargement de Paper...")
+
+            new URL(paperUrl).withInputStream { input ->
+                serverJar.withOutputStream { output ->
+                    output << input
+                }
+            }
+        }
+
+        copy {
+            from shadowJar.archiveFile
+            into "run/plugins"
+            rename { "OpenMC.jar" }
+        }
+
+        def javaExe = javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+        }.get().executablePath.asFile.absolutePath
+
+        def process = new ProcessBuilder(
+                javaExe,
+                "-Xms2G",
+                "-Xmx2G",
+                "-jar",
+                serverJar.name,
+                "--nogui"
+        )
+                .directory(file("run"))
+                .redirectErrorStream(true)
+                .start()
+
+            Thread.start {
+            process.inputStream.eachLine {
+                println(it)
+            }
+        }
+
+        Thread.start {
+            def writer = new BufferedWriter(new OutputStreamWriter(process.outputStream))
+            System.in.withReader { reader ->
+                String line
+                while ((line = reader.readLine()) != null) {
+                    writer.write(line)
+                    writer.newLine()
+                    writer.flush()
+                }
+            }
+        }
+
+        process.waitFor()
+    }
+}
 
 tasks.test {
     useJUnitPlatform()

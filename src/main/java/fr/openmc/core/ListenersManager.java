@@ -2,9 +2,24 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.combat.CombatCooldownListener;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.listeners.*;
+import fr.openmc.core.listeners.ArmorListener;
+import fr.openmc.core.listeners.AsyncChatListener;
+import fr.openmc.core.listeners.BlockBreakListener;
+import fr.openmc.core.listeners.BlockPlaceListener;
+import fr.openmc.core.listeners.ChronometerListener;
+import fr.openmc.core.listeners.ClockInfos;
+import fr.openmc.core.listeners.EquipableItemListener;
+import fr.openmc.core.listeners.HappyGhastListener;
+import fr.openmc.core.listeners.InteractListener;
+import fr.openmc.core.listeners.ItemsAddersListener;
+import fr.openmc.core.listeners.JoinQuitMessageListener;
+import fr.openmc.core.listeners.NoMoreRabbit;
+import fr.openmc.core.listeners.PlayerDeathListener;
+import fr.openmc.core.listeners.SessionsListener;
+import fr.openmc.core.listeners.SleepListener;
 import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
 import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
 import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
@@ -24,6 +39,7 @@ public class ListenersManager {
     public static void init() {
         registerEvents(
                 new HappyGhastListener(),
+                new CombatCooldownListener(),
                 new SessionsListener(),
                 new JoinQuitMessageListener(),
                 new ClockInfos(),

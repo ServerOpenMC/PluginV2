@@ -13,6 +13,7 @@ import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -107,24 +108,25 @@ public class HomeMenu extends PaginatedMenu {
                 }).hide(ItemUtils.getDataComponentType()).setOnClick(event -> {
                     if(event.isLeftClick()) {
                         this.getInventory().close();
-                        getOwner().teleportAsync(home.getLocation()).thenAccept(success -> {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    Bukkit.getPluginManager().callEvent(new HomeTpEvent(home, getOwner()));
-                                }
-                            }.runTask(OMCPlugin.getInstance());
-                            MessagesManager.sendMessage(
-                                    getOwner(),
-                                    TranslationManager.translation(
-                                            "feature.homes.menu.teleport.success",
-                                            Component.text(home.getName()).color(NamedTextColor.YELLOW)
-                                    ),
-                                    Prefix.HOME,
-                                    MessageType.SUCCESS,
-                                    true
-                            );
-                        });
+                        if (!PlayerUtils.sendFadeTitleTeleport(getOwner(), home.getLocation())) {
+                            return;
+                        }
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                Bukkit.getPluginManager().callEvent(new HomeTpEvent(home, getOwner()));
+                            }
+                        }.runTask(OMCPlugin.getInstance());
+                        MessagesManager.sendMessage(
+                                getOwner(),
+                                TranslationManager.translation(
+                                        "feature.homes.menu.teleport.success",
+                                        Component.text(home.getName()).color(NamedTextColor.YELLOW)
+                                ),
+                                Prefix.HOME,
+                                MessageType.SUCCESS,
+                                true
+                        );
                     } else if(event.isRightClick()) {
                         Player player = (Player) event.getWhoClicked();
                         new HomeConfigMenu(player, home).open();

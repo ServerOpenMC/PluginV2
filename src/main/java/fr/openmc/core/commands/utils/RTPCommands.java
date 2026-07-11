@@ -115,7 +115,9 @@ public class RTPCommands {
     }
 
     private void tpPlayer(Player player, Location loc) {
-        PlayerUtils.sendFadeTitleTeleport(player, loc);
+        if (!PlayerUtils.sendFadeTitleTeleport(player, loc)) {
+            return;
+        }
         MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.rtp.success",
                         Component.text(loc.getBlockX()).color(YELLOW),
                         Component.text(loc.getBlockY()).color(YELLOW),
