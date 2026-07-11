@@ -278,7 +278,7 @@ public class Page1 implements Menu {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new ProfileMenu(player, player).open());
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new ProfileMenu(player).open());
         } else if (RIGHT_ARROW_SLOT == slot) {
             PacketMenuLib.openMenu(new Page2(), player);
         } else if (SETTINGS_SLOTS.contains(slot)) {

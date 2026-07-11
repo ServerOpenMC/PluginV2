@@ -12,9 +12,7 @@ public class ProfileInteractionListener implements Listener {
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
         Player viewer = event.getPlayer();
         if (event.getHand() != EquipmentSlot.HAND || !viewer.isSneaking()) return;
-        if (!(event.getRightClicked() instanceof Player target)) {
-            return;
-        }
+        if (!(event.getRightClicked() instanceof Player target)) return;
 
         event.setCancelled(true);
         new ProfileMenu(viewer, target).open();
