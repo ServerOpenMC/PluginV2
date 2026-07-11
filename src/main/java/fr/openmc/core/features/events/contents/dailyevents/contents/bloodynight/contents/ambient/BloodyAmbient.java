@@ -37,6 +37,8 @@ public class BloodyAmbient extends CustomAmbient {
 
                             obj.addProperty("visual/cloud_height", 65);
                             obj.addProperty("visual/cloud_color", "#7e8c2b2b");
+                            // c'est ceci qui va permet de detecter au shader que l'ambience est activé et qu'il faut mettre la blood moon
+                            obj.addProperty("visual/cloud_fog_end_distance", 2040.0067);
 
                             obj.addProperty("visual/water_fog_color", "#330505");
                         })
