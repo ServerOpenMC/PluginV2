@@ -1,89 +1,162 @@
 package fr.openmc.core.utils.world.entities;
 
-import fr.openmc.core.OMCPlugin;
+import com.mojang.math.Transformation;
+import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Brightness;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Display;
-import org.bukkit.util.Transformation;
-import org.joml.AxisAngle4f;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TextDisplay {
 
-    private org.bukkit.entity.TextDisplay entity;
+    private final Set<UUID> viewerList = new HashSet<>();
+    private final Display.TextDisplay textDisplay;
     private Location location;
 
     public TextDisplay(Component text, Location location, Vector3f scale) {
-        this.location = at90(location);
-        sync(() -> {
-            keepChunkLoaded(this.location);
-            entity = this.location.getWorld().spawn(this.location, org.bukkit.entity.TextDisplay.class, display -> {
-                display.text(text);
-                display.setBillboard(Display.Billboard.VERTICAL);
-                display.setBrightness(new Display.Brightness(15, 15));
-                display.setViewRange(2.0f);
-                display.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), scale, new AxisAngle4f()));
-                display.setPersistent(false);
-            });
-        });
+        this.location = location;
+        textDisplay = new Display.TextDisplay(EntityTypes.TEXT_DISPLAY, ((CraftWorld) location.getWorld()).getHandle());
+        textDisplay.setPos(location.getX(), location.getY(), location.getZ());
+        textDisplay.setRot(location.getYaw(), location.getPitch());
+        textDisplay.setBillboardConstraints(Display.BillboardConstraints.CENTER);
+        textDisplay.getEntityData().set(new EntityDataAccessor<>(24, EntityDataSerializers.INT), Integer.MAX_VALUE);
+        textDisplay.setInvisible(true);
+        textDisplay.setBrightnessOverride(Brightness.FULL_BRIGHT);
+        textDisplay.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
+        textDisplay.setText(PaperAdventure.asVanilla(text));
+        update();
+        updateViewersList();
+    }
+
+    public Set<Player> getPlayersWithinDistance(double radius) {
+        return location.getWorld().getPlayers().stream()
+                .filter(player -> player.getLocation().distanceSquared(location) <= radius * radius)
+                .collect(Collectors.toSet());
+    }
+
+    private void addViewer(Player viewer) {
+        if (viewerList.contains(viewer.getUniqueId())) return;
+        viewerList.add(viewer.getUniqueId());
+        ServerPlayer nmsViewer = ((CraftPlayer) viewer).getHandle();
+        ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(
+                textDisplay.getId(),
+                textDisplay.getUUID(),
+                textDisplay.getX(),
+                textDisplay.getY(),
+                textDisplay.getZ(),
+                textDisplay.getXRot(),
+                textDisplay.getYRot(),
+                EntityTypes.TEXT_DISPLAY,
+                0,
+                Vec3.ZERO,
+                0
+        );
+        nmsViewer.connection.send(addEntityPacket);
+
+        List<SynchedEntityData.DataValue<?>> dataValues = textDisplay.getEntityData().getNonDefaultValues();
+        if (dataValues == null || dataValues.isEmpty()) return;
+        nmsViewer.connection.send(new ClientboundSetEntityDataPacket(textDisplay.getId(), dataValues));
+    }
+
+    private void addViewers(Collection<Player> viewers) {
+        viewers.forEach(this::addViewer);
+    }
+
+    private void removeViewer(UUID uuid) {
+        viewerList.remove(uuid);
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) return;
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.connection.send(new ClientboundRemoveEntitiesPacket(textDisplay.getId()));
+    }
+
+    private void removeViewers(Collection<UUID> viewers) {
+        viewers.forEach(this::removeViewer);
+    }
+
+    public void updateViewersList() {
+        Set<Player> viewersToKeep = getPlayersWithinDistance(100);
+        Set<UUID> viewersToRemove = new HashSet<>(viewerList);
+        viewersToKeep.forEach(player -> viewersToRemove.remove(player.getUniqueId()));
+        removeViewers(viewersToRemove);
+        addViewers(viewersToKeep);
     }
 
     public void updateText(Component text) {
-        sync(() -> {
-            if (entity != null) entity.text(text);
-        });
+        textDisplay.setText(PaperAdventure.asVanilla(text));
+        update();
     }
 
-    public void setScale(Vector3f scale) {
-        sync(() -> {
-            if (entity == null) return;
-            Transformation t = entity.getTransformation();
-            entity.setTransformation(new Transformation(t.getTranslation(), t.getLeftRotation(), scale, t.getRightRotation()));
-        });
-    }
-
-    public void setLocation(Location location) {
-        Location loc = at90(location);
-        sync(() -> {
-            if (entity == null) {
-                return;
+    public void update() {
+        if (viewerList.isEmpty()) return;
+        List<SynchedEntityData.DataValue<?>> dataValues = textDisplay.getEntityData().getNonDefaultValues();
+        if (dataValues == null || dataValues.isEmpty()) return;
+        ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(textDisplay.getId(), dataValues);
+        viewerList.forEach(uuid -> {
+            Player viewer = Bukkit.getPlayer(uuid);
+            if (viewer != null) {
+                ((CraftPlayer) viewer).getHandle().connection.send(entityDataPacket);
             }
-            releaseChunk(this.location);
-            this.location = loc;
-            keepChunkLoaded(this.location);
-            entity.teleport(this.location);
         });
-    }
-
-    /** Force le yaw à 90° (pitch 0) pour que l'holo soit toujours orienté pareil. */
-    private static Location at90(Location location) {
-        Location loc = location.clone();
-        loc.setYaw(90f);
-        loc.setPitch(0f);
-        return loc;
     }
 
     public void remove() {
-        sync(() -> {
-            if (entity != null) {
-                entity.remove();
-                entity = null;
+        ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(textDisplay.getId());
+        viewerList.forEach(uuid -> {
+            Player viewer = Bukkit.getPlayer(uuid);
+            if (viewer != null) {
+                ((CraftPlayer) viewer).getHandle().connection.send(removeEntitiesPacket);
             }
-            releaseChunk(location);
         });
+        viewerList.clear();
+        textDisplay.remove(Entity.RemovalReason.CHANGED_DIMENSION);
     }
 
-    private static void keepChunkLoaded(Location location) {
-        location.getWorld().addPluginChunkTicket(location.getChunk().getX(), location.getChunk().getZ(), OMCPlugin.getInstance());
+    public void setScale(Vector3f scale) {
+        textDisplay.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
+        update();
     }
 
-    private static void releaseChunk(Location location) {
-        location.getWorld().removePluginChunkTicket(location.getChunk().getX(), location.getChunk().getZ(), OMCPlugin.getInstance());
-    }
-
-    private static void sync(Runnable action) {
-        if (Bukkit.isPrimaryThread()) action.run();
-        else Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), action);
+    public void setLocation(Location location) {
+        this.location = location;
+        textDisplay.setPos(location.getX(), location.getY(), location.getZ());
+        textDisplay.setRot(location.getYaw(), location.getPitch());
+        ClientboundTeleportEntityPacket teleportEntityPacket = ClientboundTeleportEntityPacket.teleport(
+                textDisplay.getId(),
+                PositionMoveRotation.of(textDisplay),
+                new HashSet<>(),
+                false
+        );
+        viewerList.forEach(uuid -> {
+            Player viewer = Bukkit.getPlayer(uuid);
+            if (viewer != null) {
+                ((CraftPlayer) viewer).getHandle().connection.send(teleportEntityPacket);
+            }
+        });
     }
 }

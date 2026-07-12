@@ -347,9 +347,28 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                     updatePumpkinCountMap();
                     updateHolograms();
                 }
+                updateHologramsViewers();
                 i++;
             }
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
+    }
+
+    public static void updateHologramsViewers() {
+        if (contributorsHologramLocation != null) {
+            contributorsHologram.updateViewersList();
+        }
+        if (moneyHologramLocation != null) {
+            moneyHologram.updateViewersList();
+        }
+        if (villeMoneyHologramLocation != null) {
+            villeMoneyHologram.updateViewersList();
+        }
+        if (playTimeHologramLocation != null) {
+            playTimeHologram.updateViewersList();
+        }
+        if (pumpkinCountHologramLocation != null) {
+            pumpkinCountHologram.updateViewersList();
+        }
     }
 
     public static void disable() {
