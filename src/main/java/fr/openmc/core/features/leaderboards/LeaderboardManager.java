@@ -342,28 +342,9 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                     updatePumpkinCountMap();
                     updateHolograms();
                 }
-                updateHologramsViewers();
                 i++;
             }
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
-    }
-
-    public static void updateHologramsViewers() {
-        if (contributorsHologramLocation != null) {
-            contributorsHologram.updateViewersList();
-        }
-        if (moneyHologramLocation != null) {
-            moneyHologram.updateViewersList();
-        }
-        if (villeMoneyHologramLocation != null) {
-            villeMoneyHologram.updateViewersList();
-        }
-        if (playTimeHologramLocation != null) {
-            playTimeHologram.updateViewersList();
-        }
-        if (pumpkinCountHologramLocation != null) {
-            pumpkinCountHologram.updateViewersList();
-        }
     }
 
     public static void disable() {
@@ -618,20 +599,14 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
      * Updates the holograms for all leaderboards by sending ENTITY_METADATA packets to players.
      */
     public static void updateHolograms() {
-        if (contributorsHologram != null) {
-            contributorsHologram.updateText(createContributorsTextLeaderboard());
-        }
-        if (moneyHologram != null) {
-            moneyHologram.updateText(createMoneyTextLeaderboard());
-        }
-        if (villeMoneyHologram != null) {
-            villeMoneyHologram.updateText(createCityMoneyTextLeaderboard());
-        }
-        if (playTimeHologram != null) {
-            playTimeHologram.updateText(createPlayTimeTextLeaderboard());
-        }
-        if (pumpkinCountHologram != null) {
-            pumpkinCountHologram.updateText(createPumpkinCountTextLeaderboard());
-        }
+        update(contributorsHologram, createContributorsTextLeaderboard());
+        update(moneyHologram, createMoneyTextLeaderboard());
+        update(villeMoneyHologram, createCityMoneyTextLeaderboard());
+        update(playTimeHologram, createPlayTimeTextLeaderboard());
+        update(pumpkinCountHologram, createPumpkinCountTextLeaderboard());
+    }
+
+    private static void update(TextDisplay hologram, Component text) {
+        if (hologram != null) hologram.updateText(text);
     }
 }

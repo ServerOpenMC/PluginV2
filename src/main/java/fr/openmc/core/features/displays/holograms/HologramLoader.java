@@ -14,8 +14,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.joml.Vector3f;
 
 import java.io.File;
@@ -26,7 +24,6 @@ import java.util.*;
 public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
-    private static BukkitTask taskTimer;
     public static File hologramFolder;
 
     public static File getHologramFolder() {
@@ -49,7 +46,6 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
                 new TutorialHologram()
         );
 
-        updateHologramsViewers();
         HologramLoader.loadAllFromFolder(hologramFolder);
     }
 
@@ -63,18 +59,6 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
     @Override
     public void save() {
         HologramLoader.unloadAll();
-    }
-
-    public static void updateHologramsViewers() {
-        taskTimer = new BukkitRunnable() {
-            @Override
-            public void run() {
-                displays.values().forEach(hologramInfo -> {
-                    TextDisplay display = hologramInfo.display();
-                    display.updateViewersList();
-                });
-            }
-        }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
     }
 
     public static void registerHolograms(Hologram... holograms) {
@@ -153,7 +137,6 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         for (HologramInfo info : displays.values()) {
             info.display().remove();
         }
-        taskTimer.cancel();
         displays.clear();
     }
 

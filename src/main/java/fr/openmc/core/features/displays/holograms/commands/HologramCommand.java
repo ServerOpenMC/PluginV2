@@ -81,7 +81,6 @@ public class HologramCommand {
     @CommandPermission("op")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        HologramLoader.updateHologramsViewers();
         HologramLoader.loadAllFromFolder(hologramFolder);
         MessagesManager.sendMessage(
                 sender,

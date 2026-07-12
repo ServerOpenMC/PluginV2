@@ -137,7 +137,6 @@ public class LeaderboardCommands {
         LeaderboardManager.updatePlayTimeMap();
         LeaderboardManager.updatePumpkinCountMap();
         LeaderboardManager.updateHolograms();
-        LeaderboardManager.updateHologramsViewers();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_updated")
                 .color(NamedTextColor.GREEN));
     }
