@@ -7,12 +7,14 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
 import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 
 public abstract class BaseScoreboard {
     protected static final boolean canShowLogo = ItemsAdderHook.isEnable();
+    protected static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
 
     /**
      * Initialise le scoreboard pour un joueur
@@ -66,7 +68,7 @@ public abstract class BaseScoreboard {
      */
     public Component getTitle() {
         return canShowLogo
-                ? Component.text(FontImageWrapper.replaceFontImages(":openmc:"))
+                ? LEGACY_SERIALIZER.deserialize(FontImageWrapper.replaceFontImages(":openmc:"))
                 : TranslationManager.translation("feature.displays.scoreboard.title.text").color(NamedTextColor.LIGHT_PURPLE);
     }
 

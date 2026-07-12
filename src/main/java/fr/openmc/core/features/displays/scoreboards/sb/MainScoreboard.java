@@ -72,7 +72,7 @@ public class MainScoreboard extends BaseScoreboard {
 
     public static List<Component> getDefaultLines(Player player) {
         Component rank = LuckPermsHook.isEnable()
-                ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
+                ? LEGACY_SERIALIZER.deserialize(LuckPermsHook.getFormattedPAPIPrefix(player))
                 : Component.text(keyToSmall("feature.displays.scoreboard.rank.none")).color(TextColor.color(0xFF1FCC));
 
 
@@ -98,19 +98,22 @@ public class MainScoreboard extends BaseScoreboard {
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(text(keyToSmall("feature.displays.scoreboard.city.label"), NamedTextColor.GRAY))
                 .appendSpace()
-                .append(text(textToSmall(city != null ? city.getName() : TranslationManager.translationString("feature.displays.scoreboard.city.none"))).color(TextColor.color(0xFF06DC)))
+                .append(LEGACY_SERIALIZER.deserialize(textToSmall(city != null
+                        ? city.getName()
+                        : TranslationManager.translationString("feature.displays.scoreboard.city.none")))
+                        .color(TextColor.color(0xFF06DC)))
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(text(keyToSmall("feature.displays.scoreboard.balance.label"), NamedTextColor.GRAY))
                 .appendSpace()
                 .append(text(textToSmall(balance)).color(TextColor.color(0xFF06DC)))
                 .appendSpace()
-                .append(text(EconomyManager.getEconomyIcon()))
+                .append(LEGACY_SERIALIZER.deserialize(EconomyManager.getEconomyIcon()))
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(text(keyToSmall("feature.displays.scoreboard.location.label"), NamedTextColor.GRAY))
                 .appendSpace()
-                .append(text(textToSmall(location)).color(TextColor.color(0xFF06DC)))
+                .append(LEGACY_SERIALIZER.deserialize(textToSmall(location)).color(TextColor.color(0xFF06DC)))
         );
 
         if (FancyNpcsHook.isEnable()) {
