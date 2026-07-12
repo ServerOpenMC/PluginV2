@@ -30,7 +30,7 @@ import java.util.UUID;
  * if (player.hasCity()) { ... }
  * }</pre>
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused", "removal", "deprecation"})
 public class OMCPlayer implements Player {
 
     @Delegate(types = Player.class)

@@ -19,6 +19,6 @@ public class History {
             target = sender;
         }
 
-        sender.open(TransactionsMenu.class, target.getUniqueId());
+        new TransactionsMenu(sender, target.getUniqueId());
     }
 }
