@@ -19,6 +19,7 @@ import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -103,13 +104,13 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
         String header = !isInDream
                 ? TranslationManager.translationString(
                         "feature.displays.tablist.header.default",
-                        Component.text(logo),
+                        LegacyComponentSerializer.legacySection().deserialize(logo),
                         Component.text(visibleOnlinePlayers).color(NamedTextColor.GOLD),
                         Component.text(Bukkit.getMaxPlayers()).color(NamedTextColor.YELLOW)
                 )
                 : TranslationManager.translationString(
                         "feature.displays.tablist.header.dream",
-                        Component.text(logo)
+                        LegacyComponentSerializer.legacySection().deserialize(logo)
                 );
         String footer = isInDream
                 ? TranslationManager.translationString("feature.displays.tablist.footer.dream")
