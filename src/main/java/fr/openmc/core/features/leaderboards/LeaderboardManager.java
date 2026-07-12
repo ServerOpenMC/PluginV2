@@ -196,7 +196,7 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createCityMoneyTextLeaderboard() {
-        var moneyMap = LeaderboardManager.getVilleMoneyMap();
+        var moneyMap = new TreeMap<>(LeaderboardManager.getVilleMoneyMap());
         if (moneyMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.cities")
                     .color(NamedTextColor.RED);
