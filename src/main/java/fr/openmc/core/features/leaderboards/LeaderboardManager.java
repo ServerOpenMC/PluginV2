@@ -49,15 +49,15 @@ import java.util.*;
 @Credit(developers = {"miseur"})
 public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
     @Getter
-    private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> playerMoneyMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> playerMoneyMap = new TreeMap<>();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> villeMoneyMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> villeMoneyMap = new TreeMap<>();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> pumpkinCountMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> pumpkinCountMap = new TreeMap<>();
     private static File leaderBoardFile;
     @Getter
     private static Location contributorsHologramLocation;
@@ -518,11 +518,12 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                         Integer.compare(e2.getValue().getTotalLines(), e1.getValue().getTotalLines())
                 );
 
-                githubContributorsMap.clear();
+                Map<Integer, Map.Entry<String, ContributorStats>> updatedContributors = new TreeMap<>();
 
                 for (int i = 0; i < Math.min(10, statsList.size()); i++) {
-                    githubContributorsMap.put(i + 1, statsList.get(i));
+                    updatedContributors.put(i + 1, statsList.get(i));
                 }
+                githubContributorsMap = updatedContributors;
             }
             con.disconnect();
         } catch (Exception e) {
@@ -534,7 +535,7 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
      * Updates the player money leaderboard map by sorting and formatting player balances.
      */
     public static void updatePlayerMoneyMap() {
-        playerMoneyMap.clear();
+        Map<Integer, Map.Entry<String, String>> updatedMoney = new TreeMap<>();
         int rank = 1;
 
         Map<UUID, EconomyPlayer> balances = EconomyManager.getBalances();
@@ -549,15 +550,16 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                 .toList()) {
             String playerName = PlayerNameCache.getName(entry.getKey());
             String formattedBalance = EconomyManager.getFormattedSimplifiedNumber(entry.getValue());
-            playerMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
+            updatedMoney.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
         }
+        playerMoneyMap = updatedMoney;
     }
 
     /**
      * Updates the city money leaderboard map by sorting and formatting city balances.
      */
     public static void updateCityMoneyMap() {
-        villeMoneyMap.clear();
+        Map<Integer, Map.Entry<String, String>> updatedCityMoney = new TreeMap<>();
         int rank = 1;
         for (City city : CityManager.getCities().stream()
                 .sorted((city1, city2) -> Double.compare(city2.getBalance(), city1.getBalance()))
@@ -565,15 +567,16 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                 .toList()) {
             String cityName = city.getName();
             String cityBalance = EconomyManager.getFormattedSimplifiedNumber(city.getBalance());
-            villeMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
+            updatedCityMoney.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
         }
+        villeMoneyMap = updatedCityMoney;
     }
 
     /**
      * Updates the playtime leaderboard map by sorting and formatting player playtime.
      */
     public static void updatePlayTimeMap() {
-        playTimeMap.clear();
+        Map<Integer, Map.Entry<String, String>> updatedPlayTime = new TreeMap<>();
         int rank = 1;
         for (OfflinePlayer player : Arrays.stream(Bukkit.getOfflinePlayers())
                 .sorted((entry1, entry2) -> Long.compare(entry2.getStatistic(Statistic.PLAY_ONE_MINUTE), entry1.getStatistic(Statistic.PLAY_ONE_MINUTE)))
@@ -581,12 +584,13 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                 .toList()) {
             String playerName = player.getName();
             String playTime = DateUtils.convertTime(player.getStatistic(Statistic.PLAY_ONE_MINUTE));
-            playTimeMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
+            updatedPlayTime.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
         }
+        playTimeMap = updatedPlayTime;
     }
 
     public static void updatePumpkinCountMap() {
-        pumpkinCountMap.clear();
+        Map<Integer, Map.Entry<String, String>> updatedPumpkinCount = new TreeMap<>();
         int rank = 1;
 
         Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
@@ -596,8 +600,9 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
                 .toList()) {
             String playerName = PlayerNameCache.getName(entry.getKey());
             String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
-            pumpkinCountMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
+            updatedPumpkinCount.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }
+        pumpkinCountMap = updatedPumpkinCount;
     }
 
     /**
