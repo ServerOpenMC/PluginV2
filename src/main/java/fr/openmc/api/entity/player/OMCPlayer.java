@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * if (player.hasCity()) { ... }
  * }</pre>
  */
-@SuppressWarnings({"deprecation", "removal"})
+@SuppressWarnings({"unused"})
 public class OMCPlayer implements Player {
 
     @Delegate(types = Player.class)
