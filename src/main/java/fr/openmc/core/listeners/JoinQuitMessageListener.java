@@ -17,6 +17,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,7 +52,9 @@ public class JoinQuitMessageListener implements Listener {
                  if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                       MessagesManager.sendMessage(friend, TranslationManager.translation(
                               "core.player.join.friend_online",
-                              Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN)
+                              LegacyComponentSerializer.legacySection()
+                                      .deserialize(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())
+                                      .color(NamedTextColor.GREEN)
                       ), Prefix.FRIEND, MessageType.NONE, true);
                  }
              }
@@ -81,7 +84,8 @@ public class JoinQuitMessageListener implements Listener {
          });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.joinMessage(Component.text(JOIN_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
+            event.joinMessage(LegacyComponentSerializer.legacySection()
+                    .deserialize(JOIN_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
@@ -114,7 +118,9 @@ public class JoinQuitMessageListener implements Listener {
                  if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                      MessagesManager.sendMessage(friend, TranslationManager.translation(
                              "core.player.quit.friend_offline",
-                             Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.YELLOW)
+                             LegacyComponentSerializer.legacySection()
+                                     .deserialize(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())
+                                     .color(NamedTextColor.YELLOW)
                      ), Prefix.FRIEND, MessageType.NONE, true);
                  }
              }
@@ -141,7 +147,8 @@ public class JoinQuitMessageListener implements Listener {
          }
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.quitMessage(Component.text(QUIT_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
+            event.quitMessage(LegacyComponentSerializer.legacySection()
+                    .deserialize(QUIT_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
     }
 
 }
