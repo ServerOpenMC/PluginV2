@@ -120,7 +120,7 @@ public class SternalBoard extends SternalBoardHandler<Component> {
         Component line = getLineByScore(score);
 
         if (line == null || line.equals(Component.empty())) {
-            Component emptyPrefix = Component.text(COLOR_CODES[score], NamedTextColor.WHITE);
+            Component emptyPrefix = LEGACY_SERIALIZER.deserialize(COLOR_CODES[score]).color(NamedTextColor.WHITE);
             sendTeamPacket(score, TeamMode.UPDATE, emptyPrefix, Component.empty());
             return;
         }
