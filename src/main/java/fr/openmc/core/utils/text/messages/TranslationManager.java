@@ -10,9 +10,9 @@ import fr.openmc.core.utils.types.MultiResourceBundle;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,6 +32,7 @@ public class TranslationManager {
             .create();
 
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final PlainTextComponentSerializer PLAIN_TEXT_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     /**
      * Initialise le gestionnaire de traductions et génère les ressource packs.
@@ -98,7 +99,9 @@ public class TranslationManager {
      * @return Un composant Paper Adventure traduisible (italique désactivé)
      */
     public static Component translation(String key, ComponentLike... args) {
-        String fallback = getFallbackTranslation(key);
+        String fallback = PLAIN_TEXT_SERIALIZER.serialize(
+                LEGACY_COMPONENT_SERIALIZER.deserialize(getFallbackTranslation(key))
+        );
         ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(args);
 
         return Component.translatable(
@@ -132,12 +135,7 @@ public class TranslationManager {
      * @return Une liste de composants, un par ligne (italique désactivé)
      */
     public static List<Component> translationLore(String key, ComponentLike... componentsArgs) {
-        String fallback = fallbackTranslations.getOrDefault(key, key);
-
-        ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(componentsArgs);
-        TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
-
-        String legacy = LegacyComponentSerializer.legacySection().serialize(translatable);
+        String legacy = translationString(key, componentsArgs);
 
         String[] lines = legacy.split("\n");
 
