@@ -361,6 +361,11 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
         pumpkinCountHologram.remove();
     }
 
+    @Override
+    protected void save() {
+        disable();
+    }
+
     /**
      * Sets the location of a hologram in the leaderboard configuration.
      *
