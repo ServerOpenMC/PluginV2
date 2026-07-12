@@ -116,7 +116,11 @@ public class TranslationManager {
      * @return Une chaîne au format legacy (codes §)
      */
     public static String translationString(String key, ComponentLike... args) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(translation(key, args));
+        Object[] legacyArgs = Arrays.stream(args)
+                .map(ComponentLike::asComponent)
+                .map(LEGACY_COMPONENT_SERIALIZER::serialize)
+                .toArray();
+        return String.format(getFallbackTranslation(key), legacyArgs);
     }
 
     /**

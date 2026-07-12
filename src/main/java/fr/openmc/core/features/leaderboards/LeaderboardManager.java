@@ -25,6 +25,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -169,7 +170,9 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
             Component rankComponent = Component.text("#")
                     .color(rankColor)
                     .append(Component.text(rank).color(rankColor));
-            Component valueComponent = Component.text(money + " " + EconomyManager.getEconomyIcon())
+            Component valueComponent = Component.text(money + " ")
+                    .append(LegacyComponentSerializer.legacySection()
+                            .deserialize(EconomyManager.getEconomyIcon()))
                     .color(NamedTextColor.WHITE);
             Component line = Component.text("\n")
                     .append(TranslationManager.translation(
@@ -212,7 +215,9 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
             Component rankComponent = Component.text("#")
                     .color(rankColor)
                     .append(Component.text(rank).color(rankColor));
-            Component valueComponent = Component.text(money + " " + EconomyManager.getEconomyIcon())
+            Component valueComponent = Component.text(money + " ")
+                    .append(LegacyComponentSerializer.legacySection()
+                            .deserialize(EconomyManager.getEconomyIcon()))
                     .color(NamedTextColor.WHITE);
             Component line = Component.text("\n")
                     .append(TranslationManager.translation(

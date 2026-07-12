@@ -11,6 +11,7 @@ import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,6 +24,7 @@ import java.util.*;
 @Credit(developers = {"iambibi_", "miseur"})
 public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
 
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     public static File hologramFolder;
 
@@ -85,9 +87,9 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
                 String rawLine = hologram.getLines()[i];
 
                 if (component == null) {
-                    component = Component.text(rawLine);
+                    component = LEGACY_SERIALIZER.deserialize(rawLine);
                 } else {
-                    component = component.append(Component.newline()).append(Component.text(rawLine));
+                    component = component.append(Component.newline()).append(LEGACY_SERIALIZER.deserialize(rawLine));
                 }
             }
 
@@ -124,9 +126,9 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         for (int i = 0; i < lines.size(); i++) {
             String rawLine = lines.get(i);
             if (component == null) {
-                component = Component.text(rawLine);
+                component = LEGACY_SERIALIZER.deserialize(rawLine);
             } else {
-                component = component.append(Component.newline()).append(Component.text(rawLine));
+                component = component.append(Component.newline()).append(LEGACY_SERIALIZER.deserialize(rawLine));
             }
         }
         TextDisplay display = new TextDisplay(component, hologramLocation, new Vector3f(scale));
