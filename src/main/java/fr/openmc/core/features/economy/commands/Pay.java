@@ -23,7 +23,7 @@ public class Pay {
             player.message().sendError(TranslationManager.translation("feature.economy.pay.self"));
             return;
         }
-        if (player.pay(target.getUniqueId(), amount, String.format("Paiement de %s à %s", player.getName(), target.getName()))) {
+        if (player.economy().pay(target.getUniqueId(), amount, String.format("Paiement de %s à %s", player.getName(), target.getName()))) {
             player.message().sendSuccess(TranslationManager.translation(
                     "feature.economy.pay.success",
                     Component.text(target.getName()).color(NamedTextColor.YELLOW),

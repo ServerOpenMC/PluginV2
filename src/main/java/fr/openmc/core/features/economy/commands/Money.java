@@ -23,12 +23,12 @@ public class Money {
     @CommandPlaceholder()
     public void getMoney(
             CommandSender sender,
-            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) @Default("me") OfflinePlayer target
     ) {
         if (sender instanceof OMCPlayer player && target == null) {
             player.message().sendInfo(TranslationManager.translation(
                     "feature.economy.money.self",
-                    Component.text(player.getFormattedBalance()).color(NamedTextColor.YELLOW)
+                    Component.text(player.economy().getFormattedBalance()).color(NamedTextColor.YELLOW)
             ));
         } else {
             if (target == null) {
