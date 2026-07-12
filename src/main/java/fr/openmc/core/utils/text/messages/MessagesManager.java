@@ -2,6 +2,7 @@ package fr.openmc.core.utils.text.messages;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MessagesManager {
+
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
 
     /*
     For use the beautiful message, create a prefix.
@@ -40,9 +43,9 @@ public class MessagesManager {
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
         Component messageComponent =
-                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
+                LEGACY_SERIALIZER.deserialize(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
                         .append(prefix.getPrefix())
-                        .append(Component.text(" §7» ")
+                        .append(LEGACY_SERIALIZER.deserialize(" §7» ")
                         .append(message)
                 );
 
@@ -104,9 +107,9 @@ public class MessagesManager {
      */
     public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
         Component messageComponent =
-                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
+                LEGACY_SERIALIZER.deserialize(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
                         .append(prefix.getPrefix())
-                        .append(Component.text(" §7» ")
+                        .append(LEGACY_SERIALIZER.deserialize(" §7» ")
                         .append(message)
                 );
 
