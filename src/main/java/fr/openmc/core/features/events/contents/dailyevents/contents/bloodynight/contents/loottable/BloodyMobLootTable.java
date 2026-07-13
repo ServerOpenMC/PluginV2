@@ -25,7 +25,7 @@ public class BloodyMobLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.IRON_INGOT,0.3, 1, 4),
+                new ItemLoot(Material.IRON_INGOT,0.4, 1, 4),
                 new ItemLoot(Material.GOLD_INGOT,0.2, 1, 3),
                 new ItemLoot(Material.DIAMOND,0.07, 1, 2),
                 new ItemLoot(Material.IRON_BLOCK,0.08, 1),

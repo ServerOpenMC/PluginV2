@@ -5,7 +5,6 @@ import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
-import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,8 +26,7 @@ public class PlayerKillMonsterListener implements Listener {
 
         event.getDrops().clear();
 
-        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.BLOODY_MOB.rollLootsWithAmount(
-                player, RandomUtils.randomBetween(1, 2));
+        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.BLOODY_MOB.rollLoots(player);
 
         event.getDrops().clear();
         for (CustomLoot loot : loots) {

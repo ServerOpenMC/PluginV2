@@ -19,14 +19,13 @@ public class MonsterSpawnLIstener implements Listener {
     @EventHandler
     public void onNormalMonsterSpawn(EntitySpawnEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent)) return;
+                || !(DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent bloodyEvent)) return;
+        if (!event.getLocation().getWorld().getName().equals(bloodyEvent.getWorldEvent())) return;
+
         if (!(event.getEntity() instanceof Monster monster)) return;
-        System.out.println("e");
         if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
-            System.out.println("b");
             BloodyNightManager.applyBloodyMonster(monster);
         } else {
-            System.out.println("a");
             ParticleUtils.spawnDispersingParticles(event.getLocation(),
                     Particle.DAMAGE_INDICATOR,
                     10, 35, 0.1D, null);
@@ -39,6 +38,7 @@ public class MonsterSpawnLIstener implements Listener {
     public void onMonsterLoaded(EntityAddToWorldEvent event) {
         if (DailyEventsManager.isActiveDailyEvent()
                 && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
+
         if (!(event.getEntity() instanceof Monster monster)) return;
 
         if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {

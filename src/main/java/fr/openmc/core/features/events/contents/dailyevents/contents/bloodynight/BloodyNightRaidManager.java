@@ -17,7 +17,7 @@ public class BloodyNightRaidManager {
     private static final int MIN_MOBS_PER_RAID = 7;
     private static final int MAX_MOBS_PER_RAID = 14;
 
-    private static final int MAX_SPAWN_RADIUS = 20;
+    private static final int MAX_SPAWN_RADIUS = 15;
 
     private static final List<EntityType> BLOODY_MONSTERS_AVAILABLE = List.of(
             EntityType.ZOMBIE,
