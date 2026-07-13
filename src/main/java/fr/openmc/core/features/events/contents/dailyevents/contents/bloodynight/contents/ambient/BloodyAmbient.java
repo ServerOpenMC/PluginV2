@@ -35,10 +35,11 @@ public class BloodyAmbient extends CustomAmbient {
                             obj.addProperty("visual/moon_angle", 67);
                             obj.addProperty("visual/star_brightness", 0.7);
 
+
+                            obj.addProperty("visual/cloud_fog_end_distance", 512.0032);
+
                             obj.addProperty("visual/cloud_height", 65);
                             obj.addProperty("visual/cloud_color", "#7e8c2b2b");
-                            // c'est ceci qui va permet de detecter au shader que l'ambience est activé et qu'il faut mettre la blood moon
-                            obj.addProperty("visual/cloud_fog_end_distance", 2040.0067);
 
                             obj.addProperty("visual/water_fog_color", "#330505");
                         })
@@ -69,6 +70,7 @@ public class BloodyAmbient extends CustomAmbient {
 
                 .defaultClock("overworld")
                 .timelines("#minecraft:in_overworld")
+
                 .hasFixedTime(true, 21000)
                 .hasPrecipitation(false, WeatherType.NONE);
     }
