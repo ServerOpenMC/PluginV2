@@ -2,14 +2,15 @@ package fr.openmc.core.utils.nms;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.ambient.CustomAmbient;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
+import net.minecraft.network.protocol.game.CommonPlayerSpawnInfo;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.storage.LevelData;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
@@ -113,23 +114,10 @@ public class PlayerRespawnNMS {
 
         PlayerPositionNMS.sendPos(nmsPlayer, nmsPlayer.position());
 
-        nmsPlayer.connection.send(new ClientboundSetChunkCacheCenterPacket(
-                nmsPlayer.chunkPosition().x(),
-                nmsPlayer.chunkPosition().z()
-        ));
-
-        int viewDistance = nmsWorld.getServer().getPlayerList().getViewDistance();
-        ChunkPos center = nmsPlayer.chunkPosition();
-        for (int cx = center.x() - viewDistance; cx <= center.x() + viewDistance; cx++) {
-            for (int cz = center.z() - viewDistance; cz <= center.z() + viewDistance; cz++) {
-                LevelChunk chunk = nmsWorld.getChunkIfLoaded(cx, cz);
-                if (chunk != null) {
-                    nmsPlayer.connection.send(
-                            new ClientboundLevelChunkWithLightPacket(chunk, nmsWorld.getLightEngine(), null, null, false)
-                    );
-                }
-            }
-        }
+        // Utilisation d'une méthode trouvé via l'utilisation de ClientboundSetChunkCacheCenterPacket.
+        // Refait tout simplement le systeme de chargement des chunks pour un joueur, sans avoir de défaillance
+        nmsWorld.moonrise$getPlayerChunkLoader().removePlayer(nmsPlayer);
+        nmsWorld.moonrise$getPlayerChunkLoader().addPlayer(nmsPlayer);
     }
 
     /**

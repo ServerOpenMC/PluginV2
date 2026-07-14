@@ -86,6 +86,7 @@ public abstract class CustomAmbient {
      */
     public void reset(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        ACTIVE_AMBIENTS.remove(player.getUniqueId());
 
         // * On envoie le packet respawn qui remets tout a la normale
         PlayerRespawnNMS.sendPacket(
@@ -93,8 +94,6 @@ public abstract class CustomAmbient {
                 nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()),
                 getTransitionDimensionForPlayer(nmsPlayer)
         );
-
-        ACTIVE_AMBIENTS.remove(player.getUniqueId());
     }
 
     /**
