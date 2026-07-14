@@ -7,13 +7,19 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CursedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.EnragedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
+import fr.openmc.core.registry.mobs.task.MobBossbarUpdater;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class CustomMobRegistry extends Registry<String, CustomMobEntry> implements KeyedRegistry<String, CustomMobEntry> {
 
@@ -80,6 +86,22 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
             "omc_daily_events:corrupted_monster",
             CorruptedMonster::new
     ));
+
+    public final CustomMobEntry VAMPIRE_BOSS = register(new CustomMobEntry(
+            "omc_daily_events:vampire_boss",
+            VampireBoss::new
+    ));
+
+    public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();
+
+    @Override
+    public void postInit() {
+        new MobBossbarUpdater().runTaskTimer(
+                OMCPlugin.getInstance(),
+                0L,
+                20L
+        );
+    }
 
     @Override
     public String key(CustomMobEntry registryObject) {

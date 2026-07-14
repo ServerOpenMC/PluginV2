@@ -93,6 +93,8 @@ public abstract class CustomMob<T extends LivingEntity> {
     public T getPreBuildMob(Location spawnLocation) {
         T livingEntity = spawnLocation.getWorld().spawn(spawnLocation.add(0, 1, 0), entityClass, null, CreatureSpawnEvent.SpawnReason.CUSTOM);
         applyStats(livingEntity);
+
+        CustomMobRegistry.HAS_BOSSBAR.add(livingEntity.getUniqueId());
         return livingEntity;
     }
 

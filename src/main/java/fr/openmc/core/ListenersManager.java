@@ -9,7 +9,9 @@ import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
 import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
 import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
 import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -46,7 +48,9 @@ public class ListenersManager {
                 new BiomesOnChunkLoad(),
                 new AmbientWeatherListener(),
                 new AmbientFixedTimeListener(),
-                new EntityGlowNMS()
+                new EntityGlowNMS(),
+                new CustomMobBossbarListener(),
+                new CustomMobLoadListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {
