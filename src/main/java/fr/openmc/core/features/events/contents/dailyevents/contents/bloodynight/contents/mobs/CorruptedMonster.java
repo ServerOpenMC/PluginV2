@@ -7,28 +7,32 @@ import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 import net.minecraft.world.scores.TeamColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Monster;
 
 public class CorruptedMonster extends CustomMob<Monster> {
     private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "corrupted_health"),
-            0.75,
+            1,
             AttributeModifier.Operation.ADD_SCALAR
     );
+
     private static final AttributeModifier ATTACK_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "corrupted_attack"),
-            0.10,
+            0.25,
             AttributeModifier.Operation.ADD_SCALAR
     );
+
     private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "corrupted_speed"),
-            0.10,
+            0.15,
             AttributeModifier.Operation.ADD_SCALAR
     );
+
     private static final AttributeModifier FOLLOW_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "corrupted_follow"),
-            0.10,
+            0.25,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
@@ -49,6 +53,10 @@ public class CorruptedMonster extends CustomMob<Monster> {
         entity.setCustomNameVisible(false);
 
         EntityUtils.addModifierIfPresent(entity, Attribute.MAX_HEALTH, HEALTH_MODIFIER);
+        AttributeInstance attrInst = entity.getAttribute(Attribute.MAX_HEALTH);
+        if (attrInst == null) return;
+        entity.setHealth(attrInst.getValue());
+
         EntityUtils.addModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);

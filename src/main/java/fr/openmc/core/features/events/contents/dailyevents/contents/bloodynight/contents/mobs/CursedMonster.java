@@ -7,37 +7,38 @@ import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 import net.minecraft.world.scores.TeamColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Monster;
 
 public class CursedMonster extends CustomMob<Monster> {
     private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "cursed_health"),
-            1.75,
+            3,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier ATTACK_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "cursed_attack"),
-            0.25,
+            0.90,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "cursed_speed"),
-            -0.15,
+            -0.10,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier FOLLOW_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "cursed_follow"),
-            0.20,
+            0.70,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier SCALE_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "cursed_scale"),
-            0.40,
+            1,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
@@ -72,6 +73,10 @@ public class CursedMonster extends CustomMob<Monster> {
         entity.setCustomNameVisible(true);
 
         EntityUtils.removeModifierIfPresent(entity, Attribute.MAX_HEALTH, HEALTH_MODIFIER);
+        AttributeInstance attrInst = entity.getAttribute(Attribute.MAX_HEALTH);
+        if (attrInst == null) return;
+        entity.setHealth(attrInst.getValue());
+
         EntityUtils.removeModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
