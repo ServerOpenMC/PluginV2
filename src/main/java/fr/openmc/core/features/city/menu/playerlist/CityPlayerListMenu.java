@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
@@ -18,8 +19,6 @@ import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.InputUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -151,6 +150,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Player player = getOwner();
+        OMCPlayer omcPlayer = OMCPlayer.of(player);
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
@@ -162,7 +162,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
 
         map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_SEARCH, itemMeta -> {
-	        itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.invite.title"));
+            itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.invite.title"));
             itemMeta.lore(
                     TranslationManager.translationLore(
                             "feature.city.menus.members.invite.lore",
@@ -171,14 +171,14 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     )
             );
         }).setOnClick(inventoryClickEvent -> {
-	        DialogInput.send(player, TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
+            DialogInput.send(player, TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (input == null) return;
 
                 if (InputUtils.isInputPlayer(input)) {
-                    Player playerToInvite = Bukkit.getPlayer(input);
-                    CityInviteCommands.invite(player, playerToInvite);
+                    OMCPlayer playerToInvite = OMCPlayer.of(Bukkit.getPlayer(input));
+                    CityInviteCommands.invite(omcPlayer, playerToInvite);
                 } else {
-	                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, MessageType.ERROR, true);
+                    omcPlayer.message().sendError(TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, true);
                 }
             });
         }));
@@ -187,7 +187,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-	    return TranslationManager.translation("feature.city.menus.members.name");
+        return TranslationManager.translation("feature.city.menus.members.name");
     }
 
     @Override

@@ -1,17 +1,14 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.api.entity.player.OMCOfflinePlayer;
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;
@@ -26,62 +23,58 @@ public class DelHomeCommand {
     @Description("Supprime un home")
     @CommandPermission("omc.commands.home.delhome")
     public void delHome(
-            Player player,
+            OMCPlayer player,
             @Named("home") @SuggestWith(HomeAutoComplete.class) String name
     ) {
-        if(player.hasPermission("omc.admin.homes.delhome.other") && name.contains(":")) {
+        if (player.hasPermission("omc.admin.homes.delhome.other") && name.contains(":")) {
             String[] split = name.split(":");
             String targetName = split[0];
             String homeName = split[1];
 
-            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
+            OMCOfflinePlayer target = OMCOfflinePlayer.of(Bukkit.getOfflinePlayer(targetName));
 
-            if(!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.HOME, MessageType.ERROR, true);
+            if (!target.hasPlayedBefore()) {
+                player.message().sendError(TranslationManager.translation("feature.homes.command.player_not_found"), Prefix.HOME, true);
                 return;
             }
 
-            List<Home> homes = HomesManager.getHomes(target.getUniqueId());
-            for(Home home : homes) {
-                if(home.getName().equalsIgnoreCase(homeName)) {
-                    HomesManager.removeHome(home);
-                    MessagesManager.sendMessage(
-                            player,
+            List<Home> homes = target.home().getHomes();
+            for (Home home : homes) {
+                if (home.getName().equalsIgnoreCase(homeName)) {
+                    player.home().removeHome(home);
+                    player.message().sendSuccess(
                             TranslationManager.translation(
                                     "feature.homes.command.delete.other.success",
                                     Component.text(home.getName()).color(NamedTextColor.YELLOW)
                             ),
                             Prefix.HOME,
-                            MessageType.SUCCESS,
                             true
                     );
                     return;
                 }
             }
 
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.other_no_home_with_name"), Prefix.HOME, MessageType.ERROR, true);
+            player.message().sendError(TranslationManager.translation("feature.homes.command.other_no_home_with_name"), Prefix.HOME, true);
             return;
         }
 
-        List<Home> homes = HomesManager.getHomes(player.getUniqueId());
+        List<Home> homes = player.home().getHomes();
 
-        for(Home home : homes) {
-            if(home.getName().equalsIgnoreCase(name)) {
-                HomesManager.removeHome(home);
-                MessagesManager.sendMessage(
-                        player,
+        for (Home home : homes) {
+            if (home.getName().equalsIgnoreCase(name)) {
+                player.home().removeHome(home);
+                player.message().sendSuccess(
                         TranslationManager.translation(
                                 "feature.homes.command.delete.self.success",
                                 Component.text(home.getName()).color(NamedTextColor.YELLOW)
                         ),
                         Prefix.HOME,
-                        MessageType.SUCCESS,
                         true
                 );
                 return;
             }
         }
 
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.self_no_home_with_name"), Prefix.HOME, MessageType.ERROR, true);
+        player.message().sendError(TranslationManager.translation("feature.homes.command.self_no_home_with_name"), Prefix.HOME, true);
     }
 }

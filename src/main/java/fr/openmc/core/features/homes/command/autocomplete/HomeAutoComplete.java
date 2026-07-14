@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.command.autocomplete;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -13,9 +14,6 @@ import revxrsal.commands.stream.StringStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.features.homes.HomesManager.getHomes;
-import static fr.openmc.core.features.homes.HomesManager.getHomesNames;
-
 public class HomeAutoComplete implements SuggestionProvider<BukkitCommandActor> {
 
     @Override
@@ -23,6 +21,7 @@ public class HomeAutoComplete implements SuggestionProvider<BukkitCommandActor> 
         List<String> suggestions = new ArrayList<>();
 
         Player player = context.actor().requirePlayer();
+        OMCPlayer omcPlayer = OMCPlayer.of(player);
         String commandName = context.command().usage().split(" ")[0];
 
         StringStream args = context.input();
@@ -34,7 +33,7 @@ public class HomeAutoComplete implements SuggestionProvider<BukkitCommandActor> 
             if (player.hasPermission("omc.admin.homes.teleport.others")) {
                 Bukkit.getOnlinePlayers().forEach(p -> suggestions.add(p.getName() + ":"));
                 if (isHomeCommand(commandName)) {
-                    getHomes(player.getUniqueId()).forEach(home -> suggestions.add(home.getName()));
+                    omcPlayer.home().getHomes().forEach(home -> suggestions.add(home.getName()));
                 }
             }
         } else {
@@ -47,7 +46,7 @@ public class HomeAutoComplete implements SuggestionProvider<BukkitCommandActor> 
 
                     if (target.hasPlayedBefore()) {
                         String prefix = split[0] + ":";
-                        getHomesNames(target.getUniqueId()).forEach(home -> suggestions.add(prefix + home));
+                        omcPlayer.home().getHomesNames().forEach(home -> suggestions.add(prefix + home));
                     }
                 }
             } else {
@@ -60,7 +59,7 @@ public class HomeAutoComplete implements SuggestionProvider<BukkitCommandActor> 
                 }
 
                 if (isHomeCommand(commandName)) {
-                    getHomes(player.getUniqueId()).stream()
+                    omcPlayer.home().getHomes().stream()
                             .map(Home::getName)
                             .filter(name -> name.toLowerCase().startsWith(arg.toLowerCase()))
                             .forEach(suggestions::add);
@@ -69,7 +68,7 @@ public class HomeAutoComplete implements SuggestionProvider<BukkitCommandActor> 
         }
 
         if (isHomeCommand(commandName)) {
-            suggestions.addAll(getHomesNames(player.getUniqueId()));
+            suggestions.addAll(omcPlayer.home().getHomesNames());
         }
 
         return suggestions;
