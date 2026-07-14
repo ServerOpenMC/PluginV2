@@ -18,8 +18,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-// todo: tester si les mobs non chargé sont bien converti en monstre buffé
-// todo: inverse aussi si les buffé disparaiseent bien
 // todo: faire boss vampire (abilité chauve souris explosante, empoissonante, ...)
 public class BloodyNightManager {
     public static final NamespacedKey RAID_MONSTER_KEY = new NamespacedKey("omc_daily_events", "raid_monster");
