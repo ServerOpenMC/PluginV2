@@ -1,13 +1,17 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.attacks.BloodExplosionAttack;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks.SummoningEffectTask;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks.VampireAttackTask;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
+import fr.openmc.core.registry.mobs.MobAttack;
 import fr.openmc.core.registry.mobs.options.MobBossbarImpl;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
+import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,12 +21,25 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mannequin;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks.SummoningEffectTask.SUMMON_EFFECT_INTERVAL_TICKS;
 
+//todo: attack (blood explosion, explosive bat, mini vempire defender)
+//todo: death (sfx, rewards mailbox en fonction des dégats mis (plus de dégat plus de chance)
 @SuppressWarnings("UnstableApiUsage")
+@Getter
 public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl {
+    private final Random random = ThreadLocalRandom.current();
+    private final List<MobAttack> attacks = new ArrayList<>(List.of(
+        new BloodExplosionAttack(this)
+    ));
+    private Mannequin mannequin;
+
     public VampireBoss(String id) {
         super(id,
                 "Vampire",
@@ -62,6 +79,12 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl 
         mannequin.setProfile(ResolvableProfile.resolvableProfile()
                 .uuid(UUID.fromString("2add34b4-2d09-4204-a458-6251b0d24661"))
                 .build()
+        );
+
+
+        new VampireAttackTask(this).runTaskLater(
+                OMCPlugin.getInstance(),
+                20L * 10 // 10 sex
         );
 
         World world = at.getWorld();
@@ -106,6 +129,8 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl 
                     )
             );
         }
+
+        this.mannequin = mannequin;
     }
 
     @Override
@@ -126,6 +151,14 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl 
     @Override
     public double getBossBarViewRadius() {
         return 60;
+    }
+
+    public void pickRandomAttack() {
+        if (attacks.isEmpty()) {
+            return;
+        }
+
+        attacks.get(random.nextInt(attacks.size())).execute();
     }
 }
 
