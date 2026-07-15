@@ -32,6 +32,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +41,9 @@ import java.util.Map;
 
 public class DimensionContributeMenu extends Menu {
 
-    // TODO: refaire ce menu en plus intuitife
-
-    private static final int INPUT_SLOT = 22;
     private static final int INFO_SLOT = 4;
+    private static final int PREVIEW_SLOT = 20;
+    private static final int INPUT_SLOT = 22;
 
     private static final int POLL_PERIOD_TICKS = 4;
 
@@ -58,9 +59,9 @@ public class DimensionContributeMenu extends Menu {
     }
 
     @Override
-    public Component getName() {
+    public @NotNull Component getName() {
         DimensionData dim = DimensionOpenerManager.getDimension(dimensionId);
-        return Component.text(dim != null ? dim.getName() : "Dimension").color(NamedTextColor.DARK_PURPLE);
+        return Component.text(dim != null ? dim.getName() : "Dimension").color(NamedTextColor.GREEN);
     }
 
     @Override
@@ -69,18 +70,18 @@ public class DimensionContributeMenu extends Menu {
     }
 
     @Override
-    public InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+    public @NonNull InventorySize getInventorySize() {
+        return InventorySize.LARGE;
     }
 
     @Override
-    public Map<Integer, ItemMenuBuilder> getContent() {
-        Map<Integer, ItemMenuBuilder> content = fill(Material.GRAY_STAINED_GLASS_PANE);
-
+    public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         DimensionData dim = DimensionOpenerManager.getDimension(dimensionId);
         DimensionProgress progress = DimensionOpenerManager.getProgress(dimensionId);
 
-        if (dim == null || progress == null) return content;
+        if (dim == null || progress == null) return fill(Material.GRAY_STAINED_GLASS_PANE);
+
+        Map<Integer, ItemMenuBuilder> content = fill(borderMaterial(dim, progress));
 
         content.put(INFO_SLOT, infoItem(dim, progress));
 
@@ -104,6 +105,7 @@ public class DimensionContributeMenu extends Menu {
         double remaining = step.getRequired() - progress.getCurrentAmount();
 
         if (step.getType().equals(StepDimensionData.Type.ITEMS)) {
+            content.put(PREVIEW_SLOT, previewItem(step, remaining));
             content.put(INPUT_SLOT, new ItemMenuBuilder(this, Material.AIR));
             startInputWatcher(step);
         } else if (step.getType().equals(StepDimensionData.Type.MONEY)) {
@@ -112,6 +114,30 @@ public class DimensionContributeMenu extends Menu {
         }
 
         return content;
+    }
+
+    private Material borderMaterial(DimensionData dim, DimensionProgress progress) {
+        if (!DimensionOpenerManager.isPrerequisiteMet(dim)) return Material.BLACK_STAINED_GLASS_PANE;
+
+        return switch (progress.getState()) {
+            case OPENED -> Material.LIME_STAINED_GLASS_PANE;
+            case ALL_STEPS_DONE, STEP_COOLDOWN -> Material.ORANGE_STAINED_GLASS_PANE;
+            default -> Material.PURPLE_STAINED_GLASS_PANE;
+        };
+    }
+
+    private ItemMenuBuilder previewItem(StepDimensionData step, double remaining) {
+        return new ItemMenuBuilder(this, new ItemStack(step.getMaterial()), meta -> {
+            meta.itemName(TranslationManager.translation("feature.dimopener.menu.preview.title"));
+            meta.lore(List.of(
+                    TranslationManager.translation("feature.dimopener.menu.preview.hint"),
+                    Component.empty(),
+                    TranslationManager.translation(
+                            "feature.dimopener.menu.preview.remaining",
+                            Component.text((int) Math.ceil(remaining))
+                    )
+            ));
+        });
     }
 
     private ItemMenuBuilder lockedItem(DimensionData data) {
@@ -209,6 +235,7 @@ public class DimensionContributeMenu extends Menu {
         }).setOnClick(_ -> openMoneyDialog(remaining));
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void openMoneyDialog(double remaining) {
         double balance = EconomyManager.getBalance(getOwner().getUniqueId());
         float max = (float) Math.max(1, Math.min(balance, remaining));
