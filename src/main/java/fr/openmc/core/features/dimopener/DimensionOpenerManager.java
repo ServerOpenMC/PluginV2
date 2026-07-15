@@ -42,8 +42,6 @@ import java.util.stream.Collectors;
 
 public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands, LoadAfterItemsAdder {
 
-    private static final long TICK_PERIOD_TICKS = 20L * 60; // 1 minutes
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static final Map<String, DimensionData> dimensions = new ConcurrentHashMap<>();
@@ -208,7 +206,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     }
 
     private void startTicking() {
-        tickTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), DimensionOpenerManager::tick, 20L, TICK_PERIOD_TICKS);
+        tickTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), DimensionOpenerManager::tick, 20L, 20L);
     }
 
     private static void tick() {
