@@ -4,6 +4,7 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
@@ -13,14 +14,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class FishingQuest extends Quest implements Listener {
 
     public FishingQuest() {
         super(
-                "Pêcheur expérimenté",
-                List.of("Pêcher {target} poissons"),
+                TranslationManager.translation("feature.quests.fishing.name"),
+                TranslationManager.translationLore("feature.quests.fishing.description"),
                 new ItemStack(Material.FISHING_ROD)
         );
 

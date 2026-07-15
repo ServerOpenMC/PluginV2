@@ -109,7 +109,7 @@ public class ContributionMenu extends Menu {
                 int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && isSimilar(shellContestItem, is)).mapToInt(ItemStack::getAmount).sum();
 
                 if (ItemUtils.hasEnoughItems(player, shellContestItem, shellCount)) {
-                    ItemUtils.removeItemsFromInventory(player, shellContestItem, shellCount);
+                    ItemUtils.removeItemsFromPlayerInventory(player, shellContestItem, shellCount);
 
                     int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
                     int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());

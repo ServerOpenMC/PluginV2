@@ -6,6 +6,7 @@ import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public abstract class CustomItem {
         this.id = meta.getId();
     }
 
-    public abstract ItemStack getVanilla();
+    public abstract @NotNull ItemStack getVanilla();
 
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance(getId());

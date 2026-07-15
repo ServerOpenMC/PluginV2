@@ -5,11 +5,13 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +23,9 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InteractProtection implements Listener {
 
@@ -41,8 +46,6 @@ public class InteractProtection implements Listener {
         boolean isMinecart = isMinecart(itemType);
         boolean isTnt = itemType == Material.TNT;
 
-        Location loc = clickedBlock.getLocation();
-
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (inHand != null && inHand.getType().isEdible()) {
                 Material type = clickedBlock.getType();
@@ -50,7 +53,13 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            if (ShopManager.getShopAt(location) != null) {
+                if (clickedBlock.getState() instanceof Barrel) return;
+                event.setCancelled(true);
+                return;
+            }
+            
+            City city = CityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
             if (city == null) return;
             
             if (city.isMember(player)) {
@@ -73,13 +82,20 @@ public class InteractProtection implements Listener {
         ProtectionsManager.verify(player, event, location);
     }
 
+    private final Set<EntityType> INTERACTION_REFUSED = new HashSet<>(Set.of(
+            EntityType.ITEM_FRAME,
+            EntityType.GLOW_ITEM_FRAME,
+            EntityType.SULFUR_CUBE
+    ));
+
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
         
         Entity rightClicked = event.getRightClicked();
         if (rightClicked instanceof Player) return;
-        if (!(rightClicked instanceof ItemFrame)) return;
+        
+        if (!INTERACTION_REFUSED.contains(rightClicked.getType())) return;
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;
 

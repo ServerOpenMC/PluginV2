@@ -1,6 +1,9 @@
 package fr.openmc.core.registry.items;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -14,7 +17,9 @@ import java.util.Optional;
 @CommandPermission("omc.debug.customitems")
 public class CustomItemsDebugCommand {
     private void passTest(Player player, int test, boolean pass) {
-        player.sendMessage("Test " + test + ": " + (pass ? "§apassé" : "§céchoué"));
+        player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.test",
+                Component.text(test),
+                TranslationManager.translation(pass ? "command.registry.custom_items_debug.test.passed" : "command.registry.custom_items_debug.test.failed")));
     }
 
     @Subcommand("is closebutton")
@@ -34,7 +39,7 @@ public class CustomItemsDebugCommand {
         ItemStack mainhand = inv.getItemInMainHand();
 
         if (mainhand.getAmount() == 0) {
-            player.sendMessage("§cVous ne tenez rien en main.");
+            player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.hand.empty"));
             return;
         }
         Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(mainhand);
@@ -42,15 +47,16 @@ public class CustomItemsDebugCommand {
         if (item.isPresent()) {
             player.sendMessage(item.get().getId());
         } else {
-            player.sendMessage("§cL'item en main n'est pas un custom item.");
+            player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.hand.not_custom"));
         }
     }
 
     @Subcommand("list")
     public void list(Player player) {
-        player.sendMessage("§eListe des custom items :");
+        player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.list.title"));
         for (String item : OMCRegistry.CUSTOM_ITEMS.keys()) {
-            player.sendMessage("§e- " + item);
+            player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.list.item",
+                    Component.text(item).color(NamedTextColor.YELLOW)));
         }
     }
 
@@ -61,7 +67,7 @@ public class CustomItemsDebugCommand {
         if (item.isPresent()) {
             player.getInventory().addItem(item.get().getBest());
         } else {
-            player.sendMessage("§cCet item n'existe pas.");
+            player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.get.not_found"));
         }
     }
 }

@@ -4,7 +4,9 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -19,7 +21,8 @@ import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 public class LeaderboardCommands {
     @CommandPlaceholder()
     void mainCommand(CommandSender sender) {
-        sender.sendMessage("§cVeuillez spécifier un leaderboard valide. (Ex: /leaderboard contributeurs)");
+        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.leaderboards.command.invalid")
+                .color(NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, false);
     }
 
     @Subcommand({"contributeurs"})
@@ -72,15 +75,23 @@ public class LeaderboardCommands {
                 LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
+                        TranslationManager.translation(
+                                "feature.leaderboards.command.position_updated",
+                                Component.text(leaderboard).color(NamedTextColor.GREEN)
+                        ).color(NamedTextColor.GREEN),
                         Prefix.STAFF,
                         MessageType.SUCCESS,
                         true
                 );
             } catch (IOException e) {
+                String errorMessage = e.getMessage() == null ? "" : e.getMessage();
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage()),
+                        TranslationManager.translation(
+                                "feature.leaderboards.command.position_update_failed",
+                                Component.text(leaderboard).color(NamedTextColor.RED),
+                                Component.text(errorMessage).color(NamedTextColor.RED)
+                        ).color(NamedTextColor.RED),
                         Prefix.STAFF,
                         MessageType.ERROR,
                         true
@@ -89,7 +100,8 @@ public class LeaderboardCommands {
         } else {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVeuillez spécifier un leaderboard valide : contributors, money, ville-money, playtime, pumpkin-count"),
+                    TranslationManager.translation("feature.leaderboards.command.invalid_list")
+                            .color(NamedTextColor.RED),
                     Prefix.STAFF,
                     MessageType.WARNING,
                     true
@@ -102,7 +114,8 @@ public class LeaderboardCommands {
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
         LeaderboardManager.disable();
-        sender.sendMessage("§cHologrammes désactivés avec succès.");
+        sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_disabled")
+                .color(NamedTextColor.RED));
     }
 
     @Subcommand("enable")
@@ -110,7 +123,8 @@ public class LeaderboardCommands {
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
         LeaderboardManager.enable();
-        sender.sendMessage("§aHologrammes activés avec succès.");
+        sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_enabled")
+                .color(NamedTextColor.GREEN));
     }
 
     @Subcommand("update")
@@ -124,7 +138,8 @@ public class LeaderboardCommands {
         LeaderboardManager.updatePumpkinCountMap();
         LeaderboardManager.updateHolograms();
         LeaderboardManager.updateHologramsViewers();
-        sender.sendMessage("§aHologrammes mis à jour avec succès.");
+        sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_updated")
+                .color(NamedTextColor.GREEN));
     }
 
     @Subcommand("setScale")
@@ -134,12 +149,23 @@ public class LeaderboardCommands {
             Player player,
             @Named("scale") float scale
     ) {
-        player.sendMessage("§aTaille des hologrammes modifiée à " + scale);
+        Component scaleComponent = Component.text(Float.toString(scale)).color(NamedTextColor.GREEN);
+        player.sendMessage(TranslationManager.translation(
+                "feature.leaderboards.command.scale_changed",
+                scaleComponent
+        ).color(NamedTextColor.GREEN));
         try {
             LeaderboardManager.setScale(scale);
-            player.sendMessage("§aTaille des hologrammes modifiée à " + scale);
+            player.sendMessage(TranslationManager.translation(
+                    "feature.leaderboards.command.scale_changed",
+                    scaleComponent
+            ).color(NamedTextColor.GREEN));
         } catch (IOException e) {
-            player.sendMessage("§cErreur lors de la mise à jour de la taille des hologrammes: " + e.getMessage());
+            String errorMessage = e.getMessage() == null ? "" : e.getMessage();
+            player.sendMessage(TranslationManager.translation(
+                    "feature.leaderboards.command.scale_update_failed",
+                    Component.text(errorMessage).color(NamedTextColor.RED)
+            ).color(NamedTextColor.RED));
         }
     }
 }

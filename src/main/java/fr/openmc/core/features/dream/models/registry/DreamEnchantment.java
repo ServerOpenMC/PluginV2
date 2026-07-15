@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
-@SuppressWarnings("UnstableApiUsage")
 public abstract class DreamEnchantment extends CustomEnchantment {
     public DreamItem getEnchantedBookItem(int level) {
         return new DreamItem(new DreamItemMeta(getKey().asMinimalString() + level,
@@ -25,16 +24,6 @@ public abstract class DreamEnchantment extends CustomEnchantment {
             @Override
             public @NonNull ItemStack getVanilla() {
                 return getEnchantedBook(level);
-            }
-
-            @Override
-            public DreamRarity getRarity() {
-                return ((DreamItemMeta) getMeta()).getRarity();
-            }
-
-            @Override
-            public boolean isTransferable() {
-                return ((DreamItemMeta) getMeta()).getTransferable();
             }
 
             @Override

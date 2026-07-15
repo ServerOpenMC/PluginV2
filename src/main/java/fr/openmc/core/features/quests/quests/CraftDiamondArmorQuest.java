@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestBuilder;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,24 +12,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.UUID;
 
 public class CraftDiamondArmorQuest extends Quest implements Listener {
 
     public CraftDiamondArmorQuest() {
         super(
-                "Armure précieuse",
-                List.of("Fabriquer une armure complète en diamant"),
+                TranslationManager.translation("feature.quests.craft_diamond_armor.name"),
+                TranslationManager.translationLore("feature.quests.craft_diamond_armor.description"),
                 new ItemStack(Material.DIAMOND_CHESTPLATE)
         );
 
-        Quest quest = new QuestBuilder("Armure précieuse", List.of("Fabriquer une armure complète en diamant"), new ItemStack(Material.DIAMOND_CHESTPLATE))
-                .tier(4, "Fabriquer une armure complète en diamant",  new QuestItemReward(Material.DIAMOND, 10))
-                .step("Casque en diamant", 1)
-                .step("Plastron en diamant", 1)
-                .step("Pantalon en diamant", 1)
-                .step("Bottes en diamant", 1)
+        Quest quest = new QuestBuilder(
+                TranslationManager.translation("feature.quests.craft_diamond_armor.name"),
+                TranslationManager.translationLore("feature.quests.craft_diamond_armor.description"),
+                new ItemStack(Material.DIAMOND_CHESTPLATE)
+        )
+                .tier(4, "feature.quests.craft_diamond_armor.description", new QuestItemReward(Material.DIAMOND, 10))
+                .step("feature.quests.craft_diamond_armor.step.helmet", 1)
+                .step("feature.quests.craft_diamond_armor.step.chestplate", 1)
+                .step("feature.quests.craft_diamond_armor.step.leggings", 1)
+                .step("feature.quests.craft_diamond_armor.step.boots", 1)
                 .requireAllSteps(true)
                 .build();
 

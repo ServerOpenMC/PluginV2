@@ -4,9 +4,12 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -23,13 +26,11 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
-        message = Component.text("§8§m                                                     §r\n\n§7 Vous jouez actuellement sur la version")
-            .append(Component.text("§d§l " + version).clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("§7 du plugin §d§lOpenMC.\n"))
-            .append(Component.text("§f§l Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("\n\n§8§m                                                     §r"));
+        message = TranslationManager.translation("feature.updates.message.broadcast_version",
+                Component.text(version, NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD)
+        ).clickEvent(ClickEvent.openUrl(milestoneUrl));
 
-        long period = 14400 * 20; // 4h
+        long period = 14400 * 20;
 
         new BukkitRunnable() {
             @Override

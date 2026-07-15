@@ -8,7 +8,9 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -37,21 +39,26 @@ public class PrivateMessageManager extends Feature implements HasCommands {
      */
     public static void sendPrivateMessage(Player sender, Player receiver, String message) {
         if (sender.equals(receiver)) {
-            MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.privatemessage.msg.cannot_message_yourself"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
         if (!PlayerSettingsManager.canReceivePrivateMessage(receiver.getUniqueId(), sender.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("§cVous avez désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.privatemessage.msg.private_messages_disabled"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
         if (!PlayerSettingsManager.canReceivePrivateMessage(sender.getUniqueId(), receiver.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("§cLe joueur " + receiver.getName() + " a désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.privatemessage.msg.player_private_messages_disabled",
+                    Component.text(receiver.getName()).color(NamedTextColor.YELLOW)), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
-        sender.sendMessage("§7[§eToi §6§l→ §r§9" + receiver.getName() + "§7] §f" + message);
-        receiver.sendMessage("§7[§e" + sender.getName() + " §6§l→ §r§9Toi§7] §f" + message);
+        sender.sendMessage(TranslationManager.translation("feature.privatemessage.msg.format.sender",
+                Component.text(receiver.getName()).color(NamedTextColor.BLUE),
+                Component.text(message).color(NamedTextColor.WHITE)));
+        receiver.sendMessage(TranslationManager.translation("feature.privatemessage.msg.format.receiver",
+                Component.text(sender.getName()).color(NamedTextColor.YELLOW),
+                Component.text(message).color(NamedTextColor.WHITE)));
         SocialSpyManager.broadcastToSocialSpy(sender, receiver, message);
 
         lastMessageFrom.put(receiver.getUniqueId(), sender.getUniqueId());
@@ -65,17 +72,17 @@ public class PrivateMessageManager extends Feature implements HasCommands {
      * @param message The message to send.
      */
     public static void replyToLastMessage(Player sender, String message) {
-        UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
-        if (lastReceiverId == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVous n'avez pas de message privé récent."), Prefix.OPENMC, MessageType.ERROR, true);
-            return;
-        }
+         UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
+         if (lastReceiverId == null) {
+             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.missing_arg"), Prefix.OPENMC, MessageType.ERROR, true);
+             return;
+         }
 
-        Player receiver = sender.getServer().getPlayer(lastReceiverId);
-        if (receiver == null || !receiver.isOnline()) {
-            MessagesManager.sendMessage(sender, Component.text("§cLe joueur n'est pas en ligne."), Prefix.OPENMC, MessageType.ERROR, true);
-            return;
-        }
+         Player receiver = sender.getServer().getPlayer(lastReceiverId);
+         if (receiver == null || !receiver.isOnline()) {
+             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
+             return;
+         }
 
         sendPrivateMessage(sender, receiver, message);
     }

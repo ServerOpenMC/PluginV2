@@ -9,33 +9,24 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class MetalDetectorQuest extends MilestoneQuest implements Listener {
 	
 	public MetalDetectorQuest() {
 		super(
-				"Coooooooaaaaaaa",
-				List.of(
-						"§fRécupérer le §ddétecteur à métaux",
-						"§8§oPourquoi les têtards sont aussi gros ?"
-				),
+				TranslationManager.translation("feature.dream.milestone.quest.metal_detector.name"),
+				TranslationManager.translationLore("feature.dream.milestone.quest.metal_detector.description"),
 				DreamItemRegistry.METAL_DETECTOR,
 				MilestoneType.DREAM,
 				DreamSteps.METAL_DETECTOR,
 				new QuestTier(1),
-				List.of(
-						"§3Voyageur : Ah, enfin le détecteur. Nous allons pouvoir rechercher l'orbe dans cette boue plus facilement.",
-						"§3Voyageur : Ces plages étaient avant bien de sable et d'eau. Mais avec la catastrophe, les §dgrenouilles §3et §dtêtards §3se sont transformés. " +
-								"Cette transformation s'est soldée, pour eux, par une §dgrande soif§3.",
-						"§6D'où l'absence d'eau."
-				)
+				TranslationManager.translationLore("feature.dream.milestone.quest.metal_detector.dialog")
 		);
 	}
 	

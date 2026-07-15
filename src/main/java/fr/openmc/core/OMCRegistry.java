@@ -31,8 +31,6 @@ public final class OMCRegistry {
             new RegistryContext(
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),
-            new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
-                    RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
@@ -41,9 +39,11 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
-                    RegistryLoadingType.BOOTSTRAP),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 
@@ -84,6 +84,14 @@ public final class OMCRegistry {
             LifecycleRegistry r = ctx.registry().get();
             r.postInit();
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
+        }
+    }
+
+    public static void stopAll() {
+        for (RegistryContext ctx : OMCRegistry.ALL) {
+            LifecycleRegistry r = ctx.registry().get();
+            r.stop();
+            OMCLogger.successFormatted("Registre {} stoppé", r.getClass().getSimpleName());
         }
     }
 }

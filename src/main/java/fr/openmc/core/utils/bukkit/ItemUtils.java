@@ -8,6 +8,7 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -262,8 +263,8 @@ public class ItemUtils {
      * @param material       the item to remove, must be similar to the items in the inventory {@link Material}
      * @param amountToRemove the number of items to remove
      */
-    public static int removeItemsFromInventory(Player player, Material material, int amountToRemove) {
-        return removeItemsFromInventory(player, ItemStack.of(material), amountToRemove);
+    public static int removeItemsFromPlayerInventory(Player player, Material material, int amountToRemove) {
+        return removeItemsFromPlayerInventory(player, ItemStack.of(material), amountToRemove);
     }
 
     /**
@@ -273,31 +274,9 @@ public class ItemUtils {
      * @param item the item to remove, must be similar to the items in the inventory {@link ItemStack}
      * @param amountToRemove the number of items to remove
      */
-    public static int removeItemsFromInventory(Player player, ItemStack item, int amountToRemove) {
-        if (player == null || item == null || amountToRemove <= 0) return 0;
-
-        int removed = 0;
-        ItemStack[] contents = player.getInventory().getContents();
-
-        for (int i = 0; i < contents.length && removed < amountToRemove; i++) {
-            ItemStack stack = contents[i];
-            if (stack == null) continue;
-
-            if (isSimilar(stack, item)) {
-                int stackAmount = stack.getAmount();
-                int toRemove = Math.min(amountToRemove - removed, stackAmount);
-
-                removed += toRemove;
-
-                if (stackAmount <= toRemove) {
-                    player.getInventory().setItem(i, null);
-                } else {
-                    stack.setAmount(stackAmount - toRemove);
-                }
-            }
-        }
-
-        return removed;
+    public static int removeItemsFromPlayerInventory(Player player, ItemStack item, int amountToRemove) {
+        if (player == null) return 0;
+        return InventoryUtils.removeItemsFromInventory(player.getInventory(), item, amountToRemove);
     }
 
     public static boolean takeAywenite(Player player, int amount) {
@@ -307,7 +286,9 @@ public class ItemUtils {
         if (!hasEnoughItems(player, aywenite, amount)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas assez d'§dAywenite §f(" + amount + " nécessaires)"),
+                    TranslationManager.translation("core.utils.aywenite.not_enough",
+                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(amount)),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true
@@ -315,7 +296,7 @@ public class ItemUtils {
             return false;
         }
 
-        removeItemsFromInventory(player, aywenite, amount);
+        removeItemsFromPlayerInventory(player, aywenite, amount);
         return true;
     }
 
@@ -328,7 +309,9 @@ public class ItemUtils {
         if (!hasEnoughSpace(player, aywenite)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas assez de place dans votre inventaire pour recevoir " + amount + " d'§dAywenite§f. L'aywenite est disponible dans votre mailbox"),
+                    TranslationManager.translation("core.utils.aywenite.not_enough_space",
+                            Component.text(amount),
+                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE)),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true

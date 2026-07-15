@@ -6,11 +6,13 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +38,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
 
     @Override
     public Component getName() {
-        return Component.text("Soulbound");
+        return TranslationManager.translation("feature.dream.enchantment.soulbound.name");
     }
 
     @Override
@@ -95,7 +97,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
         if (hasEnchantment && DynamicCooldownManager.isReady(uuid, "player:soulbound")) {
             event.setShouldDropExperience(false);
             DynamicCooldownManager.use(uuid, "player:soulbound", getCooldown(maxSoulboundLevel));
-            MessagesManager.sendMessage(player, Component.text("Votre enchantement Soulbound a fait effet ! Prochaine utilisation dans " + DateUtils.convertMillisToTime(getCooldown(maxSoulboundLevel))), Prefix.DREAM, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.enchantment.soulbound.message.effect", Component.text(DateUtils.convertMillisToTime(getCooldown(maxSoulboundLevel))).color(NamedTextColor.GREEN)), Prefix.DREAM, MessageType.SUCCESS, false);
         }
     }
 

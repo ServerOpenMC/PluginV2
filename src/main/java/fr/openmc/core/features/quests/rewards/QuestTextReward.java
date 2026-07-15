@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
  * <p>
  * This class implements the QuestReward interface and provides functionality to give a specified amount of money to a player.
  */
-public record QuestTextReward(String text, Prefix prefix, MessageType messageType) implements QuestReward {
+public record QuestTextReward(Component text, Prefix prefix, MessageType messageType) implements QuestReward {
     /**
      * Gives the specified amount of money to the player.
      *
@@ -24,7 +24,7 @@ public record QuestTextReward(String text, Prefix prefix, MessageType messageTyp
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             MessagesManager.sendMessage(
                     player,
-                    Component.text(text),
+                    text,
                     prefix,
                     messageType,
                     false

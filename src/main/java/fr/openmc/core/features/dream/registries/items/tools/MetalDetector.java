@@ -11,11 +11,12 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -68,10 +69,10 @@ public class MetalDetector extends DreamItem implements UsableItem {
                 CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
                 if (lootTable == null) return;
 
-                List<ItemStack> rewards = lootTable.rollLoots();
+                List<CustomLoot> rewards = lootTable.rollLoots(player);
 
-                for (ItemStack item : rewards) {
-                    player.getInventory().addItem(item);
+                for (CustomLoot loot : rewards) {
+                    if (!(loot instanceof ItemStack item)) continue;
 
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                             Bukkit.getServer().getPluginManager().callEvent(new DreamRngLootEvent(player, item, item.getAmount(), lootTable.getChanceOf(item)))
@@ -91,7 +92,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         World world = player.getWorld();
         if (!DreamUtils.isDreamWorld(world)) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez être dans la dimension des rêves pour reset la position du coffre"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.metal_detector.message.must_be_dream"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -103,7 +104,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
         if (item == null) return;
 
         if (player.hasCooldown(item)) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de reset la position du coffre"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.metal_detector.message.reset_cooldown"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 

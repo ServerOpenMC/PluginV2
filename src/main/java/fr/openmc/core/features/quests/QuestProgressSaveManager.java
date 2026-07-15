@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public class QuestProgressSaveManager extends Feature {
             Map<String, Object> playerProgress = new HashMap<>();
 
             for (Quest quest : QuestsManager.quests.values()) {
-                String questName = quest.getName();
+                String questName = PlainTextComponentSerializer.plainText().serialize(quest.getName());
 
                 int progress = config.getInt(questName + ".progress", 0);
                 quest.getProgress().put(playerUUID, progress);
@@ -98,7 +99,7 @@ public class QuestProgressSaveManager extends Feature {
         YamlConfiguration config = new YamlConfiguration();
 
         for (Quest quest : QuestsManager.quests.values()) {
-            String questName = quest.getName();
+            String questName = PlainTextComponentSerializer.plainText().serialize(quest.getName());
             int progress = quest.getProgress().getOrDefault(playerUUID, 0);
             int currentTier = quest.getCurrentTierIndex(playerUUID);
             Set<Integer> completedTiers = quest.getCompletedTiers().getOrDefault(playerUUID, new HashSet<>());

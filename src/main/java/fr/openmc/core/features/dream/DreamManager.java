@@ -29,7 +29,8 @@ import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
 import fr.openmc.core.features.dream.mecanism.rng.DreamLootListener;
-import fr.openmc.core.features.dream.mecanism.sfx.PlayerCloneNpc;
+import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
+import fr.openmc.core.features.dream.mecanism.sfx.ghost.DreamGhostManager;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityCraftListener;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityManager;
 import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
@@ -83,6 +84,7 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
         MetalDetectorManager.init();
         ColdManager.init();
         SingularityManager.init();
+        DreamGhostManager.init();
 
         // ** LOAD DATAS **
         loadAllDreamPlayerData();
@@ -120,7 +122,8 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
                 new SingularityCraftListener(),
                 new PlayerDreamStructureListener(),
                 new PlayerFoodChangeListener(),
-                new DreamLootListener()
+                new DreamLootListener(),
+                new PlayerPickupListener()
         );
     }
 

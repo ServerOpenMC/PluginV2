@@ -10,6 +10,7 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -25,11 +26,15 @@ public class AdminNotationCommands {
     @Command({"admcity notation edit"})
     @CommandPermission("omc.admins.commands.admcity.notation")
     public void editNotations(Player sender) {
-	    String exempleTip = "Exemple : cette semaine on est le " + DateUtils.getWeekFormat() + " et la semaine prochaine, le " + DateUtils.getNextWeekFormat();
-        DialogInput.send(sender, Component.text("Entrer le format de la semaine (" + exempleTip + ")"),
+	    Component exempleTip = TranslationManager.translation("feature.city.notation.admin.edit.example",
+                Component.text(DateUtils.getWeekFormat()),
+                Component.text(DateUtils.getNextWeekFormat()));
+        DialogInput.send(sender, TranslationManager.translation("feature.city.notation.admin.edit.prompt",
+                        exempleTip),
                 7, weekStr -> {
                     if (weekStr == null || weekStr.isEmpty()) {
-	                    MessagesManager.sendMessage(sender, Component.text("Saisie fausse ! " + exempleTip), Prefix.STAFF, MessageType.ERROR, false);
+	                    MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.edit.invalid",
+                                exempleTip), Prefix.STAFF, MessageType.ERROR, false);
                         return;
                     }
 
@@ -39,14 +44,14 @@ public class AdminNotationCommands {
                             .toList();
 
                     if (cities.isEmpty()) {
-                        MessagesManager.sendMessage(sender, Component.text("Aucune ville a éditer"), Prefix.STAFF, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.edit.none"), Prefix.STAFF, MessageType.ERROR, false);
                         return;
                     }
 
                     try {
                         NotationEditionDialog.send(sender, weekStr, cities, null);
                     } catch (Exception e) {
-                        MessagesManager.sendMessage(sender, Component.text("Erreur lors de l'ouverture du menu"), Prefix.STAFF, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.edit.error"), Prefix.STAFF, MessageType.ERROR, false);
                     }
                 });
     }
@@ -57,7 +62,8 @@ public class AdminNotationCommands {
         String weekStr = DateUtils.getWeekFormat();
 
         if (!NotationManager.notationPerWeek.containsKey(weekStr)) {
-	        MessagesManager.sendMessage(sender, Component.text("Vous devez faire §6/admcity notation edit §ret éditer la semaine " + weekStr), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.publish.missing",
+                    Component.text(weekStr)), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -69,7 +75,8 @@ public class AdminNotationCommands {
 
         giveReward(weekStr);
 	    
-	    MessagesManager.sendMessage(sender, Component.text("La semaine " + weekStr + " a été publiée, les notes d'économies et d'activité ainsi que les gains ont été calculés et donnés"), Prefix.STAFF, MessageType.ERROR, false);
+	    MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.publish.success",
+                Component.text(weekStr)), Prefix.STAFF, MessageType.ERROR, false);
 
     }
 }

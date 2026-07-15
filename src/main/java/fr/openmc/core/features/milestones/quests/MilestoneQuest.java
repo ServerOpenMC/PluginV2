@@ -8,6 +8,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ public class MilestoneQuest extends Quest {
 	protected final MilestoneType type;
 	protected final Enum<? extends MilestoneStep> step;
     protected final Consumer<Player> actionsAfterDialog;
-    protected List<String> dialogs;
+    protected List<Component> dialogs;
 
 	/**
 	 * Constructeur de MilestoneQuest
@@ -33,7 +34,7 @@ public class MilestoneQuest extends Quest {
 	 * @param step l'enum lié a l'étape
 	 * @param quest les tiers afin de valider la quete
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest);
 	}
 
@@ -46,7 +47,7 @@ public class MilestoneQuest extends Quest {
 	 * @param step l'enum lié a l'étape
 	 * @param quest les tiers afin de valider la quete
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		super(name, baseDescription, icon);
 		this.type = type;
 		this.step = step;
@@ -65,7 +66,7 @@ public class MilestoneQuest extends Quest {
 	 * @param step l'enum lié a l'étape
 	 * @param quest les tiers afin de valider la quete
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, CustomItem customItem, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, CustomItem customItem, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest) {
 		super(name, baseDescription, customItem.getBest());
 		this.type = type;
 		this.step = step;
@@ -85,7 +86,7 @@ public class MilestoneQuest extends Quest {
 	 * @param quest les tiers afin de valider la quete
 	 * @param dialogs les dialogues à afficher lors de la validation de la quête
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<String> dialogs) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<Component> dialogs) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs);
 	}
 
@@ -99,7 +100,7 @@ public class MilestoneQuest extends Quest {
 	 * @param quest les tiers afin de valider la quete
 	 * @param dialogs les dialogues à afficher lors de la validation de la quête
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<String> dialogs) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<Component> dialogs) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs, null);
 	}
 
@@ -113,7 +114,7 @@ public class MilestoneQuest extends Quest {
 	 * @param quest les tiers afin de valider la quete
 	 * @param dialogs les dialogues à afficher lors de la validation de la quête
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, CustomItem customItem, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<String> dialogs) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, CustomItem customItem, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<Component> dialogs) {
 		this(name, baseDescription, customItem.getBest(), type, step, quest, dialogs, null);
 	}
 
@@ -128,7 +129,7 @@ public class MilestoneQuest extends Quest {
 	 * @param dialogs les dialogues à afficher lors de la validation de la quête
 	 * @param actionsAfterDialog les actions à effectuer après la fin du dialogue
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<String> dialogs, Consumer<Player> actionsAfterDialog) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, Material icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<Component> dialogs, Consumer<Player> actionsAfterDialog) {
 		this(name, baseDescription, new ItemStack(icon), type, step, quest, dialogs, actionsAfterDialog);
 	}
 
@@ -143,7 +144,7 @@ public class MilestoneQuest extends Quest {
 	 * @param dialogs les dialogues à afficher lors de la validation de la quête
 	 * @param actionsAfterDialog les actions à effectuer après la fin du dialogue
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<String> dialogs, Consumer<Player> actionsAfterDialog) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, ItemStack icon, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<Component> dialogs, Consumer<Player> actionsAfterDialog) {
 		super(name, baseDescription, icon);
 		this.type = type;
 		this.step = step;
@@ -167,7 +168,7 @@ public class MilestoneQuest extends Quest {
 	 * @param dialogs les dialogues à afficher lors de la validation de la quête
 	 * @param actionsAfterDialog les actions à effectuer après la fin du dialogue
 	 */
-	public MilestoneQuest(String name, List<String> baseDescription, CustomItem customItem, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<String> dialogs, Consumer<Player> actionsAfterDialog) {
+	public MilestoneQuest(Component name, List<Component> baseDescription, CustomItem customItem, MilestoneType type, Enum<? extends MilestoneStep> step, QuestTier quest, List<Component> dialogs, Consumer<Player> actionsAfterDialog) {
 		super(name, baseDescription, customItem.getBest());
 		this.type = type;
 		this.step = step;

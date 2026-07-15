@@ -21,6 +21,6 @@ public class DreamItemNamePlaceholder implements IAPlaceholder {
 
         if (item == null || !(item.getMeta() instanceof DreamItemMeta d)) return null;
 
-        return d.getRarity().getLegacyColor() + d.getName();
+        return d.getRarity().toLegacyColor() + d.getName();
     }
 }

@@ -20,7 +20,7 @@ public abstract class Feature {
      * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)
      */
     public final void startInit() {
-        // Condition d'initialisation (si feature ne doit pas etre lancé dans les tests ou que elle nécéssite un hook)
+        // Condition d'initialisation (si feature ne doit pas être lancée dans les tests ou qu'elle nécessite un hook)
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
             return;
@@ -49,7 +49,7 @@ public abstract class Feature {
                     OMCPlugin.registerEvents(listener);
                 }
             }
-            // Enregistre les commands
+            // Enregistre les commandes
             if (this instanceof HasCommands hasCommands) {
                     for (Object command : hasCommands.getCommands()) {
                         CommandsManager.getHandler().register(command);
@@ -61,7 +61,7 @@ public abstract class Feature {
         } catch (Exception e) {
             initialize = false;
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
-            throw e;
+            OMCLogger.error(e.getMessage());
         } catch (NoClassDefFoundError e) {
             OMCLogger.errorFormatted("Plugin has failed to start feature because " + e.getMessage() + " does not exist.");
         }
@@ -81,7 +81,7 @@ public abstract class Feature {
     }
 
     /**
-     * Sauvegarde la feature si elle a ete initialisee.
+     * Sauvegarde la feature si elle a ete initialisée.
      */
     public final void startSave() {
         if (!initialize) return;
@@ -90,9 +90,9 @@ public abstract class Feature {
     }
 
     /**
-     * Indique si la feature a ete initialisee avec succes.
+     * Indique si la feature a ete initialisée avec succès.
      *
-     * @return True si l'initialisation a reussi
+     * @return True si l'initialisation a réussi
      */
     public final boolean isInitialized() {
         return initialize;
