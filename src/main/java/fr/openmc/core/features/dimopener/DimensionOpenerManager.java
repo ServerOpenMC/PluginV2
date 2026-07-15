@@ -15,6 +15,7 @@ import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.FilesUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -74,11 +75,9 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     public static void loadDimensions() {
         dimensions.clear();
 
-        File[] files = dimensionsFolder.listFiles((_, name) -> name.toLowerCase().endsWith(".json"));
-        if (files == null) return;
-
-        for (File file : files) {
+        for (File file : FilesUtils.getAllFiles(dimensionsFolder, "json")) {
             String id = file.getName().replace(".json", "").toLowerCase();
+
             try (FileReader reader = new FileReader(file)) {
                 DimensionData data = GSON.fromJson(reader, DimensionData.class);
                 if (data == null) {
@@ -290,7 +289,8 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
 
     private static void saveProgress() {
         try {
-            if (!progressFile.getParentFile().exists()) progressFile.getParentFile().mkdirs();
+            FilesUtils.createDirectoryIfNotExists(progressFile.getParentFile());
+            
             try (FileWriter writer = new FileWriter(progressFile)) {
                 GSON.toJson(progressMap, writer);
             }
