@@ -39,6 +39,8 @@ import java.util.Map;
 
 public class DimensionContributeMenu extends Menu {
 
+    // TODO: refaire ce menu en plus intuitife
+
     private static final int INPUT_SLOT = 22;
     private static final int INFO_SLOT = 4;
 
@@ -285,7 +287,7 @@ public class DimensionContributeMenu extends Menu {
 
     private ItemMenuBuilder infoItem(DimensionData dim, DimensionProgress progress) {
         StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
-        return new ItemMenuBuilder(this, Material.BOOK, meta -> {
+        return new ItemMenuBuilder(this, DimensionOpenerManager.resolveIcon(dim), meta -> {
             meta.itemName(TranslationManager.translation("feature.dimopener.menu.info.name", Component.text(dim.getName())));
             meta.lore(List.of(
                     TranslationManager.translation("feature.dimopener.menu.info.description", Component.text(dim.getDescription())),

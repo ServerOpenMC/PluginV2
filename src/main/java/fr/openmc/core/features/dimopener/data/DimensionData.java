@@ -17,6 +17,8 @@ public class DimensionData {
     private String dimensionName;
     @Getter
     private String requireDimension;
+    @Getter
+    private String icon;
 
     private List<StepDimensionData> steps;
 
@@ -39,6 +41,7 @@ public class DimensionData {
                 ", description='" + description + '\'' +
                 ", dimensionName='" + dimensionName + '\'' +
                 ", requireDimension='" + requireDimension + '\'' +
+                ", icon='" + icon + '\'' +
                 ", steps=" + steps +
                 "}";
     }

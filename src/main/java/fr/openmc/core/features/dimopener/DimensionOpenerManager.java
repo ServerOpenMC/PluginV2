@@ -3,6 +3,7 @@ package fr.openmc.core.features.dimopener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -13,6 +14,7 @@ import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -21,9 +23,11 @@ import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,10 +37,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -318,6 +319,28 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         return state != DimensionState.STEP_COOLDOWN
                 && state != DimensionState.ALL_STEPS_DONE
                 && state != DimensionState.OPENED;
+    }
+
+    public static ItemStack resolveIcon(DimensionData dim) {
+        String icon = dim.getIcon();
+
+        if (icon == null || icon.isBlank()) return new ItemStack(Material.GRASS_BLOCK);
+
+        if (icon.contains(":")) {
+            Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(icon);
+            if (customItem.isPresent())
+                return customItem.get().getBest();
+            OMCLogger.error("Icon custom item introuvable pour la dimension {} : {}", dim.getId(), icon);
+            return new ItemStack(Material.GRASS_BLOCK);
+        }
+
+        Material material = Material.matchMaterial(icon);
+        if (material == null) {
+            OMCLogger.error("Icon material invalide pour la dimension {} : {}", dim.getId(), icon);
+            return new ItemStack(Material.GRASS_BLOCK);
+        }
+
+        return new ItemStack(material);
     }
 
     @Override

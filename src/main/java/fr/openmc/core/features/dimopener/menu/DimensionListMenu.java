@@ -51,13 +51,7 @@ public class DimensionListMenu extends Menu {
             DimensionProgress progress = DimensionOpenerManager.getProgress(dim.getId());
             boolean unlocked = DimensionOpenerManager.isPrerequisiteMet(dim);
 
-            Material icon = switch (progress.getState()) {
-                case OPENED -> Material.END_PORTAL_FRAME;
-                case ALL_STEPS_DONE, STEP_COOLDOWN -> Material.CLOCK;
-                default -> Material.ENDER_PEARL;
-            };
-
-            ItemMenuBuilder item = new ItemMenuBuilder(this, icon, meta -> {
+            ItemMenuBuilder item = new ItemMenuBuilder(this, DimensionOpenerManager.resolveIcon(dim), meta -> {
                 meta.itemName(TranslationManager.translation("feature.dimopener.menu.list.name", Component.text(dim.getName())));
                 List<Component> lore = new ArrayList<>();
                 lore.add(TranslationManager.translation("feature.dimopener.menu.list.description", Component.text(dim.getDescription())));
@@ -96,7 +90,7 @@ public class DimensionListMenu extends Menu {
         };
         return TranslationManager.translation(key);
     }
-    
+
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();
