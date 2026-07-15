@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.inventory.ItemType;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,10 +27,12 @@ public class VampireLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,1, 1, 5),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD,0.25, 1),
+                new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(
+                        o -> o.setAmplifier(6)),0.6, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD,0.50, 1),
                 new ItemLoot(
-                        OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1, 3),
-                        0.1,
+                        OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1, 2),
+                        0.25,
                         1
                 )
         ));

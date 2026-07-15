@@ -53,6 +53,14 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 maxAmount);
     }
 
+    public ItemLoot(ItemStack item, double chance, int amount) {
+        this(Collections.singleton(item),
+                null,
+                chance,
+                amount,
+                amount);
+    }
+
     public ItemLoot(Material item, double chance, int minAmount, int maxAmount) {
         this(ItemStack.of(item),
                 chance,

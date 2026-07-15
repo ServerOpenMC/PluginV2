@@ -6,6 +6,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.EnragedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.*;
@@ -71,6 +73,7 @@ public class BloodyNightManager {
 
         // * Supression des monstres devant etre supprimé (ex ceux qui vient des raids)
         deleteRaidMonsters(world);
+        deleteVampireMonsters(world);
 
         // * Modification des monstres déjà présent dans le monde (uniquement ceux chargé)
         desactivateCorruptedMonsters(world);
@@ -120,6 +123,19 @@ public class BloodyNightManager {
             if (!(entity.getPersistentDataContainer().has(RAID_MONSTER_KEY))) continue;
 
             monster.remove();
+        }
+    }
+
+    /**
+     * Supprime tout les monstres spawné par le vampire
+     * @param world le monde ciblé par la nuit sanglante
+     */
+    private static void deleteVampireMonsters(World world) {
+        for (Entity entity : world.getEntities()) {
+            CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
+            if (customMob == null) continue;
+            if (customMob instanceof VampireBoss || customMob instanceof VampireSlave)
+                entity.remove();
         }
     }
 

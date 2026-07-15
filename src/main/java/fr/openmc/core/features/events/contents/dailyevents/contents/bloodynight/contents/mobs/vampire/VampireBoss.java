@@ -67,8 +67,6 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
     @Override
     public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (mannequin == null ||
-                !entity.getUniqueId().equals(mannequin.getUniqueId())) return;
 
         event.getDrops().clear();
         event.setDroppedExp(0);
@@ -158,9 +156,9 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
             player.sendMessage(
                     TranslationManager.translation(
                             "feature.dailyevents.bloody_night.vampire_boss.summoned",
-                            Component.text(at.getX(), NamedTextColor.RED),
-                            Component.text(at.getY(), NamedTextColor.RED),
-                            Component.text(at.getZ(), NamedTextColor.RED)
+                            Component.text(Math.round(at.getX()), NamedTextColor.RED),
+                            Component.text(Math.round(at.getY()), NamedTextColor.RED),
+                            Component.text(Math.round(at.getZ()), NamedTextColor.RED)
                     )
             );
         }
@@ -173,14 +171,20 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
         Entity victim = event.getEntity();
 
         CustomMob<?> mob = OMCRegistry.CUSTOM_MOBS.getMob(victim);
+        if (!(victim instanceof LivingEntity livingVictim)) return;
         if (mob == null || !mob.getId().equals(this.getId())) return;
 
         Player player = getDamagerPlayer(event);
         if (player == null) return;
 
-        double effectiveDamage = event.getFinalDamage();
+        double effectiveDamage = Math.min(event.getFinalDamage(), livingVictim.getHealth());
         if (effectiveDamage > 0) {
-            double actualDamage = VampireBossLootManager.damageContributions.remove(player.getUniqueId());
+            double actualDamage = 0;
+
+            if (VampireBossLootManager.damageContributions.containsKey(player.getUniqueId())) {
+                actualDamage = VampireBossLootManager.damageContributions.get(player.getUniqueId());
+            }
+
             VampireBossLootManager.damageContributions.put(player.getUniqueId(), actualDamage + effectiveDamage);
         }
 
@@ -222,14 +226,12 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
 
     private Player getDamagerPlayer(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
-        if (damager instanceof Player player) {
-            event.setCancelled(true);
-            return player;
-        }
+        if (damager instanceof Player player) return player;
 
         if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player player)
             return player;
 
+        event.setCancelled(true);
         return null;
     }
 }

@@ -46,13 +46,23 @@ public abstract class CustomAmbient {
      * @param player Le joueur concerné
      */
     public void apply(Player player) {
+        apply(player, false);
+    }
+
+    /**
+     * Applique l'ambience sur un Joueur
+     * @param player Le joueur concerné
+     * @param isJoining Si le joueur est rejoint ou non
+     */
+    public void apply(Player player, boolean isJoining) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         // * On envoie le packet respawn qui applique l'ambience
         PlayerRespawnNMS.sendPacket(
                 nmsPlayer,
                 getPlayerAmbientSpawnInfo(nmsPlayer),
-                getTransitionDimensionForPlayer(nmsPlayer)
+                getTransitionDimensionForPlayer(nmsPlayer),
+                isJoining
         );
 
         if (this.getAmbientBuilder().utilizeBiome()) {
@@ -76,7 +86,7 @@ public abstract class CustomAmbient {
      */
     public void apply(Collection<Player> receivers) {
         for (Player receiver : receivers) {
-            apply(receiver);
+            apply(receiver, false);
         }
     }
 
@@ -92,7 +102,8 @@ public abstract class CustomAmbient {
         PlayerRespawnNMS.sendPacket(
                 nmsPlayer,
                 nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()),
-                getTransitionDimensionForPlayer(nmsPlayer)
+                getTransitionDimensionForPlayer(nmsPlayer),
+                false
         );
     }
 

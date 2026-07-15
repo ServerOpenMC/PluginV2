@@ -14,18 +14,18 @@ import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
 public class VampireBossLootManager {
 
@@ -70,7 +70,7 @@ public class VampireBossLootManager {
             if (rankInt == 1 || rankInt == 2 || rankInt == 3) {
                 broadcastToWorld(world, TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.rank",
-                        Component.text(rankInt + 1, LeaderboardManager.getRankColor(rankInt + 1)),
+                        Component.text("#"+ rankInt + 1, LeaderboardManager.getRankColor(rankInt + 1)),
                         PlayerNameCache.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
@@ -103,6 +103,15 @@ public class VampireBossLootManager {
 
         broadcastToWorld(world, TranslationManager.translation(
                 "feature.dailyevents.bloody_night.vampire_boss.defeated.end"));
+
+        Component messageMail = TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.mail.received")
+                .appendNewline()
+                .append(TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.mail.click"))
+                .clickEvent(ClickEvent.runCommand("mailbox"))
+                .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.dailyevents.bloody_night.vampire_boss.mail.hover")))
+                .append(TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.mail.open_mailbox"));
+
+        broadcastToWorld(world, messageMail);
     }
 
     private static void giveLootToContributor(UUID playerUUID, double chanceMultiplier) {
@@ -110,7 +119,7 @@ public class VampireBossLootManager {
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
         Player player = offlinePlayer.getPlayer();
-
+        List<ItemStack> rewards = new ArrayList<>();
 
         for (CustomLoot loot : VAMPIRE_BOSS_LOOT_TABLE.getLoots()) {
             if (!(loot instanceof ItemLoot) && !(loot instanceof MoneyLoot)) continue;
@@ -127,8 +136,9 @@ public class VampireBossLootManager {
 
             int amount = -1;
             if (loot instanceof ItemLoot itemLoot) {
-                amount = itemLoot.getRepresentativeItem().getAmount();
-                MailboxManager.sendItemsToOfflinePlayer(offlinePlayer, itemLoot.getItems().toArray(new ItemStack[0]));
+                ItemStack itemReward = itemLoot.getRepresentativeItem();
+                amount = itemReward.getAmount();
+                rewards.add(itemReward);
             } else if (loot instanceof MoneyLoot moneyLoot) {
                 EconomyManager.addBalance(playerUUID, moneyLoot.getMoney());
             }
@@ -137,6 +147,8 @@ public class VampireBossLootManager {
                 loot.sendLootMessage(player, amount);
             }
         }
+
+        MailboxManager.sendItemsToOfflinePlayer(offlinePlayer, rewards.toArray(ItemStack[]::new));
     }
 
     private static double getChanceMultiplier(double participation) {
