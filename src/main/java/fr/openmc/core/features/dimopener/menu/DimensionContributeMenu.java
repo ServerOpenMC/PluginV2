@@ -11,6 +11,7 @@ import fr.openmc.core.features.dimopener.DimensionState;
 import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -341,17 +342,12 @@ public class DimensionContributeMenu extends Menu {
         long remainingMs = Math.max(0, progress.getCooldownEndTimestamp() - System.currentTimeMillis());
         long remainingSeconds = remainingMs / 1000;
 
-        long days = remainingSeconds / 86400;
-        long hours = (remainingSeconds % 86400) / 3600;
-        long minutes = (remainingSeconds % 3600) / 60;
-        long seconds = remainingSeconds % 60;
-
         return new ItemMenuBuilder(this, Material.CLOCK, meta -> {
             meta.itemName(TranslationManager.translation("feature.dimopener.menu.waiting.title"));
             meta.lore(List.of(
                     TranslationManager.translation(
                             "feature.dimopener.menu.waiting.time",
-                            Component.text(days), Component.text(hours), Component.text(minutes), Component.text(seconds)
+                            Component.text(DateUtils.convertMillisToTime(remainingMs))
                     )
             ));
         });
