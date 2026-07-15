@@ -24,7 +24,6 @@ public class PlayerEatSomnifere implements Listener {
 
         Player player = event.getPlayer();
         if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
-        System.out.println("Eat somnifere");
 
         // somnifere se stack par 1, aucun check est nécessaire
         event.setItem(null);

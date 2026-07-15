@@ -398,8 +398,6 @@ public class DreamManager extends Feature implements DatabaseFeature, LoadAfterI
 
         if (spawningLocation == null) return;
 
-        System.out.println("tp to dream");
-
         player.teleportAsync(spawningLocation);
     }
 
