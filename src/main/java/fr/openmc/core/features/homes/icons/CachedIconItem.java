@@ -1,12 +1,11 @@
 package fr.openmc.core.features.homes.icons;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -100,13 +99,13 @@ public class CachedIconItem {
                 .setOnClick(event -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         home.setIcon(homeIcon);
-                        MessagesManager.sendMessage(player,
+                        OMCPlayer.of(player).message().sendSuccess(
                                 TranslationManager.translation(
                                         "feature.homes.icon.changed",
                                         Component.text(home.getName()).color(NamedTextColor.DARK_GREEN),
                                         Component.text(homeIcon.getVanillaName()).color(NamedTextColor.DARK_GREEN)
                                 ),
-                                Prefix.HOME, MessageType.SUCCESS, true);
+                                Prefix.HOME, true);
 
                         HomeIconCacheManager.clearRenderedCache();
                     });
