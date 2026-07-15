@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.attacks.BloodExplosionAttack;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.attacks.VampireBatAttack;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks.SummoningEffectTask;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks.VampireAttackTask;
 import fr.openmc.core.registry.mobs.CustomMob;
@@ -35,9 +36,7 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.blood
 @Getter
 public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl {
     private final Random random = ThreadLocalRandom.current();
-    private final List<MobAttack> attacks = new ArrayList<>(List.of(
-        new BloodExplosionAttack(this)
-    ));
+    private final List<MobAttack> attacks;
     private Mannequin mannequin;
 
     public VampireBoss(String id) {
@@ -50,6 +49,11 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl 
                 new CustomMobAttribute(Attribute.SCALE, 20),
                 new CustomMobAttribute(Attribute.KNOCKBACK_RESISTANCE, 1)
         );
+
+        this.attacks = new ArrayList<>(List.of(
+                new BloodExplosionAttack(this),
+                new VampireBatAttack(this)
+        ));
     }
 
     @Override
@@ -82,9 +86,10 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl 
         );
 
 
-        new VampireAttackTask(this).runTaskLater(
+        new VampireAttackTask(this).runTaskTimer(
                 OMCPlugin.getInstance(),
-                20L * 10 // 10 sex
+                20L,
+                20L
         );
 
         World world = at.getWorld();

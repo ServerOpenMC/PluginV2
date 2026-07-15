@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs;
+package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
@@ -11,34 +11,40 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Monster;
 
-public class CorruptedMonster extends CustomMob<Monster> {
+public class CursedMonster extends CustomMob<Monster> {
     private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(
-            new NamespacedKey("omc_daily_events", "corrupted_health"),
-            1,
+            new NamespacedKey("omc_daily_events", "cursed_health"),
+            3,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier ATTACK_MODIFIER = new AttributeModifier(
-            new NamespacedKey("omc_daily_events", "corrupted_attack"),
-            0.25,
+            new NamespacedKey("omc_daily_events", "cursed_attack"),
+            0.90,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(
-            new NamespacedKey("omc_daily_events", "corrupted_speed"),
-            0.15,
+            new NamespacedKey("omc_daily_events", "cursed_speed"),
+            -0.10,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
     private static final AttributeModifier FOLLOW_MODIFIER = new AttributeModifier(
-            new NamespacedKey("omc_daily_events", "corrupted_follow"),
-            0.25,
+            new NamespacedKey("omc_daily_events", "cursed_follow"),
+            0.70,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
-    public CorruptedMonster(String id) {
+    private static final AttributeModifier SCALE_MODIFIER = new AttributeModifier(
+            new NamespacedKey("omc_daily_events", "cursed_scale"),
+            1,
+            AttributeModifier.Operation.ADD_SCALAR
+    );
+
+    public CursedMonster(String id) {
         super(id,
-                "Corrupted",
+                "Cursed",
                 Monster.class,
                 1,
                 1,
@@ -53,24 +59,28 @@ public class CorruptedMonster extends CustomMob<Monster> {
         entity.setCustomNameVisible(false);
 
         EntityUtils.addModifierIfPresent(entity, Attribute.MAX_HEALTH, HEALTH_MODIFIER);
-        AttributeInstance attrInst = entity.getAttribute(Attribute.MAX_HEALTH);
-        if (attrInst == null) return;
-        entity.setHealth(attrInst.getValue());
-
         EntityUtils.addModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
+        EntityUtils.addModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
 
-        EntityGlowNMS.setGlowingColor(entity, TeamColor.DARK_RED);
+        EntityGlowNMS.setGlowingColor(entity, TeamColor.DARK_PURPLE);
     }
 
     public void resetToDefault(Monster entity) {
         unregisterAsCustomMob(entity);
 
+        entity.setCustomNameVisible(true);
+
         EntityUtils.removeModifierIfPresent(entity, Attribute.MAX_HEALTH, HEALTH_MODIFIER);
+        AttributeInstance attrInst = entity.getAttribute(Attribute.MAX_HEALTH);
+        if (attrInst == null) return;
+        entity.setHealth(attrInst.getValue());
+
         EntityUtils.removeModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.removeModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
+        EntityUtils.removeModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
 
         EntityGlowNMS.removeGlowing(entity);
     }

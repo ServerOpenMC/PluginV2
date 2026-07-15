@@ -56,9 +56,7 @@ public class BloodExplosionAttack implements MobAttack {
         );
 
         for (Player player : players) {
-            if (!canDamage(player)) {
-                continue;
-            }
+            if (!canDamage(player)) continue;
 
             double newHealth = player.getHealth() * 0.7;
 

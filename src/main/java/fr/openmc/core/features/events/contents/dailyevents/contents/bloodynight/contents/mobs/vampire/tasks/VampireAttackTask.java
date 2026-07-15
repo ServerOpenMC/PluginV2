@@ -1,22 +1,20 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
+import fr.openmc.core.utils.RandomUtils;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class VampireAttackTask extends BukkitRunnable {
     private final VampireBoss boss;
-    private final Random random = ThreadLocalRandom.current();
 
-    public static final long MIN_ATTACK_DELAY = 20L * 10; // 10 sec
-    public static final long MAX_ATTACK_DELAY = 20L * 17; // 17 sec
+    private static final int MIN_ATTACK_DELAY_SECONDS = 8;
+    private static final int MAX_ATTACK_DELAY_SECONDS = 16;
 
     public VampireAttackTask(VampireBoss boss) {
         this.boss = boss;
     }
+
+    private int cooldown = RandomUtils.randomBetween(MIN_ATTACK_DELAY_SECONDS, MAX_ATTACK_DELAY_SECONDS);
 
     @Override
     public void run() {
@@ -24,15 +22,10 @@ public class VampireAttackTask extends BukkitRunnable {
             cancel();
             return;
         }
-
-        boss.pickRandomAttack();
-
-        long nextDelay = random.nextLong(
-                MIN_ATTACK_DELAY,
-                MAX_ATTACK_DELAY + 1
-        );
-
-        this.cancel();
-        this.runTaskLater(OMCPlugin.getInstance(), nextDelay);
+        cooldown--;
+        if (cooldown <= 0) {
+            boss.pickRandomAttack();
+            cooldown = RandomUtils.randomBetween(MIN_ATTACK_DELAY_SECONDS, MAX_ATTACK_DELAY_SECONDS);
+        }
     }
 }

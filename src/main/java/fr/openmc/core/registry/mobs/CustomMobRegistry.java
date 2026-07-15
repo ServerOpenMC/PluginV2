@@ -3,10 +3,13 @@ package fr.openmc.core.registry.mobs;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.AncientMonster;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CorruptedMonster;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.CursedMonster;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.EnragedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.ExplosiveVampireBat;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.LevitationVampireBat;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.PoisonVampireBat;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.AncientMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.EnragedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
@@ -85,6 +88,21 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public final CustomMobEntry CORRUPTED_MONSTER = register(new CustomMobEntry(
             "omc_daily_events:corrupted_monster",
             CorruptedMonster::new
+    ));
+
+    public final CustomMobEntry EXPLOSIVE_VAMPIRE_BAT = register(new CustomMobEntry(
+            "omc_daily_events:explosive_vampire_bat",
+            ExplosiveVampireBat::new
+    ));
+
+    public final CustomMobEntry POISON_VAMPIRE_BAT = register(new CustomMobEntry(
+            "omc_daily_events:poison_vampire_bat",
+            PoisonVampireBat::new
+    ));
+
+    public final CustomMobEntry LEVITATION_VAMPIRE_BAT = register(new CustomMobEntry(
+            "omc_daily_events:levitation_vampire_bat",
+            LevitationVampireBat::new
     ));
 
     public final CustomMobEntry VAMPIRE_BOSS = register(new CustomMobEntry(
