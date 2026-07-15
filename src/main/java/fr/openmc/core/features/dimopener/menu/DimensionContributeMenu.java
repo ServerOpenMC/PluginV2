@@ -137,7 +137,7 @@ public class DimensionContributeMenu extends Menu {
                     Component.empty(),
                     TranslationManager.translation(
                             "feature.dimopener.menu.preview.remaining",
-                            Component.text((int) Math.ceil(remaining))
+                            Component.text((int) Math.ceil(remaining), NamedTextColor.GOLD)
                     )
             ));
         });
@@ -150,8 +150,7 @@ public class DimensionContributeMenu extends Menu {
         return new ItemMenuBuilder(this, Material.BARRIER, meta -> {
             meta.itemName(TranslationManager.translation("feature.dimopener.menu.locked.title"));
             meta.lore(List.of(
-                    TranslationManager.translation("feature.dimopener.menu.locked.lore"),
-                    Component.text(requiredName).color(NamedTextColor.YELLOW)
+                    TranslationManager.translation("feature.dimopener.menu.locked.lore")
             ));
         });
     }
@@ -175,7 +174,7 @@ public class DimensionContributeMenu extends Menu {
                         getOwner(),
                         TranslationManager.translation(
                                 "feature.dimopener.contribute.wrong_item",
-                                Component.text(step.getMaterial().toString())
+                                Component.text(step.getMaterial().toString(), NamedTextColor.YELLOW)
                         ),
                         Prefix.OPENMC, MessageType.ERROR, false
                 );
@@ -226,11 +225,11 @@ public class DimensionContributeMenu extends Menu {
             meta.lore(List.of(
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.balance",
-                            Component.text(EconomyManager.getMiniBalance(getOwner().getUniqueId()))
+                            Component.text(EconomyManager.getMiniBalance(getOwner().getUniqueId()), NamedTextColor.GOLD)
                     ),
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.remaining",
-                            Component.text(EconomyManager.getFormattedNumber(remaining))
+                            Component.text(EconomyManager.getFormattedNumber(remaining), NamedTextColor.GOLD)
                     ),
                     Component.empty(),
                     TranslationManager.translation("feature.dimopener.menu.money.click")
@@ -277,7 +276,7 @@ public class DimensionContributeMenu extends Menu {
                                                         getOwner(),
                                                         TranslationManager.translation(
                                                                 "feature.dimopener.contribute.money_success",
-                                                                Component.text(EconomyManager.getFormattedNumber(amount))
+                                                                Component.text(EconomyManager.getFormattedNumber(amount), NamedTextColor.GREEN)
                                                         ),
                                                         Prefix.DIMOPENER, MessageType.SUCCESS, false
                                                 );
@@ -318,17 +317,17 @@ public class DimensionContributeMenu extends Menu {
     private ItemMenuBuilder infoItem(DimensionData dim, DimensionProgress progress) {
         StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
         return new ItemMenuBuilder(this, DimensionOpenerManager.resolveIcon(dim), meta -> {
-            meta.itemName(TranslationManager.translation("feature.dimopener.menu.info.name", Component.text(dim.getName())));
+            meta.itemName(TranslationManager.translation("feature.dimopener.menu.info.name", Component.text(dim.getName(), NamedTextColor.GOLD)));
             meta.lore(List.of(
-                    TranslationManager.translation("feature.dimopener.menu.info.description", Component.text(dim.getDescription())),
+                    TranslationManager.translation("feature.dimopener.menu.info.description", Component.text(dim.getDescription(), NamedTextColor.GRAY)),
                     Component.empty(),
                     TranslationManager.translation(
                             "feature.dimopener.menu.info.step",
-                            Component.text(progress.getCurrentStepIndex() + 1),
-                            Component.text(dim.getDimensionsStep().size())
+                            Component.text(progress.getCurrentStepIndex() + 1, NamedTextColor.AQUA),
+                            Component.text(dim.getDimensionsStep().size(), NamedTextColor.AQUA)
                     ),
-                    TranslationManager.translation("feature.dimopener.menu.info.step_name", Component.text(step != null ? step.getName() : "-")),
-                    TranslationManager.translation("feature.dimopener.menu.info.step_description", Component.text(step != null ? step.getDescription() : ""))
+                    TranslationManager.translation("feature.dimopener.menu.info.step_name", Component.text(step != null ? step.getName() : "-", NamedTextColor.WHITE)),
+                    TranslationManager.translation("feature.dimopener.menu.info.step_description", Component.text(step != null ? step.getDescription() : "", NamedTextColor.GRAY))
             ));
         });
     }
@@ -347,7 +346,7 @@ public class DimensionContributeMenu extends Menu {
             meta.lore(List.of(
                     TranslationManager.translation(
                             "feature.dimopener.menu.waiting.time",
-                            Component.text(DateUtils.convertMillisToTime(remainingMs))
+                            Component.text(DateUtils.convertMillisToTime(remainingMs), NamedTextColor.WHITE)
                     )
             ));
         });

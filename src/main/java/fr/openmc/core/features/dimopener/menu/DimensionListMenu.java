@@ -8,6 +8,7 @@ import fr.openmc.core.features.dimopener.DimensionProgress;
 import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -52,9 +53,9 @@ public class DimensionListMenu extends Menu {
             boolean unlocked = DimensionOpenerManager.isPrerequisiteMet(dim);
 
             ItemMenuBuilder item = new ItemMenuBuilder(this, DimensionOpenerManager.resolveIcon(dim), meta -> {
-                meta.itemName(TranslationManager.translation("feature.dimopener.menu.list.name", Component.text(dim.getName())));
+                meta.itemName(TranslationManager.translation("feature.dimopener.menu.list.name", Component.text(dim.getName(), NamedTextColor.GOLD)));
                 List<Component> lore = new ArrayList<>();
-                lore.add(TranslationManager.translation("feature.dimopener.menu.list.description", Component.text(dim.getDescription())));
+                lore.add(TranslationManager.translation("feature.dimopener.menu.list.description", Component.text(dim.getDescription(), NamedTextColor.GRAY)));
                 lore.add(Component.empty());
 
                 if (unlocked) {
@@ -65,7 +66,7 @@ public class DimensionListMenu extends Menu {
                     DimensionData required = DimensionOpenerManager.getDimension(dim.getRequireDimension());
                     String requiredName = required != null ? required.getName() : dim.getName();
                     lore.add(TranslationManager.translation("feature.dimopener.menu.locked.title"));
-                    lore.add(TranslationManager.translation("feature.dimopener.menu.list.requires", Component.text(requiredName)));
+                    lore.add(TranslationManager.translation("feature.dimopener.menu.list.requires", Component.text(requiredName, NamedTextColor.WHITE)));
                 }
 
                 meta.lore(lore);
