@@ -222,7 +222,6 @@ public class Page2 implements Menu {
             PacketMenuLib.closeMenu(player);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.mainmenu.message.coming_soon")
                     .color(NamedTextColor.GOLD), Prefix.OPENMC, MessageType.INFO, true);
-            ;
         }
     }
 
