@@ -12,6 +12,7 @@ public class DimensionData implements IDimension {
     private boolean enabled;
     private String name;
     private String description;
+    private String dimensionName;
     private List<StepDimensionData> steps;
 
     public DimensionData() {
@@ -33,6 +34,11 @@ public class DimensionData implements IDimension {
     }
 
     @Override
+    public String getDimensionName() {
+        return dimensionName;
+    }
+
+    @Override
     public List<IStepDimension> getDimensionsStep() {
         return steps == null ? List.of() : List.copyOf(steps);
     }
@@ -47,6 +53,7 @@ public class DimensionData implements IDimension {
                 "enabled=" + enabled + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", dimensionName='" + dimensionName + '\'' +
                 ", steps=" + steps +
                 "}";
     }

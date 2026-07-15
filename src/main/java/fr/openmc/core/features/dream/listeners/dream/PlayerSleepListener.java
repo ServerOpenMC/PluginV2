@@ -1,6 +1,8 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dimopener.DimensionOpenerManager;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
@@ -40,7 +42,7 @@ public class PlayerSleepListener implements Listener {
 
     @EventHandler
     public void onNightSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
+        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP && DimensionOpenerManager.isOpened(DreamDimensionManager.DIMENSION_NAME)) {
             if (isPlayerSleeping.isEmpty()) {
                 return;
             }
@@ -60,7 +62,7 @@ public class PlayerSleepListener implements Listener {
                         public void run() {
                             PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SLEEPING);
                             DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
-                            if(dbDreamPlayer ==null||(dbDreamPlayer.getDreamX()==null||dbDreamPlayer.getDreamY()==null||dbDreamPlayer.getDreamZ()==null)) {
+                            if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
                                 DreamManager.tpPlayerDream(player);
                             } else {
                                 DreamManager.tpPlayerToLastDreamLocation(player);

@@ -5,10 +5,12 @@ import com.google.gson.GsonBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dimopener.commands.DimensionCommands;
 import fr.openmc.core.features.dimopener.data.DimensionData;
+import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -17,8 +19,12 @@ import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,7 +38,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class DimensionOpenerManager extends Feature implements HasCommands, LoadAfterItemsAdder {
+public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands, LoadAfterItemsAdder {
 
     private static final long TICK_PERIOD_TICKS = 20L * 60; // 1 minutes
 
@@ -237,6 +243,8 @@ public class DimensionOpenerManager extends Feature implements HasCommands, Load
 
         DimensionData dim = dimensions.get(progress.getDimensionId());
         if (dim != null) {
+            loadWorldIfNeeded(dim.getDimensionName());
+
             MessagesManager.broadcastMessage(
                     Component.text("La dimension", NamedTextColor.WHITE)
                             .appendSpace()
@@ -246,8 +254,15 @@ public class DimensionOpenerManager extends Feature implements HasCommands, Load
                     Prefix.DIMOPENER,
                     MessageType.SUCCESS
             );
-            // TODO: ouverture dimension
         }
+    }
+
+    private static void loadWorldIfNeeded(String worldName) {
+        if (worldName == null || worldName.isBlank()) return;
+        if (Bukkit.getWorld(worldName) != null) return;
+
+        OMCLogger.info("Chargement du monde de la dimension : {}", worldName);
+        new WorldCreator(worldName).createWorld();
     }
 
     private static void loadProgress() {
@@ -276,10 +291,30 @@ public class DimensionOpenerManager extends Feature implements HasCommands, Load
         }
     }
 
+    @Nullable
+    public static DimensionData getDimensionByWorldName(@NotNull String worldName) {
+        return dimensions.values().stream()
+                .filter(d -> worldName.equalsIgnoreCase(d.getDimensionName()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static boolean isOpened(String id) {
+        DimensionProgress progress = progressMap.get(id.toLowerCase());
+        return progress != null && progress.getState() == DimensionState.OPENED;
+    }
+
     @Override
     public Set<Object> getCommands() {
         return Set.of(
                 new DimensionCommands()
+        );
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new DimensionAccessListener()
         );
     }
 }

@@ -10,6 +10,8 @@ public interface IDimension {
 
     String getDescription();
 
+    String getDimensionName();
+
     List<IStepDimension> getDimensionsStep();
 
 }
