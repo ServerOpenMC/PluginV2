@@ -12,14 +12,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class BreakDiamondQuest extends Quest implements Listener {
 
     public BreakDiamondQuest() {
         super(
-                TranslationManager.translationString("feature.quests.break_diamond.name"),
-                List.of(TranslationManager.translationString("feature.quests.break_diamond.description")),
+                TranslationManager.translation("feature.quests.break_diamond.name"),
+                TranslationManager.translationLore("feature.quests.break_diamond.description"),
                 Material.DIAMOND
         );
 

@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.events;
 
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -12,13 +12,13 @@ import java.util.List;
 @Getter
 public class MetalDetectorLootEvent extends PlayerEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final List<ItemStack> loot;
+    private final List<CustomLoot> loot;
 
     /**
      * @param player The player who found the loot.
-     *  @param loot  The list of ItemStack representing the loot found.
+     *  @param loot  The list of CustomLoot representing the loot found.
      */
-    public MetalDetectorLootEvent(Player player, List<ItemStack> loot) {
+    public MetalDetectorLootEvent(Player player, List<CustomLoot> loot) {
         super(player);
         this.loot = loot;
     }

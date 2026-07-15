@@ -9,6 +9,7 @@ import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -54,14 +55,14 @@ public class DreamScoreboard extends BaseScoreboard {
             int cold = dreamPlayer.getCold();
 
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("temps:"), NamedTextColor.GRAY))
+                    .append(text(textToSmall(TranslationManager.translationString("feature.dream.scoreboard.time")), NamedTextColor.GRAY))
                     .appendSpace()
                     .append(text(textToSmall(DateUtils.convertSecondToTime(time))).color(TextColor.color(0x00CC34)))
             );
 
             if (cold > 0)
                 lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                        .append(text(textToSmall("froid:"), NamedTextColor.GRAY))
+                        .append(text(textToSmall(TranslationManager.translationString("feature.dream.scoreboard.cold")), NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(dreamPlayer.getCold()).color(TextColor.color(0x44EBDA)))
                 );
@@ -71,7 +72,7 @@ public class DreamScoreboard extends BaseScoreboard {
 
         if (dreamBiome != null) {
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("biome:"), NamedTextColor.GRAY))
+                    .append(text(textToSmall(TranslationManager.translationString("feature.dream.scoreboard.biome")), NamedTextColor.GRAY))
                     .appendSpace()
                     .append(Component.text(textToSmall(dreamBiome.getName())))
             );
@@ -81,7 +82,7 @@ public class DreamScoreboard extends BaseScoreboard {
         if (dreamStructure != null) {
             String nameLocation = PlainTextComponentSerializer.plainText().serialize(dreamStructure.getName());
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("location:"), NamedTextColor.GRAY))
+                    .append(text(textToSmall(TranslationManager.translationString("feature.dream.scoreboard.location")), NamedTextColor.GRAY))
                     .appendSpace()
                     .append(Component.text(textToSmall(nameLocation)))
             );

@@ -171,12 +171,10 @@ public class ItemInteraction implements Listener {
      * Méthode qui permet de verifier si l'item est celui avec qui on interagit
      */
     private static boolean isItemInteraction(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR)
-            return false;
+        if (item == null || item.getType() == Material.AIR) return false;
 
         ItemMeta meta = item.getItemMeta();
-        if (meta == null)
-            return false;
+        if (meta == null) return false;
 
         if (item.hasItemMeta()) {
             PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();

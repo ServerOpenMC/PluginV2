@@ -1,17 +1,25 @@
 package fr.openmc.core.registry.loottable.contents;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.registry.loottable.CustomLoot;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ItemBuilder;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public class MachineBallLootTable extends CustomLootTable {
+    @Override
+    public Component getName() {
+        return OMCRegistry.CUSTOM_LOOTBOXES.MACHINE_BALL.getName();
+    }
+
     @Override
     public String getNamespace() {
         return "omc:machine_ball";
@@ -19,98 +27,98 @@ public class MachineBallLootTable extends CustomLootTable {
 
     @Override
     public Set<CustomLoot> getLoots() {
-        return Set.of(
-                new CustomLoot(
+        return new LinkedHashSet<>(List.of(
+                new ItemLoot(
                         Set.of(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest()),
                         new ItemBuilder(
                             OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY,
                             meta -> {
-                                meta.displayName(Component.text("§d§lPeluche Seinyy"));
-                                meta.lore(List.of(Component.text("§7Une petite peluche comme Seinyy !")));
+                                meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.seinyy.name"));
+                                meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.seinyy.lore"));
                             }
                         ),
-                        10.0,
+                        0.1,
                         1,
                         1
                 ),
-                new CustomLoot(
-                        Set.of(new ItemStack(Material.DIAMOND, 3)),
+                new ItemLoot(
+                        Set.of(ItemStack.of(Material.DIAMOND)),
                         new ItemBuilder(
                             Material.DIAMOND,
                             meta -> {
-                                meta.displayName(Component.text("§b§lDiamants"));
-                                meta.lore(List.of(Component.text("§7Ohhhh mais qu'est ce que c'est précieux ce truc !?")));
+                                meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.diamond.name"));
+                                meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.diamond.lore"));
                             }
                         ),
-                        15.0,
-                        1,
-                        1
+                        0.15,
+                        3,
+                        3
                 ),
-                new CustomLoot(
-                        Set.of(new ItemStack(Material.IRON_INGOT, 10)),
+                new ItemLoot(
+                        Set.of(ItemStack.of(Material.IRON_INGOT)),
                         new ItemBuilder(
                                 Material.IRON_INGOT,
                                 meta -> {
-                                    meta.displayName(Component.text("§7§lLingots de Fer"));
-                                    meta.lore(List.of(Component.text("§7Simplement du fer, rien de fou quoi...")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.iron.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.iron.lore"));
                                 }
                         ),
-                        20.0,
-                        1,
-                        1
+                        0.2,
+                        10,
+                        10
                 ),
-                new CustomLoot(
-                        Set.of(new ItemStack(Material.NETHERITE_INGOT)),
+                new ItemLoot(
+                        Set.of(ItemStack.of(Material.NETHERITE_INGOT)),
                         new ItemBuilder(
                                 Material.NETHERITE_INGOT,
                                 meta -> {
-                                    meta.displayName(Component.text("§4§lLingot De Netherite"));
-                                    meta.lore(List.of(Component.text("§7Le truc le plus rare du jeu !")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.netherite.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.netherite.lore"));
                                 }
                         ),
-                        0.5,
+                        0.05,
                         1,
                         1
                 ),
-                new CustomLoot(
-                        Set.of(new ItemStack(Material.OAK_LOG, 32)),
+                new ItemLoot(
+                        Set.of(ItemStack.of(Material.OAK_LOG)),
                         new ItemBuilder(
                                 Material.OAK_LOG,
                                 meta -> {
-                                    meta.displayName(Component.text("§6§lBûches de Chêne"));
-                                    meta.lore(List.of(Component.text("§7De quoi te faire une petite maison hihi")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.oak_log.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.oak_log.lore"));
                                 }
                         ),
-                        25,
-                        1,
-                        1
+                        0.25,
+                        32,
+                        32
                 ),
-                new CustomLoot(
-                        Set.of(new ItemStack(Material.COOKED_BEEF, 16)),
+                new ItemLoot(
+                        Set.of(ItemStack.of(Material.COOKED_BEEF)),
                         new ItemBuilder(
                                 Material.COOKED_BEEF,
                                 meta -> {
-                                    meta.displayName(Component.text("§c§lSteaks"));
-                                    meta.lore(List.of(Component.text("§7Miam miam, de la bonne viande !")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.steak.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.steak.lore"));
                                 }
                         ),
-                        15,
-                        1,
-                        1
+                        0.15,
+                        16,
+                        16
                 ),
-                new CustomLoot(
-                        Set.of(new ItemStack(Material.COAL, 16)),
+                new ItemLoot(
+                        Set.of(ItemStack.of(Material.COAL)),
                         new ItemBuilder(
                                 Material.COAL,
                                 meta -> {
-                                    meta.displayName(Component.text("§8§lCharbon"));
-                                    meta.lore(List.of(Component.text("§7De quoi faire du feu")));
+                                    meta.displayName(TranslationManager.translation("feature.tickets.loot.machine_ball.coal.name"));
+                                    meta.lore(TranslationManager.translationLore("feature.tickets.loot.machine_ball.coal.lore"));
                                 }
                         ),
-                        14.5,
-                        1,
-                        1
+                        0.145,
+                        16,
+                        16
                 )
-        );
+        ));
     }
 }

@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.mobs;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.LivingEntity;
 
@@ -18,8 +19,8 @@ public record CustomMobEntry(
         getMob().apply(entity);
     }
 
-    public void spawn(Location spawningLocation) {
-        getMob().spawn(spawningLocation);
+    public Entity spawn(Location spawningLocation) {
+        return getMob().spawn(spawningLocation);
     }
 
     public EntitySnapshot getMobSnapshot() {

@@ -135,9 +135,14 @@ public class ContestCommand {
 
         if (tradeFound) {
             TradeYMLManager.saveContestConfig();
-            MessagesManager.sendMessage(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amountShell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.events.contest.command.settrade.updated",
+                    Component.text(trade).color(NamedTextColor.YELLOW),
+                    Component.text(amount).color(NamedTextColor.YELLOW),
+                    Component.text(amountShell).color(NamedTextColor.YELLOW)
+            ), Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
-            MessagesManager.sendMessage(player, Component.text("Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.settrade.not_found"), Prefix.STAFF, MessageType.ERROR, true);
         }
     }
 

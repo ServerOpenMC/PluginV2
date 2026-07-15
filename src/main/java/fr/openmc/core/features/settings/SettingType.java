@@ -12,28 +12,28 @@ import org.bukkit.Material;
 public enum SettingType {
 
     // - Friendship settings
-    FRIEND_REQUESTS_POLICY(ValueType.ENUM, FriendPolicy.EVERYONE, "Politique des demandes d'amis",
-            Material.PLAYER_HEAD, "Qui peut t'envoyer des demandes d'amis :"),
+    FRIEND_REQUESTS_POLICY(ValueType.ENUM, FriendPolicy.EVERYONE, "feature.settings.type.friend_requests.name",
+            Material.PLAYER_HEAD, "feature.settings.type.friend_requests.description"),
 
     // - City settings
-    CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "Politique des demandes de rejoindre une ville",
-            Material.PAPER, "Qui peut te demander à rejoindre une ville :"),
-    MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "Recevoir les sons venant des mascottes",
-            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "Activer ou désactiver les sons des mascottes", DataComponentTypes.JUKEBOX_PLAYABLE),
+    CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "feature.settings.type.city_join_requests.name",
+            Material.PAPER, "feature.settings.type.city_join_requests.description"),
+    MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "feature.settings.type.mascot_play_sound.name",
+            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "feature.settings.type.mascot_play_sound.description", DataComponentTypes.JUKEBOX_PLAYABLE),
 
     // - Mailbox settings
-    MAILBOX_RECEIVE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "Politique de réception des mailbox",
-            Material.PAPER, "Qui peut t'envoyer des mailbox:"),
+    MAILBOX_RECEIVE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "feature.settings.type.mailbox_receive.name",
+            Material.PAPER, "feature.settings.type.mailbox_receive.description"),
 
     // - General settings
-    PRIVATE_MESSAGE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "Recevoir les messages privés",
-            Material.WRITABLE_BOOK, "Qui peut t'envoyer des messages privés :"),
-    NOTIFICATIONS_SOUND(ValueType.BOOLEAN, true, "Sons des messages",
-            Material.NOTE_BLOCK, Material.GRAY_DYE, "Activer ou désactiver les sons des messages privés"),
-    TELEPORT_TITLE_FADE(ValueType.BOOLEAN, true, "Fondu du titre lors des téléportations",
-            Material.ENDER_PEARL, Material.GRAY_DYE, "Activer ou désactiver le fondu du titre lors des téléportations"),
-    JOIN_ANIMATION(ValueType.BOOLEAN, true, "Animation de connexion",
-            Material.GLOW_INK_SAC, Material.INK_SAC, "Activer ou désactiver l'animation de connexion"),
+    PRIVATE_MESSAGE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "feature.settings.type.private_message.name",
+            Material.WRITABLE_BOOK, "feature.settings.type.private_message.description"),
+    NOTIFICATIONS_SOUND(ValueType.BOOLEAN, true, "feature.settings.type.notifications_sound.name",
+            Material.NOTE_BLOCK, Material.GRAY_DYE, "feature.settings.type.notifications_sound.description"),
+    TELEPORT_TITLE_FADE(ValueType.BOOLEAN, true, "feature.settings.type.teleport_title_fade.name",
+            Material.ENDER_PEARL, Material.GRAY_DYE, "feature.settings.type.teleport_title_fade.description"),
+    JOIN_ANIMATION(ValueType.BOOLEAN, true, "feature.settings.type.join_animation.name",
+            Material.GLOW_INK_SAC, Material.INK_SAC, "feature.settings.type.join_animation.description"),
 
     ;
 

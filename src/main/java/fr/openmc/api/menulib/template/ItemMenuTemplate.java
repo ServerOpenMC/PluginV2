@@ -66,8 +66,8 @@ public class ItemMenuTemplate {
     }).setOnClick(e -> new HomeMailbox(menu.getOwner()).open());
 
 
-    public static ItemMenuBuilder btn(Menu menu, String symbol, String name, List<Component> lore, CustomItem customItem, NamedTextColor color, boolean bold) {
-        ItemMenuBuilder item = btn(menu, symbol, name, customItem, color, bold);
+    public static ItemMenuBuilder btn(Menu menu, String symbol, String nameKey, List<Component> lore, CustomItem customItem, NamedTextColor color, boolean bold) {
+        ItemMenuBuilder item = btn(menu, symbol, nameKey, customItem, color, bold);
 
         item.editMeta(
                 meta -> meta.lore(lore)
@@ -75,11 +75,11 @@ public class ItemMenuTemplate {
         return item;
     }
 
-    public static ItemMenuBuilder btn(Menu menu, String symbol, String name, CustomItem customItem, NamedTextColor color, boolean bold) {
+    public static ItemMenuBuilder btn(Menu menu, String symbol, String nameKey, CustomItem customItem, NamedTextColor color, boolean bold) {
         Component itemName = Component.text("[", NamedTextColor.DARK_GRAY)
                 .append(Component.text(symbol, color))
                 .append(Component.text("]", NamedTextColor.DARK_GRAY))
-                .append(Component.text(" " + name, color));
+                .append(TranslationManager.translation(nameKey).color(color));
 
         return new ItemMenuBuilder(menu, customItem, meta -> {
             meta.displayName(itemName

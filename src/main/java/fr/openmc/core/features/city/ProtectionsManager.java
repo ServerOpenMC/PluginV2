@@ -3,11 +3,13 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.protections.*;
 import fr.openmc.core.features.city.sub.war.War;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
+import org.bukkit.block.Barrel;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -82,7 +84,7 @@ public class ProtectionsManager {
     public static void checkCity(Player player, Cancellable event, City city) {
         if (!player.getWorld().getName().equals("world")) return;
         
-        if (city == null) return; // Pas de ville, pas de protection
+		if (city == null) return; // Pas de ville, pas de protection
 	    
 	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 	    
@@ -90,12 +92,18 @@ public class ProtectionsManager {
 
         if (!city.isMember(player)) {
             event.setCancelled(true);
-            cancelMessage(player);
+			cancelMessage(player);
         }
     }
 	
 	public static void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
+		
+		if (ShopManager.getShopAt(loc) != null) {
+			if (loc.getBlock().getState() instanceof Barrel) return;
+			event.setCancelled(true);
+			return;
+		}
 		
 		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
 		if (city == null || city.isInWar()) return;
@@ -104,6 +112,7 @@ public class ProtectionsManager {
 			if (canInteract(player, loc)) return;
 
 			event.setCancelled(true);
+			
 			cancelMessage(player);
 		} else {
 			event.setCancelled(true);

@@ -62,7 +62,7 @@ public class NotationDialog {
                         .build()
                 )
                 .type(DialogType.notice(
-                        ActionButton.builder(Component.text(ButtonType.BACK.getLabel()))
+                        ActionButton.builder(ButtonType.BACK.getLabelComponent())
                                 .action(DialogAction.customClick((response, audience) -> {
                                     player.closeInventory();
                                 }, ClickCallback.Options.builder().build()))
@@ -207,7 +207,10 @@ public class NotationDialog {
                         Component.text(notation.getNoteArchitectural()).color(NamedTextColor.DARK_AQUA)
                 ).color(NamedTextColor.DARK_GRAY))
                 .appendNewline()
-                .append(Component.text("§8Cohérence " + notation.getNoteCoherence()))
+                .append(TranslationManager.translation(
+                        "feature.city.notation.hover.total.coherence",
+                        Component.text(notation.getNoteCoherence()).color(NamedTextColor.DARK_AQUA)
+                ))
                 .appendNewline()
                 .appendNewline()
                 .append(TranslationManager.translation("feature.city.notation.hover.total.justification")

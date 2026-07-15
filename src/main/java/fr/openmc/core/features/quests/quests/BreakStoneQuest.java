@@ -20,8 +20,8 @@ public class BreakStoneQuest extends Quest implements Listener {
 
     public BreakStoneQuest() {
         super(
-                TranslationManager.translationString("feature.quests.break_stone.name"),
-                List.of(TranslationManager.translationString("feature.quests.break_stone.description")),
+                TranslationManager.translation("feature.quests.break_stone.name"),
+                TranslationManager.translationLore("feature.quests.break_stone.description"),
                 new ItemStack(Material.DIAMOND_PICKAXE)
         );
 
