@@ -1,45 +1,29 @@
 package fr.openmc.core.features.dimopener.data;
 
-import fr.openmc.core.features.dimopener.IDimension;
-import fr.openmc.core.features.dimopener.IStepDimension;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
-public class DimensionData implements IDimension {
+public class DimensionData {
 
+    @Getter
     private boolean enabled;
+    @Getter
     private String name;
+    @Getter
     private String description;
+    @Getter
     private String dimensionName;
+    @Getter
+    private String requireDimension;
+
     private List<StepDimensionData> steps;
 
     public DimensionData() {
     }
 
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public String getDimensionName() {
-        return dimensionName;
-    }
-
-    @Override
-    public List<IStepDimension> getDimensionsStep() {
+    public List<StepDimensionData> getDimensionsStep() {
         return steps == null ? List.of() : List.copyOf(steps);
     }
 
@@ -54,6 +38,7 @@ public class DimensionData implements IDimension {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", dimensionName='" + dimensionName + '\'' +
+                ", requireDimension='" + requireDimension + '\'' +
                 ", steps=" + steps +
                 "}";
     }

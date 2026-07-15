@@ -10,11 +10,13 @@ import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dimopener.commands.DimensionCommands;
 import fr.openmc.core.features.dimopener.data.DimensionData;
+import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -113,12 +115,12 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         return progressMap.get(id.toLowerCase());
     }
 
-    public static IStepDimension getCurrentStep(String id) {
+    public static StepDimensionData getCurrentStep(String id) {
         DimensionData dim = dimensions.get(id.toLowerCase());
         DimensionProgress progress = progressMap.get(id.toLowerCase());
         if (dim == null || progress == null) return null;
 
-        List<IStepDimension> steps = dim.getDimensionsStep();
+        List<StepDimensionData> steps = dim.getDimensionsStep();
         if (progress.getCurrentStepIndex() >= steps.size()) return null;
 
         return steps.get(progress.getCurrentStepIndex());
@@ -129,28 +131,36 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         STEP_COMPLETED,
         DIMENSION_ALREADY_OPENED,
         WRONG_STEP_STATE,
-        INVALID_STEP
+        INVALID_STEP,
+        REQUIRED_DIMENSION_NOT_OPENED
     }
 
     public static ContributeResult contributeItems(Player player, String dimensionId, int amount) {
-        return contribute(player, dimensionId, amount, IStepDimension.Type.ITEMS);
+        return contribute(player, dimensionId, amount, StepDimensionData.Type.ITEMS);
     }
 
     public static ContributeResult contributeMoney(Player player, String dimensionId, double amount) {
         if (amount <= 0) return ContributeResult.WRONG_STEP_STATE;
+
+        DimensionData data = dimensions.get(dimensionId.toLowerCase());
+        if (data == null) return ContributeResult.INVALID_STEP;
+        if (!isPrerequisiteMet(data)) return ContributeResult.REQUIRED_DIMENSION_NOT_OPENED;
+
         if (!EconomyManager.withdrawBalance(player.getUniqueId(), amount, "Dimension Opener : " + dimensionId)) {
             return ContributeResult.WRONG_STEP_STATE;
         }
-        return contribute(player, dimensionId, amount, IStepDimension.Type.MONEY);
+        return contribute(player, dimensionId, amount, StepDimensionData.Type.MONEY);
     }
 
-    private static ContributeResult contribute(Player player, String dimensionId, double amount, IStepDimension.Type expectedType) {
+    private static ContributeResult contribute(Player player, String dimensionId, double amount, StepDimensionData.Type expectedType) {
         String id = dimensionId.toLowerCase();
+        DimensionData data = dimensions.get(id);
         DimensionProgress progress = progressMap.get(id);
-        IStepDimension step = getCurrentStep(id);
+        StepDimensionData step = getCurrentStep(id);
 
-        if (progress == null || step == null) return ContributeResult.INVALID_STEP;
+        if (data == null || progress == null || step == null) return ContributeResult.INVALID_STEP;
         if (step.getType() != expectedType) return ContributeResult.WRONG_STEP_STATE;
+        if (!isPrerequisiteMet(data)) return ContributeResult.REQUIRED_DIMENSION_NOT_OPENED;
 
         if (progress.getState() != DimensionState.LOCKED
                 && progress.getState() != DimensionState.STEP_IN_PROGRESS) {
@@ -167,24 +177,28 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         return ContributeResult.SUCCESS;
     }
 
+    public static boolean isPrerequisiteMet(DimensionData dimensionData) {
+        String req = dimensionData.getRequireDimension();
+        if (req == null || req.isBlank()) return true;
+        return isOpened(req);
+    }
+
     private static void onStepCompleted(String dimensionId, DimensionProgress progress) {
         DimensionData dim = dimensions.get(dimensionId);
-        List<IStepDimension> steps = dim.getDimensionsStep();
+        List<StepDimensionData> steps = dim.getDimensionsStep();
 
-        IStepDimension completedStep = steps.get(progress.getCurrentStepIndex());
+        StepDimensionData completedStep = steps.get(progress.getCurrentStepIndex());
         boolean isLastStep = progress.getCurrentStepIndex() >= steps.size() - 1;
 
         progress.setState(isLastStep ? DimensionState.ALL_STEPS_DONE : DimensionState.STEP_COOLDOWN);
         progress.startCooldown(completedStep.getCooldownSeconds() * 1000L);
         progress.resetStepProgress();
 
+        Component dimName = Component.text(dim.getName(), NamedTextColor.YELLOW);
+
         Component msgComponent = isLastStep
-                ? Component.text("Toutes les etape de", NamedTextColor.WHITE)
-                .append(Component.text(dim.getName(), NamedTextColor.YELLOW))
-                .append(Component.text("sont remplies ! Ouverture bientot.", NamedTextColor.WHITE))
-                : Component.text("Une etape de", NamedTextColor.WHITE)
-                .append(Component.text(dim.getName(), NamedTextColor.YELLOW))
-                .append(Component.text("est terminee !", NamedTextColor.WHITE));
+                ? TranslationManager.translation("feature.dimopener.step.all_completed", dimName)
+                : TranslationManager.translation("feature.dimopener.step.completed", dimName);
 
         MessagesManager.broadcastMessage(
                 msgComponent,
@@ -226,11 +240,10 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         DimensionData dim = dimensions.get(progress.getDimensionId());
         if (dim != null) {
             MessagesManager.broadcastMessage(
-                    Component.text("Une nouvelle étape est disponible pour", NamedTextColor.WHITE)
-                            .appendSpace()
-                            .append(Component.text(dim.getName(), NamedTextColor.YELLOW))
-                            .appendSpace()
-                            .append(Component.text("!", NamedTextColor.WHITE)),
+                    TranslationManager.translation(
+                            "feature.dimopener.step.new_available",
+                            Component.text(dim.getName(), NamedTextColor.YELLOW)
+                    ),
                     Prefix.DIMOPENER,
                     MessageType.INFO
             );
@@ -246,11 +259,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
             loadWorldIfNeeded(dim.getDimensionName());
 
             MessagesManager.broadcastMessage(
-                    Component.text("La dimension", NamedTextColor.WHITE)
-                            .appendSpace()
-                            .append(Component.text(dim.getName(), NamedTextColor.YELLOW))
-                            .appendSpace()
-                            .append(Component.text("est desormais ouverte !", NamedTextColor.WHITE)),
+                    TranslationManager.translation("feature.dimopener.opened", Component.text(dim.getName())),
                     Prefix.DIMOPENER,
                     MessageType.SUCCESS
             );

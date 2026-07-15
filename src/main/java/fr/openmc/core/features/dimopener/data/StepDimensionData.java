@@ -1,9 +1,10 @@
 package fr.openmc.core.features.dimopener.data;
 
-import fr.openmc.core.features.dimopener.IStepDimension;
+import lombok.Getter;
 import org.bukkit.Material;
 
-public class StepDimensionData implements IStepDimension {
+@Getter
+public class StepDimensionData {
 
     private String name;
     private String description;
@@ -12,35 +13,11 @@ public class StepDimensionData implements IStepDimension {
     private Material material;
     private long cooldownSeconds;
 
-    public StepDimensionData() {}
-
-    @Override
-    public String getName() {
-        return name;
+    public StepDimensionData() {
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public int getRequired() {
-        return required;
-    }
-
-    @Override
-    public Material getMaterial() {
-        return material;
-    }
-
-    @Override
-    public long getCooldownSeconds() {
-        return cooldownSeconds;
+    public enum Type {
+        ITEMS,
+        MONEY
     }
 }

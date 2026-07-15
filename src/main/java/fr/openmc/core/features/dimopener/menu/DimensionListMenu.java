@@ -6,8 +6,8 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.dimopener.DimensionProgress;
 import fr.openmc.core.features.dimopener.data.DimensionData;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -25,7 +25,7 @@ public class DimensionListMenu extends Menu {
 
     @Override
     public Component getName() {
-        return Component.text("Dimensions").color(NamedTextColor.DARK_PURPLE);
+        return TranslationManager.translation("feature.dimopener.menu.list.title");
     }
 
     @Override
@@ -49,6 +49,7 @@ public class DimensionListMenu extends Menu {
             if (slot % 9 == 8) slot += 2;
 
             DimensionProgress progress = DimensionOpenerManager.getProgress(dim.getId());
+            boolean unlocked = DimensionOpenerManager.isPrerequisiteMet(dim);
 
             Material icon = switch (progress.getState()) {
                 case OPENED -> Material.END_PORTAL_FRAME;
@@ -57,17 +58,26 @@ public class DimensionListMenu extends Menu {
             };
 
             ItemMenuBuilder item = new ItemMenuBuilder(this, icon, meta -> {
-                meta.itemName(Component.text(dim.getName()).color(NamedTextColor.LIGHT_PURPLE));
+                meta.itemName(TranslationManager.translation("feature.dimopener.menu.list.name", Component.text(dim.getName())));
                 List<Component> lore = new ArrayList<>();
-                lore.add(Component.text(dim.getDescription()).color(NamedTextColor.GRAY));
+                lore.add(TranslationManager.translation("feature.dimopener.menu.list.description", Component.text(dim.getDescription())));
                 lore.add(Component.empty());
-                lore.add(Component.text("Etat : " + describeState(progress)).color(NamedTextColor.YELLOW));
-                lore.add(Component.empty());
-                lore.add(Component.text("Cliquez pour contribuer").color(NamedTextColor.GREEN));
-                meta.lore(lore);
-            });
 
-            item.setOnClick(_ -> new DimensionContributeMenu(getOwner(), dim.getId()).open());
+                if (unlocked) {
+                    lore.add(TranslationManager.translation("feature.dimopener.menu.list.state", describeState(progress)));
+                    lore.add(Component.empty());
+                    lore.add(TranslationManager.translation("feature.dimopener.menu.list.click"));
+                } else {
+                    DimensionData required = DimensionOpenerManager.getDimension(dim.getRequireDimension());
+                    String requiredName = required != null ? required.getName() : dim.getName();
+                    lore.add(TranslationManager.translation("feature.dimopener.menu.locked.title"));
+                    lore.add(TranslationManager.translation("feature.dimopener.menu.list.requires", Component.text(requiredName)));
+                }
+
+                meta.lore(lore);
+            }).setOnClick(_ -> {
+                if (unlocked) new DimensionContributeMenu(getOwner(), dim.getId()).open();
+            });
 
             content.put(slot, item);
             slot++;
@@ -76,16 +86,17 @@ public class DimensionListMenu extends Menu {
         return content;
     }
 
-    private String describeState(DimensionProgress progress) {
-        return switch (progress.getState()) {
-            case LOCKED -> "Non commencee";
-            case STEP_IN_PROGRESS -> "Etape en cours";
-            case STEP_COOLDOWN -> "En attente de la prochaine etape";
-            case ALL_STEPS_DONE -> "Ouverture imminente";
-            case OPENED -> "Ouverte";
+    private Component describeState(DimensionProgress progress) {
+        String key = switch (progress.getState()) {
+            case LOCKED -> "feature.dimopener.state.locked";
+            case STEP_IN_PROGRESS -> "feature.dimopener.state.in_progress";
+            case STEP_COOLDOWN -> "feature.dimopener.state.cooldown";
+            case ALL_STEPS_DONE -> "feature.dimopener.state.all_done";
+            case OPENED -> "feature.dimopener.state.opened";
         };
+        return TranslationManager.translation(key);
     }
-
+    
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();

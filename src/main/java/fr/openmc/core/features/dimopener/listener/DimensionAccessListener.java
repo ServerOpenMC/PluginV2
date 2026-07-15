@@ -7,8 +7,7 @@ import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -54,7 +53,7 @@ public class DimensionAccessListener implements Listener {
             event.setCancelled(true);
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Cette dimension n'est pas encore ouverte !", NamedTextColor.RED),
+                    TranslationManager.translation("feature.dimopener.access.denied"),
                     Prefix.DIMOPENER,
                     MessageType.ERROR,
                     true
