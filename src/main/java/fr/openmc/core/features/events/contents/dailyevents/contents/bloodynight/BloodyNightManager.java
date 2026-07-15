@@ -7,10 +7,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.EnragedMonster;
 import fr.openmc.core.registry.mobs.CustomMob;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRules;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import fr.openmc.core.utils.world.LocationUtils;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -22,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BloodyNightManager {
     public static final NamespacedKey RAID_MONSTER_KEY = new NamespacedKey("omc_daily_events", "raid_monster");
     private static BukkitTask raidTask;
+    private static BukkitTask vampireTask;
     private static long lastTime;
 
     public static void start(BloodyNightEvent event) {
@@ -34,6 +33,14 @@ public class BloodyNightManager {
                 () -> BloodyNightRaidManager.startRaid(world),
                 20L * 10,
                 20L * 60L * 2 // 2 min
+        );
+
+        // * Programmation du boss Vampire
+        Location vampireSpawnLocation = LocationUtils.randomLocation(world.getSpawnLocation(), world.getWorldBorder().getSize() / 2.0);
+        vampireTask = Bukkit.getScheduler().runTaskLater(
+                OMCPlugin.getInstance(),
+                () -> OMCRegistry.CUSTOM_MOBS.VAMPIRE_BOSS.spawn(vampireSpawnLocation),
+                20L * 60L * 15 // 15 min
         );
 
         // * Modification des monstres déjà présent dans le monde (uniquement ceux chargé)
@@ -54,6 +61,12 @@ public class BloodyNightManager {
         if (raidTask != null) {
             raidTask.cancel();
             raidTask = null;
+        }
+
+        // * Fin des raids
+        if (vampireTask != null) {
+            vampireTask.cancel();
+            vampireTask = null;
         }
 
         // * Supression des monstres devant etre supprimé (ex ceux qui vient des raids)

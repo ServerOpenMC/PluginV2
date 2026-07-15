@@ -24,6 +24,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.tasks.SummoningEffectTask.SUMMON_EFFECT_INTERVAL_TICKS;
 
-//todo: attack (blood explosion, explosive bat, mini vempire defender)
-//todo: death (sfx, rewards mailbox en fonction des dégats mis (plus de dégat plus de chance)
 @SuppressWarnings("UnstableApiUsage")
 @Getter
 public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl, Listener {
@@ -63,6 +62,34 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
     public Mannequin spawn(Location spawnLocation) {
         startSummoning(spawnLocation);
         return null;
+    }
+
+    @Override
+    public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (mannequin == null ||
+                !entity.getUniqueId().equals(mannequin.getUniqueId())) return;
+
+        event.getDrops().clear();
+        event.setDroppedExp(0);
+
+        Location deathLocation = entity.getLocation().clone();
+
+        ParticleUtils.spawnCubeParticles(
+                deathLocation.clone().add(0, 4, 0),
+                Particle.EXPLOSION_EMITTER,
+                5.0,
+                6.0,
+                5.0,
+                25,
+                100,
+                null
+        );
+
+        VampireBossLootManager.giveContributions(thisMob);
+
+        VampireBossLootManager.damageContributions.clear();
+        mannequin = null;
     }
 
     private void startSummoning(Location at) {
@@ -146,14 +173,15 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
         Entity victim = event.getEntity();
 
         CustomMob<?> mob = OMCRegistry.CUSTOM_MOBS.getMob(victim);
-        if (mob == null) return;
-        if (!mob.getId().equals(this.getId())) return;
+        if (mob == null || !mob.getId().equals(this.getId())) return;
 
-        Entity damager = event.getDamager();
+        Player player = getDamagerPlayer(event);
+        if (player == null) return;
 
-        if (!(damager instanceof Player player)) {
-            event.setCancelled(true);
-            return;
+        double effectiveDamage = event.getFinalDamage();
+        if (effectiveDamage > 0) {
+            double actualDamage = VampireBossLootManager.damageContributions.remove(player.getUniqueId());
+            VampireBossLootManager.damageContributions.put(player.getUniqueId(), actualDamage + effectiveDamage);
         }
 
         if (ThreadLocalRandom.current().nextDouble() < 0.25) {
@@ -190,6 +218,19 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
         }
 
         attacks.get(random.nextInt(attacks.size())).execute();
+    }
+
+    private Player getDamagerPlayer(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        if (damager instanceof Player player) {
+            event.setCancelled(true);
+            return player;
+        }
+
+        if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player player)
+            return player;
+
+        return null;
     }
 }
 

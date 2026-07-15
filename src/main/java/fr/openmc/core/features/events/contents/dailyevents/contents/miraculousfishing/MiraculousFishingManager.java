@@ -6,8 +6,6 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.loottable.loots.RepresentedItem;
 import fr.openmc.core.registry.loottable.loots.TableLoot;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -23,27 +21,6 @@ public class MiraculousFishingManager {
     public static final NamespacedKey NOT_PICKUP_KEY = new NamespacedKey(OMCPlugin.getInstance(), "not_pickup");
 
     /**
-     * Envoie le message de loot contenant, le nom du loot et la chance du loot
-     * @param player le joueur a qui envoyé le message
-     * @param loot le loot obtenu
-     * @param amount le nombre de loot
-     */
-    public static void sendLootMessage(Player player, CustomLoot loot, int amount) {
-        Component base = Component.text(" - ", NamedTextColor.GRAY);
-
-        if (amount != -1)
-            base = base.append(Component.text(amount + "x "));
-
-        if (loot.getDisplayText() != null &&
-                !(loot instanceof TableLoot)) {
-            base = base.append(loot.getDisplayText())
-                    .append(Component.text(" ("+ Math.round(loot.getChance() * 100.0) +"% ★)", NamedTextColor.AQUA));
-
-            player.sendMessage(base);
-        }
-    }
-
-    /**
      * Simule un item qui est lancé du bouchon de pêche jusqu'au joueur, via un CustomLoot.
      * @param player le joueur visé
      * @param hookLocation la position du bouchon, position de spawn de l'item
@@ -53,7 +30,7 @@ public class MiraculousFishingManager {
         // * Gestion spécial pour les Sea Creature
         if (loot instanceof SeaCreatureLoot seaCreatureLoot) {
             // * On envoie le message de loot
-            sendLootMessage(player, loot, -1);
+            loot.sendLootMessage(player, -1);
 
             Entity entity = seaCreatureLoot.getSeaCreatureMob().spawn(hookLocation);
 
@@ -81,7 +58,7 @@ public class MiraculousFishingManager {
         itemEntity.setGlowing(true);
 
         // * On envoie le message de loot
-        sendLootMessage(player, loot, itemEntity.getItemStack().getAmount());
+        loot.sendLootMessage(player, itemEntity.getItemStack().getAmount());
 
         applyVelocity(hookLocation, player.getEyeLocation(), itemEntity, 0.1);
     }
