@@ -11,6 +11,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.EnragedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
 import fr.openmc.core.registry.mobs.task.MobBossbarUpdater;
@@ -108,6 +109,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     public final CustomMobEntry VAMPIRE_BOSS = register(new CustomMobEntry(
             "omc_daily_events:vampire_boss",
             VampireBoss::new
+    ));
+
+    public final CustomMobEntry VAMPIRE_SLAVE = register(new CustomMobEntry(
+            "omc_daily_events:vampire_slave",
+            VampireSlave::new
     ));
 
     public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();
