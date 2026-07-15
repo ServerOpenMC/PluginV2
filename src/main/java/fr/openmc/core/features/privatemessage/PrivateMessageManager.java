@@ -78,7 +78,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
             return;
         }
 
-        OMCPlayer receiver = OMCPlayer.of(Bukkit.getServer().getPlayer(lastReceiverId));
+        OMCPlayer receiver = OMCPlayer.of(Bukkit.getPlayer(lastReceiverId));
         if (receiver == null || !receiver.isOnline()) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
