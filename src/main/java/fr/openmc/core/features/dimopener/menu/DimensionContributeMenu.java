@@ -61,7 +61,9 @@ public class DimensionContributeMenu extends Menu {
     @Override
     public @NotNull Component getName() {
         DimensionData dim = DimensionOpenerManager.getDimension(dimensionId);
-        return Component.text(dim != null ? dim.getName() : "Dimension").color(NamedTextColor.GREEN);
+        return dim != null
+                ? Component.text(dim.getName()).color(NamedTextColor.GREEN)
+                : TranslationManager.translation("feature.dimopener.menu.info.title");
     }
 
     @Override
