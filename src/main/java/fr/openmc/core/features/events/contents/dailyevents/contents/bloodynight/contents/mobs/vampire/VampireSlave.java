@@ -12,8 +12,8 @@ public class VampireSlave extends CustomMob<Zombie> {
                 "Esclave du Vampire",
                 Zombie.class,
                 16,
-                5,
-                RandomUtils.randomBetween(0.1, 0.2)
+                8,
+                RandomUtils.randomBetween(0.2, 0.35)
         );
     }
 
@@ -23,6 +23,8 @@ public class VampireSlave extends CustomMob<Zombie> {
 
         zombie.getEquipment().setHelmet(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD.getBest());
         zombie.getEquipment().setHelmetDropChance(0);
+
+        zombie.setAggressive(true);
 
         return zombie;
     }

@@ -20,10 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mannequin;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -160,8 +157,10 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
         }
 
         if (ThreadLocalRandom.current().nextDouble() < 0.25) {
-            OMCRegistry.CUSTOM_MOBS.VAMPIRE_SLAVE.spawn(
+            Entity spawned = OMCRegistry.CUSTOM_MOBS.VAMPIRE_SLAVE.spawn(
                     LocationUtils.randomLocation(player.getLocation(), 3.0));
+            if (spawned instanceof Zombie zombie)
+                zombie.setTarget(player);
         }
     }
 
