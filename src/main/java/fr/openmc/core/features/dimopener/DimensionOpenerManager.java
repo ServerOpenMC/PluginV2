@@ -311,6 +311,15 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         return progress != null && progress.getState() == DimensionState.OPENED;
     }
 
+    public static boolean isInInputPhase(String dimensionId) {
+        DimensionProgress progress = getProgress(dimensionId);
+        if (progress == null) return false;
+        DimensionState state = progress.getState();
+        return state != DimensionState.STEP_COOLDOWN
+                && state != DimensionState.ALL_STEPS_DONE
+                && state != DimensionState.OPENED;
+    }
+
     @Override
     public Set<Object> getCommands() {
         return Set.of(

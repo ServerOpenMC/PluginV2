@@ -11,9 +11,11 @@ public class DimensionProgress {
 
     @Getter
     private final String dimensionId;
-    @Setter @Getter
+    @Setter
+    @Getter
     private DimensionState state = DimensionState.LOCKED;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int currentStepIndex = 0;
     @Getter
     private double currentAmount = 0;
@@ -34,7 +36,7 @@ public class DimensionProgress {
     }
 
     public void resetStepProgress() {
-        this.currentAmount =  0;
+        this.currentAmount = 0;
         this.contributions.clear();
     }
 
@@ -48,5 +50,17 @@ public class DimensionProgress {
 
     public void clearCooldown() {
         this.cooldownEndTimestamp = -1;
+    }
+
+    @Override
+    public String toString() {
+        return "DimensionProgress{" +
+                "dimensionId='" + dimensionId + '\'' +
+                ", state=" + state +
+                ", currentStepIndex=" + currentStepIndex +
+                ", currentAmount=" + currentAmount +
+                ", contributions=" + contributions +
+                ", cooldownEndTimestamp=" + cooldownEndTimestamp +
+                '}';
     }
 }

@@ -90,9 +90,7 @@ public class DimensionContributeMenu extends Menu {
 
         DimensionState state = progress.getState();
 
-        if (state == DimensionState.STEP_COOLDOWN
-                || state == DimensionState.ALL_STEPS_DONE
-                || state == DimensionState.OPENED) {
+        if (!DimensionOpenerManager.isInInputPhase(dimensionId)) {
             content.put(INPUT_SLOT, waitingItem(progress, state));
             stopInputWatcher();
             return content;
@@ -331,10 +329,13 @@ public class DimensionContributeMenu extends Menu {
     @Override
     public List<Integer> getTakableSlot() {
         List<Integer> slots = new ArrayList<>();
-        if (data != null
+
+        boolean canDeposit = data != null
                 && data.isEnabled()
                 && DimensionOpenerManager.isPrerequisiteMet(data)
-        ) {
+                && DimensionOpenerManager.isInInputPhase(dimensionId);
+
+        if (canDeposit) {
             StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
             if (step != null && step.getType().equals(StepDimensionData.Type.ITEMS)) {
                 slots.add(INPUT_SLOT);
@@ -351,6 +352,8 @@ public class DimensionContributeMenu extends Menu {
     @Override
     public void onClose(InventoryCloseEvent event) {
         stopInputWatcher();
+
+        if (!DimensionOpenerManager.isInInputPhase(dimensionId)) return;
 
         StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
         if (step != null && step.getType().equals(StepDimensionData.Type.ITEMS)) {
