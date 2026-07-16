@@ -2,8 +2,11 @@ package fr.openmc.core.registry.loottable;
 
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.BloodyMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CursedMobLootTable;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.EnragedMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.fishing.BasicFishLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.fishing.MiraculousFishLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.fishing.SeaCreatureLootTable;
@@ -27,7 +30,10 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable LEGENDARY_FISHING_TREASURE = register(new LegendaryFishingTreasureLootTable());
 
     public final CustomLootTable VAMPIRE = register(new VampireLootTable());
-    public final CustomLootTable BLOODY_MOB = register(new BloodyMobLootTable());
+    public final CustomLootTable CORRUPTED_MOB = register(new CorruptedMobLootTable());
+    public final CustomLootTable CURSED_MOB = register(new CursedMobLootTable());
+    public final CustomLootTable ENRAGED_MOB = register(new EnragedMobLootTable());
+    public final CustomLootTable ANCIENT_MOB = register(new AncientMobLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {

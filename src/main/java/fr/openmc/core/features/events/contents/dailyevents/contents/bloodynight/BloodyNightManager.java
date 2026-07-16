@@ -155,10 +155,6 @@ public class BloodyNightManager {
      */
     public static void applyBloodyMonster(LivingEntity entity) {
         double random = ThreadLocalRandom.current().nextDouble();
-
-        System.out.println(random);
-
-        //todo: sfx particule
         if (random < 0.60) {
             OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(entity);
         } else if (random < 0.90) {

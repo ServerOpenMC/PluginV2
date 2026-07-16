@@ -7,9 +7,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightManager;
-import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Particle;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,10 +24,6 @@ public class MonsterSpawnLIstener implements Listener {
         if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
             BloodyNightManager.applyBloodyMonster(monster);
         } else {
-            ParticleUtils.spawnDispersingParticles(event.getLocation(),
-                    Particle.DAMAGE_INDICATOR,
-                    10, 35, 0.1D, null);
-
             OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(monster);
         }
     }

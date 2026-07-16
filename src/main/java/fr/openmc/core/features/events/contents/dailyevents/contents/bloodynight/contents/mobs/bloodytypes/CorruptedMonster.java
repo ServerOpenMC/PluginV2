@@ -3,9 +3,11 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.bukkit.EntityUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 import net.minecraft.world.scores.TeamColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -14,7 +16,7 @@ import org.bukkit.entity.Monster;
 public class CorruptedMonster extends CustomMob<Monster> {
     private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(
             new NamespacedKey("omc_daily_events", "corrupted_health"),
-            1,
+            0.75,
             AttributeModifier.Operation.ADD_SCALAR
     );
 
@@ -42,7 +44,7 @@ public class CorruptedMonster extends CustomMob<Monster> {
                 Monster.class,
                 1,
                 1,
-                OMCRegistry.CUSTOM_LOOT_TABLES.BLOODY_MOB.rollLoots()
+                OMCRegistry.CUSTOM_LOOT_TABLES.CORRUPTED_MOB.rollLoots()
         );
     }
 
@@ -61,6 +63,10 @@ public class CorruptedMonster extends CustomMob<Monster> {
         EntityUtils.addModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
 
+        // * SFX
+        ParticleUtils.spawnDispersingParticles(entity.getLocation(),
+                Particle.TRIAL_SPAWNER_DETECTION,
+                10, 35, 0.1D, null);
         EntityGlowNMS.setGlowingColor(entity, TeamColor.DARK_RED);
     }
 
