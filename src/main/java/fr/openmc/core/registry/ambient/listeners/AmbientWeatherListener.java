@@ -1,8 +1,10 @@
 package fr.openmc.core.registry.ambient.listeners;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.PlayerWeatherNMS;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,9 +28,11 @@ public class AmbientWeatherListener implements Listener {
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
-        for (Player player : event.getWorld().getPlayers()) {
-            reapplyWeather(player);
-        }
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            for (Player player : event.getWorld().getPlayers()) {
+                reapplyWeather(player);
+            }
+        }, 1L);
     }
 
     /**
