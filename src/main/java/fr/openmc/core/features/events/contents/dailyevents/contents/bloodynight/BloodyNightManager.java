@@ -18,9 +18,13 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-// todo: faire boss vampire (abilité chauve souris explosante, empoissonante, ...)
 public class BloodyNightManager {
+    // * CONSTANTES
     public static final NamespacedKey RAID_MONSTER_KEY = new NamespacedKey("omc_daily_events", "raid_monster");
+
+    public static final long VAMPIRE_SPAWN_TIME = 20L * 60L * 15; // 15 min
+    public static final long RAID_INTERVAL = 20L * 60L * 2; // 2 min
+
     private static BukkitTask raidTask;
     private static BukkitTask vampireTask;
     private static long lastTime;
@@ -34,7 +38,7 @@ public class BloodyNightManager {
                 OMCPlugin.getInstance(),
                 () -> BloodyNightRaidManager.startRaid(world),
                 20L * 10,
-                20L * 60L * 2 // 2 min
+                RAID_INTERVAL
         );
 
         // * Programmation du boss Vampire
@@ -48,7 +52,7 @@ public class BloodyNightManager {
         vampireTask = Bukkit.getScheduler().runTaskLater(
                 OMCPlugin.getInstance(),
                 () -> OMCRegistry.CUSTOM_MOBS.VAMPIRE_BOSS.spawn(vampireSpawnLocation),
-                20L * 60L * 15 // 15 min
+                VAMPIRE_SPAWN_TIME
         );
 
         // * Modification des monstres déjà présent dans le monde (uniquement ceux chargé)
@@ -145,6 +149,11 @@ public class BloodyNightManager {
         }
     }
 
+    public static final double CORRUPTED_CHANCE = 0.5;
+    public static final double ENRAGED_CHANCE = 0.3;
+    public static final double CURSED_CHANCE = 0.15;
+    public static final double ANCIENT_CHANCE = 0.05;
+
     /**
      * Applique l'effet bloody sur un monstre
      * - Corrompu - 60%
@@ -155,11 +164,11 @@ public class BloodyNightManager {
      */
     public static void applyBloodyMonster(LivingEntity entity) {
         double random = ThreadLocalRandom.current().nextDouble();
-        if (random < 0.60) {
+        if (random < CORRUPTED_CHANCE) {
             OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(entity);
-        } else if (random < 0.90) {
+        } else if (random < CORRUPTED_CHANCE + ENRAGED_CHANCE) {
             OMCRegistry.CUSTOM_MOBS.ENRAGED_MONSTER.apply(entity);
-        } else if (random < 0.95) {
+        } else if (random < CORRUPTED_CHANCE + ENRAGED_CHANCE + CURSED_CHANCE) {
             OMCRegistry.CUSTOM_MOBS.CURSED_MONSTER.apply(entity);
         } else {
             OMCRegistry.CUSTOM_MOBS.ANCIENT_MONSTER.apply(entity);

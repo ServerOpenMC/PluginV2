@@ -25,7 +25,9 @@ public class BloodyNightRaidManager {
             EntityType.SPIDER,
             EntityType.CREEPER,
             EntityType.HUSK,
-            EntityType.STRAY
+            EntityType.STRAY,
+            EntityType.PARCHED,
+            EntityType.BOGGED
     );
 
     public static void startRaid(World world) {

@@ -28,7 +28,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Set;
 
-public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu {
+public class MiraculousFishingEvent extends DailyEvent
+        implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu {
     @Override
     public String getEventId() {
         return "miraculous_fishing";

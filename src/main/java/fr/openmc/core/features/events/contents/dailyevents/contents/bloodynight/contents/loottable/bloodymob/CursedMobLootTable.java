@@ -33,9 +33,8 @@ public class CursedMobLootTable extends CustomLootTable {
                 new ItemLoot(Material.GOLD_BLOCK,0.2, 1, 2),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,0.2, 2, 4),
                 new ItemLoot(Material.DIAMOND,0.2, 1, 2),
-                new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p -> {
-                    p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true);
-                }),0.13, 1),
+                new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p ->
+                        p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)),0.13, 1),
                 new ItemLoot(Material.DIAMOND_BLOCK,0.1, 1),
                 new ItemLoot(Material.NETHERITE_SCRAP,0.04, 1)
         ));

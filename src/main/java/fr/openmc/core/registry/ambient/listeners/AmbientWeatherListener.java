@@ -25,7 +25,7 @@ public class AmbientWeatherListener implements Listener {
     }
 
     @EventHandler
-    public void onTimeChange(WeatherChangeEvent event) {
+    public void onWeatherChange(WeatherChangeEvent event) {
         for (Player player : event.getWorld().getPlayers()) {
             reapplyWeather(player);
         }
