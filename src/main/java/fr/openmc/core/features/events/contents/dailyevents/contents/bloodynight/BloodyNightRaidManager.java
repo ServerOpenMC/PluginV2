@@ -47,7 +47,12 @@ public class BloodyNightRaidManager {
         );
 
         for (int i = 0; i < mobAmount; i++) {
-            Location spawnLocation = LocationUtils.getSafeNearbySurface(player.getLocation(), MAX_SPAWN_RADIUS);
+            Location spawnLocation = LocationUtils.getSafeNearbySurface(
+                    LocationUtils.randomLocation(
+                            player.getLocation(),
+                            MAX_SPAWN_RADIUS
+                    ),
+                    20);
 
             world.strikeLightningEffect(spawnLocation);
             spawnRandomMonster(spawnLocation);
