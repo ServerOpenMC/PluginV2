@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
@@ -33,7 +34,7 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-	    return TranslationManager.translation("feature.city.menus.invitations.name");
+        return TranslationManager.translation("feature.city.menus.invitations.name");
     }
 
     @Override
@@ -84,14 +85,16 @@ public class InvitationsMenu extends PaginatedMenu {
             items.add(new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
                 itemMeta.itemName(invitationName);
                 itemMeta.lore(invitationLore);
-            }).setOnClick(InventoryClickEvent -> {
+            }).setOnClick(_ -> {
+                OMCPlayer omcPlayer = OMCPlayer.of(player);
+                OMCPlayer omcInviter = OMCPlayer.of(inviter);
                 new ConfirmMenu(player,
                         () -> {
-                            CityInviteCommands.acceptInvitation(player, inviter);
+                            CityInviteCommands.acceptInvitation(omcPlayer, omcInviter);
                             player.closeInventory();
                         },
                         () -> {
-                            CityInviteCommands.denyInvitation(player, inviter);
+                            CityInviteCommands.denyInvitation(omcPlayer, omcInviter);
                             player.closeInventory();
                         },
                         List.of(TranslationManager.translation("messages.global.accept")),

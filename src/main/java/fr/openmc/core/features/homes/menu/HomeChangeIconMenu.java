@@ -12,8 +12,6 @@ import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.bukkit.ItemUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -160,9 +158,9 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             long now = System.currentTimeMillis();
             long last = CATEGORY_COOLDOWNS.getOrDefault(getOwner().getUniqueId(), 0L);
             if (now - last < CATEGORY_COOLDOWN_TIME) {
-                MessagesManager.sendMessage(getOwner(),
+                getOwner().message().sendError(
                         TranslationManager.translation("feature.homes.icon.category.spam"),
-                        Prefix.OPENMC, MessageType.ERROR, true);
+                        Prefix.OPENMC, true);
                 return;
             }
             CATEGORY_COOLDOWNS.put(getOwner().getUniqueId(), now);

@@ -14,7 +14,6 @@ import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import lombok.Getter;
-import org.bukkit.Location;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,64 +53,6 @@ public class HomesManager extends Feature implements DatabaseFeature, HasCommand
     public void save() {
         saveHomes();
         saveHomeLimit();
-    }
-
-    public static void addHome(Home home) {
-        homes.add(home);
-    }
-
-    public static void removeHome(Home home) {
-        homes.remove(home);
-    }
-
-    public static void renameHome(Home home, String newName) {
-        home.setName(newName);
-    }
-
-    public static void relocateHome(Home home, Location newLoc) {
-        home.setLocation(newLoc);
-    }
-
-    public static List<Home> getHomes(UUID playerUUID) {
-        return homes
-                .stream()
-                .filter(home -> home.getOwner().equals(playerUUID))
-                .toList();
-    }
-
-    public static List<String> getHomesNames(UUID playerUUID) {
-        return getHomes(playerUUID)
-                .stream()
-                .map(Home::getName)
-                .toList();
-    }
-
-    public static HomeLimits getHomeLimit(UUID playerUUID) {
-        HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
-                .findFirst()
-                .orElse(null);
-
-        if (homeLimit == null) {
-            homeLimit = new HomeLimit(playerUUID, HomeLimits.LIMIT_0);
-            homeLimits.add(homeLimit);
-        }
-
-        return homeLimit.getHomeLimit();
-    }
-
-    public static void updateHomeLimit(UUID playerUUID) {
-        HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
-                .findFirst()
-                .orElse(null);
-        if (homeLimit == null) {
-            homeLimits.add(new HomeLimit(playerUUID, HomeLimits.LIMIT_0));
-        } else {
-            int currentLimitIndex = homeLimit.getHomeLimit().ordinal();
-            HomeLimits newLimit = HomeLimits.values()[currentLimitIndex + 1];
-            homeLimit.setLimit(newLimit.getLimit());
-        }
     }
 
     // DB methods

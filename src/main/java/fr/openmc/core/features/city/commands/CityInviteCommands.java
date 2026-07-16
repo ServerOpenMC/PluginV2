@@ -1,11 +1,10 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityInviteConditions;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -30,8 +29,8 @@ public class CityInviteCommands {
     @CommandPermission("omc.commands.city.invite")
     @Description("Inviter un joueur dans votre ville")
     public static void invite(
-            Player sender,
-            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+            OMCPlayer sender,
+            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
     ) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
@@ -45,19 +44,16 @@ public class CityInviteCommands {
         } else {
             playerInvitations.add(sender);
         }
-        MessagesManager.sendMessage(sender,
-                TranslationManager.translation("feature.city.invite.commands.invite.success",
-                        target.displayName()),
-                Prefix.CITY,
-                MessageType.SUCCESS,
-                false
+        sender.message().sendSuccess(
+                TranslationManager.translation("feature.city.invite.commands.invite.success", target.displayName()),
+                Prefix.CITY
         );
-        MessagesManager.sendMessage(target,
+        target.message().sendInfo(
                 TranslationManager.translation(
-                        "feature.city.invite.commands.invite.received",
-                        sender.displayName(),
-                        Component.text(city.getName())
-                )
+                                "feature.city.invite.commands.invite.received",
+                                sender.displayName(),
+                                Component.text(city.getName())
+                        )
                         .append(Component.newline())
                         .append(TranslationManager.translation("feature.city.invite.commands.invite.accept")
                                 .clickEvent(ClickEvent.runCommand("/city accept " + sender.getName()))
@@ -68,28 +64,35 @@ public class CityInviteCommands {
                                 .clickEvent(ClickEvent.runCommand("/city deny " + sender.getName()))
                                 .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.invite.commands.invite.deny_hover")))
                         ),
-                Prefix.CITY, MessageType.INFO, false);
+                Prefix.CITY
+        );
     }
 
     @Command("city accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
     public static void acceptInvitation(
-            Player player,
-            @Named("inviteur") @SuggestWith(OnlinePlayerAutoComplete.class) Player inviter
+            OMCPlayer player,
+            @Named("inviteur") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer inviter
     ) {
         List<Player> playerInvitations = invitations.get(player);
 
         if (playerInvitations == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation("feature.city.invite.commands.accept.none_pending"),
+                    Prefix.CITY
+            );
             return;
         }
 
         if (!playerInvitations.contains(inviter)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation(
-                    "feature.city.invite.commands.accept.not_invited",
-                    inviter.displayName()
-            ), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation(
+                            "feature.city.invite.commands.accept.not_invited",
+                            inviter.displayName()
+                    ),
+                    Prefix.CITY
+            );
             return;
         }
 
@@ -101,9 +104,16 @@ public class CityInviteCommands {
 
         invitations.remove(player);
 
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.joined", Component.text(newCity.getName())), Prefix.CITY, MessageType.SUCCESS, false);
+        player.message().sendSuccess(
+                TranslationManager.translation("feature.city.invite.commands.accept.joined", Component.text(newCity.getName())),
+                Prefix.CITY
+        );
         if (inviter.isOnline()) {
-            MessagesManager.sendMessage(inviter, TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.displayName()), Prefix.CITY, MessageType.SUCCESS, true);
+            inviter.message().sendSuccess(
+                    TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.displayName()),
+                    Prefix.CITY,
+                    true
+            );
         }
     }
 
@@ -111,15 +121,19 @@ public class CityInviteCommands {
     @CommandPermission("omc.commands.city.deny")
     @Description("Refuser une invitation")
     public static void denyInvitation(
-            Player player,
-            @Named("inviteur") @SuggestWith(OnlinePlayerAutoComplete.class) Player inviter
+            OMCPlayer player,
+            @Named("inviteur") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer inviter
     ) {
         if (!CityInviteConditions.canCityInviteDeny(player, inviter)) return;
 
         invitations.remove(player);
 
         if (inviter.isOnline()) {
-            MessagesManager.sendMessage(inviter, TranslationManager.translation("feature.city.invite.commands.deny.inviter_notified", Component.text(player.getName())), Prefix.CITY, MessageType.WARNING, true);
+            inviter.message().sendWarning(
+                    TranslationManager.translation("feature.city.invite.commands.deny.inviter_notified", Component.text(player.getName())),
+                    Prefix.CITY,
+                    true
+            );
         }
     }
 }

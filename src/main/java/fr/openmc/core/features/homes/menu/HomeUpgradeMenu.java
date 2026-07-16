@@ -8,7 +8,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
-import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -42,7 +41,7 @@ public class HomeUpgradeMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
-        int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId()).getLimit();
+        int currentHome = getOwner().home().getHomeLimit().getLimit();
 
         HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()));
 
@@ -81,7 +80,8 @@ public class HomeUpgradeMenu extends Menu {
     }
 
     @Override
-    public void onClose(InventoryCloseEvent event) {}
+    public void onClose(InventoryCloseEvent event) {
+    }
 
     @Override
     public List<Integer> getTakableSlot() {

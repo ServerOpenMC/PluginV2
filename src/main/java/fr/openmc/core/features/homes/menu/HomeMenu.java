@@ -1,6 +1,8 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.entity.player.OMCOfflinePlayer;
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -8,20 +10,16 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -37,16 +35,16 @@ import java.util.Map;
 
 public class HomeMenu extends PaginatedMenu {
 
-    private final OfflinePlayer target;
+    private final OMCOfflinePlayer target;
     private boolean wasTarget = false;
 
-    public HomeMenu(Player player, OfflinePlayer target) {
+    public HomeMenu(OMCPlayer player, OMCOfflinePlayer target) {
         super(player);
         this.target = target;
         this.wasTarget = true;
     }
 
-    public HomeMenu(Player player) {
+    public HomeMenu(OMCPlayer player) {
         super(player);
         this.target = player;
     }
@@ -91,7 +89,7 @@ public class HomeMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        for(Home home : HomesManager.getHomes(target.getUniqueId())) {
+        for (Home home : target.home().getHomes()) {
             HomeIcon homeIcon = home.getIcon();
             if (homeIcon == null) {
                 homeIcon = HomeIconRegistry.getDefaultIcon();
@@ -105,7 +103,7 @@ public class HomeMenu extends PaginatedMenu {
                     ));
                     itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.item.lore"));
                 }).hide(ItemUtils.getDataComponentType()).setOnClick(event -> {
-                    if(event.isLeftClick()) {
+                    if (event.isLeftClick()) {
                         this.getInventory().close();
                         getOwner().teleportAsync(home.getLocation()).thenAccept(success -> {
                             new BukkitRunnable() {
@@ -114,24 +112,22 @@ public class HomeMenu extends PaginatedMenu {
                                     Bukkit.getPluginManager().callEvent(new HomeTpEvent(home, getOwner()));
                                 }
                             }.runTask(OMCPlugin.getInstance());
-                            MessagesManager.sendMessage(
-                                    getOwner(),
+                            getOwner().message().sendSuccess(
                                     TranslationManager.translation(
                                             "feature.homes.menu.teleport.success",
                                             Component.text(home.getName()).color(NamedTextColor.YELLOW)
                                     ),
                                     Prefix.HOME,
-                                    MessageType.SUCCESS,
                                     true
                             );
                         });
-                    } else if(event.isRightClick()) {
-                        Player player = (Player) event.getWhoClicked();
+                    } else if (event.isRightClick()) {
+                        OMCPlayer player = OMCPlayer.of((Player) event.getWhoClicked());
                         new HomeConfigMenu(player, home).open();
                     }
                 }));
             } catch (Exception e) {
-                MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.homes.menu.error"), Prefix.OPENMC, MessageType.ERROR, false);
+                getOwner().message().sendError(TranslationManager.translation("feature.homes.menu.error"), Prefix.OPENMC, false);
                 getOwner().closeInventory();
                 throw new RuntimeException("Failed to create HomeMenu item for home: " + home.getName(), e);
             }
@@ -148,7 +144,7 @@ public class HomeMenu extends PaginatedMenu {
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        if(!wasTarget) {
+        if (!wasTarget) {
             map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.homes.menu.upgrade.name"));
                 itemMeta.lore(TranslationManager.translationLore("feature.homes.menu.upgrade.lore"));
@@ -163,7 +159,8 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
     public void onClose(InventoryCloseEvent event) {

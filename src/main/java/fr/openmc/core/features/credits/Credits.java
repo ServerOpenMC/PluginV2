@@ -76,6 +76,7 @@ public enum Credits {
     ERRORHANDLER(Material.COMMAND_BLOCK, "feature.credits.feature.errorhandler", Set.of("iambibi_")),
     UNITTEST(Material.COMMAND_BLOCK, "feature.credits.feature.unittest", Set.of("Nirbose", "Gyro")),
     ORM(Material.COMMAND_BLOCK, "feature.credits.feature.orm", Set.of("Piquel Chips")),
+    OMCPLAYER(Material.COMMAND_BLOCK, "feature.credits.feature.omcplayer", Set.of("Axeno")),
     ;
 
     private final ItemStack icon;
@@ -86,8 +87,9 @@ public enum Credits {
 
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
-     * @param icon Icône du crédit
-     * @param featureKey Translation key de la feature
+     *
+     * @param icon         Icône du crédit
+     * @param featureKey   Translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
     Credits(Material icon, String featureKey, Class<? extends Feature> featureClass) {
@@ -101,8 +103,9 @@ public enum Credits {
 
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
-     * @param icon Icône du crédit (ItemStack)
-     * @param featureKey La translation key de la feature
+     *
+     * @param icon         Icône du crédit (ItemStack)
+     * @param featureKey   La translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
     Credits(ItemStack icon, String featureKey, Class<? extends Feature> featureClass) {
@@ -116,8 +119,9 @@ public enum Credits {
 
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
-     * @param customItem Icône du crédit (CustomItem)
-     * @param featureKey La translation key de la feature
+     *
+     * @param customItem   Icône du crédit (CustomItem)
+     * @param featureKey   La translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
     Credits(CustomItem customItem, String featureKey, Class<? extends Feature> featureClass) {
@@ -210,15 +214,15 @@ public enum Credits {
      */
     private static Set<String>[] getContributorsFromClass(Class<? extends Feature> featureClass) {
         Set<String>[] result = new Set[]{new HashSet<>(), new HashSet<>(), new HashSet<>()};
-        
+
         Credit annotation = featureClass.getAnnotation(Credit.class);
-        
+
         if (annotation != null) {
             result[0] = new HashSet<>(Arrays.asList(annotation.developers()));
             result[1] = new HashSet<>(Arrays.asList(annotation.graphist()));
             result[2] = new HashSet<>(Arrays.asList(annotation.builders()));
         }
-        
+
         return result;
     }
 }

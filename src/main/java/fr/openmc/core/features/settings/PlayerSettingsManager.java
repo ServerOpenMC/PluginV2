@@ -125,7 +125,7 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
      * This method runs asynchronously to avoid blocking the main thread.
      */
     public static void loadAllPlayerSettings() {
-       CompletableFuture.runAsync(() -> {
+        CompletableFuture.runAsync(() -> {
             try {
                 List<PlayerSettingEntity> entities = playerSettingDao.queryForAll();
                 for (PlayerSettingEntity entity : entities) {
@@ -149,7 +149,7 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
      * Loads player settings from the database and applies them to the PlayerSettings instance.
      *
      * @param playerUUID the UUID of the player
-     * @param settings the PlayerSettings instance to load data into
+     * @param settings   the PlayerSettings instance to load data into
      */
     public static void loadPlayerSettingsFromDatabase(UUID playerUUID, PlayerSettings settings) {
         if (playerSettingDao == null) {
@@ -180,9 +180,9 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
     /**
      * Saves a specific setting to the database.
      *
-     * @param playerUUID the UUID of the player
+     * @param playerUUID  the UUID of the player
      * @param settingType the type of setting to save
-     * @param value the value to save
+     * @param value       the value to save
      */
     public static void saveSetting(UUID playerUUID, SettingType settingType, Object value) {
         if (playerSettingDao == null) {
@@ -275,17 +275,12 @@ public class PlayerSettingsManager extends Feature implements DatabaseFeature, H
     /**
      * Checks if a player can receive a city invite from another player.
      *
-     * @param senderUUID     the UUID of the player send the invite
-     * @param receiverUUID   the UUID of the player receive the invite
+     * @param senderUUID   the UUID of the player send the invite
+     * @param receiverUUID the UUID of the player receive the invite
      * @return true if the receiver can receive the city invite, false otherwise
      */
     public static boolean canReceiveCityInvite(UUID senderUUID, UUID receiverUUID) {
         PlayerSettings settings = getPlayerSettings(receiverUUID);
         return settings.canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
-    }
-
-    public static boolean canReceivePrivateMessage(UUID senderUUID, UUID receiverUUID) {
-        PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, senderUUID);
     }
 }
