@@ -32,7 +32,8 @@ public class InteractListener implements Listener {
             if (player.isSneaking()) usable.onSneakClick(player, event);
             else if (action.isLeftClick()) usable.onLeftClick(player, event);
             else if (action.isRightClick()) usable.onRightClick(player, event);
-        } else if (item.get() instanceof LootboxBlock lootbox) {
+        } else if (item.get() instanceof LootboxBlock lootbox
+                && event.getAction() == Action.RIGHT_CLICK_AIR) {
             ItemUtils.removeItemsFromPlayerInventory(player, item.get().getBest(), 1);
             lootbox.getLootbox().open(player);
         }
