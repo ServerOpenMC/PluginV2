@@ -7,21 +7,19 @@ import fr.openmc.core.features.cube.multiblocks.MultiBlock;
 import fr.openmc.core.features.cube.tasks.CorruptedBubbleTask;
 import fr.openmc.core.features.cube.tasks.ReproductionTask;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 // Les Restes du Cube. Aucun mouvement possible, juste pour le lore, les souvenirs, l'easter egg, bref :)
@@ -39,8 +37,7 @@ public class Cube extends MultiBlock {
 
         // ## BOSS BAR ##
         if (showBossBar) {
-            cubeBossBar = Bukkit.createBossBar(TranslationManager.translationString("feature.cube.bossbar.title"), BarColor.BLUE, BarStyle.SEGMENTED_6, BarFlag.CREATE_FOG, BarFlag.DARKEN_SKY);
-            cubeBossBar.setVisible(true);
+            cubeBossBar = BossBar.bossBar(TranslationManager.translation("feature.cube.bossbar.title"), 1f, BossBar.Color.BLUE, BossBar.Overlay.NOTCHED_6, Set.of(BossBar.Flag.CREATE_WORLD_FOG, BossBar.Flag.DARKEN_SCREEN));
 
             startBossBarUpdater();
         }
@@ -293,11 +290,9 @@ public class Cube extends MultiBlock {
                         double distance = player.getLocation().distanceSquared(getCenter());
 
                         if (distance <= 50 * 50) {
-                            if (!cubeBossBar.getPlayers().contains(player)) {
-                                cubeBossBar.addPlayer(player);
-                            }
+                            cubeBossBar.addViewer(player);
                         } else {
-                            cubeBossBar.removePlayer(player);
+                            cubeBossBar.removeViewer(player);
                         }
                     }
                 }
