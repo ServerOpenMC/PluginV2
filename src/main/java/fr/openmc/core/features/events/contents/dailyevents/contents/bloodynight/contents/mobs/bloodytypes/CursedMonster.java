@@ -11,7 +11,10 @@ import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Monster;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CursedMonster extends CustomMob<Monster> {
     private static final AttributeModifier HEALTH_MODIFIER = new AttributeModifier(
@@ -69,6 +72,9 @@ public class CursedMonster extends CustomMob<Monster> {
         EntityUtils.addModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.SCALE, SCALE_MODIFIER);
+
+        if (ThreadLocalRandom.current().nextBoolean() && entity instanceof Creeper)
+            entity.getWorld().strikeLightningEffect(entity.getLocation());
 
         // * SFX
         ParticleUtils.spawnDispersingParticles(entity.getLocation(),

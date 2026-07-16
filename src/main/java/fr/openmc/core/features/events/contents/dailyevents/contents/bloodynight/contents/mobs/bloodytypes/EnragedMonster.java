@@ -11,6 +11,7 @@ import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Monster;
 
 public class EnragedMonster extends CustomMob<Monster> {
@@ -62,6 +63,9 @@ public class EnragedMonster extends CustomMob<Monster> {
         EntityUtils.addModifierIfPresent(entity, Attribute.ATTACK_DAMAGE, ATTACK_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.MOVEMENT_SPEED, SPEED_MODIFIER);
         EntityUtils.addModifierIfPresent(entity, Attribute.FOLLOW_RANGE, FOLLOW_MODIFIER);
+
+        if (entity instanceof Creeper)
+            entity.getWorld().strikeLightningEffect(entity.getLocation());
 
         // * SFX
         ParticleUtils.spawnDispersingParticles(entity.getLocation(),
