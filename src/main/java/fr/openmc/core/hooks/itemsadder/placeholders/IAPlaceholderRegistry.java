@@ -4,6 +4,8 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.placeholders.DreamItemMaterialPlaceholder;
 import fr.openmc.core.features.dream.placeholders.DreamItemNamePlaceholder;
 import fr.openmc.core.features.dream.placeholders.DreamItemTooltipPlaceholder;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.placeholder.DoubleHookChancePlaceholder;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.placeholder.FishingSpeedPlaceholder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,9 @@ public class IAPlaceholderRegistry {
         registry.register(
                 new DreamItemTooltipPlaceholder(),
                 new DreamItemMaterialPlaceholder(),
-                new DreamItemNamePlaceholder()
+                new DreamItemNamePlaceholder(),
+                new FishingSpeedPlaceholder(),
+                new DoubleHookChancePlaceholder()
         );
         return registry;
     }

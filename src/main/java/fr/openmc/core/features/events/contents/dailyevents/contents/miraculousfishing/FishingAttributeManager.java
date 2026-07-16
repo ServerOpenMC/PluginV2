@@ -18,6 +18,9 @@ public class FishingAttributeManager {
     public static final double FISHING_SPEED_MODIFIER = 0.4;
     public static final double DOUBLE_HOOK_MODIFIER = 0;
 
+    public static final double ARMOR_FISHING_SPEED_MODIFIER = 0.05;
+    public static final double ARMOR_DOUBLE_HOOK_MODIFIER = 0.03;
+
     private static final Set<CustomItem> FISHER_ARMOR = Set.of(
             OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_HELMET,
             OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_CHESTPLATE,
@@ -56,7 +59,7 @@ public class FishingAttributeManager {
             Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(item);
 
             if (ci.isPresent() && FISHER_ARMOR.contains(ci.get())) {
-                base += 0.05;
+                base += ARMOR_FISHING_SPEED_MODIFIER;
             }
         }
 
@@ -84,7 +87,7 @@ public class FishingAttributeManager {
             Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(item);
 
             if (ci.isPresent() && FISHER_ARMOR.contains(ci.get())) {
-                base += 0.03;
+                base += ARMOR_DOUBLE_HOOK_MODIFIER;
             }
         }
 
