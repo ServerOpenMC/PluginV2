@@ -44,6 +44,7 @@ public class BloodyNightManager {
                         world.getWorldBorder().getSize() / 2.0, 10000
                 ),
                 50);
+
         vampireTask = Bukkit.getScheduler().runTaskLater(
                 OMCPlugin.getInstance(),
                 () -> OMCRegistry.CUSTOM_MOBS.VAMPIRE_BOSS.spawn(vampireSpawnLocation),
