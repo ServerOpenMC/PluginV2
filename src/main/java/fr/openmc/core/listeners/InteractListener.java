@@ -2,7 +2,9 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.options.LootboxBlock;
 import fr.openmc.core.registry.items.options.UsableItem;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,6 +32,9 @@ public class InteractListener implements Listener {
             if (player.isSneaking()) usable.onSneakClick(player, event);
             else if (action.isLeftClick()) usable.onLeftClick(player, event);
             else if (action.isRightClick()) usable.onRightClick(player, event);
+        } else if (item.get() instanceof LootboxBlock lootbox) {
+            ItemUtils.removeItemsFromPlayerInventory(player, item.get().getBest(), 1);
+            lootbox.getLootbox().open(player);
         }
     }
 

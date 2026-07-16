@@ -9,6 +9,7 @@ import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
 import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
 import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
 import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
+import fr.openmc.core.registry.lootboxes.listener.DesactivateFireworkDamageListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
@@ -38,6 +39,7 @@ public class ListenersManager {
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new InteractListener(),
+                new DesactivateFireworkDamageListener(),
                 new BlockPlaceListener(),
                 new EquipableItemListener(),
                 new NoMoreRabbit(),

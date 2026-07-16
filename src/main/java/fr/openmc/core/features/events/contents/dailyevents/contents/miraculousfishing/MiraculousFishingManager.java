@@ -95,8 +95,14 @@ public class MiraculousFishingManager {
         // * Revient à faire le vecteur vitesse entre 2 vecteur (xp - xh, yp - yh, zp - zh)
         Vector velocity = destination.toVector().subtract(origin.toVector());
         velocity.multiply(force);
-        velocity.setY(velocity.getY() + Math.sqrt(Math.sqrt(
-                velocity.getX()*2 + velocity.getY()*2 + velocity.getZ()*2)) * 0.08);
+
+        double m = Math.sqrt(
+                velocity.getX() * velocity.getX()
+                        + velocity.getY() * velocity.getY()
+                        + velocity.getZ() * velocity.getZ()
+        );
+
+        velocity.setY(velocity.getY() + m * 0.08);
         entity.setVelocity(velocity);
     }
 }
