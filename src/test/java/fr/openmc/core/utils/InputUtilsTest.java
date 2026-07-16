@@ -1,6 +1,7 @@
 package fr.openmc.core.utils;
 
 import fr.openmc.core.utils.text.InputUtils;
+import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,25 +67,25 @@ class InputUtilsTest {
     @Test
     @DisplayName("Pluralize with count > 1 adds s")
     void testPluralize_Plural() {
-        Assertions.assertEquals("joueurs", InputUtils.pluralize("joueur", 5));
+        Assertions.assertEquals(Component.text("joueurs"), InputUtils.pluralize(Component.text("joueur"), 5));
     }
 
     @Test
     @DisplayName("Pluralize with count 1 no s")
     void testPluralize_Singular() {
-        Assertions.assertEquals("joueur", InputUtils.pluralize("joueur", 1));
+        Assertions.assertEquals(Component.text("joueur"), InputUtils.pluralize(Component.text("joueur"), 1));
     }
 
     @Test
     @DisplayName("Pluralize with count 0 no s")
     void testPluralize_Zero() {
-        Assertions.assertEquals("joueur", InputUtils.pluralize("joueur", 0));
+        Assertions.assertEquals(Component.text("joueur"), InputUtils.pluralize(Component.text("joueur"), 0));
     }
 
     @Test
     @DisplayName("Pluralize long variant")
     void testPluralize_Long() {
-        Assertions.assertEquals("blocs", InputUtils.pluralize("bloc", 100L));
-        Assertions.assertEquals("bloc", InputUtils.pluralize("bloc", 1L));
+        Assertions.assertEquals(Component.text("blocs"), InputUtils.pluralize(Component.text("bloc"), 100L));
+        Assertions.assertEquals(Component.text("bloc"), InputUtils.pluralize(Component.text("bloc"), 1L));
     }
 }
