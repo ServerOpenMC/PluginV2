@@ -427,7 +427,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
             Component playerCampName = data.getCampComponent(dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
-            Component playerTitleContest = Component.text(ContestPlayerManager.getTitleWithPoints(points)) // ex. Novice en + Moutarde
+            Component playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) // ex. Novice en + Moutarde
                     .append(playerCampName);
 
             bookMetaPlayer.addPages(TranslationManager.translation(

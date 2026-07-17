@@ -76,7 +76,7 @@ public class ContributionMenu extends Menu {
 
         List<Component> loreRang = TranslationManager.translationLore(
                 "feature.events.contest.contribution.lore.rank",
-                Component.text(ContestPlayerManager.getTitleContest(player)).append(campName).colorIfAbsent(campColor),
+                ContestPlayerManager.getTitleContest(player).append(campName).colorIfAbsent(campColor),
                 Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).color(campColor),
                 Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).color(campColor)
         );
