@@ -1,8 +1,8 @@
 # assets from https://github.com/0rc1nus/Overweight-Farming
 
-# todo: obese crops, peeled versions
 info:
   namespace: omc_daily_events
+
 items:
   # --- Potato ---
   obese_potato:
@@ -316,3 +316,91 @@ items:
         placed_model:
           type: REAL_NOTE
           break_particles: ITEM
+
+recipes:
+  crafting_table:
+
+    obese_potato:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:obese_potato
+      result:
+        item: POTATO
+        amount: 9
+
+    obese_poisonous_potato:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:obese_poisonous_potato
+      result:
+        item: POISONOUS_POTATO
+        amount: 9
+
+    obese_baked_potato:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:obese_baked_potato
+      result:
+        item: BAKED_POTATO
+        amount: 9
+
+    obese_carrot:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:obese_carrot
+      result:
+        item: CARROT
+        amount: 9
+
+    obese_beetroot:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:obese_beetroot
+      result:
+        item: BEETROOT
+        amount: 9
+
+    obese_nether_wart:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:obese_nether_wart
+      result:
+        item: NETHER_WART
+        amount: 9
+
+    obese_onion:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_daily_events:omc_daily_events:obese_onion
+      result:
+        item: omc_foods:onion
+        amount: 9
+
+    obese_golden_apple:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: obese_golden_apple
+      result:
+        item: omc_foods:golden_apple
+        amount: 9
+
+  cooking:
+    obese_baked_potato:
+      ingredient:
+        item: omc_daily_events:obese_potato
+      machines:
+        - FURNACE
+        - BLAST_FURNACE
+      exp: 1
+      cook_time: 280 # 32 ticks for 1 potato, X 9 for obese
+      result:
+        item: omc_daily_events:obese_baked_potato
+        amount: 1

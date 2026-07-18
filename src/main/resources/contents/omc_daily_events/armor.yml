@@ -1,10 +1,15 @@
 info:
   namespace: omc_daily_events
+
 equipments:
   ancient_fishing:
     type: armor
     layer_1: armor/ancient_fishing/ancient_armor_layer_1
     layer_2: armor/ancient_fishing/ancient_armor_layer_2
+  abondance:
+    type: armor
+    layer_1: armor/abondance/abondance_armor_layer_1
+    layer_2: armor/abondance/abondance_armor_layer_2
 
 items:
   ancient_fishing_helmet:
@@ -69,3 +74,123 @@ items:
       id: omc_daily_events:ancient_fishing
       slot_attribute_modifiers:
         armor: 3
+
+
+  abondance_helmet:
+    display_name: "Casque de l'abondance"
+    resource:
+      generate: true
+      textures:
+        - armor/abondance/abondance_helmet
+      material: LEATHER_HELMET
+    lore:
+      - "§7§oUn casque trouvé par le travail et la persévérance"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:abondance
+      slot_attribute_modifiers:
+        armor: 3
+
+  abondance_chestplate:
+    display_name: "Plastron de l'abondance"
+    resource:
+      generate: true
+      textures:
+        - armor/abondance/abondance_chestplate
+      material: LEATHER_CHESTPLATE
+    lore:
+      - "§7§oUn plastron trouvé par la culture et la perfection"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:abondance
+      slot_attribute_modifiers:
+        armor: 5
+
+  abondance_leggings:
+    display_name: "Jambière de l'abondance"
+    resource:
+      generate: true
+      textures:
+        - armor/abondance/abondance_leggings
+      material: LEATHER_LEGGINGS
+    lore:
+      - "§7§oUne jambière trouvé par la culture et la perfection"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:abondance
+      slot_attribute_modifiers:
+        armor: 5
+
+  abondance_boots:
+    display_name: "Bottes de l'abondance"
+    resource:
+      generate: true
+      textures:
+        - armor/abondance/abondance_boots
+      material: LEATHER_BOOTS
+    lore:
+      - "§7§oDes bottes trouvées par le travail et la persévérance"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:abondance
+      slot_attribute_modifiers:
+        armor: 3
+
+recipes:
+  crafting_table:
+    abondance_helmet:
+      enabled: true
+      pattern:
+        - FFF
+        - FXF
+        - XXX
+      pattern_2:
+        - XXX
+        - FFF
+        - FXF
+      ingredients:
+        F: omc_daily_events:fermentum
+      result:
+        item: omc_daily_events:abondance_helmet
+        amount: 1
+    abondance_chestplate:
+      enabled: true
+      pattern:
+        - FXF
+        - FFF
+        - FFF
+      ingredients:
+        F: omc_daily_events:fermentum
+      result:
+        item: omc_daily_events:abondance_chestplate
+        amount: 1
+    abondance_leggings:
+      enabled: true
+      pattern:
+        - FFF
+        - FXF
+        - FXF
+      ingredients:
+        F: omc_daily_events:fermentum
+      result:
+        item: omc_daily_events:abondance_leggings
+        amount: 1
+    abondance_boots:
+      enabled: true
+      pattern:
+        - FXF
+        - FXF
+        - XXX
+      pattern_2:
+        - XXX
+        - FXF
+        - FXF
+      ingredients:
+        F: omc_daily_events:fermentum
+      result:
+        item: omc_daily_events:abondance_boots
+        amount: 1

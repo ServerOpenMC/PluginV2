@@ -1,0 +1,83 @@
+info:
+  namespace: omc_daily_events
+
+items:
+  # --- Golden Pumpkin ---
+  golden_pumpkin:
+    display_name: Citrouille dorée
+    lore:
+      - "§7§oUne citrouille avec une touche d'or"
+    graphics:
+      textures:
+        north: golden_crops/pumpkin/golden_pumpkin_side
+        south: golden_crops/pumpkin/golden_pumpkin_side
+        east: golden_crops/pumpkin/golden_pumpkin_side
+        west: golden_crops/pumpkin/golden_pumpkin_side
+        up: golden_crops/pumpkin/golden_pumpkin_top
+        down: golden_crops/pumpkin/golden_pumpkin_side
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        hardness: 4
+
+  # --- Golden Melon ---
+  golden_melon:
+    display_name: Melon doré
+    lore:
+      - "§7§oCe melon d'eau est béni par les moissons."
+    graphics:
+      textures:
+        north: golden_crops/melon/golden_melon_side
+        south: golden_crops/melon/golden_melon_side
+        east: golden_crops/melon/golden_melon_side
+        west: golden_crops/melon/golden_melon_side
+        up: golden_crops/melon/golden_melon_top
+        down: golden_crops/melon/golden_melon_side
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        hardness: 4
+
+  golden_beetroot:
+    display_name: "Bétrave dorée"
+    resource:
+      generate: true
+      textures:
+        - golden_crops/golden_beetroot
+      material: BEETROOT
+    lore:
+      - "§7§oUne betterave dorée, cultivée avec soin et amour."
+
+  golden_potato:
+    display_name: "Pomme de terre dorée"
+    resource:
+      generate: true
+      textures:
+        - golden_crops/golden_potato
+      material: POTATO
+    lore:
+      - "§7§oUne patate récoltée à la main et avec passion"
+
+  golden_wheat:
+    display_name: "Blé doré"
+    resource:
+      generate: true
+      textures:
+        - golden_crops/golden_wheat
+      material: WHEAT
+    lore:
+      - "§7§oDu blé façonné dans les mains d'un agriculteur d'or"
+
+  really_golden_carrot:
+    display_name: "Véritable carotte dorée"
+    resource:
+      generate: true
+      textures:
+        - golden_crops/really_golden_carrot
+      material: CARROT
+    lore:
+      - "§7§oDu blé façonné dans les mains d'un agriculteur d'or"

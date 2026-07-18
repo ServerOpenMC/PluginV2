@@ -35,3 +35,69 @@ items:
     attribute_modifiers:
       mainhand:
         luck: 1.1
+
+  fermentum:
+    display_name: "Fermentum"
+    resource:
+      generate: true
+      textures:
+        - other/fermentum
+      material: STICK
+    lore:
+      - "§7§oUne combinaison de toutes les cultures divines."
+      - "§7§outile pour les items divins"
+
+  blessed_bread:
+    display_name: "Pain sacré"
+    resource:
+      generate: true
+      textures:
+        - other/blessed_bread
+      material: STICK
+    enchants:
+      - minecraft:sharpness:10
+    lore:
+      - "§7§oLe pain sacré, un pain béni par les dieux eux-mêmes."
+      - "§7§grace à des éléments divin."
+
+recipes:
+  iaa_crafting_table:
+    fermentum:
+      shapeless: true
+      ingredients:
+        - item: omc_daily_events:golden_wheat
+          amount: 5
+        - item: omc_daily_events:golden_beetroot
+          amount: 5
+        - item: omc_daily_events:realy_golden_carrot
+          amount: 5
+        - item: omc_daily_events:golden_potato
+          amount: 5
+        - item: omc_daily_events:golden_melon
+          amount: 5
+        - item: omc_daily_events:golden_pumpkin
+          amount: 5
+      result:
+        item: omc_daily_events:fermentum
+
+    blessed_bread:
+      enabled: true
+      pattern:
+        - FFF
+        - XXX
+        - XXX
+      pattern_2:
+        - XXX
+        - FFF
+        - XXX
+      pattern_3:
+        - XXX
+        - XXX
+        - FFF
+      ingredients:
+        F:
+          item: omc_daily_events:golden_wheat
+          amount: 64
+      result:
+        item: omc_daily_events:blessed_bread
+        amount: 1
