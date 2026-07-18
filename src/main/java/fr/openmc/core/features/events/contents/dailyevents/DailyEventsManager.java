@@ -49,7 +49,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     public static final DailyEvent BLOODY_NIGHT = getDailyEvent("bloody_night");
 
     private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
-            9, 13, 16, 19, 21
+            9, 13, 16, 21
     ));
 
     public static final int SHOW_BEGINNING_DELAY = 60; // en secondes
