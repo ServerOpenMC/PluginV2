@@ -51,6 +51,7 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.listeners.ItemsAddersListener;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
@@ -203,6 +204,8 @@ public class OMCPlugin extends JavaPlugin {
      * Charge les registres et features qui doivent être lancé apres ItemsAdder
      */
     public void loadAfterItemsAdder() {
+        ItemsAddersListener.setLoaded(true);
+
         /* LOAD ITEMS ADDER CONTENTS */
         ItemsAdderHook.loadContents();
 
