@@ -47,10 +47,12 @@ items:
             from: omc_daily_events:obese_potato
             to: omc_daily_events:peeled_obese_potato
           replace_near_blocks:
-            radius: 2
+            radius: 5
             delay: 5
             from: omc_daily_events:obese_potato_stem
-            to: air
+            to: AIR
+          decrement_durability:
+            amount: 5
 
   obese_poisonous_potato:
     display_name: Patate empoisonnée obèse
@@ -378,7 +380,7 @@ recipes:
       enabled: true
       shapeless: true
       ingredients:
-        A: omc_daily_events:omc_daily_events:obese_onion
+        A: omc_daily_events:obese_onion
       result:
         item: omc_foods:onion
         amount: 9
@@ -387,9 +389,9 @@ recipes:
       enabled: true
       shapeless: true
       ingredients:
-        A: obese_golden_apple
+        A: omc_daily_events:obese_golden_apple
       result:
-        item: omc_foods:golden_apple
+        item: GOLDEN_APPLE
         amount: 9
 
   cooking:
