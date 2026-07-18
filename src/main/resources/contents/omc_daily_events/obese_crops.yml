@@ -269,7 +269,7 @@ items:
           break_particles: ITEM
 
   # --- Peeled Beetroot---
-  peeled_beetroot_potato:
+  peeled_obese_beetroot:
     display_name: Bétrave épluchée obèse
     graphics:
       textures:
@@ -286,7 +286,7 @@ items:
           break_particles: ITEM
 
   # --- Peeled Carrot---
-  peeled_carrot_potato:
+  peeled_obese_carrot:
     display_name: Carotte épluchée obèse
     graphics:
       textures:
@@ -303,7 +303,7 @@ items:
           break_particles: ITEM
 
   # --- Peeled Onion---
-  peeled_onion_potato:
+  peeled_obese_onion:
     display_name: Oignon épluché obèse
     graphics:
       textures:

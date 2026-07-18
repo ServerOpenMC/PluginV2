@@ -130,6 +130,41 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem KRAKEN_HEAD = register("omc_daily_events:kraken_head", Material.PLAYER_HEAD);
     public final CustomItem LEVIATHAN_HEAD = register("omc_daily_events:leviathan_head", Material.PLAYER_HEAD);
 
+    public final CustomItem OBESE_POTATO = register("omc_daily_events:obese_potato", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_POISONOUS_POTATO = register("omc_daily_events:obese_poisonous_potato", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_BAKED_POTATO = register("omc_daily_events:obese_baked_potato", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_CARROT = register("omc_daily_events:obese_carrot", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_BEETROOT = register("omc_daily_events:obese_beetroot", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_NETHER_WART = register("omc_daily_events:obese_nether_wart", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_ONION = register("omc_daily_events:obese_onion", Material.NOTE_BLOCK);
+    public final CustomItem OBESE_GOLDEN_APPLE = register("omc_daily_events:obese_golden_apple", Material.NOTE_BLOCK);
+
+    public final CustomItem OBESE_POTATO_STEM = register("omc_daily_events:obese_potato_stem", Material.SHORT_GRASS);
+    public final CustomItem OBESE_CARROT_STEM = register("omc_daily_events:obese_carrot_stem", Material.SHORT_GRASS);
+    public final CustomItem OBESE_BEETROOT_STEM = register("omc_daily_events:obese_beetroot_stem", Material.SHORT_GRASS);
+    public final CustomItem OBESE_NETHER_WART_STEM = register("omc_daily_events:obese_nether_wart_stem", Material.SHORT_GRASS);
+    public final CustomItem OBESE_GOLDEN_APPLE_STEM = register("omc_daily_events:obese_golden_apple_stem", Material.SHORT_GRASS);
+
+    public final CustomItem PEELED_OBESE_POTATO = register("omc_daily_events:peeled_obese_potato", Material.NOTE_BLOCK);
+    public final CustomItem PEELED_OBESE_BEETROOT = register("omc_daily_events:peeled_obese_beetroot", Material.NOTE_BLOCK);
+    public final CustomItem PEELED_OBESE_CARROT = register("omc_daily_events:peeled_obese_carrot", Material.NOTE_BLOCK);
+    public final CustomItem PEELED_OBESE_ONION = register("omc_daily_events:peeled_obese_onion", Material.NOTE_BLOCK);
+
+    public final CustomItem FERMENTUM = register("omc_daily_events:fermentum", Material.PAPER);
+    public final CustomItem BLESSED_BREAD = register("omc_daily_events:blessed_bread", Material.BREAD);
+
+    public final CustomItem GOLDEN_PUMPKIN = register("omc_daily_events:golden_pumpkin", Material.PUMPKIN);
+    public final CustomItem GOLDEN_MELON = register("omc_daily_events:golden_melon", Material.MELON);
+    public final CustomItem GOLDEN_BEETROOT = register("omc_daily_events:golden_beetroot", Material.BEETROOT);
+    public final CustomItem GOLDEN_POTATO = register("omc_daily_events:golden_potato", Material.POTATO);
+    public final CustomItem GOLDEN_WHEAT = register("omc_daily_events:golden_wheat", Material.WHEAT);
+    public final CustomItem REALLY_GOLDEN_CARROT = register("omc_daily_events:really_golden_carrot", Material.CARROT);
+
+    public final CustomItem ABDONDANCE_HELMET = register("omc_daily_events:abdondance_helmet", Material.IRON_HELMET);
+    public final CustomItem ABDONDANCE_CHESTPLATE = register("omc_daily_events:abdondance_chestplate", Material.IRON_CHESTPLATE);
+    public final CustomItem ABDONDANCE_LEGGINGS = register("omc_daily_events:abdondance_leggings", Material.IRON_LEGGINGS);
+    public final CustomItem ABDONDANCE_BOOTS = register("omc_daily_events:abdondance_boots", Material.IRON_BOOTS);
+
 
     @Override
     public void postInit() {
