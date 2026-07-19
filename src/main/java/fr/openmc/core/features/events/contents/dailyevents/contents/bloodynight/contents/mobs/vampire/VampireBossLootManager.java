@@ -108,7 +108,7 @@ public class VampireBossLootManager {
                 .appendNewline()
                 .append(TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.mail.click"))
                 .clickEvent(ClickEvent.runCommand("mailbox"))
-                .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.dailyevents.bloody_night.vampire_boss.mail.hover")))
+                .hoverEvent(getHoverEvent(TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.mail.hover")))
                 .append(TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.mail.open_mailbox"));
 
         broadcastToWorld(world, messageMail);
