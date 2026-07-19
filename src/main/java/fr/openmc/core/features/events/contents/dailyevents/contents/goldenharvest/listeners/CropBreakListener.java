@@ -21,7 +21,7 @@ public class CropBreakListener implements Listener {
     public void onCropBreak(BlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
-        if (GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE >= ThreadLocalRandom.current().nextDouble()) return;
+        if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
@@ -40,7 +40,7 @@ public class CropBreakListener implements Listener {
     public void onObeseCropBreak(CustomBlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
-        if (GoldenHarvestManager.GOLDEN_CROP_ON_OBESE_CHANCE >= ThreadLocalRandom.current().nextDouble()) return;
+        if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_OBESE_CHANCE) return;
         if (!ObeseCropsRegistry.isObeseCrop(event.getBlock().getLocation())) return;
 
         CustomBlock customBlock = CustomBlock.byItemStack(event.getCustomBlockItem());
