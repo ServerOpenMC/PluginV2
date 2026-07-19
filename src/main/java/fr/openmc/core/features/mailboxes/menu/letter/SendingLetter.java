@@ -141,6 +141,6 @@ public class SendingLetter extends Menu {
 
     @Override
     public List<Integer> getTakableSlot() {
-        return Stream.concat(MAILBOX_MENU_SLOTS.stream(), MenuUtils.getInventoryItemSlots().stream()).toList();
+        return Stream.concat(MAILBOX_MENU_SLOTS.stream(), MenuUtils.getInventoryItemSlots(this).stream()).toList();
     }
 }

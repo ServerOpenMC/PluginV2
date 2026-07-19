@@ -89,9 +89,9 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem HOMES_ICON_XERNAS = register("omc_homes:omc_homes_icon_xernas", Material.CHEST);
 
     /* Hammer */
-    public final CustomItem IRON_HAMMER = register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0));
-    public final CustomItem DIAMOND_HAMMER = register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1));
-    public final CustomItem NETHERITE_HAMMER = register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2));
+    public final CustomItem IRON_HAMMER = register(new Hammer("omc_items:iron_hammer", Material.IRON_PICKAXE, 1, 0, 1280));
+    public final CustomItem DIAMOND_HAMMER = register(new Hammer("omc_items:diamond_hammer", Material.DIAMOND_PICKAXE, 1, 1, 3200));
+    public final CustomItem NETHERITE_HAMMER = register(new Hammer("omc_items:netherite_hammer", Material.NETHERITE_PICKAXE, 1, 2, 12800));
 
     /* Daily Event */
     public final CustomItem TENDERS = register("omc_daily_events:tenders", Material.COOKED_CHICKEN);
