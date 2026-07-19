@@ -29,11 +29,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GoldenHarvestManager extends Feature implements HasListeners {
     public static HashMap<KeyBlock, Map<Double, CustomItem>> OBESE_CROPS_MAPPING = null;
-    public static final double OBESE_CROP_CHANCE = 0.06; // 6% d'avoir une crop obèse
+    public static final double OBESE_CROP_CHANCE = 0.1; // 10% d'avoir une crop obèse
 
     public static HashMap<KeyBlock, ItemLoot> GOLDEN_CROPS_MAPPING = null;
-    public static final double GOLDEN_CROP_ON_CROP_CHANCE = 0.04; // 6% d'avoir une golden crosps sur des crops
-    public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 6% d'avoir une golden crosps sur des crops
+    public static final double GOLDEN_CROP_ON_CROP_CHANCE = 0.04; // 4% d'avoir une golden crosps sur des crops
+    public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 50% d'avoir une golden crosps sur des crops
 
     @Override
     public void init() {

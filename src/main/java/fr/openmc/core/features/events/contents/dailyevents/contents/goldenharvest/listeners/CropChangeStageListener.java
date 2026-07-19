@@ -17,14 +17,11 @@ public class CropChangeStageListener implements Listener {
     public void onCropHasGrowed(BlockGrowEvent event) {
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        System.out.println("keyBlock 3 " + keyBlock);
         if (GoldenHarvestManager.getGoldenCropsMapping().get(keyBlock) == null) return;
 
         BlockData data = event.getNewState().getBlockData();
-        System.out.println("data instanceof Ageable ageable 3 " + (data instanceof Ageable ageable));
         if (!(data instanceof Ageable ageable)) return;
 
-        System.out.println("ageable.getAge() == ageable.getMaximumAge() " + (ageable.getAge() == ageable.getMaximumAge()));
         if (ageable.getAge() == ageable.getMaximumAge()) {
             System.out.println("Crop has reached maximum age");
             if (ThreadLocalRandom.current().nextDouble() >= GoldenHarvestManager.OBESE_CROP_CHANCE) return;
