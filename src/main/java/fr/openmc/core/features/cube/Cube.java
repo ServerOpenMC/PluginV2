@@ -34,10 +34,16 @@ public class Cube extends MultiBlock {
 
     public Cube(Location origin, int size, Material material, boolean showBossBar) {
         super(origin, size, material);
+        this.showBossBar = showBossBar;
 
         // ## BOSS BAR ##
-        if (showBossBar) {
-            cubeBossBar = BossBar.bossBar(TranslationManager.translation("feature.cube.bossbar.title"), 1f, BossBar.Color.BLUE, BossBar.Overlay.NOTCHED_6, Set.of(BossBar.Flag.CREATE_WORLD_FOG, BossBar.Flag.DARKEN_SCREEN));
+        if (this.showBossBar) {
+            cubeBossBar = BossBar.bossBar(
+                    TranslationManager.translation("feature.cube.bossbar.title"),
+                    1f,
+                    BossBar.Color.BLUE,
+                    BossBar.Overlay.NOTCHED_6,
+                    Set.of(BossBar.Flag.CREATE_WORLD_FOG, BossBar.Flag.DARKEN_SCREEN));
 
             startBossBarUpdater();
         }
@@ -290,9 +296,9 @@ public class Cube extends MultiBlock {
                         double distance = player.getLocation().distanceSquared(getCenter());
 
                         if (distance <= 50 * 50) {
-                            cubeBossBar.addViewer(player);
+                            player.showBossBar(cubeBossBar);
                         } else {
-                            cubeBossBar.removeViewer(player);
+                            player.hideBossBar(cubeBossBar);
                         }
                     }
                 }
