@@ -2,14 +2,15 @@ package fr.openmc.core.utils.nms;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.ambient.CustomAmbient;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
+import net.minecraft.network.protocol.game.CommonPlayerSpawnInfo;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.storage.LevelData;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
@@ -43,12 +44,12 @@ public class PlayerRespawnNMS {
      * @param nmsPlayer le joueur en NMS
      * @param spawnInfo Les informations de la dimension ou il est envoyé
      */
-    public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo spawnInfo) {
+    public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo spawnInfo, boolean isJoining) {
         // ** Envoie de l'entete du packet respawn
         sendSimplePacket(nmsPlayer, spawnInfo);
 
         // ** Procédure afin que le packet respawn soit valide
-        sendPostRespawnPackets(nmsPlayer);
+        sendPostRespawnPackets(nmsPlayer, isJoining);
         resyncEntities(nmsPlayer.getBukkitEntity().getPlayer());
     }
 
@@ -62,11 +63,15 @@ public class PlayerRespawnNMS {
      * Note : Assurer vous que le pivot ne pointe pas vers une dimension ou le joueur est déja
      * {@code nmsPlayer.createCommonSpawnInfo(nmsPlayer.level()).dimension().equals(Level.OVERWORLD) ? Level.END : Level.OVERWORLD;}
      */
-    public static void sendPacket(ServerPlayer nmsPlayer, CommonPlayerSpawnInfo targetSpawnInfo, ResourceKey<Level> pivotDimension) {
+    public static void sendPacket(
+            ServerPlayer nmsPlayer,
+            CommonPlayerSpawnInfo targetSpawnInfo,
+            ResourceKey<Level> pivotDimension,
+            boolean isJoining) {
         // changement de dimension car sinon l'ambience de la dimension n'est pas affiché
         // l'unique packet de repsawn pour simuler un changement de dimension + envoie du dimension type = plus rapide
         sendSimplePacket(nmsPlayer, createPlayerSpawnInfoWithDimension(nmsPlayer, pivotDimension));
-        sendPacket(nmsPlayer, targetSpawnInfo);
+        sendPacket(nmsPlayer, targetSpawnInfo, isJoining);
     }
 
     /**
@@ -94,7 +99,7 @@ public class PlayerRespawnNMS {
      * Procédure basée sur {@link ServerPlayer#teleport} afin de corriger que le packet RESPAWN invalide
      * @param nmsPlayer le joueur (NMS)
      */
-    private static void sendPostRespawnPackets(ServerPlayer nmsPlayer) {
+    private static void sendPostRespawnPackets(ServerPlayer nmsPlayer, boolean isJoining) {
         ServerLevel nmsWorld = nmsPlayer.level();
         LevelData levelData = nmsWorld.getLevelData();
 
@@ -113,22 +118,11 @@ public class PlayerRespawnNMS {
 
         PlayerPositionNMS.sendPos(nmsPlayer, nmsPlayer.position());
 
-        nmsPlayer.connection.send(new ClientboundSetChunkCacheCenterPacket(
-                nmsPlayer.chunkPosition().x(),
-                nmsPlayer.chunkPosition().z()
-        ));
-
-        int viewDistance = nmsWorld.getServer().getPlayerList().getViewDistance();
-        ChunkPos center = nmsPlayer.chunkPosition();
-        for (int cx = center.x() - viewDistance; cx <= center.x() + viewDistance; cx++) {
-            for (int cz = center.z() - viewDistance; cz <= center.z() + viewDistance; cz++) {
-                LevelChunk chunk = nmsWorld.getChunkIfLoaded(cx, cz);
-                if (chunk != null) {
-                    nmsPlayer.connection.send(
-                            new ClientboundLevelChunkWithLightPacket(chunk, nmsWorld.getLightEngine(), null, null, false)
-                    );
-                }
-            }
+        // Utilisation d'une méthode trouvé via l'utilisation de ClientboundSetChunkCacheCenterPacket.
+        // Refait tout simplement le systeme de chargement des chunks pour un joueur, sans avoir de défaillance
+        if (!isJoining) {
+            nmsWorld.moonrise$getPlayerChunkLoader().removePlayer(nmsPlayer);
+            nmsWorld.moonrise$getPlayerChunkLoader().addPlayer(nmsPlayer);
         }
     }
 

@@ -5,6 +5,7 @@ import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.EndEventTask;
 import fr.openmc.core.features.events.models.Event;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -103,5 +104,9 @@ public abstract class DailyEvent extends Event {
         if (this instanceof HasToast toast) {
             toast.getEndToastData().send(receivers);
         }
+    }
+
+    public World getWorld() {
+        return Bukkit.getWorld(this.getWorldEvent());
     }
 }

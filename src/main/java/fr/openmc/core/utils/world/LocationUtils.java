@@ -19,6 +19,12 @@ public class LocationUtils {
         return target.getWorld().getHighestBlockAt(target).getLocation().add(0, 1, 0);
     }
 
+    public static Location randomLocation(Location origin, double minDistance, double maxDistance) {
+        double distance = minDistance + Math.random() * (maxDistance - minDistance);
+
+        return randomLocation(origin, distance);
+    }
+
     public static Location getSafeNearbySurface(Location location, int radius) {
         World world = location.getWorld();
         int baseY = location.getBlockY();

@@ -29,6 +29,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static fr.openmc.core.registry.lootboxes.listener.DesactivateFireworkDamageListener.NO_DAMAGE_KEY;
 
 public class LootboxOpenMenu extends Menu {
 
@@ -234,6 +237,7 @@ public class LootboxOpenMenu extends Menu {
                         meta.setPower(2);
                         firework.setFireworkMeta(meta);
                         firework.detonate();
+                        firework.getPersistentDataContainer().set(NO_DAMAGE_KEY, PersistentDataType.BOOLEAN, true);
                     });
 
                     MessagesManager.broadcastMessage(TranslationManager.translation("feature.tickets.loot.broadcast",

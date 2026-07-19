@@ -16,7 +16,7 @@ public record CustomMobEntry(
     }
 
     public void apply(LivingEntity entity) {
-        getMob().apply(entity);
+        ((CustomMob<LivingEntity>) getMob()).apply(entity);
     }
 
     public Entity spawn(Location spawningLocation) {

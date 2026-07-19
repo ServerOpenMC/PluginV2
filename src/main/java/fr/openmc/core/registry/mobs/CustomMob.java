@@ -69,8 +69,8 @@ public abstract class CustomMob<T extends LivingEntity> {
     }
 
     // * peut etre Override
-    public void apply(LivingEntity livingEntity) {
-        applyStats(livingEntity);
+    public void apply(T entity) {
+        applyStats(entity);
     }
 
     // * peut etre Override
@@ -93,6 +93,8 @@ public abstract class CustomMob<T extends LivingEntity> {
     public T getPreBuildMob(Location spawnLocation) {
         T livingEntity = spawnLocation.getWorld().spawn(spawnLocation.add(0, 1, 0), entityClass, null, CreatureSpawnEvent.SpawnReason.CUSTOM);
         applyStats(livingEntity);
+
+        CustomMobRegistry.HAS_BOSSBAR.add(livingEntity.getUniqueId());
         return livingEntity;
     }
 
@@ -113,11 +115,7 @@ public abstract class CustomMob<T extends LivingEntity> {
                 .orElse(livingEntity.getHealth())
         );
 
-        livingEntity.getPersistentDataContainer().set(
-                CustomMobRegistry.CUSTOM_MOB_KEY,
-                PersistentDataType.STRING,
-                this.getId()
-        );
+        registerAsCustomMob(livingEntity);
     }
 
     public double getHealth() {
@@ -126,5 +124,17 @@ public abstract class CustomMob<T extends LivingEntity> {
                 .findFirst()
                 .map(CustomMobAttribute::value)
                 .orElse(20.0);
+    }
+
+    public void registerAsCustomMob(LivingEntity entity) {
+        entity.getPersistentDataContainer().set(
+                CustomMobRegistry.CUSTOM_MOB_KEY,
+                PersistentDataType.STRING,
+                this.getId()
+        );
+    }
+
+    public void unregisterAsCustomMob(LivingEntity entity) {
+        entity.getPersistentDataContainer().remove(CustomMobRegistry.CUSTOM_MOB_KEY);
     }
 }

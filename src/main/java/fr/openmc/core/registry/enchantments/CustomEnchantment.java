@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.enchantments;
 
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.RandomUtils;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
@@ -52,6 +53,11 @@ public abstract class CustomEnchantment {
                 return bookEnchanted;
             }
         };
+    }
+
+    public CustomItem getEnchantedBookItem(int minLevel, int maxLevel) {
+        int level = RandomUtils.randomBetween(minLevel, maxLevel);
+        return getEnchantedBookItem(level);
     }
 
     public Enchantment getEnchantment() {
