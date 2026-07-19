@@ -7,10 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.features.types.*;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
@@ -64,6 +61,13 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     @Override
     public void init() {
+        // * Register les sous features
+        for (DailyEvent event : EVENTS) {
+            if (!(event instanceof HasFeature hasFeature)) continue;
+
+            OMCPlugin.registerFeature(hasFeature.getFeature());
+        }
+
         incomingEvents = loadIncomingEvents();
         nextEventTask = scheduleNextEventTask();
     }

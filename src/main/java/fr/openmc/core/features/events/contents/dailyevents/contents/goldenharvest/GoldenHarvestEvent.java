@@ -1,6 +1,8 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
@@ -15,7 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast {
+public class GoldenHarvestEvent extends DailyEvent
+        implements HasToast, HasAmbient, HasBroadcast, HasFeature {
     @Override
     public String getEventId() {
         return "golden_harvest";
@@ -91,5 +94,10 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     @Override
     public Component getEndBroadcast() {
         return TranslationManager.translation("feature.dailyevents.goldenharvest.broadcast.end");
+    }
+
+    @Override
+    public Feature getFeature() {
+        return new GoldenHarvestManager();
     }
 }
