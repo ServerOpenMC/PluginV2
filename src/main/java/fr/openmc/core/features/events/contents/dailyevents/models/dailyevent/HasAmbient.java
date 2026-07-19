@@ -12,7 +12,11 @@ public interface HasAmbient {
     CustomAmbient getAmbient();
 
     default void apply(Player player) {
-        this.getAmbient().apply(player);
+        apply(player, false);
+    }
+
+    default void apply(Player player, boolean isJoining) {
+        this.getAmbient().apply(player, isJoining);
     }
 
     default void apply(Collection<Player> receivers) {

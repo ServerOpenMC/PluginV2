@@ -1,4 +1,4 @@
-package fr.openmc.core.registry.ambient.contents;
+package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient;
 
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
@@ -35,6 +35,9 @@ public class BloodyAmbient extends CustomAmbient {
                             obj.addProperty("visual/moon_angle", 67);
                             obj.addProperty("visual/star_brightness", 0.7);
 
+
+                            obj.addProperty("visual/cloud_fog_end_distance", 512.0032);
+
                             obj.addProperty("visual/cloud_height", 65);
                             obj.addProperty("visual/cloud_color", "#7e8c2b2b");
 
@@ -67,6 +70,7 @@ public class BloodyAmbient extends CustomAmbient {
 
                 .defaultClock("overworld")
                 .timelines("#minecraft:in_overworld")
+
                 .hasFixedTime(true, 21000)
                 .hasPrecipitation(false, WeatherType.NONE);
     }

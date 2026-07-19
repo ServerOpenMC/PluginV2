@@ -116,19 +116,20 @@ public class MailboxManager extends Feature implements DatabaseFeature, HasComma
     }
 
     public static void sendItemsToAOfflinePlayerBatch(Map<OfflinePlayer, ItemStack[]> playerItemsMap) {
+        for (Map.Entry<OfflinePlayer, ItemStack[]> entry : playerItemsMap.entrySet()) {
+            sendItemsToOfflinePlayer(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public static void sendItemsToOfflinePlayer(OfflinePlayer player, ItemStack[] items) {
         try {
-            for (Map.Entry<OfflinePlayer, ItemStack[]> entry : playerItemsMap.entrySet()) {
-                OfflinePlayer player = entry.getKey();
-                ItemStack[] items = entry.getValue();
+            int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
 
-                int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
+            byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
 
-                byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
-
-                Letter letter = new Letter(nextLetterId++, player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
-                        Timestamp.valueOf(DateUtils.getLocalDateTime()), false);
-                letters.add(letter);
-            }
+            Letter letter = new Letter(nextLetterId++, player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
+                    Timestamp.valueOf(DateUtils.getLocalDateTime()), false);
+            letters.add(letter);
         } catch (IOException e) {
             OMCLogger.warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }

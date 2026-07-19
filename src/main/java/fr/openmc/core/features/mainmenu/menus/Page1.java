@@ -25,6 +25,7 @@ import fr.openmc.core.features.homes.command.TpHomeCommand;
 import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
+import fr.openmc.core.features.profile.menu.ProfileMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.utils.text.DateUtils;
@@ -43,6 +44,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
@@ -180,22 +182,22 @@ public class Page1 implements Menu {
                     .color(NamedTextColor.RED)));
         });
         PROFILE_SLOTS.forEach(slot -> {
-            if (slot != 60)
+            if (slot != 78)
                 content.put(slot, profilItem);
         });
 
-        ItemStack playerHeadProfilItem = CustomStack.getInstance("omc_main_menu:player_head").getItemStack();
-        playerHeadProfilItem.editMeta(meta -> {
+        ItemStack playerHeadProfileItem = CustomStack.getInstance("omc_main_menu:player_head").getItemStack();
+        playerHeadProfileItem.editMeta(meta -> {
             meta.customName(TranslationManager.translation("feature.mainmenu.item.profile.name")
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.profile.lore")
                     .color(NamedTextColor.RED)));
-            if (meta instanceof org.bukkit.inventory.meta.SkullMeta skullMeta) {
+            if (meta instanceof SkullMeta skullMeta) {
                 skullMeta.setOwningPlayer(player);
             }
         });
-        content.put(60, playerHeadProfilItem);
+        content.put(78, playerHeadProfileItem);
 
         ItemStack rightArrowItem = new ItemStack(Material.PAPER);
         rightArrowItem.editMeta(meta -> {
@@ -277,14 +279,7 @@ public class Page1 implements Menu {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation(
-                            "feature.mainmenu.message.profile_dev",
-                            Component.text(FontImageWrapper.replaceFontImages(":sad:"))
-                    ).color(NamedTextColor.RED),
-                    Prefix.OPENMC,
-                    MessageType.INFO,
-                    true);
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new ProfileMenu(player).open());
         } else if (RIGHT_ARROW_SLOT == slot) {
             PacketMenuLib.openMenu(new Page2(), player);
         } else if (SETTINGS_SLOTS.contains(slot)) {

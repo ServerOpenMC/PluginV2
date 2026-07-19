@@ -128,6 +128,12 @@ public class ParticleUtils {
         sendParticlePacket(player, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, null);
     }
 
+    public static <T> void sendParticlePacket(Collection<Player> receivers, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
+        for (Player player : receivers) {
+            sendParticlePacket(player, particle, location, count, offsetX, offsetY, offsetZ, speed, data);
+        }
+    }
+
     public static <T> void sendParticlePacket(Player player, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 

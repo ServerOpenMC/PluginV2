@@ -53,6 +53,9 @@ public class TableLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public Set<CustomLoot> run(Player receiver) {
-        return Set.copyOf(lootTable.rollLoots(receiver, this.giveRewards));
+        if (this.giveRewards)
+            return Set.copyOf(lootTable.rollLoots(receiver));
+        else
+            return Set.copyOf(lootTable.rollLoots());
     }
 }

@@ -42,6 +42,7 @@ import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.privatemessage.SocialSpyManager;
+import fr.openmc.core.features.profile.ProfileManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -106,6 +107,7 @@ public class OMCPlugin extends JavaPlugin {
             MascotsManager::new,
             PlayerSettingsManager::new,
             MailboxManager::new,
+            ProfileManager::new,
             QuestsManager::new,
             CityManager::new,
             DynamicCooldownManager::new,

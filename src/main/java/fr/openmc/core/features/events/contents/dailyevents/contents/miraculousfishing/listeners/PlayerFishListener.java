@@ -16,10 +16,12 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import io.papermc.paper.event.entity.FishHookStateChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
@@ -44,43 +46,60 @@ public class PlayerFishListener implements Listener {
 
         FishingAttributeManager.applyFishingSpeedModifier(player, hook);
 
-        switch (event.getState()) {
-            case FISHING -> {
-                // * SFX
-                ParticleUtils.sendParticlePacket(player, Particle.POOF, hook.getLocation(), 5, 0.1, 0.1, 0.1, 0.01, null);
-                player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 1f, 0.7f);
+        if (event.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
+            Entity caughtEntity = event.getCaught();
+            if (caughtEntity instanceof Item caughtItem) {
+                caughtItem.remove();
             }
 
-            case CAUGHT_FISH -> {
-                Entity caughtEntity = event.getCaught();
-                if (caughtEntity instanceof Item caughtItem) {
-                    caughtItem.remove();
-                }
+            CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
 
-                CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
+            List<CustomLoot> loots = fishingLootTable.rollLoots();
 
-                List<CustomLoot> loots = fishingLootTable.rollLoots(player, false);
+            List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
 
-                List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
+            // * SFX
+            ParticleUtils.spawnDispersingParticles(player,
+                    Particle.CLOUD,
+                    hook.getLocation(),
+                    35, 0.1D, null);
 
-                // * SFX
-                ParticleUtils.spawnDispersingParticles(player,
-                        Particle.CLOUD,
-                        hook.getLocation(),
-                        35, 0.1D, null);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.dailyevents.miraculousfishing.loot_table.get",
+                    Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
+            ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
-                MessagesManager.sendMessage(player, TranslationManager.translation(
-                        "feature.dailyevents.miraculousfishing.loot_table.get",
-                        Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
-                ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
-
-                if (loots.size()*2 == finalLoots.size()) {
-                    player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
-                }
-
-                sendLoot(player, hook, finalLoots);
+            if (loots.size() * 2 == finalLoots.size()) {
+                player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
             }
+
+            sendLoot(player, hook, finalLoots);
         }
+    }
+
+    @EventHandler
+    public void onHookOnWater(FishHookStateChangeEvent event) {
+        if (!DailyEventsManager.isActiveDailyEvent()
+                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+
+        Entity hook = event.getEntity();
+        World world = hook.getWorld();
+
+        if (event.getNewHookState().equals(FishHook.HookState.BOBBING)) {
+            // * SFX
+            ParticleUtils.sendParticlePacket(
+                    hook.getLocation().getNearbyEntitiesByType(Player.class, 30),
+                    Particle.POOF, hook.getLocation(),
+                    5,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.01,
+                    null
+            );
+            world.playSound(hook.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 2f, 0.7f);
+        }
+
     }
 
     /**

@@ -30,4 +30,15 @@ public class DailyEventCommand {
                 DailyEventsManager.getDailyEvent(dailyEvent), DateUtils.getLocalDateTime());
         DailyEventsManager.outgoingEvent.getDailyEvent().start();
     }
+
+    @Subcommand("forceEnd")
+    @CommandPermission("omc.admins.commands.dailyevent.forceend")
+    public static void forceEndCommand(Player player) {
+        if (DailyEventsManager.outgoingEvent != null) {
+            // * On arrete l'evenement en cours
+            DailyEventsManager.endEventTask.cancel();
+            DailyEventsManager.endEventTask = null;
+            DailyEventsManager.outgoingEvent.getDailyEvent().end();
+        }
+    }
 }

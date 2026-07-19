@@ -15,6 +15,8 @@ items:
         - armor/ancient_fishing/ancient_helmet
       material: LEATHER_HELMET
     lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
       - "§7§oUn casque trouvé dans les abysses des mers"
     durability:
       unbreakable: true
@@ -31,6 +33,8 @@ items:
         - armor/ancient_fishing/ancient_chestplate
       material: LEATHER_CHESTPLATE
     lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
       - "§7§oUn plastron trouvé dans les abysses des mers"
     durability:
       unbreakable: true
@@ -46,6 +50,8 @@ items:
         - armor/ancient_fishing/ancient_leggings
       material: LEATHER_LEGGINGS
     lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
       - "§7§oUne jambière trouvé dans les abysses des mers"
     durability:
       unbreakable: true
@@ -62,6 +68,8 @@ items:
         - armor/ancient_fishing/ancient_boots
       material: LEATHER_BOOTS
     lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
       - "§7§oDes bottes trouvées dans les abysses des mers"
     durability:
       unbreakable: true
