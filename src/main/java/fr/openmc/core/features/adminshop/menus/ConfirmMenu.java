@@ -69,9 +69,13 @@ public class ConfirmMenu extends Menu {
         int quantityToStack = Math.max(0, quantity / 64);
 
         List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
-                Component.text(quantity), Component.text(quantityToStack), (quantityToStack > 1 ? Component.text("s") : Component.empty()),
-                Component.text(AdminShopManager.priceFormat.format(pricePerUnit)), Component.text(EconomyManager.getEconomyIcon()),
-                Component.text(AdminShopManager.priceFormat.format(totalPrice)), Component.text(EconomyManager.getEconomyIcon())
+                Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
+                Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
+                quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
+                Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
+                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
+                Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
+                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN)
         );
 
         content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));

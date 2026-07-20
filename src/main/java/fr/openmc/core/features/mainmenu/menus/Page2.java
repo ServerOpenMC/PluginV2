@@ -202,15 +202,6 @@ public class Page2 implements Menu {
                 ).color(NamedTextColor.GREEN);
                 player.sendActionBar(message);
             });
-        } else if (COMPANY_SLOTS.contains(slot) || SHOPS_SLOTS.contains(slot)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation(
-                            "feature.mainmenu.message.shops_disabled",
-                            Component.text(FontImageWrapper.replaceFontImages(":sad:"))
-                    ).color(NamedTextColor.RED),
-                    Prefix.OPENMC,
-                    MessageType.ERROR,
-                    true);
         } else if (LEADERBOARD_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
             MessagesManager.sendMessage(player,
