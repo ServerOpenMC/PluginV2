@@ -54,7 +54,7 @@ public class MilestoneMenu extends Menu {
     public @NotNull Component getName() {
         return TranslationManager.translation(
                 "feature.milestones.menu.title.milestone",
-                Component.text(milestone.getName())
+                milestone.getName()
         );
     }
 

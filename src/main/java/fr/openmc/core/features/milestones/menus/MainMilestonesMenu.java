@@ -56,13 +56,13 @@ public class MainMilestonesMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
         
-        Milestone tutoMilestone = MilestoneType.TUTORIAL.getMilestone();
+        Milestone<?> tutoMilestone = MilestoneType.TUTORIAL.getMilestone();
         
         inventory.put(10, new ItemMenuBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
-            itemMeta.displayName(Component.text(tutoMilestone.getName()).decoration(TextDecoration.ITALIC, false));
+            itemMeta.displayName(tutoMilestone.getName().decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(tutoMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
-        }).setOnClick(inventoryClickEvent -> tutoMilestone.getMenu(player).open()));
+        }).setOnClick(_ -> tutoMilestone.getMenu(player).open()));
         
 	    List<Component> loreMilestoneVille = new ArrayList<>();
         
@@ -97,10 +97,10 @@ public class MainMilestonesMenu extends Menu {
             }
         }));
         
-        Milestone dreamMilestone = MilestoneType.DREAM.getMilestone();
+        Milestone<?> dreamMilestone = MilestoneType.DREAM.getMilestone();
         
         inventory.put(14, new ItemMenuBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
-            itemMeta.displayName(Component.text(dreamMilestone.getName()).decoration(TextDecoration.ITALIC, false));
+            itemMeta.displayName(dreamMilestone.getName().decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(dreamMilestone.getDescription());
             itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
         }).setOnClick(inventoryClickEvent -> dreamMilestone.getMenu(player).open()));

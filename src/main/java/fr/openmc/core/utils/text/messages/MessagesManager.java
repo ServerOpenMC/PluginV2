@@ -166,7 +166,7 @@ public class MessagesManager {
         return result.toString();
     }
 
-    public static String keyToSmall(String key) {
-        return textToSmall(TranslationManager.translationString(key));
+    public static Component textToSmallComponent(String text) {
+        return Component.text(textToSmall(text));
     }
 }

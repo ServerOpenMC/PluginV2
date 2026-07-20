@@ -104,7 +104,7 @@ public class LetterMenu extends Menu {
                     TranslationManager.translation(
                             "feature.mailboxes.message.items_received",
                             Component.text(letterHead.getItemsCount()).color(NamedTextColor.GREEN),
-                            Component.text(pluralize("item", letterHead.getItemsCount())).color(NamedTextColor.DARK_GREEN)
+                            pluralize(TranslationManager.translation("global.item"), letterHead.getItemsCount()).color(NamedTextColor.DARK_GREEN)
                     ).color(NamedTextColor.DARK_GREEN),
                     Prefix.MAILBOX,
                     MessageType.SUCCESS,

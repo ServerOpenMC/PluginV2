@@ -82,23 +82,26 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
         for (UUID memberUUID : sortedMembers) {
             OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(memberUUID);
+            if (offline == null) continue;
+            String playerName = offline.getName() != null ? offline.getName() : "null";
+
             boolean isSelected = selected.contains(memberUUID);
             boolean isOwner = cityLaunch.hasPermission(memberUUID, CityPermission.OWNER);
             boolean isMayor = MayorManager.phaseMayor == 2
                     && cityLaunch.getMayor() != null
                     && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 
-            String prefix = isOwner
-                    ? TranslationManager.translationString("feature.city.war.menu.players.role.owner")
+            Component prefix = isOwner
+                    ? TranslationManager.translation("feature.city.war.menu.players.role.owner")
                     : isMayor
-                    ? TranslationManager.translationString("feature.city.war.menu.players.role.mayor")
-                    : TranslationManager.translationString("feature.city.war.menu.players.role.member");
+                    ? TranslationManager.translation("feature.city.war.menu.players.role.mayor")
+                    : TranslationManager.translation("feature.city.war.menu.players.role.member");
 
             ItemMenuBuilder item = new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), meta -> {
                 Component prefixComponent = isSelected
                         ? TranslationManager.translation("feature.city.war.menu.participants.selected_prefix")
                         : Component.empty();
-                meta.displayName(prefixComponent.append(Component.text(prefix + offline.getName()))
+                meta.displayName(prefixComponent.append(prefix.append(Component.text(playerName)))
                         .decoration(TextDecoration.ITALIC, false));
                 meta.lore(List.of(TranslationManager.translation(
                         isSelected ? "feature.city.war.menu.participants.click_remove" : "feature.city.war.menu.participants.click_select"

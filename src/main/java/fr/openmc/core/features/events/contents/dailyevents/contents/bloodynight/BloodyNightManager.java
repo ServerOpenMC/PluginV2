@@ -45,7 +45,7 @@ public class BloodyNightManager {
         Location vampireSpawnLocation = LocationUtils.getSafeNearbySurface(
                 LocationUtils.randomLocation(
                         world.getSpawnLocation(),
-                        world.getWorldBorder().getSize() / 2.0, 10000
+                        Math.min(10000, world.getWorldBorder().getSize() / 2.0)
                 ),
                 50);
 

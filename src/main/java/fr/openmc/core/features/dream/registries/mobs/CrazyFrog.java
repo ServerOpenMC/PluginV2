@@ -8,7 +8,6 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.bukkit.VelocityUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Frog;
@@ -36,7 +35,7 @@ public class CrazyFrog extends DreamMob<Frog> implements Listener {
 
     public CrazyFrog(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.crazy_frog"),
+                TranslationManager.translation("feature.dream.mob.crazy_frog"),
                 Frog.class,
                 18.0,
                 0L,

@@ -1,4 +1,4 @@
-package fr.openmc.core.listeners;
+package fr.openmc.core.registry.items.listeners;
 
 import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;

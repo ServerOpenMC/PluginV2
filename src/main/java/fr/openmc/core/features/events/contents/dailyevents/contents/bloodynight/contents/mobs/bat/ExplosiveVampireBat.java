@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat;
 
 import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ public class ExplosiveVampireBat extends AbstractVampireBat {
 
     public ExplosiveVampireBat(String id) {
         super(id,
-                "Chauve-souris explosive"
+                TranslationManager.translation("feature.dailyevents.bloody_night.mob.explosive_vampire_bat")
         );
     }
 

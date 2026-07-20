@@ -3,13 +3,14 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Zombie;
 
 public class VampireSlave extends CustomMob<Zombie> {
     public VampireSlave(String id) {
         super(id,
-                "Esclave du Vampire",
+                TranslationManager.translation("feature.dailyevents.bloody_night.mob.vampire_slave"),
                 Zombie.class,
                 16,
                 8,

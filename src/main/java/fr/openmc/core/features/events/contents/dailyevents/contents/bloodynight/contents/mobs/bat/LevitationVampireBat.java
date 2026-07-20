@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat;
 
 import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Bat;
@@ -12,7 +13,7 @@ public class LevitationVampireBat extends AbstractVampireBat {
 
     public LevitationVampireBat(String id) {
         super(id,
-                "Chauve-souris de lévitation"
+                TranslationManager.translation("feature.dailyevents.bloody_night.mob.levitation_vampire_bat")
         );
     }
 

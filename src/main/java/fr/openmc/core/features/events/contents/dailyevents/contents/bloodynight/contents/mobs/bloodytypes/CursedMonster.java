@@ -5,6 +5,7 @@ import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.bukkit.EntityUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.minecraft.world.scores.TeamColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -49,7 +50,7 @@ public class CursedMonster extends CustomMob<Monster> {
 
     public CursedMonster(String id) {
         super(id,
-                "Cursed",
+                TranslationManager.translation("feature.dailyevents.bloody_night.mob.cursed_monster"),
                 Monster.class,
                 1,
                 1,

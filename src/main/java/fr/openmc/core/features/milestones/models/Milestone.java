@@ -27,7 +27,7 @@ public interface Milestone<T extends Enum<T> & MilestoneStep> {
 	 *
 	 * @return The name of the milestone.
 	 */
-	String getName();
+	Component getName();
 	
 	/**
 	 * Returns the description of the milestone.

@@ -5,6 +5,7 @@ import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.bukkit.EntityUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.minecraft.world.scores.TeamColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -41,7 +42,7 @@ public class AncientMonster extends CustomMob<Monster> {
     public AncientMonster(String id) {
         super(
                 id,
-                "Ancient",
+                TranslationManager.translation("feature.dailyevents.bloody_night.mob.ancient_monster"),
                 Monster.class,
                 3,
                 1,

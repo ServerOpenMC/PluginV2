@@ -5,14 +5,6 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
-import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
-import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
-import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
-import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
-import fr.openmc.core.registry.lootboxes.listener.DesactivateFireworkDamageListener;
-import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
-import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
-import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -38,21 +30,9 @@ public class ListenersManager {
                 new SleepListener(),
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
-                new InteractListener(),
-                new DesactivateFireworkDamageListener(),
-                new BlockPlaceListener(),
-                new EquipableItemListener(),
                 new NoMoreRabbit(),
-                new CustomMobDeathListener(),
                 new ArmorListener(),
-                new BlockBreakListener(),
-                new CustomAmbientListener(),
-                new BiomesOnChunkLoad(),
-                new AmbientWeatherListener(),
-                new AmbientFixedTimeListener(),
-                new EntityGlowNMS(),
-                new CustomMobBossbarListener(),
-                new CustomMobLoadListener()
+                new EntityGlowNMS()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {

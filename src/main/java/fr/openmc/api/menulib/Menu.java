@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -148,7 +149,7 @@ public abstract class Menu implements InventoryHolder {
             }
 
             Menu current = MenuLib.getCurrentLastMenu(owner);
-            if (current != this) {
+            if (current == null || !current.getClass().equals(this.getClass())) {
                 MenuLib.pushMenu(owner, this);
             }
 
@@ -189,7 +190,7 @@ public abstract class Menu implements InventoryHolder {
                 itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
                 itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
                 itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ?
-                        MenuLib.getLastMenu(player).getName() : TranslationManager.translation("api.menulib.menu.back")));
+                        MenuLib.getLastMenu(player).getName().color(NamedTextColor.GREEN) : TranslationManager.translation("api.menulib.menu.back")));
             }, true));
             return;
         }

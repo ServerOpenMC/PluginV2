@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.text;
 
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 
@@ -102,8 +103,8 @@ public class ColorUtils {
     /**
      * Retourne une translation key qui contient la couleur entrée
      */
-    public static String getNameFromColor(NamedTextColor c) {
-        return TranslationManager.translationString(colorToNameKey.getOrDefault(c, "core.color.name.none"));
+    public static Component getNameFromColor(NamedTextColor c) {
+        return TranslationManager.translation(colorToNameKey.getOrDefault(c, "core.color.name.none"));
     }
 
     private static final Map<NamedTextColor, String> colorCode = new HashMap<>();

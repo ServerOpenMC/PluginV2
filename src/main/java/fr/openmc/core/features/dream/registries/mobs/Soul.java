@@ -29,7 +29,7 @@ public class Soul extends DreamMob<Vex> {
 
     public Soul(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.soul"),
+                TranslationManager.translation("feature.dream.mob.soul"),
                 Vex.class,
                 2,
                 3L,
@@ -73,7 +73,7 @@ public class Soul extends DreamMob<Vex> {
 
         stand.getEquipment().setHelmet(SkullUtils.getCustomHead(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc5YTkxMTg0NmJjY2YzNWM5ODM4ZjljMmQ5NjRmMjNjMzI1ODQ3ZTQ0ZDA3ZTU0NGFmZjdhMjA2YmY0NGI3MyJ9fX0=",
-                TranslationManager.translationString("feature.dream.mob.soul.skull")
+                TranslationManager.translation("feature.dream.mob.soul.skull")
         ));
 
         EntityUtils.setAttributeIfPresent(stand, Attribute.MAX_HEALTH, this.getHealth());

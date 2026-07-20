@@ -5,6 +5,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.ElderGuardian;
@@ -16,7 +17,7 @@ import java.util.List;
 public class GiantElderGuardian extends CustomMob<ElderGuardian> implements Listener {
     public GiantElderGuardian(String id) {
         super(id,
-                "Géant Elder Gardian",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.giant_elder_guardian"),
                 ElderGuardian.class,
                 100,
                 4,

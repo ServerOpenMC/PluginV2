@@ -40,13 +40,13 @@ public class SkullUtils {
      * @param name   nom affiché (optionnel)
      * @return ItemStack de tête (copie sûre)
      */
-    public static ItemStack getCustomHead(String base64, String name) {
+    public static ItemStack getCustomHead(String base64, Component name) {
         ItemStack cached = CACHE.get(base64);
         if (cached != null) {
             ItemStack clone = cached.clone();
-            if (name != null && !name.isEmpty()) {
+            if (name != null) {
                 SkullMeta meta = (SkullMeta) clone.getItemMeta();
-                if (meta != null) meta.displayName(Component.text(name));
+                if (meta != null) meta.displayName(name);
                 clone.setItemMeta(meta);
             }
             return clone;
@@ -61,7 +61,7 @@ public class SkullUtils {
 
         ItemMeta meta = head.getItemMeta();
         if (meta == null) return null;
-        if (name != null && !name.isEmpty()) meta.displayName(Component.text(name));
+        if (name != null) meta.displayName(name);
 
         CACHE.put(base64, head.clone());
         return head;

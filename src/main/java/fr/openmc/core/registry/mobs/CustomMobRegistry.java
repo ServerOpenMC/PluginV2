@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.mobs;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.ExplosiveVampireBat;
@@ -14,6 +15,9 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
+import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
 import fr.openmc.core.registry.mobs.task.MobBossbarUpdater;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -25,7 +29,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class CustomMobRegistry extends Registry<String, CustomMobEntry> implements KeyedRegistry<String, CustomMobEntry> {
+public class CustomMobRegistry extends Registry<String, CustomMobEntry>
+        implements KeyedRegistry<String, CustomMobEntry>, HasListeners {
 
     public static final NamespacedKey CUSTOM_MOB_KEY =
             new NamespacedKey("openmc", "custom_mob");
@@ -117,6 +122,15 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry> implemen
     ));
 
     public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new CustomMobDeathListener(),
+                new CustomMobBossbarListener(),
+                new CustomMobLoadListener()
+        );
+    }
 
     @Override
     public void postInit() {

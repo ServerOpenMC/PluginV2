@@ -5,6 +5,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import java.util.List;
 public class AngryWitch extends CustomMob<Witch> {
     public AngryWitch(String id) {
         super(id,
-                "Sorcière énervée",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.angry_witch"),
                 Witch.class,
                 100,
                 67,

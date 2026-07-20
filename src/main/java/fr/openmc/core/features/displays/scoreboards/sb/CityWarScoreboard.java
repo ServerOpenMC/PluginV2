@@ -16,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -26,8 +27,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.messages.MessagesManager.keyToSmall;
 import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmallComponent;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -49,26 +50,32 @@ public class CityWarScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>(MainScoreboard.getDefaultLines(player));
 
         lines.add(MiniMessage.miniMessage()
-                .deserialize("<gradient:#FF0000:#FF7F7F>%s</gradient>".formatted(keyToSmall("feature.displays.scoreboard.citywar.title")))
+                .deserialize(
+                        "<gradient:#FF0000:#FF7F7F><title></gradient>",
+                        Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.citywar.title.to_small"))
+                )
                 .decoration(TextDecoration.BOLD, true));
 
         lines.add(text("  • ", net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.citywar.enemy.label"), TextColor.color(0xAAAAAA)))
+                .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label.to_small").color(TextColor.color(0xAAAAAA)))
                 .appendSpace()
-                .append(text(textToSmall(enemyCity.getName()), TextColor.color(0xFF0634)))
+                .append(textToSmallComponent(enemyCity.getName()).color(TextColor.color(0xFF0634)))
         );
 
         Component phaseComponent;
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
                     .deserialize("<gradient:#FF7518:#FFD580>%s</gradient>".formatted(textToSmall(WarManager.getFormattedPhase(war.getPhase()))));
-            case COMBAT -> phaseComponent = text(textToSmall(WarManager.getFormattedPhase(war.getPhase())), TextColor.color(0xFC1C1C));
-            case ENDED -> phaseComponent = text(textToSmall(WarManager.getFormattedPhase(war.getPhase())), NamedTextColor.GRAY);
-            default -> phaseComponent = text(textToSmall(WarManager.getFormattedPhase(war.getPhase())), NamedTextColor.WHITE);
+            case COMBAT -> phaseComponent = textToSmallComponent(WarManager.getFormattedPhase(war.getPhase()))
+                    .color(TextColor.color(0xFC1C1C));
+            case ENDED -> phaseComponent = textToSmallComponent(WarManager.getFormattedPhase(war.getPhase()))
+                    .color(NamedTextColor.GRAY);
+            default -> phaseComponent = textToSmallComponent((WarManager.getFormattedPhase(war.getPhase())))
+                    .color(NamedTextColor.WHITE);
         }
 
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.citywar.phase.label"), NamedTextColor.GRAY))
+                .append(TranslationManager.translation("feature.displays.scoreboard.citywar.phase.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(phaseComponent)
         );
@@ -88,7 +95,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         int rounded = (int) Math.round(distance);
 
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(text(keyToSmall("feature.displays.scoreboard.citywar.distance.label"), NamedTextColor.GRAY))
+                .append(TranslationManager.translation("feature.displays.scoreboard.citywar.distance.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(text(direction, TextColor.color(0xFFE206)))
                 .appendSpace()
@@ -98,7 +105,7 @@ public class CityWarScoreboard extends BaseScoreboard {
 
         switch (war.getPhase()) {
             case PREPARATION -> lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(text(keyToSmall("feature.displays.scoreboard.citywar.starts_in.label"), NamedTextColor.GRAY))
+                    .append(TranslationManager.translation("feature.displays.scoreboard.citywar.starts_in.label.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(text(DateUtils.convertSecondToTime(war.getPreparationTimeRemaining()), TextColor.color(0xF52727)))
             );
@@ -106,29 +113,29 @@ public class CityWarScoreboard extends BaseScoreboard {
             case COMBAT -> {
                 if (mascot != null)
                     lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                            .append(text(keyToSmall("feature.displays.scoreboard.citywar.mascot.label"), NamedTextColor.GRAY))
+                            .append(TranslationManager.translation("feature.displays.scoreboard.citywar.mascot.label.to_small").color(NamedTextColor.GRAY))
                             .appendSpace()
                             .append(getColoredHealth(mascot))
                     );
 
                 if (enemyMascot != null)
                     lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                            .append(text(keyToSmall("feature.displays.scoreboard.citywar.enemy.label"), NamedTextColor.GRAY))
+                            .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label.to_small").color(NamedTextColor.GRAY))
                             .appendSpace()
                             .append(getColoredHealth(enemyMascot))
                     );
 
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                        .append(text(keyToSmall("feature.displays.scoreboard.citywar.ends_in.label"), NamedTextColor.GRAY))
+                        .append(TranslationManager.translation("feature.displays.scoreboard.citywar.ends_in.label.to_small").color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(DateUtils.convertSecondToTime(war.getCombatTimeRemaining()), TextColor.color(0xF52727)))
                 );
             }
 
             case ENDED -> lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(text(keyToSmall("feature.displays.scoreboard.citywar.state.label"), NamedTextColor.GRAY))
+                    .append(TranslationManager.translation("feature.displays.scoreboard.citywar.state.label.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(text(keyToSmall("feature.displays.scoreboard.citywar.state.ended"), NamedTextColor.GRAY))
+                    .append(TranslationManager.translation("feature.displays.scoreboard.citywar.state.ended.to_small").color(NamedTextColor.GRAY))
             );
         }
 
@@ -157,10 +164,10 @@ public class CityWarScoreboard extends BaseScoreboard {
 
     private Component getColoredHealth(LivingEntity entity) {
         if (entity.isDead())
-            return text(textToSmall(TranslationManager.translationString(
-                    "feature.displays.scoreboard.citywar.mascot.dead",
+            return TranslationManager.translation(
+                    "feature.displays.scoreboard.citywar.mascot.dead.to_small",
                     Component.text(FontImageWrapper.replaceFontImages(":dead1:"))
-            )), TextColor.color(0xFF3246));
+            ).color(TextColor.color(0xFF3246));
 
         double health = entity.getHealth();
         double maxHealth = entity.getAttribute(Attribute.MAX_HEALTH).getValue();
