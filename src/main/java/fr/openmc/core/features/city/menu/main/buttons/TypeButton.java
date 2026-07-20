@@ -14,14 +14,12 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -61,7 +59,7 @@ public class TypeButton {
         List<Component> lore = new ArrayList<>();
         lore.add(TranslationManager.translation(
                 "feature.city.menus.main.type.lore.status",
-                Component.text(PlainTextComponentSerializer.plainText().serialize(city.getType().getDisplayName()).toLowerCase(Locale.ROOT))
+                city.getType().getDisplayName()
         ));
 
         if (showWarCommand) {
