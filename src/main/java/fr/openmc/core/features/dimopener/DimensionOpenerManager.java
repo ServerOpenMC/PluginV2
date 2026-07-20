@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands, LoadAfterItemsAdder {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final String DIMENSIONS_FOLDER = "data/dimensions";
 
     private static final Map<String, DimensionData> dimensions = new ConcurrentHashMap<>();
     private static final Map<String, DimensionProgress> progressMap = new ConcurrentHashMap<>();
@@ -57,13 +58,25 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     @Override
     protected void init() {
         dimensionsFolder = new File(OMCPlugin.getInstance().getDataFolder(), "data/dimensions");
-        if (!dimensionsFolder.exists()) dimensionsFolder.mkdir();
+        FilesUtils.createDirectoryIfNotExists(dimensionsFolder);
+        saveDefaultDimensions();
 
         progressFile = new File(OMCPlugin.getInstance().getDataFolder(), "data/dimensions_progress.json");
 
         loadDimensions();
         loadProgress();
         startTicking();
+    }
+
+    private static void saveDefaultDimensions() {
+        for (String fileName : FilesUtils.listFileNamesInResource(DIMENSIONS_FOLDER)) {
+            if (!fileName.endsWith(".json")) continue;
+
+            File target = new File(dimensionsFolder, fileName);
+            if (target.exists()) continue;
+
+            OMCPlugin.getInstance().saveResource(DIMENSIONS_FOLDER + "/" + fileName, false);
+        }
     }
 
     @Override
@@ -92,7 +105,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
             }
         }
 
-        OMCLogger.info("{} dimension(s) chargée", dimensions.size());
+        OMCLogger.infoFormatted("{} ouvertures de dimension(s) chargée", dimensions.size());
     }
 
     public static Collection<DimensionData> getDimensions() {

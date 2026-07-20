@@ -1,0 +1,50 @@
+{
+  "enabled": true,
+  "name": "End",
+  "description": "Touvrez la route de l'End.",
+  "dimensionName": "world_the_end",
+  "requireDimension": "world_nether",
+  "icon": "END_PORTAL_FRAME",
+  "steps": [
+    {
+      "name": "Cartographie du vide",
+      "description": "Rassemblez les yeux capables de trouver la forteresse.",
+      "type": "ITEMS",
+      "required": 96,
+      "material": "ENDER_EYE",
+      "cooldownSeconds": 86400
+    },
+    {
+      "name": "Perles du seuil",
+      "description": "Accumulez les perles necessaires a la recherche du portail.",
+      "type": "ITEMS",
+      "required": 192,
+      "material": "ENDER_PEARL",
+      "cooldownSeconds": 43200
+    },
+    {
+      "name": "Souffle de blaze",
+      "description": "Broyez la puissance du Nether pour activer les yeux.",
+      "type": "ITEMS",
+      "required": 96,
+      "material": "BLAZE_ROD",
+      "cooldownSeconds": 43200
+    },
+    {
+      "name": "Portail chargé",
+      "description": "Chargez le portail avec les cristaux de l'End.",
+      "type": "ITEMS",
+      "required": 16,
+      "material": "END_CRYSTAL",
+      "cooldownSeconds": 86400
+    },
+    {
+      "name": "Collecte astrale",
+      "description": "Financez les préparations pour l'ouverture du portail.",
+      "type": "MONEY",
+      "required": 40000,
+      "material": "GOLD_INGOT",
+      "cooldownSeconds": 86400
+    }
+  ]
+}
