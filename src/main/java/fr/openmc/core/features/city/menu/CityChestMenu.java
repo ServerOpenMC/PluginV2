@@ -94,7 +94,7 @@ public class CityChestMenu extends PaginatedMenu {
     public List<Integer> getTakableSlot() {
         return Stream.concat(
                 CITY_MENU_ITEM_SLOTS.stream(),
-                MenuUtils.getInventoryItemSlots().stream()
+                MenuUtils.getInventoryItemSlots(this.getInventorySize().getSize()).stream()
         ).toList();
     }
 
