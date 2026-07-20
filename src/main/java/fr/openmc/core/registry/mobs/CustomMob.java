@@ -18,12 +18,12 @@ import java.util.*;
 @Getter
 public abstract class CustomMob<T extends LivingEntity> {
     private final String id;
-    private final String name;
+    private final Component name;
     private final Class<T> entityClass;
     private final Set<CustomMobAttribute> baseAttributes = new HashSet<>();
     private final List<CustomLoot> loots = new ArrayList<>();
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -32,7 +32,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, double speed, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, double speed, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -42,7 +42,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, double speed, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, double speed, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -53,7 +53,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.loots.addAll(loots);
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -101,7 +101,7 @@ public abstract class CustomMob<T extends LivingEntity> {
     public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {}
 
     public void applyStats(LivingEntity livingEntity) {
-        livingEntity.customName(Component.text(this.getName()));
+        livingEntity.customName(this.getName());
         livingEntity.setCustomNameVisible(true);
 
         for (CustomMobAttribute attribute : baseAttributes) {

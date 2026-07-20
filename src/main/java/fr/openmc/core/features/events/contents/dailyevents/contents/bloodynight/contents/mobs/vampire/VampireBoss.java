@@ -43,7 +43,7 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
 
     public VampireBoss(String id) {
         super(id,
-                "Vampire",
+                TranslationManager.translation("feature.dailyevents.bloody_night.vampire_boss.name"),
                 Mannequin.class,
                 1000,
                 20,

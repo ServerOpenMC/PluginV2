@@ -2,6 +2,7 @@ package fr.openmc.core.registry.ambient;
 
 import fr.openmc.api.datapacks.OMCDatapack;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
@@ -10,16 +11,23 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient.BlessedAmbient;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
+import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
+import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
+import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
+import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 
 import java.io.IOException;
+import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
-public class CustomAmbientRegistry extends Registry<String, CustomAmbient> implements KeyedRegistry<String, CustomAmbient> {
+public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
+        implements KeyedRegistry<String, CustomAmbient>, HasListeners {
     public static final String NAMESPACE = "omc_ambient";
     private final OMCDatapack ambientDatapack = new OMCDatapack("openmc", NAMESPACE);
 
@@ -29,6 +37,16 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient> imple
     public final CustomAmbient GOLDEN = register(new GoldenAmbient());
     public final CustomAmbient BLOODY = register(new BloodyAmbient());
     public final CustomAmbient BLESSED = register(new BlessedAmbient());
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new CustomAmbientListener(),
+                new BiomesOnChunkLoad(),
+                new AmbientWeatherListener(),
+                new AmbientFixedTimeListener()
+        );
+    }
 
     @Override
     public String key(CustomAmbient registryObject) {

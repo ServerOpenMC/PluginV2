@@ -4,6 +4,7 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 
@@ -13,13 +14,13 @@ import java.util.List;
 public abstract class DreamMob<T extends LivingEntity> extends CustomMob<T> {
     private final Long damageTime;
 
-    public DreamMob(String id, String name, Class<T> entityClass, double health, Long damageTime, double speed, double scale) {
+    public DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale) {
         super(id, name, entityClass, health, 0f, speed,
                 new CustomMobAttribute(Attribute.SCALE, scale));
         this.damageTime = damageTime;
     }
 
-    public DreamMob(String id, String name, Class<T> entityClass, double health, Long damageTime, double speed, double scale, List<CustomLoot> loots) {
+    public DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale, List<CustomLoot> loots) {
         super(id, name, entityClass, health, 0f, speed, loots,
                 new CustomMobAttribute(Attribute.SCALE, scale));
         this.damageTime = damageTime;

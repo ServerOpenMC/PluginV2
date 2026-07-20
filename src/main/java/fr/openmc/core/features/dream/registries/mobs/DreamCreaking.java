@@ -9,7 +9,7 @@ public class DreamCreaking extends DreamMob<Creaking> {
 
     public DreamCreaking(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.dream_creaking"),
+                TranslationManager.translation("feature.dream.mob.dream_creaking"),
                 Creaking.class,
                 1,
                 2L,

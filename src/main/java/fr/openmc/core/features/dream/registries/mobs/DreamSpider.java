@@ -14,7 +14,7 @@ public class DreamSpider extends DreamMob<Spider> {
 
     public DreamSpider(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.dream_spider"),
+                TranslationManager.translation("feature.dream.mob.dream_spider"),
                 Spider.class,
                 8.0,
                 1L,

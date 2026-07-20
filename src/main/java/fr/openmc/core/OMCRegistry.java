@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
@@ -73,6 +74,10 @@ public final class OMCRegistry {
                     .noneMatch(t -> t == RegistryLoadingType.RUNTIME)) continue;
 
             LifecycleRegistry r = load(ctx);
+
+            if (r instanceof HasListeners hasListeners)
+                OMCPlugin.registerEvents(hasListeners.getListeners());
+
             r.init();
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
@@ -84,6 +89,10 @@ public final class OMCRegistry {
                     .noneMatch(t -> t == RegistryLoadingType.AFTER_IA)) continue;
 
             LifecycleRegistry r = load(ctx);
+
+            if (r instanceof HasListeners hasListeners)
+                OMCPlugin.registerEvents(hasListeners.getListeners());
+
             r.postInit();
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
         }

@@ -13,7 +13,7 @@ public class CorruptedTadpole extends DreamMob<Tadpole> {
 
     public CorruptedTadpole(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.corrupted_tadpole"),
+                TranslationManager.translation("feature.dream.mob.corrupted_tadpole"),
                 Tadpole.class,
                 25.0,
                 0L,

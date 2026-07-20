@@ -24,7 +24,7 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
     private static final NamespacedKey BREEZY_WIND_CHARGE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "breezy_wind_charge");
     public Breezy(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.breezy"),
+                TranslationManager.translation("feature.dream.mob.breezy"),
                 Breeze.class,
                 100.0,
                 5L,

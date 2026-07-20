@@ -4,6 +4,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SeaGuard extends CustomMob<Drowned> {
     public SeaGuard(String id) {
         super(id,
-                "Gardien des mers",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.sea_guard"),
                 Drowned.class,
                 30,
                 7,

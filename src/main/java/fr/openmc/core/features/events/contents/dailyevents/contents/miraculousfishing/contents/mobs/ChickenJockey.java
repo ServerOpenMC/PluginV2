@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ChickenJockey extends CustomMob<Chicken> {
     public ChickenJockey(String id) {
         super(id,
-                "Chicken Jockey",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.chicken_jockey"),
                 Chicken.class,
                 20,
                 67,

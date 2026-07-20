@@ -13,7 +13,7 @@ import org.bukkit.entity.Phantom;
 public class DreamPhantom extends DreamMob<Phantom> {
     public DreamPhantom(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.dream_phantom"),
+                TranslationManager.translation("feature.dream.mob.dream_phantom"),
                 Phantom.class,
                 10.0,
                 3L,
