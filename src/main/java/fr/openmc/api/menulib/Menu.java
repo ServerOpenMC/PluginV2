@@ -149,7 +149,7 @@ public abstract class Menu implements InventoryHolder {
             }
 
             Menu current = MenuLib.getCurrentLastMenu(owner);
-            if (current != this) {
+            if (current == null || !current.getClass().equals(this.getClass())) {
                 MenuLib.pushMenu(owner, this);
             }
 
