@@ -27,14 +27,18 @@ public class BehaviourUpBlock implements Listener {
         }
     }
 
-    @EventHandler
-    public void onBelowBlockPosed(CustomBlockPlaceEvent event) {
-        if (!UP_BLOCKS.containsKey(event.getNamespacedID())) return;
+    public static void onPlace(CustomBlock customBlock) {
+        if (!UP_BLOCKS.containsKey(customBlock.getNamespacedID())) return;
 
-        Block upBlock = event.getBlock().getRelative(BlockFace.UP);
+        Block upBlock = customBlock.getBlock().getRelative(BlockFace.UP);
 
         if (upBlock.getType().isAir())
-            CustomBlock.place(UP_BLOCKS.get(event.getNamespacedID()), upBlock.getLocation());
+            CustomBlock.place(UP_BLOCKS.get(customBlock.getNamespacedID()), upBlock.getLocation());
+    }
+
+    @EventHandler
+    public void onBelowBlockPosed(CustomBlockPlaceEvent event) {
+        onPlace(CustomBlock.byAlreadyPlaced(event.getBlock()));
     }
 
     @EventHandler

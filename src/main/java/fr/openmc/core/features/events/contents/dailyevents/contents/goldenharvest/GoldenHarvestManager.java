@@ -4,10 +4,11 @@ import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.CropBreakListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.CropChangeStageListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.ObeseCropListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.FixGoldenBlockListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.GoldenCropsListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.ObeseCropsListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
+import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -18,9 +19,9 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-// todo: tester mécanique obese crops et golden crop
 // todo: enchantment plantation
 // todo: ajouter un sfx pour le golden crop
 // todo: impl abondance armor
@@ -29,11 +30,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GoldenHarvestManager extends Feature implements HasListeners {
     public static HashMap<KeyBlock, Map<Double, CustomItem>> OBESE_CROPS_MAPPING = null;
-    public static final double OBESE_CROP_CHANCE = 0.1; // 10% d'avoir une crop obèse
+    public static final double OBESE_CROP_CHANCE = 0.05; // 10% d'avoir une crop obèse
 
     public static HashMap<KeyBlock, ItemLoot> GOLDEN_CROPS_ON_BREAK_MAPPING = null;
     public static HashMap<KeyBlock, KeyBlock> GOLDEN_CROPS_ON_GROW_MAPPING = null;
-    public static final double GOLDEN_CROP_ON_CROP_CHANCE = 1; // 4% d'avoir une golden crosps sur des crops
+    public static final double GOLDEN_CROP_ON_CROP_CHANCE = 0.04; // 4% d'avoir une golden crosps sur des crops
     public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 50% d'avoir une golden crosps sur des crops
 
     @Override
@@ -49,9 +50,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
     @Override
     public Set<Listener> getListeners() {
         return Set.of(
-                new CropBreakListener(),
-                new CropChangeStageListener(),
-                new ObeseCropListener()
+                new GoldenCropsListener(),
+                new ObeseCropsListener(),
+                new FixGoldenBlockListener()
         );
     }
 
@@ -64,9 +65,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
         if (OBESE_CROPS_MAPPING == null) {
             OBESE_CROPS_MAPPING = new HashMap<>(
                     Map.of(
-                            KeyBlock.vanilla(BlockType.POTATOES), Map.of(
+                            KeyBlock.vanilla(BlockType.POTATOES), new TreeMap<>(Map.of(
                                     0.05, OMCRegistry.CUSTOM_ITEMS.OBESE_POISONOUS_POTATO,
-                                    0.95, OMCRegistry.CUSTOM_ITEMS.OBESE_POTATO),
+                                    1d, OMCRegistry.CUSTOM_ITEMS.OBESE_POTATO)),
                             KeyBlock.vanilla(BlockType.CARROTS), Map.of(1d, OMCRegistry.CUSTOM_ITEMS.OBESE_CARROT),
                             KeyBlock.vanilla(BlockType.BEETROOTS), Map.of(1d, OMCRegistry.CUSTOM_ITEMS.OBESE_BEETROOT),
                             KeyBlock.vanilla(BlockType.NETHER_WART), Map.of(1d, OMCRegistry.CUSTOM_ITEMS.OBESE_NETHER_WART)
@@ -139,14 +140,14 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
 
         double chance = ThreadLocalRandom.current().nextDouble();
 
-        obeseCrops.forEach((chanceValue, item) -> {
-            if (chance <= chanceValue) {
-                CustomBlock customBlock = item.getCustomBlock();
+        for (Map.Entry<Double, CustomItem> entry : obeseCrops.entrySet()) {
+            if (chance <= entry.getKey()) {
+                CustomBlock customBlock = entry.getValue().getCustomBlock();
                 if (customBlock == null) return;
                 customBlock.place(block.getLocation());
-
-                ObeseCropsRegistry.mark(block.getLocation());
+                BehaviourUpBlock.onPlace(customBlock);
+                return;
             }
-        });
+        }
     }
 }

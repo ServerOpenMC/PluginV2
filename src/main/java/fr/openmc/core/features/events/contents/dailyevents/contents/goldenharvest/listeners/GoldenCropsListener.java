@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
@@ -9,14 +10,20 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockGrowEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class CropBreakListener implements Listener {
+/**
+ * Listener qui prends en charge les loots donnée par les crops et par les obese crops
+ */
+public class GoldenCropsListener implements Listener {
+
     @EventHandler
     public void onCropBreak(BlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
@@ -25,11 +32,9 @@ public class CropBreakListener implements Listener {
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-
         ItemLoot loot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (loot == null) return;
 
-        System.out.println("give rewards");
         loot.run(event.getPlayer(), event.getBlock().getLocation());
         // todo sfx si loots pas empty + message chance
     }
@@ -47,8 +52,26 @@ public class CropBreakListener implements Listener {
         ItemLoot loot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (loot == null) return;
 
-        System.out.println("2 give rewards");
         loot.run(event.getPlayer(), event.getBlock().getLocation());
         // todo sfx si loots pas empty
+    }
+
+    @EventHandler
+    public void onCropFullyGrowed(BlockGrowEvent event) {
+        if (!DailyEventsManager.isActiveDailyEvent()
+                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        BlockType blockType = event.getNewState().getType().asBlockType();
+        KeyBlock keyBlock = KeyBlock.vanilla(blockType);
+        KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
+        if (keyBlockGolden == null) return;
+
+        if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;
+
+        CustomBlock customBlock =  keyBlockGolden.getCustomBlock();
+        if (customBlock == null) return;
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                customBlock.place(event.getBlock().getLocation()), 1L);
+        // todo sfx
     }
 }
