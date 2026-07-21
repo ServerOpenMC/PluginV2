@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * The {@code MenuLib} class implements the {@link Listener} interface to handle inventory-related events.
  */
 public final class MenuLib implements Listener {
-    private static final Map<Player, Deque<Menu>> menuHistory = new HashMap<>();
+    private static final Map<UUID, Deque<Menu>> menuHistory = new HashMap<>();
 
     private static final Set<Class<? extends Menu>> ignoredMenus = new HashSet<>();
     static {
@@ -89,15 +89,15 @@ public final class MenuLib implements Listener {
     }
 
     public static void clearHistory(Player player) {
-        menuHistory.remove(player);
+        menuHistory.remove(player.getUniqueId());
     }
 
     public static void pushMenu(Player player, Menu menu) {
-        menuHistory.computeIfAbsent(player, k -> new ArrayDeque<>()).push(menu);
+        menuHistory.computeIfAbsent(player.getUniqueId(), k -> new ArrayDeque<>()).push(menu);
     }
 
     public static Menu getCurrentLastMenu(Player player) {
-        Deque<Menu> history = menuHistory.get(player);
+        Deque<Menu> history = menuHistory.get(player.getUniqueId());
 
         if (history == null || history.isEmpty()) {
             return null;
@@ -107,22 +107,18 @@ public final class MenuLib implements Listener {
     }
 
     public static Menu getLastMenu(Player player) {
-        Deque<Menu> history = menuHistory.get(player);
+        Deque<Menu> history = menuHistory.get(player.getUniqueId());
 
-        if (history == null || history.size() < 2) {
-            return null;
-        }
+        if (history == null || history.size() < 2) return null;
 
         Iterator<Menu> iterator = history.iterator();
-
         Menu current = iterator.next();
 
         while (iterator.hasNext()) {
             Menu previous = iterator.next();
 
             if (!ignoredMenus.contains(previous.getClass())
-                    && !previous.getClass().equals(current.getClass())
-            ) {
+                    && !previous.getClass().equals(current.getClass())) {
                 return previous;
             }
         }
@@ -131,26 +127,30 @@ public final class MenuLib implements Listener {
     }
 
     public static Menu popAndGetPreviousMenu(Player player) {
-        Deque<Menu> history = menuHistory.get(player);
+        UUID uuid = player.getUniqueId();
+        Deque<Menu> history = menuHistory.get(uuid);
+
         if (history == null || history.size() < 2) return null;
 
         Menu current = history.pop();
 
         while (!history.isEmpty()) {
-            Menu previous = history.pop();
+            Menu previous = history.peek();
 
-            if (!ignoredMenus.contains(previous.getClass()) && previous != current) {
-                return previous;
+            if (ignoredMenus.contains(previous.getClass()) || previous.getClass().equals(current.getClass())) {
+                history.pop();
+                continue;
             }
 
-            current = history.pop();
+            return previous;
         }
 
+        menuHistory.remove(uuid);
         return null;
     }
 
     public static boolean hasPreviousMenu(Player player) {
-        Deque<Menu> history = menuHistory.get(player);
+        Deque<Menu> history = menuHistory.get(player.getUniqueId());
         return history != null && history.size() > 1;
     }
 

@@ -1,5 +1,6 @@
 package fr.openmc.api.menulib;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
@@ -13,13 +14,16 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -38,171 +42,179 @@ import java.util.function.Consumer;
  */
 @Getter
 public abstract class Menu implements InventoryHolder {
-	private final Object2ObjectMap<ItemMenuBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
-	
-	private final Player owner;
-	
-	/**
-	 * Constructs a new Menu for the specified player.
-	 *
-	 * @param owner The {@link Player} who owns the menu
-	 */
-	protected Menu(Player owner) {
-		this.owner = owner;
-	}
-	
-	/**
-	 * Retrieves the name of the menu.
-	 *
-	 * @return A non-null {@link Component} representing the name of the menu
-	 */
-	@NotNull
-	public abstract Component getName();
+    private final Object2ObjectMap<ItemMenuBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 
-	/**
-	 * Retrieves the textures of the menu.
-	 *
-	 * @return A {@link String} representing the texture of the menu
-	 */
-	public abstract String getTexture();
-	
-	/**
-	 * Retrieves the size of the inventory for the menu.
-	 *
-	 * @return An {@link InventorySize} constant representing the size of the inventory.
-	 */
-	@NotNull
-	public abstract InventorySize getInventorySize();
-	
-	public String getPermission() {
-		return null;
-	}
-	
-	public Component getNoPermissionMessage() {
-		return TranslationManager.translation("api.menulib.no_permission");
-	}
-	
-	/**
-	 * Handles the event that occurs when a player interacts with the menu's inventory.
-	 * This method is called whenever an {@link InventoryClickEvent} is triggered for a menu
-	 * controlled by this class. Subclasses should implement the logic to respond
-	 * to clicks in the inventory, such as handling button functionality or item interactions.
-	 *
-	 * @param e The {@link InventoryClickEvent} containing details about the click action,
-	 *          including the player who clicked, the clicked inventory slot, and other relevant event data.
-	 */
-	public abstract void onInventoryClick(InventoryClickEvent e);
+    private final OMCPlayer owner;
 
-	/**
-	 * Handles the event that occurs when a player closes the menu's inventory.
-	 * This method is called whenever an {@link InventoryCloseEvent} is triggered for a menu
-	 * controlled by this class. Subclasses
-	 * should implement the logic to respond to the inventory being closed,
-	 * such as saving data or cleaning up resources.
-	 *
-	 * @param event The {@link InventoryCloseEvent} containing details about the close action,
-	 */
-	public abstract void onClose(InventoryCloseEvent event);
+    /**
+     * Constructs a new Menu for the specified player.
+     *
+     * @param owner The {@link Player} who owns the menu
+     */
+    protected Menu(Player owner) {
+        this.owner = OMCPlayer.of(owner);
+    }
 
-	/**
-	 * Retrieves the content of this menu as a mapping between inventory slot indexes and {@link ItemStack}s.
-	 * Each entry in the map represents an item stored in a specific slot of the menu's inventory.
-	 *
-	 * @return A non-null {@link Map} where the key is an integer representing an inventory slot index,
-	 * and the value is the {@link ItemStack} present in that slot.
-	 */
-	@NotNull
-	public abstract Map<Integer, ItemMenuBuilder> getContent();
+    protected Menu(OMCPlayer owner) {
+        this.owner = owner;
+    }
 
-	/**
-	 * Retrieves a list of inventory slot indices that can be taken from the menu.
-	 * These slots are typically used for items that can be moved or removed by the player.
-	 *
-	 * @return A non-null list of integers representing the takable inventory slot indices.
-	 */
-	public abstract List<Integer> getTakableSlot();
+    /**
+     * Retrieves the name of the menu.
+     *
+     * @return A non-null {@link Component} representing the name of the menu
+     */
+    @NotNull
+    public abstract Component getName();
 
-	/**
-	 * Opens the menu for the owner player. If the menu specifies a required permission,
-	 * the method checks if the owner has the necessary permission. If not, a "no permission"
-	 * message is sent to the owner and the menu does not open.
-	 * <p>
-	 * The inventory for the menu is created using {@link #getInventory()} and populated
-	 * with items from {@link #getContent()}. The populated inventory is then opened for
-	 * the owner player.
-	 */
-	public final void open() {
-		try {
-			if (getPermission() != null && !getPermission().isEmpty()) {
-				if (!owner.hasPermission(getPermission())) {
-					owner.sendMessage(getNoPermissionMessage());
-					return;
-				}
-			}
+    /**
+     * Retrieves the textures of the menu.
+     *
+     * @return A {@link String} representing the texture of the menu
+     */
+    public abstract String getTexture();
 
-			Menu current = MenuLib.getCurrentLastMenu(owner);
-			if (current != this) {
-				MenuLib.pushMenu(owner, this);
-			}
+    /**
+     * Retrieves the size of the inventory for the menu.
+     *
+     * @return An {@link InventorySize} constant representing the size of the inventory.
+     */
+    @NotNull
+    public abstract InventorySize getInventorySize();
 
-			Inventory inventory = getInventory();
+    public String getPermission() {
+        return null;
+    }
 
-			getContent().forEach((slot, item) ->
-					setItem(owner, inventory, slot, item));
+    public Component getNoPermissionMessage() {
+        return TranslationManager.translation("api.menulib.no_permission");
+    }
+
+    /**
+     * Handles the event that occurs when a player interacts with the menu's inventory.
+     * This method is called whenever an {@link InventoryClickEvent} is triggered for a menu
+     * controlled by this class. Subclasses should implement the logic to respond
+     * to clicks in the inventory, such as handling button functionality or item interactions.
+     *
+     * @param e The {@link InventoryClickEvent} containing details about the click action,
+     *          including the player who clicked, the clicked inventory slot, and other relevant event data.
+     */
+    public abstract void onInventoryClick(InventoryClickEvent e);
+
+    /**
+     * Handles the event that occurs when a player closes the menu's inventory.
+     * This method is called whenever an {@link InventoryCloseEvent} is triggered for a menu
+     * controlled by this class. Subclasses
+     * should implement the logic to respond to the inventory being closed,
+     * such as saving data or cleaning up resources.
+     *
+     * @param event The {@link InventoryCloseEvent} containing details about the close action,
+     */
+    public abstract void onClose(InventoryCloseEvent event);
+
+    /**
+     * Retrieves the content of this menu as a mapping between inventory slot indexes and {@link ItemStack}s.
+     * Each entry in the map represents an item stored in a specific slot of the menu's inventory.
+     *
+     * @return A non-null {@link Map} where the key is an integer representing an inventory slot index,
+     * and the value is the {@link ItemStack} present in that slot.
+     */
+    @NotNull
+    public abstract Map<Integer, ItemMenuBuilder> getContent();
+
+    /**
+     * Retrieves a list of inventory slot indices that can be taken from the menu.
+     * These slots are typically used for items that can be moved or removed by the player.
+     *
+     * @return A non-null list of integers representing the takable inventory slot indices.
+     */
+    public abstract List<Integer> getTakableSlot();
+
+    /**
+     * Opens the menu for the owner player. If the menu specifies a required permission,
+     * the method checks if the owner has the necessary permission. If not, a "no permission"
+     * message is sent to the owner and the menu does not open.
+     * <p>
+     * The inventory for the menu is created using {@link #getInventory()} and populated
+     * with items from {@link #getContent()}. The populated inventory is then opened for
+     * the owner player.
+     */
+    public final void open() {
+        try {
+            if (getPermission() != null && !getPermission().isEmpty()) {
+                if (!owner.hasPermission(getPermission())) {
+                    owner.sendMessage(getNoPermissionMessage());
+                    return;
+                }
+            }
+
+            Menu current = MenuLib.getCurrentLastMenu(owner);
+            if (current == null || !current.getClass().equals(this.getClass())) {
+                MenuLib.pushMenu(owner, this);
+            }
+
+            Inventory inventory = getInventory();
+
+            getContent().forEach((slot, item) ->
+                    setItem(owner, inventory, slot, item));
 
             Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
 
-			owner.openInventory(inventory);
-		} catch (Exception e) {
-			MessagesManager.sendMessage(owner, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
-			owner.closeInventory();
-			throw new RuntimeException(e);
-		}
-	}
+            InventoryView openedMenu = owner.openInventory(inventory);
 
-	public final void setItem(Player player, Inventory inventory, int slot, ItemMenuBuilder item) {
-		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) {
-			if (!this.getTakableSlot().contains(slot)) {
-				inventory.setItem(slot, ItemUtils.getInvisibleItem());
-			}
-			return;
-		}
+            if (this instanceof OpenMenu om)
+                om.onOpen(new InventoryOpenEvent(openedMenu));
+        } catch (Exception e) {
+            MessagesManager.sendMessage(owner, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
+            owner.closeInventory();
+            throw new RuntimeException(e);
+        }
+    }
 
-		if (this instanceof PaginatedMenu paginatedMenu) {
-			if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
-					|| (item.isNextButton() && paginatedMenu.isLastPage()))
-				return;
-		}
+    public final void setItem(Player player, Inventory inventory, int slot, ItemMenuBuilder item) {
+        if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) {
+            if (!this.getTakableSlot().contains(slot)) {
+                inventory.setItem(slot, ItemUtils.getInvisibleItem());
+            }
+            return;
+        }
 
-		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
-			inventory.setItem(slot, new ItemMenuBuilder(this, item, itemMeta -> {
-				itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
-				itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
-				itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : Component.text("Menu Précédent")));
-			}, true));
-			return;
-		}
+        if (this instanceof PaginatedMenu paginatedMenu) {
+            if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
+                    || (item.isNextButton() && paginatedMenu.isLastPage()))
+                return;
+        }
 
-		if (item.getType().isAir() && !this.getTakableSlot().contains(slot)) {
-			inventory.setItem(slot, ItemUtils.getInvisibleItem());
-			return;
-		}
+        if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
+            inventory.setItem(slot, new ItemMenuBuilder(this, item, itemMeta -> {
+                itemMeta.itemName(TranslationManager.translation("api.menulib.menu.back.title"));
+                itemMeta.customName(TranslationManager.translation("api.menulib.menu.back.title"));
+                itemMeta.lore(TranslationManager.translationLore("api.menulib.menu.back.lore", MenuLib.getLastMenu(player) != null ?
+                        MenuLib.getLastMenu(player).getName().color(NamedTextColor.GREEN) : TranslationManager.translation("api.menulib.menu.back")));
+            }, true));
+            return;
+        }
 
-		inventory.setItem(slot, item);
-	}
-	
-	/**
-	 * Fills the entire inventory with items made from the specified material.
-	 * Each slot in the inventory is populated with an {@link ItemStack} that uses the
-	 * provided material and has a blank name.
-	 *
-	 * @param material The {@link Material} to use for creating {@link ItemStack}s to fill the inventory.
-	 * @return A {@link Map} where the key represents the inventory slot index, and the value is the {@link ItemStack} placed
-	 * in that slot.
-	 */
-	public final Map<Integer, ItemMenuBuilder> fill(Material material) {
-		return fill(new ItemStack(material));
-	}
+        if (item.getType().isAir() && !this.getTakableSlot().contains(slot)) {
+            inventory.setItem(slot, ItemUtils.getInvisibleItem());
+            return;
+        }
+
+        inventory.setItem(slot, item);
+    }
+
+    /**
+     * Fills the entire inventory with items made from the specified material.
+     * Each slot in the inventory is populated with an {@link ItemStack} that uses the
+     * provided material and has a blank name.
+     *
+     * @param material The {@link Material} to use for creating {@link ItemStack}s to fill the inventory.
+     * @return A {@link Map} where the key represents the inventory slot index, and the value is the {@link ItemStack} placed
+     * in that slot.
+     */
+    public final Map<Integer, ItemMenuBuilder> fill(Material material) {
+        return fill(new ItemStack(material));
+    }
 
     /**
      * Fills the entire inventory with the specified {@link ItemStack}.
@@ -210,8 +222,8 @@ public abstract class Menu implements InventoryHolder {
      * with its display name set to a single space character to create a blank appearance.
      *
      * @param item The {@link ItemStack} to use for filling the inventory.
-     * @return     A {@link Map} where the key represents the inventory slot index,
-     *             and the value is the {@link ItemMenuBuilder} placed in that slot.
+     * @return A {@link Map} where the key represents the inventory slot index,
+     * and the value is the {@link ItemMenuBuilder} placed in that slot.
      */
     public final Map<Integer, ItemMenuBuilder> fill(ItemStack item) {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
@@ -222,51 +234,51 @@ public abstract class Menu implements InventoryHolder {
         return map;
     }
 
-	public final void update() {
-		if (owner == null) return;
+    public final void update() {
+        if (owner == null) return;
 
-		Inventory open = owner.getOpenInventory().getTopInventory();
+        Inventory open = owner.getOpenInventory().getTopInventory();
 
-		if (!(open.getHolder() instanceof Menu menu) || menu != this) return;
+        if (!(open.getHolder() instanceof Menu menu) || menu != this) return;
 
-		getContent().forEach((slot, item) ->
-				setItem(owner, open, slot, item));
+        getContent().forEach((slot, item) ->
+                setItem(owner, open, slot, item));
 
-		owner.updateInventory();
-	}
-	
-	/**
-	 * Checks if the given {@link ItemStack} is associated with the specified item ID.
-	 *
-	 * @param item   The {@link ItemStack} to be checked
-	 * @param itemId The ID of the item to compare against
-	 * @return {@code true} if the item matches the specified ID, otherwise {@code false}
-	 */
-	public final boolean isItem(ItemStack item, String itemId) {
-		PersistentDataContainer dataContainer = Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer();
-		if (dataContainer.has(MenuLib.getItemIdKey(), PersistentDataType.STRING)) {
-			return Objects.equals(dataContainer.get(MenuLib.getItemIdKey(), PersistentDataType.STRING), itemId);
-		}
-		return false;
-	}
-	
-	/**
-	 * Creates and returns the inventory associated with this menu.
-	 * The inventory is created with the size specified by {@link #getInventorySize()}
-	 * and named using {@link #getName()}. The menu itself is set as the inventory holder.
-	 *
-	 * @return The inventory object for this menu
-	 */
-	@NotNull
-	@Override
-	public final Inventory getInventory() {
-		Component title = getName();
+        owner.updateInventory();
+    }
+
+    /**
+     * Checks if the given {@link ItemStack} is associated with the specified item ID.
+     *
+     * @param item   The {@link ItemStack} to be checked
+     * @param itemId The ID of the item to compare against
+     * @return {@code true} if the item matches the specified ID, otherwise {@code false}
+     */
+    public final boolean isItem(ItemStack item, String itemId) {
+        PersistentDataContainer dataContainer = Objects.requireNonNull(item.getItemMeta()).getPersistentDataContainer();
+        if (dataContainer.has(MenuLib.getItemIdKey(), PersistentDataType.STRING)) {
+            return Objects.equals(dataContainer.get(MenuLib.getItemIdKey(), PersistentDataType.STRING), itemId);
+        }
+        return false;
+    }
+
+    /**
+     * Creates and returns the inventory associated with this menu.
+     * The inventory is created with the size specified by {@link #getInventorySize()}
+     * and named using {@link #getName()}. The menu itself is set as the inventory holder.
+     *
+     * @return The inventory object for this menu
+     */
+    @NotNull
+    @Override
+    public final Inventory getInventory() {
+        Component title = getName();
 
         if (ItemsAdderHook.isEnable() && (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()) {
             title = Component.text(getTexture());
         }
 
-		return Bukkit.createInventory(this, getInventorySize().getSize(), title);
-	}
+        return Bukkit.createInventory(this, getInventorySize().getSize(), title);
+    }
 
 }

@@ -4,7 +4,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
 import fr.openmc.core.registry.lootboxes.LootboxOptions;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 
 import java.util.stream.IntStream;
 
@@ -12,7 +12,7 @@ public class MachineBallLootbox extends CustomLootbox {
     public MachineBallLootbox() {
         super(
                 "omc:machine_ball",
-                Component.text("§6§lLa Machine à boules"),
+                TranslationManager.translation("feature.tickets.machine.title"),
                 OMCRegistry.CUSTOM_LOOT_TABLES.MACHINE_BALL,
                 new LootboxOptions(
                         InventorySize.NORMAL,

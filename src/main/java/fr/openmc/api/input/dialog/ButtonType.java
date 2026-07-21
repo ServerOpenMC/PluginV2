@@ -1,22 +1,28 @@
 package fr.openmc.api.input.dialog;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
-@Getter
 public enum ButtonType {
-    SAVE("Sauvegarder"),
-    CONFIRM("Confirmer"),
-    CANCEL("Annuler"),
-    BACK("Retour"),
-    NEXT("Suivant"),
-    PREVIOUS("Précédent"),
-	FINISH("Terminer"),
-	IGNORE("Ignorer")
+    SAVE("api.dialoginput.button.save"),
+    CONFIRM("api.dialoginput.button.confirm"),
+    CANCEL("api.dialoginput.button.cancel"),
+    BACK("api.dialoginput.button.back"),
+    NEXT("api.dialoginput.button.next"),
+    PREVIOUS("api.dialoginput.button.previous"),
+	FINISH("api.dialoginput.button.finish"),
+	IGNORE("api.dialoginput.button.ignore")
 	;
 
-    private final String label;
+    @Getter
+    private final String labelKey;
 
-    ButtonType(String label) {
-        this.label = label;
+    ButtonType(String labelKey) {
+        this.labelKey = labelKey;
+    }
+
+    public Component getLabelComponent() {
+        return TranslationManager.translation(labelKey);
     }
 }

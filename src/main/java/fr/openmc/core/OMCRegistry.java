@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
@@ -13,6 +14,7 @@ import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,12 +28,11 @@ public final class OMCRegistry {
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
     public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
 
+    private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
     private static final List<RegistryContext> ALL = List.of(
             new RegistryContext(
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
-                    RegistryLoadingType.AFTER_IA),
-            new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
@@ -41,9 +42,11 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
-                    RegistryLoadingType.BOOTSTRAP),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 
@@ -54,7 +57,7 @@ public final class OMCRegistry {
             if (Arrays.stream(ctx.loadingTypes())
                     .noneMatch(t -> t == RegistryLoadingType.BOOTSTRAP)) continue;
 
-            LifecycleRegistry r = ctx.registry().get();
+            LifecycleRegistry r = load(ctx);
             try {
                 r.bootstrap(context);
             } catch (IOException e) {
@@ -70,7 +73,11 @@ public final class OMCRegistry {
             if (Arrays.stream(ctx.loadingTypes())
                     .noneMatch(t -> t == RegistryLoadingType.RUNTIME)) continue;
 
-            LifecycleRegistry r = ctx.registry().get();
+            LifecycleRegistry r = load(ctx);
+
+            if (r instanceof HasListeners hasListeners)
+                OMCPlugin.registerEvents(hasListeners.getListeners());
+
             r.init();
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
@@ -81,9 +88,27 @@ public final class OMCRegistry {
             if (Arrays.stream(ctx.loadingTypes())
                     .noneMatch(t -> t == RegistryLoadingType.AFTER_IA)) continue;
 
-            LifecycleRegistry r = ctx.registry().get();
+            LifecycleRegistry r = load(ctx);
+
+            if (r instanceof HasListeners hasListeners)
+                OMCPlugin.registerEvents(hasListeners.getListeners());
+
             r.postInit();
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
         }
+    }
+
+    public static void stopAll() {
+        for (LifecycleRegistry r : LOADED) {
+            r.stop();
+            OMCLogger.successFormatted("Registre {} stoppé", r.getClass().getSimpleName());
+        }
+        LOADED.clear();
+    }
+
+    private static LifecycleRegistry load(RegistryContext ctx) {
+        LifecycleRegistry registry = ctx.registry().get();
+        LOADED.add(registry);
+        return registry;
     }
 }

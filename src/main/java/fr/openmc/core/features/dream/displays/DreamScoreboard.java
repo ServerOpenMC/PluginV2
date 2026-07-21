@@ -9,11 +9,13 @@ import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
+import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmallComponent;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -54,14 +57,14 @@ public class DreamScoreboard extends BaseScoreboard {
             int cold = dreamPlayer.getCold();
 
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("temps:"), NamedTextColor.GRAY))
+                    .append(TranslationManager.translation("feature.dream.scoreboard.time.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(text(textToSmall(DateUtils.convertSecondToTime(time))).color(TextColor.color(0x00CC34)))
+                    .append(textToSmallComponent(DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
             );
 
             if (cold > 0)
                 lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                        .append(text(textToSmall("froid:"), NamedTextColor.GRAY))
+                        .append(TranslationManager.translation("feature.dream.scoreboard.cold.to_small").color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(dreamPlayer.getCold()).color(TextColor.color(0x44EBDA)))
                 );
@@ -71,9 +74,9 @@ public class DreamScoreboard extends BaseScoreboard {
 
         if (dreamBiome != null) {
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("biome:"), NamedTextColor.GRAY))
+                    .append(TranslationManager.translation("feature.dream.scoreboard.biome.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(Component.text(textToSmall(dreamBiome.getName())))
+                    .append(dreamBiome.getSmallName())
             );
         }
 
@@ -81,14 +84,17 @@ public class DreamScoreboard extends BaseScoreboard {
         if (dreamStructure != null) {
             String nameLocation = PlainTextComponentSerializer.plainText().serialize(dreamStructure.getName());
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(text(textToSmall("location:"), NamedTextColor.GRAY))
+                    .append(TranslationManager.translation("feature.dream.scoreboard.location.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(Component.text(textToSmall(nameLocation)))
+                    .append(textToSmallComponent(nameLocation))
             );
         }
 
         lines.add(empty());
-        lines.add(MiniMessage.miniMessage().deserialize("    <gradient:#001a66:#1358c9>%s</gradient>".formatted(textToSmall("play.openmc.fr"))));
+        lines.add(MiniMessage.miniMessage().deserialize(
+                "    <gradient:#001a66:#1358c9><footer></gradient>",
+                Placeholder.component("footer", TranslationManager.translation("feature.displays.scoreboard.footer.text.to_small"))
+        ));
         board.updateLines(lines);
     }
 

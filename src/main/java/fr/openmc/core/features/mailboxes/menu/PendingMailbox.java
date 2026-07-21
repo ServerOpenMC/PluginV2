@@ -135,7 +135,7 @@ public class PendingMailbox extends PaginatedMenu {
                     "feature.mailboxes.message.cancel_success_sender",
                     Component.text(player.getName()).color(NamedTextColor.DARK_GREEN),
                     Component.text(itemsCount).color(NamedTextColor.GREEN),
-                    Component.text(pluralize(" item", itemsCount)).color(NamedTextColor.DARK_GREEN)
+                    pluralize(Component.space().append(TranslationManager.translation("global.item")), itemsCount).color(NamedTextColor.DARK_GREEN)
             ).color(NamedTextColor.DARK_GREEN);
 
             MessagesManager.sendMessage(

@@ -19,6 +19,7 @@ import fr.openmc.core.features.animations.AnimationsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
+import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
@@ -28,7 +29,8 @@ import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.features.events.commands.calendar.CalendarManager;
+import fr.openmc.core.features.events.EventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -41,9 +43,11 @@ import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.privatemessage.SocialSpyManager;
+import fr.openmc.core.features.profile.ProfileManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
@@ -62,6 +66,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -104,19 +109,23 @@ public class OMCPlugin extends JavaPlugin {
             MascotsManager::new,
             PlayerSettingsManager::new,
             MailboxManager::new,
+            ProfileManager::new,
             QuestsManager::new,
             CityManager::new,
             DynamicCooldownManager::new,
             ContestManager::new,
             WeeklyEventsManager::new,
-            CalendarManager::new,
+            DailyEventsManager::new,
+            EventsManager::new,
             DreamManager::new,
             MultiBlockManager::new,
             MilestonesManager::new,
             () -> new LeaderboardManager(),
             () -> new MainMenu(),
             () -> new HologramLoader(),
-            HomeIconCacheManager::new
+            ShopManager::new,
+            HomeIconCacheManager::new,
+            DimensionOpenerManager::new
     ));
 
     public final List<Feature> loadedFeature = new ArrayList<>();
@@ -189,7 +198,7 @@ public class OMCPlugin extends JavaPlugin {
                     }
                 });
 
-        // * Si ItemsAdder est pas présent, alors on charge les dernieres features maintenant
+        // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
         if (!ItemsAdderHook.isEnable()) {
             loadAfterItemsAdder();
         }
@@ -231,6 +240,9 @@ public class OMCPlugin extends JavaPlugin {
             feature.startSave();
         }
 
+        /* REGISTRIES */
+        OMCRegistry.stopAll();
+
         // - Close all inventories
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.closeInventory();
@@ -248,6 +260,17 @@ public class OMCPlugin extends JavaPlugin {
      * @param listeners Listeners à enregistrer
      */
     public static void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
+            instance.getServer().getPluginManager().registerEvents(listener, instance);
+        }
+    }
+
+    /**
+     * Enregistre une liste de listeners Bukkit sur l'instance du plugin.
+     *
+     * @param listeners Listeners à enregistrer
+     */
+    public static void registerEvents(Collection<Listener> listeners) {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }

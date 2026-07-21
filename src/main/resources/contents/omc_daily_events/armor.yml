@@ -1,0 +1,79 @@
+info:
+  namespace: omc_daily_events
+equipments:
+  ancient_fishing:
+    type: armor
+    layer_1: armor/ancient_fishing/ancient_armor_layer_1
+    layer_2: armor/ancient_fishing/ancient_armor_layer_2
+
+items:
+  ancient_fishing_helmet:
+    display_name: "Casque du pêcheur antique"
+    resource:
+      generate: true
+      textures:
+        - armor/ancient_fishing/ancient_helmet
+      material: LEATHER_HELMET
+    lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
+      - "§7§oUn casque trouvé dans les abysses des mers"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:ancient_fishing
+      slot_attribute_modifiers:
+        armor: 3
+
+  ancient_fishing_chestplate:
+    display_name: "Plastron du pêcheur antique"
+    resource:
+      generate: true
+      textures:
+        - armor/ancient_fishing/ancient_chestplate
+      material: LEATHER_CHESTPLATE
+    lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
+      - "§7§oUn plastron trouvé dans les abysses des mers"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:ancient_fishing
+      slot_attribute_modifiers:
+        armor: 5
+  ancient_fishing_leggings:
+    display_name: "Jambière du pêcheur antique"
+    resource:
+      generate: true
+      textures:
+        - armor/ancient_fishing/ancient_leggings
+      material: LEATHER_LEGGINGS
+    lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
+      - "§7§oUne jambière trouvé dans les abysses des mers"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:ancient_fishing
+      slot_attribute_modifiers:
+        armor: 5
+
+  ancient_fishing_boots:
+    display_name: "Bottes du pêcheur antique"
+    resource:
+      generate: true
+      textures:
+        - armor/ancient_fishing/ancient_boots
+      material: LEATHER_BOOTS
+    lore:
+      - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
+      - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
+      - "§7§oDes bottes trouvées dans les abysses des mers"
+    durability:
+      unbreakable: true
+    equipment:
+      id: omc_daily_events:ancient_fishing
+      slot_attribute_modifiers:
+        armor: 3

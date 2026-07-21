@@ -10,6 +10,7 @@ import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -37,12 +38,12 @@ public class PlayerEnteredBiome implements Listener {
             DreamBiome.GLACITE_GROTTO.getBiome()
     );
 
-    private static final List<String> ORB_UNLOCKER = List.of(
-            "",
-            "Orbe de Domination",
-            "Orbe des Âmes",
-            "Orbe des Nuages",
-            "Orbe de Boue"
+    private static final List<Component> ORB_UNLOCKER = List.of(
+            Component.empty(),
+            TranslationManager.translation("feature.dream.item.domination_orb.name"),
+            TranslationManager.translation("feature.dream.item.ame_orb.name"),
+            TranslationManager.translation("feature.dream.item.cloud_orb.name"),
+            TranslationManager.translation("feature.dream.item.mud_orb.name")
     );
 
     private final Map<UUID, BukkitTask> activeTasks = new HashMap<>();
@@ -90,7 +91,10 @@ public class PlayerEnteredBiome implements Listener {
             );
 
             activeTasks.put(player.getUniqueId(), task);
-            MessagesManager.sendMessage(player, Component.text("Attention, vous êtes dans un biome que vous avez pas encore débloqué, il vous faut l'§b" + ORB_UNLOCKER.get(index)), Prefix.DREAM, MessageType.WARNING, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.dream.biome.message.not_unlocked",
+                    ORB_UNLOCKER.get(index)
+            ), Prefix.DREAM, MessageType.WARNING, false);
         }
     }
 
@@ -100,8 +104,9 @@ public class PlayerEnteredBiome implements Listener {
     }
 
     private void applyEffects(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1, true, false));
-		player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 60, 1, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 3, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false));
     }
 
     private void spawnParticles(Player player) {

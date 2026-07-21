@@ -94,12 +94,12 @@ public class MayorColorMenu extends Menu {
         colorSlot.forEach((color, slot) -> {
             List<Component> loreColor = TranslationManager.translationLore(
                     "feature.city.mayor.menu.color.option.lore",
-                    Component.text(ColorUtils.getNameFromColor(color)).color(color)
+                    ColorUtils.getNameFromColor(color).color(color)
             );
             inventory.put(slot, new ItemMenuBuilder(this, ColorUtils.getMaterialFromColor(color), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation(
                         "feature.city.mayor.menu.color.option.name",
-                        Component.text(ColorUtils.getNameFromColor(color)).color(color)
+                        ColorUtils.getNameFromColor(color).color(color)
                 ));
                 itemMeta.lore(loreColor);
             }).setOnClick(inventoryClickEvent -> {

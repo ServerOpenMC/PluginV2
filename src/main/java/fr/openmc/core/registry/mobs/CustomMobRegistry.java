@@ -1,26 +1,145 @@
 package fr.openmc.core.registry.mobs;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.ExplosiveVampireBat;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.LevitationVampireBat;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.PoisonVampireBat;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.AncientMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.EnragedMonster;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
+import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
+import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
+import fr.openmc.core.registry.mobs.task.MobBossbarUpdater;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class CustomMobRegistry extends Registry<String, CustomMobEntry> implements KeyedRegistry<String, CustomMobEntry> {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+public class CustomMobRegistry extends Registry<String, CustomMobEntry>
+        implements KeyedRegistry<String, CustomMobEntry>, HasListeners {
 
     public static final NamespacedKey CUSTOM_MOB_KEY =
             new NamespacedKey("openmc", "custom_mob");
 
     // ** REGISTER MOBS **
-    /* ex :
-    public static final CustomMobEntry BREEZY = create(new CustomMobEntry(
-            "omc_dream:breezy",
-            Breezy::new
+    public final CustomMobEntry SEA_GUARD = register(new CustomMobEntry(
+            "omc_daily_events:sea_guard",
+            SeaGuard::new
     ));
-     */
+
+    public final CustomMobEntry CHICKEN_JOCKEY = register(new CustomMobEntry(
+            "omc_daily_events:chicken_jockey",
+            ChickenJockey::new
+    ));
+
+    public final CustomMobEntry ANCIENT_VILLAGER = register(new CustomMobEntry(
+            "omc_daily_events:ancient_villager",
+            AncientVillager::new
+    ));
+
+    public final CustomMobEntry POISSON_STEVE = register(new CustomMobEntry(
+            "omc_daily_events:poisson_steve",
+            PoissonSteve::new
+    ));
+
+    public final CustomMobEntry LEVIATHAN = register(new CustomMobEntry(
+            "omc_daily_events:leviathan",
+            Leviathan::new
+    ));
+
+    public final CustomMobEntry ANGRY_WITCH = register(new CustomMobEntry(
+            "omc_daily_events:angry_witch",
+            AngryWitch::new
+    ));
+
+    public final CustomMobEntry KRAKEN = register(new CustomMobEntry(
+            "omc_daily_events:kraken",
+            Kraken::new
+    ));
+
+    public final CustomMobEntry GIANT_ELDER_GUARDIAN = register(new CustomMobEntry(
+            "omc_daily_events:giant_elder_guardian",
+            GiantElderGuardian::new
+    ));
+
+    public final CustomMobEntry ANCIENT_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:ancient_monster",
+            AncientMonster::new
+    ));
+
+    public final CustomMobEntry CURSED_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:cursed_monster",
+            CursedMonster::new
+    ));
+
+    public final CustomMobEntry ENRAGED_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:enraged_monster",
+            EnragedMonster::new
+    ));
+
+    public final CustomMobEntry CORRUPTED_MONSTER = register(new CustomMobEntry(
+            "omc_daily_events:corrupted_monster",
+            CorruptedMonster::new
+    ));
+
+    public final CustomMobEntry EXPLOSIVE_VAMPIRE_BAT = register(new CustomMobEntry(
+            "omc_daily_events:explosive_vampire_bat",
+            ExplosiveVampireBat::new
+    ));
+
+    public final CustomMobEntry POISON_VAMPIRE_BAT = register(new CustomMobEntry(
+            "omc_daily_events:poison_vampire_bat",
+            PoisonVampireBat::new
+    ));
+
+    public final CustomMobEntry LEVITATION_VAMPIRE_BAT = register(new CustomMobEntry(
+            "omc_daily_events:levitation_vampire_bat",
+            LevitationVampireBat::new
+    ));
+
+    public final CustomMobEntry VAMPIRE_BOSS = register(new CustomMobEntry(
+            "omc_daily_events:vampire_boss",
+            VampireBoss::new
+    ));
+
+    public final CustomMobEntry VAMPIRE_SLAVE = register(new CustomMobEntry(
+            "omc_daily_events:vampire_slave",
+            VampireSlave::new
+    ));
+
+    public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new CustomMobDeathListener(),
+                new CustomMobBossbarListener(),
+                new CustomMobLoadListener()
+        );
+    }
+
+    @Override
+    public void postInit() {
+        new MobBossbarUpdater().runTaskTimer(
+                OMCPlugin.getInstance(),
+                0L,
+                20L
+        );
+    }
 
     @Override
     public String key(CustomMobEntry registryObject) {

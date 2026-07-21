@@ -7,6 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.papermc.paper.adventure.PaperAdventure;
 import lombok.Getter;
 import net.minecraft.advancements.*;
 import net.minecraft.network.chat.Component;
@@ -52,7 +53,7 @@ public class MainMenuListener implements Listener {
         // Rien de très important ici, on crée justes les instances nécessaires pour le packet avec le minimum requis.
         DisplayInfo displayInfo = new DisplayInfo(
                 ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(getInvisibleItem())),
-                Component.literal(TranslationManager.translationString("feature.mainmenu.advancements.loading")),
+                PaperAdventure.asVanilla(TranslationManager.translation("feature.mainmenu.advancements.loading")),
                 Component.empty(),
                 Optional.empty(),
                 AdvancementType.GOAL,

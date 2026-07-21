@@ -2,12 +2,8 @@ package fr.openmc.core.features.economy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.j256.ormlite.dao.Dao;
-
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -87,40 +83,7 @@ public class EconomyManagerTest {
     }
 
     @Test
-    public void testBalancesSnapshotCannotBeMutated() {
-        EconomyManager.setBalance(player1.getUniqueId(), 100.0);
-
-        Map<UUID, EconomyPlayer> balances = EconomyManager.getBalances();
-
-        assertThrows(UnsupportedOperationException.class, () -> balances.remove(player1.getUniqueId()));
-
-        balances.get(player1.getUniqueId()).setBalance(50.0);
-
-        assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
-    }
-
-    @Test
-    public void testGetPlayerBankReturnsSnapshot() {
-        EconomyManager.setBalance(player1.getUniqueId(), 100.0);
-
-        EconomyPlayer bank = EconomyManager.getPlayerBank(player1.getUniqueId());
-        bank.setBalance(50.0);
-
-        assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
-    }
-
-    @Test
-    public void testMarkPlayerBankDirtyStoresSnapshot() {
-        EconomyPlayer bank = new EconomyPlayer(player1.getUniqueId(), 100.0);
-
-        EconomyManager.markPlayerBankDirty(bank);
-        bank.setBalance(50.0);
-
-        assertEquals(100.0, EconomyManager.getBalance(player1.getUniqueId()));
-    }
-
-    @Test
-    public void testBalanceChangesAreSavedOnSaveAll() {
+    public void testBalanceChangesAreSavedOnFeatureSave() {
         UUID playerUUID = player1.getUniqueId();
 
         EconomyManager.setBalance(playerUUID, 500.0);
@@ -128,29 +91,10 @@ public class EconomyManagerTest {
         Map<UUID, EconomyPlayer> balancesBeforeSave = EconomyManager.loadAllBalances();
         assertFalse(balancesBeforeSave.containsKey(playerUUID));
 
-        EconomyManager.saveAllBalances();
+        new EconomyManager().save();
 
         Map<UUID, EconomyPlayer> balancesAfterSave = EconomyManager.loadAllBalances();
         assertEquals(500.0, balancesAfterSave.get(playerUUID).getBalance());
-    }
-
-    @Test
-    public void testFailedSaveKeepsBalancesDirtyForRetry() throws Exception {
-        UUID playerUUID = player1.getUniqueId();
-
-        EconomyManager.setBalance(playerUUID, 500.0);
-
-        Dao<EconomyPlayer, String> playersDao = replacePlayersDao(null);
-        try {
-            EconomyManager.saveAllBalances();
-        } finally {
-            replacePlayersDao(playersDao);
-        }
-
-        EconomyManager.saveAllBalances();
-
-        Map<UUID, EconomyPlayer> balancesAfterRetry = EconomyManager.loadAllBalances();
-        assertEquals(500.0, balancesAfterRetry.get(playerUUID).getBalance());
     }
 
     @Test
@@ -238,16 +182,5 @@ public class EconomyManagerTest {
         );
 
         assertTrue(found);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Dao<EconomyPlayer, String> replacePlayersDao(Dao<EconomyPlayer, String> playersDao) throws Exception {
-        Field playersDaoField = EconomyManager.class.getDeclaredField("playersDao");
-        playersDaoField.setAccessible(true);
-
-        Dao<EconomyPlayer, String> previousPlayersDao = (Dao<EconomyPlayer, String>) playersDaoField.get(null);
-        playersDaoField.set(null, playersDao);
-
-        return previousPlayersDao;
     }
 }

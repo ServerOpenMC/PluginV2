@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mailboxes.letter;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
@@ -36,11 +37,11 @@ public class LetterHead extends ItemStack {
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getPlayerName(player));
         skullMeta.lore(List.of(
-                nonItalic(Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY)),
+                nonItalic(formatRelativeDate(sentAt).color(NamedTextColor.DARK_GRAY)),
                 nonItalic(translation(
                         "feature.mailboxes.letter.contains",
                         Component.text(itemsCount).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),
-                        Component.text(pluralize("item", itemsCount)).color(NamedTextColor.DARK_GREEN)
+                        pluralize(TranslationManager.translation("global.item"), itemsCount).color(NamedTextColor.DARK_GREEN)
                 ).color(NamedTextColor.DARK_GREEN))
         ));
         TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(

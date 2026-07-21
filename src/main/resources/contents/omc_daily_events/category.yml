@@ -4,7 +4,7 @@ categories:
   omc_daily_events:
     enabled: true
     skip_if_already: false
-    icon: omc_daily_events:aywenite_block
+    icon: omc_daily_events:obese_golden_apple
     name: "OpenMC Daily Events"
     items:
       - omc_daily_events:*

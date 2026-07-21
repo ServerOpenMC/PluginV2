@@ -4,7 +4,9 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -19,20 +21,26 @@ public class TPACancelCommand {
 	@CommandPermission("omc.commands.tpa")
 	public void tpaCancel(Player player) {
 		if (!TPAManager.requesterHasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		Player target = TPAManager.getTargetByRequester(player);
 
 		if (target == null) {
-			MessagesManager.sendMessage(player, Component.text("§4Le joueur n'est pas en ligne ou n'existe pas"), Prefix.OPENMC, MessageType.ERROR, true);
+			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
 		TPAManager.removeRequest(player, target);
-		MessagesManager.sendMessage(player, Component.text("§2Vous avez annulé votre demande de téléportation à §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
-		MessagesManager.sendMessage(target, Component.text("§3" + player.getName() + " §4a annulé sa demande de téléportation"), Prefix.OPENMC, MessageType.INFO, true);
-		
+		MessagesManager.sendMessage(player, TranslationManager.translation(
+				"feature.tpa.cancel.success",
+				Component.text(target.getName()).color(NamedTextColor.GOLD)
+		), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(target, TranslationManager.translation(
+				"feature.tpa.cancel.cancelled",
+				Component.text(player.getName()).color(NamedTextColor.DARK_RED)
+		), Prefix.OPENMC, MessageType.INFO, true);
+
 	}
 }

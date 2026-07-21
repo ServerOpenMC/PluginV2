@@ -1,8 +1,8 @@
 package fr.openmc.core.features.economy.commands;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.menu.TransactionsMenu;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -12,19 +12,13 @@ public class History {
     @CommandPermission("omc.commands.money.history")
     @Cooldown(30)
     public void history(
-            Player sender,
-            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+            OMCPlayer sender,
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
     ) {
-        if (!(sender instanceof Player player)) { return; }
-
-        if (target == null) {
-            target = player;
-        } else {
-            if (!sender.hasPermission("omc.admin.money.history")) {
-                target = player;
-            }
+        if (target == null || !sender.hasPermission("omc.admin.money.history")) {
+            target = sender;
         }
 
-        new TransactionsMenu(player, target.getUniqueId()).open();
+        new TransactionsMenu(sender, target.getUniqueId());
     }
 }

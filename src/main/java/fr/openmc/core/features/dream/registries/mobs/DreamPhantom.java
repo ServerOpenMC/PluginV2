@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.registries.mobs;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntitySnapshot;
@@ -12,7 +13,7 @@ import org.bukkit.entity.Phantom;
 public class DreamPhantom extends DreamMob<Phantom> {
     public DreamPhantom(String id) {
         super(id,
-                "Phantom Réveillé",
+                TranslationManager.translation("feature.dream.mob.dream_phantom"),
                 Phantom.class,
                 10.0,
                 3L,

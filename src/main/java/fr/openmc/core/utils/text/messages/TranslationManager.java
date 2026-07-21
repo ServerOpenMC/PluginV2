@@ -13,6 +13,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +26,6 @@ import java.util.*;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class TranslationManager {
-    /** Traductions de fallback (langue par défaut du serveur - Français) */
     public static Map<String, String> fallbackTranslations = new HashMap<>();
 
     private static final Gson GSON = new GsonBuilder()
@@ -33,6 +33,7 @@ public class TranslationManager {
             .create();
 
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     /**
      * Initialise le gestionnaire de traductions et génère les ressource packs.
@@ -46,7 +47,7 @@ public class TranslationManager {
         // * Generate resource pack
         Path resourcePackFolder;
         try {
-            resourcePackFolder=ResourcePacksGenerator.generateBase(context, "generated-rp-langs");
+            resourcePackFolder = ResourcePacksGenerator.generateBase(context, "generated-rp-langs");
             Files.createDirectories(resourcePackFolder.resolve("assets/minecraft/lang"));
             OMCLogger.successFormatted("Génération du resource pack de langues !");
         } catch (Exception e) {
@@ -77,7 +78,6 @@ public class TranslationManager {
             Map<String, String> localeTranslations = toLegacyMap(bundle.getAllTranslations());
 
             translations.putAll(localeTranslations);
-
 
             try {
                 injectLangs(resourcePackFolder, translations, locale);
@@ -111,6 +111,7 @@ public class TranslationManager {
 
     /**
      * Retourne une traduction sous forme de String au format legacy.
+     * ATTENTION RETOURNE DIRECTEMENT LE FALLBACK
      * 
      * @param key La clé de traduction
      * @param args Les arguments à interpoler
@@ -129,19 +130,23 @@ public class TranslationManager {
      * @return Une liste de composants, un par ligne (italique désactivé)
      */
     public static List<Component> translationLore(String key, ComponentLike... componentsArgs) {
-        String fallback = fallbackTranslations.getOrDefault(key, key);
-
+        String fallback = getFallbackTranslation(key);
         ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(componentsArgs);
-        TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
+        String[] lines = fallback.split("\n");
 
-        String legacy = LegacyComponentSerializer.legacySection().serialize(translatable);
-
-        String[] lines = legacy.split("\n");
+        if (lines.length == 1) {
+            TranslatableComponent translatable = Component.translatable(key, normalizedArgs).fallback(fallback);
+            return List.of(translatable.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        }
 
         List<Component> lore = new ArrayList<>();
 
-        for (String line : lines) {
-            lore.add(LegacyComponentSerializer.legacySection().deserialize(line).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        for (int i = 0; i < lines.length; i++) {
+            lore.add(Component.translatable(
+                    getLoreLineKey(key, i),
+                    lines[i],
+                    normalizedArgs
+            ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         }
 
         return lore;
@@ -156,7 +161,16 @@ public class TranslationManager {
     private static Map<String, String> toLegacyMap(Map<String, String> miniMessageMap) {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, String> entry : miniMessageMap.entrySet()) {
-            result.put(entry.getKey(), MessageConvertor.toLegacy(entry.getValue()));
+            String key = entry.getKey();
+            if (key.endsWith(".to_small")) continue;
+
+            String value = MessageConvertor.toLegacy(entry.getValue());
+            result.put(key, value);
+
+            if (miniMessageMap.get(key + ".to_small") != null &&
+                    miniMessageMap.get(key + ".to_small").equalsIgnoreCase("true")) {
+                result.put(key + ".to_small", MessagesManager.textToSmall(value));
+            }
         }
         return result;
     }
@@ -188,12 +202,28 @@ public class TranslationManager {
         JsonObject root = new JsonObject();
 
         for (Map.Entry<String, String> entry : translations.entrySet()) {
-            root.addProperty(entry.getKey(), entry.getValue());
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            root.addProperty(key, value);
+
+            String[] lines = value.split("\n");
+            if (lines.length == 1) {
+                continue;
+            }
+
+            for (int i = 0; i < lines.length; i++) {
+                root.addProperty(getLoreLineKey(key, i), lines[i]);
+            }
         }
 
         Files.writeString(
                 langFolder.resolve(minecraftLocale + ".json"),
                 GSON.toJson(root)
         );
+    }
+
+    private static String getLoreLineKey(String key, int line) {
+        return key + "." + line;
     }
 }

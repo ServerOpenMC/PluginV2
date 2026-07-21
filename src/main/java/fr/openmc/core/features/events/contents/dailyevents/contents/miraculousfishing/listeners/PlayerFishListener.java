@@ -1,0 +1,134 @@
+package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners;
+
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.FishingAttributeManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
+import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.MethodLoot;
+import fr.openmc.core.registry.loottable.loots.MoneyLoot;
+import fr.openmc.core.registry.loottable.loots.TableLoot;
+import fr.openmc.core.utils.RngUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import io.papermc.paper.event.entity.FishHookStateChangeEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FishHook;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerFishEvent;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+public class PlayerFishListener implements Listener {
+
+    @EventHandler
+    public void onStartFishing(PlayerFishEvent event) {
+        if (!DailyEventsManager.isActiveDailyEvent()
+                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+
+        Player player = event.getPlayer();
+        FishHook hook = event.getHook();
+
+        FishingAttributeManager.applyFishingSpeedModifier(player, hook);
+
+        if (event.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
+            Entity caughtEntity = event.getCaught();
+            if (caughtEntity instanceof Item caughtItem) {
+                caughtItem.remove();
+            }
+
+            CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
+
+            List<CustomLoot> loots = fishingLootTable.rollLoots();
+
+            List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
+
+            // * SFX
+            ParticleUtils.spawnDispersingParticles(player,
+                    Particle.CLOUD,
+                    hook.getLocation(),
+                    35, 0.1D, null);
+
+            MessagesManager.sendMessage(player, TranslationManager.translation(
+                    "feature.dailyevents.miraculousfishing.loot_table.get",
+                    Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
+            ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
+
+            if (loots.size() * 2 == finalLoots.size()) {
+                player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
+            }
+
+            sendLoot(player, hook, finalLoots);
+        }
+    }
+
+    @EventHandler
+    public void onHookOnWater(FishHookStateChangeEvent event) {
+        if (!DailyEventsManager.isActiveDailyEvent()
+                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+
+        Entity hook = event.getEntity();
+        World world = hook.getWorld();
+
+        if (event.getNewHookState().equals(FishHook.HookState.BOBBING)) {
+            // * SFX
+            ParticleUtils.sendParticlePacket(
+                    hook.getLocation().getNearbyEntitiesByType(Player.class, 30),
+                    Particle.POOF, hook.getLocation(),
+                    5,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.01,
+                    null
+            );
+            world.playSound(hook.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 2f, 0.7f);
+        }
+
+    }
+
+    /**
+     * Gère l'envoie des loots obtenu, du hook vers le joueur
+     * @param player le joueur ciblé
+     * @param hook le hook lancé par le joueur
+     * @param loots les loots obtenus par le joueur
+     */
+    private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
+        for (CustomLoot loot : loots) {
+            RngUtils.sendSoundRng(player, loot.getChance());
+
+            MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
+
+            // * Si y'a des sous loots, alors on affiche les sous loots obtenu,
+            // en modiant leur probabilité corresponde à la réalité
+            if (loot instanceof TableLoot) {
+                Set<CustomLoot> subLoots = loot.run(player);
+
+                for (CustomLoot subLoot : subLoots) {
+                    subLoot.setChance(loot.getChance() * subLoot.getChance());
+                }
+
+                sendLoot(player, hook, subLoots);
+            }
+            // * Si c'est un loot de type MoneyLoot ou MethodLoot,
+                // on exécute le loot, car on ne le donne va via un item
+            else if (loot instanceof MoneyLoot || loot instanceof MethodLoot)
+                loot.run(player);
+        }
+    }
+}

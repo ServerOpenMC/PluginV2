@@ -20,8 +20,10 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
+import fr.openmc.core.features.profile.ProfileManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.registry.items.CustomItem;
@@ -58,8 +60,10 @@ public enum Credits {
     MAINMENU(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFORMATION, "feature.credits.feature.mainmenu", MainMenu.class),
     MILESTONES(Material.SEA_LANTERN, "feature.credits.feature.milestones", MilestonesManager.class),
     PRIVATEMESSAGE(Material.ZOMBIE_HEAD, "feature.credits.feature.privatemessage", PrivateMessageManager.class),
+    PROFILE(Material.PLAYER_HEAD, "feature.credits.feature.profile", ProfileManager.class),
     QUEST(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_CHATEAU, "feature.credits.feature.quest", QuestsManager.class),
     SETTINGS(Material.REDSTONE_TORCH, "feature.credits.feature.settings", PlayerSettingsManager.class),
+    SHOPS(OMCRegistry.CUSTOM_ITEMS.CAISSE, "feature.credits.feature.shops", ShopManager.class),
     TICKETS(Material.BOOK, "feature.credits.feature.tickets", TicketManager.class),
     TPA(Material.ENDER_PEARL, "feature.credits.feature.tpa", TPAManager.class),
     RTP(Material.ENDER_PEARL, "feature.credits.feature.rtp", Set.of("miseur")),
@@ -74,6 +78,7 @@ public enum Credits {
     ERRORHANDLER(Material.COMMAND_BLOCK, "feature.credits.feature.errorhandler", Set.of("iambibi_")),
     UNITTEST(Material.COMMAND_BLOCK, "feature.credits.feature.unittest", Set.of("Nirbose", "Gyro")),
     ORM(Material.COMMAND_BLOCK, "feature.credits.feature.orm", Set.of("Piquel Chips")),
+    OMCPLAYER(Material.COMMAND_BLOCK, "feature.credits.feature.omcplayer", Set.of("Axeno")),
     ;
 
     private final ItemStack icon;
@@ -84,8 +89,9 @@ public enum Credits {
 
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
-     * @param icon Icône du crédit
-     * @param featureKey Translation key de la feature
+     *
+     * @param icon         Icône du crédit
+     * @param featureKey   Translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
     Credits(Material icon, String featureKey, Class<? extends Feature> featureClass) {
@@ -99,8 +105,9 @@ public enum Credits {
 
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
-     * @param icon Icône du crédit (ItemStack)
-     * @param featureKey La translation key de la feature
+     *
+     * @param icon         Icône du crédit (ItemStack)
+     * @param featureKey   La translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
     Credits(ItemStack icon, String featureKey, Class<? extends Feature> featureClass) {
@@ -114,8 +121,9 @@ public enum Credits {
 
     /**
      * Constructeur qui récupère automatiquement les contributeurs de la classe Feature via annotation.
-     * @param customItem Icône du crédit (CustomItem)
-     * @param featureKey La translation key de la feature
+     *
+     * @param customItem   Icône du crédit (CustomItem)
+     * @param featureKey   La translation key de la feature
      * @param featureClass Classe Feature (ex: AdminShopManager.class)
      */
     Credits(CustomItem customItem, String featureKey, Class<? extends Feature> featureClass) {
@@ -208,15 +216,15 @@ public enum Credits {
      */
     private static Set<String>[] getContributorsFromClass(Class<? extends Feature> featureClass) {
         Set<String>[] result = new Set[]{new HashSet<>(), new HashSet<>(), new HashSet<>()};
-        
+
         Credit annotation = featureClass.getAnnotation(Credit.class);
-        
+
         if (annotation != null) {
             result[0] = new HashSet<>(Arrays.asList(annotation.developers()));
             result[1] = new HashSet<>(Arrays.asList(annotation.graphist()));
             result[2] = new HashSet<>(Arrays.asList(annotation.builders()));
         }
-        
+
         return result;
     }
 }

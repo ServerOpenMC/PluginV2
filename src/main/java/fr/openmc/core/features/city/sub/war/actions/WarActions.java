@@ -291,7 +291,7 @@ public class WarActions {
                 Player pl = Bukkit.getPlayer(uuid);
                 if (pl != null) {
                     MessagesManager.sendMessage(pl,
-                            Component.text("La guerre a été annulée car la ville ennemie n'avait pas assez de défenseurs requis."),
+                            TranslationManager.translation("feature.city.war.begin.cancel_not_enough_defenders"),
                             Prefix.CITY, MessageType.ERROR, false);
                     return;
                 }

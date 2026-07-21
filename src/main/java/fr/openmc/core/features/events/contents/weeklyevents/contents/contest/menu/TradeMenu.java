@@ -18,7 +18,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -61,7 +60,7 @@ public class TradeMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        String campName = ContestPlayerManager.getPlayerCampName(player);
+        Component campName = ContestPlayerManager.getPlayerCampComponent(player);
         NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
         ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
@@ -70,7 +69,7 @@ public class TradeMenu extends Menu {
 
         List<Component> loreTrade = TranslationManager.translationLore(
                 "feature.events.contest.trade.main.lore",
-                Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)
+                TranslationManager.translation("feature.events.contest.team.label", campName).color(campColor)
         );
 
         inventory.put(4, new ItemMenuBuilder(this, shellContest, itemMeta -> {
@@ -156,7 +155,7 @@ public class TradeMenu extends Menu {
             sendNotEnoughMessage(player);
             return;
         }
-        ItemUtils.removeItemsFromInventory(player, item, itemsRemoved);
+        ItemUtils.removeItemsFromPlayerInventory(player, item, itemsRemoved);
         giveShells(player, shellsEarned);
         sendSuccessMessage(player, itemsRemoved, shellsEarned, tradeName);
     }
@@ -185,7 +184,7 @@ public class TradeMenu extends Menu {
                 .sum();
         int shellsEarned = (totalItems / amount) * amountShell;
         int itemsRemoved = (shellsEarned / amountShell) * amount;
-        ItemUtils.removeItemsFromInventory(player, item, itemsRemoved);
+        ItemUtils.removeItemsFromPlayerInventory(player, item, itemsRemoved);
         giveShells(player, shellsEarned);
         sendSuccessMessage(player, itemsRemoved, shellsEarned, tradeName);
     }

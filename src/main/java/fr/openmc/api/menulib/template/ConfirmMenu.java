@@ -103,33 +103,33 @@ public class ConfirmMenu extends Menu {
 
         List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
 
-        loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
+        loreAccept.add(TranslationManager.translation("api.menulib.menu.confirm.accept.lore"));
 
         List<Component> loreDeny = new ArrayList<>(loreDenyMsg);
 
-        loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
+        loreDeny.add(TranslationManager.translation("api.menulib.menu.confirm.deny.lore"));
 
         inventory.put(posDenyBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, itemMeta -> {
-            itemMeta.displayName(Component.text("§cRefuser"));
+            itemMeta.displayName(TranslationManager.translation("api.menulib.menu.confirm.deny.title"));
             itemMeta.lore(loreDeny);
         }).setOnClick(event -> {
             try {
                 deny.run();
             } catch (Exception e) {
-                MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
                 player.closeInventory();
                 throw new RuntimeException(e);
             }
         }));
 
         inventory.put(posAcceptBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, itemMeta -> {
-            itemMeta.displayName(Component.text("§aAccepter"));
+            itemMeta.displayName(TranslationManager.translation("api.menulib.menu.confirm.accept.title"));
             itemMeta.lore(loreAccept);
         }).setOnClick(event -> {
             try {
                 accept.run();
             } catch (Exception e) {
-                MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
                 player.closeInventory();
                 throw new RuntimeException(e);
             }

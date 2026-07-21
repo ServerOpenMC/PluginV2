@@ -1,6 +1,6 @@
 package fr.openmc.core.registry.mobs;
 
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -18,12 +18,12 @@ import java.util.*;
 @Getter
 public abstract class CustomMob<T extends LivingEntity> {
     private final String id;
-    private final String name;
+    private final Component name;
     private final Class<T> entityClass;
     private final Set<CustomMobAttribute> baseAttributes = new HashSet<>();
     private final List<CustomLoot> loots = new ArrayList<>();
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -32,7 +32,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, double speed, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, double speed, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -42,7 +42,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, double speed, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, double speed, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -53,7 +53,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.loots.addAll(loots);
     }
 
-    public CustomMob(String id, String name, Class<T> entityClass, double health, double damage, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
         this.entityClass = entityClass;
@@ -69,8 +69,8 @@ public abstract class CustomMob<T extends LivingEntity> {
     }
 
     // * peut etre Override
-    public void apply(LivingEntity livingEntity) {
-        applyStats(livingEntity);
+    public void apply(T entity) {
+        applyStats(entity);
     }
 
     // * peut etre Override
@@ -93,13 +93,15 @@ public abstract class CustomMob<T extends LivingEntity> {
     public T getPreBuildMob(Location spawnLocation) {
         T livingEntity = spawnLocation.getWorld().spawn(spawnLocation.add(0, 1, 0), entityClass, null, CreatureSpawnEvent.SpawnReason.CUSTOM);
         applyStats(livingEntity);
+
+        CustomMobRegistry.HAS_BOSSBAR.add(livingEntity.getUniqueId());
         return livingEntity;
     }
 
     public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {}
 
     public void applyStats(LivingEntity livingEntity) {
-        livingEntity.customName(Component.text(this.getName()));
+        livingEntity.customName(this.getName());
         livingEntity.setCustomNameVisible(true);
 
         for (CustomMobAttribute attribute : baseAttributes) {
@@ -113,11 +115,7 @@ public abstract class CustomMob<T extends LivingEntity> {
                 .orElse(livingEntity.getHealth())
         );
 
-        livingEntity.getPersistentDataContainer().set(
-                CustomMobRegistry.CUSTOM_MOB_KEY,
-                PersistentDataType.STRING,
-                this.getId()
-        );
+        registerAsCustomMob(livingEntity);
     }
 
     public double getHealth() {
@@ -126,5 +124,17 @@ public abstract class CustomMob<T extends LivingEntity> {
                 .findFirst()
                 .map(CustomMobAttribute::value)
                 .orElse(20.0);
+    }
+
+    public void registerAsCustomMob(LivingEntity entity) {
+        entity.getPersistentDataContainer().set(
+                CustomMobRegistry.CUSTOM_MOB_KEY,
+                PersistentDataType.STRING,
+                this.getId()
+        );
+    }
+
+    public void unregisterAsCustomMob(LivingEntity entity) {
+        entity.getPersistentDataContainer().remove(CustomMobRegistry.CUSTOM_MOB_KEY);
     }
 }

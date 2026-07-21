@@ -1,6 +1,9 @@
 package fr.openmc.core;
 
 import fr.openmc.api.cooldown.CooldownInterceptor;
+import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.entity.player.OMCPlayerParameterType;
+import fr.openmc.api.entity.player.OMCPlayerSenderResolver;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.debug.ToastCommand;
@@ -11,9 +14,11 @@ import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.commands.utils.Socials;
 import fr.openmc.core.features.credits.CreditsCommand;
 import fr.openmc.core.registry.ambient.commands.CustomAmbientCommands;
+import fr.openmc.core.registry.mobs.commands.CustomMobsCommands;
 import lombok.Getter;
 import revxrsal.commands.Lamp;
-import revxrsal.commands.bukkit.BukkitLamp;
+import revxrsal.commands.bukkit.BukkitLampConfig;
+import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 
 /**
  * Enregistrement des commandes globales du plugin.
@@ -27,8 +32,12 @@ public class CommandsManager {
      * Initialise le handler de commandes et enregistre les commandes.
      */
     public static void init() {
-        handler = BukkitLamp.builder(OMCPlugin.getInstance())
+        handler = Lamp.<BukkitCommandActor>builder()
+                .senderResolver(new OMCPlayerSenderResolver())
+                .accept(BukkitLampConfig.createDefault(OMCPlugin.getInstance()))
                 .commandCondition(new CooldownInterceptor())
+                .parameterTypes(builder ->
+                        builder.addParameterType(OMCPlayer.class, new OMCPlayerParameterType()))
                 .build();
 
         registerCommands();
@@ -48,6 +57,7 @@ public class CommandsManager {
                 new CreditsCommand(),
                 new CustomItemCommand(),
                 new CustomAmbientCommands(),
+                new CustomMobsCommands(),
                 new ToastCommand()
         );
     }

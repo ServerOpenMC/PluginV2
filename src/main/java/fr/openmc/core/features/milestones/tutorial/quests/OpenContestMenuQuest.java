@@ -32,12 +32,9 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 
     public OpenContestMenuQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.open_contest.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_contest.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.open_contest.description.2")
-                ),
-				OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
+                TranslationManager.translation("feature.milestones.tutorial.quest.open_contest.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.open_contest.description"),
+                OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.OPEN_CONTEST,
                 new QuestTier(

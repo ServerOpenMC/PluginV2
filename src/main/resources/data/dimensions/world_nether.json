@@ -1,0 +1,42 @@
+{
+  "enabled": true,
+  "name": "Nether",
+  "description": "Forgez une breche vers les terres de feu.",
+  "dimensionName": "world_nether",
+  "requireDimension": "",
+  "icon": "NETHER_BRICKS",
+  "steps": [
+    {
+      "name": "Le Brasier initial",
+      "description": "Rassemblez le bloc initial pour créer le lien.",
+      "type": "ITEMS",
+      "required": 160,
+      "material": "OBSIDIAN",
+      "cooldownSeconds": 43200
+    },
+    {
+      "name": "L'Etincelle",
+      "description": "Preparez l'item capable d'enflammer le portail.",
+      "type": "ITEMS",
+      "required": 502,
+      "material": "FLINT",
+      "cooldownSeconds": 43200
+    },
+    {
+      "name": "L'Appel de l'or",
+      "description": "Offrez l'or qui attire les forces infernales.",
+      "type": "ITEMS",
+      "required": 512,
+      "material": "GOLD_INGOT",
+      "cooldownSeconds": 86400
+    },
+    {
+      "name": "Collecte infernal",
+      "description": "Financez les protections necessaires a l'ouverture.",
+      "type": "MONEY",
+      "required": 250000,
+      "material": "GOLD_INGOT",
+      "cooldownSeconds": 86400
+    }
+  ]
+}

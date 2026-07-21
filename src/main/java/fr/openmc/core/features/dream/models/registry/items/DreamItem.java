@@ -36,7 +36,7 @@ public abstract class DreamItem extends CustomItem {
 
     public boolean isTransferable() {
         return getMeta().getTransferable();
-    };
+    }
 
     public abstract ItemStack getTransferableItem();
 

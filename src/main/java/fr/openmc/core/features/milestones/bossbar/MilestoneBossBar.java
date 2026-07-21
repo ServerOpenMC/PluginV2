@@ -7,6 +7,7 @@ import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 public class MilestoneBossBar extends BaseBossbar {
@@ -39,11 +40,13 @@ public class MilestoneBossBar extends BaseBossbar {
         int progress = quest.getProgress(player.getUniqueId());
         int goal = quest.getCurrentTarget(player.getUniqueId());
 
-        String questName = quest.getName(player.getUniqueId());
+        Component questName = quest.getName(player.getUniqueId());
 
         if (goal <= 1) {
             bar.name(Component.text(
-                    PLACEHOLDER_MILESTONE_BOSSBAR.formatted(currentStep + 1, questName)
+                    PLACEHOLDER_MILESTONE_BOSSBAR.formatted(
+                            currentStep + 1,
+                            PlainTextComponentSerializer.plainText().serialize(questName))
             ).color(milestone.getBossBarOptions().textColor()));
 
             bar.progress((float) currentStep / maxStep);

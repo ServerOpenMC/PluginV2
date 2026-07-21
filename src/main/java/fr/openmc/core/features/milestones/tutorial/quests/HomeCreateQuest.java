@@ -21,17 +21,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class HomeCreateQuest extends MilestoneQuest implements Listener {
 
     public HomeCreateQuest() {
         super(
-                TranslationManager.translationString("feature.milestones.tutorial.quest.home_create.name"),
-                List.of(
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_create.description.1"),
-                        TranslationManager.translationString("feature.milestones.tutorial.quest.home_create.description.2")
-                ),
+                TranslationManager.translation("feature.milestones.tutorial.quest.home_create.name"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.home_create.description"),
                 Material.ENDER_PEARL,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.HOME_CREATE,

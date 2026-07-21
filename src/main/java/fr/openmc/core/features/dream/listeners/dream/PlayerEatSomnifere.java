@@ -1,11 +1,14 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
+import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
+import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,12 +23,13 @@ public class PlayerEatSomnifere implements Listener {
         if (dreamItem == null || !dreamItem.getId().equals("omc_dream:somnifere")) return;
 
         Player player = event.getPlayer();
+        if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
 
         // somnifere se stack par 1, aucun check est nécessaire
         event.setItem(null);
 
         if (DreamUtils.isInDreamWorld(player)) {
-            AttributeInstance attribute = player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);
+            AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
 
             if (attribute == null) return;
 

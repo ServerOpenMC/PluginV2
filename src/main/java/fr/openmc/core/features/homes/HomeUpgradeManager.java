@@ -1,23 +1,21 @@
 package fr.openmc.core.features.homes;
 
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
 import fr.openmc.core.utils.bukkit.ItemUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public class HomeUpgradeManager {
 
-    public static HomeLimits getCurrentUpgrade(Player player) {
-        int currentLimit = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
+    public static HomeLimits getCurrentUpgrade(OMCPlayer player) {
+        int currentLimit = player.home().getHomeLimit().getLimit();
         for (HomeLimits upgrade : HomeLimits.values()) {
             if (upgrade.getLimit() == currentLimit) {
                 return upgrade;
@@ -38,49 +36,43 @@ public class HomeUpgradeManager {
         return values[nextIndex];
     }
 
-    public static void upgradeHome(Player player) {
-        int currentHomes = HomesManager.getHomes(player.getUniqueId()).size();
-        int currentUpgrade = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
+    public static void upgradeHome(OMCPlayer player) {
+        int currentHomes = player.home().getHomes().size();
+        int currentUpgrade = player.home().getHomeLimit().getLimit();
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
-        if(nextUpgrade != null) {
+        if (nextUpgrade != null) {
             int price = nextUpgrade.getPrice();
             int ayweniteAmount = nextUpgrade.getAyweniteCost();
 
-            if(currentHomes < currentUpgrade) {
-                MessagesManager.sendMessage(
-                        player,
+            if (currentHomes < currentUpgrade) {
+                player.message().sendError(
                         TranslationManager.translation("feature.homes.upgrade.not_reached_limit"),
                         Prefix.HOME,
-                        MessageType.ERROR,
                         true
                 );
                 return;
             }
 
             if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), ayweniteAmount)) {
-                MessagesManager.sendMessage(
-                        player,
+                player.message().sendError(
                         TranslationManager.translation(
                                 "feature.homes.upgrade.not_enough_aywenite",
                                 Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE)
                         ),
                         Prefix.OPENMC,
-                        MessageType.ERROR,
                         true
                 );
                 return;
             }
 
             if (EconomyManager.getBalance(player.getUniqueId()) < price) {
-                MessagesManager.sendMessage(
-                        player,
+                player.message().sendError(
                         TranslationManager.translation(
                                 "feature.homes.upgrade.not_enough_money",
                                 Component.text(price).color(NamedTextColor.YELLOW),
                                 Component.text(EconomyManager.getEconomyIcon())
                         ),
                         Prefix.HOME,
-                        MessageType.ERROR,
                         true
                 );
                 return;
@@ -89,27 +81,25 @@ public class HomeUpgradeManager {
             ItemUtils.takeAywenite(player, ayweniteAmount);
             EconomyManager.withdrawBalance(player.getUniqueId(), price);
 
-            HomesManager.updateHomeLimit(player.getUniqueId());
+            player.home().updateHomeLimit();
 
-            int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId()).getLimit();
+            int updatedHomesLimit = player.home().getHomeLimit().getLimit();
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
             });
 
-            MessagesManager.sendMessage(player,
+            player.message().sendSuccess(
                     TranslationManager.translation(
                             "feature.homes.upgrade.success",
                             Component.text(updatedHomesLimit).color(NamedTextColor.YELLOW),
                             Component.text(nextUpgrade.getPrice()).color(NamedTextColor.YELLOW),
                             Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE)
-                    ), Prefix.HOME, MessageType.SUCCESS, true);
+                    ), Prefix.HOME, true);
         } else {
-            MessagesManager.sendMessage(
-                    player,
+            player.message().sendError(
                     TranslationManager.translation("feature.homes.upgrade.max"),
                     Prefix.HOME,
-                    MessageType.ERROR,
                     true
             );
         }

@@ -4,9 +4,8 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,7 +24,7 @@ public class PlayerUtils {
 		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
             player.showTitle(Title.title(
                     Component.text(FontImageWrapper.replaceFontImages(":tp_effect:")),
-                    Component.text("Téléportation...", NamedTextColor.GREEN, TextDecoration.BOLD),
+					TranslationManager.translation("core.utils.fade_title.teleporting"),
                     Title.Times.times(Duration.ofMillis(20 * 50), Duration.ofMillis(10 * 50), Duration.ofMillis(10 * 50))
             ));
 			new BukkitRunnable() {

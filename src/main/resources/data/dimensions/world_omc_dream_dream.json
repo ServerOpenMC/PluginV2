@@ -1,0 +1,50 @@
+{
+  "enabled": true,
+  "name": "Reves",
+  "description": "Endormez le monde pour ouvrir le monde des reves.",
+  "dimensionName": "world_omc_dream_dream",
+  "requireDimension": "world_the_end",
+  "icon": "omc_dream:somnifere",
+  "steps": [
+    {
+      "name": "Sommeil collectif",
+      "description": "Accumulez des membranes de phantom pour tisser le voile du reve.",
+      "type": "ITEMS",
+      "required": 128,
+      "material": "PHANTOM_MEMBRANE",
+      "cooldownSeconds": 86400
+    },
+    {
+      "name": "Noyau amethyste",
+      "description": "Rassemblez un maximum de noyau amethyste pour détecter la Singurlarité.",
+      "type": "ITEMS",
+      "required": 256,
+      "material": "AMETHYST_SHARD",
+      "cooldownSeconds": 43200
+    },
+    {
+      "name": "Bout de corruption",
+      "description": "Trouvez un nombre raisonnant de fragments de corruption pour stabiliser la dimension.",
+      "type": "ITEMS",
+      "required": 32,
+      "material": "ECHO_SHARD",
+      "cooldownSeconds": 86400
+    },
+    {
+      "name": "Sculk endormi",
+      "description": "Calmez la matiere vivante avant qu'elle se propage trop vite",
+      "type": "ITEMS",
+      "required": 2048,
+      "material": "SCULK",
+      "cooldownSeconds": 43200
+    },
+    {
+      "name": "Collecte onirique",
+      "description": "Financez la stabilisation de la dimension des reves.",
+      "type": "MONEY",
+      "required": 50000,
+      "material": "GOLD_INGOT",
+      "cooldownSeconds": 86400
+    }
+  ]
+}

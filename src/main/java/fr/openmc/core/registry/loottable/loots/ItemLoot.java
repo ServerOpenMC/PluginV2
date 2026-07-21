@@ -1,0 +1,212 @@
+package fr.openmc.core.registry.loottable.loots;
+
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.bukkit.ItemUtils;
+import lombok.Getter;
+import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.function.Supplier;
+
+@Getter
+public class ItemLoot implements CustomLoot, RepresentedItem {
+    @Setter
+    private double chance;
+    private final Set<ItemStack> items;
+    private Supplier<ItemStack> itemSupplier = null;
+    private final ItemStack displayedItem;
+    private final int minAmount;
+    private final int maxAmount;
+
+    public ItemLoot(Set<ItemStack> items, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+        this.chance = chance;
+        this.items = items;
+        this.displayedItem = displayedItem;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
+    }
+
+    public ItemLoot(Supplier<ItemStack> itemSupplier, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+        this.chance = chance;
+        this.items = Collections.singleton(displayedItem);
+        this.itemSupplier = itemSupplier;
+        this.displayedItem = displayedItem;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
+    }
+
+    public ItemLoot(Supplier<ItemStack> itemSupplier, Material displayedItem, double chance, int minAmount, int maxAmount) {
+        this(itemSupplier, ItemStack.of(displayedItem), chance, minAmount, maxAmount);
+    }
+
+    public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
+        this(Collections.singleton(item),
+                null,
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(ItemStack item, double chance, int amount) {
+        this(Collections.singleton(item),
+                null,
+                chance,
+                amount,
+                amount);
+    }
+
+    public ItemLoot(Material item, double chance, int minAmount, int maxAmount) {
+        this(ItemStack.of(item),
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(Material item, double chance, int amount) {
+        if (item == null) {
+            throw new IllegalArgumentException("CustomItem cannot be null");
+        }
+        this(Collections.singleton(ItemStack.of(item)),
+                null,
+                chance,
+                amount,
+                amount);
+    }
+    public ItemLoot(CustomItem item, double chance, int amount) {
+        if (item == null) {
+            throw new IllegalArgumentException("CustomItem cannot be null");
+        }
+        this(Collections.singleton(item.getBest()),
+                null,
+                chance,
+                amount,
+                amount);
+    }
+
+    public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
+        if (item == null) {
+            throw new IllegalArgumentException("CustomItem cannot be null");
+        }
+        this(Collections.singleton(item.getBest()),
+                null,
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(Material item, Material displayedItem, double chance, int minAmount, int maxAmount) {
+        this(ItemStack.of(item),
+                ItemStack.of(displayedItem),
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(ItemStack item, Material displayedItem, double chance, int minAmount, int maxAmount) {
+        this(item,
+                ItemStack.of(displayedItem),
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(ItemStack item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+        this(Collections.singleton(item),
+                displayedItem,
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(CustomItem item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+        if (item == null) {
+            throw new IllegalArgumentException("CustomItem cannot be null");
+        }
+        this(Collections.singleton(item.getBest()),
+                displayedItem,
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(CustomItem item, CustomItem displayedItem, double chance, int minAmount, int maxAmount) {
+        if (item == null) throw new IllegalArgumentException("CustomItem cannot be null");
+        if (displayedItem == null) throw new IllegalArgumentException("CustomItem cannot be null");
+
+        this(Collections.singleton(item.getBest()),
+                displayedItem.getBest(),
+                chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemStack getFirstLoot() {
+        ItemStack item = items.stream().findFirst().orElse(null);
+        if (item == null) return null;
+
+        item = item.clone();
+        item.setAmount(Math.min(this.getRandomAmount(), 99));
+        return item;
+    }
+
+    public int getRandomAmount() {
+        return minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+    }
+
+    @Override
+    public Component getDisplayText() {
+        return getFirstLoot().displayName();
+    }
+
+    /**
+     * Renvoie un nom d'item simple, sans crochet et sans hover
+     * @return un component contenant le nouveau nom du loot
+     */
+    public Component getSimpleText() {
+        return getFirstLoot().effectiveName().asHoverEvent().value()
+                .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
+
+    @Override
+    public Set<CustomLoot> run(Player receiver) {
+        if (itemSupplier != null) {
+            ItemStack item = itemSupplier.get();
+            item.setAmount(this.getRandomAmount());
+
+            if (ItemUtils.hasEnoughSpace(receiver, item)) {
+                receiver.getInventory().addItem(item);
+            } else {
+                receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+            }
+
+            return Collections.singleton(this);
+        }
+
+        for (ItemStack lootItem : this.getItems()) {
+            ItemStack item = lootItem.clone();
+            item.setAmount(this.getRandomAmount());
+
+            if (ItemUtils.hasEnoughSpace(receiver, item)) {
+                receiver.getInventory().addItem(item);
+            } else {
+                receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+            }
+        }
+
+        return Collections.singleton(this);
+    }
+
+    @Override
+    public ItemStack getRepresentativeItem() {
+        if (this.displayedItem != null)
+            return this.getDisplayedItem();
+        else
+            return getFirstLoot();
+    }
+}

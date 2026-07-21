@@ -31,11 +31,13 @@ public enum Prefix {
     MILLESTONE("<gradient:#A2D182:#B8E89D>ᴍɪʟʟᴇѕᴛᴏɴᴇ</gradient>"),
     DREAM("<gradient:#4498DB:#412AEF>ᴅʀᴇᴀᴍ</gradient>"),
     MAILBOX("<gradient:#2C43C4:#6A76D9>ᴍᴀɪʟʙᴏx</gradient>"),
-    HALLOWEEN("<gradient:#FF7518:#FFD580>ʜᴀʟʟᴏᴡᴇᴇɴ</gradient>")
-    ;
+    HALLOWEEN("<gradient:#FF7518:#FFD580>ʜᴀʟʟᴏᴡᴇᴇɴ</gradient>"),
+    DIMOPENER("<gradient:#A5FFA8:#DAFFE4>ᴅɪᴍᴏᴘᴇɴᴇʀ</gradient>"),
+    MIRACULOUS_FISHING("<gradient:#4498DB:#0FB590>ᴘᴇᴄʜᴇ ᴍɪʀᴀᴄᴜʟᴇ</gradient><gradient:#0FB590:#0FB590>ᴜѕᴇ</gradient>");
 
     @Getter
     private final Component prefix;
+
     Prefix(String prefix) {
         this.prefix = MiniMessage.miniMessage().deserialize(prefix);
     }

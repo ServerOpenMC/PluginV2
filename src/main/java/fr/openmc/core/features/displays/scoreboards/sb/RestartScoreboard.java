@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -27,11 +26,10 @@ public class RestartScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(text(
-                "%s %s".formatted(textToSmall(
-                TranslationManager.translationString("feature.displays.scoreboard.restart.in")),
-                DateUtils.convertSecondToTime(Restart.remainingTime)
-        ), NamedTextColor.RED));
+        lines.add(TranslationManager.translation("feature.displays.scoreboard.restart.in.to_small")
+                .appendSpace()
+                .append(text(DateUtils.convertSecondToTime(Restart.remainingTime)))
+                .color(NamedTextColor.RED));
         lines.add(empty());
         lines.add(getFooter());
 

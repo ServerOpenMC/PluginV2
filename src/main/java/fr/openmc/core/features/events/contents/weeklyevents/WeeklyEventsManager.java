@@ -25,7 +25,7 @@ import java.util.List;
 @Credit(developers = {"iambibi_"})
 public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
 
-    private static final List<WeeklyEvent> EVENTS = List.of(
+    public static final List<WeeklyEvent> EVENTS = List.of(
             new Contest()
     );
 

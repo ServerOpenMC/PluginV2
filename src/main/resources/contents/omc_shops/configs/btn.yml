@@ -1,0 +1,10 @@
+info:
+  namespace: omc_shops
+items:
+  company_box:
+    display_name: "company box"
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - company_box

@@ -14,7 +14,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -59,8 +58,8 @@ public class VoteMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        String camp1Name = ContestManager.data.getCamp1();
-        String camp2Name = ContestManager.data.getCamp2();
+        Component camp1Name = ContestManager.data.getCamp1();
+        Component camp2Name = ContestManager.data.getCamp2();
 
         String camp1Color = ContestManager.data.getColor1();
         String camp2Color = ContestManager.data.getColor2();
@@ -85,7 +84,7 @@ public class VoteMenu extends Menu {
             ench2 = false;
             lore1.add(TranslationManager.translation(
                     "feature.events.contest.vote.lore.vote_team",
-                    Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
+                    camp1Name
             ));
             lore1.add(TranslationManager.translation("feature.events.contest.vote.lore.win"));
             lore1.add(TranslationManager.translation("feature.events.contest.vote.lore.warning_choice"));
@@ -93,7 +92,7 @@ public class VoteMenu extends Menu {
 
             lore2.add(TranslationManager.translation(
                     "feature.events.contest.vote.lore.vote_team",
-                    Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)
+                    camp2Name
             ));
             lore2.add(TranslationManager.translation("feature.events.contest.vote.lore.win"));
             lore2.add(TranslationManager.translation("feature.events.contest.vote.lore.warning_choice"));
@@ -103,14 +102,14 @@ public class VoteMenu extends Menu {
                 ench2 = false;
                 lore1.add(TranslationManager.translation(
                         "feature.events.contest.vote.lore.vote_team",
-                        Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
+                        camp1Name
                 ));
                 lore1.add(TranslationManager.translation("feature.events.contest.vote.lore.win"));
                 lore1.add(TranslationManager.translation("feature.events.contest.vote.lore.warning_choice"));
 
                 lore2.add(TranslationManager.translation(
                         "feature.events.contest.vote.lore.vote_team",
-                        Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)
+                        camp2Name
                 ));
                 lore2.add(TranslationManager.translation("feature.events.contest.vote.lore.win"));
                 lore2.add(TranslationManager.translation("feature.events.contest.vote.lore.warning_choice"));
@@ -118,28 +117,28 @@ public class VoteMenu extends Menu {
             } else if (playerData.getCamp() == 1) {
                 lore1.add(TranslationManager.translation(
                         "feature.events.contest.vote.lore.voted_for",
-                        Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
+                        camp1Name
                 ));
                 lore1.add(TranslationManager.translation("feature.events.contest.vote.lore.win_exclaim"));
                 ench1 = true;
 
                 lore2.add(TranslationManager.translation(
                         "feature.events.contest.vote.lore.lose_team",
-                        Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)
+                        camp2Name
                 ));
                 lore2.add(TranslationManager.translation("feature.events.contest.vote.lore.lose_detail"));
                 ench2 = false;
             } else if (playerData.getCamp() == 2) {
                 lore1.add(TranslationManager.translation(
                         "feature.events.contest.vote.lore.lose_team",
-                        Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
+                        camp1Name
                 ));
                 lore1.add(TranslationManager.translation("feature.events.contest.vote.lore.lose_detail"));
                 ench1 = false;
 
                 lore2.add(TranslationManager.translation(
                         "feature.events.contest.vote.lore.voted_for",
-                        Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)
+                        camp2Name
                 ));
                 lore2.add(TranslationManager.translation("feature.events.contest.vote.lore.win_exclaim"));
                 ench2 = true;
@@ -152,19 +151,18 @@ public class VoteMenu extends Menu {
         List<Component> loreInfo = TranslationManager.translationLore("feature.events.contest.vote.info.lore");
 
         inventory.put(camp1Slot, new ItemMenuBuilder(this, m1, itemMeta -> {
-            itemMeta.displayName(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1));
+            itemMeta.displayName(camp1Name);
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
-                String campName = ContestManager.data.getCamp1();
                 String campColor = ContestManager.data.getColor1();
 
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
                 Component teamComponent = TranslationManager.translation(
                         "feature.events.contest.team.label",
-                        Component.text(campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
-                );
+                        ContestManager.data.getCamp1()
+                ).color(colorFinal);
                 List<Component> loreAccept = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.join.lore",
                         teamComponent
@@ -206,19 +204,18 @@ public class VoteMenu extends Menu {
         }));
 
         inventory.put(camp2Slot, new ItemMenuBuilder(this, m2, itemMeta -> {
-            itemMeta.displayName(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2));
+            itemMeta.displayName(camp2Name);
             itemMeta.lore(lore2);
             itemMeta.setEnchantmentGlintOverride(ench2);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
-                String campName = ContestManager.data.getCamp2();
                 String campColor = ContestManager.data.getColor2();
 
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
                 Component teamComponent = TranslationManager.translation(
                         "feature.events.contest.team.label",
-                        Component.text(campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)
-                );
+                        ContestManager.data.getCamp2()
+                ).color(colorFinal);
                 List<Component> loreAccept = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.join.lore",
                         teamComponent
@@ -262,7 +259,7 @@ public class VoteMenu extends Menu {
         inventory.put(35, new ItemMenuBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.events.contest.vote.info.name"));
             itemMeta.lore(loreInfo);
-        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(player).open()));
+        }).setOnClick(_ -> new MoreInfoMenu(player).open()));
 
         return inventory;
     }

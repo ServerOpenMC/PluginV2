@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
@@ -8,11 +9,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -33,7 +31,7 @@ public class HomeConfigMenu extends Menu {
 
     private final Home home;
 
-    public HomeConfigMenu(Player owner, Home home) {
+    public HomeConfigMenu(OMCPlayer owner, Home home) {
         super(owner);
         this.home = home;
     }
@@ -56,7 +54,7 @@ public class HomeConfigMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         content.put(4, new ItemMenuBuilder(this, home.getIconItem()).hide(ItemUtils.getDataComponentType()));
 
@@ -73,17 +71,17 @@ public class HomeConfigMenu extends Menu {
 
             if (!HomeUtil.isValidHomeName(input)) return;
 
-            if (HomesManager.getHomesNames(getOwner().getUniqueId()).contains(input)) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.homes.command.rename.already_has"), Prefix.HOME, MessageType.ERROR, true);
+            if (getOwner().home().getHomesNames().contains(input)) {
+                player.message().sendError(TranslationManager.translation("feature.homes.command.rename.already_has"), Prefix.HOME, true);
                 return;
             }
 
-            MessagesManager.sendMessage(player, TranslationManager.translation(
+            player.message().sendSuccess(TranslationManager.translation(
                     "feature.homes.config.rename.success",
                     Component.text(home.getName()).color(NamedTextColor.YELLOW),
                     Component.text(input).color(NamedTextColor.YELLOW)
-            ), Prefix.HOME, MessageType.SUCCESS, true);
-            HomesManager.renameHome(home, input);
+            ), Prefix.HOME, true);
+            getOwner().home().renameHome(home, input);
         })));
 
         content.put(24, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED, itemMeta -> {
@@ -98,10 +96,12 @@ public class HomeConfigMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
-    public void onClose(InventoryCloseEvent event) {}
+    public void onClose(InventoryCloseEvent event) {
+    }
 
     @Override
     public List<Integer> getTakableSlot() {

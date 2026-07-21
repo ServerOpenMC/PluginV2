@@ -1,5 +1,6 @@
 package fr.openmc.api.scoreboard;
 
+import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -193,13 +194,12 @@ public class SternalBoard extends SternalBoardHandler<Component> {
     }
 
     @Override
-    protected Object toMinecraftComponent(Component component) throws Throwable {
+    protected Object toMinecraftComponent(Component component) {
         if (component == null || component.equals(Component.empty())) {
             return EMPTY_MESSAGE;
         }
 
-        String legacy = LEGACY_SERIALIZER.serialize(component);
-        return Array.get(MESSAGE_FROM_STRING.invoke(legacy), 0);
+        return PaperAdventure.asVanilla(component);
     }
 
     @Override

@@ -1,17 +1,25 @@
 package fr.openmc.core.utils.text;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
 public class DateUtils {
+
     private final static DateTimeFormatter foratterWeekFormat = DateTimeFormatter.ofPattern("u-w", Locale.FRENCH);
 
+    public static LocalDateTime getLocalDateTime() {
+        return LocalDateTime.now(ZoneId.of("Europe/Paris"));
+    }
     /**
      * Get "Previous Week Format"
      * -> 2025-34 - 1 YY-w
@@ -132,26 +140,55 @@ public class DateUtils {
     /**
      * Renvoie une chaine de caractère en fonction du temps passé
      */
-    public static String formatRelativeDate(LocalDateTime dateTime) {
-        LocalDateTime now = LocalDateTime.now();
+    public static Component formatRelativeDate(LocalDateTime dateTime) {
+        LocalDateTime now = DateUtils.getLocalDateTime();
         Duration duration = Duration.between(dateTime, now);
         long minutes = duration.toMinutes();
 
-        String repetMsg="Il y a ";
         if (minutes < 1) {
-            return "À l'instant";
+            return TranslationManager.translation("core.date.relative.just_now");
         } else if (minutes < 60) {
-            return repetMsg + minutes + " minute" + (minutes > 1 ? "s" : "");
+            return TranslationManager.translation(
+                    minutes > 1 ? "core.date.relative.minutes" : "core.date.relative.minute",
+                    Component.text(minutes)
+            );
         } else if (duration.toHours() < 24) {
             long hours = duration.toHours();
-            return repetMsg + hours + " heure" + (hours > 1 ? "s" : "");
+            return TranslationManager.translation(
+                    hours > 1 ? "core.date.relative.hours" : "core.date.relative.hour",
+                    Component.text(hours)
+            );
         } else if (duration.toDays() <= 5) {
             long days = duration.toDays();
-            return repetMsg + days + " jour" + (days > 1 ? "s" : "");
+            return TranslationManager.translation(
+                    days > 1 ? "core.date.relative.days" : "core.date.relative.day",
+                    Component.text(days)
+            );
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'Le' dd/MM/yyyy 'à' HH:mm");
-            return dateTime.format(formatter);
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            return TranslationManager.translation(
+                    "core.date.relative.absolute",
+                    Component.text(dateTime.format(dateFormatter)),
+                    Component.text(dateTime.format(timeFormatter))
+            );
         }
+    }
+
+    /**
+     * Renvoie une chaine de caractère (ex dimanche 7 juin)
+     */
+    public static String formatDate(LocalDateTime dateTime) {
+        return dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.FRANCE)
+                + " " + dateTime.getDayOfMonth() + " "
+                + dateTime.getMonth().getDisplayName(TextStyle.FULL, Locale.FRANCE);
+    }
+
+    /**
+     * Renvoie une chaine de caractère (ex 0h12)
+     */
+    public static String formatHourMinute(int hours, int minutes) {
+        return hours + "h" + String.format("%02d", minutes);
     }
 
     /**
@@ -160,7 +197,7 @@ public class DateUtils {
      * @return format 4h 2m 38s
      */
     public static String getTimeUntilNextDay(DayOfWeek day) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.getLocalDateTime();
 
         LocalDateTime nextDay = now.with(TemporalAdjusters.next(day)).toLocalDate().atStartOfDay();
 
@@ -174,7 +211,7 @@ public class DateUtils {
     }
 
     public static long getSecondsUntilDayOfWeekTime(DayOfWeek dayOfWeek, int hour, int minute, int second) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.getLocalDateTime();
         LocalDateTime nextDayOfWeekMidnight = now.with(TemporalAdjusters.nextOrSame(dayOfWeek))
                 .withHour(hour).withMinute(minute).withSecond(second).withNano(0);
 
@@ -183,5 +220,11 @@ public class DateUtils {
         }
 
         return ChronoUnit.SECONDS.between(now, nextDayOfWeekMidnight);
+    }
+
+    public static long getDelayBetweenNow(LocalDateTime time) {
+        LocalDateTime now = getLocalDateTime();
+
+        return ChronoUnit.SECONDS.between(now, time);
     }
 }

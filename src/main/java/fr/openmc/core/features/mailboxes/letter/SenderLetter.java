@@ -4,6 +4,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName;
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 import static fr.openmc.core.utils.text.DateUtils.formatRelativeDate;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
@@ -25,14 +27,15 @@ public class SenderLetter extends ItemStack {
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getStatus(refused));
         ArrayList<Component> lore = new ArrayList<>();
-        lore.add(colorText(TranslationManager.translationString("feature.mailboxes.letter.cancel_hint"), NamedTextColor.YELLOW, true));
+        lore.add(TranslationManager.translation("feature.mailboxes.letter.cancel_hint")
+                .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
         lore.add(getPlayerName(player));
-        lore.add(colorText(TranslationManager.translationString(
+        lore.add(TranslationManager.translation(
                 "feature.mailboxes.letter.sent_info",
-                Component.text(formatRelativeDate(sentAt)),
+                formatRelativeDate(sentAt),
                 Component.text(itemsCount),
-                Component.text(pluralize("item", itemsCount))
-        ), NamedTextColor.DARK_GRAY, true));
+                pluralize(TranslationManager.translation("global.item"), itemsCount)
+        ).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         skullMeta.lore(lore);
         this.setItemMeta(skullMeta);
     }

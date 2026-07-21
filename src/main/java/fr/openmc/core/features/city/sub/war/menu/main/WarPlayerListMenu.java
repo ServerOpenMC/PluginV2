@@ -70,19 +70,22 @@ public class WarPlayerListMenu extends PaginatedMenu {
 
         for (UUID memberUUID : sortedMembers) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(memberUUID);
+            if (playerOffline == null) continue;
+            String playerName = playerOffline.getName() != null ? playerOffline.getName() : "null";
 
             boolean hasPermissionOwner = city.hasPermission(memberUUID, CityPermission.OWNER);
-            String title;
+            Component title;
             if (hasPermissionOwner) {
-                title = TranslationManager.translationString("feature.city.war.menu.players.role.owner");
+                title = TranslationManager.translation("feature.city.war.menu.players.role.owner");
             } else if (MayorManager.cityMayor.get(city.getUniqueId()).getMayorUUID().equals(memberUUID)) {
-                title = TranslationManager.translationString("feature.city.war.menu.players.role.mayor");
+                title = TranslationManager.translation("feature.city.war.menu.players.role.mayor");
             } else {
-                title = TranslationManager.translationString("feature.city.war.menu.players.role.member");
+                title = TranslationManager.translation("feature.city.war.menu.players.role.member");
             }
 
-            String finalTitle = title;
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(title
+                    .append(Component.text(playerName).decoration(TextDecoration.ITALIC, false)))));
         }
 
         return items;

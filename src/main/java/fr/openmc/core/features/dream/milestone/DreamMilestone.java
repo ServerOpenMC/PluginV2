@@ -8,6 +8,7 @@ import fr.openmc.core.features.milestones.menus.MilestoneMenu;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneType;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,18 +30,13 @@ public class DreamMilestone implements Milestone<DreamSteps>  {
 	}
 	
 	@Override
-	public String getName() {
-		return "§1Tutoriel de la Dimension des Rêves";
+	public Component getName() {
+		return TranslationManager.translation("feature.dream.milestone.name");
 	}
 	
 	@Override
 	public List<Component> getDescription() {
-		return List.of(
-				Component.text("§7Plongez-vous dans un §6long sommeil §7!"),
-				Component.text("§7Arpentez vos rêves et gagnez des §6récompenses §7!"),
-				Component.text("§7Un monde nouveau s'offre à vous,"),
-				Component.text("§7mais arriverez-vous à vous extraire de ce lieu sombre et chaotique ?")
-		);
+		return TranslationManager.translationLore("feature.dream.milestone.description");
 	}
 	
 	@Override

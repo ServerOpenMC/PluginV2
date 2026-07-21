@@ -3,12 +3,12 @@ package fr.openmc.core.features.dream.registries.mobs;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.registry.loottable.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.bukkit.EntityUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,7 +29,7 @@ public class Soul extends DreamMob<Vex> {
 
     public Soul(String id) {
         super(id,
-                "Âme",
+                TranslationManager.translation("feature.dream.mob.soul"),
                 Vex.class,
                 2,
                 3L,
@@ -63,7 +63,7 @@ public class Soul extends DreamMob<Vex> {
         );
 
         ArmorStand stand = (ArmorStand) world.spawnEntity(location, EntityType.ARMOR_STAND);
-        stand.customName(Component.text("§5§lÂme"));
+        stand.customName(TranslationManager.translation("feature.dream.mob.soul.display"));
         stand.setCustomNameVisible(true);
         stand.setInvisible(true);
         stand.setSmall(true);
@@ -73,7 +73,7 @@ public class Soul extends DreamMob<Vex> {
 
         stand.getEquipment().setHelmet(SkullUtils.getCustomHead(
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc5YTkxMTg0NmJjY2YzNWM5ODM4ZjljMmQ5NjRmMjNjMzI1ODQ3ZTQ0ZDA3ZTU0NGFmZjdhMjA2YmY0NGI3MyJ9fX0=",
-                "§6§lSoul"
+                TranslationManager.translation("feature.dream.mob.soul.skull")
         ));
 
         EntityUtils.setAttributeIfPresent(stand, Attribute.MAX_HEALTH, this.getHealth());
@@ -92,7 +92,7 @@ public class Soul extends DreamMob<Vex> {
         return vex;
     }
 
-    private final List<CustomLoot> loots = List.of(new CustomLoot(
+    private final List<ItemLoot> loots = List.of(new ItemLoot(
             DreamItemRegistry.SOUL,
             0.70,
             1,
@@ -121,19 +121,19 @@ public class Soul extends DreamMob<Vex> {
             Entity dead = e.getEntity();
             if (dead.equals(vex) && stand.isValid()) {
                 stand.remove();
-                for (CustomLoot loot : loots) {
-                    if (Math.random() >= loot.chance()) return;
+                for (ItemLoot loot : loots) {
+                    if (Math.random() >= loot.getChance()) return;
 
-                    int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
+                    int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
                     ItemStack drop = loot.getFirstLoot().asQuantity(amount);
                     dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
                 }
             } else if (dead.equals(stand) && vex.isValid()) {
                 vex.remove();
-                for (CustomLoot loot : loots) {
-                    if (Math.random() >= loot.chance()) return;
+                for (ItemLoot loot : loots) {
+                    if (Math.random() >= loot.getChance()) return;
 
-                    int amount = loot.minAmount() + (int) (Math.random() * (loot.maxAmount() - loot.minAmount() + 1));
+                    int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
                     ItemStack drop = loot.getFirstLoot().asQuantity(amount);
                     dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
                 }

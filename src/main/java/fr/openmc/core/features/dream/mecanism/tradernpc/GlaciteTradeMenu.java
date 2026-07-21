@@ -12,9 +12,9 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class GlaciteTradeMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return Component.text("Trades du Vagabond");
+        return TranslationManager.translation("feature.dream.trader.menu.name");
     }
 
     @Override
@@ -73,32 +73,35 @@ public class GlaciteTradeMenu extends Menu {
 
         int timeSlot = tradeSlots.getFirst();
 
-        List<Component> loreTime = List.of(
-                Component.text("§7Achetez du temps pour vous permettre de rester plus longtemps !"),
-                Component.text("§7Coût :"),
-                Component.text(" §51 Ewenite")
+        List<Component> loreTime = TranslationManager.translationLore(
+                "feature.dream.trader.menu.time.lore",
+                Component.text(1).color(NamedTextColor.DARK_PURPLE)
         );
 
         inventory.put(timeSlot,
                 new ItemMenuBuilder(this, Material.EXPERIENCE_BOTTLE, meta -> {
-                    meta.itemName(Component.text("1 min de Temps", NamedTextColor.GREEN));
+                    meta.itemName(TranslationManager.translation("feature.dream.trader.menu.time.name"));
                     meta.lore(loreTime);
                 }).setOnClick(event -> {
                     ItemStack eweniteItem = DreamItemRegistry.EWENITE.getBest();
                     int ewenite = ItemUtils.countItems(player, eweniteItem);
 
                     if (ewenite < 1) {
-                        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de ressources pour effectuer cet achat !"), Prefix.DREAM, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.trader.message.not_enough_resources"), Prefix.DREAM, MessageType.ERROR, false);
                         return;
                     }
 
-                    ItemUtils.removeItemsFromInventory(player, eweniteItem, 1);
+                    ItemUtils.removeItemsFromPlayerInventory(player, eweniteItem, 1);
 
                     DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
                     if (dreamPlayer == null) return;
                     dreamPlayer.addTime(60L);
 
-                    MessagesManager.sendMessage(player, Component.text("Vous avez échangé §51 d'Ewenite §fcontre §a1 minute de temps"), Prefix.DREAM, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, TranslationManager.translation(
+                            "feature.dream.trader.message.time_trade_success",
+                            Component.text(1).color(NamedTextColor.DARK_PURPLE),
+                            TranslationManager.translation("feature.dream.trader.time.one_minute").color(NamedTextColor.GREEN)
+                    ), Prefix.DREAM, MessageType.SUCCESS, false);
                 })
         );
 
@@ -124,47 +127,63 @@ public class GlaciteTradeMenu extends Menu {
         int tradeEwenite = trade.getEweniteCost();
 
         if (glacite < tradeGlacite || ewenite < tradeEwenite) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de ressources pour effectuer cet achat !"), Prefix.DREAM, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.trader.message.not_enough_resources"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
-        ItemUtils.removeItemsFromInventory(player, glaciteItem, tradeGlacite);
-        ItemUtils.removeItemsFromInventory(player, eweniteItem, tradeEwenite);
+        ItemUtils.removeItemsFromPlayerInventory(player, glaciteItem, tradeGlacite);
+        ItemUtils.removeItemsFromPlayerInventory(player, eweniteItem, tradeEwenite);
 
         player.getInventory().addItem(trade.getResult().getBest());
 
-        String sb = "Vous avez échangé ";
-
+        Component cost = Component.empty();
         if (tradeGlacite > 0) {
-            sb += glacite + " §bde Glacite§f";
+            cost = cost.append(TranslationManager.translation(
+                    "feature.dream.trader.message.cost.glacite",
+                    Component.text(tradeGlacite)
+            ).color(NamedTextColor.AQUA));
         }
-
         if (tradeEwenite > 0) {
-            if (tradeGlacite > 0) sb += " et ";
-            sb += ewenite + " §5d'Ewenite§f";
+            if (tradeGlacite > 0) {
+                cost = cost.appendSpace()
+                        .append(TranslationManager.translation("feature.dream.trader.message.cost.separator").color(NamedTextColor.GREEN))
+                        .appendSpace();
+            }
+            cost = cost.append(TranslationManager.translation(
+                    "feature.dream.trader.message.cost.ewenite",
+                    Component.text(tradeEwenite)
+            ).color(NamedTextColor.DARK_PURPLE));
         }
-
-        sb += " contre §b" + PlainTextComponentSerializer.plainText().serialize(trade.getDisplayName());
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 Bukkit.getServer().getPluginManager().callEvent(new GlaciteTradeEvent(player, trade))
         );
-        MessagesManager.sendMessage(player, Component.text(sb), Prefix.DREAM, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.dream.trader.message.trade_success",
+                cost,
+                trade.getDisplayName()
+        ), Prefix.DREAM, MessageType.SUCCESS, false);
     }
 
     private List<Component> getLoreTrade(GlaciteTrade trade) {
         List<Component> lore = new ArrayList<>();
 
-        lore.add(Component.text("§7Coût :"));
+        lore.addAll(TranslationManager.translationLore("feature.dream.trader.menu.trade.lore.cost"));
 
         if (trade.getGlaciteCost() > 0)
-            lore.add(Component.text(" §b" + trade.getGlaciteCost() + " Glacite"));
+            lore.addAll(TranslationManager.translationLore(
+                    "feature.dream.trader.menu.trade.lore.glacite",
+                    Component.text(trade.getGlaciteCost()).color(NamedTextColor.AQUA)
+            ));
 
         if (trade.getEweniteCost() > 0)
-            lore.add(Component.text(" §5" + trade.getEweniteCost() + " Ewenite"));
+            lore.addAll(TranslationManager.translationLore(
+                    "feature.dream.trader.menu.trade.lore.ewenite",
+                    Component.text(trade.getEweniteCost()).color(NamedTextColor.DARK_PURPLE)
+            ));
 
         lore.add(Component.text(""));
-        lore.add(Component.text("§e§lCLIQUE-GAUCHE POUR ACHETER"));
+        lore.addAll(TranslationManager.translationLore("feature.dream.trader.menu.trade.lore.click"));
 
         return lore;
     }

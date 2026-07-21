@@ -10,7 +10,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -55,7 +54,7 @@ public class MilestoneMenu extends Menu {
     public @NotNull Component getName() {
         return TranslationManager.translation(
                 "feature.milestones.menu.title.milestone",
-                Component.text(milestone.getName())
+                milestone.getName()
         );
     }
 
@@ -94,15 +93,14 @@ public class MilestoneMenu extends Menu {
 
             List<Component> stepLore = new ArrayList<>();
             quest.getDescription(player.getUniqueId()).forEach(line -> stepLore.add(
-                    LegacyComponentSerializer.legacySection().deserialize(line)
-                            .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                    line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
             ));
 
 
             int slot = snake.nodes.get(i);
             NamedTextColor nameColor = completed ? NamedTextColor.GREEN : active ? NamedTextColor.YELLOW : NamedTextColor.GRAY;
             content.put(slot, new ItemMenuBuilder(this, quest.getIcon(), meta -> {
-                meta.displayName(Component.text(quest.getName())
+                meta.displayName(quest.getName()
                         .color(nameColor)
                         .decoration(TextDecoration.ITALIC, false));
                 meta.lore(stepLore);
