@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
@@ -62,9 +63,14 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }
 
+    @Override
+    protected void save() {
+        saveAllBalances();
+    }
+
     public static double getBalance(UUID playerUUID) {
-        EconomyPlayer bank = getPlayerBank(playerUUID);
-        return bank.getBalance();
+        EconomyPlayer bank = balances.get(playerUUID);
+        return bank == null ? 0 : bank.getBalance();
     }
 
     public static void addBalance(UUID playerUUID, double amount) {
@@ -84,7 +90,6 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
             ));
         }
 
-        savePlayerBank(bank);
     }
 
     public static boolean withdrawBalance(UUID playerUUID, double amount) {
@@ -94,22 +99,18 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     public static boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
 
-        if (bank.withdraw(amount)) {
-            if (reason != null) {
-                TransactionsManager.registerTransaction(new Transaction(
-                    "CONSOLE",
-                    playerUUID.toString(),
-                    amount,
-                    reason
-                ));
-            }
+        if (!bank.withdraw(amount)) return false;
 
-            savePlayerBank(bank);
-
-            return true;
+        if (reason != null) {
+            TransactionsManager.registerTransaction(new Transaction(
+                "CONSOLE",
+                playerUUID.toString(),
+                amount,
+                reason
+            ));
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -154,9 +155,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
 
     public static void setBalance(UUID playerUUID, double amount) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
-        bank.withdraw(bank.getBalance());
-        bank.deposit(amount);
-        savePlayerBank(bank);
+        bank.setBalance(amount);
     }
 
     public static String getMiniBalance(UUID playerUUID) {
@@ -165,20 +164,22 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
         return getFormattedSimplifiedNumber(balance);
     }
 
-    public static void savePlayerBank(EconomyPlayer player) {
-        try {
-            balances.put(player.getPlayerUUID(), player);
-            playersDao.createOrUpdate(player);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public static EconomyPlayer getPlayerBank(UUID playerUUID) {
+        return balances.computeIfAbsent(playerUUID, EconomyPlayer::new);
     }
 
-    public static EconomyPlayer getPlayerBank(UUID playerUUID) {
-        EconomyPlayer bank = balances.get(playerUUID);
-        if (bank != null)
-            return bank;
-        return new EconomyPlayer(playerUUID);
+    private static void saveAllBalances() {
+        try {
+            playersDao.callBatchTasks(() -> {
+                for (EconomyPlayer player : balances.values()) {
+                    playersDao.createOrUpdate(player);
+                }
+
+                return null;
+            });
+        } catch (Exception e) {
+            OMCLogger.error("Impossible de sauvegarder les soldes de l'economie pendant l'arret.", e);
+        }
     }
 
     public static Map<UUID, EconomyPlayer> loadAllBalances() {
@@ -240,7 +241,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
             return "Ⓐ";
         }
     }
-    
+
     public static boolean hasEnoughMoney(@NotNull UUID uniqueId, int requiredAmount) {
         double balance = EconomyManager.getBalance(uniqueId);
         return balance >= requiredAmount;

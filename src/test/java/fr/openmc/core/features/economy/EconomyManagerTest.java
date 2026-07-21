@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.mock.MockBukkitHelper;
 import fr.openmc.mock.ServerMock;
 
@@ -69,6 +72,29 @@ public class EconomyManagerTest {
         EconomyManager.setBalance(player1.getUniqueId(), 500.0);
 
         assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 500.0);
+    }
+
+    @Test
+    public void testGetBalanceDoesNotCreateCachedAccount() {
+        UUID unknownPlayerUUID = UUID.randomUUID();
+
+        assertEquals(0.0, EconomyManager.getBalance(unknownPlayerUUID));
+        assertFalse(EconomyManager.getBalances().containsKey(unknownPlayerUUID));
+    }
+
+    @Test
+    public void testBalanceChangesAreSavedOnFeatureSave() {
+        UUID playerUUID = player1.getUniqueId();
+
+        EconomyManager.setBalance(playerUUID, 500.0);
+
+        Map<UUID, EconomyPlayer> balancesBeforeSave = EconomyManager.loadAllBalances();
+        assertFalse(balancesBeforeSave.containsKey(playerUUID));
+
+        new EconomyManager().save();
+
+        Map<UUID, EconomyPlayer> balancesAfterSave = EconomyManager.loadAllBalances();
+        assertEquals(500.0, balancesAfterSave.get(playerUUID).getBalance());
     }
 
     @Test

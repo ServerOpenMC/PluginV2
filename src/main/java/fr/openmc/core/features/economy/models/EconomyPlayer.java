@@ -34,4 +34,8 @@ public class EconomyPlayer {
         }
         return false;
     }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 }
