@@ -7,6 +7,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CursedMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.EnragedMobLootTable;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.loottables.CropBreakLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.fishing.BasicFishLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.fishing.MiraculousFishLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.fishing.SeaCreatureLootTable;
@@ -34,6 +35,9 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable CURSED_MOB = register(new CursedMobLootTable());
     public final CustomLootTable ENRAGED_MOB = register(new EnragedMobLootTable());
     public final CustomLootTable ANCIENT_MOB = register(new AncientMobLootTable());
+
+
+    public final CustomLootTable CROPS = register(new CropBreakLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {

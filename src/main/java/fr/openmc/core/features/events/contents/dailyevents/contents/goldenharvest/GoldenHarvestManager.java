@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.FixGoldenBlockListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.GoldenCropsListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.ObeseCropsListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.PlantationLootListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.registry.items.CustomItem;
@@ -22,7 +23,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-// todo: enchantment plantation
 // todo: ajouter un sfx pour le golden crop
 // todo: impl abondance armor
 //  +5% chance de doubler les drops (par piece)
@@ -52,7 +52,8 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
         return Set.of(
                 new GoldenCropsListener(),
                 new ObeseCropsListener(),
-                new FixGoldenBlockListener()
+                new FixGoldenBlockListener(),
+                new PlantationLootListener()
         );
     }
 
