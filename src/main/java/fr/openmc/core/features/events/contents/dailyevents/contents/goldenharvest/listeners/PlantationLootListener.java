@@ -13,6 +13,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
@@ -48,10 +49,11 @@ public class PlantationLootListener implements Listener {
             loot.sendLootMessage(player, 1);
         }
 
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0.6f);
         ParticleUtils.spawnDispersingParticles(
                 event.getBlock().getLocation().add(0.5, 0.5, 0.5),
                 Particle.TOTEM_OF_UNDYING,
-                10,
+                25,
                 40,
                 0.3,
                 null);

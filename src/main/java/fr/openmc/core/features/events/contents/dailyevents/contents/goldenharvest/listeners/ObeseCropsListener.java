@@ -9,6 +9,7 @@ import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -40,10 +41,11 @@ public class ObeseCropsListener implements Listener {
             ParticleUtils.spawnDispersingParticles(
                     event.getBlock().getLocation().add(0.5, 0.5, 0.5),
                     Particle.POOF,
-                    5,
+                    30,
                     40,
-                    0.3,
+                    0.2,
                     null);
+            event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.ENTITY_CREAKING_SPAWN, 1, 0.3f);
         }
     }
 

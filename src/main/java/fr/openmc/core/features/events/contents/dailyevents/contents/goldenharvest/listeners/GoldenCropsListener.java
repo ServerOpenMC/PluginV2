@@ -12,12 +12,9 @@ import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
 import org.bukkit.entity.Player;
@@ -87,25 +84,18 @@ public class GoldenCropsListener implements Listener {
         ParticleUtils.spawnDispersingParticles(
                 event.getBlock().getLocation().add(0.5, 0.5, 0.5),
                 Particle.POOF,
-                5,
+                20,
                 40,
                 0.3,
                 null);
+        event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.ENTITY_CREAKING_SPAWN, 1, 0.3f);
     }
 
     private void giveRewards(ItemLoot itemLoot, Player player, Block block) {
         Set<CustomLoot> loots = itemLoot.run(player, block.getLocation());
         if (loots.isEmpty()) return;
 
-        MessagesManager.sendMessage(player, TranslationManager.translation(
-                "feature.dailyevents.golden_harvest.loot_table.crop_break.message"
-        ), Prefix.GOLDEN_HARVEST, MessageType.INFO, false);
-
-        for (CustomLoot loot : loots) {
-            if (loot instanceof ItemLoot itemLoot1)
-                loot.sendLootMessage(player, itemLoot1.getRepresentativeItem().getAmount());
-        }
-
+        player.playSound(player.getLocation(), Sound.ITEM_GOLDEN_DANDELION_USE, 1, 0.3f);
         ParticleUtils.spawnDispersingParticles(
                 block.getLocation().add(0.5, 0.5, 0.5),
                 Particle.DRIPPING_HONEY,
