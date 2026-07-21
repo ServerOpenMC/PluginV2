@@ -202,18 +202,16 @@ public class Page2 implements Menu {
                 ).color(NamedTextColor.GREEN);
                 player.sendActionBar(message);
             });
-        } else if (COMPANY_SLOTS.contains(slot) || SHOPS_SLOTS.contains(slot)) {
-            String rawMessage = TranslationManager.translationString("feature.mainmenu.message.shops_disabled");
-            MessagesManager.sendMessage(player,
-                    Component.text(FontImageWrapper.replaceFontImages(rawMessage), NamedTextColor.RED),
-                    Prefix.OPENMC,
-                    MessageType.ERROR,
-                    true);
         } else if (LEADERBOARD_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            String rawMessage = TranslationManager.translationString("feature.mainmenu.message.leaderboard_dev");
-            MessagesManager.sendMessage(player, Component.text(FontImageWrapper.replaceFontImages(rawMessage), NamedTextColor.RED),
-                    Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.mainmenu.message.leaderboard_dev",
+                            Component.text(FontImageWrapper.replaceFontImages(":sad:"))
+                    ).color(NamedTextColor.RED),
+                    Prefix.OPENMC,
+                    MessageType.INFO,
+                    true);
         } else if (BANK_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(OMCPlayer.of(player)));
         } else if (COMING_SOON_1_SLOTS.contains(slot) || COMING_SOON_2_SLOTS.contains(slot)

@@ -10,6 +10,7 @@ import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -29,7 +30,7 @@ import java.util.Set;
 public class Kraken extends CustomMob<Squid> implements Listener {
     public Kraken(String id) {
         super(id,
-                "Kraken",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.kraken"),
                 Squid.class,
                 100,
                 20,

@@ -4,8 +4,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -18,7 +16,7 @@ import java.util.List;
 public class HelpConfigManager extends Feature {
 
     @Getter
-    private static final List<Component> helpMessages = new ArrayList<>();
+    private static final List<String> helpMessages = new ArrayList<>();
     @Getter
     private static File configFile;
 
@@ -55,8 +53,8 @@ public class HelpConfigManager extends Feature {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         helpMessages.clear();
 
-        for (String rawMessage : config.getStringList("messages")) {
-            helpMessages.add(MiniMessage.miniMessage().deserialize(rawMessage));
+        for (String key : config.getStringList("messages")) {
+            helpMessages.add(key);
         }
 
         if (helpMessages.isEmpty()) {

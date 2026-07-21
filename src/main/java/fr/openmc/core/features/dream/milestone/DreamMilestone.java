@@ -30,8 +30,8 @@ public class DreamMilestone implements Milestone<DreamSteps>  {
 	}
 	
 	@Override
-	public String getName() {
-		return TranslationManager.translationString("feature.dream.milestone.name");
+	public Component getName() {
+		return TranslationManager.translation("feature.dream.milestone.name");
 	}
 	
 	@Override

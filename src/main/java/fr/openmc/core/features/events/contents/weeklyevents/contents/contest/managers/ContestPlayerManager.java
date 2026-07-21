@@ -1,7 +1,9 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers;
 
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -18,16 +20,16 @@ public class ContestPlayerManager  {
      * Par exemple, 10000 points correspondent à "Dictateur en ".
      */
     private static final Map<Integer, String> RANKS = new LinkedHashMap<>() {{
-        put(10000, "Dictateur en ");
-        put(2500, "Colonel en ");
-        put(2000, "Addict en ");
-        put(1500, "Dieu en ");
-        put(1000, "Légende en ");
-        put(750, "Sénior en ");
-        put(500, "Pro en ");
-        put(250, "Semi-pro en ");
-        put(100, "Amateur en ");
-        put(0, "Noob en ");
+        put(10000, "feature.events.contest.prefix.dictator");
+        put(2500, "feature.events.contest.prefix.colonel");
+        put(2000, "feature.events.contest.prefix.addict");
+        put(1500, "feature.events.contest.prefix.dieu");
+        put(1000, "feature.events.contest.prefix.legende");
+        put(750, "feature.events.contest.prefix.senior");
+        put(500, "feature.events.contest.prefix.pro");
+        put(250, "feature.events.contest.prefix.semi_pro");
+        put(100, "feature.events.contest.prefix.amateur");
+        put(0, "feature.events.contest.prefix.noob");
     }};
 
     /**
@@ -84,15 +86,9 @@ public class ContestPlayerManager  {
         MULTIPLICATOR_MONEY.put(10, 2.4);
     }
 
-    /**
-     * Retourne le nom du camp auquel appartient le joueur.
-     *
-     * @param player Le joueur dont on veut connaître le camp.
-     * @return Le nom du camp (camp1 ou camp2).
-     */
-    public static String getPlayerCampName(Player player) {
+    public static Component getPlayerCampComponent(Player player) {
         int campInteger = ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
-        return ContestManager.data.get("camp" + campInteger);
+        return ContestManager.data.getCampComponent(campInteger);
     }
 
     /**
@@ -115,13 +111,13 @@ public class ContestPlayerManager  {
      * @param points Le nombre de points d’un joueur.
      * @return Le titre correspondant aux points.
      */
-    public static String getTitleWithPoints(int points) {
+    public static Component getTitleWithPoints(int points) {
         for (Map.Entry<Integer, String> entry : RANKS.entrySet()) {
             if (points >= entry.getKey()) {
-                return entry.getValue();
+                return TranslationManager.translation(entry.getValue()).appendSpace();
             }
         }
-        return "";
+        return Component.empty();
     }
 
     /**
@@ -130,7 +126,7 @@ public class ContestPlayerManager  {
      * @param player Le joueur dont on veut obtenir le titre.
      * @return Le titre correspondant au joueur.
      */
-    public static String getTitleContest(Player player) {
+    public static Component getTitleContest(Player player) {
         int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
 
         return getTitleWithPoints(points);

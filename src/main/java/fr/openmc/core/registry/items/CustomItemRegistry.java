@@ -2,6 +2,7 @@ package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.EpicFishingTreasureLootbox;
@@ -11,20 +12,26 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
+import fr.openmc.core.registry.items.listeners.BlockBreakListener;
+import fr.openmc.core.registry.items.listeners.BlockPlaceListener;
+import fr.openmc.core.registry.items.listeners.EquipableItemListener;
+import fr.openmc.core.registry.items.listeners.InteractListener;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class CustomItemRegistry extends Registry<String, CustomItem>
-        implements KeyedRegistry<String, CustomItem> {
+        implements KeyedRegistry<String, CustomItem>, HasListeners {
 
     public static final NamespacedKey CUSTOM_ITEM_KEY =
             new NamespacedKey("openmc", "custom_item");
@@ -167,6 +174,15 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem ABDONDANCE_LEGGINGS = register("omc_daily_events:abdondance_leggings", Material.IRON_LEGGINGS);
     public final CustomItem ABDONDANCE_BOOTS = register("omc_daily_events:abdondance_boots", Material.IRON_BOOTS);
 
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new BlockBreakListener(),
+                new EquipableItemListener(),
+                new InteractListener(),
+                new BlockPlaceListener()
+        );
+    }
 
     @Override
     public void postInit() {

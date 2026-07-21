@@ -16,7 +16,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -59,7 +58,7 @@ public class ContributionMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        String campName = ContestPlayerManager.getPlayerCampName(player);
+        Component campName = ContestPlayerManager.getPlayerCampComponent(player);
         NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
         Material m = ColorUtils.getMaterialFromColor(campColor);
 
@@ -67,17 +66,17 @@ public class ContributionMenu extends Menu {
 
         List<Component> loreContribute = TranslationManager.translationLore(
                 "feature.events.contest.contribution.lore.contribute",
-                Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)
+                TranslationManager.translation("feature.events.contest.team.label", campName).color(campColor)
         );
 
         List<Component> loreTrade = TranslationManager.translationLore(
                 "feature.events.contest.contribution.lore.trade",
-                Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)
+                TranslationManager.translation("feature.events.contest.team.label", campName).color(campColor)
         );
 
         List<Component> loreRang = TranslationManager.translationLore(
                 "feature.events.contest.contribution.lore.rank",
-                Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
+                ContestPlayerManager.getTitleContest(player).append(campName).colorIfAbsent(campColor),
                 Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).color(campColor),
                 Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).color(campColor)
         );
@@ -95,7 +94,7 @@ public class ContributionMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, m, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation(
                     "feature.events.contest.contribution.button.name",
-                    Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)
+                    TranslationManager.translation("feature.events.contest.team.label", campName.colorIfAbsent(campColor))
             ));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {

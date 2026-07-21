@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Bat;
@@ -11,7 +12,7 @@ public class PoisonVampireBat extends AbstractVampireBat {
 
     public PoisonVampireBat(String id) {
         super(id,
-                "Chauve-souris empoisonneuse"
+                TranslationManager.translation("feature.dailyevents.bloody_night.mob.poison_vampire_bat")
         );
     }
 

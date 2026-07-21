@@ -16,7 +16,7 @@ public class DreamStray extends DreamMob<Stray> {
 
     public DreamStray(String id) {
         super(id,
-                TranslationManager.translationString("feature.dream.mob.dream_stray"),
+                TranslationManager.translation("feature.dream.mob.dream_stray"),
                 Stray.class,
                 9.0,
                 3L,

@@ -7,7 +7,6 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
@@ -17,9 +16,13 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.network.protocol.game.ClientboundTabListPacket;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.EnumSet;
@@ -72,16 +75,10 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
         });
     }
 
-    public static void updateHeaderFooter(Player player, String header, String footer) {
-        try {
-            if (protocolManager == null) return;
-            PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
-            packet.getChatComponents().write(0, WrappedChatComponent.fromText(header))
-                    .write(1, WrappedChatComponent.fromText(footer));
-            protocolManager.sendServerPacket(player, packet);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static void updateHeaderFooter(Player player, Component header, Component footer) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.connection.send(new ClientboundTabListPacket(
+                PaperAdventure.asVanilla(header), PaperAdventure.asVanilla(footer)));
     }
 
     public static void updateTabList(Player player) {
@@ -100,20 +97,20 @@ public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<Prot
             logo = "OPEN MC";
         }
 
-        String header = !isInDream
-                ? TranslationManager.translationString(
+        Component header = !isInDream
+                ? TranslationManager.translation(
                         "feature.displays.tablist.header.default",
                         Component.text(logo),
                         Component.text(visibleOnlinePlayers).color(NamedTextColor.GOLD),
                         Component.text(Bukkit.getMaxPlayers()).color(NamedTextColor.YELLOW)
                 )
-                : TranslationManager.translationString(
+                : TranslationManager.translation(
                         "feature.displays.tablist.header.dream",
                         Component.text(logo)
                 );
-        String footer = isInDream
-                ? TranslationManager.translationString("feature.displays.tablist.footer.dream")
-                : TranslationManager.translationString("feature.displays.tablist.footer.default");
+        Component footer = isInDream
+                ? TranslationManager.translation("feature.displays.tablist.footer.dream")
+                : TranslationManager.translation("feature.displays.tablist.footer.default");
 
         updateHeaderFooter(player, header, footer);
     }

@@ -66,7 +66,8 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public Component getDisplayText() {
-        return Component.text(seaCreatureMob.getMob().getName(), NamedTextColor.AQUA)
+        return seaCreatureMob.getMob().getName()
+                .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false);
     }
 

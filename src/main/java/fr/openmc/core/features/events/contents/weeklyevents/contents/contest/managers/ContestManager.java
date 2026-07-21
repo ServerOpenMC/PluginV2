@@ -139,7 +139,13 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         try {
             data = contestDao.queryForFirst();
             if (data == null) {
-                data = new ContestData("Mayonnaise", "Ketchup", "YELLOW", "RED", 0, 0);
+                data = new ContestData(
+                        "feature.events.contest.camp.mayonnaise",
+                        "feature.events.contest.camp.ketchup",
+                        "YELLOW",
+                        "RED",
+                        0,
+                        0);
                 contestDao.create(data);
             }
         } catch (SQLException e) {
@@ -270,8 +276,8 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         String camp2Color = data.getColor2();
         NamedTextColor color1 = ColorUtils.getReadableColor(ColorUtils.getNamedTextColor(camp1Color));
         NamedTextColor color2 = ColorUtils.getReadableColor(ColorUtils.getNamedTextColor(camp2Color));
-        String camp1Name = data.getCamp1();
-        String camp2Name = data.getCamp2();
+        Component camp1Name = data.getCamp1();
+        Component camp2Name = data.getCamp2();
         
         // Create part of the book
         ItemStack baseBook = new ItemStack(Material.WRITTEN_BOOK);
@@ -281,8 +287,8 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
         List<Component> lore = TranslationManager.translationLore(
                 "feature.events.contest.book.lore",
-                Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1),
-                Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)
+                camp1Name.colorIfAbsent(color1),
+                camp2Name.colorIfAbsent(color2)
         );
         baseBookMeta.lore(lore);
 
@@ -314,12 +320,12 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         points2Taux = Integer.parseInt(df.format(points2Taux));
 
         // 1ERE PAGE - STATS GLOBAL
-        String campWinner;
+        Component campWinner;
         NamedTextColor colorWinner;
         int voteWinnerTaux;
         int pointsWinnerTaux;
         
-        String campLooser;
+        Component campLooser;
         NamedTextColor colorLooser;
         int voteLooserTaux;
         int pointsLooserTaux;
@@ -348,10 +354,10 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
 
         baseBookMeta.addPages(TranslationManager.translation(
                 "feature.events.contest.book.page.global",
-                Component.text(campWinner).decoration(TextDecoration.ITALIC, false).color(colorWinner),
+                campWinner.colorIfAbsent(colorWinner),
                 Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false),
                 Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false),
-                Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser),
+                campLooser.colorIfAbsent(colorLooser),
                 Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false),
                 Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false),
                 Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.AQUA)
@@ -412,21 +418,22 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
                             .appendNewline()
                             .append(TranslationManager.translation("feature.events.contest.mail.click"))
                             .clickEvent(ClickEvent.runCommand("mailbox"))
-                            .hoverEvent(getHoverEvent(TranslationManager.translationString("feature.events.contest.mail.hover")))
+                            .hoverEvent(getHoverEvent(TranslationManager.translation("feature.events.contest.mail.hover")))
                             .append(TranslationManager.translation("feature.events.contest.mail.open_mailbox"));
 
                     player.sendMessage(messageMail);
                 }
             }
 
-            String playerCampName = data.get("camp" + dataPlayer1.getCamp());
+            Component playerCampName = data.getCampComponent(dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
-            String playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) + playerCampName; // ex. Novice en + Moutarde
+            Component playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) // ex. Novice en + Moutarde
+                    .append(playerCampName);
 
             bookMetaPlayer.addPages(TranslationManager.translation(
                     "feature.events.contest.book.page.personal",
-                    Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor),
-                    Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor),
+                    playerCampName.colorIfAbsent(playerCampColor),
+                    playerTitleContest.colorIfAbsent(playerCampColor),
                     Component.text(rank.get()),
                     Component.text(points).color(NamedTextColor.AQUA)
             ));
@@ -519,7 +526,7 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         
         // Exécuter les requêtes SQL dans un autre thread
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            TradeYMLManager.addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
+            TradeYMLManager.addOneToLastContest(data.getKeyCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
 
             try {
                 TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);

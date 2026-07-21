@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Leviathan extends CustomMob<Nautilus> {
     public Leviathan(String id) {
         super(id,
-                "Léviathan",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.leviathan"),
                 Nautilus.class,
                 40,
                 20,

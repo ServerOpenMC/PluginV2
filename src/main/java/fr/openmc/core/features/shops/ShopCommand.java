@@ -8,6 +8,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;
@@ -23,7 +24,8 @@ public class ShopCommand {
     @Description("Create a shop")
     public void createShop(Player player) {
         if (!EconomyManager.hasEnoughMoney(player.getUniqueId(), 500)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money", Component.text("500 " + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money",
+                    Component.text("500 " + EconomyManager.getEconomyIcon(), NamedTextColor.RED)), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         PlayerShopManager.startCreatingShop(player);

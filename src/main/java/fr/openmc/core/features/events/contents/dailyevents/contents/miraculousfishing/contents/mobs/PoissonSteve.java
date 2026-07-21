@@ -5,6 +5,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class PoissonSteve extends CustomMob<Mannequin> {
     public PoissonSteve(String id) {
         super(id,
-                "Le Poisson Steve",
+                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.poisson_steve"),
                 Mannequin.class,
                 50,
                 67,

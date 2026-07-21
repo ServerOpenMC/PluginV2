@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -24,7 +25,7 @@ public abstract class AbstractVampireBat extends CustomMob<Bat> {
 
     private static final int MAX_LIFETIME_TICKS = 20 * 15;
 
-    public AbstractVampireBat(String id, String name) {
+    public AbstractVampireBat(String id, Component name) {
         super(
                 id,
                 name,

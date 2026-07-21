@@ -67,6 +67,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -256,6 +257,17 @@ public class OMCPlugin extends JavaPlugin {
      * @param listeners Listeners à enregistrer
      */
     public static void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
+            instance.getServer().getPluginManager().registerEvents(listener, instance);
+        }
+    }
+
+    /**
+     * Enregistre une liste de listeners Bukkit sur l'instance du plugin.
+     *
+     * @param listeners Listeners à enregistrer
+     */
+    public static void registerEvents(Collection<Listener> listeners) {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }

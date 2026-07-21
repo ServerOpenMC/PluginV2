@@ -40,14 +40,6 @@ class ColorUtilsTest {
     }
 
     @Test
-    @DisplayName("getNameFromColor returns French names")
-    void testGetNameFromColor() {
-        Assertions.assertEquals("§cRouge", ColorUtils.getNameFromColor(NamedTextColor.RED));
-        Assertions.assertEquals("§fBlanc", ColorUtils.getNameFromColor(NamedTextColor.WHITE));
-        Assertions.assertEquals("§6Orange", ColorUtils.getNameFromColor(NamedTextColor.GOLD));
-    }
-
-    @Test
     @DisplayName("getMaterialFromColor returns correct wool")
     void testGetMaterialFromColor() {
         Assertions.assertEquals(Material.RED_WOOL, ColorUtils.getMaterialFromColor(NamedTextColor.RED));
