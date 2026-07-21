@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+//todo refaire le systeme de peeled en code java au lieu d'une config item adder qui marche jamais
 public class GoldenHarvestManager extends Feature implements HasListeners {
     public static HashMap<KeyBlock, Map<Double, CustomItem>> OBESE_CROPS_MAPPING = null;
     public static final double OBESE_CROP_CHANCE = 0.05; // 10% d'avoir une crop obèse
@@ -87,10 +88,6 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                             new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GOLDEN_POTATO, 1, 1),
                             KeyBlock.vanilla(BlockType.WHEAT),
                             new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GOLDEN_WHEAT, 1, 1),
-                            KeyBlock.vanilla(BlockType.MELON),
-                            new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GOLDEN_MELON, 1, 1),
-                            KeyBlock.vanilla(BlockType.PUMPKIN),
-                            new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GOLDEN_PUMPKIN, 1, 1),
                             KeyBlock.vanilla(BlockType.CARROTS),
                             new ItemLoot(OMCRegistry.CUSTOM_ITEMS.REALLY_GOLDEN_CARROT, 1, 1),
                             KeyBlock.vanilla(BlockType.BEETROOTS),

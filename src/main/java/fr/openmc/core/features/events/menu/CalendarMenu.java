@@ -124,7 +124,8 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        map.put(33, ItemMenuTemplate.BTN_CANCEL.apply(this));
+        map.put(27, new ItemMenuBuilder(this, Material.ARROW, true));
+        map.put(31, ItemMenuTemplate.BTN_CANCEL.apply(this));
         return map;
     }
 

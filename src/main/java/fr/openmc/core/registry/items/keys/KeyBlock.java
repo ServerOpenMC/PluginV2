@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.items.keys;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.block.Block;
@@ -37,6 +38,10 @@ public final class KeyBlock {
             return custom(customBlock);
         }
         return vanilla(block.getType().asBlockType());
+    }
+
+    public CustomItem getCustomItem() {
+        return OMCRegistry.CUSTOM_ITEMS.get(customBlock.getNamespacedID()).orElse(null);
     }
 
     public boolean isVanilla() {
