@@ -7,10 +7,12 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import org.bukkit.Particle;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
@@ -45,5 +47,13 @@ public class PlantationLootListener implements Listener {
         for (CustomLoot loot : loots) {
             loot.sendLootMessage(player, 1);
         }
+
+        ParticleUtils.spawnDispersingParticles(
+                event.getBlock().getLocation().add(0.5, 0.5, 0.5),
+                Particle.TOTEM_OF_UNDYING,
+                10,
+                40,
+                0.3,
+                null);
     }
 }

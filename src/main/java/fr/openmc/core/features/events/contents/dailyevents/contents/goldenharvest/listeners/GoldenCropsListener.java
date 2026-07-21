@@ -9,14 +9,24 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.registry.items.keys.KeyBlock;
+import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -32,11 +42,13 @@ public class GoldenCropsListener implements Listener {
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        ItemLoot loot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
-        if (loot == null) return;
+        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        if (itemLoot == null) return;
 
-        loot.run(event.getPlayer(), event.getBlock().getLocation());
-        // todo sfx si loots pas empty + message chance
+        Set<CustomLoot> loots = itemLoot.run(event.getPlayer(), event.getBlock().getLocation());
+        if (loots.isEmpty()) return;
+
+        giveRewards(itemLoot, event.getPlayer(), event.getBlock());
     }
 
     @EventHandler
@@ -49,11 +61,10 @@ public class GoldenCropsListener implements Listener {
         CustomBlock customBlock = CustomBlock.byItemStack(event.getCustomBlockItem());
         KeyBlock keyBlock = KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.getOrThrow(customBlock.getItemStack()));
 
-        ItemLoot loot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
-        if (loot == null) return;
+        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        if (itemLoot == null) return;
 
-        loot.run(event.getPlayer(), event.getBlock().getLocation());
-        // todo sfx si loots pas empty
+        giveRewards(itemLoot, event.getPlayer(), event.getBlock());
     }
 
     @EventHandler
@@ -72,6 +83,35 @@ public class GoldenCropsListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                 customBlock.place(event.getBlock().getLocation()), 1L);
-        // todo sfx
+
+        ParticleUtils.spawnDispersingParticles(
+                event.getBlock().getLocation().add(0.5, 0.5, 0.5),
+                Particle.POOF,
+                5,
+                40,
+                0.3,
+                null);
+    }
+
+    private void giveRewards(ItemLoot itemLoot, Player player, Block block) {
+        Set<CustomLoot> loots = itemLoot.run(player, block.getLocation());
+        if (loots.isEmpty()) return;
+
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.dailyevents.golden_harvest.loot_table.crop_break.message"
+        ), Prefix.GOLDEN_HARVEST, MessageType.INFO, false);
+
+        for (CustomLoot loot : loots) {
+            if (loot instanceof ItemLoot itemLoot1)
+                loot.sendLootMessage(player, itemLoot1.getRepresentativeItem().getAmount());
+        }
+
+        ParticleUtils.spawnDispersingParticles(
+                block.getLocation().add(0.5, 0.5, 0.5),
+                Particle.DRIPPING_HONEY,
+                10,
+                40,
+                0.3,
+                null);
     }
 }

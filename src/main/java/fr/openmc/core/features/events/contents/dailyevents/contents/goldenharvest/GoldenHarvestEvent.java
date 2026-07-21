@@ -31,21 +31,17 @@ public class GoldenHarvestEvent extends DailyEvent
 
     @Override
     public int getDuration() {
-        return 40;
+        return 30;
     }
 
     @Override
     public Runnable onStart() {
-        return () -> {
-            System.out.println("GOLDEN HARVEST START");
-        };
+        return () -> {};
     }
 
     @Override
     public Runnable onEnd() {
-        return () -> {
-            System.out.println("GOLDEN HARVEST END");
-        };
+        return () -> {};
     }
 
     @Override

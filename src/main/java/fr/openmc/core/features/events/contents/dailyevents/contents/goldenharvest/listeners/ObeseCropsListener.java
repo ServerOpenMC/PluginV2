@@ -6,7 +6,9 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.registry.items.keys.KeyBlock;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -34,7 +36,14 @@ public class ObeseCropsListener implements Listener {
 
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                     GoldenHarvestManager.setObeseCrop(event.getBlock()), 1L);
-            // todo sfx
+
+            ParticleUtils.spawnDispersingParticles(
+                    event.getBlock().getLocation().add(0.5, 0.5, 0.5),
+                    Particle.POOF,
+                    5,
+                    40,
+                    0.3,
+                    null);
         }
     }
 

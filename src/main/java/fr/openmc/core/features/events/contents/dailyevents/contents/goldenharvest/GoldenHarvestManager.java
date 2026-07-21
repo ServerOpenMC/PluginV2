@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-// todo: ajouter un sfx pour le golden crop
 // todo: impl abondance armor
 //  +5% chance de doubler les drops (par piece)
 //	+1.5% de chance d'avoir les crops dorée (par piece)
