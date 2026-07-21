@@ -23,7 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class CustomItemRegistry extends Registry<String, CustomItem> implements KeyedRegistry<String, CustomItem> {
+public class CustomItemRegistry extends Registry<String, CustomItem>
+        implements KeyedRegistry<String, CustomItem> {
 
     public static final NamespacedKey CUSTOM_ITEM_KEY =
             new NamespacedKey("openmc", "custom_item");
@@ -129,6 +130,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem> implements 
     public final CustomItem POISSON_STEVE_HEAD = register("omc_daily_events:poisson_steve_head", Material.PLAYER_HEAD);
     public final CustomItem KRAKEN_HEAD = register("omc_daily_events:kraken_head", Material.PLAYER_HEAD);
     public final CustomItem LEVIATHAN_HEAD = register("omc_daily_events:leviathan_head", Material.PLAYER_HEAD);
+    public final CustomItem VAMPIRE_HEAD = register("omc_daily_events:vampire_head", Material.PLAYER_HEAD);
 
     public final CustomItem OBESE_POTATO = register("omc_daily_events:obese_potato", Material.NOTE_BLOCK);
     public final CustomItem OBESE_POISONOUS_POTATO = register("omc_daily_events:obese_poisonous_potato", Material.NOTE_BLOCK);

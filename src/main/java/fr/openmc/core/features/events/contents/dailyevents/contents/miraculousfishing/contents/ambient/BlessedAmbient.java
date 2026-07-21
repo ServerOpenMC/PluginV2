@@ -1,4 +1,4 @@
-package fr.openmc.core.registry.ambient.contents;
+package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient;
 
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
 import fr.openmc.api.datapacks.builders.sounds.AmbientSoundBuilder;

@@ -24,7 +24,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast, HasMenu, HasFeature {
+public class MiraculousFishingEvent extends DailyEvent
+        implements HasToast, HasAmbient, HasBroadcast, HasMenu, HasFeature {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -97,7 +98,7 @@ public class MiraculousFishingEvent extends DailyEvent implements HasToast, HasA
     @Override
     public Component getStartBroadcast() {
         return TranslationManager.translation("feature.dailyevents.miraculousfishing.broadcast.start",
-                Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100, NamedTextColor.AQUA));
+                Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100 + "%", NamedTextColor.AQUA));
     }
 
     @Override

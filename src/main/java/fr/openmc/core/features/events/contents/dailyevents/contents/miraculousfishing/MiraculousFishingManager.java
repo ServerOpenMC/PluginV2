@@ -11,8 +11,6 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.loottable.loots.RepresentedItem;
 import fr.openmc.core.registry.loottable.loots.TableLoot;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -40,27 +38,6 @@ public class MiraculousFishingManager extends Feature implements HasListeners {
     }
 
     /**
-     * Envoie le message de loot contenant, le nom du loot et la chance du loot
-     * @param player le joueur a qui envoyé le message
-     * @param loot le loot obtenu
-     * @param amount le nombre de loot
-     */
-    public static void sendLootMessage(Player player, CustomLoot loot, int amount) {
-        Component base = Component.text(" - ", NamedTextColor.GRAY);
-
-        if (amount != -1)
-            base = base.append(Component.text(amount + "x "));
-
-        if (loot.getDisplayText() != null &&
-                !(loot instanceof TableLoot)) {
-            base = base.append(loot.getDisplayText())
-                    .append(Component.text(" ("+ Math.round(loot.getChance() * 100.0) +"% ★)", NamedTextColor.AQUA));
-
-            player.sendMessage(base);
-        }
-    }
-
-    /**
      * Simule un item qui est lancé du bouchon de pêche jusqu'au joueur, via un CustomLoot.
      * @param player le joueur visé
      * @param hookLocation la position du bouchon, position de spawn de l'item
@@ -70,7 +47,7 @@ public class MiraculousFishingManager extends Feature implements HasListeners {
         // * Gestion spécial pour les Sea Creature
         if (loot instanceof SeaCreatureLoot seaCreatureLoot) {
             // * On envoie le message de loot
-            sendLootMessage(player, loot, -1);
+            loot.sendLootMessage(player, -1);
 
             Entity entity = seaCreatureLoot.getSeaCreatureMob().spawn(hookLocation);
 
@@ -98,7 +75,7 @@ public class MiraculousFishingManager extends Feature implements HasListeners {
         itemEntity.setGlowing(true);
 
         // * On envoie le message de loot
-        sendLootMessage(player, loot, itemEntity.getItemStack().getAmount());
+        loot.sendLootMessage(player, itemEntity.getItemStack().getAmount());
 
         applyVelocity(hookLocation, player.getEyeLocation(), itemEntity, 0.1);
     }
@@ -135,8 +112,14 @@ public class MiraculousFishingManager extends Feature implements HasListeners {
         // * Revient à faire le vecteur vitesse entre 2 vecteur (xp - xh, yp - yh, zp - zh)
         Vector velocity = destination.toVector().subtract(origin.toVector());
         velocity.multiply(force);
-        velocity.setY(velocity.getY() + Math.sqrt(Math.sqrt(
-                velocity.getX()*2 + velocity.getY()*2 + velocity.getZ()*2)) * 0.08);
+
+        double m = Math.sqrt(
+                velocity.getX() * velocity.getX()
+                        + velocity.getY() * velocity.getY()
+                        + velocity.getZ() * velocity.getZ()
+        );
+
+        velocity.setY(velocity.getY() + m * 0.08);
         entity.setVelocity(velocity);
     }
 }

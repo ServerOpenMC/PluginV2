@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;
 import fr.openmc.core.features.dream.registries.enchantements.Soulbound;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.enchantments.Vampirism;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryComposeEvent;
@@ -29,6 +30,8 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
     public final CustomEnchantment SOULBOUND = register(new Soulbound());
     public final CustomEnchantment EXPERIENTASTIC = register(new Experientastic());
     public final CustomEnchantment DREAM_SLEEPER = register(new DreamSleeper());
+
+    public final CustomEnchantment VAMPIRISM = register(new Vampirism());
 
     @Override
     public void bootstrap(BootstrapContext context) {

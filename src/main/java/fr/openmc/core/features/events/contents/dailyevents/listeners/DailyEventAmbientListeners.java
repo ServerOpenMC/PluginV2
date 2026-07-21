@@ -21,7 +21,7 @@ public class DailyEventAmbientListeners implements Listener {
 
         if (!(dailyEvent instanceof HasAmbient hasAmbient)) return;
 
-        hasAmbient.apply(event.getPlayer());
+        hasAmbient.apply(event.getPlayer(), true);
     }
 
     @EventHandler

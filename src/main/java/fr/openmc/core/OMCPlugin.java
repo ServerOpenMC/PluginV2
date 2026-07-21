@@ -19,6 +19,7 @@ import fr.openmc.core.features.animations.AnimationsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
+import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
@@ -42,6 +43,7 @@ import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.privatemessage.SocialSpyManager;
+import fr.openmc.core.features.profile.ProfileManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -107,6 +109,7 @@ public class OMCPlugin extends JavaPlugin {
             MascotsManager::new,
             PlayerSettingsManager::new,
             MailboxManager::new,
+            ProfileManager::new,
             QuestsManager::new,
             CityManager::new,
             DynamicCooldownManager::new,
@@ -121,7 +124,8 @@ public class OMCPlugin extends JavaPlugin {
             () -> new MainMenu(),
             () -> new HologramLoader(),
             ShopManager::new,
-            HomeIconCacheManager::new
+            HomeIconCacheManager::new,
+            DimensionOpenerManager::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();

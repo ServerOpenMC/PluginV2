@@ -20,6 +20,7 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
+import fr.openmc.core.features.profile.ProfileManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
@@ -59,6 +60,7 @@ public enum Credits {
     MAINMENU(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFORMATION, "feature.credits.feature.mainmenu", MainMenu.class),
     MILESTONES(Material.SEA_LANTERN, "feature.credits.feature.milestones", MilestonesManager.class),
     PRIVATEMESSAGE(Material.ZOMBIE_HEAD, "feature.credits.feature.privatemessage", PrivateMessageManager.class),
+    PROFILE(Material.PLAYER_HEAD, "feature.credits.feature.profile", ProfileManager.class),
     QUEST(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_CHATEAU, "feature.credits.feature.quest", QuestsManager.class),
     SETTINGS(Material.REDSTONE_TORCH, "feature.credits.feature.settings", PlayerSettingsManager.class),
     SHOPS(OMCRegistry.CUSTOM_ITEMS.CAISSE, "feature.credits.feature.shops", ShopManager.class),

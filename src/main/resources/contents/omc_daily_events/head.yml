@@ -42,3 +42,8 @@ items:
     display_name: "Tete de Léviathan"
     components_nbt_file: "nbt/head/leviathan.json"
     material: PLAYER_HEAD
+
+  vampire_head:
+    display_name: "Tete de Vampire"
+    components_nbt_file: "nbt/head/vampire.json"
+    material: PLAYER_HEAD
