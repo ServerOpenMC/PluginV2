@@ -31,8 +31,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
     public static HashMap<KeyBlock, Map<Double, CustomItem>> OBESE_CROPS_MAPPING = null;
     public static final double OBESE_CROP_CHANCE = 0.1; // 10% d'avoir une crop obèse
 
-    public static HashMap<KeyBlock, ItemLoot> GOLDEN_CROPS_MAPPING = null;
-    public static final double GOLDEN_CROP_ON_CROP_CHANCE = 0.04; // 4% d'avoir une golden crosps sur des crops
+    public static HashMap<KeyBlock, ItemLoot> GOLDEN_CROPS_ON_BREAK_MAPPING = null;
+    public static HashMap<KeyBlock, KeyBlock> GOLDEN_CROPS_ON_GROW_MAPPING = null;
+    public static final double GOLDEN_CROP_ON_CROP_CHANCE = 1; // 4% d'avoir une golden crosps sur des crops
     public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 50% d'avoir une golden crosps sur des crops
 
     @Override
@@ -81,9 +82,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
      * qu'on genere seulement sur le moment afin d'éviter des erreurs
      * @return notre mapping
      */
-    public static HashMap<KeyBlock, ItemLoot> getGoldenCropsMapping() {
-        if (GOLDEN_CROPS_MAPPING == null) {
-            GOLDEN_CROPS_MAPPING = new HashMap<>(
+    public static HashMap<KeyBlock, ItemLoot> getGoldenCropsOnBreakMapping() {
+        if (GOLDEN_CROPS_ON_BREAK_MAPPING == null) {
+            GOLDEN_CROPS_ON_BREAK_MAPPING = new HashMap<>(
                     Map.of(
                             KeyBlock.vanilla(BlockType.POTATOES),
                             new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GOLDEN_POTATO, 1, 1),
@@ -107,13 +108,33 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                     )
             );
         }
-        return GOLDEN_CROPS_MAPPING;
+        return GOLDEN_CROPS_ON_BREAK_MAPPING;
+    }
+
+    /**
+     * On génère un mapping pour savoir quels types de blocs donnent
+     * quel type de plantation dorée lorsqu'ils ont fini de pousser
+     * qu'on genere seulement sur le moment afin d'éviter des erreurs
+     * @return notre mapping
+     */
+    public static HashMap<KeyBlock, KeyBlock> getGoldenCropsOnGrowMapping() {
+        if (GOLDEN_CROPS_ON_GROW_MAPPING == null) {
+            GOLDEN_CROPS_ON_GROW_MAPPING = new HashMap<>(
+                    Map.of(
+                            KeyBlock.vanilla(BlockType.MELON),
+                            KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.GOLDEN_MELON),
+                            KeyBlock.vanilla(BlockType.PUMPKIN),
+                            KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.GOLDEN_PUMPKIN)
+                    )
+            );
+        }
+        return GOLDEN_CROPS_ON_GROW_MAPPING;
     }
 
     public static void setObeseCrop(Block block) {
         BlockType type = block.getType().asBlockType();
 
-        Map<Double, CustomItem> obeseCrops = getObeseCropsMapping().get(type);
+        Map<Double, CustomItem> obeseCrops = getObeseCropsMapping().get(KeyBlock.vanilla(type));
         if (obeseCrops == null) return;
 
         double chance = ThreadLocalRandom.current().nextDouble();

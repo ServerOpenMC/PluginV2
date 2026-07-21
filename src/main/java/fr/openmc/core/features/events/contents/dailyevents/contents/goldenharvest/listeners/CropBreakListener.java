@@ -26,7 +26,7 @@ public class CropBreakListener implements Listener {
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
 
-        ItemLoot loot = GoldenHarvestManager.getGoldenCropsMapping().get(keyBlock);
+        ItemLoot loot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (loot == null) return;
 
         System.out.println("give rewards");
@@ -44,7 +44,7 @@ public class CropBreakListener implements Listener {
         CustomBlock customBlock = CustomBlock.byItemStack(event.getCustomBlockItem());
         KeyBlock keyBlock = KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.getOrThrow(customBlock.getItemStack()));
 
-        ItemLoot loot = GoldenHarvestManager.getGoldenCropsMapping().get(keyBlock);
+        ItemLoot loot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (loot == null) return;
 
         System.out.println("2 give rewards");
