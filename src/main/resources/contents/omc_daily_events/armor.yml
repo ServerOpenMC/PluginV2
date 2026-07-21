@@ -92,6 +92,8 @@ items:
         - armor/abondance/abondance_helmet
       material: LEATHER_HELMET
     lore:
+      - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
+      - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
       - "§7§oUn casque trouvé par le travail et la persévérance"
     durability:
       unbreakable: true
@@ -108,6 +110,8 @@ items:
         - armor/abondance/abondance_chestplate
       material: LEATHER_CHESTPLATE
     lore:
+      - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
+      - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
       - "§7§oUn plastron trouvé par la culture et la perfection"
     durability:
       unbreakable: true
@@ -124,6 +128,8 @@ items:
         - armor/abondance/abondance_leggings
       material: LEATHER_LEGGINGS
     lore:
+      - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
+      - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
       - "§7§oUne jambière trouvé par la culture et la perfection"
     durability:
       unbreakable: true
@@ -140,6 +146,8 @@ items:
         - armor/abondance/abondance_boots
       material: LEATHER_BOOTS
     lore:
+      - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
+      - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
       - "§7§oDes bottes trouvées par le travail et la persévérance"
     durability:
       unbreakable: true

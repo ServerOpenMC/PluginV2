@@ -23,10 +23,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-// todo: impl abondance armor
-//  +5% chance de doubler les drops (par piece)
-//	+1.5% de chance d'avoir les crops dorée (par piece)
-
 public class GoldenHarvestManager extends Feature implements HasListeners {
     public static HashMap<KeyBlock, Map<Double, CustomItem>> OBESE_CROPS_MAPPING = null;
     public static final double OBESE_CROP_CHANCE = 0.05; // 10% d'avoir une crop obèse

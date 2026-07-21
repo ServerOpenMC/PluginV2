@@ -5,6 +5,7 @@ import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.AbondanceArmorManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
@@ -23,8 +24,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.AbondanceArmorManager.applyDoubleCropsChance;
 
 /**
  * Listener qui prends en charge les loots donnée par les crops et par les obese crops
@@ -35,7 +39,7 @@ public class GoldenCropsListener implements Listener {
     public void onCropBreak(BlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
-        if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;
+        if (ThreadLocalRandom.current().nextDouble() > AbondanceArmorManager.getLuckGoldenCropsModifier(event.getPlayer())) return;
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
@@ -92,7 +96,7 @@ public class GoldenCropsListener implements Listener {
     }
 
     private void giveRewards(ItemLoot itemLoot, Player player, Block block) {
-        Set<CustomLoot> loots = itemLoot.run(player, block.getLocation());
+        Collection<CustomLoot> loots = applyDoubleCropsChance(player, itemLoot.run(player, block.getLocation()));
         if (loots.isEmpty()) return;
 
         player.playSound(player.getLocation(), Sound.ITEM_GOLDEN_DANDELION_USE, 1, 0.3f);

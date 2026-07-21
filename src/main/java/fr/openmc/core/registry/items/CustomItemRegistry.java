@@ -169,10 +169,10 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem GOLDEN_WHEAT = register("omc_daily_events:golden_wheat", Material.WHEAT);
     public final CustomItem REALLY_GOLDEN_CARROT = register("omc_daily_events:really_golden_carrot", Material.CARROT);
 
-    public final CustomItem ABDONDANCE_HELMET = register("omc_daily_events:abdondance_helmet", Material.IRON_HELMET);
-    public final CustomItem ABDONDANCE_CHESTPLATE = register("omc_daily_events:abdondance_chestplate", Material.IRON_CHESTPLATE);
-    public final CustomItem ABDONDANCE_LEGGINGS = register("omc_daily_events:abdondance_leggings", Material.IRON_LEGGINGS);
-    public final CustomItem ABDONDANCE_BOOTS = register("omc_daily_events:abdondance_boots", Material.IRON_BOOTS);
+    public final CustomItem ABONDANCE_HELMET = register("omc_daily_events:abdondance_helmet", Material.IRON_HELMET);
+    public final CustomItem ABONDANCE_CHESTPLATE = register("omc_daily_events:abdondance_chestplate", Material.IRON_CHESTPLATE);
+    public final CustomItem ABONDANCE_LEGGINGS = register("omc_daily_events:abdondance_leggings", Material.IRON_LEGGINGS);
+    public final CustomItem ABONDANCE_BOOTS = register("omc_daily_events:abdondance_boots", Material.IRON_BOOTS);
 
     @Override
     public Set<Listener> getListeners() {
