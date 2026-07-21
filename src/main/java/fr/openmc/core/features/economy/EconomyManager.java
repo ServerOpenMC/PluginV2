@@ -99,9 +99,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
     public static boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
 
-        if (!bank.withdraw(amount)) {
-            return false;
-        }
+        if (!bank.withdraw(amount)) return false;
 
         if (reason != null) {
             TransactionsManager.registerTransaction(new Transaction(
