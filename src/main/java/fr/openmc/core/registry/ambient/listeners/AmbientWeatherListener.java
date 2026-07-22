@@ -40,7 +40,6 @@ public class AmbientWeatherListener implements Listener {
     @EventHandler
     public void onRegionEnter(RegionEnterEvent event) {
         Player player = event.getPlayer();
-        System.out.println("apply");
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                 reapplyWeather(player), 1L);
     }
@@ -48,7 +47,6 @@ public class AmbientWeatherListener implements Listener {
     @EventHandler
     public void onRegionExit(RegionLeaveEvent event) {
         Player player = event.getPlayer();
-        System.out.println("apply2");
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                     reapplyWeather(player), 1L);
     }
