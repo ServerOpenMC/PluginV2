@@ -45,6 +45,7 @@ public class DimensionTypesInjector implements DatapackInjector {
             Files.createDirectories(root);
             for (var entry : entries.entrySet()) {
                 Path dimensionTypeFile = root.resolve(entry.getKey() + ".json");
+                Files.createDirectories(dimensionTypeFile.getParent());
                 Files.writeString(dimensionTypeFile, GSON.toJson(entry.getValue().toJson()));
             }
         } catch (IOException e) {
