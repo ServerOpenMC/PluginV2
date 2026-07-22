@@ -91,8 +91,6 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
             File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/plugins/ItemsAdder
             File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/plugins/ItemsAdder/contents
 
-            FilesUtils.deleteDirectory(contentDir);
-
             if (!FilesUtils.createDirectoryIfNotExists(contentDir)) {
                 OMCLogger.error("Impossible de créer le dossier {}", contentDir.getAbsolutePath());
                 return;
@@ -102,6 +100,22 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
             List<String> contentFolders = FilesUtils.listFolderNamesInResource(contentsName);
 
             if (contentFolders.isEmpty()) return;
+
+            // * On supprime que ceux qu'on connait déjà
+            for (String folder : contentFolders) {
+                File toDelete = new File(contentDir, folder);
+                FilesUtils.deleteDirectory(toDelete);
+            }
+
+            // * On supprime tout les dossier commençant par omc_ (protection)
+            File[] existing = contentDir.listFiles();
+            if (existing != null) {
+                for (File f : existing) {
+                    if (f.isDirectory() && f.getName().startsWith("omc_")) {
+                        FilesUtils.deleteDirectory(f);
+                    }
+                }
+            }
 
             // * Charge les registres de nos placeholders
             IAPlaceholderRegistry placeholderRegistry = IAPlaceholderRegistry.loadDefault();
