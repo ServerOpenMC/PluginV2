@@ -21,7 +21,7 @@ items:
           type: REAL_NOTE
           break_particles: ITEM
         up_block: omc_daily_events:obese_potato_stem
-        hardness: 5
+        hardness: 4
         break_tools_blacklist:
           - WOODEN_HOE
           - STONE_HOE
@@ -30,29 +30,7 @@ items:
         break_tools_whitelist:
           - NETHERITE_HOE
           - DIAMOND_HOE
-        events_tools_whitelist:
-          - NETHERITE_HOE
-          - DIAMOND_HOE
-    events:
-      placed_block:
-        interact:
-          play_sound:
-            name: item.axe.strip
-            volume: 1.0
-            pitch: 0.6
-            category: MASTER
-            stop_previous: false
-          replace_block:
-            delay: 5
-            from: omc_daily_events:obese_potato
-            to: omc_daily_events:peeled_obese_potato
-          replace_near_blocks:
-            radius: 5
-            delay: 5
-            from: omc_daily_events:obese_potato_stem
-            to: AIR
-          decrement_durability:
-            amount: 5
+          - GOLD_HOE
 
   obese_poisonous_potato:
     display_name: Patate empoisonnée obèse
@@ -70,6 +48,16 @@ items:
           type: REAL_NOTE
           break_particles: ITEM
         up_block: omc_daily_events:obese_potato_stem
+        hardness: 4
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+          - GOLD_HOE
 
   obese_potato_stem:
     display_name: Tige de patate obèse
@@ -101,6 +89,7 @@ items:
         placed_model:
           type: REAL_NOTE
           break_particles: ITEM
+          hardness: 3
 
 
   # --- Carrot ---
@@ -120,6 +109,16 @@ items:
           type: REAL_NOTE
           break_particles: ITEM
         up_block: omc_daily_events:obese_carrot_stem
+        hardness: 4
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+          - GOLD_HOE
     
 
 
@@ -154,6 +153,16 @@ items:
           type: REAL_NOTE
           break_particles: ITEM
         up_block: omc_daily_events:obese_beetroot_stem
+        hardness: 4
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+          - GOLD_HOE
 
   obese_beetroot_stem:
     display_name: Tige de bétrave obèse
@@ -186,6 +195,16 @@ items:
           type: REAL_NOTE
           break_particles: ITEM
         up_block: omc_daily_events:obese_nether_wart_stem
+        hardness: 3
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+          - GOLD_HOE
 
   obese_nether_wart_stem:
     display_name: Tige de verrue du nether obèse
@@ -217,6 +236,16 @@ items:
         placed_model:
           type: REAL_NOTE
           break_particles: ITEM
+        hardness: 4
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+          - GOLD_HOE
 
   # --- Golden Apple ---
   obese_golden_apple:
@@ -235,6 +264,16 @@ items:
           type: REAL_NOTE
           break_particles: ITEM
         up_block: omc_daily_events:obese_golden_apple_stem
+        hardness: 4
+        break_tools_blacklist:
+          - WOODEN_HOE
+          - STONE_HOE
+          - IRON_HOE
+          - COPPER_HOE
+        break_tools_whitelist:
+          - NETHERITE_HOE
+          - DIAMOND_HOE
+          - GOLD_HOE
 
   obese_golden_apple_stem:
     display_name: Tige de pomme dorée obèse

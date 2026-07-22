@@ -4,10 +4,7 @@ import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.FixGoldenBlockListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.GoldenCropsListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.ObeseCropsListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.PlantationLootListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.registry.items.CustomItem;
@@ -49,7 +46,8 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                 new GoldenCropsListener(),
                 new ObeseCropsListener(),
                 new FixGoldenBlockListener(),
-                new PlantationLootListener()
+                new PlantationLootListener(),
+                new PeeledObeseCropsListener()
         );
     }
 
@@ -138,7 +136,7 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                 CustomBlock customBlock = entry.getValue().getCustomBlock();
                 if (customBlock == null) return;
                 customBlock.place(block.getLocation());
-                BehaviourUpBlock.onPlace(customBlock);
+                BehaviourUpBlock.onPlace(block, customBlock.getNamespacedID());
                 return;
             }
         }

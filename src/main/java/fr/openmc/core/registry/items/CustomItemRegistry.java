@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.items;
 
+import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -21,6 +22,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -218,6 +220,19 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
         } else {
             return this.get(id);
         }
+    }
+
+    public Optional<CustomItem> get(Block block) {
+        if (block == null) return Optional.empty();
+
+        if (!ItemsAdderHook.isEnable())
+            throw new IllegalStateException("Impossible d'avoir un CustomItem via un Block, néccésite que ItemsAdder soit activé");
+
+        CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
+
+        if (customBlock == null) return Optional.empty();
+
+        return this.get(customBlock.getNamespacedID());
     }
 
     public CustomItem getOrThrow(ItemStack stack) {

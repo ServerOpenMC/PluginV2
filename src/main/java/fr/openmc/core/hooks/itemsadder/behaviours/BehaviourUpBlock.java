@@ -27,28 +27,33 @@ public class BehaviourUpBlock implements Listener {
         }
     }
 
-    public static void onPlace(CustomBlock customBlock) {
-        if (!UP_BLOCKS.containsKey(customBlock.getNamespacedID())) return;
+    public static void onPlace(Block block, String namespacedId) {
+        if (!UP_BLOCKS.containsKey(namespacedId)) return;
 
-        Block upBlock = customBlock.getBlock().getRelative(BlockFace.UP);
+        Block upBlock = block.getRelative(BlockFace.UP);
 
         if (upBlock.getType().isAir())
-            CustomBlock.place(UP_BLOCKS.get(customBlock.getNamespacedID()), upBlock.getLocation());
+            CustomBlock.place(UP_BLOCKS.get(namespacedId), upBlock.getLocation());
     }
 
     @EventHandler
     public void onBelowBlockPosed(CustomBlockPlaceEvent event) {
-        onPlace(CustomBlock.byAlreadyPlaced(event.getBlock()));
+        onPlace(event.getBlock(), event.getNamespacedID());
     }
 
     @EventHandler
     public void onBelowBlockBreak(CustomBlockBreakEvent event) {
-        if (!UP_BLOCKS.containsKey(event.getNamespacedID())) return;
+        onBreak(event.getBlock(), event.getNamespacedID());
+    }
 
-        Block upBlock = event.getBlock().getRelative(BlockFace.UP);
+    public static void onBreak(Block block, String namespacedId) {
+        if (!UP_BLOCKS.containsKey(namespacedId)) return;
+
+        Block upBlock = block.getRelative(BlockFace.UP);
+
         CustomBlock upCustomBlock = CustomBlock.byAlreadyPlaced(upBlock);
 
-        if (upCustomBlock != null && UP_BLOCKS.get(event.getNamespacedID()).equals(upCustomBlock.getNamespacedID()))
+        if (upCustomBlock != null && UP_BLOCKS.get(namespacedId).equals(upCustomBlock.getNamespacedID()))
             upCustomBlock.remove();
     }
 
