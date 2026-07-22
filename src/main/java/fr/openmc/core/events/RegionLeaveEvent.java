@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class RegionLeaveEvent extends PlayerEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-
     private final ProtectedRegion region;
+
     public RegionLeaveEvent(ProtectedRegion region, Player player) {
         super(player);
         this.region = region;
