@@ -2,6 +2,8 @@ package fr.openmc.core.registry.ambient.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.events.RegionEnterEvent;
+import fr.openmc.core.events.RegionLeaveEvent;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.PlayerWeatherNMS;
 import org.bukkit.Bukkit;
@@ -33,6 +35,20 @@ public class AmbientWeatherListener implements Listener {
                 reapplyWeather(player);
             }
         }, 1L);
+    }
+
+    @EventHandler
+    public void onRegionEnter(RegionEnterEvent event) {
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                reapplyWeather(player), 1L);
+    }
+
+    @EventHandler
+    public void onRegionExit(RegionLeaveEvent event) {
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                    reapplyWeather(player), 1L);
     }
 
     /**
