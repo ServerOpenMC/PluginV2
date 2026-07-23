@@ -136,6 +136,7 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                 CustomBlock customBlock = entry.getValue().getCustomBlock();
                 if (customBlock == null) return;
                 customBlock.place(block.getLocation());
+                ObeseCropsRegistry.mark(block.getLocation());
                 BehaviourUpBlock.onPlace(block, customBlock.getNamespacedID());
                 return;
             }

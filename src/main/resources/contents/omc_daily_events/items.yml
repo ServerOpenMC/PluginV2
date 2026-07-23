@@ -69,7 +69,7 @@ recipes:
           amount: 5
         - item: omc_daily_events:golden_beetroot
           amount: 5
-        - item: omc_daily_events:realy_golden_carrot
+        - item: omc_daily_events:really_golden_carrot
           amount: 5
         - item: omc_daily_events:golden_potato
           amount: 5

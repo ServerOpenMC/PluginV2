@@ -5,8 +5,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -52,7 +52,7 @@ public class GoldenHarvestMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         boolean isActived = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent;
+                && DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
 
         inventory.put(11, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.GOLDEN_BEETROOT, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.golden_harvest.menu.info.golden_crops.name"));

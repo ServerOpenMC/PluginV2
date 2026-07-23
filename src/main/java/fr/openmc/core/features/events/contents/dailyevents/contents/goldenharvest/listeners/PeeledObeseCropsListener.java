@@ -28,7 +28,7 @@ public class PeeledObeseCropsListener implements Listener {
             KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.OBESE_ONION), OMCRegistry.CUSTOM_ITEMS.PEELED_OBESE_ONION
     ));
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onStripObeseCrop(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 

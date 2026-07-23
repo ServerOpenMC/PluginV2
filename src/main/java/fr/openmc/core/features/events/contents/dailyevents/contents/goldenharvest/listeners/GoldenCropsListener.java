@@ -18,6 +18,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +36,7 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.golde
  */
 public class GoldenCropsListener implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
@@ -52,7 +53,7 @@ public class GoldenCropsListener implements Listener {
         giveRewards(itemLoot, event.getPlayer(), event.getBlock());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onObeseCropBreak(CustomBlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
@@ -68,7 +69,7 @@ public class GoldenCropsListener implements Listener {
         giveRewards(itemLoot, event.getPlayer(), event.getBlock());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCropFullyGrowed(BlockGrowEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
@@ -76,6 +77,9 @@ public class GoldenCropsListener implements Listener {
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
         KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
         if (keyBlockGolden == null) return;
+
+        if (!(event.getNewState() instanceof Ageable ageable)) return;
+        if (ageable.getAge() != ageable.getMaximumAge()) return;
 
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;
 

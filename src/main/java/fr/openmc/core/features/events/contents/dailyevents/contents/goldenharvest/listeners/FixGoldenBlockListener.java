@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.registry.items.CustomItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,10 +18,11 @@ import org.bukkit.event.Listener;
  * Corrige le bug d'un Golden Pumpkin/ Golden Melon qui ne reset pas l'état d'une stem
  */
 public class FixGoldenBlockListener implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onGoldenBlockBreak(CustomBlockBreakEvent event) {
-        CustomBlock broken = OMCRegistry.CUSTOM_ITEMS.getOrThrow(event.getNamespacedID()).getCustomBlock();
-        if (broken == null) return;
+        CustomItem brokenItem = OMCRegistry.CUSTOM_ITEMS.get(event.getNamespacedID()).orElse(null);
+        if (brokenItem == null) return;
+        CustomBlock broken = brokenItem.getCustomBlock();
 
         Material attachedStemType = broken.getNamespacedID().contains("pumpkin")
                 ? Material.ATTACHED_PUMPKIN_STEM

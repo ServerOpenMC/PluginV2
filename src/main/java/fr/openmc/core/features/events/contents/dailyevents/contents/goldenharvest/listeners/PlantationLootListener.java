@@ -24,7 +24,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import java.util.List;
 
 public class PlantationLootListener implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;

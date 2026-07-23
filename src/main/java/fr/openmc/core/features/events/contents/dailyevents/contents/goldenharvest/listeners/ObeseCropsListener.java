@@ -21,7 +21,7 @@ import org.bukkit.event.block.BlockGrowEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ObeseCropsListener implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCropFullyGrowed(BlockGrowEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
                 || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
@@ -45,6 +45,7 @@ public class ObeseCropsListener implements Listener {
                     40,
                     0.2,
                     null);
+
             event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.ENTITY_CREAKING_SPAWN, 1, 0.3f);
         }
     }
