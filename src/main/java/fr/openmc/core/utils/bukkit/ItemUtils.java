@@ -533,9 +533,14 @@ public class ItemUtils {
 
         ItemMeta meta = item.getItemMeta();
         if (meta instanceof Damageable d) {
+
+            int maxDamage = d.hasMaxDamage() ? d.getMaxDamage() : item.getType().getMaxDurability();
+
+            if (maxDamage <= 0) return;
+
             int newDamage = d.getDamage() + amount;
 
-            if (newDamage >= d.getMaxDamage()) {
+            if (newDamage >= maxDamage) {
                 item.setAmount(0);
             } else {
                 d.setDamage(newDamage);

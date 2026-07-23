@@ -8,6 +8,7 @@ import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;
 import fr.openmc.core.features.dream.registries.enchantements.Soulbound;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.enchantments.Vampirism;
+import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.enchantments.Plantation;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryComposeEvent;
@@ -32,6 +33,7 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
     public final CustomEnchantment DREAM_SLEEPER = register(new DreamSleeper());
 
     public final CustomEnchantment VAMPIRISM = register(new Vampirism());
+    public final CustomEnchantment PLANTATION = register(new Plantation());
 
     @Override
     public void bootstrap(BootstrapContext context) {

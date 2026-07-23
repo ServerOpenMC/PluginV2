@@ -53,6 +53,7 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.listeners.ItemsAddersListener;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
@@ -82,7 +83,7 @@ public class OMCPlugin extends JavaPlugin {
     public static final String VANISH_META_KEY = "omcstaff.vanished";
 
     // ** Registry of OMC Features
-    // () -> nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
+    // () -> : nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
     public final List<FeatureFactory> REGISTRY_FEATURE = new ArrayList<>(List.of(
             () -> new TicketManager(new File(this.getDataFolder(), "data/stats")),
             PrivateMessageManager::new,
@@ -128,7 +129,7 @@ public class OMCPlugin extends JavaPlugin {
             DimensionOpenerManager::new
     ));
 
-    public final List<Feature> loadedFeature = new ArrayList<>();
+    public static final List<Feature> loadedFeature = new ArrayList<>();
 
     // ** Registry of OMC Plugin Hooks
     public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
@@ -192,10 +193,7 @@ public class OMCPlugin extends JavaPlugin {
                 .forEach(f -> {
                     Feature feature = f.create(FeatureLoadingType.RUNTIME);
 
-                    if (feature != null) {
-                        feature.startInit();
-                        loadedFeature.add(feature);
-                    }
+                    registerFeature(feature);
                 });
 
         // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
@@ -208,6 +206,8 @@ public class OMCPlugin extends JavaPlugin {
      * Charge les registres et features qui doivent être lancé apres ItemsAdder
      */
     public void loadAfterItemsAdder() {
+        ItemsAddersListener.setLoaded(true);
+
         /* LOAD ITEMS ADDER CONTENTS */
         ItemsAdderHook.loadContents();
 
@@ -219,10 +219,7 @@ public class OMCPlugin extends JavaPlugin {
                 .forEach(f -> {
                     Feature feature = f.create(FeatureLoadingType.AFTER_IA);
 
-                    if (feature != null) {
-                        feature.startInit();
-                        loadedFeature.add(feature);
-                    }
+                    registerFeature(feature);
                 });
 
         if (WorldGuardHook.isEnable()) {
@@ -273,6 +270,18 @@ public class OMCPlugin extends JavaPlugin {
     public static void registerEvents(Collection<Listener> listeners) {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
+        }
+    }
+
+    /**
+     * Enregistre une feature dans le registre des features
+     *
+     * @param feature Feature à register
+     */
+    public static void registerFeature(Feature feature) {
+        if (feature != null) {
+            feature.startInit();
+            loadedFeature.add(feature);
         }
     }
 

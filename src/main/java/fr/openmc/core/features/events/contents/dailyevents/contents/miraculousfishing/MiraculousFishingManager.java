@@ -1,6 +1,11 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.EatKebabFermentedListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerFishListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerNotPickUpListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry.SeaCreatureLoot;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
@@ -12,13 +17,25 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-public class MiraculousFishingManager {
+import java.util.Set;
+
+public class MiraculousFishingManager extends Feature implements HasListeners {
 
     public static final NamespacedKey NOT_PICKUP_KEY = new NamespacedKey(OMCPlugin.getInstance(), "not_pickup");
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new PlayerFishListener(),
+                new PlayerNotPickUpListener(),
+                new EatKebabFermentedListener()
+        );
+    }
 
     /**
      * Simule un item qui est lancé du bouchon de pêche jusqu'au joueur, via un CustomLoot.
