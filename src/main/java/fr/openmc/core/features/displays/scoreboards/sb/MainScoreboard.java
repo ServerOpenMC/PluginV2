@@ -90,6 +90,7 @@ public class MainScoreboard extends BaseScoreboard {
         location = (chunkCity != null) ? textToSmallComponent(chunkCity.getName()) : location;
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
+        double bits = BitsManager.getBits(player.getUniqueId());
 
         List<Component> lines = new ArrayList<>();
 
@@ -114,13 +115,11 @@ public class MainScoreboard extends BaseScoreboard {
                 .appendSpace()
                 .append(text(EconomyManager.getEconomyIcon()))
         );
-        if (BitsManager.getBits(player.getUniqueId()) > 0) {
+        if (bits > 0) {
             lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.displays.scoreboard.bits.label.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(textToSmallComponent(BitsManager.getFormattedBits(player.getUniqueId())).color(TextColor.color(0x07A0F5)))
-                    .appendSpace()
-                    .append(text(BitsManager.getBitsIcon()))
+                    .append(textToSmallComponent(EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
             );
         }
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
