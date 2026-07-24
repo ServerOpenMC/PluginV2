@@ -29,6 +29,7 @@ public abstract class Hooks {
                 httpsHook.init();
             } catch (Exception e) {
                 OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
+                OMCLogger.error(e.getMessage(), e);
             }
             OMCLogger.successFormatted("Hook " + pluginName + " activé.");
             return;

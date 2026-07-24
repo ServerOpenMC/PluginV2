@@ -36,8 +36,8 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
 
     @Override
     public void init() {
-        fetchContributorStats();
         loadAllPlayerLinkGithubData();
+        fetchContributorStats();
     }
 
     @Override
@@ -64,6 +64,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         try {
             playerGithubMap.clear();
             linkGithubMinecraft.queryForAll().forEach(playerData -> {
+                System.out.println("playerdata " + playerData.getPlayerUUID() + " " + playerData.getGithubID());
                 playerGithubMap.put(playerData.getPlayerUUID(), playerData);
                 try {
                     linkGithubMinecraft.delete(playerData);
@@ -77,6 +78,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     public static void saveAllPlayerLinkGithubData() {
+        System.out.println("save");
         playerGithubMap.forEach((uuid, playerSave) -> {
             try {
                 linkGithubMinecraft.createOrUpdate(playerSave);
@@ -86,8 +88,8 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         });
     }
 
-    public static Map<Integer, String> getContributors() {
-        Map<Integer, String> contributors = new HashMap<>();
+    public static Map<Long, String> getContributors() {
+        Map<Long, String> contributors = new HashMap<>();
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors?per_page=100",
                 REPO_OWNER, REPO_NAME);
 
@@ -107,7 +109,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
             for (Object obj : array) {
                 JSONObject contributor = (JSONObject) obj;
                 String nameContributor = (String) contributor.get("login");
-                Integer idContributor = (Integer) contributor.get("id");
+                Long idContributor = (Long) contributor.get("id");
                 String type = (String) contributor.get("type"); // "User" ou "Bot"
 
                 if ("Bot".equals(type)) continue;
@@ -174,7 +176,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         }
     }
 
-    public static void linkPlayerToContributor(UUID playerUUID, int idGithub) {
+    public static void linkPlayerToContributor(UUID playerUUID, long idGithub) {
         playerGithubMap.put(playerUUID, new DBGithubMinecraft(playerUUID, idGithub));
         fetchContributorStats();
     }
@@ -203,33 +205,33 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         return stats == null ? 0 : stats.totalRemoveLines();
     }
 
-    public static String getContributorName(int idGithub) {
+    public static String getContributorName(long idGithub) {
         return getContributors().getOrDefault(idGithub, "null");
     }
 
-    public static int getContributorId(String nameGithub) {
+    public static long getContributorId(String nameGithub) {
         return getContributors().entrySet().stream()
                 .filter(entry -> entry.getValue().equals(nameGithub))
                 .map(Map.Entry::getKey)
                 .findFirst()
-                .orElse(-1);
+                .orElse(-1L);
     }
 
-    public static ContributorStats getStats(int idGithub) {
+    public static ContributorStats getStats(long idGithub) {
         return contributorStatsMap.get(getContributorName(idGithub));
     }
 
-    public static int getTotalLines(int idGithub) {
+    public static int getTotalLines(long idGithub) {
         ContributorStats stats = contributorStatsMap.get(getContributorName(idGithub));
         return stats == null ? 0 : stats.getTotalLines();
     }
 
-    public static int getTotalAddedLines(int idGithub) {
+    public static int getTotalAddedLines(long idGithub) {
         ContributorStats stats = contributorStatsMap.get(getContributorName(idGithub));
         return stats == null ? 0 : stats.totalAddLines();
     }
 
-    public static int getTotalRemovedLines(int idGithub) {
+    public static int getTotalRemovedLines(long idGithub) {
         ContributorStats stats = contributorStatsMap.get(getContributorName(idGithub));
         return stats == null ? 0 : stats.totalRemoveLines();
     }
@@ -238,7 +240,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         return playerGithubMap.get(uuid);
     }
 
-    public static UUID getPlayerLinkTo(int idGithub) {
+    public static UUID getPlayerLinkTo(long idGithub) {
         return playerGithubMap.values().stream()
                 .filter(data -> data.getGithubID() == idGithub)
                 .map(DBGithubMinecraft::getPlayerUUID)

@@ -13,23 +13,23 @@ import java.util.UUID;
 @DatabaseTable(tableName = "dream_player")
 @Getter
 public class DBGithubMinecraft {
-    @DatabaseField(id = true, columnName = "mc_uuid")
+    @DatabaseField(id = true, columnName = "player_uuid")
     private UUID playerUUID;
 
     @Setter
     @DatabaseField(canBeNull = false, columnName = "github_id")
-    private int githubID;
+    private long githubID;
 
     DBGithubMinecraft() {
         // Default constructor for ORMLite
     }
 
-    public DBGithubMinecraft(UUID playerUUID, int githubID) {
+    public DBGithubMinecraft(UUID playerUUID, long githubID) {
         this.playerUUID = playerUUID;
         this.githubID = githubID;
     }
 
-    public DBGithubMinecraft(OfflinePlayer player, int githubID) {
+    public DBGithubMinecraft(OfflinePlayer player, long githubID) {
         this.playerUUID = player.getUniqueId();
         this.githubID = githubID;
     }

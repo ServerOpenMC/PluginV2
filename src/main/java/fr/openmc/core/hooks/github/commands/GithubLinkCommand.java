@@ -30,7 +30,7 @@ public class GithubLinkCommand {
             return;
         }
 
-        int contributorId = GitHubHook.getContributorId(contributorName);
+        long contributorId = GitHubHook.getContributorId(contributorName);
 
         if (contributorId == -1) {
             MessagesManager.sendMessage(executor, TranslationManager.translation("hook.github.command.link.contributor_not_found"),
@@ -55,7 +55,7 @@ public class GithubLinkCommand {
     @Description("Délie un joueur à un contributeur GitHub")
     private void unlinkPlayerToContributor(Player executor,
                                          @Named("player lié") @SuggestWith(PlayerNameLinkedAutocomplete.class) Player targetLinked) {
-        if (GitHubHook.getContributorLink(targetLinked.getUniqueId()) != null) {
+        if (GitHubHook.getContributorLink(targetLinked.getUniqueId()) == null) {
             MessagesManager.sendMessage(executor, TranslationManager.translation("hook.github.command.unlink.player_not_linked"),
                     Prefix.STAFF, MessageType.ERROR, true);
             return;

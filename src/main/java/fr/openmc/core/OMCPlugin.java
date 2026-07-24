@@ -158,6 +158,7 @@ public class OMCPlugin extends JavaPlugin {
         saveDefaultConfig();
         configs = this.getConfig();
         OMCLogger.setRuntimeLogger(this.getSLF4JLogger());
+        DatabaseManager.init();
 
         /* EXTERNALS */
         MenuLib.init(this);
@@ -182,7 +183,6 @@ public class OMCPlugin extends JavaPlugin {
         new ErrorReporter();
 
         /* MANAGERS */
-        DatabaseManager.init();
         CommandsManager.init();
         ListenersManager.init();
 
@@ -238,12 +238,12 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // ** SAVE **
+        /* HOOKS */
+        REGISTRY_HOOKS.forEach(Hooks::startSave);
+
         for (Feature feature : loadedFeature) {
             feature.startSave();
         }
-
-        /* HOOKS */
-        REGISTRY_HOOKS.forEach(Hooks::startSave);
 
         /* REGISTRIES */
         OMCRegistry.stopAll();
