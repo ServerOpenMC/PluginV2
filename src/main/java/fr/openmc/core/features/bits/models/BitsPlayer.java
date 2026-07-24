@@ -1,4 +1,4 @@
-package fr.openmc.core.features.economy.models;
+package fr.openmc.core.features.bits.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -8,32 +8,39 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Getter
-@DatabaseTable(tableName = "balances")
-public class EconomyPlayer {
+@DatabaseTable(tableName = "bits")
+public class BitsPlayer {
     @DatabaseField(id = true, columnName = "player")
     private UUID playerUUID;
+
     @Setter
     @DatabaseField(canBeNull = false, defaultValue = "0")
-    private double balance;
+    private double bits;
 
-    EconomyPlayer() {
+    @Setter
+    @DatabaseField(canBeNull = false)
+    private int last_lines;
+
+    BitsPlayer() {
         // necessary for OrmLite
     }
 
-    public EconomyPlayer(UUID playerUUID) {
+    public BitsPlayer(UUID playerUUID) {
         this.playerUUID = playerUUID;
-        this.balance = 0;
+        this.bits = 0;
+        this.last_lines = 0;
     }
 
     public void deposit(double amount) {
-        balance += amount;
+        bits += amount;
     }
 
     public boolean withdraw(double amount) {
-        if (amount <= balance) {
-            balance -= amount;
+        if (amount <= bits) {
+            bits -= amount;
             return true;
         }
         return false;
     }
 }
+

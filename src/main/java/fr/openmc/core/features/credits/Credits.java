@@ -5,6 +5,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.animations.AnimationsManager;
+import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
@@ -39,6 +40,7 @@ import java.util.Set;
 public enum Credits {
     ADMINSHOP(Material.GOLD_INGOT, "feature.credits.feature.adminshop", AdminShopManager.class),
     ANIMATIONS(Material.AMETHYST_BLOCK, "feature.credits.feature.animations", AnimationsManager.class),
+    BITS(Material.LAPIS_LAZULI, "feature.credits.feature.bits", BitsManager.class),
     CUBE(Material.LAPIS_BLOCK, "feature.credits.feature.cube", Set.of("iambibi_")),
     CITY(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_AXENQ, "feature.credits.feature.city", CityManager.class),
     DREAM(Material.SCULK, "feature.credits.feature.dream", DreamManager.class),

@@ -31,3 +31,9 @@ font_images:
     path: "font/aywenito.png"
     scale_ratio: 12
     y_position: 9
+  bits:
+    permission: bits
+    show_in_gui: true
+    path: "font/bits.png"
+    scale_ratio: 12
+    y_position: 9

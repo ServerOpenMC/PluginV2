@@ -64,7 +64,6 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         try {
             playerGithubMap.clear();
             linkGithubMinecraft.queryForAll().forEach(playerData -> {
-                System.out.println("playerdata " + playerData.getPlayerUUID() + " " + playerData.getGithubID());
                 playerGithubMap.put(playerData.getPlayerUUID(), playerData);
                 try {
                     linkGithubMinecraft.delete(playerData);
@@ -78,7 +77,6 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     public static void saveAllPlayerLinkGithubData() {
-        System.out.println("save");
         playerGithubMap.forEach((uuid, playerSave) -> {
             try {
                 linkGithubMinecraft.createOrUpdate(playerSave);

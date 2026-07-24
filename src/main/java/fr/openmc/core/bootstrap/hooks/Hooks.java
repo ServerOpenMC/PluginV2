@@ -53,6 +53,17 @@ public abstract class Hooks {
     public void startSave() {
         String pluginName = getPluginName();
 
+        if (this instanceof HttpsHook httpsHook) {
+            try {
+                httpsHook.save();
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
+                OMCLogger.error(e.getMessage(), e);
+            }
+            OMCLogger.successFormatted("Hook " + pluginName + " activé.");
+            return;
+        }
+
         PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
         boolean enabled = pluginManager.getPlugin(pluginName) != null
                 && pluginManager.isPluginEnabled(pluginName)

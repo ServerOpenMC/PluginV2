@@ -34,7 +34,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     private static Dao<EconomyPlayer, String> playersDao;
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    private static final NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
+    public static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>(Map.of(
             1_000L, "k",
             1_000_000L, "M",
             1_000_000_000L, "B",
@@ -220,7 +220,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
             return "0";
         }
 
-        Map.Entry<Long, String> entry = suffixes.floorEntry((long) balance);
+        Map.Entry<Long, String> entry = SUFFIXES.floorEntry((long) balance);
         if (entry == null) {
             return decimalFormat.format(balance);
         }
