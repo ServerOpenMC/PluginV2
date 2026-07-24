@@ -51,6 +51,7 @@ public class TimelinesInjector implements DatapackInjector {
             Files.createDirectories(root);
             for (var entry : entries.entrySet()) {
                 Path file = root.resolve(entry.getKey() + ".json");
+                Files.createDirectories(file.getParent());
                 Files.writeString(file, GSON.toJson(entry.getValue().toJson()));
             }
         } catch (IOException e) {

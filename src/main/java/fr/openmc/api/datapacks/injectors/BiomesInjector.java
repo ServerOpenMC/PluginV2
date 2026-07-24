@@ -47,6 +47,7 @@ public class BiomesInjector implements DatapackInjector {
             Files.createDirectories(root);
             for (var entry : entries.entrySet()) {
                 Path biomeFile = root.resolve(entry.getKey() + ".json");
+                Files.createDirectories(biomeFile.getParent());
                 Files.writeString(biomeFile, GSON.toJson(entry.getValue().toJson()));
             }
         } catch (IOException e) {
