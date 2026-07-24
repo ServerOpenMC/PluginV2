@@ -52,6 +52,7 @@ import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
+import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.MotdUtils;
@@ -137,7 +138,8 @@ public class OMCPlugin extends JavaPlugin {
             new PapiHook(),
             new WorldGuardHook(),
             new ItemsAdderHook(),
-            new FancyNpcsHook()
+            new FancyNpcsHook(),
+            new GitHubHook()
     ));
 
     @Override
@@ -239,6 +241,9 @@ public class OMCPlugin extends JavaPlugin {
         for (Feature feature : loadedFeature) {
             feature.startSave();
         }
+
+        /* HOOKS */
+        REGISTRY_HOOKS.forEach(Hooks::startSave);
 
         /* REGISTRIES */
         OMCRegistry.stopAll();

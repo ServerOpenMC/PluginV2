@@ -13,6 +13,7 @@ import fr.openmc.core.commands.utils.RTPCommands;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.commands.utils.Socials;
 import fr.openmc.core.features.credits.CreditsCommand;
+import fr.openmc.core.hooks.github.commands.GithubLinkCommand;
 import fr.openmc.core.registry.ambient.commands.CustomAmbientCommands;
 import fr.openmc.core.registry.mobs.commands.CustomMobsCommands;
 import lombok.Getter;
@@ -58,7 +59,8 @@ public class CommandsManager {
                 new CustomItemCommand(),
                 new CustomAmbientCommands(),
                 new CustomMobsCommands(),
-                new ToastCommand()
+                new ToastCommand(),
+                new GithubLinkCommand()
         );
     }
 }

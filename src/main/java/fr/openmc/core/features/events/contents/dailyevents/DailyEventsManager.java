@@ -7,8 +7,8 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
@@ -37,7 +37,7 @@ import java.util.Set;
 
 
 @Credit(developers = {"iambibi_"})
-public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners, HasCommands {
+public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
     // * Constantes
     public static final List<DailyEvent> EVENTS = List.of(
             new MiraculousFishingEvent(),

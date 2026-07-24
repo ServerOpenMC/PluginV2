@@ -6,7 +6,6 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
@@ -15,6 +14,8 @@ import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
+import fr.openmc.core.hooks.github.GitHubHook;
+import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -34,15 +35,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.joml.Vector3f;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
 import java.util.*;
 
 @Credit(developers = {"miseur"})
@@ -121,8 +116,8 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
 
             if (contributorName == null || stats == null) continue;
 
-            int addLines = stats.added();
-            int removeLines = stats.removed();
+            int addLines = stats.totalAddLines();
+            int removeLines = stats.totalRemoveLines();
             TextColor rankColor = getRankColor(rank);
             Component rankComponent = Component.text("#")
                     .color(rankColor)
@@ -453,94 +448,25 @@ public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAf
      * <a href="https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity">Documentation GitHub API (REST)</a>
      */
     public static void updateGithubContributorsMap() {
-        String repoOwner = "ServerOpenMC";
-        String repoName = "PluginV2";
+        GitHubHook.fetchContributorStats();
 
-        Set<String> realContributors = getRealContributors(repoOwner, repoName);
+        List<Map.Entry<String, ContributorStats>> statsList = new ArrayList<>();
 
-        fetchAndFilterContributorStats(repoOwner, repoName, realContributors);
-    }
+        for (String login : GitHubHook.getContributors().values()) {
+            ContributorStats stats = GitHubHook.getStats(login);
+            if (stats == null) continue;
 
-    private static Set<String> getRealContributors(String owner, String repo) {
-        Set<String> contributors = new HashSet<>();
-        String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors?per_page=100", owner, repo);
-
-        try {
-            HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "OpenMC-BOT");
-
-            if (con.getResponseCode() == 200) {
-                JSONArray array = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-
-                for (Object obj : array) {
-                    JSONObject contributor = (JSONObject) obj;
-                    String login = (String) contributor.get("login");
-                    String type = (String) contributor.get("type"); // "User" ou "Bot"
-
-                    if (!"Bot".equals(type)) {
-                        contributors.add(login);
-                    }
-                }
-            }
-            con.disconnect();
-        } catch (Exception e) {
-            OMCLogger.warn("Could not fetch contributors: {}", e.getMessage(), e);
+            statsList.add(new AbstractMap.SimpleEntry<>(login, stats));
         }
 
-        return contributors;
-    }
+        statsList.sort((e1, e2) ->
+                Integer.compare(e2.getValue().getTotalLines(), e1.getValue().getTotalLines())
+        );
 
-    private static void fetchAndFilterContributorStats(String owner, String repo, Set<String> allowedContributors) {
-        String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", owner, repo);
+        githubContributorsMap.clear();
 
-        try {
-            HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "OpenMC-BOT");
-
-            if (con.getResponseCode() == 200) {
-                JSONArray statsArray = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-                List<Map.Entry<String, ContributorStats>> statsList = new ArrayList<>();
-
-                for (Object obj : statsArray) {
-                    JSONObject contributor = (JSONObject) obj;
-                    JSONObject author = (JSONObject) contributor.get("author");
-                    if (author == null) continue;
-
-                    String login = (String) author.get("login");
-                    if (!allowedContributors.contains(login)) continue;
-
-                    // Calcul des contributions
-                    JSONArray weeks = (JSONArray) contributor.get("weeks");
-                    int totalNetLines = 0;
-                    int totalAddLines = 0;
-                    int totalRemoveLines = 0;
-
-                    for (Object wObj : weeks) {
-                        JSONObject week = (JSONObject) wObj;
-                        totalNetLines += ((Long) week.get("a")).intValue() - ((Long) week.get("d")).intValue();
-                        totalAddLines += ((Long) week.get("a")).intValue();
-                        totalRemoveLines += ((Long) week.get("d")).intValue();
-                    }
-
-                    statsList.add(new AbstractMap.SimpleEntry<>(login, new ContributorStats(totalAddLines, totalRemoveLines)));
-                }
-
-                // Tri et affichage du classement
-                statsList.sort((e1, e2) ->
-                        Integer.compare(e2.getValue().getTotalLines(), e1.getValue().getTotalLines())
-                );
-
-                githubContributorsMap.clear();
-
-                for (int i = 0; i < Math.min(10, statsList.size()); i++) {
-                    githubContributorsMap.put(i + 1, statsList.get(i));
-                }
-            }
-            con.disconnect();
-        } catch (Exception e) {
-            OMCLogger.warn("Could not fetch contributor stats: {}", e.getMessage(), e);
+        for (int i = 0; i < Math.min(10, statsList.size()); i++) {
+            githubContributorsMap.put(i + 1, statsList.get(i));
         }
     }
 

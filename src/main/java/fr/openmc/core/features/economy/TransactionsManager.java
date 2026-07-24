@@ -8,7 +8,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.Stats;
 import org.bukkit.Bukkit;
@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
-public class TransactionsManager extends Feature implements DatabaseFeature {
+public class TransactionsManager extends Feature implements HasDatabase {
     private static Dao<Transaction, String> transactionsDao;
 
     @Override

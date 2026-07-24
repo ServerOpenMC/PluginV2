@@ -3,8 +3,8 @@ package fr.openmc.core.features.friend;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.features.friend.commands.FriendCommand;
 import lombok.Getter;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Credit(developers = {"Axeno"})
-public class FriendManager extends Feature implements DatabaseFeature, HasCommands {
+public class FriendManager extends Feature implements HasDatabase, HasCommands {
 
     // TODO: Configuration pour activer/désactiver les demandes d'amis (par défaut activé) & les messages de connexion/déconnexion
     // Config: accepter que les joueurs voient l'argent, la ville, le status (En ligne, Hors ligne), le temps de jeu, ou autre

@@ -75,7 +75,7 @@ public abstract class Feature {
      */
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
-        if (this instanceof DatabaseFeature dbF) {
+        if (this instanceof HasDatabase dbF) {
             dbF.initDB(connectionSource);
         }
     }

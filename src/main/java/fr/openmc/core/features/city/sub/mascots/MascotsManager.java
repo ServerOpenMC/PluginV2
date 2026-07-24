@@ -8,8 +8,8 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -47,7 +47,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"Nocolm"})
-public class MascotsManager extends Feature implements DatabaseFeature, HasCommands, HasListeners {
+public class MascotsManager extends Feature implements HasDatabase, HasCommands, HasListeners {
     public static final List<UUID> movingMascots = new ArrayList<>();
     public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
