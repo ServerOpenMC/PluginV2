@@ -1,8 +1,12 @@
 package fr.openmc.core.registry.ambient.listeners;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.events.RegionEnterEvent;
+import fr.openmc.core.events.RegionLeaveEvent;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.PlayerSetTimeNMS;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +32,20 @@ public class AmbientFixedTimeListener implements Listener {
         for (Player player : event.getWorld().getPlayers()) {
             reapplyTime(player);
         }
+    }
+
+    @EventHandler
+    public void onRegionEnter(RegionEnterEvent event) {
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                reapplyTime(player), 1L);
+    }
+
+    @EventHandler
+    public void onRegionExit(RegionLeaveEvent event) {
+        Player player = event.getPlayer();
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                reapplyTime(player), 1L);
     }
 
     /**
