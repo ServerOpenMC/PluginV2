@@ -126,4 +126,9 @@ public class MiraculousFishingEvent extends DailyEvent
     public BossBar.Color getBossBarColor() {
         return BossBar.Color.BLUE;
     }
+
+    @Override
+    public BossBar.Overlay getBossBarOverlay() {
+        return BossBar.Overlay.NOTCHED_6;
+    }
 }

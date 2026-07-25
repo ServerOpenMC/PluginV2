@@ -7,4 +7,5 @@ import net.kyori.adventure.bossbar.BossBar;
  */
 public interface HasBossBar {
     BossBar.Color getBossBarColor();
+    BossBar.Overlay getBossBarOverlay();
 }

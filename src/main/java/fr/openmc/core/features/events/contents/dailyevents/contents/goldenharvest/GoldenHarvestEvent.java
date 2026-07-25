@@ -95,4 +95,9 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     public BossBar.Color getBossBarColor() {
         return BossBar.Color.YELLOW;
     }
+
+    @Override
+    public BossBar.Overlay getBossBarOverlay() {
+        return BossBar.Overlay.NOTCHED_6;
+    }
 }

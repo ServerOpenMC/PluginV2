@@ -7,6 +7,7 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -34,7 +35,7 @@ public class DailyEventBossbar extends BaseBossbar {
                 Component.text(
                         DateUtils.convertSecondToTime(
                                 (long) DailyEventsManager.getRemainingTime(
-                                        DailyEventsManager.getActiveDailyEvent())))
+                                        DailyEventsManager.getActiveDailyEvent())), NamedTextColor.RED)
                 ));
     }
 
@@ -63,6 +64,11 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected BossBar.Overlay style(Player player) {
+        if (DailyEventsManager.isActiveDailyEvent()
+                && DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar hasBossBar) {
+            return hasBossBar.getBossBarOverlay();
+        }
+
         return BossBar.Overlay.PROGRESS;
     }
 

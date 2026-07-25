@@ -114,4 +114,9 @@ public class BloodyNightEvent extends DailyEvent
     public BossBar.Color getBossBarColor() {
         return BossBar.Color.RED;
     }
+
+    @Override
+    public BossBar.Overlay getBossBarOverlay() {
+        return BossBar.Overlay.NOTCHED_12;
+    }
 }
