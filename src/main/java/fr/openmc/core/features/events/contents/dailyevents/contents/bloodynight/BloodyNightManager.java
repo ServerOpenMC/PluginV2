@@ -42,12 +42,13 @@ public class BloodyNightManager {
         );
 
         // * Programmation du boss Vampire
-        Location vampireSpawnLocation = LocationUtils.getSafeNearbySurface(
-                LocationUtils.randomLocation(
-                        world.getSpawnLocation(),
-                        Math.min(10000, world.getWorldBorder().getSize() / 2.0)
-                ),
-                50);
+        Location vampireSpawnLocation = LocationUtils.findSafeSpawnLocation(
+                world,
+                world.getSpawnLocation(),
+                1000,
+                10000,
+                10
+        );
 
         vampireTask = Bukkit.getScheduler().runTaskLater(
                 OMCPlugin.getInstance(),

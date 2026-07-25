@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.world;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.block.Biome;
@@ -9,6 +10,36 @@ import org.bukkit.block.Block;
 import java.util.Random;
 
 public class LocationUtils {
+    public static Location findSafeSpawnLocation(World world, Location center, double minDistance, double maxDistance, int maxTries) {
+        WorldBorder border = world.getWorldBorder();
+
+        double borderRadius = border.getSize() / 2.0;
+        double distanceMax = Math.min(maxDistance, Math.max(borderRadius, minDistance));
+
+        for (int i = 0; i < maxTries; i++) {
+            Location tryLocation = randomLocation(center, minDistance, distanceMax);
+
+            if (border.isInside(tryLocation) && isSafeGround(tryLocation))
+                return tryLocation;
+        }
+
+        return randomLocation(center, minDistance, distanceMax);
+    }
+
+    private static boolean isSafeGround(Location loc) {
+        World world = loc.getWorld();
+        Block feet = world.getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
+        Block above = world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+
+        return feet.getType().isSolid()
+                && !feet.isLiquid()
+                && feet.getType() != Material.LAVA
+                && feet.getType() != Material.CACTUS
+                && feet.getType() != Material.MAGMA_BLOCK
+                && above.getType().isAir();
+    }
+
+
     public static Location randomLocation(Location origin, double distance) {
         double angle = Math.random() * 2 * Math.PI;
 
