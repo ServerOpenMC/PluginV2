@@ -2,6 +2,10 @@ package fr.openmc.core.registry.loottable;
 
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.bits.contents.loottables.KitchenLootTable;
+import fr.openmc.core.features.bits.contents.loottables.MedievalLootTable;
+import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
+import fr.openmc.core.features.bits.contents.loottables.OfficeLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
@@ -34,6 +38,11 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable CURSED_MOB = register(new CursedMobLootTable());
     public final CustomLootTable ENRAGED_MOB = register(new EnragedMobLootTable());
     public final CustomLootTable ANCIENT_MOB = register(new AncientMobLootTable());
+
+    public final CustomLootTable MEDIEVAL_BOX = register(new MedievalLootTable());
+    public final CustomLootTable KITCHEN_BOX = register(new KitchenLootTable());
+    public final CustomLootTable OFFICE_BOX = register(new OfficeLootTable());
+    public final CustomLootTable MODERN_BOX = register(new ModernLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {

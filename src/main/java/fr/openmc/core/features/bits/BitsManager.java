@@ -26,8 +26,6 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.*;
 
-// todo: systeme qui donne les bits avec l'attribut last_lines
-// todo: CustomItem et CUstomLootbox pour les boxes + clé
 // todo: shop de bits (menu qui va avec)
 @Credit(developers = {"iambibi_"})
 public class BitsManager extends Feature implements HasDatabase, HasCommands {
