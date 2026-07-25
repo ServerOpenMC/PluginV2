@@ -118,6 +118,11 @@ public class PlayerRespawnNMS {
                 nmsPlayer.totalExperience,
                 nmsPlayer.experienceLevel
         ));
+        nmsPlayer.connection.send(new ClientboundSetHealthPacket(
+                nmsPlayer.getHealth(),
+                nmsPlayer.getFoodData().getFoodLevel(),
+                nmsPlayer.getFoodData().getSaturationLevel()
+        ));
 
         PlayerPositionNMS.sendPos(nmsPlayer, nmsPlayer.position());
 
