@@ -34,7 +34,7 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item == null || !item.isSimilar(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE.getBest()))
+        if (item == null || !ItemUtils.isSimilar(item, OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE.getBest()))
             return;
 
         // Le joueur ne craft pas plus d'un kebab
