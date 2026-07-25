@@ -300,27 +300,26 @@ public class ItemUtils {
         return true;
     }
 
-    public static boolean giveAywenite(Player player, int amount) {
-        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
-        if (aywenite == null) return false;
+    public static boolean giveItem(Player player, ItemStack item, int amount) {
+        if (item == null) return false;
 
-        aywenite.setAmount(amount);
+        item.setAmount(amount);
 
-        if (!hasEnoughSpace(player, aywenite)) {
+        if (!hasEnoughSpace(player, item)) {
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("core.utils.aywenite.not_enough_space",
                             Component.text(amount),
-                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE)),
+                            item.getItemMeta().displayName().color(NamedTextColor.LIGHT_PURPLE)),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true
             );
-            MailboxManager.sendItems(player, player, new ItemStack[]{ aywenite });
+            MailboxManager.sendItems(player, player, new ItemStack[]{ item });
             return false;
         }
 
-        player.getInventory().addItem(aywenite);
+        player.getInventory().addItem(item);
         return true;
     }
 

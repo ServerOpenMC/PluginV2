@@ -36,6 +36,9 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
 
     private static BukkitTask bitsUpdateTask;
 
+    public static final double LINE_REQ = 500d;
+    public static final double BITS_PER_LINE_REQ = 250d;
+
     @Override
     public void init() {
         bitsData = loadAllBits();

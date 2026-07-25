@@ -3,6 +3,7 @@ package fr.openmc.core.features.bits.commands;
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.bits.BitsManager;
+import fr.openmc.core.features.bits.menu.BitsMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.commands.autocomplete.PlayerNameLinkedAutocomplete;
@@ -29,10 +30,7 @@ public class BitsCommands {
             @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) @Default("me") OfflinePlayer target
     ) {
         if (sender instanceof OMCPlayer player && target == null) {
-            player.message().sendInfo(TranslationManager.translation(
-                    "feature.economy.bits.self",
-                    Component.text(player.economy().getFormattedBalance()).color(NamedTextColor.YELLOW)
-            ));
+            new BitsMenu(player).open();
         } else {
             if (target == null) {
                 MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.missing_arg"), Prefix.OPENMC, MessageType.ERROR, true);
