@@ -56,9 +56,9 @@ public class BitsShopMenu extends Menu {
                 BitsManager.getBitsPlayer(getOwner().getUniqueId()).getBits();
 
         inventory.put(11, createBuyButton(OMCRegistry.CUSTOM_ITEMS.MODERN_BOX, 500));
-        inventory.put(12, createBuyButton(OMCRegistry.CUSTOM_ITEMS.MEDIEVAL_BOX, 1000));
-        inventory.put(14, createBuyButton(OMCRegistry.CUSTOM_ITEMS.OFFICE_BOX, 1500));
-        inventory.put(15, createBuyButton(OMCRegistry.CUSTOM_ITEMS.KITCHEN_BOX, 2000));
+        inventory.put(12, createBuyButton(OMCRegistry.CUSTOM_ITEMS.MEDIEVAL_BOX, 500));
+        inventory.put(14, createBuyButton(OMCRegistry.CUSTOM_ITEMS.OFFICE_BOX, 500));
+        inventory.put(15, createBuyButton(OMCRegistry.CUSTOM_ITEMS.KITCHEN_BOX, 500));
 
         return inventory;
     }

@@ -1,6 +1,5 @@
 package fr.openmc.core.features.bits.commands;
 
-import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.bits.menu.BitsMenu;
@@ -26,28 +25,9 @@ public class BitsCommands {
 
     @CommandPlaceholder()
     public void getBits(
-            CommandSender sender,
-            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) @Default("me") OfflinePlayer target
+            Player sender
     ) {
-        if (sender instanceof OMCPlayer player && target == null) {
-            new BitsMenu(player).open();
-        } else {
-            if (target == null) {
-                MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.missing_arg"), Prefix.OPENMC, MessageType.ERROR, true);
-                return;
-            }
-            if (!(sender instanceof Player player) || player.hasPermission("omc.admin.commands.bits.others")) {
-                MessagesManager.sendMessage(sender,
-                        TranslationManager.translation(
-                                "feature.economy.bits.others",
-                                Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                                Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
-                        ),
-                        Prefix.OPENMC, MessageType.INFO, true);
-            } else {
-                MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);
-            }
-        }
+        new BitsMenu(sender).open();
     }
 
     @Subcommand("set")
