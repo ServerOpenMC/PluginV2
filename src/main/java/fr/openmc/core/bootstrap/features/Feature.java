@@ -61,7 +61,7 @@ public abstract class Feature {
         } catch (Exception e) {
             initialize = false;
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
-            OMCLogger.error(e.getMessage());
+            OMCLogger.error(e.getMessage(), e);
         } catch (NoClassDefFoundError e) {
             OMCLogger.errorFormatted("Plugin has failed to start feature because " + e.getMessage() + " does not exist.");
         }
@@ -86,7 +86,15 @@ public abstract class Feature {
     public final void startSave() {
         if (!initialize) return;
         if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
-        save();
+
+        try {
+            save();
+            OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " sauvegardée correctement.");
+        } catch (Exception e) {
+            initialize = false;
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non sauvegardée.");
+            OMCLogger.error(e.getMessage(), e);
+        }
     }
 
     /**
