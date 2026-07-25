@@ -2,10 +2,7 @@ package fr.openmc.core.utils.nms;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.ambient.CustomAmbient;
-import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
-import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
-import net.minecraft.network.protocol.game.CommonPlayerSpawnInfo;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -115,6 +112,12 @@ public class PlayerRespawnNMS {
         playerList.sendLevelInfo(nmsPlayer, nmsWorld);
         playerList.sendAllPlayerInfo(nmsPlayer);
         playerList.sendActivePlayerEffects(nmsPlayer);
+
+        nmsPlayer.connection.send(new ClientboundSetExperiencePacket(
+                nmsPlayer.experienceProgress,
+                nmsPlayer.totalExperience,
+                nmsPlayer.experienceLevel
+        ));
 
         PlayerPositionNMS.sendPos(nmsPlayer, nmsPlayer.position());
 
