@@ -45,7 +45,7 @@ public class MainBossbar extends BaseBossbar {
      */
     @Override
     protected BossBar.Color color(Player player) {
-        return BossBar.Color.RED;
+        return BossBar.Color.PINK;
     }
 
     /**

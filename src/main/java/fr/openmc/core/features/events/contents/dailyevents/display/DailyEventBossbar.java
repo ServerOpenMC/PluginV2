@@ -3,6 +3,8 @@ package fr.openmc.core.features.events.contents.dailyevents.display;
 import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBossBar;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -28,12 +30,17 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected void update(Player player, BossBar bar) {
-        bar.name(Component.empty());
+        bar.name(TranslationManager.translation("feature.dailyevents.bossbar.name",
+                Component.text(
+                        DateUtils.convertSecondToTime(
+                                (long) DailyEventsManager.getRemainingTime(
+                                        DailyEventsManager.getActiveDailyEvent())))
+                ));
     }
 
     @Override
     protected Float progress(Player player) {
-        return (float) (DailyEventsManager.getRemainingTime(DailyEventsManager.getActiveDailyEvent()) / (float) DailyEventsManager.getActiveDailyEvent().getDuration());
+        return (float) (DailyEventsManager.getRemainingTime(DailyEventsManager.getActiveDailyEvent()) / (float) DailyEventsManager.getActiveDailyEvent().getDuration()) * 60;
     }
 
     /**

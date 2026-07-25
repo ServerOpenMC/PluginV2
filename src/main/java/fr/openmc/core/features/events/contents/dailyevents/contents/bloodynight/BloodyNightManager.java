@@ -142,9 +142,13 @@ public class BloodyNightManager {
      */
     private static void deleteVampireMonsters(World world) {
         for (Entity entity : world.getEntities()) {
+            if (!(entity instanceof LivingEntity livingEntity)) continue;
             CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
             if (customMob == null) continue;
-            if (customMob instanceof VampireBoss || customMob instanceof VampireSlave)
+            if (customMob instanceof VampireBoss bossbar) {
+                bossbar.removeBossBar(livingEntity);
+                entity.remove();
+            } else if (customMob instanceof VampireSlave)
                 entity.remove();
         }
     }

@@ -7,14 +7,12 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerFishListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerNotPickUpListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.menu.MiraculousFishingMenu;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.advancements.AdvancementType;
@@ -29,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MiraculousFishingEvent extends DailyEvent
-        implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu {
+        implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu, HasBossBar {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -122,5 +120,10 @@ public class MiraculousFishingEvent extends DailyEvent
     @Override
     public Menu getInfoMenu(Player player) {
         return new MiraculousFishingMenu(player);
+    }
+
+    @Override
+    public BossBar.Color getBossBarColor() {
+        return BossBar.Color.BLUE;
     }
 }

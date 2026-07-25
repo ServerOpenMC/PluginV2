@@ -6,14 +6,12 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnLIstener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.PlayerKillMonsterListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.menu.BloodyNightMenu;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
@@ -25,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 public class BloodyNightEvent extends DailyEvent
-        implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu {
+        implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu, HasBossBar {
     @Override
     public String getEventId() {
         return "bloody_night";
@@ -110,5 +108,10 @@ public class BloodyNightEvent extends DailyEvent
     @Override
     public Menu getInfoMenu(Player player) {
         return new BloodyNightMenu(player);
+    }
+
+    @Override
+    public BossBar.Color getBossBarColor() {
+        return BossBar.Color.RED;
     }
 }

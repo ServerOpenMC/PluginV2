@@ -1,13 +1,11 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
@@ -15,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast {
+public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbient, HasBroadcast, HasBossBar {
     @Override
     public String getEventId() {
         return "golden_harvest";
@@ -91,5 +89,10 @@ public class GoldenHarvestEvent extends DailyEvent implements HasToast, HasAmbie
     @Override
     public Component getEndBroadcast() {
         return TranslationManager.translation("feature.dailyevents.goldenharvest.broadcast.end");
+    }
+
+    @Override
+    public BossBar.Color getBossBarColor() {
+        return BossBar.Color.YELLOW;
     }
 }
