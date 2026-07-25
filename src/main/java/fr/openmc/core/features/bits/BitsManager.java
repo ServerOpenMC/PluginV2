@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -12,14 +13,22 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.bits.models.BitsPlayer;
+import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.hooks.github.GitHubHook;
+import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.*;
 
+// todo: systeme qui donne les bits avec l'attribut last_lines
+// todo: CustomItem et CUstomLootbox pour les boxes + clé
+// todo: shop de bits (menu qui va avec)
 @Credit(developers = {"iambibi_"})
 public class BitsManager extends Feature implements HasDatabase, HasCommands {
     @Getter
@@ -27,9 +36,14 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
 
     private static Dao<BitsPlayer, String> playersBitsDao;
 
+    private static BukkitTask bitsUpdateTask;
+
     @Override
     public void init() {
         bitsData = loadAllBits();
+
+        updateBitsUpdateTimer();
+
     }
 
     @Override
@@ -118,5 +132,60 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
         } else {
             return "✯";
         }
+    }
+
+    public static void applyContributorBitsUpdate(Long githubID) {
+        UUID playerLinked = GitHubHook.getPlayerLinkTo(githubID);
+        if (playerLinked == null) return;
+
+        ContributorStats stats = GitHubHook.getStats(githubID);
+        if (stats == null) return;
+
+        int lastSavedLines = getBitsPlayer(playerLinked).getLastSavedLines();
+        int currentLines = stats.getTotalLines();
+
+        if (lastSavedLines != currentLines) {
+            // 500 lignes de codes = 250 bits
+            double bits = ((currentLines - lastSavedLines) / 500d) * 250d;
+            addBits(playerLinked, bits);
+            getBitsPlayer(playerLinked).setLastSavedLines(currentLines);
+        }
+    }
+
+    public static void applyAllContributorBitsUpdate() {
+        Map<Long, String> contributors = GitHubHook.getContributors();
+
+        GitHubHook.fetchContributorStats();
+
+        for (Long githubID : contributors.keySet()) {
+            applyContributorBitsUpdate(githubID);
+        }
+    }
+
+    public static void updateBitsUpdateTimer() {
+        if (OMCPlugin.isUnitTestVersion()) return;
+
+        if (bitsUpdateTask != null) return;
+
+        long delay = 60L * 60L * 20L; // 1 heures
+
+        bitsUpdateTask = Bukkit.getScheduler().runTaskLater(
+                OMCPlugin.getInstance(),
+                () -> {
+                    OMCLogger.info("Applying all bits update for contributors");
+                    applyAllContributorBitsUpdate();
+                    CityBankManager.applyAllCityInterests();
+                    OMCLogger.info("All bits update for contributors applied successfully.");
+
+                    bitsUpdateTask = null;
+
+                    Bukkit.getScheduler().runTaskLater(
+                            OMCPlugin.getInstance(),
+                            BitsManager::updateBitsUpdateTimer,
+                            20L * 10
+                    );
+                },
+                delay
+        );
     }
 }

@@ -215,6 +215,10 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
                 .orElse(-1L);
     }
 
+    public static Long getContributorId(UUID playerUUID) {
+        return playerGithubMap.get(playerUUID) != null ? playerGithubMap.get(playerUUID).getGithubID() : null;
+    }
+
     public static ContributorStats getStats(long idGithub) {
         return contributorStatsMap.get(getContributorName(idGithub));
     }

@@ -18,8 +18,8 @@ public class BitsPlayer {
     private double bits;
 
     @Setter
-    @DatabaseField(canBeNull = false)
-    private int last_lines;
+    @DatabaseField(canBeNull = false, columnName = "last_saved_lines")
+    private int lastSavedLines;
 
     BitsPlayer() {
         // necessary for OrmLite
@@ -28,7 +28,7 @@ public class BitsPlayer {
     public BitsPlayer(UUID playerUUID) {
         this.playerUUID = playerUUID;
         this.bits = 0;
-        this.last_lines = 0;
+        this.lastSavedLines = 0;
     }
 
     public void deposit(double amount) {

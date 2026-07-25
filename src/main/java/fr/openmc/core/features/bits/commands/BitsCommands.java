@@ -4,6 +4,8 @@ import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.hooks.github.GitHubHook;
+import fr.openmc.core.hooks.github.commands.autocomplete.PlayerNameLinkedAutocomplete;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -120,9 +122,9 @@ public class BitsCommands {
     }
 
     @Subcommand("reset")
-    @Description("Permet de réinitialiser l'argent d'un joueur")
-    @CommandPermission("omc.admin.commands.money.reset")
-    public void resetMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target) {
+    @Description("Permet de réinitialiser les bits d'un joueur")
+    @CommandPermission("omc.admin.commands.bits.reset")
+    public void resetBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target) {
         BitsManager.setBits(target.getUniqueId(), 0);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
@@ -139,5 +141,29 @@ public class BitsCommands {
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
+    }
+
+    @Subcommand("forceBitsUpdate")
+    @Description("Permet de forcer l'update des bits d'un joueur")
+    @CommandPermission("omc.admin.commands.bits.forceupdate")
+    public void forceBitsUpdate(CommandSender player, @SuggestWith(PlayerNameLinkedAutocomplete.class) Player target) {
+        Long githubId = GitHubHook.getContributorId(target.getUniqueId());
+
+        if (githubId == null) {
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation(
+                            "feature.economy.bits.forceupdate.not_linked"
+                    ),
+                    Prefix.OPENMC, MessageType.ERROR, true);
+            return;
+        }
+
+        BitsManager.applyContributorBitsUpdate(githubId);
+        MessagesManager.sendMessage(player,
+                TranslationManager.translation(
+                        "feature.economy.bits.forceupdate.success",
+                        Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                ),
+                Prefix.OPENMC, MessageType.SUCCESS, true);
     }
 }
