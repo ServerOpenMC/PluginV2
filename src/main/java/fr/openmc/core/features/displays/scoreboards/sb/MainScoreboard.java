@@ -120,6 +120,8 @@ public class MainScoreboard extends BaseScoreboard {
                     .append(TranslationManager.translation("feature.displays.scoreboard.bits.label.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(textToSmallComponent(EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                    .appendSpace()
+                    .append(text(BitsManager.getBitsIcon()))
             );
         }
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
