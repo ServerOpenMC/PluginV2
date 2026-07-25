@@ -2,10 +2,8 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.EatKebabFermentedListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerFishListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners.PlayerNotPickUpListener;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.menu.MiraculousFishingMenu;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
@@ -22,14 +20,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Set;
 
 public class MiraculousFishingEvent extends DailyEvent
-        implements HasToast, HasAmbient, HasBroadcast, HasListeners, HasMenu {
+        implements HasToast, HasAmbient, HasBroadcast, HasMenu, HasFeature {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -111,16 +107,12 @@ public class MiraculousFishingEvent extends DailyEvent
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new PlayerFishListener(),
-                new PlayerNotPickUpListener(),
-                new EatKebabFermentedListener()
-        );
+    public Menu getInfoMenu(Player player) {
+        return new MiraculousFishingMenu(player);
     }
 
     @Override
-    public Menu getInfoMenu(Player player) {
-        return new MiraculousFishingMenu(player);
+    public Feature getFeature() {
+        return new MiraculousFishingManager();
     }
 }

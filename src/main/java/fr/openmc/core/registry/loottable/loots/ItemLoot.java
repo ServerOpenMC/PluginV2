@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Getter
@@ -175,15 +177,26 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public Set<CustomLoot> run(Player receiver) {
-        if (itemSupplier != null) {
-            ItemStack item = itemSupplier.get();
-            item.setAmount(this.getRandomAmount());
-
+        return runBase((item) -> {
             if (ItemUtils.hasEnoughSpace(receiver, item)) {
                 receiver.getInventory().addItem(item);
             } else {
                 receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
             }
+        });
+    }
+
+    public Set<CustomLoot> run(Player receiver, Location location) {
+        return runBase((item) ->
+                receiver.getWorld().dropItemNaturally(location, item));
+    }
+
+    private Set<CustomLoot> runBase(Consumer<ItemStack> consumer) {
+        if (itemSupplier != null) {
+            ItemStack item = itemSupplier.get();
+            item.setAmount(this.getRandomAmount());
+
+            consumer.accept(item);
 
             return Collections.singleton(this);
         }
@@ -192,11 +205,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
             ItemStack item = lootItem.clone();
             item.setAmount(this.getRandomAmount());
 
-            if (ItemUtils.hasEnoughSpace(receiver, item)) {
-                receiver.getInventory().addItem(item);
-            } else {
-                receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
-            }
+            consumer.accept(item);
         }
 
         return Collections.singleton(this);

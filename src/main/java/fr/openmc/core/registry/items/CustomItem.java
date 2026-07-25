@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.items;
 
+import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -36,6 +37,14 @@ public abstract class CustomItem {
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance(getId());
         return stack != null ? stack.getItemStack() : null;
+    }
+
+    public CustomStack getCustomStack() {
+        return CustomStack.getInstance(getId());
+    }
+
+    public CustomBlock getCustomBlock() {
+        return CustomBlock.getInstance(getId());
     }
 
     @Override

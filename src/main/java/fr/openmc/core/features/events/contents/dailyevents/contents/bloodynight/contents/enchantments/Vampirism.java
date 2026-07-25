@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.enchantments;
 
-import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
+import fr.openmc.core.registry.enchantments.CustomEnchantment;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 
 @SuppressWarnings("UnstableApiUsage")
-public class Vampirism extends DreamEnchantment implements Listener {
+public class Vampirism extends CustomEnchantment implements Listener {
     private static final NamespacedKey MAX_HEALTH_MODIFIER_KEY =
             new NamespacedKey("omc_daily_events", "vampirism_max_health");
 
