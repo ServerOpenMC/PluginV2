@@ -543,4 +543,21 @@ public class ItemUtils {
             }
         }
     }
+
+    public static void removeItemInHand(Player player, ItemStack itemToDelete) {
+        if (itemToDelete == null) return;
+
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+
+        if (!ItemUtils.isSimilar(itemInHand, itemToDelete)) return;
+
+        int stackAmount = itemInHand.getAmount();
+        int toRemove = Math.min(1, stackAmount);
+
+        if (stackAmount <= toRemove) {
+            player.getInventory().setItemInMainHand(null);
+        } else {
+            itemInHand.setAmount(stackAmount - toRemove);
+        }
+    }
 }

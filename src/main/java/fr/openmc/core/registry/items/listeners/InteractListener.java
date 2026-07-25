@@ -34,7 +34,7 @@ public class InteractListener implements Listener {
             else if (action.isRightClick()) usable.onRightClick(player, event);
         } else if (item.get() instanceof LootboxBlock lootbox
                 && event.getAction() == Action.RIGHT_CLICK_AIR) {
-            ItemUtils.removeItemsFromPlayerInventory(player, item.get().getBest(), 1);
+            ItemUtils.removeItemInHand(player, item.get().getBest());
             lootbox.getLootbox().open(player);
         }
     }
