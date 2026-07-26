@@ -51,4 +51,16 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     public OMCPlayerSettings settings() {
         return settings;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player p)) return false;
+        return player.getUniqueId().equals(p.getUniqueId());
+    }
+
+    @Override
+    public int hashCode() {
+        return player.getUniqueId().hashCode();
+    }
 }
