@@ -6,7 +6,7 @@ info:
 items:
   # --- Potato ---
   obese_potato:
-    display_name: Patate obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_potato.name>
     graphics:
       textures:
         north: obese_crops/basic/potato/obese_potato_side
@@ -33,7 +33,7 @@ items:
           - GOLD_HOE
 
   obese_poisonous_potato:
-    display_name: Patate empoisonnée obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_poisonous_potato.name>
     graphics:
       textures:
         north: obese_crops/basic/poisonous_potato/obese_poisonous_potato_side
@@ -60,7 +60,7 @@ items:
           - GOLD_HOE
 
   obese_potato_stem:
-    display_name: Tige de patate obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_potato_stem.name>
     graphics:
       icon: obese_crops/basic/potato/obese_potato_stem
       parent: block/cross
@@ -75,7 +75,7 @@ items:
 
   # --- Baked potato ---
   obese_baked_potato:
-    display_name: Patate cuite obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_baked_potato.name>
     graphics:
       textures:
         north: obese_crops/basic/baked_potato/obese_baked_potato_side_2
@@ -94,7 +94,7 @@ items:
 
   # --- Carrot ---
   obese_carrot:
-    display_name: Carotte obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_carrot.name>
     graphics:
       textures:
         north: obese_crops/basic/carrot/obese_carrot_side
@@ -123,7 +123,7 @@ items:
 
 
   obese_carrot_stem:
-    display_name: Tige de carotte obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_carrot_stem.name>
     graphics:
       icon: obese_crops/basic/carrot/obese_carrot_stem
       parent: block/cross
@@ -138,7 +138,7 @@ items:
 
   # --- Beetroot ---
   obese_beetroot:
-    display_name: Bétrave obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_beetroot.name>
     graphics:
       textures:
         north: obese_crops/basic/beetroot/obese_beetroot_side
@@ -165,7 +165,7 @@ items:
           - GOLD_HOE
 
   obese_beetroot_stem:
-    display_name: Tige de bétrave obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_beetroot_stem.name>
     graphics:
       icon: obese_crops/basic/beetroot/obese_beetroot_stem
       parent: block/cross
@@ -180,7 +180,7 @@ items:
 
   # --- Nether Wart ---
   obese_nether_wart:
-    display_name: Verrue du nether obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_nether_wart.name>
     graphics:
       textures:
         north: obese_crops/basic/nether_wart/obese_nether_wart_side
@@ -207,7 +207,7 @@ items:
           - GOLD_HOE
 
   obese_nether_wart_stem:
-    display_name: Tige de verrue du nether obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_nether_wart_stem.name>
     graphics:
       icon: obese_crops/basic/nether_wart/obese_nether_wart_stem
       parent: block/cross
@@ -222,7 +222,7 @@ items:
 
   # --- Onion ---
   obese_onion:
-    display_name: Oignon obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_onion.name>
     graphics:
       textures:
         north: obese_crops/basic/onion/obese_onion_side
@@ -249,7 +249,7 @@ items:
 
   # --- Golden Apple ---
   obese_golden_apple:
-    display_name: Pomme dorée obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_golden_apple.name>
     graphics:
       textures:
         north: obese_crops/basic/golden_apple/obese_golden_apple_side
@@ -276,7 +276,7 @@ items:
           - GOLD_HOE
 
   obese_golden_apple_stem:
-    display_name: Tige de pomme dorée obèse
+    display_name: <lang:itemsadder.omc_daily_events.obese_golden_apple_stem.name>
     graphics:
       icon: obese_crops/basic/golden_apple/obese_golden_apple_stem
       parent: block/cross
@@ -292,7 +292,7 @@ items:
   # PEELED VERSIONS
   # --- Peeled Potato ---
   peeled_obese_potato:
-    display_name: Patate épluchée obèse
+    display_name: <lang:itemsadder.omc_daily_events.peeled_obese_potato.name>
     graphics:
       textures:
         north: obese_crops/peeled/potato/peeled_obese_potato
@@ -309,7 +309,7 @@ items:
 
   # --- Peeled Beetroot---
   peeled_obese_beetroot:
-    display_name: Bétrave épluchée obèse
+    display_name: <lang:itemsadder.omc_daily_events.peeled_obese_beetroot.name>
     graphics:
       textures:
         north: obese_crops/peeled/beetroot/peeled_obese_beetroot
@@ -326,7 +326,7 @@ items:
 
   # --- Peeled Carrot---
   peeled_obese_carrot:
-    display_name: Carotte épluchée obèse
+    display_name: <lang:itemsadder.omc_daily_events.peeled_obese_carrot.name>
     graphics:
       textures:
         north: obese_crops/peeled/carrot/peeled_obese_carrot_side
@@ -343,7 +343,7 @@ items:
 
   # --- Peeled Onion---
   peeled_obese_onion:
-    display_name: Oignon épluché obèse
+    display_name: <lang:itemsadder.omc_daily_events.peeled_obese_onion.name>
     graphics:
       textures:
         north: obese_crops/peeled/onion/peeled_obese_onion_side

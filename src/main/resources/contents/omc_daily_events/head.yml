@@ -3,47 +3,47 @@ info:
 
 items:
   coin:
-    display_name: "Aywenito"
+    display_name: <lang:itemsadder.omc_daily_events.coin.name>
     components_nbt_file: "nbt/head/coin.json"
     material: PLAYER_HEAD
 
   poisson_steve_head:
-    display_name: "Tete du Poisson Steve"
+    display_name: <lang:itemsadder.omc_daily_events.poisson_steve_head.name>
     lore:
-      - "§7§oSteve, le (Poi-)"
-      - "§7§oLe poisson Steve"
-      - "§7§o(Poisson Steve)"
-      - "§7§oIl est orange (ooh-ooh)"
-      - "§7§oIl a des bras"
-      - "§7§oEt des jambes"
-      - "§7§oLe poisson Steve"
-      - "§7§oPa-la-la, pa-la-la"
-      - "§7§oLa-la, la-la, la-la-la"
-      - "§7§oLa-la, la-la, la-la-la"
-      - "§7§oLa-la, la-la, la-la, la-la"
-      - "§7§oPa-la-la, pa-la-la"
-      - "§7§oLe poisson Steve (Poi-)"
-      - "§7§oIl est vraiment très beau"
-      - "§7§o(Poisson Steve)"
-      - "§7§oIl peut nager sur la Terre (ooh-ah, ooh-ah)"
-      - "§7§oIl peut marcher dans l'eau"
-      - "§7§oLe poisson Steve"
-      - "§7§oIl sent forcément mauvais"
-      - "§7§oMais on l'aime bien"
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.0>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.1>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.2>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.3>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.4>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.5>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.6>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.7>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.8>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.9>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.10>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.11>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.12>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.13>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.14>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.15>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.16>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.17>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.18>
+      - <lang:itemsadder.omc_daily_events.poisson_steve_head.lore.19>
     components_nbt_file: "nbt/head/poisson_steve.json"
     material: PLAYER_HEAD
 
   kraken_head:
-    display_name: "Tete de Kraken"
+    display_name: <lang:itemsadder.omc_daily_events.kraken_head.name>
     components_nbt_file: "nbt/head/kraken.json"
     material: PLAYER_HEAD
 
   leviathan_head:
-    display_name: "Tete de Léviathan"
+    display_name: <lang:itemsadder.omc_daily_events.leviathan_head.name>
     components_nbt_file: "nbt/head/leviathan.json"
     material: PLAYER_HEAD
 
   vampire_head:
-    display_name: "Tete de Vampire"
+    display_name: <lang:itemsadder.omc_daily_events.vampire_head.name>
     components_nbt_file: "nbt/head/vampire.json"
     material: PLAYER_HEAD

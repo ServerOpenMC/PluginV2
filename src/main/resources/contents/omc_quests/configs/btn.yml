@@ -2,14 +2,14 @@ info:
   namespace: omc_quests
 items:
   quests_right_arrow:
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_quests.quests_right_arrow.name>
     resource:
       material: PAPER
       generate: true
       textures: 
         - right_arrow
   quests_left_arrow:
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_quests.quests_left_arrow.name>
     resource:
       material: PAPER
       generate: true

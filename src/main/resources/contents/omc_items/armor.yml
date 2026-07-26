@@ -2,7 +2,7 @@ info:
   namespace: omc_items
 items:
   suit_helmet:
-    name: Suit Helmet
+    name: <lang:itemsadder.omc_items.suit_helmet.name>
     resource:
       generate: true
       texture: items/suit_armor/helmet
@@ -14,7 +14,7 @@ items:
       slot_attribute_modifiers:
         armor: 1
   suit_chestplate:
-    name: Suit Chestplate
+    name: <lang:itemsadder.omc_items.suit_chestplate.name>
     resource:
       generate: true
       texture: items/suit_armor/chestplate
@@ -26,7 +26,7 @@ items:
       slot_attribute_modifiers:
         armor: 1
   suit_leggings:
-    name: Suit Leggings
+    name: <lang:itemsadder.omc_items.suit_leggings.name>
     resource:
       generate: true
       texture: items/suit_armor/leggings
@@ -38,7 +38,7 @@ items:
       slot_attribute_modifiers:
         armor: 1
   suit_boots:
-    name: Suit Boots
+    name: <lang:itemsadder.omc_items.suit_boots.name>
     resource:
       generate: true
       texture: items/suit_armor/boots
@@ -50,7 +50,7 @@ items:
       slot_attribute_modifiers:
         armor: 1
   aywen_cap:
-    name: Aywen Cap
+    name: <lang:itemsadder.omc_items.aywen_cap.name>
     resource:
       generate: false
       model_path: armor/aywen_cap

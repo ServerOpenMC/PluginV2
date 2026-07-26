@@ -23,8 +23,8 @@ items:
       textures:
         - fishes/sun_fish.png
     lore:
-      - '§7Attention! Vous risquez'
-      - '§7de vous brulez!'
+      - <lang:itemsadder.omc_dream.sun_fish.lore.0>
+      - <lang:itemsadder.omc_dream.sun_fish.lore.1>
     consumable:
       nutrition: 6
       saturation: 9.6
@@ -39,7 +39,7 @@ items:
       textures:
         - fishes/poissonion.png
     lore:
-      - '§7On dirait un onion...'
+      - <lang:itemsadder.omc_dream.poissonion.lore.0>
     consumable:
       nutrition: 2
       saturation: 0.4
@@ -54,8 +54,8 @@ items:
       textures:
         - fishes/cooked_poissonion.png
     lore:
-      - '§7Mot du dev:'
-      - '§7Il est plus beau cru'
+      - <lang:itemsadder.omc_dream.cooked_poissonion.lore.0>
+      - <lang:itemsadder.omc_dream.cooked_poissonion.lore.1>
     consumable:
       nutrition: 5
       saturation: 6
@@ -82,8 +82,8 @@ items:
       generate: false
       model_path: consumable/chips_aywen
     lore:
-      - '§7Les joueurs aiment tellement Aywen'
-      - "§7malgré qu'il ait joué meme pas 1h30"
+      - <lang:itemsadder.omc_dream.chips_aywen.lore.0>
+      - <lang:itemsadder.omc_dream.chips_aywen.lore.1>
     consumable:
       nutrition: 15
       saturation: 3
@@ -97,7 +97,7 @@ items:
       generate: false
       model_path: consumable/chips_dihydrogene
     lore:
-      - '§7Attention explosif!'
+      - <lang:itemsadder.omc_dream.chips_dihydrogene.lore.0>
     consumable:
       nutrition: 15
       saturation: 3
@@ -111,8 +111,8 @@ items:
       generate: false
       model_path: consumable/chips_jimmy
     lore:
-      - '§7R.I.P Jimmy'
-      - '§7Root est son successeur'
+      - <lang:itemsadder.omc_dream.chips_jimmy.lore.0>
+      - <lang:itemsadder.omc_dream.chips_jimmy.lore.1>
     consumable:
       nutrition: 15
       saturation: 3
@@ -126,7 +126,7 @@ items:
       generate: false
       model_path: consumable/chips_lait_2_margouta
     lore:
-      - '§7Miam'
+      - <lang:itemsadder.omc_dream.chips_lait_2_margouta.lore.0>
     consumable:
       nutrition: 20
       saturation: 3
@@ -140,7 +140,7 @@ items:
       generate: false
       model_path: consumable/chips_nature
     lore:
-      - '§7Basique, simple'
+      - <lang:itemsadder.omc_dream.chips_nature.lore.0>
     consumable:
       nutrition: 10
       saturation: 3
@@ -154,7 +154,7 @@ items:
       generate: false
       model_path: consumable/chips_sans_plomb
     lore:
-      - '§7La hausse de prix....'
+      - <lang:itemsadder.omc_dream.chips_sans_plomb.lore.0>
     consumable:
       nutrition: 15
       saturation: 3
@@ -168,7 +168,7 @@ items:
       generate: false
       model_path: consumable/chips_terre
     lore:
-      - '§7pourquoi pas'
+      - <lang:itemsadder.omc_dream.chips_terre.lore.0>
     consumable:
       nutrition: 15
       saturation: 3

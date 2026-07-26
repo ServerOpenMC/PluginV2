@@ -3,7 +3,7 @@ info:
 items:
   omc_homes_icon_axenq:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_axenq.name>
     resource:
       material: PAPER
       generate: true
@@ -11,7 +11,7 @@ items:
         - icons/axenq
   omc_homes_icon_bank:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_bank.name>
     resource:
       material: PAPER
       generate: true
@@ -19,7 +19,7 @@ items:
         - icons/bank
   omc_homes_icon_chateau:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_chateau.name>
     resource:
       material: PAPER
       generate: true
@@ -27,7 +27,7 @@ items:
         - icons/chateau
   omc_homes_icon_chest:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_chest.name>
     resource:
       material: PAPER
       generate: true
@@ -35,7 +35,7 @@ items:
         - icons/chest
   omc_homes_icon_grass:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_grass.name>
     resource:
       material: PAPER
       generate: true
@@ -43,7 +43,7 @@ items:
         - icons/grass
   omc_homes_icon_maison:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_maison.name>
     resource:
       material: PAPER
       generate: true
@@ -51,7 +51,7 @@ items:
         - icons/maison
   omc_homes_icon_sandblock:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_sandblock.name>
     resource:
       material: PAPER
       generate: true
@@ -59,7 +59,7 @@ items:
         - icons/sandblock
   omc_homes_icon_shop:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_shop.name>
     resource:
       material: PAPER
       generate: true
@@ -67,7 +67,7 @@ items:
         - icons/shop
   omc_homes_icon_xernas:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_xernas.name>
     resource:
       material: PAPER
       generate: true
@@ -75,7 +75,7 @@ items:
         - icons/xernas
   omc_homes_icon_zombie:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_zombie.name>
     resource:
       material: PAPER
       generate: true
@@ -83,7 +83,7 @@ items:
         - icons/zombie
   omc_homes_icon_upgrade:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_upgrade.name>
     resource:
       material: PAPER
       generate: true
@@ -91,7 +91,7 @@ items:
         - icons/upgrade
   omc_homes_icon_information:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_information.name>
     resource:
       material: PAPER
       generate: true
@@ -99,7 +99,7 @@ items:
         - icons/information
   omc_homes_icon_bin:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_bin.name>
     resource:
       material: PAPER
       generate: true
@@ -107,7 +107,7 @@ items:
         - icons/bin
   omc_homes_icon_bin_red:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_icon_bin_red.name>
     resource:
       material: PAPER
       generate: true
@@ -115,7 +115,7 @@ items:
         - icons/bin_red
   omc_homes_invisible:
     enabled: true
-    display_name: Pourquoi faire ?
+    display_name: <lang:itemsadder.omc_homes.omc_homes_invisible.name>
     resource:
       material: PAPER
       generate: true

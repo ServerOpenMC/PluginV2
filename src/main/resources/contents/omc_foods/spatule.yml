@@ -2,7 +2,7 @@ info:
   namespace: omc_foods
 items:
   spatule:
-    display_name: Spatule
+    display_name: <lang:itemsadder.omc_foods.spatule.name>
     resource:
       material: IRON_SWORD
       generate: true

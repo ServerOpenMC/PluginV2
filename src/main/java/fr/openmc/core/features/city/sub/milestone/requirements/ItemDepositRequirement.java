@@ -117,14 +117,14 @@ public class ItemDepositRequirement implements CityRequirement {
             return TranslationManager.translation(
                     "feature.city.levels.requirements.deposit",
                     Component.text(amountRequired),
-                    Component.text(ItemUtils.getItemName(itemType))
+                    ItemUtils.getItemName(itemType)
             );
         }
 
         return TranslationManager.translation(
                 "feature.city.levels.requirements.deposit.progress",
                 Component.text(amountRequired),
-                Component.text(ItemUtils.getItemName(itemType)),
+                ItemUtils.getItemName(itemType),
                 Component.text(Objects.requireNonNull(
                         CityStatisticsManager.getOrCreateStat(city.getUniqueId(), getScope())
                 ).asInt())
@@ -167,7 +167,7 @@ public class ItemDepositRequirement implements CityRequirement {
                     TranslationManager.translation(
                             "feature.city.levels.requirements.deposit.success",
                             Component.text(removed),
-                            Component.text(ItemUtils.getItemName(itemType))
+                            ItemUtils.getItemName(itemType)
                                     .color(NamedTextColor.DARK_AQUA)
                                     .decoration(TextDecoration.ITALIC, false)
                     ),

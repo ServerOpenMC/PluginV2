@@ -3,9 +3,9 @@ info:
 items:
   iron_hammer:
     permission: customitems.iron_hammer
-    display_name: <gradient:#ffffff:#ffd08a>Marteau en fer
+    display_name: <lang:itemsadder.omc_items.iron_hammer.name>
     lore:
-      - "§7Permet de creuser une zone de 3x3 blocs"
+      - <lang:itemsadder.omc_items.iron_hammer.lore.0>
     resource:
       material: IRON_PICKAXE
       generate: false
@@ -18,9 +18,9 @@ items:
 
   diamond_hammer:
     permission: customitems.diamond_hammer
-    display_name: <gradient:#ffffff:#72f6ef>Marteau en diamant
+    display_name: <lang:itemsadder.omc_items.diamond_hammer.name>
     lore:
-      - "§7Permet de creuser une zone de 3x3x2 blocs"
+      - <lang:itemsadder.omc_items.diamond_hammer.lore.0>
     resource:
       material: DIAMOND_PICKAXE
       generate: false
@@ -33,9 +33,9 @@ items:
 
   netherite_hammer:
     permission: customitems.netherite_hammer
-    display_name: <gradient:#ffffff:#6b604f>Marteau en netherite
+    display_name: <lang:itemsadder.omc_items.netherite_hammer.name>
     lore:
-      - "§7Permet de creuser une zone de 3x3x3 blocs"
+      - <lang:itemsadder.omc_items.netherite_hammer.lore.0>
     resource:
       material: NETHERITE_PICKAXE
       generate: false

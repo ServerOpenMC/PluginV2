@@ -2,7 +2,7 @@ info:
   namespace: omc_foods
 items:
   kebab:
-    display_name: Kebab
+    display_name: <lang:itemsadder.omc_foods.kebab.name>
     resource:
       material: COOKED_BEEF
       generate: true

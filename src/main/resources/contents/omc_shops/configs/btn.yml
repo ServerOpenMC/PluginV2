@@ -2,7 +2,7 @@ info:
   namespace: omc_shops
 items:
   company_box:
-    display_name: "company box"
+    display_name: <lang:itemsadder.omc_shops.company_box.name>
     resource:
       material: PAPER
       generate: true

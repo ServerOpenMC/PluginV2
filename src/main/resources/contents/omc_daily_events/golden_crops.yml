@@ -4,9 +4,9 @@ info:
 items:
   # --- Golden Pumpkin ---
   golden_pumpkin:
-    display_name: Citrouille dorée
+    display_name: <lang:itemsadder.omc_daily_events.golden_pumpkin.name>
     lore:
-      - "§7§oUne citrouille avec une touche d'or"
+      - <lang:itemsadder.omc_daily_events.golden_pumpkin.lore.0>
     graphics:
       textures:
         north: golden_crops/pumpkin/golden_pumpkin_side
@@ -24,9 +24,9 @@ items:
 
   # --- Golden Melon ---
   golden_melon:
-    display_name: Melon doré
+    display_name: <lang:itemsadder.omc_daily_events.golden_melon.name>
     lore:
-      - "§7§oCe melon d'eau est béni par les moissons."
+      - <lang:itemsadder.omc_daily_events.golden_melon.lore.0>
     graphics:
       textures:
         north: golden_crops/melon/golden_melon_side
@@ -43,41 +43,41 @@ items:
         hardness: 4
 
   golden_beetroot:
-    display_name: "Bétrave dorée"
+    display_name: <lang:itemsadder.omc_daily_events.golden_beetroot.name>
     resource:
       generate: true
       textures:
         - golden_crops/golden_beetroot
       material: BEETROOT
     lore:
-      - "§7§oUne betterave dorée, cultivée avec soin et amour."
+      - <lang:itemsadder.omc_daily_events.golden_beetroot.lore.0>
 
   golden_potato:
-    display_name: "Pomme de terre dorée"
+    display_name: <lang:itemsadder.omc_daily_events.golden_potato.name>
     resource:
       generate: true
       textures:
         - golden_crops/golden_potato
       material: POTATO
     lore:
-      - "§7§oUne patate récoltée à la main et avec passion"
+      - <lang:itemsadder.omc_daily_events.golden_potato.lore.0>
 
   golden_wheat:
-    display_name: "Blé doré"
+    display_name: <lang:itemsadder.omc_daily_events.golden_wheat.name>
     resource:
       generate: true
       textures:
         - golden_crops/golden_wheat
       material: WHEAT
     lore:
-      - "§7§oDu blé façonné dans les mains d'un agriculteur d'or"
+      - <lang:itemsadder.omc_daily_events.golden_wheat.lore.0>
 
   really_golden_carrot:
-    display_name: "Véritable carotte dorée"
+    display_name: <lang:itemsadder.omc_daily_events.really_golden_carrot.name>
     resource:
       generate: true
       textures:
         - golden_crops/really_golden_carrot
       material: CARROT
     lore:
-      - "§7§oDu blé façonné dans les mains d'un agriculteur d'or"
+      - <lang:itemsadder.omc_daily_events.really_golden_carrot.lore.0>

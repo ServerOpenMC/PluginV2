@@ -2,7 +2,7 @@ info:
   namespace: omc_plush
 items:
   peluche_awyen:
-    display_name: Aywen la peluche
+    display_name: <lang:itemsadder.omc_plush.peluche_awyen.name>
     resource: 
       material: PAPER
       model_path: peluche
@@ -26,7 +26,7 @@ items:
           ceilling: false
           floor: true
   peluche_seinyy:
-    display_name: Seinyy la peluche
+    display_name: <lang:itemsadder.omc_plush.peluche_seinyy.name>
     resource:
       material: PAPER
       model_path: peluche_seiny

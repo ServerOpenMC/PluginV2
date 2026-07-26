@@ -2,7 +2,7 @@ info:
   namespace: omc_foods
 items:
   tomato_seeds:
-    display_name: Graines de tomate
+    display_name: <lang:itemsadder.omc_foods.tomato_seeds.name>
     resource:
       generate: true
       material: WHEAT_SEEDS
@@ -18,7 +18,7 @@ items:
             max_amount: 2
             chance: 100
   onion_seeds:
-    display_name: "Graines d'onion"
+    display_name: <lang:itemsadder.omc_foods.onion_seeds.name>
     resource:
       generate: true
       material: WHEAT_SEEDS
@@ -34,7 +34,7 @@ items:
             max_amount: 3
             chance: 100
   salad_seed:
-    display_name: Graine de salade
+    display_name: <lang:itemsadder.omc_foods.salad_seed.name>
     resource:
       generate: true
       material: WHEAT_SEEDS
