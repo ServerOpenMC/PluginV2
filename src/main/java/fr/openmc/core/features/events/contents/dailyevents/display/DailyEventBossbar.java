@@ -99,6 +99,6 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected Integer updateInterval() {
-        return 20;
+        return 1;
     }
 }
