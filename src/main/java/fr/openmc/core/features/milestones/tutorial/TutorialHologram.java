@@ -13,17 +13,17 @@ public class TutorialHologram extends Hologram {
 
         String icon = CustomFonts.getBest("omc_icons:openmc", "");
         this.setLines(
-                TranslationManager.translationString(
+                TranslationManager.translation(
                         "feature.milestones.tutorial.hologram.icon",
                         Component.text(icon).color(NamedTextColor.WHITE)
                 ),
-                TranslationManager.translationString("feature.milestones.tutorial.hologram.welcome"),
-                TranslationManager.translationString("feature.milestones.tutorial.hologram.based_on"),
-                "",
-                TranslationManager.translationString("feature.milestones.tutorial.hologram.how_to"),
-                TranslationManager.translationString("feature.milestones.tutorial.hologram.server"),
-                TranslationManager.translationString("feature.milestones.tutorial.hologram.separator"),
-                TranslationManager.translationString("feature.milestones.tutorial.hologram.links")
+                TranslationManager.translation("feature.milestones.tutorial.hologram.welcome"),
+                TranslationManager.translation("feature.milestones.tutorial.hologram.based_on"),
+                Component.empty(),
+                TranslationManager.translation("feature.milestones.tutorial.hologram.how_to"),
+                TranslationManager.translation("feature.milestones.tutorial.hologram.server"),
+                TranslationManager.translation("feature.milestones.tutorial.hologram.separator"),
+                TranslationManager.translation("feature.milestones.tutorial.hologram.links")
 
         );
         this.setScale(0.5f);

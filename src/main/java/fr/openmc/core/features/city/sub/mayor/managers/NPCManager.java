@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -79,7 +80,8 @@ public class NPCManager implements Listener {
         if (city.getMayor().getMayorUUID() != null && city.getElectionType() == ElectionType.ELECTION) {
             String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getMayor().getMayorUUID()).getName();
             dataMayor.setSkin(mayorName);
-            String mayorDisplayName = "<gold>" + TranslationManager.translationString("feature.city.mayor.npc.display.mayor", Component.text(mayorName)) + "</gold>";
+            String mayorDisplayName = "<gold>" + LegacyComponentSerializer.legacySection()
+                    .serialize(TranslationManager.translation("feature.city.mayor.npc.display.mayor", Component.text(mayorName))) + "</gold>";
             dataMayor.setDisplayName(mayorDisplayName);
 
             dataMayor.addEquipment(NpcEquipmentSlot.HEAD, OMCRegistry.CUSTOM_ITEMS.SUIT_HELMET.getBest());
@@ -88,7 +90,8 @@ public class NPCManager implements Listener {
             dataMayor.addEquipment(NpcEquipmentSlot.FEET, OMCRegistry.CUSTOM_ITEMS.SUIT_BOOTS.getBest());
         } else {
             dataMayor.setSkin("https://s.namemc.com/i/1971f3c39cb8e3ef.png");
-            String unknownDisplayName = "<dark_gray>" + TranslationManager.translationString("feature.city.mayor.npc.display.unknown") + "</dark_gray>";
+            String unknownDisplayName = "<dark_gray>" + LegacyComponentSerializer.legacySection()
+                    .serialize(TranslationManager.translation("feature.city.mayor.npc.display.unknown")) + "</dark_gray>";
             dataMayor.setDisplayName(unknownDisplayName);
         }
 
@@ -97,7 +100,8 @@ public class NPCManager implements Listener {
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
-        String ownerDisplayName = TranslationManager.translationString("feature.city.mayor.npc.display.owner", Component.text(ownerName));
+        String ownerDisplayName = LegacyComponentSerializer.legacySection()
+                .serialize(TranslationManager.translation("feature.city.mayor.npc.display.owner", Component.text(ownerName)));
         dataOwner.setDisplayName("<yellow>" + ownerDisplayName + "</yellow>");
 
         Npc npcOwner = FancyNpcsPlugin.get().getNpcAdapter().apply(dataOwner);

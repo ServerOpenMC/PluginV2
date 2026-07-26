@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -88,7 +89,9 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
                 YamlConfiguration config = new YamlConfiguration();
                 config.set("location", hologram.getLocation());
                 config.set("scale", hologram.getScale());
-                config.set("line", Arrays.asList(hologram.getLines()));
+                config.set("line", Arrays.stream(hologram.getLines())
+                        .map(TranslationManager::getTranslationKey)
+                        .toList());
                 try {
                     config.save(file);
                 } catch (IOException e) {
@@ -98,12 +101,12 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
 
             Component component = null;
             for (int i = 0; i < hologram.getLines().length; i++) {
-                String rawLine = hologram.getLines()[i];
+                Component rawLine = hologram.getLines()[i];
 
                 if (component == null) {
-                    component = Component.text(rawLine);
+                    component = rawLine;
                 } else {
-                    component = component.append(Component.newline()).append(Component.text(rawLine));
+                    component = component.append(Component.newline()).append(rawLine);
                 }
             }
 
@@ -138,11 +141,11 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         Component component = null;
 
         for (int i = 0; i < lines.size(); i++) {
-            String rawLine = lines.get(i);
+            String rawLineKey = lines.get(i);
             if (component == null) {
-                component = Component.text(rawLine);
+                component = TranslationManager.translation(rawLineKey);
             } else {
-                component = component.append(Component.newline()).append(Component.text(rawLine));
+                component = component.append(Component.newline()).append(TranslationManager.translation(rawLineKey));
             }
         }
         TextDisplay display = new TextDisplay(component, hologramLocation, new Vector3f(scale));

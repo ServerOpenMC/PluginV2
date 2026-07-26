@@ -12,7 +12,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ public class TranslationManager {
             .setPrettyPrinting()
             .create();
 
-    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.legacySection();
     private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     /**
@@ -117,10 +115,6 @@ public class TranslationManager {
      * @param args Les arguments à interpoler
      * @return Une chaîne au format legacy (codes §)
      */
-    public static String translationString(String key, ComponentLike... args) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(translation(key, args));
-    }
-
     /**
      * Crée une liste de lignes traduisibles pour une lore d'objet.
      * Divise le texte en plusieurs lignes (séparées par \n).
@@ -150,6 +144,13 @@ public class TranslationManager {
         }
 
         return lore;
+    }
+
+    public static String getTranslationKey(Component component) {
+        if (component instanceof TranslatableComponent translatable) {
+            return translatable.key();
+        }
+        return "null";
     }
 
     /**

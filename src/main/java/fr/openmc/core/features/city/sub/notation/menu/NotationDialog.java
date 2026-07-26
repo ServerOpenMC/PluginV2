@@ -21,6 +21,7 @@ import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -74,23 +75,24 @@ public class NotationDialog {
     }
 
     public static DialogBody lineCityNotationHeader(City city, String weekStr) {
-        String headerCity = TranslationManager.translationString("feature.city.notation.header.city");
-        String headerActivity = TranslationManager.translationString("feature.city.notation.header.activity");
-        String headerEconomy = TranslationManager.translationString("feature.city.notation.header.economy");
-        String headerMilitary = TranslationManager.translationString("feature.city.notation.header.military");
-        String headerArchitectural = TranslationManager.translationString("feature.city.notation.header.architectural");
-        String headerCoherence = TranslationManager.translationString("feature.city.notation.header.coherence");
-        String headerTotal = TranslationManager.translationString("feature.city.notation.header.total");
-        String headerMoney = TranslationManager.translationString("feature.city.notation.header.money");
+        Component headerCity = TranslationManager.translation("feature.city.notation.header.city");
+        Component headerActivity = TranslationManager.translation("feature.city.notation.header.activity");
+        Component headerEconomy = TranslationManager.translation("feature.city.notation.header.economy");
+        Component headerMilitary = TranslationManager.translation("feature.city.notation.header.military");
+        Component headerArchitectural = TranslationManager.translation("feature.city.notation.header.architectural");
+        Component headerCoherence = TranslationManager.translation("feature.city.notation.header.coherence");
+        Component headerTotal = TranslationManager.translation("feature.city.notation.header.total");
+        Component headerMoney = TranslationManager.translation("feature.city.notation.header.money");
 
-        Component header = Component.text(PaddingUtils.format(headerCity, MAX_LENGTH_CITY)).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerActivity, 8)).hoverEvent(getHoverActivity())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerEconomy, LENGTH_CASE)).hoverEvent(getHoverEconomy())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerMilitary, LENGTH_CASE)).hoverEvent(getHoverMilitary())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerArchitectural, LENGTH_CASE)).hoverEvent(getHoverArchitectural())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerCoherence, LENGTH_CASE)).hoverEvent(getHoverCoherence())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerTotal, LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr)))).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format(headerMoney, LENGTH_CASE)));
+        PlainTextComponentSerializer plain = PlainTextComponentSerializer.plainText();
+        Component header = Component.text(PaddingUtils.format(plain.serialize(headerCity), MAX_LENGTH_CITY)).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerActivity), 8)).hoverEvent(getHoverActivity())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerEconomy), LENGTH_CASE)).hoverEvent(getHoverEconomy())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerMilitary), LENGTH_CASE)).hoverEvent(getHoverMilitary())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerArchitectural), LENGTH_CASE)).hoverEvent(getHoverArchitectural())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerCoherence), LENGTH_CASE)).hoverEvent(getHoverCoherence())).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerTotal), LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr)))).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format(plain.serialize(headerMoney), LENGTH_CASE)));
 
         header.font(Key.key(FONT));
 
