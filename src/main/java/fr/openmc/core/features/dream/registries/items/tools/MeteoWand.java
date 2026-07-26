@@ -27,7 +27,7 @@ public class MeteoWand extends DreamItem implements UsableItem {
     public MeteoWand() {
         super(new DreamItemMeta(
                 "omc_dream:meteo_wand",
-                "Meteo Wand",
+                TranslationManager.translation("feature.dream.item.meteo_wand.name"),
                 DreamRarity.LEGENDARY,
                 Material.STICK,
                 true

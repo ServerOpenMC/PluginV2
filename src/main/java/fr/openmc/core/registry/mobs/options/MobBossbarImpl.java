@@ -18,7 +18,7 @@ public interface MobBossbarImpl {
     default Component getBossBarName(LivingEntity entity) {
         return entity.customName() != null
                 ? entity.customName()
-                : Component.text(entity.getName());
+                : entity.name();
     }
 
     BossBar.Color getBossBarColor();

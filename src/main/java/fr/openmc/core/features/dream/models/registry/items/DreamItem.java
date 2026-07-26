@@ -26,7 +26,7 @@ public abstract class DreamItem extends CustomItem {
     @Override
     public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
-        item.getItemMeta().itemName(Component.text(getMeta().getName()));
+        item.editMeta(meta -> meta.itemName(getMeta().getName()));
         return item;
     }
 

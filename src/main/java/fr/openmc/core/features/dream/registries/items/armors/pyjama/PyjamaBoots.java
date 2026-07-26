@@ -3,6 +3,7 @@ package fr.openmc.core.features.dream.registries.items.armors.pyjama;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +11,7 @@ public class PyjamaBoots extends DreamItem {
     public PyjamaBoots() {
         super(new DreamItemMeta(
                 "omc_dream:pyjama_boots",
-                "Bottes de Pyjama",
+                TranslationManager.translation("feature.dream.item.pyjama_boots.name"),
                 DreamRarity.RARE,
                 Material.LEATHER_BOOTS,
                 false

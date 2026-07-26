@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ public class OldCreakingLeggings extends DreamItem implements DreamEquipableItem
     public OldCreakingLeggings() {
         super(new DreamItemMeta(
                 "omc_dream:old_creaking_leggings",
-                "Vieux Pantalon de Creaking",
+                TranslationManager.translation("feature.dream.item.old_creaking_leggings.name"),
                 DreamRarity.COMMON,
                 Material.LEATHER_LEGGINGS,
                 true

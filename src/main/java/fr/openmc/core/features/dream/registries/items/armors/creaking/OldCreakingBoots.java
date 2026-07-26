@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ public class OldCreakingBoots extends DreamItem implements DreamEquipableItem {
     public OldCreakingBoots() {
         super(new DreamItemMeta(
                 "omc_dream:old_creaking_boots",
-                "Vieille Botte de Creaking",
+                TranslationManager.translation("feature.dream.item.old_creaking_boots.name"),
                 DreamRarity.COMMON,
                 Material.LEATHER_BOOTS,
                 true
