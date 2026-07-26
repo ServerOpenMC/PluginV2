@@ -22,7 +22,7 @@ public class BloodyNightManager {
     // * CONSTANTES
     public static final NamespacedKey RAID_MONSTER_KEY = new NamespacedKey("omc_daily_events", "raid_monster");
 
-    public static final long VAMPIRE_SPAWN_TIME = 20L * 60L * 15; // 15 min
+    public static final long VAMPIRE_SPAWN_TIME = 20L * 60L * 14; // 14 min
     public static final long RAID_INTERVAL = 20L * 60L * 2; // 2 min
 
     private static BukkitTask raidTask;

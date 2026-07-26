@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.display;
 
 import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBossBar;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -41,8 +42,10 @@ public class DailyEventBossbar extends BaseBossbar {
 
     @Override
     protected Float progress(Player player) {
-        return (float) (DailyEventsManager.getRemainingTime(DailyEventsManager.getActiveDailyEvent())
-                / (float) DailyEventsManager.getActiveDailyEvent().getDuration() * 60);
+        DailyEvent event = DailyEventsManager.getActiveDailyEvent();
+        float remainingSeconds = DailyEventsManager.getRemainingTime(event);
+        float totalSeconds = event.getDuration() * 60f;
+        return remainingSeconds / totalSeconds;
     }
 
     /**
