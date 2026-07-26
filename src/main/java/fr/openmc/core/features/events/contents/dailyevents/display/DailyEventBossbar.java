@@ -41,7 +41,8 @@ public class DailyEventBossbar extends BaseBossbar {
 
     @Override
     protected Float progress(Player player) {
-        return (float) (DailyEventsManager.getRemainingTime(DailyEventsManager.getActiveDailyEvent()) / (float) DailyEventsManager.getActiveDailyEvent().getDuration()) * 60;
+        return (float) (DailyEventsManager.getRemainingTime(DailyEventsManager.getActiveDailyEvent())
+                / (float) DailyEventsManager.getActiveDailyEvent().getDuration() * 60);
     }
 
     /**
