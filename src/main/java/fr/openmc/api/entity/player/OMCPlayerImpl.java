@@ -7,8 +7,13 @@ import fr.openmc.api.entity.player.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 @SuppressWarnings({"unused", "removal", "deprecation"})
 public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
+    private static final Map<UUID, OMCPlayer> CACHE = new ConcurrentHashMap<>();
 
     @Delegate(types = Player.class)
     private final Player player;
@@ -29,7 +34,11 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     static OMCPlayer of(Player player) {
         if (player instanceof OMCPlayer omcPlayer)
             return omcPlayer;
-        return new OMCPlayerImpl(player);
+        return CACHE.computeIfAbsent(player.getUniqueId(), id -> new OMCPlayerImpl(player));
+    }
+
+    public static void removeCache(UUID uuid) {
+        CACHE.remove(uuid);
     }
 
     @Override
