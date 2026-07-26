@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnLIstener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.PlayerKillMonsterListener;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.menu.BloodyNightMenu;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
@@ -101,7 +101,7 @@ public class BloodyNightEvent extends DailyEvent
     public Set<Listener> getListeners() {
         return Set.of(
                 new PlayerKillMonsterListener(),
-                new MonsterSpawnLIstener()
+                new MonsterSpawnListener()
         );
     }
 

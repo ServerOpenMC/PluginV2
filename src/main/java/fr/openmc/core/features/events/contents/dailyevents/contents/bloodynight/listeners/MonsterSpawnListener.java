@@ -18,7 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
-public class MonsterSpawnLIstener implements Listener {
+public class MonsterSpawnListener implements Listener {
     @EventHandler
     public void onNormalMonsterSpawn(EntitySpawnEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
@@ -38,31 +38,37 @@ public class MonsterSpawnLIstener implements Listener {
         if (DailyEventsManager.isActiveDailyEvent()
                 && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
 
-        Entity entity = event.getEntity();
-        if (!(entity instanceof Monster)) {
-            CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
-            if (entity instanceof LivingEntity livingEntity) {
-                if (customMob == null) return;
-                if (customMob instanceof VampireBoss bossbar) {
-                    bossbar.removeBossBar(livingEntity);
-                    livingEntity.remove();
-                } else if (customMob instanceof VampireSlave)
-                    livingEntity.remove();
-                return;
-            }
-        }
+        if (!(event.getEntity() instanceof Monster monster)) return;
 
-        if (entity.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
+        if (monster.getPersistentDataContainer().has(BloodyNightManager.RAID_MONSTER_KEY)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                if (entity.isValid()) {
-                    entity.remove();
+                if (monster.isValid()) {
+                    monster.remove();
                 } else {
-                    OMCLogger.error("Impossible de supprimer le monstre (mort, delete, non chargé) " + entity.getName());
+                    OMCLogger.error("Impossible de supprimer le monstre (mort, delete, non chargé) " + monster.getName());
                 }
             });
             return;
         }
 
-        BloodyNightManager.desactivateCorruptedMonster(entity);
+        BloodyNightManager.desactivateCorruptedMonster(monster);
+    }
+
+    @EventHandler
+    public void onVampireLoaded(EntityAddToWorldEvent event) {
+        if (DailyEventsManager.isActiveDailyEvent()
+                && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
+
+        Entity entity = event.getEntity();
+
+        CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
+        if (!(entity instanceof LivingEntity livingEntity)) return;
+
+        if (customMob == null) return;
+        if (customMob instanceof VampireBoss bossbar) {
+            bossbar.removeBossBar(livingEntity);
+            livingEntity.remove();
+        } else if (customMob instanceof VampireSlave)
+            livingEntity.remove();
     }
 }
