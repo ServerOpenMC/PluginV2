@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.shops.events.PlaceShopEvent;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -108,6 +109,9 @@ public class PlayerShopManager {
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.withdraw_money", Component.text("500 " + EconomyManager.getEconomyIcon()).color(NamedTextColor.RED)), Prefix.SHOP, MessageType.SUCCESS, false);
                 }
             });
+
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                    Bukkit.getPluginManager().callEvent(new PlaceShopEvent(player)));
             return true;
         } else {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.multiblock"), Prefix.SHOP, MessageType.ERROR, false);

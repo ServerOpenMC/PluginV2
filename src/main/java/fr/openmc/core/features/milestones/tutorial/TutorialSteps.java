@@ -17,7 +17,7 @@ public enum TutorialSteps implements MilestoneStep {
     OPEN_ADMINSHOP(null),
     SELL_BUY_ADMINSHOP(null),
     SPARE_BANK(null),
-    //TODO: ajouter des quêtes autour des shops/entreprises lorsque refonte faite
+    PLACE_SHOP(null),
     OPEN_SETTINGS(null),
     OPEN_CONTEST(null),
     CLAIM_LETTER(null),
@@ -41,6 +41,7 @@ public enum TutorialSteps implements MilestoneStep {
         OPEN_ADMINSHOP.quest = new OpenAdminShopMenuQuest();
         SELL_BUY_ADMINSHOP.quest = new SellBuyQuest();
         SPARE_BANK.quest = new SpareBankQuest();
+        PLACE_SHOP.quest = new PlaceShopQuest();
         OPEN_SETTINGS.quest = new OpenSettingsMenuQuest();
         OPEN_CONTEST.quest = new OpenContestMenuQuest();
         CLAIM_LETTER.quest = new ClaimLetterQuest();

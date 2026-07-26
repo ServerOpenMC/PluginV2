@@ -171,6 +171,14 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, Databas
 		return getShopAt(new Location(Bukkit.getWorld("world"), x, y, z));
 	}
 
+	public static int getShopCountOf(Player player) {
+		return shops.values()
+				.stream()
+				.filter(shop -> shop.getOwnerUUID().equals(player.getUniqueId()))
+				.toList()
+				.size();
+	}
+
     /**
      * Places the shop block (sign or ItemsAdder furniture) in the world,
      * oriented based on the player's direction.
