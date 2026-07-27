@@ -6,8 +6,10 @@ import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
+import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -38,6 +40,13 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
                                 ),
                                 Prefix.MILLESTONE,
                                 MessageType.SUCCESS
+                        ),
+                        new QuestMethodsReward(
+                                player -> {
+                                    if (ShopManager.getShopCountOf(player) > 0) {
+                                        TutorialSteps.PLACE_SHOP.getQuest().incrementProgress(player.getUniqueId());
+                                    }
+                                }
                         )
                 )
         );
