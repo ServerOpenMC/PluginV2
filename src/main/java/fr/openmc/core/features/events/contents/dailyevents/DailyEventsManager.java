@@ -246,10 +246,10 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      * @param event l'event
      * @return le temps restant en secondes
      */
-    public static double getRemainingTime(DailyEvent event) {
+    public static float getRemainingTime(DailyEvent event) {
         if (!isActiveDailyEvent()) return -1;
         if (getActiveDailyEvent() != event) return -1;
 
-        return outgoingEvent.getScheduledStartDate().until(DateUtils.getLocalDateTime(), ChronoUnit.SECONDS);
+        return DateUtils.getLocalDateTime().until(outgoingEvent.getScheduledEndDate(), ChronoUnit.SECONDS);
     }
 }

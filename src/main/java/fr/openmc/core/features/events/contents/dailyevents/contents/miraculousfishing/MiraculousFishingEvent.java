@@ -5,14 +5,12 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.menu.MiraculousFishingMenu;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.advancements.AdvancementType;
@@ -25,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MiraculousFishingEvent extends DailyEvent
-        implements HasToast, HasAmbient, HasBroadcast, HasMenu, HasFeature {
+        implements HasToast, HasAmbient, HasBroadcast, HasMenu, HasFeature, HasBossBar {
     @Override
     public String getEventId() {
         return "miraculous_fishing";
@@ -114,5 +112,15 @@ public class MiraculousFishingEvent extends DailyEvent
     @Override
     public Feature getFeature() {
         return new MiraculousFishingManager();
+    }
+
+    @Override
+    public BossBar.Color getBossBarColor() {
+        return BossBar.Color.BLUE;
+    }
+
+    @Override
+    public BossBar.Overlay getBossBarOverlay() {
+        return BossBar.Overlay.NOTCHED_6;
     }
 }

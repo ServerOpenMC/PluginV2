@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
 import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
+import fr.openmc.core.features.events.contents.dailyevents.display.DailyEventBossbar;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -28,7 +29,8 @@ public class BossbarManager extends Feature implements HasCommands {
     public void init() {
         registerBossbars(
                 new MainBossbar(),
-                new DreamBossBar()
+                new DreamBossBar(),
+                new DailyEventBossbar()
         );
 
         start();

@@ -2,32 +2,46 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.AncientMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.EnragedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnListener;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.PlayerKillMonsterListener;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BloodyNightManager {
+public class BloodyNightManager extends Feature implements HasListeners {
     // * CONSTANTES
     public static final NamespacedKey RAID_MONSTER_KEY = new NamespacedKey("omc_daily_events", "raid_monster");
 
-    public static final long VAMPIRE_SPAWN_TIME = 20L * 60L * 15; // 15 min
+    public static final long VAMPIRE_SPAWN_TIME = 20L * 60L * 14; // 14 min
     public static final long RAID_INTERVAL = 20L * 60L * 2; // 2 min
 
     private static BukkitTask raidTask;
     private static BukkitTask vampireTask;
     private static long lastTime;
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new PlayerKillMonsterListener(),
+                new MonsterSpawnListener()
+        );
+    }
 
     public static void start(BloodyNightEvent event) {
         World world = Bukkit.getWorld(event.getWorldEvent());
@@ -42,12 +56,13 @@ public class BloodyNightManager {
         );
 
         // * Programmation du boss Vampire
-        Location vampireSpawnLocation = LocationUtils.getSafeNearbySurface(
-                LocationUtils.randomLocation(
-                        world.getSpawnLocation(),
-                        Math.min(10000, world.getWorldBorder().getSize() / 2.0)
-                ),
-                50);
+        Location vampireSpawnLocation = LocationUtils.findSafeSpawnLocation(
+                world,
+                world.getSpawnLocation(),
+                1000,
+                10000,
+                10
+        );
 
         vampireTask = Bukkit.getScheduler().runTaskLater(
                 OMCPlugin.getInstance(),
@@ -142,9 +157,13 @@ public class BloodyNightManager {
      */
     private static void deleteVampireMonsters(World world) {
         for (Entity entity : world.getEntities()) {
+            if (!(entity instanceof LivingEntity livingEntity)) continue;
             CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
             if (customMob == null) continue;
-            if (customMob instanceof VampireBoss || customMob instanceof VampireSlave)
+            if (customMob instanceof VampireBoss bossbar) {
+                bossbar.removeBossBar(livingEntity);
+                entity.remove();
+            } else if (customMob instanceof VampireSlave)
                 entity.remove();
         }
     }

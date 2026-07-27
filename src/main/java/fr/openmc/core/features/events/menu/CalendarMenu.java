@@ -137,10 +137,14 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
             LocalDateTime startDate = de.getScheduledStartDate();
             LocalDateTime endDate = de.getScheduledStartDate();
 
+            long timeStart = ChronoUnit.SECONDS.between(now, startDate);
+
+            Component timeStartComponent = timeStart < 0 ? TranslationManager.translation("feature.events.calendar.start_in.now")
+                    : TranslationManager.translation("feature.events.calendar.start_in",
+                    Component.text(DateUtils.convertSecondToTime(timeStart), NamedTextColor.YELLOW));
+
             eventLore.add(Component.empty());
-            eventLore.add(TranslationManager.translation("feature.events.calendar.start_in",
-                    Component.text(DateUtils.convertSecondToTime(ChronoUnit.SECONDS.between(now, startDate)), NamedTextColor.YELLOW)
-            ));
+            eventLore.add(timeStartComponent);
             eventLore.add(Component.empty());
             eventLore.add(TranslationManager.translation("feature.events.calendar.start_date",
                     Component.text(DateUtils.formatDate(startDate), NamedTextColor.AQUA),
