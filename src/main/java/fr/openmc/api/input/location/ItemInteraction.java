@@ -350,11 +350,11 @@ public class ItemInteraction implements Listener {
             player.getInventory().remove(item);
             if (slotOfItem != -1) player.getInventory().setItem(slotOfItem, oldItem);
 
-            if (player.getInventory().getItemInOffHand().isSimilar(item)) {
+            if (ItemUtils.isSimilar(player.getInventory().getItemInOffHand(), item)) {
                 player.getInventory().setItemInOffHand(null);
             }
 
-            if (player.getItemOnCursor().isSimilar(item)) {
+            if (ItemUtils.isSimilar(player.getItemOnCursor(), item)) {
                 player.setItemOnCursor(null);
             }
 
