@@ -20,6 +20,7 @@ public class ListenersManager {
      */
     public static void init() {
         registerEvents(
+                new OMCPlayerCacheListener(),
                 new HappyGhastListener(),
                 new SessionsListener(),
                 new JoinQuitMessageListener(),
