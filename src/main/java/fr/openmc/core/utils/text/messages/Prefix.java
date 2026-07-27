@@ -33,6 +33,7 @@ public enum Prefix {
     MAILBOX("<gradient:#2C43C4:#6A76D9>ᴍᴀɪʟʙᴏx</gradient>"),
     HALLOWEEN("<gradient:#FF7518:#FFD580>ʜᴀʟʟᴏᴡᴇᴇɴ</gradient>"),
     DIMOPENER("<gradient:#A5FFA8:#DAFFE4>ᴅɪᴍᴏᴘᴇɴᴇʀ</gradient>"),
+    GOLDEN_HARVEST("<gradient:#EFDA3A:#93AE0E>ᴍᴏɪѕѕᴏɴ ᴅᴏʀᴇᴇ</gradient>"),
     MIRACULOUS_FISHING("<gradient:#4498DB:#0FB590>ᴘᴇᴄʜᴇ ᴍɪʀᴀᴄᴜʟᴇ</gradient><gradient:#0FB590:#0FB590>ᴜѕᴇ</gradient>");
 
     @Getter
