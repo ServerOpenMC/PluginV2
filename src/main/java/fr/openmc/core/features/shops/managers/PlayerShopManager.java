@@ -69,7 +69,10 @@ public class PlayerShopManager {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
         
         if (!ProtectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
-            if (CityManager.isChunkClaimed(location.getChunk()) && !CityManager.getPlayerCity(player.getUniqueId()).equals(CityManager.getCityFromChunk(location.getChunk()))) {
+            if ((CityManager.isChunkClaimed(location.getChunk())
+                    && !CityManager.getPlayerCity(player.getUniqueId())
+                    .equals(CityManager.getCityFromChunk(location.getChunk())))
+            || (CityManager.isChunkClaimed(location.getChunk()) && CityManager.getPlayerCity(player.getUniqueId()) == null)) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
                 return false;
             }
