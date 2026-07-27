@@ -27,7 +27,7 @@ public class BlockPlaceListener implements Listener {
             usable.onFurniturePlace(player, event);
         } else if (item.get() instanceof LootboxBlock lootboxBlock) {
             event.setCancelled(true);
-            ItemUtils.removeItemsFromPlayerInventory(player, item.get().getBest(), 1);
+            ItemUtils.removeItemInHand(player, item.get().getBest());
             lootboxBlock.getLootbox().open(player);
         }
     }
