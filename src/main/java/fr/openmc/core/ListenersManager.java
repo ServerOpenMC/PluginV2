@@ -32,7 +32,8 @@ public class ListenersManager {
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new NoMoreRabbit(),
                 new ArmorListener(),
-                new EntityGlowNMS()
+                new EntityGlowNMS(),
+                new RegionTrackingListener()
         );
 
         if (!OMCPlugin.isUnitTestVersion()) {

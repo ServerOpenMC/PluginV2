@@ -8,13 +8,6 @@ font_images:
     path: "admin.png"
     scale_ratio: 9
     y_position: 8
-  mod:
-    permission: "omc_ranks.admin"
-    show_in_gui: true
-    suggest_in_command: false
-    path: "mod.png"
-    scale_ratio: 9
-    y_position: 8
   helper:
     permission: "omc_ranks.admin"
     show_in_gui: true

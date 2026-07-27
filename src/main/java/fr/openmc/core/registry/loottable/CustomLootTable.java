@@ -93,6 +93,25 @@ public abstract class CustomLootTable {
         return loot;
     }
 
+    public List<CustomLoot> rollLootsWithoutGuarantee(Player receiver) {
+        List<CustomLoot> result = new ArrayList<>();
+
+        double roll = ThreadLocalRandom.current().nextDouble();
+        double cumulativeChance = 0.0;
+
+        for (CustomLoot loot : this.getLoots()) {
+            cumulativeChance += loot.getChance();
+
+            if (roll < cumulativeChance) {
+                loot.run(receiver);
+                result.add(loot);
+                break;
+            }
+        }
+
+        return result;
+    }
+
     public CustomLoot selectRandomLoot() {
         double totalChance = this.getLoots().stream()
                 .mapToDouble(CustomLoot::getChance)
