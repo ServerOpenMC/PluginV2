@@ -195,6 +195,23 @@ recipes:
       result:
         item: omc_dream:cooked_poissonion
         amount: 1
+  campfire_cooking:
+    sun_fish:
+      ingredient:
+        item: omc_dream:moon_fish
+      exp: 1
+      cook_time: 300
+      result:
+        item: omc_dream:sun_fish
+        amount: 1
+    poissonion:
+      ingredient:
+        item: omc_dream:poissonion
+      exp: 1
+      cook_time: 300
+      result:
+        item: omc_dream:cooked_poissonion
+        amount: 1
   crafting_table:
     kebab:
       enabled: true
