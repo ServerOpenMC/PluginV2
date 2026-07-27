@@ -57,7 +57,7 @@ public class MiraculousFishingMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.miraculousfishing.menu.info.fishing_speed.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.dailyevents.miraculousfishing.menu.info.fishing_speed.lore",
-                    Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100).color(NamedTextColor.AQUA)
+                    Component.text(FishingAttributeManager.FISHING_SPEED_MODIFIER * 100 + "%").color(NamedTextColor.AQUA)
             ));
             itemMeta.setEnchantmentGlintOverride(isActived);
         }));
