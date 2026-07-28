@@ -25,4 +25,17 @@ public class Hologram {
     public void setLines(Component... lines) {
         this.lines = lines;
     }
+
+    public Component toComponent() {
+        Component component = null;
+
+        for (Component rawLine : lines) {
+            if (component == null) {
+                component = rawLine;
+            } else {
+                component = component.append(Component.newline()).append(rawLine);
+            }
+        }
+        return component;
+    }
 }

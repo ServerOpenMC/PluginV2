@@ -4,5 +4,5 @@ import fr.openmc.core.utils.world.entities.TextDisplay;
 
 import java.io.File;
 
-public record HologramInfo(File file, TextDisplay display) {
+public record HologramInfo(File file, Hologram hologram, TextDisplay display) {
 }
