@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.listeners.protections;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.ProtectionsManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -52,7 +51,7 @@ public class ExplodeProtection implements Listener {
         event.blockList().removeIf(block -> {
             City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
 
-            return blockCity != null && blockCity.getType().equals(CityType.PEACE);
+            return blockCity != null;
         });
     }
 
@@ -62,7 +61,7 @@ public class ExplodeProtection implements Listener {
 
         if (entity.getType() == EntityType.WITHER || entity.getType() == EntityType.WITHER_SKULL) {
             City city = CityManager.getCityFromChunk(event.getBlock().getChunk().getX(), event.getBlock().getChunk().getZ());
-            if (city != null && city.getType().equals(CityType.PEACE)) {
+            if (city != null) {
                 event.setCancelled(true);
             }
         }

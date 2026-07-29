@@ -18,7 +18,7 @@ public class BlockProtection implements Listener {
         if (city.isMember(event.getPlayer())) {
             ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.PLACE);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city);
+            ProtectionsManager.checkCity(event.getPlayer(), event, city, true);
         }
     }
 
@@ -30,7 +30,7 @@ public class BlockProtection implements Listener {
         if (city.isMember(event.getPlayer())) {
             ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.BREAK);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city);
+            ProtectionsManager.checkCity(event.getPlayer(), event, city, false);
         }
     }
 }

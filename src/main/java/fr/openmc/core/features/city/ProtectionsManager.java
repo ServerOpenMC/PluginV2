@@ -76,19 +76,17 @@ public class ProtectionsManager {
 
     public static boolean canExplodeNaturally(Location loc) {
         City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (city == null) return true;
-
-        return city.isInWar() && city.getWar().getPhase() == War.WarPhase.COMBAT;
+        return city == null;
     }
     
-    public static void checkCity(Player player, Cancellable event, City city) {
+    public static void checkCity(Player player, Cancellable event, City city, boolean allowByPassInWar) {
         if (!player.getWorld().getName().equals("world")) return;
         
 		if (city == null) return; // Pas de ville, pas de protection
 	    
 	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 	    
-	    if (city.isInWar()) return; // En guerre, pas de protection
+	    if (allowByPassInWar && city.isInWar()) return; // En guerre, pas de protection
 
         if (!city.isMember(player)) {
             event.setCancelled(true);
@@ -154,7 +152,7 @@ public class ProtectionsManager {
 				cancelMessage(player);
 			}
 		} else {
-			checkCity(player, event, city);
+			checkCity(player, event, city, false);
 		}
 	}
 }
