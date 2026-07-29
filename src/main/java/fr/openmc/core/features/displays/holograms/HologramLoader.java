@@ -20,7 +20,9 @@ import org.joml.Vector3f;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Set;
 
 @Credit(developers = {"iambibi_", "miseur"})
 public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
@@ -88,7 +90,6 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
                 YamlConfiguration config = new YamlConfiguration();
                 config.set("location", hologram.getLocation());
                 config.set("scale", hologram.getScale());
-                config.set("line", Arrays.asList(hologram.getLines()));
                 try {
                     config.save(file);
                 } catch (IOException e) {
@@ -97,18 +98,17 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
             }
 
             Component component = null;
-            for (int i = 0; i < hologram.getLines().length; i++) {
-                String rawLine = hologram.getLines()[i];
-
+            for (Component rawLine : hologram.getLines()) {
                 if (component == null) {
-                    component = Component.text(rawLine);
+                    component = rawLine;
                 } else {
-                    component = component.append(Component.newline()).append(Component.text(rawLine));
+                    component = component.append(Component.newline()).append(rawLine);
                 }
             }
 
             displays.put(hologram.getName(), new HologramInfo(
                     file,
+                    hologram,
                     new TextDisplay(component, hologram.getLocation(), new Vector3f(hologram.getScale()))
             ));
         }
@@ -132,21 +132,17 @@ public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterI
         }
 
         float scale = (float) hologramConfig.getDouble("scale");
-        List<String> lines = hologramConfig.getStringList("line");
-        if (lines.isEmpty()) return;
 
-        Component component = null;
-
-        for (int i = 0; i < lines.size(); i++) {
-            String rawLine = lines.get(i);
-            if (component == null) {
-                component = Component.text(rawLine);
-            } else {
-                component = component.append(Component.newline()).append(Component.text(rawLine));
-            }
+        HologramInfo hologramInfo = displays.get(hologramName);
+        if (hologramInfo == null) {
+            OMCLogger.warn("Hologram {} est null dans une map.", hologramName);
+            return;
         }
-        TextDisplay display = new TextDisplay(component, hologramLocation, new Vector3f(scale));
-        displays.put(hologramName, new HologramInfo(file, display));
+
+        Hologram hologram = hologramInfo.hologram();
+
+        TextDisplay display = new TextDisplay(hologram.toComponent(), hologramLocation, new Vector3f(scale));
+        displays.put(hologramName, new HologramInfo(file, hologram, display));
     }
 
     public static void unloadAll() {

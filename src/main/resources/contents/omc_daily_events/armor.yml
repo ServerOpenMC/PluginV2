@@ -13,7 +13,7 @@ equipments:
 
 items:
   ancient_fishing_helmet:
-    display_name: "Casque du pêcheur antique"
+    display_name: <lang:itemsadder.omc_daily_events.ancient_fishing_helmet.name>
     resource:
       generate: true
       textures:
@@ -22,7 +22,7 @@ items:
     lore:
       - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
       - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
-      - "§7§oUn casque trouvé dans les abysses des mers"
+      - <lang:itemsadder.omc_daily_events.ancient_fishing_helmet.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -31,7 +31,7 @@ items:
         armor: 3
 
   ancient_fishing_chestplate:
-    display_name: "Plastron du pêcheur antique"
+    display_name: <lang:itemsadder.omc_daily_events.ancient_fishing_chestplate.name>
     resource:
       generate: true
       textures:
@@ -40,7 +40,7 @@ items:
     lore:
       - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
       - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
-      - "§7§oUn plastron trouvé dans les abysses des mers"
+      - <lang:itemsadder.omc_daily_events.ancient_fishing_chestplate.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -48,7 +48,7 @@ items:
       slot_attribute_modifiers:
         armor: 5
   ancient_fishing_leggings:
-    display_name: "Jambière du pêcheur antique"
+    display_name: <lang:itemsadder.omc_daily_events.ancient_fishing_leggings.name>
     resource:
       generate: true
       textures:
@@ -57,7 +57,7 @@ items:
     lore:
       - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
       - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
-      - "§7§oUne jambière trouvé dans les abysses des mers"
+      - <lang:itemsadder.omc_daily_events.ancient_fishing_leggings.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -66,7 +66,7 @@ items:
         armor: 5
 
   ancient_fishing_boots:
-    display_name: "Bottes du pêcheur antique"
+    display_name: <lang:itemsadder.omc_daily_events.ancient_fishing_boots.name>
     resource:
       generate: true
       textures:
@@ -75,7 +75,7 @@ items:
     lore:
       - "§8+ §b{armor_fishing_speed:a}% §7de §bvitesse de pêche"
       - "§8+ §1{armor_double_hook_chance:a}% §7de chance de §1double prise"
-      - "§7§oDes bottes trouvées dans les abysses des mers"
+      - <lang:itemsadder.omc_daily_events.ancient_fishing_boots.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -85,7 +85,7 @@ items:
 
 
   abondance_helmet:
-    display_name: "Casque de l'abondance"
+    display_name: <lang:itemsadder.omc_daily_events.abondance_helmet.name>
     resource:
       generate: true
       textures:
@@ -94,7 +94,7 @@ items:
     lore:
       - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
       - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
-      - "§7§oUn casque trouvé par le travail et la persévérance"
+      - <lang:itemsadder.omc_daily_events.abondance_helmet.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -103,7 +103,7 @@ items:
         armor: 3
 
   abondance_chestplate:
-    display_name: "Plastron de l'abondance"
+    display_name: <lang:itemsadder.omc_daily_events.abondance_chestplate.name>
     resource:
       generate: true
       textures:
@@ -112,7 +112,7 @@ items:
     lore:
       - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
       - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
-      - "§7§oUn plastron trouvé par la culture et la perfection"
+      - <lang:itemsadder.omc_daily_events.abondance_chestplate.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -121,7 +121,7 @@ items:
         armor: 5
 
   abondance_leggings:
-    display_name: "Jambière de l'abondance"
+    display_name: <lang:itemsadder.omc_daily_events.abondance_leggings.name>
     resource:
       generate: true
       textures:
@@ -130,7 +130,7 @@ items:
     lore:
       - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
       - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
-      - "§7§oUne jambière trouvé par la culture et la perfection"
+      - <lang:itemsadder.omc_daily_events.abondance_leggings.lore.2>
     durability:
       unbreakable: true
     equipment:
@@ -139,7 +139,7 @@ items:
         armor: 5
 
   abondance_boots:
-    display_name: "Bottes de l'abondance"
+    display_name: <lang:itemsadder.omc_daily_events.abondance_boots.name>
     resource:
       generate: true
       textures:
@@ -148,7 +148,7 @@ items:
     lore:
       - "§8+ §6{armor_golden_crops_chance:a}% §7d'avoir §6les cultures dorée"
       - "§8+ §e{armor_double_crops_chance:a}% §7de chance d'avoir le §edouble de cultures"
-      - "§7§oDes bottes trouvées par le travail et la persévérance"
+      - <lang:itemsadder.omc_daily_events.abondance_boots.lore.2>
     durability:
       unbreakable: true
     equipment:

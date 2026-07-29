@@ -2,7 +2,7 @@ info:
   namespace: omc_contest
 items:
   borne:
-    display_name: "Borne"
+    display_name: <lang:itemsadder.omc_contest.borne.name>
     permission: contest.borne
     resource:
       material: PAPER

@@ -5,7 +5,7 @@ items:
   fisherman_blue_fish:
     enabled: true
     permission: ""
-    display_name: "Blue fish"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_blue_fish.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -30,7 +30,7 @@ items:
   fisherman_cyan_fish:
     enabled: true
     permission: ""
-    display_name: "Cyan fish"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_cyan_fish.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -55,7 +55,7 @@ items:
   fisherman_orange_fish:
     enabled: true
     permission: ""
-    display_name: "Orange fish"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_orange_fish.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -80,7 +80,7 @@ items:
   fisherman_red_fish:
     enabled: true
     permission: ""
-    display_name: "Red fish"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_red_fish.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -105,7 +105,7 @@ items:
   fisherman_boat:
     enabled: true
     permission: ""
-    display_name: "Boat"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_boat.name>
     behaviours:
       furniture:
         entity: item_display
@@ -152,7 +152,7 @@ items:
   fisherman_chair:
     enabled: true
     permission: ""
-    display_name: "Fisherman stool"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_chair.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -179,7 +179,7 @@ items:
   fisherman_fish_box:
     enabled: true
     permission: ""
-    display_name: "Fish box"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_fish_box.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -204,7 +204,7 @@ items:
   fisherman_fish_rack:
     enabled: true
     permission: ""
-    display_name: "Fish rack"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_fish_rack.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -233,7 +233,7 @@ items:
   fisherman_fishing_pole:
     enabled: true
     permission: ""
-    display_name: "Fishing pole"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_fishing_pole.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -258,7 +258,7 @@ items:
   fisherman_fishingpole_rack:
     enabled: true
     permission: ""
-    display_name: "Fishing pole rack"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_fishingpole_rack.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -283,7 +283,7 @@ items:
   fisherman_floatie:
     enabled: true
     permission: ""
-    display_name: "Floatie"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_floatie.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -308,7 +308,7 @@ items:
   fisherman_hanging_fish:
     enabled: true
     permission: ""
-    display_name: "Hanging fish"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_hanging_fish.name>
     behaviours:
       furniture:
         entity: item_display
@@ -355,7 +355,7 @@ items:
   fisherman_landing_net:
     enabled: true
     permission: ""
-    display_name: "Landing net"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_landing_net.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -380,7 +380,7 @@ items:
   fisherman_large_fishnet:
     enabled: true
     permission: ""
-    display_name: "Large fishnet"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_large_fishnet.name>
     behaviours:
       furniture:
         entity: item_display
@@ -426,7 +426,7 @@ items:
   fisherman_lobster_trap:
     enabled: true
     permission: ""
-    display_name: "Lobster trap"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_lobster_trap.name>
     behaviours:
       furniture:
         entity: item_frame
@@ -451,7 +451,7 @@ items:
   fisherman_stand:
     enabled: true
     permission: ""
-    display_name: "Fisherman stand"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_stand.name>
     behaviours:
       furniture:
         entity: item_display
@@ -493,7 +493,7 @@ items:
   fisherman_table:
     enabled: true
     permission: ""
-    display_name: "Table"
+    display_name: <lang:itemsadder.omc_daily_events.fisherman_table.name>
     behaviours:
       furniture:
         entity: item_frame

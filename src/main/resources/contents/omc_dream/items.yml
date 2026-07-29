@@ -8,7 +8,7 @@ items:
       generate: false
       model_path: "minecraft:item/sculk"
     lore:
-      - "§7§oDu sculk qui a vécu..."
+      - <lang:itemsadder.omc_dream.corrupted_sculk.lore.0>
     tooltip_style: "{dream_rarity:corrupted_sculk}"
 
   old_pale_oak:
@@ -18,7 +18,7 @@ items:
       generate: false
       model_path: "minecraft:block/pale_oak_wood"
     lore:
-      - "§7§o... et qui a subit des crises."
+      - <lang:itemsadder.omc_dream.old_pale_oak.lore.0>
     tooltip_style: "{dream_rarity:old_pale_oak}"
 
   corrupted_string:
@@ -38,7 +38,7 @@ items:
         - minecraft:item/resin_clump.png
       material: {dream_item_material:creaking_heart}
     lore:
-      - "§7§oun coeur frais."
+      - <lang:itemsadder.omc_dream.creaking_heart.lore.0>
     tooltip_style: "{dream_rarity:creaking_heart}"
 
   old_creaking_axe:
@@ -130,7 +130,7 @@ items:
   ewenite:
     display_name: "{dream_item_name:ewenite}"
     lore:
-      - "§7Un matériau pas ouf"
+      - <lang:itemsadder.omc_dream.ewenite.lore.0>
     resource:
       generate: true
       material: {dream_item_material:ewenite}

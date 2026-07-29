@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.EquipableItem;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -15,7 +16,7 @@ public class DreamHelmet extends DreamItem implements DreamEquipableItem, Equipa
     public DreamHelmet() {
         super(new DreamItemMeta(
                 "omc_dream:dream_helmet",
-                "Casque Onirique",
+                TranslationManager.translation("feature.dream.item.dream_helmet.name"),
                 DreamRarity.ONIRISIME,
                 Material.LEATHER_HELMET,
                 true

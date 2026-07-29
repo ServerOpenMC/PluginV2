@@ -2,7 +2,7 @@ info:
   namespace: omc_foods
 items:
   frite:
-    display_name: Frite
+    display_name: <lang:itemsadder.omc_foods.frite.name>
     permission: ayw.frite
     resource:
       material: GOLDEN_CARROT

@@ -37,7 +37,7 @@ public class Spawn {
                         Component.text(target.getName()).color(NamedTextColor.YELLOW)), Prefix.OPENMC, MessageType.SUCCESS, true);
                 MessagesManager.sendMessage(target, TranslationManager.translation("command.utils.spawn.have_sent_by",
                         (sender instanceof Player player ? Component.text(player.getName()).color(NamedTextColor.YELLOW) :
-                                Component.text("Console").color(NamedTextColor.YELLOW))),
+                                TranslationManager.translation("command.utils.spawn.console").color(NamedTextColor.YELLOW))),
                         Prefix.OPENMC, MessageType.WARNING, true);
             } else {
                 MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, true);

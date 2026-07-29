@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ public class OldCreakingChestplate extends DreamItem implements DreamEquipableIt
     public OldCreakingChestplate() {
         super(new DreamItemMeta(
                 "omc_dream:old_creaking_chestplate",
-                "Vieux Plastron de Creaking",
+                TranslationManager.translation("feature.dream.item.old_creaking_chestplate.name"),
                 DreamRarity.COMMON,
                 Material.LEATHER_CHESTPLATE,
                 true

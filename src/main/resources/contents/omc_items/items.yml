@@ -2,31 +2,31 @@ info:
   namespace: omc_items
 items:
   aywenite:
-    display_name: §dAywenite
+    display_name: <lang:itemsadder.omc_items.aywenite.name>
     lore:
-      - "§7Un matériau exceptionnel"
+      - <lang:itemsadder.omc_items.aywenite.lore.0>
     resource:
       generate: true
       material: EMERALD
       textures:
         - aywenite.png
   mascot_stick:
-    display_name: Mascot Wand
+    display_name: <lang:itemsadder.omc_items.mascot_stick.name>
     resource:
       material: STICK
       model_path: items/msctt_wand
   warp_stick:
-    display_name: Warp Wand
+    display_name: <lang:itemsadder.omc_items.warp_stick.name>
     resource:
       material: STICK
       model_path: items/warp_wand
   unknown_stick:
-    display_name: unknown wand
+    display_name: <lang:itemsadder.omc_items.unknown_stick.name>
     resource:
       material: STICK
       model_path: items/rndm_wand
   renforced_stick:
-    display_name: Bâton Renforcé
+    display_name: <lang:itemsadder.omc_items.renforced_stick.name>
     lore:
     - §9Ingrédients
     resource:
@@ -35,7 +35,7 @@ items:
       textures:
       - renforced_stick.png
   spawner_extractor:
-    display_name: §6§lExtracteur de Spawner
+    display_name: <lang:itemsadder.omc_items.spawner_extractor.name>
     lore:
     - "§7Cette outil permet de récupérer des spawners"
     - "§c⚠ 40% de chance d’échec"

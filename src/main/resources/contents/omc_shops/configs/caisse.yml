@@ -2,7 +2,7 @@ info:
   namespace: omc_shops
 items:
   caisse:
-    display_name: "§6§lCaisse"
+    display_name: <lang:itemsadder.omc_shops.caisse.name>
     permission: company.caisse
     resource:
       material: PAPER

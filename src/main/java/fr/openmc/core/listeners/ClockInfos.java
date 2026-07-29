@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,6 +34,11 @@ public class ClockInfos implements Listener {
         String hoursAsText = String.format("%02d", hours);
 
         // J12 03h49
-        player.sendActionBar(Component.text("J" + daysPassed + " " + hoursAsText + "h" + minutesAsText));
+        player.sendActionBar(TranslationManager.translation(
+                "core.clock.actionbar",
+                Component.text(daysPassed),
+                Component.text(hoursAsText),
+                Component.text(minutesAsText)
+        ));
     }
 }

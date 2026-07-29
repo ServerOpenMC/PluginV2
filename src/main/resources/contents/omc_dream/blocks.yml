@@ -2,7 +2,7 @@ info:
   namespace: omc_dream
 items:
   vegetation_1:
-    display_name: "Sculk Végétation 1"
+    display_name: <lang:itemsadder.omc_dream.vegetation_1.name>
     resource:
       material: PAPER
       generate: false
@@ -16,9 +16,9 @@ items:
           roty: 0
         light_level: 6
   ewenite_ore:
-    display_name: §dMinerais d'Ewenite
+    display_name: <lang:itemsadder.omc_dream.ewenite_ore.name>
     lore:
-      - "§7Une découverte pas surprenante"
+      - <lang:itemsadder.omc_dream.ewenite_ore.lore.0>
     resource:
       generate: true
       material: PAPER
@@ -60,9 +60,9 @@ items:
             min_amount: 1
             max_amount: 3
   deepslate_ewenite_ore:
-    display_name: §dMinerai d'Ewenite des Abimes
+    display_name: <lang:itemsadder.omc_dream.deepslate_ewenite_ore.name>
     lore:
-      - "§7Une découverte pas surprenante"
+      - <lang:itemsadder.omc_dream.deepslate_ewenite_ore.lore.0>
     resource:
       generate: true
       material: PAPER
@@ -104,9 +104,9 @@ items:
             min_amount: 1
             max_amount: 3
   ewenite_block:
-    display_name: §dBloc d'Ewenite
+    display_name: <lang:itemsadder.omc_dream.ewenite_block.name>
     lore:
-      - "§7Une fusion de débilité."
+      - <lang:itemsadder.omc_dream.ewenite_block.lore.0>
     resource:
       generate: true
       material: PAPER
