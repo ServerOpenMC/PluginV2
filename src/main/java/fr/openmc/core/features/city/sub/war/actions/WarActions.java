@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -138,6 +139,30 @@ public class WarActions {
     }
 
     /**
+     * Notifie le joueur des règles à suivre pour les guerres.
+     * @param player le joueur à notifier
+     */
+    public static void notifyWarRules(Player player) {
+        ConfirmMenu menu = new ConfirmMenu(player,
+                player::closeInventory,
+                () -> {
+                    MessagesManager.sendMessage(player,
+                            TranslationManager.translation("feature.city.war.disagree_reported"),
+                            Prefix.CITY, MessageType.ERROR, false);
+                    OMCLogger.error("Joueur " + player.getName() + " a refusé les règles des guerres, Note au cas ou d'un drame");
+                    player.closeInventory();
+                },
+                TranslationManager.translationLore(
+                        "feature.city.war.agree_war_rules.lore"
+                ),
+                TranslationManager.translationLore(
+                        "feature.city.war.disagree_war_rules.lore"
+                )
+        );
+        menu.open();
+    }
+
+    /**
      * Prepares the war launch by selecting participants.
      *
      * @param player     The player initiating the war.
@@ -226,6 +251,8 @@ public class WarActions {
         for (UUID uuid : allDefenders) {
             Player defender = Bukkit.getPlayer(uuid);
             if (defender != null && defender.isOnline()) {
+                notifyWarRules(defender);
+
                 MessagesManager.sendMessage(defender, info, Prefix.CITY, MessageType.WARNING, false);
                 defender.sendMessage(clickToJoin);
             }
@@ -239,6 +266,7 @@ public class WarActions {
         for (UUID uuid : attackers) {
             Player attacker = Bukkit.getPlayer(uuid);
             if (attacker != null && attacker.isOnline()) {
+                notifyWarRules(attacker);
                 MessagesManager.sendMessage(attacker, infoAttackers, Prefix.CITY, MessageType.INFO, false);
             }
         }
