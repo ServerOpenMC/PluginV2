@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
@@ -85,7 +86,9 @@ public class WarPlayerListMenu extends PaginatedMenu {
 
 
             items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(title
-                    .append(Component.text(playerName).decoration(TextDecoration.ITALIC, false)))));
+                    .append(Component.text(playerName).decoration(TextDecoration.ITALIC, false))))
+                    .hide(ItemUtils.getDataComponentType())
+            );
         }
 
         return items;
