@@ -85,6 +85,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem PELUCHE_AWYEN = register("omc_plush:peluche_awyen", Material.PAPER);
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
     public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
+    public final CustomItem ELEVATOR = register("omc_blocks:elevator", Material.NOTE_BLOCK);
 
     /* Homes icons */
     public final CustomItem HOMES_ICON_AXENQ = register("omc_homes:omc_homes_icon_axenq", Material.CHEST);
