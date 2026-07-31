@@ -248,6 +248,8 @@ public class WarActions {
                 .clickEvent(ClickEvent.runCommand("/war acceptdefense"))
                 .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.war.begin.defense.hover_join")));
 
+        notifyWarRules(player);
+
         for (UUID uuid : allDefenders) {
             Player defender = Bukkit.getPlayer(uuid);
             if (defender != null && defender.isOnline()) {
