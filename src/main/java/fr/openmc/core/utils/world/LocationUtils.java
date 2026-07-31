@@ -26,7 +26,7 @@ public class LocationUtils {
         return randomLocation(center, minDistance, distanceMax);
     }
 
-    private static boolean isSafeGround(Location loc) {
+    public static boolean isSafeGround(Location loc) {
         World world = loc.getWorld();
         Block feet = world.getBlockAt(loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ());
         Block above = world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
