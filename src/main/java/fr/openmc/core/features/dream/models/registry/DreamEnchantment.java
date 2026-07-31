@@ -6,6 +6,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.enchantments.CustomEnchantment;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +18,7 @@ import org.jspecify.annotations.NonNull;
 public abstract class DreamEnchantment extends CustomEnchantment {
     public DreamItem getEnchantedBookItem(int level) {
         return new DreamItem(new DreamItemMeta(getKey().asMinimalString() + level,
-                getKey().asString() + " " + level,
+                Component.text(getKey().asString() + " " + level),
                 DreamRarity.EPIC,
                 Material.ENCHANTED_BOOK,
                 true)) {

@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ public class CloudHelmet extends DreamItem implements DreamEquipableItem {
     public CloudHelmet() {
         super(new DreamItemMeta(
                 "omc_dream:cloud_helmet",
-                "Casques des Nuages",
+                TranslationManager.translation("feature.dream.item.cloud_helmet.name"),
                 DreamRarity.EPIC,
                 Material.LEATHER_HELMET,
                 true

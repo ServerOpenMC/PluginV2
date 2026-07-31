@@ -7,9 +7,9 @@ scripts:
 items:
   builder_wand:
     permission: omc_items.builder_wand
-    display_name: Builder Wand
+    display_name: <lang:itemsadder.omc_items.builder_wand.name>
     lore:
-      - "§7Permet de poser une large zone de blocs"
+      - <lang:itemsadder.omc_items.builder_wand.lore.0>
     resource:
       material: WOODEN_SHOVEL
       generate: false

@@ -149,7 +149,8 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                     );
 
                     customPumpkin.editMeta(meta -> {
-                        Component ownerName = Component.text(offlinePlayer.getName() == null ? TranslationManager.translationString("feature.events.halloween.unknown_player") : offlinePlayer.getName()).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+                        Component ownerName = offlinePlayer.getName() == null ? TranslationManager.translation("feature.events.halloween.unknown_player") : Component.text(offlinePlayer.getName());
+                        ownerName = ownerName.color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
                         meta.itemName(TranslationManager.translation("feature.events.halloween.reward.rank1.name"));
                         meta.lore(TranslationManager.translationLore("feature.events.halloween.reward.rank1.lore", ownerName));
                     });
@@ -172,7 +173,8 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                     );
 
                     customPumpkin.editMeta(meta -> {
-                        Component ownerName = Component.text(offlinePlayer.getName() == null ? TranslationManager.translationString("feature.events.halloween.unknown_player") : offlinePlayer.getName()).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+                        Component ownerName = offlinePlayer.getName() == null ? TranslationManager.translation("feature.events.halloween.unknown_player") : Component.text(offlinePlayer.getName());
+                        ownerName = ownerName.color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
                         meta.itemName(TranslationManager.translation("feature.events.halloween.reward.rank2.name"));
                         meta.lore(TranslationManager.translationLore("feature.events.halloween.reward.rank2.lore", ownerName));
                     });
@@ -195,7 +197,8 @@ public class HalloweenManager extends Feature implements DatabaseFeature, HasCom
                     );
 
                     customPumpkin.editMeta(meta -> {
-                        Component ownerName = Component.text(offlinePlayer.getName() == null ? TranslationManager.translationString("feature.events.halloween.unknown_player") : offlinePlayer.getName()).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+                        Component ownerName = offlinePlayer.getName() == null ? TranslationManager.translation("feature.events.halloween.unknown_player") : Component.text(offlinePlayer.getName());
+                        ownerName = ownerName.color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
                         meta.itemName(TranslationManager.translation("feature.events.halloween.reward.rank3.name"));
                         meta.lore(TranslationManager.translationLore("feature.events.halloween.reward.rank3.lore", ownerName));
                     });

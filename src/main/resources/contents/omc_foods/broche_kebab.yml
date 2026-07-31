@@ -3,7 +3,7 @@ info:
 items:
   broche_kebab:
     enabled: true
-    display_name: Broche à viande 
+    display_name: <lang:itemsadder.omc_foods.broche_kebab.name>
     resource:
       material: PAPER
       generate: false

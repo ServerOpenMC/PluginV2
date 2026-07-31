@@ -2,9 +2,9 @@ info:
   namespace: omc_blocks
 items:
   aywenite_ore:
-    display_name: §dMinerais d'Aywenite
+    display_name: <lang:itemsadder.omc_blocks.aywenite_ore.name>
     lore:
-      - "§7Une découverte surprenante"
+      - <lang:itemsadder.omc_blocks.aywenite_ore.lore.0>
     resource:
       generate: true
       material: PAPER
@@ -45,9 +45,9 @@ items:
             min_amount: 1
             max_amount: 3
   deepslate_aywenite_ore:
-    display_name: §dMinerai d'Aywenite des Abimes
+    display_name: <lang:itemsadder.omc_blocks.deepslate_aywenite_ore.name>
     lore:
-      - "§7Une découverte surprenante"
+      - <lang:itemsadder.omc_blocks.deepslate_aywenite_ore.lore.0>
     resource:
       generate: true
       material: PAPER
@@ -88,9 +88,9 @@ items:
             min_amount: 1
             max_amount: 3
   aywenite_block:
-    display_name: §dBloc d'Aywenite
+    display_name: <lang:itemsadder.omc_blocks.aywenite_block.name>
     lore:
-      - "§7Une fusion de cette §dmatière unique"
+      - <lang:itemsadder.omc_blocks.aywenite_block.lore.0>
     resource:
       generate: true
       material: PAPER
@@ -115,7 +115,7 @@ items:
             volume: 1
             pitch: 1
   ball_machine:
-    display_name: "Machine a Boule"
+    display_name: <lang:itemsadder.omc_blocks.ball_machine.name>
     permission: blocks.ball_machine
     resource:
       material: PAPER
@@ -140,7 +140,7 @@ items:
             y: 0.50
             z: 0
   urne:
-    display_name: "Urne"
+    display_name: <lang:itemsadder.omc_blocks.urne.name>
     resource:
       material: PAPER
       generate: false

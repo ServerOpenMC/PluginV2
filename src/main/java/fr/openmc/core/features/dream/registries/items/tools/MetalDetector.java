@@ -36,7 +36,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
     public MetalDetector() {
         super(new DreamItemMeta(
                 "omc_dream:metal_detector",
-                "Détecteur à métaux",
+                TranslationManager.translation("feature.dream.item.metal_detector.name"),
                 DreamRarity.EPIC,
                 Material.STICK,
                 false

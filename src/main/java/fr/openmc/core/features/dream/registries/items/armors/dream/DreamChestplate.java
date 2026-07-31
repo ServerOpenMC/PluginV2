@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.EquipableItem;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -15,7 +16,7 @@ public class DreamChestplate extends DreamItem implements DreamEquipableItem, Eq
     public DreamChestplate() {
         super(new DreamItemMeta(
                 "omc_dream:dream_chestplate",
-                "Plastron Onirique",
+                TranslationManager.translation("feature.dream.item.dream_chestplate.name"),
                 DreamRarity.ONIRISIME,
                 Material.LEATHER_CHESTPLATE,
                 true

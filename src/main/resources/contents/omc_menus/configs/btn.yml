@@ -2,70 +2,70 @@ info:
   namespace: omc_menus
 items:
   accept_btn:
-    display_name: accept
+    display_name: <lang:itemsadder.omc_menus.accept_btn.name>
     resource:
       material: PAPER
       generate: true
       textures: 
         - accept_btn
   refuse_btn:
-    display_name: refuse
+    display_name: <lang:itemsadder.omc_menus.refuse_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - refuse_btn
   1_btn:
-    display_name: 1
+    display_name: <lang:itemsadder.omc_menus.1_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - 1_btn
   10_btn:
-    display_name: 10
+    display_name: <lang:itemsadder.omc_menus.10_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - 10_btn
   64_btn:
-    display_name: 64
+    display_name: <lang:itemsadder.omc_menus.64_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - 64_btn
   plus_btn:
-    display_name: plus
+    display_name: <lang:itemsadder.omc_menus.plus_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - plus_btn
   minus_btn:
-    display_name: moins
+    display_name: <lang:itemsadder.omc_menus.minus_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - minus_btn
   mailbox_accept_btn:
-    display_name: accept
+    display_name: <lang:itemsadder.omc_menus.mailbox_accept_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - "items/mailbox/accept_btn"
   mailbox_refuse_btn:
-    display_name: refuse
+    display_name: <lang:itemsadder.omc_menus.mailbox_refuse_btn.name>
     resource:
       material: PAPER
       generate: true
       textures:
         - "items/mailbox/refuse_btn"
   mailbox_cancel_btn:
-    display_name: accept
+    display_name: <lang:itemsadder.omc_menus.mailbox_cancel_btn.name>
     resource:
       material: PAPER
       generate: true
@@ -86,7 +86,7 @@ items:
         textures:
           - "items/mailbox/arrow_right"
   mailbox_send:
-    display_name: send
+    display_name: <lang:itemsadder.omc_menus.mailbox_send.name>
     resource:
       material: PAPER
       generate: true

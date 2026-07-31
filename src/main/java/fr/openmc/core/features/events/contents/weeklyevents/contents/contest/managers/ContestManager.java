@@ -282,8 +282,8 @@ public class ContestManager extends Feature implements DatabaseFeature, LoadAfte
         // Create part of the book
         ItemStack baseBook = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta baseBookMeta = (BookMeta) baseBook.getItemMeta();
-        baseBookMeta.setTitle(TranslationManager.translationString("feature.events.contest.book.title"));
-        baseBookMeta.setAuthor(TranslationManager.translationString("feature.events.contest.book.author"));
+        baseBookMeta.title(TranslationManager.translation("feature.events.contest.book.title"));
+        baseBookMeta.author(TranslationManager.translation("feature.events.contest.book.author"));
 
         List<Component> lore = TranslationManager.translationLore(
                 "feature.events.contest.book.lore",

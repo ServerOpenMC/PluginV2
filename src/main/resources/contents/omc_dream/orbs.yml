@@ -8,8 +8,8 @@ items:
       generate: false
       model_path: orb/orb_domination
     lore:
-      - "§7§ola boule de détermination..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - <lang:itemsadder.omc_dream.domination_orb.lore.0>
+      - <lang:itemsadder.omc_dream.domination_orb.lore.1>
     tooltip_style: "{dream_rarity:domination_orb}"
 
   ame_orb:
@@ -19,8 +19,8 @@ items:
       generate: false
       model_path: orb/orb_ame
     lore:
-      - "§7§ola boule de la conscience..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - <lang:itemsadder.omc_dream.ame_orb.lore.0>
+      - <lang:itemsadder.omc_dream.ame_orb.lore.1>
     tooltip_style: "{dream_rarity:ame_orb}"
 
   mud_orb:
@@ -30,8 +30,8 @@ items:
       generate: false
       model_path: orb/orb_mud
     lore:
-      - "§7§ola boule de l'espoir..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - <lang:itemsadder.omc_dream.mud_orb.lore.0>
+      - <lang:itemsadder.omc_dream.mud_orb.lore.1>
     tooltip_style: "{dream_rarity:mud_orb}"
 
   cloud_orb:
@@ -41,8 +41,8 @@ items:
       generate: false
       model_path: orb/orb_cloud
     lore:
-      - "§7§ola boule du courage..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - <lang:itemsadder.omc_dream.cloud_orb.lore.0>
+      - <lang:itemsadder.omc_dream.cloud_orb.lore.1>
     tooltip_style: "{dream_rarity:cloud_orb}"
 
   glacite_orb:
@@ -52,8 +52,8 @@ items:
       generate: false
       model_path: orb/orb_glacite
     lore:
-      - "§7§ola boule de la solitude..."
-      - "§7Un des 5 Fragments de la §fSingularité"
+      - <lang:itemsadder.omc_dream.glacite_orb.lore.0>
+      - <lang:itemsadder.omc_dream.glacite_orb.lore.1>
     tooltip_style: "{dream_rarity:glacite_orb}"
     
   singularity:
@@ -63,6 +63,6 @@ items:
       generate: false
       model_path: orb/singularity
     lore:
-      - "§7§ol'acheminement d'un parcours chaotique dans le futur"
-      - "§7La §fSingularité"
+      - <lang:itemsadder.omc_dream.singularity.lore.0>
+      - <lang:itemsadder.omc_dream.singularity.lore.1>
     tooltip_style: "{dream_rarity:singularity}"

@@ -3,52 +3,52 @@ info:
 
 items:
   tenders:
-    display_name: "Cuisse de poulet"
+    display_name: <lang:itemsadder.omc_daily_events.tenders.name>
     resource:
       generate: true
       textures:
         - other/tenders
       material: COOKED_CHICKEN
     lore:
-      - "§7§oMhh le poulet eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeett"
+      - <lang:itemsadder.omc_daily_events.tenders.lore.0>
 
   bob_sponge:
-    display_name: "<yellow>Bob l'éponge</yellow>"
+    display_name: <lang:itemsadder.omc_daily_events.bob_sponge.name>
     resource:
       material: SPONGE
       generate: false
       model_path: "minecraft:item/sponge"
     lore:
-      - "§7§oBOB L'ÉPONGE CARRÉ"
+      - <lang:itemsadder.omc_daily_events.bob_sponge.lore.0>
     glint: true
 
   kebab_fermented:
-    display_name: "Kebab fermenté"
+    display_name: <lang:itemsadder.omc_daily_events.kebab_fermented.name>
     resource:
       material: COOKED_BEEF
       generate: true
       textures:
         - "omc_foods:items/kebab"
     lore:
-      - "§7§ol'originel, une légende raconte qu'il existait avant la kebaberie"
+      - <lang:itemsadder.omc_daily_events.kebab_fermented.lore.0>
     glint: true
     attribute_modifiers:
       mainhand:
         luck: 1.1
 
   fermentum:
-    display_name: "Fermentum"
+    display_name: <lang:itemsadder.omc_daily_events.fermentum.name>
     resource:
       generate: true
       textures:
         - other/fermentum
       material: STICK
     lore:
-      - "§7§oUne combinaison de toutes les cultures divines."
-      - "§7§outile pour les items divins"
+      - <lang:itemsadder.omc_daily_events.fermentum.lore.0>
+      - <lang:itemsadder.omc_daily_events.fermentum.lore.1>
 
   blessed_bread:
-    display_name: "Pain sacré"
+    display_name: <lang:itemsadder.omc_daily_events.blessed_bread.name>
     resource:
       generate: true
       textures:
@@ -57,8 +57,8 @@ items:
     enchants:
       - minecraft:sharpness:10
     lore:
-      - "§7§oLe pain sacré, un pain béni par les dieux eux-mêmes."
-      - "§7§grace à des éléments divin."
+      - <lang:itemsadder.omc_daily_events.blessed_bread.lore.0>
+      - <lang:itemsadder.omc_daily_events.blessed_bread.lore.1>
 
 recipes:
   iaa_crafting_table:

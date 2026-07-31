@@ -2,8 +2,10 @@ package fr.openmc.core.features.dream.models.registry.items;
 
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
 
@@ -26,7 +28,7 @@ public abstract class DreamItem extends CustomItem {
     @Override
     public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(getMeta().getDefaultMaterial());
-        item.getItemMeta().itemName(Component.text(getMeta().getName()));
+        item.editMeta(meta -> meta.itemName(getMeta().getName()));
         return item;
     }
 
@@ -55,18 +57,24 @@ public abstract class DreamItem extends CustomItem {
         if (this instanceof DreamEquipableItem equipableItem) {
             lore.add(Component.empty());
 
-            lore.add(Component.text("§7§oTemps additionnel: §r§a+" + equipableItem.getAdditionalMaxTime() + "s"));
+            lore.add(TranslationManager.translation(
+                    "feature.dream.item.lore.additional_time",
+                    Component.text("+" + equipableItem.getAdditionalMaxTime() + "s", NamedTextColor.GREEN)
+            ));
 
             Integer coldResistance = equipableItem.getColdResistance();
             if (coldResistance != null) {
-                lore.add(Component.text("§7§oResistance au froid: §r§b+" + coldResistance));
+                lore.add(TranslationManager.translation(
+                        "feature.dream.item.lore.cold_resistance",
+                        Component.text("+" + coldResistance, NamedTextColor.AQUA)
+                ));
             }
         }
 
         lore.add(Component.empty());
 
         if (isTransferable()) {
-            lore.add(Component.text("§9§ko §r§9Dream Transferable §9§ko"));
+            lore.add(TranslationManager.translation("feature.dream.item.lore.transferable"));
         }
 
         lore.add(this.getRarity().getTemplateLore());
@@ -89,7 +97,7 @@ public abstract class DreamItem extends CustomItem {
         lore.add(Component.empty());
 
         if (isTransferable()) {
-            lore.add(Component.text("§9§ko §r§9Dream Transferable §9§ko"));
+            lore.add(TranslationManager.translation("feature.dream.item.lore.transferable"));
         }
 
         lore.add(this.getRarity().getTemplateLore());

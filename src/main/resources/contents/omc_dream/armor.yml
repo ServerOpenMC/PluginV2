@@ -59,7 +59,7 @@ items:
         - armor/old_creaking/creaking_helmet
       material: {dream_item_material:old_creaking_helmet}
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - <lang:itemsadder.omc_dream.old_creaking_helmet.lore.0>
     durability:
       unbreakable: true
     equipment:
@@ -77,7 +77,7 @@ items:
         - armor/old_creaking/creaking_chestplate
       material: {dream_item_material:old_creaking_chestplate}
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - <lang:itemsadder.omc_dream.old_creaking_chestplate.lore.0>
     durability:
       unbreakable: true
     equipment:
@@ -95,7 +95,7 @@ items:
         - armor/old_creaking/creaking_leggings
       material: {dream_item_material:old_creaking_leggings}
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - <lang:itemsadder.omc_dream.old_creaking_leggings.lore.0>
     durability:
       unbreakable: true
     equipment:
@@ -113,7 +113,7 @@ items:
          - armor/old_creaking/creaking_boots
       material: {dream_item_material:old_creaking_boots}
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
+      - <lang:itemsadder.omc_dream.old_creaking_boots.lore.0>
     durability:
       unbreakable: true
     equipment:
@@ -315,8 +315,8 @@ items:
   dream_helmet:
     display_name: "{dream_item_name:dream_helmet}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§oPeut-être est-elle liée aux rêves..."
+      - <lang:itemsadder.omc_dream.dream_helmet.lore.0>
+      - <lang:itemsadder.omc_dream.dream_helmet.lore.1>
     resource:
       material: {dream_item_material:dream_helmet}
       generate: true
@@ -334,8 +334,8 @@ items:
   dream_chestplate:
     display_name: "{dream_item_name:dream_chestplate}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§o..., les rêves se réalisent ..."
+      - <lang:itemsadder.omc_dream.dream_chestplate.lore.0>
+      - <lang:itemsadder.omc_dream.dream_chestplate.lore.1>
     resource:
       generate: true
       textures:
@@ -353,8 +353,8 @@ items:
   dream_leggings:
     display_name: "{dream_item_name:dream_leggings}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§o... toujours, en espérant que ... "
+      - <lang:itemsadder.omc_dream.dream_leggings.lore.0>
+      - <lang:itemsadder.omc_dream.dream_leggings.lore.1>
     resource:
       generate: true
       textures:
@@ -372,8 +372,8 @@ items:
   dream_boots:
     display_name: "{dream_item_name:dream_boots}"
     lore:
-      - "§7§oUne armure aussi étrange que cet environnement"
-      - "§7§o... celui là ne se réalisera pas."
+      - <lang:itemsadder.omc_dream.dream_boots.lore.0>
+      - <lang:itemsadder.omc_dream.dream_boots.lore.1>
     resource:
       generate: true
       textures:

@@ -22,7 +22,7 @@ public class PacketMenuListener extends PacketAdapter {
     private static PacketMenuListener instance;
 
     public PacketMenuListener(Plugin plugin) {
-        super(plugin, PacketType.Play.Client.WINDOW_CLICK, PacketType.Play.Client.CLOSE_WINDOW, PacketType.Play.Server.OPEN_WINDOW, PacketType.Play.Server.SET_SLOT);
+        super(plugin, PacketType.Play.Client.WINDOW_CLICK, PacketType.Play.Client.CLOSE_WINDOW, PacketType.Play.Server.OPEN_WINDOW, PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS);
         ProtocolLibrary.getProtocolManager().addPacketListener(this);
         instance = this;
     }
@@ -38,10 +38,23 @@ public class PacketMenuListener extends PacketAdapter {
             if (PacketMenuLib.getOpenMenus().containsKey(uuid) && PacketMenuLib.getWindowIds().get(uuid) != windowId) {
                 PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player));
                 PacketMenuLib.getOpenMenus().remove(uuid);
+                PacketMenuLib.getWindowIds().remove(uuid);
                 PacketMenuLib.updateInv(Objects.requireNonNull(player));
             }
-        } else if (event.getPacketType() == PacketType.Play.Server.SET_SLOT && PacketMenuLib.getOpenMenus().containsKey(event.getPlayer().getUniqueId()))
+        } else if (event.getPacketType() == PacketType.Play.Server.SET_SLOT && PacketMenuLib.getOpenMenus().containsKey(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
+        } else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
+            Player player = event.getPlayer();
+            UUID uuid = player.getUniqueId();
+
+            if (!PacketMenuLib.getOpenMenus().containsKey(uuid)) return;
+
+            Integer packetMenuWindowId = PacketMenuLib.getWindowIds().get(uuid);
+            int windowId = event.getPacket().getIntegers().read(0);
+
+            if (packetMenuWindowId == null || windowId != packetMenuWindowId)
+                event.setCancelled(true);
+        }
     }
 
     @Override
@@ -84,6 +97,7 @@ public class PacketMenuListener extends PacketAdapter {
             if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
                 PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player));
                 PacketMenuLib.getOpenMenus().remove(uuid);
+                PacketMenuLib.getWindowIds().remove(uuid);
                 PacketMenuLib.updateInv(Objects.requireNonNull(player));
             } // We don't verify if it is a good window id because if we do, the player can close the inventory without a packet and the event will never be called
         }

@@ -61,8 +61,8 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 				location.setY(location.getWorld().getHighestBlockYAt(location) + 1);
 				target.teleport(location);
 				FROZEN_PLAYERS.add(target);
-                target.sendTitlePart(TitlePart.TITLE, TranslationManager.translation("command.admin.freeze.title.1"));
-                target.sendTitlePart(TitlePart.SUBTITLE, TranslationManager.translation("command.admin.freeze.title.2"));
+                target.sendTitlePart(TitlePart.TITLE, TranslationManager.translation("command.admin.freeze.title"));
+                target.sendTitlePart(TitlePart.SUBTITLE, TranslationManager.translation("command.admin.freeze.subtitle"));
                 MessagesManager.sendMessage(player,
 						TranslationManager.translation("command.admin.freeze.player_freeze",
 								Component.text(target.getName()).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.SUCCESS, false);

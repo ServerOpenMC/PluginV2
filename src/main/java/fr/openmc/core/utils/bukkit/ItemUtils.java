@@ -14,7 +14,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -59,16 +58,18 @@ public class ItemUtils {
         return getItemTranslation(stack.getType());
     }
 
-    public static String getItemName(ItemStack stack) {
+    public static Component getItemName(ItemStack stack) {
         CustomStack customItem = CustomStack.byItemStack(stack);
-        if (customItem != null)
-            return PlainTextComponentSerializer.plainText().serialize(stack.getItemMeta().customName());
+        if (customItem != null) {
+            Component customName = stack.getItemMeta().customName();
+            return customName != null ? customName : stack.displayName();
+        }
 
-        return PlainTextComponentSerializer.plainText().serialize(getItemTranslation(stack));
+        return getItemTranslation(stack);
     }
 
 
-    public static String getMaterialName(Material material) {
+    public static Component getMaterialName(Material material) {
         return getItemName(new ItemStack(material));
     }
 

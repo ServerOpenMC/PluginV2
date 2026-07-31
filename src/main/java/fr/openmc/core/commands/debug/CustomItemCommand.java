@@ -6,7 +6,7 @@ import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import net.kyori.adventure.text.Component;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import revxrsal.commands.annotation.Command;
@@ -28,7 +28,7 @@ public class CustomItemCommand {
         java.util.Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(name);
 
         if (item.isEmpty()) {
-            MessagesManager.sendMessage(player, Component.text("Cet item n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("command.debug.customitem.not_found"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

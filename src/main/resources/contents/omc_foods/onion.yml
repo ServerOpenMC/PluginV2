@@ -2,7 +2,7 @@ info:
   namespace: omc_foods
 items:
   onion:
-    display_name: Onion
+    display_name: <lang:itemsadder.omc_foods.onion.name>
     resource:
       material: PORKCHOP
       generate: true

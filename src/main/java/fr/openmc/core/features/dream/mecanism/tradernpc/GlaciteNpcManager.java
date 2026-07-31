@@ -8,6 +8,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -39,7 +40,8 @@ public class GlaciteNpcManager implements Listener {
         UUID npcUUID = UUID.randomUUID();
 
         NpcData data = new NpcData("glacite-" + npcUUID, null, locationNpc);
-        data.setDisplayName(TranslationManager.translationString("feature.dream.trader.npc.name"));
+        data.setDisplayName(LegacyComponentSerializer.legacySection()
+                .serialize(TranslationManager.translation("feature.dream.trader.npc.name")));
         data.setType(EntityType.ILLUSIONER);
         data.setTurnToPlayerDistance(10);
         data.setTurnToPlayer(true);

@@ -5,6 +5,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -14,7 +15,7 @@ public class Singularity extends DreamItem implements UsableItem {
     public Singularity() {
         super(new DreamItemMeta(
                 "omc_dream:singularity",
-                "Singularité",
+                TranslationManager.translation("feature.dream.item.singularity.name"),
                 DreamRarity.ONIRISIME,
                 Material.HEART_OF_THE_SEA,
                 false

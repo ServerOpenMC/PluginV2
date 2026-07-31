@@ -4,6 +4,7 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholder;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 
 public class DreamItemNamePlaceholder implements IAPlaceholder {
     private static final String PLACEHOLDER_NAME = "dream_item_name";
@@ -21,6 +22,8 @@ public class DreamItemNamePlaceholder implements IAPlaceholder {
 
         if (item == null || !(item.getMeta() instanceof DreamItemMeta d)) return null;
 
-        return d.getRarity().toLegacyColor() + d.getName();
+        return "<" + d.getRarity().getColor().name() + ">" +
+                "<lang:" + TranslationManager.getTranslationKey(d.getName()) +
+                "></"+ d.getRarity().getColor().name() + ">";
     }
 }
