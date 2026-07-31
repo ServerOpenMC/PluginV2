@@ -204,6 +204,7 @@ public class WarActions {
                 () -> {
                     finishLaunchWar(player, cityLaunch, cityAttack, attackers);
                     player.closeInventory();
+                    notifyWarRules(player);
                 },
                 player::closeInventory,
                 TranslationManager.translationLore(
@@ -247,8 +248,6 @@ public class WarActions {
         Component clickToJoin = TranslationManager.translation("feature.city.war.begin.defense.click_to_join")
                 .clickEvent(ClickEvent.runCommand("/war acceptdefense"))
                 .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.war.begin.defense.hover_join")));
-
-        notifyWarRules(player);
 
         for (UUID uuid : allDefenders) {
             Player defender = Bukkit.getPlayer(uuid);
