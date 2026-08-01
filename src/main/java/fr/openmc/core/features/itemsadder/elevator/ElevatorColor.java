@@ -20,11 +20,15 @@ public enum ElevatorColor {
     ;
 
     private final Material dye;
-    private final CustomStack elevator;
+    private final String elevator;
 
     ElevatorColor(Material dye, String elevator) {
         this.dye = dye;
-        this.elevator = CustomStack.getInstance(elevator);
+        this.elevator = elevator;
+    }
+
+    public CustomStack getCustomStack() {
+        return CustomStack.getInstance(elevator);
     }
 
 }

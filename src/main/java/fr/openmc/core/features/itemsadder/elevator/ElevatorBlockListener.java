@@ -103,9 +103,9 @@ public class ElevatorBlockListener extends ElevatorUtils implements Listener {
 
         if (targetColor == null) return;
 
-        if (block.matchNamespacedID(targetColor.getElevator())) return;
+        if (block.matchNamespacedID(targetColor.getCustomStack())) return;
 
-        CustomStack result = targetColor.getElevator();
+        CustomStack result = targetColor.getCustomStack();
 
         if (result != null) {
             inv.setResult(result.getItemStack());

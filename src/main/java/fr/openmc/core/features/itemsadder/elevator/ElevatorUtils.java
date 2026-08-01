@@ -20,8 +20,6 @@ public class ElevatorUtils extends Feature implements HasListeners {
     // Map<(X,Z), Set<Y>>
     public Map<Vector2i, Set<Integer>> elevatorsPerColumn = new HashMap<>();
 
-    public static List<String> elevatorsVariants = new ArrayList<>();
-
     /**
      * Know if the player is standing on top of an elevator
      */
@@ -155,18 +153,16 @@ public class ElevatorUtils extends Feature implements HasListeners {
     }
 
     public boolean isElevator(String namespaceID) {
-        for (String elevatorsVariant : elevatorsVariants) {
-            if (elevatorsVariant.matches(namespaceID)) return true;
-        }
+        for (ElevatorColor variant : ElevatorColor.values())
+            if (variant.getElevator().matches(namespaceID)) return true;
         return false;
     }
 
     public boolean isElevator(CustomStack item) {
         if (item == null) return false;
 
-        for (String elevatorsVariant : elevatorsVariants) {
-            if (elevatorsVariant.matches(item.getNamespacedID())) return true;
-        }
+        for (ElevatorColor variant : ElevatorColor.values())
+            if (variant.getElevator().matches(item.getNamespacedID())) return true;
         return false;
     }
 

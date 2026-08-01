@@ -14,10 +14,8 @@ public class ElevatorBlock extends CustomItem {
     public ElevatorColor color;
 
     public ElevatorBlock(ElevatorColor color) {
-        super(new CustomItemMeta(color.getElevator().getNamespacedID()));
+        super(new CustomItemMeta(color.getElevator()));
         this.color = color;
-
-        ElevatorUtils.elevatorsVariants.add(getId());
     }
 
     @Override
