@@ -11,7 +11,7 @@ import org.jspecify.annotations.NonNull;
 public class ElevatorBlock extends CustomItem {
 
     @Getter
-    public ElevatorColor color;
+    public ElevatorColor color = ElevatorColor.DEFAULT;
 
     public ElevatorBlock(CustomItemMeta meta, ElevatorColor color) {
         meta.add("elevator:color", color);
@@ -28,7 +28,7 @@ public class ElevatorBlock extends CustomItem {
         );
     }
 
-    public ElevatorColor setColor(ElevatorColor color) {
+    private ElevatorColor setColor(ElevatorColor color) {
         if (this.color.equals(color)) return color;
         getMeta().add("elevator:color", color);
         return color;
@@ -38,7 +38,7 @@ public class ElevatorBlock extends CustomItem {
     public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NOTE_BLOCK);
         item.editMeta(meta -> meta.itemName(
-                TranslationManager.translation("itemsadder.omc_elevator.name")
+                TranslationManager.translation("itemsadder.omc_elevator.elevator.name")
         ));
         return item;
     }
