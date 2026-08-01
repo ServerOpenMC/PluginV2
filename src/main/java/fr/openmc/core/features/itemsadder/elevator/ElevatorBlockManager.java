@@ -20,6 +20,10 @@ public class ElevatorBlockManager {
     // - solution 2, regarder pour chacun des elevator sur la map et load colonne par colonne ( évite les prolème mais peut être gourmant )
     // - solution 3, changer le système de check pour monter ou descendre
 
+    public ElevatorBlockManager() {
+        // load elevator or not ?
+    }
+
     public boolean isOnTop(Player player) {
         Location playerLocation = player.getLocation();
         Block blockUnderPlayer = playerLocation.getBlock().getRelative(0, -1, 0);
@@ -27,7 +31,7 @@ public class ElevatorBlockManager {
         if (blockUnderPlayer.isEmpty()) return false;
 
         return CustomBlock.byAlreadyPlaced(blockUnderPlayer)
-                .equals(OMCRegistry.CUSTOM_ITEMS.ELEVATOR.getCustomBlock());
+                .matchNamespacedID(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_GREY.getCustomStack());
     }
 
     public void addToColumn(@NotNull Location location) {

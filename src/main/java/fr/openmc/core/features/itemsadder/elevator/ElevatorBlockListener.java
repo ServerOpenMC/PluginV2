@@ -64,7 +64,7 @@ public class ElevatorBlockListener extends ElevatorBlockManager implements Liste
     public void onElevatorPlaced(CustomBlockPlaceEvent event) {
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
 
-        if (!customBlock.equals(OMCRegistry.CUSTOM_ITEMS.ELEVATOR.getCustomBlock())) return;
+        if (!customBlock.matchNamespacedID(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_GREY.getCustomStack())) return;
 
         addToColumn(customBlock.getBlock().getLocation());
     }
@@ -73,7 +73,7 @@ public class ElevatorBlockListener extends ElevatorBlockManager implements Liste
     public void onElevatorRemove(CustomBlockBreakEvent event) {
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
 
-        if (!customBlock.equals(OMCRegistry.CUSTOM_ITEMS.ELEVATOR.getCustomBlock())) return;
+        if (!customBlock.matchNamespacedID(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_GREY.getCustomStack())) return;
 
         removeToColumn(customBlock.getBlock().getLocation());
     }

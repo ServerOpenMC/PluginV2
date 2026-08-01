@@ -10,6 +10,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
@@ -85,7 +87,17 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem PELUCHE_AWYEN = register("omc_plush:peluche_awyen", Material.PAPER);
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
     public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
-    public final CustomItem ELEVATOR = register("omc_blocks:elevator", Material.NOTE_BLOCK);
+
+    public final CustomItem ELEVATOR_GREY = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_grey"), ElevatorColor.DEFAULT));
+    public final CustomItem ELEVATOR_RED = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_red"), ElevatorColor.RED));
+    public final CustomItem ELEVATOR_YELLOW = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_yellow"), ElevatorColor.YELLOW));
+    public final CustomItem ELEVATOR_ORANGE = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_orange"), ElevatorColor.ORANGE));
+    public final CustomItem ELEVATOR_LIME = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_lime"), ElevatorColor.LIME));
+    public final CustomItem ELEVATOR_GREEN = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_green"), ElevatorColor.GREEN));
+    public final CustomItem ELEVATOR_LIGHT_BLUE = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_light_blue"), ElevatorColor.LIGHT_BLUE));
+    public final CustomItem ELEVATOR_BLUE = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_blue"), ElevatorColor.BLUE));
+    public final CustomItem ELEVATOR_PURPLE = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_purple"), ElevatorColor.PURPLE));
+    public final CustomItem ELEVATOR_PINK = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_pink"), ElevatorColor.PINK));
 
     /* Homes icons */
     public final CustomItem HOMES_ICON_AXENQ = register("omc_homes:omc_homes_icon_axenq", Material.CHEST);

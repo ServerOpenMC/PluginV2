@@ -10,26 +10,35 @@ import org.jspecify.annotations.NonNull;
 
 public class ElevatorBlock extends CustomItem {
 
-    //@Getter
-    //public ElevatorColor color;
+    @Getter
+    public ElevatorColor color;
+
+    public ElevatorBlock(CustomItemMeta meta, ElevatorColor color) {
+        meta.add("elevator:color", color);
+        this(meta);
+    }
 
     public ElevatorBlock(CustomItemMeta meta) {
         super(meta);
 
-        //color = setColor(ElevatorColor.DEFAULT);
+        color = setColor(
+                getMeta().get("elevator:color").getClass() == ElevatorColor.class ?
+                        (ElevatorColor) getMeta().get("elevator:color")
+                        : ElevatorColor.DEFAULT
+        );
     }
 
-    //public ElevatorColor setColor(ElevatorColor color) {
-    //    if (this.color.equals(color)) return color;
-    //    getMeta().add("elevator:color", color);
-    //    return color;
-    //}
+    public ElevatorColor setColor(ElevatorColor color) {
+        if (this.color.equals(color)) return color;
+        getMeta().add("elevator:color", color);
+        return color;
+    }
 
     @Override
     public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NOTE_BLOCK);
         item.editMeta(meta -> meta.itemName(
-                TranslationManager.translation("itemsadder.omc_block.elevator.name") //TODO faire la trad en_GB
+                TranslationManager.translation("itemsadder.omc_elevator.name")
         ));
         return item;
     }
