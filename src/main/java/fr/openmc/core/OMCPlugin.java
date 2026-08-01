@@ -37,6 +37,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorUtils;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
@@ -126,7 +127,8 @@ public class OMCPlugin extends JavaPlugin {
             () -> new HologramLoader(),
             ShopManager::new,
             HomeIconCacheManager::new,
-            DimensionOpenerManager::new
+            DimensionOpenerManager::new,
+            ElevatorUtils::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();
