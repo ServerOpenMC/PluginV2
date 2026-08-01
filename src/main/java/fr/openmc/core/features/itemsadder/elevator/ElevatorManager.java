@@ -15,15 +15,15 @@ import org.joml.Vector2i;
 import java.util.*;
 
 @Credit(developers = {"Nocolm"}, graphist = {"Gexary"})
-public class ElevatorUtils extends Feature implements HasListeners {
+public class ElevatorManager extends Feature implements HasListeners {
 
     // Map<(X,Z), Set<Y>>
-    public Map<Vector2i, Set<Integer>> elevatorsPerColumn = new HashMap<>();
+    public static Map<Vector2i, Set<Integer>> elevatorsPerColumn = new HashMap<>();
 
     /**
      * Know if the player is standing on top of an elevator
      */
-    public boolean isOnTop(Player player) {
+    public static boolean isOnTop(Player player) {
         Block blockUnderPlayer = player.getLocation().getBlock().getRelative(0, -1, 0);
 
         if (blockUnderPlayer.isEmpty()) return false;
@@ -38,7 +38,7 @@ public class ElevatorUtils extends Feature implements HasListeners {
     /**
      * Search for elevator to add in the actual column
      */
-    private void scanColumn(Location loc) {
+    private static void scanColumn(Location loc) {
         Set<Integer> elevators = new HashSet<>();
 
         int minY = loc.getWorld().getMinHeight();
@@ -68,7 +68,7 @@ public class ElevatorUtils extends Feature implements HasListeners {
     /**
      * Add an elevator to a column
      */
-    public void addToColumn(@NotNull Location location) {
+    public static void addToColumn(@NotNull Location location) {
         if (!elevatorsPerColumn.containsKey(keyOf(location)))
             scanColumn(location);
 
@@ -81,7 +81,7 @@ public class ElevatorUtils extends Feature implements HasListeners {
     /**
      * Remove an elevator to a column
      */
-    public void removeToColumn(@NotNull Location location) {
+    public static void removeToColumn(@NotNull Location location) {
         if (!elevatorsPerColumn.containsKey(keyOf(location)))
             scanColumn(location);
 
@@ -94,7 +94,7 @@ public class ElevatorUtils extends Feature implements HasListeners {
     /**
      * Get the next elevator above the player if there's one
      */
-    public Location getNextTop(Player player) {
+    public static Location getNextTop(Player player) {
         Location loc = player.getLocation().clone();
 
         if (!elevatorsPerColumn.containsKey(keyOf(loc)))
@@ -121,7 +121,7 @@ public class ElevatorUtils extends Feature implements HasListeners {
     /**
      * Get the next elevator below the player if there's one
      */
-    public Location getNextDown(Player player) {
+    public static Location getNextDown(Player player) {
         Location loc = player.getLocation().clone();
 
         if (!elevatorsPerColumn.containsKey(keyOf(loc)))
@@ -148,17 +148,17 @@ public class ElevatorUtils extends Feature implements HasListeners {
     /**
      * Convert a location to a Vector2i(X,Z), used as a key for the HashMap
      */
-    public Vector2i keyOf(@NotNull Location location) {
+    public static Vector2i keyOf(@NotNull Location location) {
         return new Vector2i(location.getBlockX(), location.getBlockZ());
     }
 
-    public boolean isElevator(String namespaceID) {
+    public static boolean isElevator(String namespaceID) {
         for (ElevatorColor variant : ElevatorColor.values())
             if (variant.getElevator().matches(namespaceID)) return true;
         return false;
     }
 
-    public boolean isElevator(CustomStack item) {
+    public static boolean isElevator(CustomStack item) {
         if (item == null) return false;
 
         for (ElevatorColor variant : ElevatorColor.values())

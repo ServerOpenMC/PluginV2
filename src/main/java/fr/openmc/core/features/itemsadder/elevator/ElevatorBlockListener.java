@@ -20,16 +20,19 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-public class ElevatorBlockListener extends ElevatorUtils implements Listener {
+import java.util.Arrays;
+import java.util.Objects;
+
+public class ElevatorBlockListener implements Listener {
 
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
         Player player = event.getPlayer();
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
 
-        if (!isOnTop(player)) return;
+        if (!ElevatorManager.isOnTop(player)) return;
 
-        Location locAfterTP = getNextTop(player);
+        Location locAfterTP = ElevatorManager.getNextTop(player);
 
         if (locAfterTP.equals(player.getLocation())) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.limit.up"),
@@ -51,11 +54,11 @@ public class ElevatorBlockListener extends ElevatorUtils implements Listener {
         Player player = event.getPlayer();
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
 
-        if (!isOnTop(player)) return;
+        if (!ElevatorManager.isOnTop(player)) return;
 
         if (event.isSneaking()) return;
 
-        Location locAfterTP = getNextDown(player);
+        Location locAfterTP = ElevatorManager.getNextDown(player);
 
         if (locAfterTP.equals(player.getLocation())) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.limit.down"),
@@ -79,14 +82,19 @@ public class ElevatorBlockListener extends ElevatorUtils implements Listener {
         CustomStack block = null;
         ElevatorColor targetColor = null;
 
-        for (ItemStack item : inv.getMatrix()) {
+        if (Arrays.stream(inv.getContents())
+                .filter(Objects::nonNull)
+                .filter(item -> !item.isEmpty())
+                .count() > 2) return;
+
+        for (ItemStack item : inv.getContents()) {
 
             if (item == null)
                 continue;
 
             CustomStack custom = CustomStack.byItemStack(item);
 
-            if (custom != null && isElevator(custom)) {
+            if (custom != null && ElevatorManager.isElevator(custom)) {
                 block = custom;
                 continue;
             }
@@ -114,16 +122,16 @@ public class ElevatorBlockListener extends ElevatorUtils implements Listener {
 
     @EventHandler
     public void onElevatorPlaced(CustomBlockPlaceEvent event) {
-        if (!isElevator(event.getNamespacedID())) return;
+        if (!ElevatorManager.isElevator(event.getNamespacedID())) return;
 
-        addToColumn(event.getBlock().getLocation());
+        ElevatorManager.addToColumn(event.getBlock().getLocation());
     }
 
     @EventHandler
     public void onElevatorRemove(CustomBlockBreakEvent event) {
-        if (!isElevator(event.getNamespacedID())) return;
+        if (!ElevatorManager.isElevator(event.getNamespacedID())) return;
 
-        removeToColumn(event.getBlock().getLocation());
+        ElevatorManager.removeToColumn(event.getBlock().getLocation());
     }
 
 }
