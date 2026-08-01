@@ -7,7 +7,7 @@ import org.bukkit.Material;
 @Getter
 public enum ElevatorColor {
 
-    DEFAULT(Material.GRAY_DYE,"omc_elevator:elevator_gray"),
+    GRAY(Material.GRAY_DYE,"omc_elevator:elevator_gray"),
 
     RED(Material.RED_DYE, "omc_elevator:elevator_red"),
     ORANGE(Material.ORANGE_DYE, "omc_elevator:elevator_yellow"),
