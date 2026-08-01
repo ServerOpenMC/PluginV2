@@ -11,27 +11,11 @@ import org.jspecify.annotations.NonNull;
 public class ElevatorBlock extends CustomItem {
 
     @Getter
-    public ElevatorColor color = ElevatorColor.DEFAULT;
+    public ElevatorColor color;
 
     public ElevatorBlock(CustomItemMeta meta, ElevatorColor color) {
-        meta.add("elevator:color", color);
-        this(meta);
-    }
-
-    public ElevatorBlock(CustomItemMeta meta) {
         super(meta);
-
-        color = setColor(
-                getMeta().get("elevator:color").getClass() == ElevatorColor.class ?
-                        (ElevatorColor) getMeta().get("elevator:color")
-                        : ElevatorColor.DEFAULT
-        );
-    }
-
-    private ElevatorColor setColor(ElevatorColor color) {
-        if (this.color.equals(color)) return color;
-        getMeta().add("elevator:color", color);
-        return color;
+        this.color = color;
     }
 
     @Override
