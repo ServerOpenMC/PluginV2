@@ -20,7 +20,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-public class ElevatorBlockListener extends ElevatorBlockManager implements Listener {
+public class ElevatorBlockListener extends ElevatorUtils implements Listener {
 
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
@@ -74,7 +74,6 @@ public class ElevatorBlockListener extends ElevatorBlockManager implements Liste
 
     @EventHandler
     public void onPrepareCraft(PrepareItemCraftEvent event) {
-
         CraftingInventory inv = event.getInventory();
 
         CustomStack block = null;
@@ -87,7 +86,7 @@ public class ElevatorBlockListener extends ElevatorBlockManager implements Liste
 
             CustomStack custom = CustomStack.byItemStack(item);
 
-            if (custom != null && custom.getNamespacedID().contains("omc_elevator")) {
+            if (custom != null && isElevator(custom)) {
                 block = custom;
                 continue;
             }
@@ -115,15 +114,14 @@ public class ElevatorBlockListener extends ElevatorBlockManager implements Liste
 
     @EventHandler
     public void onElevatorPlaced(CustomBlockPlaceEvent event) {
-
-        if (!event.getNamespacedID().contains("omc_elevator")) return;
+        if (!isElevator(event.getNamespacedID())) return;
 
         addToColumn(event.getBlock().getLocation());
     }
 
     @EventHandler
     public void onElevatorRemove(CustomBlockBreakEvent event) {
-        if (!event.getNamespacedID().contains("omc_elevator")) return;
+        if (!isElevator(event.getNamespacedID())) return;
 
         removeToColumn(event.getBlock().getLocation());
     }

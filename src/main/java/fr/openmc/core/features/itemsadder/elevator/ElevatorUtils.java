@@ -1,6 +1,7 @@
 package fr.openmc.core.features.itemsadder.elevator;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,17 +10,18 @@ import org.joml.Vector2i;
 
 import java.util.*;
 
-public class ElevatorBlockManager {
+public class ElevatorUtils {
 
     // Map<(X,Z), Set<Y>>
     public Map<Vector2i, Set<Integer>> elevatorsPerColumn = new HashMap<>();
+
+    public static List<String> elevatorsVariants = new ArrayList<>();
 
     /**
      * Know if the player is standing on top of an elevator
      */
     public boolean isOnTop(Player player) {
-        Location playerLocation = player.getLocation();
-        Block blockUnderPlayer = playerLocation.getBlock().getRelative(0, -1, 0);
+        Block blockUnderPlayer = player.getLocation().getBlock().getRelative(0, -1, 0);
 
         if (blockUnderPlayer.isEmpty()) return false;
 
@@ -27,7 +29,7 @@ public class ElevatorBlockManager {
 
         if (cBlock == null) return false;
 
-        return cBlock.getNamespacedID().contains("omc_elevator");
+        return isElevator(cBlock);
     }
 
     /**
@@ -50,7 +52,7 @@ public class ElevatorBlockManager {
             if (customBlock == null)
                 continue;
 
-            if (customBlock.getNamespacedID().contains("omc_elevator")) {
+            if (isElevator(customBlock)) {
                 elevators.add(y);
             }
         }
@@ -64,7 +66,6 @@ public class ElevatorBlockManager {
      * Add an elevator to a column
      */
     public void addToColumn(@NotNull Location location) {
-
         if (!elevatorsPerColumn.containsKey(keyOf(location)))
             scanColumn(location);
 
@@ -78,7 +79,6 @@ public class ElevatorBlockManager {
      * Remove an elevator to a column
      */
     public void removeToColumn(@NotNull Location location) {
-
         if (!elevatorsPerColumn.containsKey(keyOf(location)))
             scanColumn(location);
 
@@ -149,4 +149,19 @@ public class ElevatorBlockManager {
         return new Vector2i(location.getBlockX(), location.getBlockZ());
     }
 
+    public boolean isElevator(String namespaceID) {
+        for (String elevatorsVariant : elevatorsVariants) {
+            if (elevatorsVariant.matches(namespaceID)) return true;
+        }
+        return false;
+    }
+
+    public boolean isElevator(CustomStack item) {
+        if (item == null) return false;
+
+        for (String elevatorsVariant : elevatorsVariants) {
+            if (elevatorsVariant.matches(item.getNamespacedID())) return true;
+        }
+        return false;
+    }
 }

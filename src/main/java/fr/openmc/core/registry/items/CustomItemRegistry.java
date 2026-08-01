@@ -88,7 +88,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
     public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
 
-    public final CustomItem ELEVATOR_GRAY = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_grey"), ElevatorColor.DEFAULT));
+    public final CustomItem ELEVATOR_GRAY = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_gray"), ElevatorColor.GRAY));
     public final CustomItem ELEVATOR_RED = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_red"), ElevatorColor.RED));
     public final CustomItem ELEVATOR_YELLOW = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_yellow"), ElevatorColor.YELLOW));
     public final CustomItem ELEVATOR_ORANGE = register(new ElevatorBlock(new CustomItemMeta("omc_elevator:elevator_orange"), ElevatorColor.ORANGE));
