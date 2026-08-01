@@ -1,0 +1,258 @@
+info:
+  namespace: omc_elevator
+items:
+  elevator_gray:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_gray.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_red:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_red.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_orange:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_orange.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_yellow:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_yellow.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_lime:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_lime.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_green:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_green.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_light_blue:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_light_blue.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_blue:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_blue.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_purple:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_purple.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+  elevator_pink:
+    display_name: <lang:itemsadder.omc_block.elevator.name=>
+    lore:
+      - <lang:itemsadder.omc_block.elevator.lore.0>
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - elevator_pink.png
+    specific_properties:
+      block:
+        placed_model:
+          type: REAL_NOTE
+          break_particles: ITEM
+        sound:
+          break:
+            name: BLOCK_STONE_BREAK
+            volume: 1
+            pitch: 1
+          place:
+            name: BLOCK_STONE_PLACE
+            volume: 1
+            pitch: 1
+
+recipes:
+  crafting_table:
+    elevator_gray:
+      enabled: true
+      pattern:
+        - SES
+        - EAE
+        - SES
+      ingredients:
+        A: "omc_items:aywenite"
+        S: "minecraft:stone_brick"
+        E: "minecraft:ender_pearl"
+      result:
+        item: "omc_blocks:elevator_gray"
+        amount: 1
