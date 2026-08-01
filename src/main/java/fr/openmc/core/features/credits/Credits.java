@@ -15,6 +15,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorUtils;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
@@ -79,11 +80,12 @@ public enum Credits {
     UNITTEST(Material.COMMAND_BLOCK, "feature.credits.feature.unittest", Set.of("Nirbose", "Gyro")),
     ORM(Material.COMMAND_BLOCK, "feature.credits.feature.orm", Set.of("Piquel Chips")),
     OMCPLAYER(Material.COMMAND_BLOCK, "feature.credits.feature.omcplayer", Set.of("Axeno")),
+    ELEVATOR(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_BLUE, "feature.credits.feature.elevator", ElevatorUtils.class),
     ;
 
     private final ItemStack icon;
     private final String featureKey;
-    private final Set<String> developpers;
+    private final Set<String>   developpers;
     private final Set<String> graphists;
     private final Set<String> builders;
 
