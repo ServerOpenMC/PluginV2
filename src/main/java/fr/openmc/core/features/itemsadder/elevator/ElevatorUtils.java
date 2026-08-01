@@ -2,15 +2,20 @@ package fr.openmc.core.features.itemsadder.elevator;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 import java.util.*;
 
-public class ElevatorUtils {
+@Credit(developers = {"Nocolm"}, graphist = {"Gexary"})
+public class ElevatorUtils extends Feature implements HasListeners {
 
     // Map<(X,Z), Set<Y>>
     public Map<Vector2i, Set<Integer>> elevatorsPerColumn = new HashMap<>();
@@ -163,5 +168,12 @@ public class ElevatorUtils {
             if (elevatorsVariant.matches(item.getNamespacedID())) return true;
         }
         return false;
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new ElevatorBlockListener()
+        );
     }
 }

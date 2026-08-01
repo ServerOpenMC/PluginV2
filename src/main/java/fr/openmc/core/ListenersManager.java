@@ -3,7 +3,6 @@ package fr.openmc.core;
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
-import fr.openmc.core.features.itemsadder.elevator.ElevatorBlockListener;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
@@ -40,8 +39,7 @@ public class ListenersManager {
 
         if (!OMCPlugin.isUnitTestVersion()) {
             registerEvents(
-                    new SpawnerExtractorListener(),
-                    new ElevatorBlockListener()
+                    new SpawnerExtractorListener()
             );
         }
 
