@@ -68,6 +68,7 @@ public enum Credits {
     TICKETS(Material.BOOK, "feature.credits.feature.tickets", TicketManager.class),
     TPA(Material.ENDER_PEARL, "feature.credits.feature.tpa", TPAManager.class),
     RTP(Material.ENDER_PEARL, "feature.credits.feature.rtp", Set.of("miseur")),
+    ELEVATOR(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_BLUE, "feature.credits.feature.elevator", ElevatorManager.class),
     VERSIONNING(Material.COMMAND_BLOCK_MINECART, "feature.credits.feature.versionning", Set.of("Piquel Chips")),
     OMCREGISTRY(Material.COMMAND_BLOCK, "feature.credits.feature.omcregistry", Set.of("iambibi_")),
     CUSTOMITEMS(Material.COMMAND_BLOCK, "feature.credits.feature.customitems", Set.of("Axeno", "iambibi_")),
@@ -80,7 +81,6 @@ public enum Credits {
     UNITTEST(Material.COMMAND_BLOCK, "feature.credits.feature.unittest", Set.of("Nirbose", "Gyro")),
     ORM(Material.COMMAND_BLOCK, "feature.credits.feature.orm", Set.of("Piquel Chips")),
     OMCPLAYER(Material.COMMAND_BLOCK, "feature.credits.feature.omcplayer", Set.of("Axeno")),
-    ELEVATOR(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_BLUE, "feature.credits.feature.elevator", ElevatorManager.class),
     ;
 
     private final ItemStack icon;
