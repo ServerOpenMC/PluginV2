@@ -1,0 +1,10 @@
+info:
+  namespace: omc_bits
+categories:
+  omc_bits:
+    enabled: true
+    skip_if_already: false
+    icon: omc_bits:modern_box
+    name: "OpenMC Bits"
+    items:
+      - omc_bits:*

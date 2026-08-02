@@ -16,6 +16,7 @@ import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
 import fr.openmc.core.features.animations.AnimationsManager;
+import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
@@ -53,6 +54,7 @@ import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
+import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.ItemsAddersListener;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
@@ -93,6 +95,7 @@ public class OMCPlugin extends JavaPlugin {
             UpdateManager::new,
             EconomyManager::new,
             BankManager::new,
+            BitsManager::new,
             ScoreboardManager::new,
             HomesManager::new,
             TPAManager::new,
@@ -140,7 +143,8 @@ public class OMCPlugin extends JavaPlugin {
             new PapiHook(),
             new WorldGuardHook(),
             new ItemsAdderHook(),
-            new FancyNpcsHook()
+            new FancyNpcsHook(),
+            new GitHubHook()
     ));
 
     @Override
@@ -159,6 +163,7 @@ public class OMCPlugin extends JavaPlugin {
         saveDefaultConfig();
         configs = this.getConfig();
         OMCLogger.setRuntimeLogger(this.getSLF4JLogger());
+        DatabaseManager.init();
 
         /* EXTERNALS */
         MenuLib.init(this);
@@ -183,7 +188,6 @@ public class OMCPlugin extends JavaPlugin {
         new ErrorReporter();
 
         /* MANAGERS */
-        DatabaseManager.init();
         CommandsManager.init();
         ListenersManager.init();
 
@@ -235,6 +239,9 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // ** SAVE **
+        /* HOOKS */
+        REGISTRY_HOOKS.forEach(Hooks::startSave);
+
         for (Feature feature : loadedFeature) {
             feature.startSave();
         }

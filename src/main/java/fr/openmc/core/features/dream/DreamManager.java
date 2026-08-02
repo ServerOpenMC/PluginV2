@@ -6,8 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
@@ -57,12 +57,11 @@ import java.util.Set;
 import java.util.UUID;
 
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"}, builders = {"Mcross_bow"})
-public class DreamManager extends Feature implements DatabaseFeature, LoadAfterItemsAdder, HasCommands, HasListeners {
+public class DreamManager extends Feature implements HasDatabase, LoadAfterItemsAdder, HasCommands, HasListeners {
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
     private static final HashMap<UUID, DBPlayerSave> playerSaveData = new HashMap<>();
-
     private static final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
     public static final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
 

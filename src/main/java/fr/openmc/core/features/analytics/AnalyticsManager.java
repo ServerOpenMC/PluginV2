@@ -7,7 +7,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.models.Statistic;
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-public class AnalyticsManager extends Feature implements DatabaseFeature {
+public class AnalyticsManager extends Feature implements HasDatabase {
     static Dao<Statistic, String> statsDao;
 
     @Override

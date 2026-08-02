@@ -6,8 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
-public class HomesManager extends Feature implements DatabaseFeature, HasCommands {
+public class HomesManager extends Feature implements HasDatabase, HasCommands {
 
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();

@@ -4,6 +4,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.scoreboard.SternalBoard;
+import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
@@ -89,6 +90,7 @@ public class MainScoreboard extends BaseScoreboard {
         location = (chunkCity != null) ? textToSmallComponent(chunkCity.getName()) : location;
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
+        double bits = BitsManager.getBits(player.getUniqueId());
 
         List<Component> lines = new ArrayList<>();
 
@@ -113,6 +115,15 @@ public class MainScoreboard extends BaseScoreboard {
                 .appendSpace()
                 .append(text(EconomyManager.getEconomyIcon()))
         );
+        if (bits > 0) {
+            lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation("feature.displays.scoreboard.bits.label.to_small").color(NamedTextColor.GRAY))
+                    .appendSpace()
+                    .append(textToSmallComponent(EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                    .appendSpace()
+                    .append(text(BitsManager.getBitsIcon()))
+            );
+        }
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.location.label.to_small").color(NamedTextColor.GRAY))
                 .appendSpace()

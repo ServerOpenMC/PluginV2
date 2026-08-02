@@ -4,8 +4,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
@@ -29,7 +29,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"gab400", "Nocolm", "Xernas78"}, graphist = {"Gexary"})
-public class ShopManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasListeners, HasCommands {
+public class ShopManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
 	
 	@Getter
 	private static final Map<UUID, Shop> shops = new HashMap<>();

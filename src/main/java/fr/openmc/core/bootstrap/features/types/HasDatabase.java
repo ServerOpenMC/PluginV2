@@ -5,9 +5,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import java.sql.SQLException;
 
 /**
- * Interface permettant aux features d'initialiser leur base de données lors du démarrage du plugin.
+ * Interface permettant aux classes d'initialiser leur base de données lors du démarrage du plugin.
  */
-public interface DatabaseFeature {
+public interface HasDatabase {
     /**
      * Initialise les structures et acces DB de la feature.
      *

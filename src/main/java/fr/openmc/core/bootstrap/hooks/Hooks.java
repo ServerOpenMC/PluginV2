@@ -1,9 +1,13 @@
 package fr.openmc.core.bootstrap.hooks;
 
+import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
+import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.plugin.PluginManager;
 
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,6 +24,17 @@ public abstract class Hooks {
     public void startInit() {
         String pluginName = getPluginName();
 
+        if (this instanceof HttpsHook httpsHook) {
+            try {
+                httpsHook.init();
+                OMCLogger.successFormatted("Hook " + pluginName + " activé.");
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
+                OMCLogger.error(e.getMessage(), e);
+            }
+            return;
+        }
+
         PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
         boolean enabled = pluginManager.getPlugin(pluginName) != null
                 && pluginManager.isPluginEnabled(pluginName);
@@ -30,6 +45,50 @@ public abstract class Hooks {
             return;
         }
         OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
+    }
+
+    /**
+     * Verifie la presence du plugin cible, puis save le hook si actif.
+     */
+    public void startSave() {
+        String pluginName = getPluginName();
+
+        if (this instanceof HttpsHook httpsHook) {
+            try {
+                httpsHook.save();
+                OMCLogger.successFormatted("Hook " + pluginName + " desactivé avec succes.");
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Hook " + pluginName + " a rencontré une erreur lors du save.");
+                OMCLogger.error(e.getMessage(), e);
+            }
+            return;
+        }
+
+        PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
+        boolean enabled = pluginManager.getPlugin(pluginName) != null
+                && pluginManager.isPluginEnabled(pluginName)
+                && ENABLED.get(getClass()) != null
+                && ENABLED.get(getClass());
+
+        if (enabled) {
+            save();
+            OMCLogger.successFormatted("Hook " + pluginName + " désactivé avec succès.");
+            return;
+        }
+        OMCLogger.errorFormatted("Hook " + pluginName + " désactivé avec échec.");
+    }
+
+    /**
+     * Delegue l'initialisation base de donnees si le hook la supporte.
+     *
+     * @param connectionSource Source de connexion ORMLite
+     * @throws SQLException Si l'initialisation DB échoue
+     */
+    public final void startDB(ConnectionSource connectionSource) throws SQLException {
+        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
+        if (this instanceof HasDatabase dbHook) {
+            dbHook.initDB(connectionSource);
+        }
     }
 
     /**
@@ -50,9 +109,16 @@ public abstract class Hooks {
     protected abstract String getPluginName();
 
     /**
-     * Initialise le hook lorsqu'il est actif.
+     * Initialise les méthodes du hook lorsqu'il est actif.
      */
     protected void init() {
         // a @Override dans les classes si besoin
-    };
+    }
+
+    /**
+     * Sauvegarde les méthodes du hook lorsqu'il est actif.
+     */
+    protected void save() {
+        // a @Override dans les classes si besoin
+    }
 }
