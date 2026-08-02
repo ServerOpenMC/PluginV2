@@ -1,5 +1,5 @@
 info:
-  namespace: omc_blocks
+  namespace: omc_elevator
 categories:
   omc_blocks:
     enabled: true
