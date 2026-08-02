@@ -18,11 +18,11 @@ public enum FeaturesRewards implements CityRewards {
     LEVEL_2(Feature.CHEST, Feature.CITY_BANK, Feature.PLAYER_BANK),
     LEVEL_3(Feature.NOTATION, Feature.RANK),
     LEVEL_4(Feature.MAYOR, Feature.PERK_AGRICULTURAL),
-    LEVEL_5(Feature.PERK_ECONOMY),
-    LEVEL_6(),
-    LEVEL_7(Feature.TYPE_WAR, Feature.WAR),
-    LEVEL_8(Feature.PERK_DREAM),
-    LEVEL_9(Feature.PERK_MILITARY),
+    LEVEL_5(Feature.TYPE_WAR, Feature.WAR),
+    LEVEL_6(Feature.PERK_ECONOMY),
+    LEVEL_7(Feature.PERK_MILITARY),
+    LEVEL_8(),
+    LEVEL_9(Feature.PERK_DREAM),
     LEVEL_10(Feature.PERK_STRATEGY);
 
     /**
