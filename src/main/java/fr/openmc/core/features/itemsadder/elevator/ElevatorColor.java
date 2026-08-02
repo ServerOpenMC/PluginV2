@@ -2,6 +2,7 @@ package fr.openmc.core.features.itemsadder.elevator;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -28,8 +29,8 @@ public enum ElevatorColor {
         this.elevatorId = elevatorId;
     }
 
-    public CustomStack getCustomStack() {
-        return OMCRegistry.CUSTOM_ITEMS.getOrThrow(elevatorId).getCustomStack();
+    public CustomItem getCustomItem() {
+        return OMCRegistry.CUSTOM_ITEMS.getOrThrow(elevatorId);
     }
 
 }
