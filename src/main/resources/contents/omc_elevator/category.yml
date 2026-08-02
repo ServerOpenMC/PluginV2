@@ -4,7 +4,7 @@ categories:
   omc_elevator:
     enabled: true
     skip_if_already: false
-    icon: omc_blocks:elevator
+    icon: omc_elevator:elevator_gray
     name: "OpenMC Elevator"
     items:
       - omc_elevator:*
