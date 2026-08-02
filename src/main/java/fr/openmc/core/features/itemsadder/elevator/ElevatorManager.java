@@ -154,16 +154,13 @@ public class ElevatorManager extends Feature implements HasListeners {
 
     public static boolean isElevator(String namespaceID) {
         for (ElevatorColor variant : ElevatorColor.values())
-            if (variant.getElevator().matches(namespaceID)) return true;
+            if (variant.getElevatorId().matches(namespaceID)) return true;
         return false;
     }
 
     public static boolean isElevator(CustomStack item) {
         if (item == null) return false;
-
-        for (ElevatorColor variant : ElevatorColor.values())
-            if (variant.getElevator().matches(item.getNamespacedID())) return true;
-        return false;
+        return isElevator(item.getNamespacedID());
     }
 
     @Override

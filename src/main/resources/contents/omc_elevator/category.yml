@@ -1,10 +1,10 @@
 info:
   namespace: omc_elevator
 categories:
-  omc_blocks:
+  omc_elevator:
     enabled: true
     skip_if_already: false
     icon: omc_blocks:elevator
-    name: "OpenMC Blocks"
+    name: "OpenMC Elevator"
     items:
       - omc_elevator:*
