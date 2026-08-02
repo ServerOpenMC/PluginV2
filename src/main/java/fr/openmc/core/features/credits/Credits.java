@@ -85,7 +85,7 @@ public enum Credits {
 
     private final ItemStack icon;
     private final String featureKey;
-    private final Set<String>   developpers;
+    private final Set<String> developpers;
     private final Set<String> graphists;
     private final Set<String> builders;
 
