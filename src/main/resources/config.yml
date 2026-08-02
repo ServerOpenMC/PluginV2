@@ -36,3 +36,5 @@ repoV2: "https://github.com/ServerOpenMC/PluginV2"
 error:
   notif: [ ]
   webhook: null
+report:
+  webhook: null
