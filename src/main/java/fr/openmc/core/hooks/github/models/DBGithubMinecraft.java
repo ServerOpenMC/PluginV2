@@ -10,7 +10,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-@DatabaseTable(tableName = "dream_player")
+@DatabaseTable(tableName = "github_mc")
 @Getter
 public class DBGithubMinecraft {
     @DatabaseField(id = true, columnName = "player_uuid")

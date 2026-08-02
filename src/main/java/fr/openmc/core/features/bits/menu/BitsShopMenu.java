@@ -52,9 +52,6 @@ public class BitsShopMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        double bits = BitsManager.getBitsPlayer(getOwner().getUniqueId()) == null ? 0 :
-                BitsManager.getBitsPlayer(getOwner().getUniqueId()).getBits();
-
         inventory.put(11, createBuyButton(OMCRegistry.CUSTOM_ITEMS.MODERN_BOX, 500));
         inventory.put(12, createBuyButton(OMCRegistry.CUSTOM_ITEMS.MEDIEVAL_BOX, 500));
         inventory.put(14, createBuyButton(OMCRegistry.CUSTOM_ITEMS.OFFICE_BOX, 500));

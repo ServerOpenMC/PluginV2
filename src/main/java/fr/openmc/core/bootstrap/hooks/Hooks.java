@@ -27,11 +27,11 @@ public abstract class Hooks {
         if (this instanceof HttpsHook httpsHook) {
             try {
                 httpsHook.init();
+                OMCLogger.successFormatted("Hook " + pluginName + " activé.");
             } catch (Exception e) {
                 OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
                 OMCLogger.error(e.getMessage(), e);
             }
-            OMCLogger.successFormatted("Hook " + pluginName + " activé.");
             return;
         }
 
@@ -56,11 +56,11 @@ public abstract class Hooks {
         if (this instanceof HttpsHook httpsHook) {
             try {
                 httpsHook.save();
+                OMCLogger.successFormatted("Hook " + pluginName + " desactivé avec succes.");
             } catch (Exception e) {
-                OMCLogger.errorFormatted("Hook " + pluginName + " non activé.");
+                OMCLogger.errorFormatted("Hook " + pluginName + " a rencontré une erreur lors du save.");
                 OMCLogger.error(e.getMessage(), e);
             }
-            OMCLogger.successFormatted("Hook " + pluginName + " activé.");
             return;
         }
 
