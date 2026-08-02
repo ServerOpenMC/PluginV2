@@ -1,6 +1,7 @@
 package fr.openmc.core.features.itemsadder.elevator;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.OMCRegistry;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -20,15 +21,15 @@ public enum ElevatorColor {
     ;
 
     private final Material dye;
-    private final String elevator;
+    private final String elevatorId;
 
-    ElevatorColor(Material dye, String elevator) {
+    ElevatorColor(Material dye, String elevatorId) {
         this.dye = dye;
-        this.elevator = elevator;
+        this.elevatorId = elevatorId;
     }
 
     public CustomStack getCustomStack() {
-        return CustomStack.getInstance(elevator);
+        return OMCRegistry.CUSTOM_ITEMS.getOrThrow(elevatorId).getCustomStack();
     }
 
 }
