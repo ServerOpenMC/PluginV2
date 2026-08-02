@@ -15,6 +15,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
@@ -53,6 +54,7 @@ public enum Credits {
     WEEKLY_EVENTS(Material.FIREWORK_ROCKET, "feature.credits.feature.weekly_events", WeeklyEventsManager.class),
     HOLOGRAMS(Material.OAK_HANGING_SIGN, "feature.credits.feature.holograms", HologramLoader.class),
     ECONOMY(Material.GOLD_BLOCK, "feature.credits.feature.economy", EconomyManager.class),
+    ELEVATOR(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_BLUE, "feature.credits.feature.elevator", ElevatorManager.class),
     FRIENDS(Material.EMERALD_BLOCK, "feature.credits.feature.friends", FriendManager.class),
     HOMES(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_MAISON, "feature.credits.feature.homes", HomesManager.class),
     LEADERBOARD(Material.ANCIENT_DEBRIS, "feature.credits.feature.leaderboard", LeaderboardManager.class),

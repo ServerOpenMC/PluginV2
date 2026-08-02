@@ -10,6 +10,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
+import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
@@ -85,6 +87,17 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem PELUCHE_AWYEN = register("omc_plush:peluche_awyen", Material.PAPER);
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
     public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
+
+    public final CustomItem ELEVATOR_GRAY = register(new ElevatorBlock(ElevatorColor.GRAY));
+    public final CustomItem ELEVATOR_RED = register(new ElevatorBlock(ElevatorColor.RED));
+    public final CustomItem ELEVATOR_YELLOW = register(new ElevatorBlock(ElevatorColor.YELLOW));
+    public final CustomItem ELEVATOR_ORANGE = register(new ElevatorBlock(ElevatorColor.ORANGE));
+    public final CustomItem ELEVATOR_LIME = register(new ElevatorBlock(ElevatorColor.LIME));
+    public final CustomItem ELEVATOR_GREEN = register(new ElevatorBlock(ElevatorColor.GREEN));
+    public final CustomItem ELEVATOR_LIGHT_BLUE = register(new ElevatorBlock(ElevatorColor.LIGHT_BLUE));
+    public final CustomItem ELEVATOR_BLUE = register(new ElevatorBlock(ElevatorColor.BLUE));
+    public final CustomItem ELEVATOR_PURPLE = register(new ElevatorBlock(ElevatorColor.PURPLE));
+    public final CustomItem ELEVATOR_PINK = register(new ElevatorBlock(ElevatorColor.PINK));
 
     /* Homes icons */
     public final CustomItem HOMES_ICON_AXENQ = register("omc_homes:omc_homes_icon_axenq", Material.CHEST);
