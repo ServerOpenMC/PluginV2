@@ -30,7 +30,8 @@ public class ReportPlayerDialog {
                                 TranslationManager.translation("feature.report.dialog.title.input.reason.hover")
                         )
                 )
-                .multiline(TextDialogInput.MultilineOptions.create(7, 40))
+                .multiline(TextDialogInput.MultilineOptions.create(15, 250))
+                .maxLength(700)
                 .build()
         );
 
