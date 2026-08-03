@@ -40,7 +40,7 @@ public class ConfirmMenu extends Menu {
         this.shopItem = shopItem;
         this.isBuying = isBuying;
         this.quantity = 1;
-        this.maxQuantity = isBuying ? ItemUtils.getFreePlacesForItem(owner, shopItem.getMaterial()) : countPlayerItems(owner, shopItem.getMaterial());
+        this.maxQuantity = isBuying ? getMaxBuyQuantity(owner, shopItem) : countPlayerItems(owner, shopItem.getMaterial());
     }
 
     @Override
@@ -201,6 +201,18 @@ public class ConfirmMenu extends Menu {
             quantity = Math.min(quantity + amount, maxQuantity);
         }
         this.open();
+    }
+
+    private int getMaxBuyQuantity(Player player, ShopItem shopItem) {
+        int freePlaces = ItemUtils.getFreePlacesForItem(player, shopItem.getMaterial());
+
+        double buyPrice = shopItem.getActualBuyPrice();
+        if (buyPrice <= 0) return freePlaces;
+
+        double balance = EconomyManager.getBalance(player.getUniqueId());
+        int affordable = (int) Math.floor(balance / buyPrice);
+
+        return Math.min(freePlaces, affordable);
     }
 
 
