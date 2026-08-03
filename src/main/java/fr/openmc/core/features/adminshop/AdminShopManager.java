@@ -166,7 +166,7 @@ public class AdminShopManager extends Feature implements HasCommands {
         // Calculate the adjustment factor based on the amount
         double factor = Math.log10(amount + 1) * 0.003; // Logarithmic scale for adjustment
 
-        double newSell = item.getActualSellPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new sell price
+        double newSell = item.getActualSellPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new sell price
         double newBuy = item.getActualBuyPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new buy price
 
         item.setActualSellPrice(clamp(newSell, item.getInitialSellPrice())); // Set new sell price
