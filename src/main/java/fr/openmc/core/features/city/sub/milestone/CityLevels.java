@@ -316,7 +316,10 @@ public enum CityLevels {
                                 );
                             }
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE, 32)
+                    new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
+                    new ItemDepositRequirement(Material.TNT, 64),
+                    new ItemDepositRequirement(Material.FLINT_AND_STEEL, 16),
+                    new ItemDepositRequirement(Material.NETHERITE_INGOT, 2)
             ),
             List.of(
                     FeaturesRewards.LEVEL_5,
@@ -392,10 +395,10 @@ public enum CityLevels {
                             )
                     ),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 400),
-                    new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
-                    new ItemDepositRequirement(Material.TNT, 64),
-                    new ItemDepositRequirement(Material.FLINT_AND_STEEL, 16),
-                    new ItemDepositRequirement(Material.NETHERITE_INGOT, 2)
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE, 32),
+                    new ItemDepositRequirement(Material.SNIFFER_EGG, 2),
+                    new ItemDepositRequirement(Material.CONDUIT, 1),
+                    new ItemDepositRequirement(Material.NETHER_STAR, 1)
             ),
             List.of(
                     PlayerBankLimitRewards.LEVEL_6,
@@ -483,8 +486,9 @@ public enum CityLevels {
                             )
                     ),
                     new ItemDepositRequirement(Material.NETHERITE_INGOT, 10),
-                    new ItemDepositRequirement(Material.OBSIDIAN, 128),
-                    new ItemDepositRequirement(Material.WATER_BUCKET, 16)
+                    new ItemDepositRequirement(Material.OBSIDIAN, 200),
+                    new ItemDepositRequirement(Material.WATER_BUCKET, 16),
+                    new ItemDepositRequirement(Material.RESIN_CLUMP, 32)
             ),
             List.of(
                     FeaturesRewards.LEVEL_7,
@@ -631,6 +635,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.DIAMOND, 300),
                     new ItemDepositRequirement(Material.CYAN_CONCRETE, 200),
                     new ItemDepositRequirement(Material.DRIED_GHAST, 5),
+                    new ItemDepositRequirement(Material.ECHO_SHARD, 10),
                     new ItemDepositRequirement(Material.LAPIS_BLOCK, 16),
                     new ItemDepositRequirement(Material.SCULK, 1028),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.KEBAB, 128)
@@ -709,7 +714,8 @@ public enum CityLevels {
                     ),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK, 64),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, 128),
-                    new ItemDepositRequirement(Material.SCULK, 1028)
+                    new ItemDepositRequirement(Material.SCULK, 1028),
+                    new ItemDepositRequirement(Material.PEARLESCENT_FROGLIGHT, 64)
             ),
             List.of(
                     FeaturesRewards.LEVEL_10,
