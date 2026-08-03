@@ -26,8 +26,8 @@ public class ReportPlayerDialog {
 
         inputs.add(DialogInput
                 .text("input_reason",
-                        TranslationManager.translation("feature.city.notation.edit.input.justification").hoverEvent(
-                                TranslationManager.translation("feature.city.notation.edit.input.justification.hover")
+                        TranslationManager.translation("feature.report.dialog.title.input.reason").hoverEvent(
+                                TranslationManager.translation("feature.report.dialog.title.input.reason.hover")
                         )
                 )
                 .multiline(TextDialogInput.MultilineOptions.create(7, 40))
