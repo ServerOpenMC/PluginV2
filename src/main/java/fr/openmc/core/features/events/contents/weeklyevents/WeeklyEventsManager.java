@@ -20,7 +20,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 @Credit(developers = {"iambibi_"})
 public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
@@ -148,6 +150,18 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             runPhase(nextPhase);
             return;
         }
+
+        OMCLogger.infoFormatted("Prochaine Phase ({}) de l'évenement weekly ({}) le"
+                + nextPhase.getStartDay().getDisplayName(TextStyle.FULL_STANDALONE, Locale.FRENCH) + " "
+                + nextPhase.getStartHour() + "h" + nextPhase.getStartMinutes() + "m "
+                + " (dans " + DateUtils.convertSecondToTime(DateUtils.getSecondsUntilDayOfWeekTime(
+                        nextPhase.getStartDay(),
+                    nextPhase.getStartHour(),
+                    nextPhase.getStartMinutes(),
+                    0
+        )) + ")", PlainTextComponentSerializer.plainText().serialize(nextPhase.getName()),
+                PlainTextComponentSerializer.plainText().serialize(getCurrentEvent().getName()));
+
 
         currentTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (findNextPhase() != nextPhase) {
