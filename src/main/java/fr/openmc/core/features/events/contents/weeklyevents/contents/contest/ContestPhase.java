@@ -86,8 +86,8 @@ public enum ContestPhase {
 
         @Override
         public DayOfWeek getStartDay() {
-            return DayOfWeek.MONDAY;
-        }
+            return DayOfWeek.WEDNESDAY;
+        } //todo: A CHANGER
 
         @Override
         public int getStartHour() {
