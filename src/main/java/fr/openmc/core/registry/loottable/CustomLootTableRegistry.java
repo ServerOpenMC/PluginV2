@@ -2,6 +2,7 @@ package fr.openmc.core.registry.loottable;
 
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
@@ -36,8 +37,9 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable ENRAGED_MOB = register(new EnragedMobLootTable());
     public final CustomLootTable ANCIENT_MOB = register(new AncientMobLootTable());
 
-
     public final CustomLootTable CROPS = register(new CropBreakLootTable());
+
+    public final CustomLootTable QUIZZ = register(new QuizzLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {

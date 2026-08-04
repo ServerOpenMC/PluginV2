@@ -24,6 +24,13 @@ public class RandomUtils {
     }
 
     /**
+     * Retourne un long aléatoire entre min et max.
+     */
+    public static long randomBetween(long min, long max) {
+        return min + random.nextLong() * (max - min);
+    }
+
+    /**
      * Retourne un int aléatoire entre min et max.
      */
     public static int randomBetween(int min, int max) {
