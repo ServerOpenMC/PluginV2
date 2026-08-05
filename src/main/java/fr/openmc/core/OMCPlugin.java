@@ -115,6 +115,7 @@ public class OMCPlugin extends JavaPlugin {
             MascotsManager::new,
             PlayerSettingsManager::new,
             MailboxManager::new,
+            DiscordLinkManager::new,
             ProfileManager::new,
             QuestsManager::new,
             CityManager::new,
@@ -132,8 +133,7 @@ public class OMCPlugin extends JavaPlugin {
             ShopManager::new,
             HomeIconCacheManager::new,
             DimensionOpenerManager::new,
-            ElevatorManager::new,
-            DiscordLinkManager::new
+            ElevatorManager::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();

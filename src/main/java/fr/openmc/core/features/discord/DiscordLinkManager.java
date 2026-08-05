@@ -35,6 +35,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     private static Dao<DBDiscordLink, UUID> discordLinksDao;
     private static final Map<UUID, DBDiscordLink> linkCache = new ConcurrentHashMap<>();
 
+    // Map<code, (Player, expireAt, task)>
     private static final Map<String, PendingLink> pendingLinks = new ConcurrentHashMap<>();
 
     private static final long CODE_TTL_MS = 10 * 60 * 1000;

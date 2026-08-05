@@ -10,7 +10,7 @@ import java.util.UUID;
 @DatabaseTable(tableName = "discord_link")
 public class DBDiscordLink {
 
-    @DatabaseField(id = true, columnName = "player")
+    @DatabaseField(id = true, columnName = "player_uuid")
     private UUID playerUUID;
 
     @DatabaseField(canBeNull = false, columnName = "discord_id")
