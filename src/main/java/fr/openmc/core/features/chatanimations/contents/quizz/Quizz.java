@@ -32,7 +32,6 @@ public class Quizz extends ChatAnimation implements Listener {
     }
 
     public Quizz(Component question, List<String> answers, CustomLootTable reward, long time) {
-        super("omc:quizz");
         this.question = question;
         this.answers = answers.stream()
                 .map(String::toLowerCase)
