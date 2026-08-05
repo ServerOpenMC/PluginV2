@@ -3,13 +3,16 @@ package fr.openmc.core.features.chatanimations;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
+import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashSet;
@@ -18,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Credit(developers = {"iambibi_"})
-public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder {
+public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners {
 
     //todo: changr valeur pour delay entre animationsXXss
     private static final long MIN_DELAY_TICKS = 20 * 60 * 1L; // 20 min
@@ -77,6 +80,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new Quizz(TranslationManager.translation("quizz.server.04"), "jorbani"),
                 new Quizz(TranslationManager.translation("quizz.server.05"), "2024")
         ));
+
         scheduleNext();
     }
 
@@ -88,12 +92,16 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
     private void scheduleNext() {
         long delay = RandomUtils.randomBetween(MIN_DELAY_TICKS, MAX_DELAY_TICKS);
+        System.out.println("Next animation in " + delay / 20 + "s");
 
         scheduleTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            System.out.println("Starting next animation");
             if (isAnimationRunning()) {
+                System.out.println("outt");
                 Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::scheduleNext, 20 * 30L);
                 return;
             }
+            System.out.println("1");
             startNext();
             scheduleNext();
         }, delay);
@@ -107,7 +115,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
         if (isAnimationRunning()) return;
 
         List<ChatAnimation> pool = ANIMATIONS.stream()
-                .filter(a -> a.equals(lastAnimation))
+                .filter(a -> !a.equals(lastAnimation))
                 .toList();
         if (pool.isEmpty()) return;
 
@@ -155,7 +163,14 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
         }
     }
 
-    public static boolean isActive(ChatAnimation animation) {
-        return currentAnimation.equals(animation);
+    public static ChatAnimation getActive() {
+        return currentAnimation;
+    }
+
+    @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new QuizzListener()
+        );
     }
 }
