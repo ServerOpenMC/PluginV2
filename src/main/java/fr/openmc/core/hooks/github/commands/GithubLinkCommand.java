@@ -19,8 +19,8 @@ public class GithubLinkCommand {
     @Command("admingithub refresh")
     @CommandPermission("omc.admins.commands.admingithub.refresh")
     @Description("Force le rafraichissement du lien GitHub d'un joueur")
-    private void linkPlayerToContributor(Player executor,
-                                         @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
+    private void refreshPlayerToGithubLink(Player executor,
+                                           @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
         Long githubId = GitHubHook.refreshContributorId(target.getUniqueId());
 
         if (githubId == null) {

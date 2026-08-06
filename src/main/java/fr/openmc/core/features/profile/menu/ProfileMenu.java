@@ -110,6 +110,9 @@ public class ProfileMenu extends Menu {
         lore.add(Component.empty());
         lore.add(getSocialLore("feature.profile.item.socials.lore.discord", discordUsername));
         lore.add(getSocialLore("feature.profile.item.socials.lore.github", githubUsername));
+        if (getOwner().getUniqueId() == target.getUniqueId()) {
+            lore.add(TranslationManager.translation("feature.profile.item.socials.lore.github.refresh"));
+        }
 
         inventory.put(13, new ItemMenuBuilder(
                 this,
@@ -121,7 +124,11 @@ public class ProfileMenu extends Menu {
                     ));
                     meta.lore(lore);
                 }
-        ).hide(DataComponentTypes.PROFILE));
+        ).setOnClick(click -> {
+            if (click.getWhoClicked().getUniqueId() == target.getUniqueId()) {
+                GitHubHook.refreshContributorId(target.getUniqueId());
+            }
+        }).hide(DataComponentTypes.PROFILE));
     }
 
     private void addFriendsItem(Map<Integer, ItemMenuBuilder> inventory) {
