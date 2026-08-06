@@ -135,8 +135,6 @@ public class InternalToorApiClient {
             con.setConnectTimeout(3000);
             con.setReadTimeout(3000);
 
-            System.out.println(con.getResponseCode());
-
             if (con.getResponseCode() != 200) {
                 con.disconnect();
                 return GithubStatus.NOT_LINKED;
@@ -144,8 +142,6 @@ public class InternalToorApiClient {
 
             JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
             con.disconnect();
-
-            System.out.println(json.toJSONString());
 
             if (!Boolean.TRUE.equals(json.get("linked"))) return GithubStatus.NOT_LINKED;
             Object rawId = json.get("githubUserId");

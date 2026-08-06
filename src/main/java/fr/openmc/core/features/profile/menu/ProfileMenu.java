@@ -126,7 +126,15 @@ public class ProfileMenu extends Menu {
                 }
         ).setOnClick(click -> {
             if (click.getWhoClicked().getUniqueId() == target.getUniqueId()) {
-                GitHubHook.refreshContributorId(target.getUniqueId());
+                Player owner = getOwner();
+                Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                    GitHubHook.refreshContributorId(target.getUniqueId());
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        if (owner.isOnline()) {
+                            new ProfileMenu(owner, target).open();
+                        }
+                    });
+                });
             }
         }).hide(DataComponentTypes.PROFILE));
     }
