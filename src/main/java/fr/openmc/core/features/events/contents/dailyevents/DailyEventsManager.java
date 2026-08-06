@@ -31,10 +31,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Credit(developers = {"iambibi_"})
@@ -172,6 +169,9 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             }
             scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), scheduledDailyEvent));
         }
+
+        // * Tri chornologique des dates
+        scheduledEvents.sort(Comparator.comparing(ScheduleDailyEvent::getScheduledStartDate));
 
         return scheduledEvents;
     }
