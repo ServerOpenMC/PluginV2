@@ -180,15 +180,15 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         data.setActive(true);
         save(data);
 
+        advancePhase();
+        scheduleNextPhase();
+
         try {
             Runnable action = phase.runAction();
             if (action != null) action.run();
         } catch (Exception e) {
             OMCLogger.error("Erreur lors de l'exécution de la phase {}",
                     PlainTextComponentSerializer.plainText().serialize(phase.getName()), e);
-        } finally {
-            advancePhase();
-            scheduleNextPhase();
         }
     }
 
