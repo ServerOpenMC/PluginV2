@@ -1,4 +1,4 @@
-package fr.openmc.core.features.discord.utils;
+package fr.openmc.core.features.toor.utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

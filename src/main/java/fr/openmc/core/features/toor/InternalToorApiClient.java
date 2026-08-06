@@ -1,7 +1,7 @@
-package fr.openmc.core.features.discord;
+package fr.openmc.core.features.toor;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.discord.utils.RequestSigner;
+import fr.openmc.core.features.toor.utils.RequestSigner;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -11,10 +11,14 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public class InternalBotApiClient {
+public class InternalToorApiClient {
 
     public record LinkStatus(boolean linked, String discordUserId) {
         public static final LinkStatus NOT_LINKED = new LinkStatus(false, null);
+    }
+
+    public record GithubStatus(boolean linked, Long githubUserId) {
+        public static final GithubStatus NOT_LINKED = new GithubStatus(false, null);
     }
 
     public static LinkStatus checkLinkStatus(String code) {
@@ -124,4 +128,75 @@ public class InternalBotApiClient {
         }
     }
 
+
+    public static GithubStatus checkGithubStatus(UUID uuid) {
+        try {
+            HttpURLConnection con = open("/internal/github/status/" + uuid, "GET", null);
+            con.setConnectTimeout(3000);
+            con.setReadTimeout(3000);
+
+            System.out.println(con.getResponseCode());
+
+            if (con.getResponseCode() != 200) {
+                con.disconnect();
+                return GithubStatus.NOT_LINKED;
+            }
+
+            JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+            con.disconnect();
+
+            System.out.println(json.toJSONString());
+
+            if (!Boolean.TRUE.equals(json.get("linked"))) return GithubStatus.NOT_LINKED;
+            Object rawId = json.get("githubUserId");
+            Long githubId = rawId == null ? null : ((Number) rawId).longValue();
+            return new GithubStatus(true, githubId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getDiscordUsername(String discordUserId) {
+        try {
+            HttpURLConnection con = open("/internal/discord/username/" + discordUserId, "GET", null);
+            con.setConnectTimeout(3000);
+            con.setReadTimeout(3000);
+
+            if (con.getResponseCode() != 200) {
+                con.disconnect();
+                return null;
+            }
+
+            JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+            con.disconnect();
+
+            if (!Boolean.TRUE.equals(json.get("found"))) return null;
+            return (String) json.get("username");
+        } catch (Exception e) {
+            OMCLogger.warn("Impossible de contacter l'API interne du bot (discord username): {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public static String getGithubUsername(long githubId) {
+        try {
+            HttpURLConnection con = open("/internal/github/username/" + githubId, "GET", null);
+            con.setConnectTimeout(3000);
+            con.setReadTimeout(3000);
+
+            if (con.getResponseCode() != 200) {
+                con.disconnect();
+                return null;
+            }
+
+            JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+            con.disconnect();
+
+            if (!Boolean.TRUE.equals(json.get("found"))) return null;
+            return (String) json.get("username");
+        } catch (Exception e) {
+            OMCLogger.warn("Impossible de contacter l'API interne du bot (github username): {}", e.getMessage(), e);
+            return null;
+        }
+    }
 }

@@ -8,8 +8,10 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.hooks.Hooks;
 import fr.openmc.core.bootstrap.hooks.HttpsHook;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.toor.InternalToorApiClient;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.github.models.DBGithubMinecraft;
+import fr.openmc.core.utils.cache.TtlCache;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class GitHubHook extends HttpsHook implements HasDatabase {
     public final static String REPO_OWNER = "ServerOpenMC";
@@ -30,19 +33,16 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
 
     private static Dao<DBGithubMinecraft, String> linkGithubMinecraft;
 
-    public static final Map<UUID, DBGithubMinecraft> playerGithubMap = new ConcurrentHashMap<>();
-    // * Map reliant nom contributeur -> à ses Stats
+    public static final Map<UUID, DBGithubMinecraft> lastKnownLinkMap = new ConcurrentHashMap<>();
     private static final Map<String, ContributorStats> contributorStatsMap = new ConcurrentHashMap<>();
+
+    private static final TtlCache<UUID, Long> githubLinkCache = new TtlCache<>(60, TimeUnit.SECONDS);
+    private static final TtlCache<Long, String> usernameCache = new TtlCache<>(10, TimeUnit.MINUTES);
 
     @Override
     public void init() {
         loadAllPlayerLinkGithubData();
         fetchContributorStats();
-    }
-
-    @Override
-    public void save() {
-        saveAllPlayerLinkGithubData();
     }
 
     @Override
@@ -62,28 +62,57 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
 
     private static void loadAllPlayerLinkGithubData() {
         try {
-            playerGithubMap.clear();
-            linkGithubMinecraft.queryForAll().forEach(playerData -> {
-                playerGithubMap.put(playerData.getPlayerUUID(), playerData);
-                try {
-                    linkGithubMinecraft.delete(playerData);
-                } catch (SQLException e) {
-                    OMCLogger.error("Cannot load player link github data", e);
-                }
-            });
+            lastKnownLinkMap.clear();
+            for (DBGithubMinecraft link : linkGithubMinecraft.queryForAll()) {
+                lastKnownLinkMap.put(link.getPlayerUUID(), link);
+            }
         } catch (SQLException e) {
             OMCLogger.error("Cannot load player link github data", e);
         }
     }
 
-    public static void saveAllPlayerLinkGithubData() {
-        playerGithubMap.forEach((uuid, playerSave) -> {
+    public static Long getContributorId(UUID playerUUID) {
+        if (githubLinkCache.contains(playerUUID)) {
+            return githubLinkCache.get(playerUUID);
+        }
+
+        InternalToorApiClient.GithubStatus status = InternalToorApiClient.checkGithubStatus(playerUUID);
+
+        if (status.linked()) {
+            Long githubId = status.githubUserId();
+            githubLinkCache.put(playerUUID, githubId);
+            persistFallback(playerUUID, githubId);
+            return githubId;
+        }
+
+        githubLinkCache.put(playerUUID, null);
+        removeFallback(playerUUID);
+        return null;
+    }
+
+    private static void persistFallback(UUID playerUUID, long githubId) {
+        DBGithubMinecraft link = new DBGithubMinecraft(playerUUID, githubId);
+        lastKnownLinkMap.put(playerUUID, link);
+        try {
+            linkGithubMinecraft.createOrUpdate(link);
+        } catch (SQLException e) {
+            OMCLogger.error("Cannot persist github link fallback for {}", playerUUID, e);
+        }
+    }
+
+    private static void removeFallback(UUID playerUUID) {
+        if (lastKnownLinkMap.remove(playerUUID) != null) {
             try {
-                linkGithubMinecraft.createOrUpdate(playerSave);
+                linkGithubMinecraft.deleteById(playerUUID.toString());
             } catch (SQLException e) {
-                OMCLogger.error("Cannot save player link github data for player {}", uuid, e);
+                OMCLogger.error("Cannot clear github link fallback for {}", playerUUID, e);
             }
-        });
+        }
+    }
+
+    public static Long refreshContributorId(UUID playerUUID) {
+        githubLinkCache.invalidate(playerUUID);
+        return getContributorId(playerUUID);
     }
 
     public static Map<Long, String> getContributors() {
@@ -174,16 +203,6 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         }
     }
 
-    public static void linkPlayerToContributor(UUID playerUUID, long idGithub) {
-        playerGithubMap.put(playerUUID, new DBGithubMinecraft(playerUUID, idGithub));
-        fetchContributorStats();
-    }
-
-    public static void unlinkPlayerToContributor(UUID playerUUID) {
-        playerGithubMap.remove(playerUUID);
-        fetchContributorStats();
-    }
-
     public static ContributorStats getStats(String nameGithub) {
         return contributorStatsMap.get(nameGithub);
     }
@@ -207,18 +226,6 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         return getContributors().getOrDefault(idGithub, "null");
     }
 
-    public static long getContributorId(String nameGithub) {
-        return getContributors().entrySet().stream()
-                .filter(entry -> entry.getValue().equals(nameGithub))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(-1L);
-    }
-
-    public static Long getContributorId(UUID playerUUID) {
-        return playerGithubMap.get(playerUUID) != null ? playerGithubMap.get(playerUUID).getGithubID() : null;
-    }
-
     public static ContributorStats getStats(long idGithub) {
         return contributorStatsMap.get(getContributorName(idGithub));
     }
@@ -239,14 +246,24 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     public static DBGithubMinecraft getContributorLink(UUID uuid) {
-        return playerGithubMap.get(uuid);
+        Long githubId = getContributorId(uuid);
+        if (githubId == null) return null;
+        return lastKnownLinkMap.getOrDefault(uuid, new DBGithubMinecraft(uuid, githubId));
     }
 
     public static UUID getPlayerLinkTo(long idGithub) {
-        return playerGithubMap.values().stream()
+        return lastKnownLinkMap.values().stream()
                 .filter(data -> data.getGithubID() == idGithub)
                 .map(DBGithubMinecraft::getPlayerUUID)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static Collection<DBGithubMinecraft> getKnownLinks() {
+        return lastKnownLinkMap.values();
+    }
+
+    public static String getUsernameById(long githubId) {
+        return usernameCache.getOrCompute(githubId, InternalToorApiClient::getGithubUsername);
     }
 }

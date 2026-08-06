@@ -1,6 +1,6 @@
-package fr.openmc.core.features.discord.commands;
+package fr.openmc.core.features.toor.commands;
 
-import fr.openmc.core.features.discord.DiscordLinkManager;
+import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

@@ -1,4 +1,4 @@
-package fr.openmc.core.features.discord.models;
+package fr.openmc.core.features.toor.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
