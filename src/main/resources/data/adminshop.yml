@@ -433,7 +433,7 @@ ORES:
           buy: 6.0
           sell: 0.0
         actual:
-          buy: 5.999819382002602
+          buy: 6.0
           sell: 0.0
   - AMETHYST_SHARD:
       slot: 23
