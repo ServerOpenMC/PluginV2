@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -151,7 +152,7 @@ public class MainWarMenu extends PaginatedMenu {
                 } else if (inventoryClickEvent.getClick() == ClickType.RIGHT) {
                     new WarCityDetailsMenu(player, city).open();
                 }
-            }));
+            }).hide(ItemUtils.getDataComponentType()));
         }
         return items;
     }

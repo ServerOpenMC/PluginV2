@@ -11,7 +11,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
-import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -56,8 +55,7 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                new WarKillListener(),
-                new TntPlaceListener()
+                new WarKillListener()
         );
 
         loadWarHistories();

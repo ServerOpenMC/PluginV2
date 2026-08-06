@@ -64,9 +64,9 @@ public class War {
         this.startTime = System.currentTimeMillis();
         this.phase = WarPhase.PREPARATION;
 
-        Component message = TranslationManager.translation(
+        Component messageDefender = TranslationManager.translation(
                 "feature.city.war.preparation.message",
-                Component.text(cityAttacker.getName()).color(NamedTextColor.RED),
+                Component.text(cityDefender.getName()).color(NamedTextColor.RED),
                 Component.text(TIME_PREPARATION).color(NamedTextColor.GOLD),
                 Component.text(attackers.size()).color(NamedTextColor.DARK_RED),
                 Component.text(defenders.size()).color(NamedTextColor.DARK_RED)
@@ -77,15 +77,23 @@ public class War {
             if (player == null) continue;
             if (!player.isOnline()) continue;
 
-            player.sendMessage(message);
+            player.sendMessage(messageDefender);
         }
+
+        Component messageAttacker = TranslationManager.translation(
+                "feature.city.war.preparation.message",
+                Component.text(cityAttacker.getName()).color(NamedTextColor.RED),
+                Component.text(TIME_PREPARATION).color(NamedTextColor.GOLD),
+                Component.text(attackers.size()).color(NamedTextColor.DARK_RED),
+                Component.text(defenders.size()).color(NamedTextColor.DARK_RED)
+        );
 
         for (UUID uuid : defenders) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
             if (!player.isOnline()) continue;
 
-            player.sendMessage(message);
+            player.sendMessage(messageAttacker);
         }
 
         LivingEntity mascotAttacker = (LivingEntity) cityAttacker.getMascot().getEntity();
