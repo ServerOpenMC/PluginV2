@@ -69,7 +69,7 @@ BLOCKS:
           buy: 3.0
           sell: 0.0
         actual:
-          buy: 2.9983510431439564
+          buy: 3.0
           sell: 0.0
   - GLASS_PANE:
       slot: 32
