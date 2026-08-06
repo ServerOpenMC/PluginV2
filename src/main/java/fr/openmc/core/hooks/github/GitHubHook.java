@@ -72,9 +72,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     public static Long getContributorId(UUID playerUUID) {
-        if (githubLinkCache.contains(playerUUID)) {
-            return githubLinkCache.get(playerUUID);
-        }
+        if (githubLinkCache.contains(playerUUID)) return githubLinkCache.get(playerUUID);
 
         InternalToorApiClient.GithubStatus status = InternalToorApiClient.checkGithubStatus(playerUUID);
 
