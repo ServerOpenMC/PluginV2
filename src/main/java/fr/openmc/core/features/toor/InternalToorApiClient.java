@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public class InternalToorApiClient {
 
-    public record LinkStatus(boolean linked, String discordUserId) {
-        public static final LinkStatus NOT_LINKED = new LinkStatus(false, null);
+    public record LinkStatus(boolean linked, String discordUserId, String discordUsername) {
+        public static final LinkStatus NOT_LINKED = new LinkStatus(false, null, null);
     }
 
     public record GithubStatus(boolean linked, Long githubUserId) {
@@ -36,7 +36,7 @@ public class InternalToorApiClient {
             con.disconnect();
 
             if (!Boolean.TRUE.equals(json.get("linked"))) return LinkStatus.NOT_LINKED;
-            return new LinkStatus(true, (String) json.get("discordUserId"));
+            return new LinkStatus(true, (String) json.get("discordUserId"), (String) json.get("discordUsername"));
         } catch (Exception e) {
             OMCLogger.warn("Impossible de contacter l'API interne du bot (link status): {}", e.getMessage(), e);
             return LinkStatus.NOT_LINKED;

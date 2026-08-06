@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.toor.commands.LinkCommand;
 import fr.openmc.core.features.toor.commands.UnlinkCommand;
+import fr.openmc.core.features.toor.event.ConnectToDiscordEvent;
 import fr.openmc.core.features.toor.models.DBDiscordLink;
 import fr.openmc.core.features.toor.utils.RequestSigner;
 import fr.openmc.core.utils.cache.TtlCache;
@@ -19,6 +20,8 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -139,10 +142,15 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         InternalToorApiClient.LinkStatus status = InternalToorApiClient.checkLinkStatus(code);
         if (!status.linked()) return;
 
+        String discordUserId = status.discordUserId();
+        String discordUsername = status.discordUsername();
+
         confirmLink(playerUUID, status.discordUserId());
         InternalToorApiClient.consumeCode(code);
         cancelPendingFor(playerUUID);
-        notifyPlayer(playerUUID, "feature.discord.success", MessageType.SUCCESS);
+        notifyPlayer(playerUUID, "feature.discord.success", MessageType.SUCCESS, Component.text(discordUsername));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(),
+                () -> Bukkit.getPluginManager().callEvent(new ConnectToDiscordEvent(playerUUID, discordUserId, discordUsername)));
     }
 
     private static void confirmLink(UUID playerUUID, String discordUserId) {
@@ -155,11 +163,11 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         }
     }
 
-    private static void notifyPlayer(UUID playerUUID, String translationKey, MessageType type) {
+    private static void notifyPlayer(UUID playerUUID, String translationKey, MessageType type, ComponentLike... args) {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null && player.isOnline()) {
-                MessagesManager.sendMessage(player, TranslationManager.translation(translationKey), Prefix.OPENMC, type, true);
+                MessagesManager.sendMessage(player, TranslationManager.translation(translationKey, args), Prefix.OPENMC, type, true);
             }
         });
     }
