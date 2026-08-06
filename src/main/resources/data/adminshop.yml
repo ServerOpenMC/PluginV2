@@ -415,7 +415,7 @@ ORES:
           buy: 10.0
           sell: 0.0
         actual:
-          buy: 9.999397949070577
+          buy: 10.0
           sell: 0.0
   - IRON_INGOT:
       slot: 12
