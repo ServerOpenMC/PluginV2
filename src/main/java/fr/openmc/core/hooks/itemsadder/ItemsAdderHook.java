@@ -16,7 +16,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Gère toutes les actions spéciales avec items adder (injecteur de namespaces)
@@ -27,6 +30,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     private static ItemsAdder api;
 
     private static final String CONTENTS_FOLDER_NAME = "contents";
+    private static final String MERGE_RESOURCEPACK_PATH = "resource-pack.zip.merge_other_plugins_resourcepacks_folders";
 
     public static boolean isEnable() {
         return Hooks.isEnabled(ItemsAdderHook.class);
@@ -44,6 +48,8 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
         OMCPlugin.registerEvents(
                 new BehaviourUpBlock()
         );
+
+        mergeResourcePack(Set.of("OpenMC/generated-rp-langs"));
     }
 
     /**
@@ -161,6 +167,39 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
             OMCLogger.debug("Dossier {} copié avec succès", folderName);
         } catch (Exception e) {
             OMCLogger.warn("Erreur lors de la copie du dossier {}: {}", folderName, e.getMessage());
+        }
+    }
+
+    /**
+     * Combine une liste de resource packs dans le dossier plugins du serveur à celui d'ItemsAdder
+     * @param locationsRp les chemins des resourcespack à partir de root/plugins
+     */
+    private void mergeResourcePack(Set<String> locationsRp) {
+        for (String rpToMerge : locationsRp) {
+            try {
+                File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/plugins
+                File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/plugins/ItemsAdder
+                File configFile = new File(itemsAdderDir, "config.yml"); // * root/plugins/ItemsAdder/config.yml
+
+                if (!configFile.exists()) {
+                    OMCLogger.warn("config.yml d'ItemsAdder introuvable ({})", configFile.getAbsolutePath());
+                    return;
+                }
+
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+                List<String> folders = config.getStringList(MERGE_RESOURCEPACK_PATH);
+
+                if (folders.contains(rpToMerge)) return;
+
+                List<String> updated = new ArrayList<>(folders);
+                updated.add(rpToMerge);
+                config.set(MERGE_RESOURCEPACK_PATH, updated);
+
+                config.save(configFile);
+                OMCLogger.successFormatted("{} ajouté au resourcepack d'ItemsAdder", rpToMerge);
+            } catch (IOException e) {
+                OMCLogger.error("Erreur lors de la mise à jour du config.yml d'ItemsAdder", e);
+            }
         }
     }
 

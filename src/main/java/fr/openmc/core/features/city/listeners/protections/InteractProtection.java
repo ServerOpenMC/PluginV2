@@ -71,7 +71,7 @@ public class InteractProtection implements Listener {
                 }
 
             } else {
-                ProtectionsManager.checkCity(player, event, city);
+                ProtectionsManager.checkCity(player, event, city, true);
             }
 
         }

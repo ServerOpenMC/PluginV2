@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
@@ -122,7 +123,8 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                     selected.add(memberUUID);
                 }
                 new WarChooseParticipantsMenu(player, cityLaunch, cityAttack, count, selected).open();
-            });
+            }).hide(ItemUtils.getDataComponentType());
+
 
             items.add(item);
         }

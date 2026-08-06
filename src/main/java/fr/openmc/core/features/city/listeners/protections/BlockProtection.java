@@ -4,7 +4,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -15,13 +14,11 @@ public class BlockProtection implements Listener {
     public void onPlaceBlock(BlockPlaceEvent event) {
         City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
-        
-        if (event.getBlock().getType() == Material.TNT) return; // used in city.sub.war.listener.TntPlaceListener.java
       
         if (city.isMember(event.getPlayer())) {
             ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.PLACE);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city);
+            ProtectionsManager.checkCity(event.getPlayer(), event, city, true);
         }
     }
 
@@ -33,7 +30,7 @@ public class BlockProtection implements Listener {
         if (city.isMember(event.getPlayer())) {
             ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.BREAK);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city);
+            ProtectionsManager.checkCity(event.getPlayer(), event, city, false);
         }
     }
 }

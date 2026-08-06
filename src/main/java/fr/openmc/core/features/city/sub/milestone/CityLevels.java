@@ -316,7 +316,10 @@ public enum CityLevels {
                                 );
                             }
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE, 32)
+                    new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
+                    new ItemDepositRequirement(Material.TNT, 64),
+                    new ItemDepositRequirement(Material.FLINT_AND_STEEL, 16),
+                    new ItemDepositRequirement(Material.NETHERITE_INGOT, 2)
             ),
             List.of(
                     FeaturesRewards.LEVEL_5,
@@ -334,6 +337,11 @@ public enum CityLevels {
             "feature.city.levels.level_6.name",
             "feature.city.levels.level_6.description",
             List.of(
+                    new TemplateRequirement(
+                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 1,
+                            city -> ItemStack.of(Material.DIAMOND_SWORD),
+                            (city, level) -> TranslationManager.translation("feature.city.levels.requirements.war.win")
+                    ),
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 20),
                             city -> ItemStack.of(Material.DANDELION),
@@ -386,11 +394,11 @@ public enum CityLevels {
                                     Component.text(5)
                             )
                     ),
-                    new ItemDepositRequirement(Material.STONE_BRICKS, 400),
-                    new ItemDepositRequirement(Material.BLACK_CONCRETE, 184),
-                    new ItemDepositRequirement(Material.WHITE_CONCRETE, 64),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 98),
-                    new ItemDepositRequirement(Material.DIAMOND, 128)
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 400),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE, 32),
+                    new ItemDepositRequirement(Material.SNIFFER_EGG, 2),
+                    new ItemDepositRequirement(Material.CONDUIT, 1),
+                    new ItemDepositRequirement(Material.NETHER_STAR, 1)
             ),
             List.of(
                     PlayerBankLimitRewards.LEVEL_6,
@@ -407,6 +415,24 @@ public enum CityLevels {
             "feature.city.levels.level_7.name",
             "feature.city.levels.level_7.description",
             List.of(
+                    new TemplateRequirement(
+                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 2,
+                            city -> ItemStack.of(Material.IRON_SWORD),
+                            (city, level) -> {
+                                if (city.getLevel() != level.ordinal()) {
+                                    return TranslationManager.translation(
+                                            "feature.city.levels.requirements.war.count",
+                                            Component.text(2)
+                                    );
+                                }
+
+                                return TranslationManager.translation(
+                                        "feature.city.levels.requirements.war.count.progress",
+                                        Component.text(2),
+                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                );
+                            }
+                    ),
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 30),
                             city -> ItemStack.of(Material.DANDELION),
@@ -459,11 +485,10 @@ public enum CityLevels {
                                     Component.text(6)
                             )
                     ),
-                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 400),
-                    new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
-                    new ItemDepositRequirement(Material.TNT, 64),
-                    new ItemDepositRequirement(Material.FLINT_AND_STEEL, 16),
-                    new ItemDepositRequirement(Material.NETHERITE_INGOT, 2)
+                    new ItemDepositRequirement(Material.NETHERITE_INGOT, 10),
+                    new ItemDepositRequirement(Material.OBSIDIAN, 200),
+                    new ItemDepositRequirement(Material.WATER_BUCKET, 16),
+                    new ItemDepositRequirement(Material.RESIN_CLUMP, 32)
             ),
             List.of(
                     FeaturesRewards.LEVEL_7,
@@ -481,29 +506,6 @@ public enum CityLevels {
             "feature.city.levels.level_8.name",
             "feature.city.levels.level_8.description",
             List.of(
-                    new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 2,
-                            city -> ItemStack.of(Material.IRON_SWORD),
-                            (city, level) -> {
-                                if (city.getLevel() != level.ordinal()) {
-                                    return TranslationManager.translation(
-                                            "feature.city.levels.requirements.war.count",
-                                            Component.text(2)
-                                    );
-                                }
-
-                                return TranslationManager.translation(
-                                        "feature.city.levels.requirements.war.count.progress",
-                                        Component.text(2),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
-                                );
-                            }
-                    ),
-                    new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 1,
-                            city -> ItemStack.of(Material.DIAMOND_SWORD),
-                            (city, level) -> TranslationManager.translation("feature.city.levels.requirements.war.win")
-                    ),
                     new TemplateRequirement(
                             city -> city.getAvailableNotation().stream().anyMatch(notation -> notation.getTotalNote() >= 40),
                             city -> ItemStack.of(Material.DANDELION),
@@ -556,9 +558,11 @@ public enum CityLevels {
                                     Component.text(7)
                             )
                     ),
-                    new ItemDepositRequirement(Material.NETHERITE_INGOT, 4),
-                    new ItemDepositRequirement(Material.OBSIDIAN, 128),
-                    new ItemDepositRequirement(Material.WATER_BUCKET, 16)
+                    new ItemDepositRequirement(Material.STONE_BRICKS, 400),
+                    new ItemDepositRequirement(Material.BLACK_CONCRETE, 184),
+                    new ItemDepositRequirement(Material.WHITE_CONCRETE, 308),
+                    new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 98),
+                    new ItemDepositRequirement(Material.DIAMOND, 208)
             ),
             List.of(
                     FeaturesRewards.LEVEL_8,
@@ -631,6 +635,9 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.DIAMOND, 300),
                     new ItemDepositRequirement(Material.CYAN_CONCRETE, 200),
                     new ItemDepositRequirement(Material.DRIED_GHAST, 5),
+                    new ItemDepositRequirement(Material.ECHO_SHARD, 10),
+                    new ItemDepositRequirement(Material.LAPIS_BLOCK, 16),
+                    new ItemDepositRequirement(Material.SCULK, 1028),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.KEBAB, 128)
             ),
             List.of(
@@ -707,7 +714,8 @@ public enum CityLevels {
                     ),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK, 64),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL, 128),
-                    new ItemDepositRequirement(Material.SCULK, 1028)
+                    new ItemDepositRequirement(Material.SCULK, 1028),
+                    new ItemDepositRequirement(Material.PEARLESCENT_FROGLIGHT, 64)
             ),
             List.of(
                     FeaturesRewards.LEVEL_10,
