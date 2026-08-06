@@ -175,9 +175,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     }
 
     public static boolean unlink(UUID playerUUID) {
-        if (!linkCache.containsKey(playerUUID)) {
-            return false;
-        }
+        if (!linkCache.containsKey(playerUUID)) return false;
 
         cancelPendingFor(playerUUID);
         linkCache.remove(playerUUID);
