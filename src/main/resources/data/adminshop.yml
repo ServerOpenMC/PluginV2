@@ -231,7 +231,7 @@ BLOCKS:
           buy: 20.0
           sell: 0.0
         actual:
-          buy: 19.990582533877493
+          buy: 20.0
           sell: 0.0
   - LIGHT_BLUE_WOOL:
       slot: 4
