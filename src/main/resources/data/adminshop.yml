@@ -51,7 +51,7 @@ BLOCKS:
           buy: 1.0
           sell: 0.0
         actual:
-          buy: 0.9999698970004336
+          buy: 1.0
           sell: 0.0
   - PURPLE_WOOL:
       slot: 4
