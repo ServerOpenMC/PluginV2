@@ -4,14 +4,11 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.ChatAnimation;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public abstract class ChallengeAnimation extends ChatAnimation {
     private final Component description;
-    @Getter
-    private final CustomLootTable reward;
     private final long time;
 
     public ChallengeAnimation(Component description, long time) {

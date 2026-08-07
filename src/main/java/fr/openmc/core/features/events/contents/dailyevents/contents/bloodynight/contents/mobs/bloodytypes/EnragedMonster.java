@@ -46,7 +46,7 @@ public class EnragedMonster extends CustomMob<Monster> {
                 Monster.class,
                 1,
                 1,
-                OMCRegistry.CUSTOM_LOOT_TABLES.ENRAGED_MOB.rollLoots()
+                OMCRegistry.CUSTOM_LOOT_TABLES.ENRAGED_MOB.rollLoots().loots()
         );
     }
 

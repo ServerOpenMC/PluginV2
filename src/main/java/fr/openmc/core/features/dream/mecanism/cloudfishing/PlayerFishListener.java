@@ -66,7 +66,7 @@ public class PlayerFishListener implements Listener {
                     CustomLootTable lootTable = CloudFishingManager.FISHING_LOOT_TABLE;
                     if (lootTable == null) return;
 
-                    List<CustomLoot> rewards = lootTable.rollLoots(player);
+                    List<CustomLoot> rewards = lootTable.rollLoots(player).loots();
 
                     for (CustomLoot loot : rewards) {
                         if (!(loot instanceof ItemStack item)) continue;

@@ -8,6 +8,7 @@ import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListener;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.MineBlocksChallenge;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
+import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -150,7 +151,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
         }, timeBeforeEndTicks);
     }
 
-    public static void onAnimationCompleted(ChatAnimation animation, Player winner) {
+    public static void onAnimationCompleted(ChatAnimation animation, Player winner, LootReward loot) {
         if (currentAnimation != animation) return;
 
         if (endAnimationTask != null) {
@@ -160,7 +161,11 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
         if (winner != null) {
             Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.winner",
-                    winner.name().color(NamedTextColor.GOLD), animation.getName(), animation.getDescriptionResult()));
+                    winner.name().color(NamedTextColor.GOLD),
+                    animation.getName(),
+                    animation.getDescriptionResult(),
+                    loot.buildComponent()
+            ));
         } else {
             Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.no_winner",
                     animation.getName(), animation.getDescriptionResult()));

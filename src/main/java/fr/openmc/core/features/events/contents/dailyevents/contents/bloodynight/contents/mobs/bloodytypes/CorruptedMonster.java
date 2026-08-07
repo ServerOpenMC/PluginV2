@@ -45,7 +45,7 @@ public class CorruptedMonster extends CustomMob<Monster> {
                 Monster.class,
                 1,
                 1,
-                OMCRegistry.CUSTOM_LOOT_TABLES.CORRUPTED_MOB.rollLoots()
+                OMCRegistry.CUSTOM_LOOT_TABLES.CORRUPTED_MOB.rollLoots().loots()
         );
     }
 

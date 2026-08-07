@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -176,7 +177,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public Set<CustomLoot> run(Player receiver) {
+    public LootReward run(Player receiver) {
         return runBase((item) -> {
             if (ItemUtils.hasEnoughSpace(receiver, item)) {
                 receiver.getInventory().addItem(item);
@@ -186,19 +187,19 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         });
     }
 
-    public Set<CustomLoot> run(Player receiver, Location location) {
+    public LootReward run(Player receiver, Location location) {
         return runBase((item) ->
                 receiver.getWorld().dropItemNaturally(location, item));
     }
 
-    private Set<CustomLoot> runBase(Consumer<ItemStack> consumer) {
+    private LootReward runBase(Consumer<ItemStack> consumer) {
         if (itemSupplier != null) {
             ItemStack item = itemSupplier.get();
             item.setAmount(this.getRandomAmount());
 
             consumer.accept(item);
 
-            return Collections.singleton(this);
+            return LootReward.loots(Collections.singleton(this));
         }
 
         for (ItemStack lootItem : this.getItems()) {
@@ -208,7 +209,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
             consumer.accept(item);
         }
 
-        return Collections.singleton(this);
+        return LootReward.loots(Collections.singleton(this));
     }
 
     @Override

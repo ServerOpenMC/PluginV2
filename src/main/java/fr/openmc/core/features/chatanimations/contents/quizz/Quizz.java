@@ -17,8 +17,6 @@ public class Quizz extends ChatAnimation {
     private final Component question;
     @Getter
     private final List<String> answers;
-    @Getter
-    private final CustomLootTable reward;
     private final long time;
 
     public Quizz(Component question, String... answers) {

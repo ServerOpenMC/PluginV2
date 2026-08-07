@@ -18,6 +18,11 @@ public class ChallengeListener implements Listener {
         if (event.getBlock().getType() != challenge.getMaterial()) return;
 
         Player player = event.getPlayer();
-        challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
+        int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
+
+        if (count >= challenge.getTarget()) {
+            Player winner = event.getPlayer();
+            animation.complete(winner);
+        }
     }
 }

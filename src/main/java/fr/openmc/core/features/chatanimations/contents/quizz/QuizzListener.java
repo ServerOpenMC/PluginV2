@@ -23,7 +23,6 @@ public class QuizzListener implements Listener {
 
         if (quizz.getAnswers().contains(message)) {
             Player winner = event.getPlayer();
-            quizz.getReward().rollLoots(winner);
             animation.complete(winner);
             event.setCancelled(true);
         }

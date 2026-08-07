@@ -1,6 +1,9 @@
 package fr.openmc.core.features.chatanimations;
 
 
+import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.LootReward;
+import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -8,6 +11,8 @@ import org.bukkit.entity.Player;
 public abstract class ChatAnimation {
     @Setter
     private boolean finished = false;
+    @Getter
+    protected CustomLootTable reward;
 
     public abstract Component getName();
     public abstract Component getAnnounceStart();
@@ -22,7 +27,12 @@ public abstract class ChatAnimation {
     public void complete(Player winner) {
         if (finished) return;
         finished = true;
-        ChatAnimationManager.onAnimationCompleted(this, winner);
+        LootReward loot;
+        if (winner == null)
+            loot = null;
+        else
+            loot = reward.rollLoots(winner);
+        ChatAnimationManager.onAnimationCompleted(this, winner, loot);
     }
 
     public final boolean isFinished() {
