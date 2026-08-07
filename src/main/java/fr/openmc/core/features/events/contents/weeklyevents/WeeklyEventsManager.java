@@ -222,24 +222,11 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             return;
         }
 
-        data.setCurrentEventIndex(eventIndex);
-        data.setCurrentPhaseIndex(phaseIndex);
-        data.setActive(true);
-        save(data);
-
-        Runnable action = phase.runAction();
-        if (action != null) action.run();
-
-        boolean isLastPhase = phaseIndex == event.getPhases().size() - 1;
-        if (isLastPhase) {
-            advanceToNextEvent();
-        }
-
-        scheduleNextPhase();
-
         OMCLogger.info("[WeeklyEvents] Event forcé : {} à la phase {}",
                 PlainTextComponentSerializer.plainText().serialize(event.getName()),
                 PlainTextComponentSerializer.plainText().serialize(phase.getName()));
+
+        runPhase(phase);
     }
 
     /**
