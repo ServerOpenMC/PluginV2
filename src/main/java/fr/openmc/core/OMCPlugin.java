@@ -16,6 +16,8 @@ import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
 import fr.openmc.core.features.animations.AnimationsManager;
+import fr.openmc.core.features.bits.BitsManager;
+import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
