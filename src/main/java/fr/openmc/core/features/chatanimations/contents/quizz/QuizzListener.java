@@ -25,6 +25,7 @@ public class QuizzListener implements Listener {
             Player winner = event.getPlayer();
             quizz.getReward().rollLoots(winner);
             animation.complete(winner);
+            event.setCancelled(true);
         }
     }
 }
