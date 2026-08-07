@@ -15,6 +15,10 @@ public abstract class ChatAnimation {
 
     public abstract long getTimeBeforeEnd();
 
+    public void stop() {
+        // a override si besoin
+    }
+
     public void complete(Player winner) {
         if (finished) return;
         finished = true;

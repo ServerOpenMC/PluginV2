@@ -7,13 +7,12 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.event.Listener;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Quizz extends ChatAnimation implements Listener {
+public class Quizz extends ChatAnimation {
 
     private final Component question;
     @Getter

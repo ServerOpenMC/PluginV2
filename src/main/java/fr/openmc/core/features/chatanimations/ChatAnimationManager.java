@@ -5,13 +5,15 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
+import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListener;
+import fr.openmc.core.features.chatanimations.contents.challenge.types.MineBlocksChallenge;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
@@ -38,48 +40,58 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
     private static BukkitTask endAnimationTask;
 
     @Override
+    public Set<Listener> getListeners() {
+        return Set.of(
+                new QuizzListener(),
+                new ChallengeListener()
+        );
+    }
+
+    @Override
     public void init() {
         ANIMATIONS = new HashSet<>(Set.of(
-                new Quizz(TranslationManager.translation("quizz.tech.01"), "python"),
-                new Quizz(TranslationManager.translation("quizz.tech.02"), "hypertext markup language", "hyper text markup language"),
-                new Quizz(TranslationManager.translation("quizz.tech.03"), "microsoft"),
-                new Quizz(TranslationManager.translation("quizz.tech.04"), "linus torvalds", "torvalds"),
-                new Quizz(TranslationManager.translation("quizz.tech.05"), "8"),
-                new Quizz(TranslationManager.translation("quizz.tech.06"), "python"),
-                new Quizz(TranslationManager.translation("quizz.tech.07"), "https"),
-                new Quizz(TranslationManager.translation("quizz.tech.08"), "mark zuckerberg", "zuckerberg"),
-                new Quizz(TranslationManager.translation("quizz.tech.09"), "mojang"),
-                new Quizz(TranslationManager.translation("quizz.tech.10"), "png"),
-                new Quizz(TranslationManager.translation("quizz.tech.11"), "chrome", "google chrome"),
-                new Quizz(TranslationManager.translation("quizz.tech.12"), "random access memory"),
-
-                new Quizz(TranslationManager.translation("quizz.general.01"), "paris"),
-                new Quizz(TranslationManager.translation("quizz.general.02"), "7"),
-                new Quizz(TranslationManager.translation("quizz.general.03"), "léonard de vinci", "leonard de vinci", "de vinci"),
-                new Quizz(TranslationManager.translation("quizz.general.04"), "pacifique", "océan pacifique", "ocean pacifique"),
-                new Quizz(TranslationManager.translation("quizz.general.05"), "1789"),
-                new Quizz(TranslationManager.translation("quizz.general.06"), "everest", "mont everest"),
-                new Quizz(TranslationManager.translation("quizz.general.07"), "11"),
-                new Quizz(TranslationManager.translation("quizz.general.08"), "mars"),
-                new Quizz(TranslationManager.translation("quizz.general.09"), "victor hugo", "hugo"),
-                new Quizz(TranslationManager.translation("quizz.general.10"), "guépard", "guepard"),
-                new Quizz(TranslationManager.translation("quizz.general.11"), "yen"),
-                new Quizz(TranslationManager.translation("quizz.general.12"), "366"),
-                new Quizz(TranslationManager.translation("quizz.general.13"), "italie"),
-                new Quizz(TranslationManager.translation("quizz.general.14"), "beethoven", "ludwig van beethoven"),
-                new Quizz(TranslationManager.translation("quizz.general.15"), "nil", "le nil"),
-                new Quizz(TranslationManager.translation("quizz.general.16"), "au", "or"),
-                new Quizz(TranslationManager.translation("quizz.general.17"), "groenland"),
-                new Quizz(TranslationManager.translation("quizz.general.18"), "neil armstrong", "armstrong"),
-                new Quizz(TranslationManager.translation("quizz.general.19"), "sumo", "le sumo"),
-                new Quizz(TranslationManager.translation("quizz.general.20"), "8", "8 minutes"),
-                new Quizz(TranslationManager.translation("quizz.general.21"), "3"),
-
-                new Quizz(TranslationManager.translation("quizz.server.01"), "aywen1"),
-                new Quizz(TranslationManager.translation("quizz.server.02"), "notch", "markus persson", "persson"),
-                new Quizz(TranslationManager.translation("quizz.server.03"), "aywen"),
-                new Quizz(TranslationManager.translation("quizz.server.04"), "jorbani"),
-                new Quizz(TranslationManager.translation("quizz.server.05"), "2024")
+                new MineBlocksChallenge(Material.DIAMOND_ORE, 5, 60L),
+                new MineBlocksChallenge(Material.SCULK, 15, 60L)
+//                new Quizz(TranslationManager.translation("quizz.tech.01"), "python"),
+//                new Quizz(TranslationManager.translation("quizz.tech.02"), "hypertext markup language", "hyper text markup language"),
+//                new Quizz(TranslationManager.translation("quizz.tech.03"), "microsoft"),
+//                new Quizz(TranslationManager.translation("quizz.tech.04"), "linus torvalds", "torvalds"),
+//                new Quizz(TranslationManager.translation("quizz.tech.05"), "8"),
+//                new Quizz(TranslationManager.translation("quizz.tech.06"), "python"),
+//                new Quizz(TranslationManager.translation("quizz.tech.07"), "https"),
+//                new Quizz(TranslationManager.translation("quizz.tech.08"), "mark zuckerberg", "zuckerberg"),
+//                new Quizz(TranslationManager.translation("quizz.tech.09"), "mojang"),
+//                new Quizz(TranslationManager.translation("quizz.tech.10"), "png"),
+//                new Quizz(TranslationManager.translation("quizz.tech.11"), "chrome", "google chrome"),
+//                new Quizz(TranslationManager.translation("quizz.tech.12"), "random access memory"),
+//
+//                new Quizz(TranslationManager.translation("quizz.general.01"), "paris"),
+//                new Quizz(TranslationManager.translation("quizz.general.02"), "7"),
+//                new Quizz(TranslationManager.translation("quizz.general.03"), "léonard de vinci", "leonard de vinci", "de vinci"),
+//                new Quizz(TranslationManager.translation("quizz.general.04"), "pacifique", "océan pacifique", "ocean pacifique"),
+//                new Quizz(TranslationManager.translation("quizz.general.05"), "1789"),
+//                new Quizz(TranslationManager.translation("quizz.general.06"), "everest", "mont everest"),
+//                new Quizz(TranslationManager.translation("quizz.general.07"), "11"),
+//                new Quizz(TranslationManager.translation("quizz.general.08"), "mars"),
+//                new Quizz(TranslationManager.translation("quizz.general.09"), "victor hugo", "hugo"),
+//                new Quizz(TranslationManager.translation("quizz.general.10"), "guépard", "guepard"),
+//                new Quizz(TranslationManager.translation("quizz.general.11"), "yen"),
+//                new Quizz(TranslationManager.translation("quizz.general.12"), "366"),
+//                new Quizz(TranslationManager.translation("quizz.general.13"), "italie"),
+//                new Quizz(TranslationManager.translation("quizz.general.14"), "beethoven", "ludwig van beethoven"),
+//                new Quizz(TranslationManager.translation("quizz.general.15"), "nil", "le nil"),
+//                new Quizz(TranslationManager.translation("quizz.general.16"), "au", "or"),
+//                new Quizz(TranslationManager.translation("quizz.general.17"), "groenland"),
+//                new Quizz(TranslationManager.translation("quizz.general.18"), "neil armstrong", "armstrong"),
+//                new Quizz(TranslationManager.translation("quizz.general.19"), "sumo", "le sumo"),
+//                new Quizz(TranslationManager.translation("quizz.general.20"), "8", "8 minutes"),
+//                new Quizz(TranslationManager.translation("quizz.general.21"), "3"),
+//
+//                new Quizz(TranslationManager.translation("quizz.server.01"), "aywen1"),
+//                new Quizz(TranslationManager.translation("quizz.server.02"), "notch", "markus persson", "persson"),
+//                new Quizz(TranslationManager.translation("quizz.server.03"), "aywen"),
+//                new Quizz(TranslationManager.translation("quizz.server.04"), "jorbani"),
+//                new Quizz(TranslationManager.translation("quizz.server.05"), "2024")
         ));
 
         scheduleNext();
@@ -166,12 +178,5 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
     public static ChatAnimation getActive() {
         return currentAnimation;
-    }
-
-    @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new QuizzListener()
-        );
     }
 }
