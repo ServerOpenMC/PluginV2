@@ -13,7 +13,7 @@ public class PlayerNameLinkedAutocomplete implements SuggestionProvider<BukkitCo
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return GitHubHook.playerGithubMap.values().stream()
+        return GitHubHook.getKnownLinks().stream()
                 .map(DBGithubMinecraft::getPlayerName)
                 .toList();
     }

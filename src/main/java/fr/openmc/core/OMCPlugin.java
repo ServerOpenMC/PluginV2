@@ -51,6 +51,7 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
+import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
@@ -114,6 +115,7 @@ public class OMCPlugin extends JavaPlugin {
             MascotsManager::new,
             PlayerSettingsManager::new,
             MailboxManager::new,
+            DiscordLinkManager::new,
             ProfileManager::new,
             QuestsManager::new,
             CityManager::new,
