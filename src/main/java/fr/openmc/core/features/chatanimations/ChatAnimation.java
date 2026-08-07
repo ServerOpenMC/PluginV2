@@ -27,11 +27,14 @@ public abstract class ChatAnimation {
     public void complete(Player winner) {
         if (finished) return;
         finished = true;
+
         LootReward loot;
         if (winner == null)
             loot = null;
         else
             loot = reward.rollLoots(winner);
+
+        this.stop();
         ChatAnimationManager.onAnimationCompleted(this, winner, loot);
     }
 
