@@ -148,10 +148,10 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
         if (winner != null) {
             Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.winner",
-                    winner.name().color(NamedTextColor.GOLD), animation.getName().color(NamedTextColor.YELLOW), animation.getDescriptionResult()));
+                    winner.name().color(NamedTextColor.GOLD), animation.getName(), animation.getDescriptionResult()));
         } else {
             Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.no_winner",
-                    animation.getName().color(NamedTextColor.YELLOW), animation.getDescriptionResult()));
+                    animation.getName(), animation.getDescriptionResult()));
         }
 
         lastAnimation = currentAnimation;
