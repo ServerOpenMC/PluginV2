@@ -1,0 +1,65 @@
+info:
+  namespace: omc_bits
+items:
+    office_box:
+      display_name: <lang:feature.bits.lootbox.office.name>
+      resource:
+        material: PAPER
+        generate: false
+        model_path: office_box
+      behaviours:
+        furniture:
+          fixed_rotation: true
+          small: false
+          solid: true
+          placeable_on:
+            floor: true
+            ceiling: true
+            walls: true
+
+    kitchen_box:
+      display_name: <lang:feature.bits.lootbox.kitchen.name>
+      resource:
+        material: PAPER
+        generate: false
+        model_path: kitchen_box
+      behaviours:
+        furniture:
+          fixed_rotation: true
+          small: false
+          solid: true
+          placeable_on:
+            floor: true
+            ceiling: true
+            walls: true
+    medieval_box:
+      display_name: <lang:feature.bits.lootbox.medieval.name>
+      resource:
+        material: PAPER
+        generate: false
+        model_path: medieval_box
+      behaviours:
+        furniture:
+          fixed_rotation: true
+          small: false
+          solid: true
+          placeable_on:
+            floor: true
+            ceiling: true
+            walls: true
+
+    modern_box:
+      display_name: "<lang:feature.bits.lootbox.modern.name>"
+      resource:
+        material: PAPER
+        generate: false
+        model_path: modern_box
+      behaviours:
+        furniture:
+          fixed_rotation: true
+          small: false
+          solid: true
+          placeable_on:
+            floor: true
+            ceiling: true
+            walls: true

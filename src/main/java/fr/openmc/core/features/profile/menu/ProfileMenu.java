@@ -11,6 +11,8 @@ import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
+import fr.openmc.core.features.toor.DiscordLinkManager;
+import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.DateUtils;
@@ -28,6 +30,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,16 +85,34 @@ public class ProfileMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent event) {}
+    public void onInventoryClick(InventoryClickEvent event) {
+    }
 
     @Override
-    public void onClose(InventoryCloseEvent event) {}
+    public void onClose(InventoryCloseEvent event) {
+    }
 
     @SuppressWarnings("UnstableApiUsage")
     private void addIdentityItem(Map<Integer, ItemMenuBuilder> inventory) {
         String statusKey = target.isOnline()
                 ? "feature.profile.status.online"
                 : "feature.profile.status.offline";
+
+        String discordUsername = DiscordLinkManager.getLinkedDiscordUsername(target.getUniqueId());
+        Long githubId = GitHubHook.getContributorId(target.getUniqueId());
+        String githubUsername = githubId == null ? null : GitHubHook.getUsernameById(githubId);
+
+        List<Component> lore = new ArrayList<>(TranslationManager.translationLore(
+                "feature.profile.item.identity.lore",
+                TranslationManager.translation(statusKey).color(NamedTextColor.GRAY)
+        ));
+
+        lore.add(Component.empty());
+        lore.add(getSocialLore("feature.profile.item.socials.lore.discord", discordUsername));
+        lore.add(getSocialLore("feature.profile.item.socials.lore.github", githubUsername));
+        if (getOwner().getUniqueId() == target.getUniqueId()) {
+            lore.add(TranslationManager.translation("feature.profile.item.socials.lore.github.refresh"));
+        }
 
         inventory.put(13, new ItemMenuBuilder(
                 this,
@@ -101,13 +122,21 @@ public class ProfileMenu extends Menu {
                             "feature.profile.item.identity.name",
                             PlayerNameCache.name(target.getUniqueId()).color(NamedTextColor.GOLD)
                     ));
-                    meta.lore(TranslationManager.translationLore(
-                            "feature.profile.item.identity.lore",
-                            TranslationManager.translation(statusKey)
-                                    .color(NamedTextColor.GRAY)
-                    ));
+                    meta.lore(lore);
                 }
-        ).hide(DataComponentTypes.PROFILE));
+        ).setOnClick(click -> {
+            if (click.getWhoClicked().getUniqueId() == target.getUniqueId()) {
+                Player owner = getOwner();
+                Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                    GitHubHook.refreshContributorId(target.getUniqueId());
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        if (owner.isOnline()) {
+                            new ProfileMenu(owner, target).open();
+                        }
+                    });
+                });
+            }
+        }).hide(DataComponentTypes.PROFILE));
     }
 
     private void addFriendsItem(Map<Integer, ItemMenuBuilder> inventory) {
@@ -262,4 +291,11 @@ public class ProfileMenu extends Menu {
         return getOwner().getUniqueId().equals(target.getUniqueId());
     }
 
+    private Component getSocialLore(String translationKey, String value) {
+        if (value == null) {
+            return TranslationManager.translation(translationKey + ".unlinked").color(NamedTextColor.GRAY);
+        }
+        return TranslationManager.translation(translationKey + ".linked", Component.text(value, NamedTextColor.GOLD))
+                .color(NamedTextColor.GRAY);
+    }
 }

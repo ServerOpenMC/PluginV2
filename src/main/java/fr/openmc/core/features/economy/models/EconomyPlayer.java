@@ -3,6 +3,7 @@ package fr.openmc.core.features.economy.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 public class EconomyPlayer {
     @DatabaseField(id = true, columnName = "player")
     private UUID playerUUID;
+    @Setter
     @DatabaseField(canBeNull = false, defaultValue = "0")
     private double balance;
 
@@ -33,9 +35,5 @@ public class EconomyPlayer {
             return true;
         }
         return false;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 }

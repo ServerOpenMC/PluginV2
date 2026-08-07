@@ -164,15 +164,21 @@ public class AdminShopManager extends Feature implements HasCommands {
         if (item == null) return;
 
         // Calculate the adjustment factor based on the amount
-        double factor = Math.log10(amount + 1) * 0.01; // Logarithmic scale for adjustment
+        double factor = Math.log10(amount + 1) * 0.003; // Logarithmic scale for adjustment
 
-        double newSell = item.getActualSellPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new sell price
+        double newSell = item.getActualSellPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new sell price
         double newBuy = item.getActualBuyPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new buy price
 
-        item.setActualSellPrice(Math.max(newSell, item.getInitialSellPrice() * 0.5)); // Set new sell price
-        item.setActualBuyPrice(Math.max(newBuy, item.getInitialBuyPrice() * 0.5)); // Set new buy price
+        item.setActualSellPrice(clamp(newSell, item.getInitialSellPrice())); // Set new sell price
+        item.setActualBuyPrice(clamp(newBuy, item.getInitialBuyPrice())); // Set new buy price
 
         adminShopYAML.saveConfig(); // Save the updated configuration
+    }
+
+    private static double clamp(double actual, double initial) {
+        double min = initial * 0.8;
+        double max = initial * 2.0; // plafond au double du prix existant
+        return Math.max(min, Math.min(actual, max));
     }
 
     /**

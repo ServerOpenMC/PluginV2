@@ -32,11 +32,14 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected void update(Player player, BossBar bar) {
+        if (!(DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar hasBossBar)) return;
+
+        NamedTextColor color = NamedTextColor.NAMES.valueOr(hasBossBar.getBossBarColor().name(), NamedTextColor.RED);
         bar.name(TranslationManager.translation("feature.dailyevents.bossbar.name",
                 Component.text(
                         DateUtils.convertSecondToTime(
                                 (long) DailyEventsManager.getRemainingTime(
-                                        DailyEventsManager.getActiveDailyEvent())), NamedTextColor.RED)
+                                        DailyEventsManager.getActiveDailyEvent())), color)
                 ));
     }
 

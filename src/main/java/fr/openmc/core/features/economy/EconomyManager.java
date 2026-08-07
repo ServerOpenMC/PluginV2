@@ -7,8 +7,8 @@ import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
@@ -27,14 +27,14 @@ import java.text.NumberFormat;
 import java.util.*;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
-public class EconomyManager extends Feature implements DatabaseFeature, HasCommands {
+public class EconomyManager extends Feature implements HasDatabase, HasCommands {
     @Getter
     private static Map<UUID, EconomyPlayer> balances;
 
     private static Dao<EconomyPlayer, String> playersDao;
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    private static final NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
+    public static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>(Map.of(
             1_000L, "k",
             1_000_000L, "M",
             1_000_000_000L, "B",
@@ -220,7 +220,7 @@ public class EconomyManager extends Feature implements DatabaseFeature, HasComma
             return "0";
         }
 
-        Map.Entry<Long, String> entry = suffixes.floorEntry((long) balance);
+        Map.Entry<Long, String> entry = SUFFIXES.floorEntry((long) balance);
         if (entry == null) {
             return decimalFormat.format(balance);
         }

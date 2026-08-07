@@ -21,6 +21,7 @@ public enum TutorialSteps implements MilestoneStep {
     OPEN_SETTINGS(null),
     OPEN_CONTEST(null),
     CLAIM_LETTER(null),
+    CONNECT_TO_DISCORD(null),
     ;
 
     private MilestoneQuest quest;
@@ -28,7 +29,7 @@ public enum TutorialSteps implements MilestoneStep {
     TutorialSteps(MilestoneQuest quest) {
         this.quest = quest;
     }
-    
+
     // ça peut paraitre con de faire ça, mais obligatoire pour pas avoir d'instance nulle de quête.
     static {
         BREAK_AYWENITE.quest = new BreakAyweniteQuest();
@@ -45,5 +46,6 @@ public enum TutorialSteps implements MilestoneStep {
         OPEN_SETTINGS.quest = new OpenSettingsMenuQuest();
         OPEN_CONTEST.quest = new OpenContestMenuQuest();
         CLAIM_LETTER.quest = new ClaimLetterQuest();
+        CONNECT_TO_DISCORD.quest = new ConnectToDiscordQuest();
     }
 }

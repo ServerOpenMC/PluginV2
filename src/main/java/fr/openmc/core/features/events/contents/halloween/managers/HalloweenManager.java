@@ -10,8 +10,8 @@ import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -46,7 +46,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
-public class HalloweenManager extends Feature implements DatabaseFeature, HasCommands, HasListeners {
+public class HalloweenManager extends Feature implements HasDatabase, HasCommands, HasListeners {
     private static Object2ObjectMap<UUID, HalloweenData> halloweenData;
     private static Dao<HalloweenData, String> halloweenDataDao;
 

@@ -7,7 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
@@ -20,10 +20,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 @Credit(developers = {"iambibi_"})
-public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature {
+public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase {
 
     public static final List<WeeklyEvent> EVENTS = List.of(
             new Contest()
@@ -44,8 +46,8 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
 
         WeeklyEventPhase currentPhase = getCurrentPhase();
         if (data.isActive() && currentPhase != null && DateUtils.getCurrentDayOfWeek().equals(currentPhase.getStartDay())) {
-            Runnable action = currentPhase.runAction();
-            if (action != null) action.run();
+            runPhase(currentPhase);
+            return;
         }
 
         scheduleNextPhase();
@@ -149,6 +151,18 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             return;
         }
 
+        OMCLogger.infoFormatted("Prochaine Phase ({}) de l'évenement weekly ({}) le"
+                + nextPhase.getStartDay().getDisplayName(TextStyle.FULL_STANDALONE, Locale.FRENCH) + " "
+                + nextPhase.getStartHour() + "h" + nextPhase.getStartMinutes() + "m "
+                + " (dans " + DateUtils.convertSecondToTime(DateUtils.getSecondsUntilDayOfWeekTime(
+                        nextPhase.getStartDay(),
+                    nextPhase.getStartHour(),
+                    nextPhase.getStartMinutes(),
+                    0
+        )) + ")", PlainTextComponentSerializer.plainText().serialize(nextPhase.getName()),
+                PlainTextComponentSerializer.plainText().serialize(getCurrentEvent().getName()));
+
+
         currentTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (findNextPhase() != nextPhase) {
                 scheduleNextPhase();
@@ -166,11 +180,16 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         data.setActive(true);
         save(data);
 
-        Runnable action = phase.runAction();
-        if (action != null) action.run();
-
         advancePhase();
         scheduleNextPhase();
+
+        try {
+            Runnable action = phase.runAction();
+            if (action != null) action.run();
+        } catch (Exception e) {
+            OMCLogger.error("Erreur lors de l'exécution de la phase {}",
+                    PlainTextComponentSerializer.plainText().serialize(phase.getName()), e);
+        }
     }
 
     /**
@@ -203,24 +222,11 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             return;
         }
 
-        data.setCurrentEventIndex(eventIndex);
-        data.setCurrentPhaseIndex(phaseIndex);
-        data.setActive(true);
-        save(data);
-
-        Runnable action = phase.runAction();
-        if (action != null) action.run();
-
-        boolean isLastPhase = phaseIndex == event.getPhases().size() - 1;
-        if (isLastPhase) {
-            advanceToNextEvent();
-        }
-
-        scheduleNextPhase();
-
         OMCLogger.info("[WeeklyEvents] Event forcé : {} à la phase {}",
                 PlainTextComponentSerializer.plainText().serialize(event.getName()),
                 PlainTextComponentSerializer.plainText().serialize(phase.getName()));
+
+        runPhase(phase);
     }
 
     /**

@@ -61,7 +61,7 @@ public class CityCreateAction {
                 },
                 () -> {
                     pendingCities.remove(player.getUniqueId());
-                    ItemUtils.giveAywenite(player, CityCreateConditions.AYWENITE_CREATE);
+                    ItemUtils.giveItem(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), CityCreateConditions.AYWENITE_CREATE);
                     EconomyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
                 }
         );

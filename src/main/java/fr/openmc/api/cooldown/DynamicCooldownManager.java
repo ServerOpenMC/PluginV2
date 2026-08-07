@@ -8,8 +8,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.debug.DebugCooldownCommand;
@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Main class for managing cooldowns
  */
-public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdder, DatabaseFeature, HasCommands {
+public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasCommands {
 
     /**
      * Represents a single cooldown with duration and last use time

@@ -1,0 +1,3 @@
+internal-api:
+  bot-url: "https://toor.openmc.fr"
+  private-key-path: "data/discord/plugin_private.pem"

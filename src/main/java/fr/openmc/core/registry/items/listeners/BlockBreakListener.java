@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class BlockBreakListener implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (event.isCancelled()) return;

@@ -8,8 +8,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.DatabaseFeature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.settings.command.SettingsCommand;
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
-public class PlayerSettingsManager extends Feature implements DatabaseFeature, HasListeners, HasCommands {
+public class PlayerSettingsManager extends Feature implements HasDatabase, HasListeners, HasCommands {
 
     private static final Map<UUID, PlayerSettings> playersSettings = new ConcurrentHashMap<>();
     private static Dao<PlayerSettingEntity, Long> playerSettingDao;
