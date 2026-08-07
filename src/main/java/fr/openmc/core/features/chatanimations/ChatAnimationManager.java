@@ -10,6 +10,7 @@ import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -147,10 +148,10 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
         if (winner != null) {
             Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.winner",
-                    winner.name(), animation.getName(), animation.getDescriptionResult()));
+                    winner.name().color(NamedTextColor.GOLD), animation.getName().color(NamedTextColor.YELLOW), animation.getDescriptionResult()));
         } else {
             Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.no_winner",
-                    animation.getName(), animation.getDescriptionResult()));
+                    animation.getName().color(NamedTextColor.YELLOW), animation.getDescriptionResult()));
         }
 
         lastAnimation = currentAnimation;

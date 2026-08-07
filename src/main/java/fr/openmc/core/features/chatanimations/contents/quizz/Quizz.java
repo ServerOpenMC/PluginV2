@@ -46,14 +46,14 @@ public class Quizz extends ChatAnimation implements Listener {
     @Override
     public Component getAnnounceStart() {
         return TranslationManager.translation("feature.chatanimations.quizz.announce",
-                question,
+                question.color(NamedTextColor.YELLOW),
                 Component.text(time, NamedTextColor.GOLD));
     }
 
     @Override
     public Component getDescriptionResult() {
         return TranslationManager.translation("feature.chatanimations.quizz.result",
-                Component.text(answers.getFirst()));
+                Component.text(answers.getFirst(), NamedTextColor.YELLOW));
     }
 
     @Override
