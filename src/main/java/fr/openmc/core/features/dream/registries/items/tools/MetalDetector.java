@@ -69,7 +69,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
                 CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
                 if (lootTable == null) return;
 
-                List<CustomLoot> rewards = lootTable.rollLoots(player);
+                List<CustomLoot> rewards = lootTable.rollLoots(player).loots();
 
                 for (CustomLoot loot : rewards) {
                     if (!(loot instanceof ItemStack item)) continue;

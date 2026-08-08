@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
+import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -8,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
-import java.util.Set;
 
 @Getter
 public class LootboxLoot implements CustomLoot, RepresentedItem {
@@ -27,9 +27,9 @@ public class LootboxLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public Set<CustomLoot> run(Player receiver) {
+    public LootReward run(Player receiver) {
         lootbox.open(receiver);
-        return Collections.singleton(this);
+        return LootReward.loots(Collections.singleton(this));
     }
 
     @Override

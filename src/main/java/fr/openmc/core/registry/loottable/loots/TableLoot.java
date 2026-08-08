@@ -2,14 +2,13 @@ package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Set;
 
 @Getter
 public class TableLoot implements CustomLoot, RepresentedItem {
@@ -52,10 +51,10 @@ public class TableLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public Set<CustomLoot> run(Player receiver) {
+    public LootReward run(Player receiver) {
         if (this.giveRewards)
-            return Set.copyOf(lootTable.rollLoots(receiver));
+            return lootTable.rollLoots(receiver).copy();
         else
-            return Set.copyOf(lootTable.rollLoots());
+            return lootTable.rollLoots().copy();
     }
 }
