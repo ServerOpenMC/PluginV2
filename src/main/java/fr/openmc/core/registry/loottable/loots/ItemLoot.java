@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @Getter
@@ -22,6 +23,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     @Setter
     private double chance;
     private final Set<ItemStack> items;
+    private Predicate<Player> predicateToLoot = null;
     private Supplier<ItemStack> itemSupplier = null;
     private final ItemStack displayedItem;
     private final int minAmount;
@@ -81,6 +83,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 amount,
                 amount);
     }
+
     public ItemLoot(CustomItem item, double chance, int amount) {
         if (item == null) {
             throw new IllegalArgumentException("CustomItem cannot be null");
@@ -90,6 +93,17 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 chance,
                 amount,
                 amount);
+    }
+
+    public ItemLoot(CustomItem item, Predicate<Player> predicate, double chance, int amount) {
+        if (item == null) throw new IllegalArgumentException("CustomItem cannot be null");
+        this(Collections.singleton(item.getBest()),
+                null,
+                chance,
+                amount,
+                amount);
+
+        this.predicateToLoot = predicate;
     }
 
     public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
@@ -178,6 +192,8 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public LootReward run(Player receiver) {
+        if (predicateToLoot != null && !predicateToLoot.test(receiver)) return null;
+
         return runBase((item) -> {
             if (ItemUtils.hasEnoughSpace(receiver, item)) {
                 receiver.getInventory().addItem(item);
@@ -188,6 +204,8 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     public LootReward run(Player receiver, Location location) {
+        if (predicateToLoot != null && !predicateToLoot.test(receiver)) return null;
+
         return runBase((item) ->
                 receiver.getWorld().dropItemNaturally(location, item));
     }
