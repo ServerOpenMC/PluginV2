@@ -116,11 +116,11 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new Quizz(TranslationManager.translation("quizz.general.13"), "italie"),
                 new Quizz(TranslationManager.translation("quizz.general.14"), "beethoven", "ludwig van beethoven"),
                 new Quizz(TranslationManager.translation("quizz.general.15"), "nil", "le nil"),
-                new Quizz(TranslationManager.translation("quizz.general.16"), "au", "or"),
+                new Quizz(TranslationManager.translation("quizz.general.16"), "au"),
                 new Quizz(TranslationManager.translation("quizz.general.17"), "groenland"),
                 new Quizz(TranslationManager.translation("quizz.general.18"), "neil armstrong", "armstrong"),
                 new Quizz(TranslationManager.translation("quizz.general.19"), "sumo", "le sumo"),
-                new Quizz(TranslationManager.translation("quizz.general.20"), "8", "8 minutes"),
+                new Quizz(TranslationManager.translation("quizz.general.20"), "8", "8 minutes", "8 min"),
                 new Quizz(TranslationManager.translation("quizz.general.21"), "3"),
 
                 new Quizz(TranslationManager.translation("quizz.server.01"), "aywen1"),
@@ -141,16 +141,12 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
     private void scheduleNext() {
         long delay = RandomUtils.randomBetween(MIN_DELAY_TICKS, MAX_DELAY_TICKS);
-        System.out.println("Next animation in " + delay / 20 + "s");
 
         scheduleTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            System.out.println("Starting next animation");
             if (isAnimationRunning()) {
-                System.out.println("outt");
                 Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::scheduleNext, 20 * 30L);
                 return;
             }
-            System.out.println("1");
             startNext();
             scheduleNext();
         }, delay);
