@@ -1,6 +1,7 @@
 package fr.openmc.core.features.chatanimations;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -59,6 +60,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.DIAMOND_ORE), 2, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.SCULK), 15, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.BEEHIVE), 1, 60L),
+                new MineBlocksChallenge(KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK), 1, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.COBBLESTONE), 32, 90L),
 
                 new JumpChallenge(10, 30L),
@@ -72,6 +74,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new CraftItemChallenge(ItemStack.of(Material.STICK), 32, 45L),
                 new CraftItemChallenge(ItemStack.of(Material.CRAFTING_TABLE), 1, 20L),
                 new CraftItemChallenge(ItemStack.of(Material.BREAD), 10, 60L),
+                new CraftItemChallenge(OMCRegistry.CUSTOM_ITEMS.THE_MIXTURE, 1, 60L),
 
                 new FishingChallenge(3, 90L),
                 new FishingChallenge(5, 120L),
@@ -79,6 +82,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new PlaceBlocksChallenge(KeyBlock.vanilla(BlockType.OAK_PLANKS), 50, 60L),
                 new PlaceBlocksChallenge(KeyBlock.vanilla(BlockType.TORCH), 20, 45L),
                 new PlaceBlocksChallenge(KeyBlock.vanilla(BlockType.WHITE_WOOL), 10, 60L),
+                new PlaceBlocksChallenge(KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_GRAY), 1, 120L),
 
                 new WalkDistanceChallenge(200, 60L),
                 new WalkDistanceChallenge(500, 120L),
