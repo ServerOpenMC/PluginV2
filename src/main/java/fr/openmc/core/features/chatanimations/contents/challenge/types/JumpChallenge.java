@@ -2,7 +2,6 @@ package fr.openmc.core.features.chatanimations.contents.challenge.types;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeAnimation;
-import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -13,19 +12,17 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter
-public class MineBlocksChallenge extends ChallengeAnimation {
-    private final KeyBlock keyBlock;
+public class JumpChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public MineBlocksChallenge(KeyBlock keyBlock, int target, long time) {
-        this(keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public JumpChallenge(int target, long time) {
+        this(target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public MineBlocksChallenge(KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.mine_blocks.name",
-                Component.text(target), keyBlock.name()), reward, time);
-        this.keyBlock = keyBlock;
+    public JumpChallenge(int target, CustomLootTable reward, long time) {
+        super(TranslationManager.translation("feature.chatanimations.challenge.jump.name",
+                Component.text(target)), reward, time);
         this.target = target;
     }
 
@@ -34,3 +31,4 @@ public class MineBlocksChallenge extends ChallengeAnimation {
         progress.clear();
     }
 }
+

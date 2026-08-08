@@ -2,30 +2,30 @@ package fr.openmc.core.features.chatanimations.contents.challenge.types;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeAnimation;
-import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
-public class MineBlocksChallenge extends ChallengeAnimation {
-    private final KeyBlock keyBlock;
+public class KillEntityChallenge extends ChallengeAnimation {
+    private final EntityType entityType;
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public MineBlocksChallenge(KeyBlock keyBlock, int target, long time) {
-        this(keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public KillEntityChallenge(EntityType entityType, int target, long time) {
+        this(entityType, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public MineBlocksChallenge(KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.mine_blocks.name",
-                Component.text(target), keyBlock.name()), reward, time);
-        this.keyBlock = keyBlock;
+    public KillEntityChallenge(EntityType entityType, int target, CustomLootTable reward, long time) {
+        super(TranslationManager.translation("feature.chatanimations.challenge.kill_entity.name",
+                Component.text(target), Component.translatable(entityType.translationKey())), reward, time);
+        this.entityType = entityType;
         this.target = target;
     }
 
@@ -34,3 +34,4 @@ public class MineBlocksChallenge extends ChallengeAnimation {
         progress.clear();
     }
 }
+
