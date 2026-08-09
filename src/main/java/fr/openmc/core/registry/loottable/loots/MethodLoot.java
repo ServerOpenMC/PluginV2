@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -7,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.function.Consumer;
 
 @Getter
@@ -31,8 +31,8 @@ public class MethodLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public Set<CustomLoot> run(Player receiver) {
+    public LootReward run(Player receiver) {
         receiverAction.accept(receiver);
-        return Collections.singleton(this);
+        return LootReward.loots(Collections.singleton(this));
     }
 }

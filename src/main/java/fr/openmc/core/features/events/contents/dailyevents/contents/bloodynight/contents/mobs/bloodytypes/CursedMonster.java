@@ -54,7 +54,7 @@ public class CursedMonster extends CustomMob<Monster> {
                 Monster.class,
                 1,
                 1,
-                OMCRegistry.CUSTOM_LOOT_TABLES.CURSED_MOB.rollLoots()
+                OMCRegistry.CUSTOM_LOOT_TABLES.CURSED_MOB.rollLoots().loots()
         );
     }
 

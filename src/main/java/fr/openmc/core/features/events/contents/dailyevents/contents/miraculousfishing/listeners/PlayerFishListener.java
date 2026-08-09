@@ -32,7 +32,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class PlayerFishListener implements Listener {
 
@@ -54,7 +53,7 @@ public class PlayerFishListener implements Listener {
 
             CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
 
-            List<CustomLoot> loots = fishingLootTable.rollLoots();
+            List<CustomLoot> loots = fishingLootTable.rollLoots().loots();
 
             List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
 
@@ -117,7 +116,7 @@ public class PlayerFishListener implements Listener {
             // * Si y'a des sous loots, alors on affiche les sous loots obtenu,
             // en modiant leur probabilité corresponde à la réalité
             if (loot instanceof TableLoot) {
-                Set<CustomLoot> subLoots = loot.run(player);
+                List<CustomLoot> subLoots = loot.run(player).loots();
 
                 for (CustomLoot subLoot : subLoots) {
                     subLoot.setChance(loot.getChance() * subLoot.getChance());

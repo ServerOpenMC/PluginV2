@@ -29,17 +29,22 @@ public abstract class CustomLootTable {
                 .sum();
     }
 
-    public List<CustomLoot> rollLoots(Player receiver) {
-        List<CustomLoot> result = new ArrayList<>();
+    public LootReward rollLoots(Player receiver) {
+        List<CustomLoot> guaranted = this.getLoots().stream()
+                .filter(loot -> loot.getChance() >= 1.0)
+                .toList();
+        List<CustomLoot> result = new ArrayList<>(guaranted);
+        List<CustomLoot> remaining = new ArrayList<>(this.getLoots().stream()
+                .filter(loot -> loot.getChance() < 1.0).toList());
 
-        double totalChance = this.getLoots().stream()
+        double totalChance = remaining.stream()
                 .mapToDouble(CustomLoot::getChance)
                 .sum();
 
         double roll = Math.random() * totalChance;
         double sumChance = 0.0;
 
-        for (CustomLoot loot : this.getLoots()) {
+        for (CustomLoot loot : remaining) {
             sumChance += loot.getChance();
             if (roll <= sumChance) {
                 loot.run(receiver);
@@ -54,20 +59,25 @@ public abstract class CustomLootTable {
             result.add(next);
         }
 
-        return result;
+        return LootReward.loots(result);
     }
 
-    public List<CustomLoot> rollLoots() {
-        List<CustomLoot> result = new ArrayList<>();
+    public LootReward rollLoots() {
+        List<CustomLoot> guaranted = this.getLoots().stream()
+                .filter(loot -> loot.getChance() >= 1.0)
+                .toList();
+        List<CustomLoot> result = new ArrayList<>(guaranted);
+        List<CustomLoot> remaining = new ArrayList<>(this.getLoots().stream()
+                .filter(loot -> loot.getChance() < 1.0).toList());
 
-        double totalChance = this.getLoots().stream()
+        double totalChance = remaining.stream()
                 .mapToDouble(CustomLoot::getChance)
                 .sum();
 
         double roll = Math.random() * totalChance;
         double sumChance = 0.0;
 
-        for (CustomLoot loot : this.getLoots()) {
+        for (CustomLoot loot : remaining) {
             sumChance += loot.getChance();
             if (roll <= sumChance) {
                 result.add(loot);
@@ -80,20 +90,20 @@ public abstract class CustomLootTable {
             result.add(next);
         }
 
-        return result;
+        return LootReward.loots(result);
     }
 
-    public List<CustomLoot> rollLootsWithAmount(Player receiver, int amountRoll) {
+    public LootReward rollLootsWithAmount(Player receiver, int amountRoll) {
         List<CustomLoot> loot = new ArrayList<>();
 
         for (int i = 0; i < amountRoll; i++) {
-            loot.addAll(rollLoots(receiver));
+            loot.addAll(rollLoots(receiver).loots());
         }
 
-        return loot;
+        return LootReward.loots(loot);
     }
 
-    public List<CustomLoot> rollLootsWithoutGuarantee(Player receiver) {
+    public LootReward rollLootsWithoutGuarantee(Player receiver) {
         List<CustomLoot> result = new ArrayList<>();
 
         double roll = ThreadLocalRandom.current().nextDouble();
@@ -109,7 +119,7 @@ public abstract class CustomLootTable {
             }
         }
 
-        return result;
+        return LootReward.loots(result);
     }
 
     public CustomLoot selectRandomLoot() {
@@ -131,7 +141,7 @@ public abstract class CustomLootTable {
         return this.getLoots().stream().findFirst().orElse(null);
     }
 
-    public List<CustomLoot> generateWeightedPool() {
+    public LootReward generateWeightedPool() {
         List<CustomLoot> pool = new ArrayList<>();
         for (CustomLoot loot : this.getLoots()) {
             int count = Math.max(1, (int) (loot.getChance() * 100 * 2));
@@ -140,7 +150,7 @@ public abstract class CustomLootTable {
             }
         }
         Collections.shuffle(pool);
-        return pool;
+        return LootReward.loots(pool);
     }
 
     public void openMenu(Player player) {

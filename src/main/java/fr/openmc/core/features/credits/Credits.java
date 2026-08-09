@@ -5,6 +5,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.animations.AnimationsManager;
+import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -43,6 +44,7 @@ public enum Credits {
     ANIMATIONS(Material.AMETHYST_BLOCK, "feature.credits.feature.animations", AnimationsManager.class),
     BITS(Material.LAPIS_LAZULI, "feature.credits.feature.bits", BitsManager.class),
     CUBE(Material.LAPIS_BLOCK, "feature.credits.feature.cube", Set.of("iambibi_")),
+    CHAT_ANIMATION(Material.FIREWORK_ROCKET, "feature.credits.feature.chat_animation", ChatAnimationManager.class),
     CITY(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_AXENQ, "feature.credits.feature.city", CityManager.class),
     DREAM(Material.SCULK, "feature.credits.feature.dream", DreamManager.class),
     DREAM_MILESTONE(DreamItemRegistry.SINGULARITY, "feature.credits.feature.dream_milestone", Set.of("gab400", "Rylo42 (histoire et dialogues)")),

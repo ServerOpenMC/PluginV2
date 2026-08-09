@@ -46,7 +46,7 @@ public class AncientMonster extends CustomMob<Monster> {
                 Monster.class,
                 3,
                 1,
-                OMCRegistry.CUSTOM_LOOT_TABLES.ANCIENT_MOB.rollLoots()
+                OMCRegistry.CUSTOM_LOOT_TABLES.ANCIENT_MOB.rollLoots().loots()
         );
     }
 

@@ -6,6 +6,8 @@ import fr.openmc.core.features.bits.contents.loottables.KitchenLootTable;
 import fr.openmc.core.features.bits.contents.loottables.MedievalLootTable;
 import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
 import fr.openmc.core.features.bits.contents.loottables.OfficeLootTable;
+import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeLootTable;
+import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
@@ -46,6 +48,9 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable KITCHEN_BOX = register(new KitchenLootTable());
     public final CustomLootTable OFFICE_BOX = register(new OfficeLootTable());
     public final CustomLootTable MODERN_BOX = register(new ModernLootTable());
+
+    public final CustomLootTable QUIZZ = register(new QuizzLootTable());
+    public final CustomLootTable CHALLENGE = register(new ChallengeLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {
