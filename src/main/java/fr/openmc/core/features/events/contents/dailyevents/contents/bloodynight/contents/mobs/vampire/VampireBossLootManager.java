@@ -61,16 +61,15 @@ public class VampireBossLootManager {
 
         int rankInt = 0;
 
-
         broadcastToWorld(world, TranslationManager.translation(
                 "feature.dailyevents.bloody_night.vampire_boss.defeated.start"
         ));
 
         for (Map.Entry<UUID, Double> entry : orderedMap.entrySet()) {
-            if (rankInt == 1 || rankInt == 2 || rankInt == 3) {
+            if (rankInt == 0 || rankInt == 1 || rankInt == 2) {
                 broadcastToWorld(world, TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.rank",
-                        Component.text("#"+ rankInt + 1, LeaderboardManager.getRankColor(rankInt + 1)),
+                        Component.text("#"+ (rankInt + 1), LeaderboardManager.getRankColor(rankInt + 1)),
                         PlayerNameCache.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
@@ -83,7 +82,7 @@ public class VampireBossLootManager {
 
                 player.sendMessage(TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.midle",
-                        Component.text(rankInt + 1, LeaderboardManager.getRankColor(rankInt + 1)),
+                        Component.text((rankInt + 1), LeaderboardManager.getRankColor(rankInt + 1)),
                         PlayerNameCache.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
