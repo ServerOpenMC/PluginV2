@@ -68,6 +68,10 @@ public class ConfirmMenu extends Menu {
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
 
+        Component shiftRightSellAll = !isBuying ? Component.newline().append(
+                TranslationManager.translation("feature.adminshop.menu.confirm.sell_all"))
+                : Component.empty();
+
         List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
@@ -75,7 +79,9 @@ public class ConfirmMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN)
+                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
+                shiftRightSellAll
+
         );
 
         content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
@@ -102,8 +108,8 @@ public class ConfirmMenu extends Menu {
             meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).setOnClick(event -> {
-            if (event.getClick().equals(ClickType.MIDDLE)) {
-                DialogInput.sendFloat(
+            switch (event.getClick()) {
+                case ClickType.MIDDLE -> DialogInput.sendFloat(
                         getOwner(),
                         TranslationManager.translation("feature.adminshop.menu.confirm.input"),
                         1,
@@ -119,6 +125,15 @@ public class ConfirmMenu extends Menu {
                             }
                         }
                 );
+                case ClickType.SHIFT_LEFT -> {
+                    if (!isBuying && ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())) > 0) {
+                        getOwner().closeInventory();
+                        AdminShopManager.sellItem(
+                                getOwner(),
+                                shopItem.getId(),
+                                ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())));
+                    }
+                }
             }
         }));
 
