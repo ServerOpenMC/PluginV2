@@ -5,9 +5,9 @@ import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 public class MilestoneBossBar extends BaseBossbar {
@@ -17,8 +17,8 @@ public class MilestoneBossBar extends BaseBossbar {
     public MilestoneBossBar(Milestone<?> milestone) {
         this.milestone = milestone;
     }
-    public static final String PLACEHOLDER_MILESTONE_BOSSBAR = "Étape %s : %s";
-    public static final String PLACEHOLDER_MILESTONE_BOSSBAR_PROGRESS = "Étape %s : %s (%s/%s)";
+    public static final String PLACEHOLDER_MILESTONE_BOSSBAR = "feature.milestones.placeholder.1";
+    public static final String PLACEHOLDER_MILESTONE_BOSSBAR_PROGRESS = "feature.milestones.placeholder.2";
 
     @Override
     protected String id() {
@@ -43,22 +43,18 @@ public class MilestoneBossBar extends BaseBossbar {
         Component questName = quest.getName(player.getUniqueId());
 
         if (goal <= 1) {
-            bar.name(Component.text(
-                    PLACEHOLDER_MILESTONE_BOSSBAR.formatted(
-                            currentStep + 1,
-                            PlainTextComponentSerializer.plainText().serialize(questName))
-            ).color(milestone.getBossBarOptions().textColor()));
+            bar.name(TranslationManager.translation(PLACEHOLDER_MILESTONE_BOSSBAR,
+                            Component.text(currentStep + 1),
+                            questName).color(milestone.getBossBarOptions().textColor()));
 
             bar.progress((float) currentStep / maxStep);
         } else {
-            bar.name(Component.text(
-                    PLACEHOLDER_MILESTONE_BOSSBAR_PROGRESS.formatted(
-                            currentStep + 1,
-                            quest.getName(player.getUniqueId()),
-                            progress,
-                            goal
-                    )
-            ).color(milestone.getBossBarOptions().textColor()));
+            bar.name(TranslationManager.translation(PLACEHOLDER_MILESTONE_BOSSBAR_PROGRESS,
+                            Component.text(currentStep + 1),
+                            questName,
+                            Component.text(progress),
+                            Component.text(goal)
+                    ).color(milestone.getBossBarOptions().textColor()));
 
             bar.progress((float) progress / goal);
         }
