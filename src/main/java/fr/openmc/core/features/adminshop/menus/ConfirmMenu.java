@@ -68,8 +68,7 @@ public class ConfirmMenu extends Menu {
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
 
-        Component shiftRightSellAll = !isBuying ? Component.newline().append(
-                TranslationManager.translation("feature.adminshop.menu.confirm.sell_all"))
+        Component shiftRightSellAll = !isBuying ? TranslationManager.translation("feature.adminshop.menu.confirm.sell_all")
                 : Component.empty();
 
         List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
