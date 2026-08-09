@@ -5,7 +5,11 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -161,6 +165,29 @@ public class ElevatorManager extends Feature implements HasListeners {
     public static boolean isElevator(CustomStack item) {
         if (item == null) return false;
         return isElevator(item.getNamespacedID());
+    }
+
+    public static boolean isSafeGround(Location loc) {
+        World world = loc.getWorld();
+        Block above = world.getBlockAt(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+
+        if (Tag.WOOL_CARPETS.isTagged(above.getType())
+                || Tag.BUTTONS.isTagged(above.getType())
+                || Tag.PRESSURE_PLATES.isTagged(above.getType())
+                || Tag.BANNERS.isTagged(above.getType())
+                || Tag.SIGNS.isTagged(above.getType())
+                || Tag.FLOWERS.isTagged(above.getType())) return true;
+
+        if (above.getType() == Material.MOSS_CARPET
+                || above.getType() == Material.PALE_MOSS_CARPET
+                || above.getType() == Material.SCULK_VEIN) return true;
+
+        return !above.isSolid()
+                && above.isPassable()
+                && !above.isLiquid()
+                && above.getType() != Material.LAVA
+                && above.getType() != Material.CACTUS
+                && above.getType() != Material.MAGMA_BLOCK;
     }
 
     @Override

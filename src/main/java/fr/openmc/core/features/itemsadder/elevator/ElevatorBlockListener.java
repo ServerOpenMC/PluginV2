@@ -9,7 +9,6 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -32,6 +31,12 @@ public class ElevatorBlockListener implements Listener {
 
         if (!ElevatorManager.isOnTop(player)) return;
 
+        if (!ElevatorManager.isSafeGround(player.getLocation()))  {
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_1"),
+                    Prefix.OPENMC, MessageType.WARNING, true);
+            return;
+        }
+
         Location locAfterTP = ElevatorManager.getNextTop(player);
 
         if (locAfterTP.equals(player.getLocation())) {
@@ -40,8 +45,8 @@ public class ElevatorBlockListener implements Listener {
             return;
         }
 
-        if (!LocationUtils.isSafeGround(locAfterTP)) {
-            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed"),
+        if (!ElevatorManager.isSafeGround(locAfterTP)) {
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_0"),
                     Prefix.OPENMC, MessageType.WARNING, true);
             return;
         }
@@ -56,6 +61,12 @@ public class ElevatorBlockListener implements Listener {
 
         if (!ElevatorManager.isOnTop(player)) return;
 
+        if (!ElevatorManager.isSafeGround(player.getLocation()))  {
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_1"),
+                    Prefix.OPENMC, MessageType.WARNING, true);
+            return;
+        }
+
         if (event.isSneaking()) return;
 
         Location locAfterTP = ElevatorManager.getNextDown(player);
@@ -66,8 +77,8 @@ public class ElevatorBlockListener implements Listener {
             return;
         }
 
-        if (!LocationUtils.isSafeGround(locAfterTP)) {
-            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed"),
+        if (!ElevatorManager.isSafeGround(locAfterTP)) {
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_0"),
                     Prefix.OPENMC, MessageType.WARNING, true);
             return;
         }
