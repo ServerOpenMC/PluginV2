@@ -148,7 +148,8 @@ public class InternalToorApiClient {
             Long githubId = rawId == null ? null : ((Number) rawId).longValue();
             return new GithubStatus(true, githubId);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            OMCLogger.warn("Impossible de contacter l'API interne du bot (github status): {}", e.getMessage(), e);
+            return GithubStatus.NOT_LINKED;
         }
     }
 
