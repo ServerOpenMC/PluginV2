@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.events.PlaceShopEvent;
 import fr.openmc.core.features.shops.models.Shop;
+import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -68,7 +69,8 @@ public class PlayerShopManager {
      */
     private static boolean createShop(Player player, Location location) {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
-        
+
+        if (WorldGuardHook.isRegionConflict(location)) return false;
         if (!ProtectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
             if ((CityManager.isChunkClaimed(location.getChunk())
                     && !CityManager.getPlayerCity(player.getUniqueId())
