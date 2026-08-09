@@ -66,9 +66,22 @@ public class MonsterSpawnListener implements Listener {
 
         if (customMob == null) return;
         if (customMob instanceof VampireBoss bossbar) {
-            bossbar.removeBossBar(livingEntity);
-            livingEntity.remove();
-        } else if (customMob instanceof VampireSlave)
-            livingEntity.remove();
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                if (livingEntity.isValid()) {
+                    bossbar.removeBossBar(livingEntity);
+                    livingEntity.remove();
+                } else {
+                    OMCLogger.error("Impossible de supprimer le vampire boss (mort, delete, non chargé) " + livingEntity.getName());
+                }
+            });
+        } else if (customMob instanceof VampireSlave) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                if (livingEntity.isValid()) {
+                    livingEntity.remove();
+                } else {
+                    OMCLogger.error("Impossible de supprimer le vampire slave (mort, delete, non chargé) " + livingEntity.getName());
+                }
+            });
+        }
     }
 }
