@@ -125,7 +125,7 @@ public class ConfirmMenu extends Menu {
                             }
                         }
                 );
-                case ClickType.SHIFT_LEFT -> {
+                case ClickType.SHIFT_RIGHT -> {
                     if (!isBuying && ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())) > 0) {
                         getOwner().closeInventory();
                         AdminShopManager.sellItem(
