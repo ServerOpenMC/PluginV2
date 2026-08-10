@@ -73,7 +73,8 @@ public class Plantation extends CustomEnchantment implements Listener {
         Block block = event.getBlock();
         BlockData blockData = block.getBlockData();
 
-        if (!(blockData instanceof Ageable)) return;
+        if (!(blockData instanceof Ageable ageable)) return;
+        if (ageable.getAge() != ageable.getMaximumAge()) return;
 
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
@@ -83,7 +84,6 @@ public class Plantation extends CustomEnchantment implements Listener {
         if (level <= 0) return;
 
         BlockData replantData = blockData.clone();
-        Ageable ageable = (Ageable) replantData;
         int maxAge = ageable.getMaximumAge();
 
         // * Mécanique de repousse des cultures avec bonus d'âge selon le niveau de l'enchantement
@@ -94,6 +94,9 @@ public class Plantation extends CustomEnchantment implements Listener {
             startAge = Math.min(startAge, maxAge);
         }
         ageable.setAge(startAge);
+
+        event.setDropItems(false);
+        event.setExpToDrop(0);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             block.setType(blockData.getMaterial());
