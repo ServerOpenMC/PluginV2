@@ -1,0 +1,66 @@
+info:
+  namespace: omc_foods
+crops:
+  courgette_crops:
+    models_by_textures:
+      parent: minecraft:block/crop
+      textures_prefix: blocks/crops/courgette/courgette_crops_
+      model_texture_key: crop
+    max_age: 3
+    min_light: 10
+    seed: "omc_foods:courgette_seed"
+    bottom_block: "farmland"
+    item_drop:
+      item: omc_foods:courgette
+      min_amount: 1
+      max_amount: 2
+      chance: 100
+      ignore_fortune: false
+
+  salad_crops:
+    models_by_textures:
+      parent: minecraft:block/crop
+      textures_prefix: blocks/crops/salad/salad_crops_
+      model_texture_key: crop
+    max_age: 3
+    min_light: 10
+    seed: "omc_foods:salad_seed"
+    bottom_block: "farmland"
+    item_drop:
+      item: omc_foods:salade
+      min_amount: 1
+      max_amount: 1
+      chance: 100
+      ignore_fortune: false
+
+  onion_crops:
+    models_by_textures:
+      parent: minecraft:block/crop
+      textures_prefix: blocks/crops/onion/onion_crops_2_
+      model_texture_key: crop
+    max_age: 3
+    min_light: 10
+    seed: "omc_foods:onion_seed"
+    bottom_block: "farmland"
+    item_drop:
+      item: omc_foods:onion
+      min_amount: 1
+      max_amount: 3
+      chance: 100
+      ignore_fortune: false
+
+  tomato_crops:
+    models_by_textures:
+      parent: minecraft:block/crop
+      textures_prefix: blocks/crops/tomato/tomato_crops_
+      model_texture_key: crop
+    max_age: 3
+    min_light: 10
+    seed: "omc_foods:tomato_seed"
+    bottom_block: "farmland"
+    item_drop:
+      item: omc_foods:tomate
+      min_amount: 1
+      max_amount: 2
+      chance: 100
+      ignore_fortune: false
