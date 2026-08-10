@@ -97,7 +97,7 @@ recipes:
       ingredients:
         F:
           item: omc_daily_events:golden_wheat
-          amount: 64
+          amount: 192
       result:
         item: omc_daily_events:blessed_bread
         amount: 1
