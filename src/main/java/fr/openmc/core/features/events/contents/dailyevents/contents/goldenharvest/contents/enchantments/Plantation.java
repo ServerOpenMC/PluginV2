@@ -75,8 +75,8 @@ public class Plantation extends CustomEnchantment implements Listener {
 
         if (!(blockData instanceof Ageable ageable)) return;
         if (ageable.getAge() != ageable.getMaximumAge()) {
+            event.setCancelled(true);
             event.setDropItems(false);
-            return;
         }
 
         Player player = event.getPlayer();
