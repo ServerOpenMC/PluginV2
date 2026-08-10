@@ -5,17 +5,14 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.menu.GoldenHarvestMenu;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasAmbient;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasBroadcast;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.HasToast;
-import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
+import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,6 +60,11 @@ public class GoldenHarvestEvent extends DailyEvent
     @Override
     public ItemStack getIcon() {
         return new ItemStack(Material.GOLDEN_HOE);
+    }
+
+    @Override
+    public NamedTextColor getMainColor() {
+        return NamedTextColor.GOLD;
     }
 
     @Override

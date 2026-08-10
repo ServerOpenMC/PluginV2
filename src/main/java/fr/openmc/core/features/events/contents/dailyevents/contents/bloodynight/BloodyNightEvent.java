@@ -12,6 +12,7 @@ import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.advancements.AdvancementType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,6 +45,11 @@ public class BloodyNightEvent extends DailyEvent
     @Override
     public Runnable onEnd() {
         return () -> BloodyNightManager.stop(this);
+    }
+
+    @Override
+    public NamedTextColor getMainColor() {
+        return NamedTextColor.DARK_RED;
     }
 
     @Override

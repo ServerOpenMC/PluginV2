@@ -71,6 +71,11 @@ public class MiraculousFishingEvent extends DailyEvent
     }
 
     @Override
+    public NamedTextColor getMainColor() {
+        return NamedTextColor.AQUA;
+    }
+
+    @Override
     public CustomToastData getStartToastData() {
         return new CustomToastData(
                 this.getIcon(),
