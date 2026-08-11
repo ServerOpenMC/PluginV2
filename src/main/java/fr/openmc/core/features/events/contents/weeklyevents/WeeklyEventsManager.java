@@ -139,10 +139,10 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             return;
         }
 
-        OMCLogger.infoFormatted("Prochaine Phase ({}) de l'évenement weekly ({}) le"
+        OMCLogger.infoFormatted("Prochaine Phase ({}) de l'évenement weekly ({}) le "
                 + nextPhase.getStartDay().getDisplayName(TextStyle.FULL_STANDALONE, Locale.FRENCH) + " "
-                + nextPhase.getStartHour() + "h" + nextPhase.getStartMinutes() + "m "
-                + " (dans " + DateUtils.convertSecondToTime(DateUtils.getSecondsUntilDayOfWeekTime(
+                + nextPhase.getStartHour() + "h " + nextPhase.getStartMinutes() + "m "
+                + "(dans " + DateUtils.convertSecondToTime(DateUtils.getSecondsUntilDayOfWeekTime(
                         nextPhase.getStartDay(),
                     nextPhase.getStartHour(),
                     nextPhase.getStartMinutes(),
