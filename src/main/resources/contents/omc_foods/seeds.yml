@@ -1,63 +1,35 @@
 info:
   namespace: omc_foods
 items:
-  tomato_seeds:
+  tomato_seed:
     display_name: <lang:itemsadder.omc_foods.tomato_seeds.name>
-    resource:
-      generate: true
-      material: WHEAT_SEEDS
-      textures:
-      - items/tomato_seeds
-    specific_properties:
-      seed:
-        crop_block: BEETROOTS
-        results:
-          result_1:
-            item: omc_foods:tomate
-            min_amount: 1
-            max_amount: 2
-            chance: 100
-  onion_seeds:
+    graphics:
+      texture: items/seeds/tomato_seed
+
+  onion_seed:
     display_name: <lang:itemsadder.omc_foods.onion_seeds.name>
-    resource:
-      generate: true
-      material: WHEAT_SEEDS
-      textures:
-      - items/onion_seeds
-    specific_properties:
-      seed:
-        crop_block: WHEAT
-        results:
-          result_1:
-            item: omc_foods:onion
-            min_amount: 1
-            max_amount: 3
-            chance: 100
+    graphics:
+      texture: items/seeds/onion_seed
+
   salad_seed:
     display_name: <lang:itemsadder.omc_foods.salad_seed.name>
-    resource:
-      generate: true
-      material: WHEAT_SEEDS
-      textures:
-      - items/salad_seed
-    specific_properties:
-      seed:
-        crop_block: POTATOES
-        results:
-          result_1:
-            item: omc_foods:salade
-            min_amount: 1
-            max_amount: 1
-            chance: 100
+    graphics:
+      texture: items/seeds/salad_seed
+
+  courgette_seed:
+    display_name: <lang:itemsadder.omc_foods.courgette_seed.name>
+    graphics:
+      texture: items/seeds/courgette_seed
+
 recipes:
   crafting_table:
-    tomato_seeds:
+    tomato_seed:
       enabled: true
       shapeless: true
       ingredients:
         A: omc_foods:tomate
       result:
-        item: omc_foods:tomato_seeds
+        item: omc_foods:tomato_seed
         amount: 3
     courgette_seeds:
       enabled: true
@@ -67,13 +39,13 @@ recipes:
       result:
         item: omc_foods:courgette_seed
         amount: 3
-    onion_seeds:
+    onion_seed:
       enabled: true
       shapeless: true
       ingredients:
         A: omc_foods:onion
       result:
-        item: omc_foods:onion_seeds
+        item: omc_foods:onion_seed
         amount: 2
     salad_seed:
       enabled: true

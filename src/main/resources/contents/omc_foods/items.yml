@@ -1,0 +1,161 @@
+info:
+  namespace: omc_foods
+items:
+  courgette:
+    display_name: <lang:itemsadder.omc_foods.courgette.name>
+    resource:
+      material: DRIED_KELP
+      generate: true
+      textures:
+        - items/courgette.png
+
+  gratin_courgette:
+    display_name: <lang:itemsadder.omc_foods.gratin_courgette.name>
+    resource:
+      material: MELON_SLICE
+      generate: false
+      model_path: gratin_courgette
+    events:
+      eat:
+        feed:
+          amount: 3
+          saturation: 0.5
+
+  onion:
+    display_name: <lang:itemsadder.omc_foods.onion.name>
+    resource:
+      material: PORKCHOP
+      generate: true
+      textures:
+        - items/onion.png
+
+  salade:
+    display_name: <lang:itemsadder.omc_foods.salade.name>
+    resource:
+      material: DRIED_KELP
+      generate: true
+      textures:
+        - items/salade.png
+
+  tomate:
+    display_name: <lang:itemsadder.omc_foods.tomate.name>
+    resource:
+      material: BEETROOT
+      generate: true
+      textures:
+        - items/tomate.png
+
+  the_mixture:
+    display_name: <lang:itemsadder.omc_foods.the_mixture.name>
+    lore:
+      - <lang:itemsadder.omc_foods.the_mixture.lore.0>
+      - <lang:itemsadder.omc_foods.the_mixture.lore.1>
+    components_nbt_file: "nbt/the_mixture_nbt.json"
+    resource:
+      material: POTION
+      generate: false
+      model_path: the_mixture
+
+  broche_kebab:
+    enabled: true
+    display_name: <lang:itemsadder.omc_foods.broche_kebab.name>
+    resource:
+      material: PAPER
+      generate: false
+      model_path: broche_kebab
+    behaviours:
+      furniture:
+        entity: armor_stand
+        solid: true
+        fixed_rotation: false
+        light_level: 13
+        opposite_direction: false
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          width_offset: 0
+          height_offset:
+          placeable_on:
+          walls: false
+          ceilling: false
+          floor: true
+
+  frite:
+    display_name: <lang:itemsadder.omc_foods.frite.name>
+    permission: ayw.frite
+    resource:
+      material: GOLDEN_CARROT
+      generate: true
+      textures:
+        - items/frite.png
+
+  kebab:
+    display_name: <lang:itemsadder.omc_foods.kebab.name>
+    resource:
+      material: COOKED_BEEF
+      generate: true
+      textures:
+        - items/kebab.png
+
+  spatule:
+    display_name: <lang:itemsadder.omc_foods.spatule.name>
+    resource:
+      material: IRON_SWORD
+      generate: true
+      textures:
+        - items/spatule.png
+
+recipes:
+  crafting_table:
+    gratin_courgette:
+      enabled: true
+      pattern:
+        - AAA
+        - AAA
+        - BBB
+      ingredients:
+        A: "omc_foods:courgette"
+        B: "GLASS"
+      result:
+        item: "omc_foods:gratin_courgette"
+        amount: 1
+
+    the_mixture:
+      enabled: true
+      pattern:
+        - BCB
+        - CAC
+        - BCB
+      ingredients:
+        A: "omc_items:aywenite"
+        C: "GLASS"
+        B: "IRON_INGOT"
+      result:
+        item: "omc_foods:the_mixture"
+        amount: 1
+
+    frite:
+      enabled: true
+      shapeless: false
+      pattern:
+        - XAX
+        - XAX
+        - XAX
+      ingredients:
+        A: BAKED_POTATO
+      result:
+        item: omc_foods:frite
+        amount: 1
+
+    kebab:
+      enabled: true
+      shapeless: true
+      ingredients:
+        A: omc_foods:salade
+        B: omc_foods:tomate
+        C: omc_foods:onion
+        D: BREAD
+      result:
+        item: omc_foods:kebab
+        amount: 1

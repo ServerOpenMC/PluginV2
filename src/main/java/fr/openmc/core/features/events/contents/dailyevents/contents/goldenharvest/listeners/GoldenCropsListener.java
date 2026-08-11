@@ -18,7 +18,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
-import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -78,12 +77,9 @@ public class GoldenCropsListener implements Listener {
         KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
         if (keyBlockGolden == null) return;
 
-        if (!(event.getNewState() instanceof Ageable ageable)) return;
-        if (ageable.getAge() != ageable.getMaximumAge()) return;
-
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;
 
-        CustomBlock customBlock =  keyBlockGolden.getCustomBlock();
+        CustomBlock customBlock = keyBlockGolden.getCustomBlock();
         if (customBlock == null) return;
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->

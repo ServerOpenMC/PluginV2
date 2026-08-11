@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.EndEventTask;
 import fr.openmc.core.features.events.models.Event;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -41,6 +42,8 @@ public abstract class DailyEvent extends Event {
      * @return une méthode
      */
     public abstract Runnable onEnd();
+
+    public abstract NamedTextColor getMainColor();
 
     /**
      * Procédure complète de lancement de l'évenement, qui s'occupe de tout (broadcast, toast, ambiance, etc...)
