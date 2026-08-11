@@ -11,7 +11,6 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnListener;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.PlayerKillMonsterListener;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.*;
@@ -38,7 +37,6 @@ public class BloodyNightManager extends Feature implements HasListeners {
     @Override
     public Set<Listener> getListeners() {
         return Set.of(
-                new PlayerKillMonsterListener(),
                 new MonsterSpawnListener()
         );
     }
