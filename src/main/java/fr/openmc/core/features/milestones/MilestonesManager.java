@@ -12,6 +12,8 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
 import fr.openmc.core.features.milestones.listeners.PlayerJoinListener;
 import fr.openmc.core.features.milestones.models.Milestone;
@@ -78,9 +80,10 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
             for (MilestoneModel data : milestoneData) {
 	            MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone<?> milestone = type.getMilestone();
+                BossbarManager.registerBossbars(new MilestoneBossBar(milestone));
 	            milestone.getPlayerData().put(data.getUUID(), data);
             }
-			OMCLogger.info("Milestones loaded successfully from the database!");
+			OMCLogger.infoFormatted("Milestones loaded successfully from the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -98,7 +101,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
                     millestoneDao.createOrUpdate(model);
                 }
             }
-	        OMCLogger.info("Milestones saved successfully to the database!");
+	        OMCLogger.infoFormatted("Milestones saved successfully to the database!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
