@@ -32,9 +32,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Credit(developers = {"iambibi_"})
 public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners {
-    
-    private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 20 min
-    private static final long MAX_DELAY_TICKS = 20 * 60 * 30L; // 30 min
+
+    //todo: changr valeur pour delay entre animationsXXss
+    private static final long MIN_DELAY_TICKS = 20 * 60 * 1L; // 20 min
+    private static final long MAX_DELAY_TICKS = 20 * 60 * 2L; // 30 min
 
     private Set<ChatAnimation> ANIMATIONS;
 
