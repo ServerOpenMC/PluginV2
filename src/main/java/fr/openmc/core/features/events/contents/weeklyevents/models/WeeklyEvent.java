@@ -4,8 +4,10 @@ import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.models.Event;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class WeeklyEvent extends Event {
+    public abstract String getId();
     public abstract List<WeeklyEventPhase> getPhases();
 
     /**
@@ -22,6 +24,26 @@ public abstract class WeeklyEvent extends Event {
     public WeeklyEventPhase getActivePhase() {
         if (!isActive()) return null;
         return WeeklyEventsManager.getCurrentPhase();
+    }
+
+    /**
+     * Retourne la premiere phase de l'event
+     * @return un WeeklyEventPhase
+     */
+    public WeeklyEventPhase getFirstPhase() {
+        return getPhases().getFirst();
+    }
+
+    public Optional<WeeklyEventPhase> getNextPhase(WeeklyEventPhase current) {
+        List<WeeklyEventPhase> phases = getPhases();
+        int index = phases.indexOf(current);
+        if (index == -1 || index + 1 >= phases.size()) return Optional.empty();
+
+        return Optional.of(phases.get(index + 1));
+    }
+
+    public boolean hasPhase(WeeklyEventPhase phase) {
+        return getPhases().contains(phase);
     }
 
     /**

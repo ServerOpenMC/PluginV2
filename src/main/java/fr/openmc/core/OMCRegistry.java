@@ -5,6 +5,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
 import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
+import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
@@ -20,13 +21,16 @@ import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class OMCRegistry {
-
+    // * Registre globaux
     public static CustomItemRegistry CUSTOM_ITEMS;
     public static CustomMobRegistry CUSTOM_MOBS;
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
     public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
+
+    // * Registre des features
+    public static WeeklyEventsRegistry WEEKLY_EVENTS;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
@@ -47,6 +51,8 @@ public final class OMCRegistry {
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 

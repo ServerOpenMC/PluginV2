@@ -13,6 +13,11 @@ import java.util.List;
 public enum ContestPhase {
     VOTE_CAMP(new WeeklyEventPhase() {
         @Override
+        public String getId() {
+            return "omc_contest:vote_camp";
+        }
+
+        @Override
         public Component getName() {
             return TranslationManager.translation("feature.events.contest.phase.vote.name");
         }
@@ -44,6 +49,11 @@ public enum ContestPhase {
     }),
     TRADE_PHASE(new WeeklyEventPhase() {
         @Override
+        public String getId() {
+            return "omc_contest:trade_phase";
+        }
+
+        @Override
         public Component getName() {
             return TranslationManager.translation("feature.events.contest.phase.trade.name");
         }
@@ -74,6 +84,11 @@ public enum ContestPhase {
         }
     }),
     END_PHASE(new WeeklyEventPhase() {
+        @Override
+        public String getId() {
+            return "omc_contest:end_phase";
+        }
+
         @Override
         public Component getName() {
             return TranslationManager.translation("feature.events.contest.phase.end.name");
