@@ -28,6 +28,9 @@ public class WeeklyEventsData {
 
     public WeeklyEventsData(WeeklyEvent currentEvent, WeeklyEventPhase currentPhase) {
         this.currentEvent = currentEvent.getId();
-        this.currentPhase = currentPhase.getId();
+        if (currentPhase == null)
+            this.currentPhase = null;
+        else
+            this.currentPhase = currentPhase.getId();
     }
 }

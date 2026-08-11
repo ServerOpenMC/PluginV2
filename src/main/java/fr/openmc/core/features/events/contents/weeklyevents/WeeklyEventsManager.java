@@ -15,7 +15,6 @@ import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
 import fr.openmc.core.utils.text.DateUtils;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -42,7 +41,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
 
         WeeklyEventPhase currentPhase = getCurrentPhase();
         if (data.isActive() && currentPhase != null && DateUtils.getCurrentDayOfWeek().equals(currentPhase.getStartDay())) {
-            runPhase(currentPhase);
+            runPhase(getCurrentEvent(), currentPhase);
             return;
         }
 
@@ -66,7 +65,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             WeeklyEventsData data = dao.queryForId(1);
             if (data == null) {
                 WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.CONTEST;
-                data = new WeeklyEventsData(contest, contest.getPhases().getFirst());
+                data = new WeeklyEventsData(contest, null);
                 dao.create(data);
             }
             return data;
@@ -136,7 +135,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         ) * 20L;
 
         if (delayTicks <= 0) {
-            runPhase(nextPhase);
+            runPhase(getCurrentEvent(), nextPhase);
             return;
         }
 
@@ -157,7 +156,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
                 scheduleNextPhase();
                 return;
             }
-            runPhase(nextPhase);
+            runPhase(getCurrentEvent(), nextPhase);
         }, delayTicks);
     }
 
@@ -165,7 +164,9 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Exécute l'action de la phase, marque l'event comme actif,
      * avance l'état, puis schedule la suivante.
      */
-    private static void runPhase(WeeklyEventPhase phase) {
+    private static void runPhase(WeeklyEvent event, WeeklyEventPhase phase) {
+        data.setCurrentEvent(event.getId());
+        data.setCurrentPhase(phase.getId());
         data.setActive(true);
         save(data);
 
@@ -176,8 +177,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
             Runnable action = phase.runAction();
             if (action != null) action.run();
         } catch (Exception e) {
-            OMCLogger.error("Erreur lors de l'exécution de la phase {}",
-                    PlainTextComponentSerializer.plainText().serialize(phase.getName()), e);
+            OMCLogger.error("Erreur lors de l'exécution de la phase {}", phase.getId(), e);
         }
     }
 
@@ -214,10 +214,10 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         save(data);
 
         OMCLogger.info("[WeeklyEvents] Event forcé : {} à la phase {}",
-                PlainTextComponentSerializer.plainText().serialize(event.getName()),
-                PlainTextComponentSerializer.plainText().serialize(phase.getName()));
+                event.getId(),
+                phase.getId());
 
-        runPhase(phase);
+        runPhase(event, phase);
     }
 
     /**
@@ -230,7 +230,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
 
         data.setActive(false);
         data.setCurrentEvent(next.getId());
-        data.setCurrentPhase(next.getFirstPhase().getId());
+        data.setCurrentPhase(null);
         save(data);
 
         OMCLogger.info("[WeeklyEvents] Passage à l'event suivant : {}",
@@ -244,6 +244,10 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
     private static WeeklyEventPhase findNextPhase() {
         WeeklyEvent event = getCurrentEvent();
         WeeklyEventPhase current = getCurrentPhase();
+
+        if (current == null) {
+            return event.getFirstPhase();
+        }
 
         return event.getNextPhase(current)
                 .or(() -> OMCRegistry.WEEKLY_EVENTS.getNextEvent(event).map(WeeklyEvent::getFirstPhase))
