@@ -27,12 +27,12 @@ public class CropBreakLootTable extends CustomLootTable {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ENCHANTS.PLANTATION.getEnchantedBookItem(1),
-                        0.01,
+                        0.005,
                         1
                 ),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ENCHANTS.PLANTATION.getEnchantedBookItem(2),
-                        0.005,
+                        0.001,
                         1
                 )
         ));

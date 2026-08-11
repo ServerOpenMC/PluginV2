@@ -36,7 +36,7 @@ public class PlantationLootListener implements Listener {
         if (!(event.getBlock().getBlockData() instanceof Ageable ageable)) return;
         if (ageable.getAge() != ageable.getMaximumAge()) return;
 
-        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.CROPS.rollLootsWithoutGuarantee(event.getPlayer());
+        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.CROPS.rollLootsWithoutGuarantee(event.getPlayer()).loots();
 
         if (loots.isEmpty()) return;
 

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry;
 
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.RepresentedItem;
 import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
-import java.util.Set;
 
 /**
  * Classe représentant le Loot étant une Sea Creature, donc un mob péchable
@@ -77,9 +77,9 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public Set<CustomLoot> run(Player receiver) {
+    public LootReward run(Player receiver) {
         // déjà lancé dans MiraculousFishingManager.simulateLaunchLoot
-        return Collections.singleton(this);
+        return LootReward.loots(Collections.singleton(this));
     }
 
     public void showLoot(Player player) {

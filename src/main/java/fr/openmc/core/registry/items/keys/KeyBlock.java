@@ -4,8 +4,10 @@ import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
+import org.bukkit.inventory.ItemStack;
 
 public final class KeyBlock {
     @Getter
@@ -52,11 +54,32 @@ public final class KeyBlock {
         return customBlock != null;
     }
 
+    public Component name() {
+        if (isVanilla()) return Component.translatable(blockType.translationKey());
+        else {
+            CustomItem item = getCustomItem();
+            ItemStack itemStack = item.getBest();
+            if (itemStack.getItemMeta().hasItemName()) {
+                return itemStack.getItemMeta().itemName();
+            }
+            return itemStack.displayName();
+        }
+    }
+
+    public boolean matches(Block block) {
+        if (block == null) return false;
+
+        CustomBlock placed = CustomBlock.byAlreadyPlaced(block);
+        if (isCustom()) return customBlock.getNamespacedID().equals(placed.getNamespacedID());
+
+        return blockType == block.getType().asBlockType();
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof KeyBlock other)) return false;
-        return this.id.equals(other.id);
+        return id.equals(other.id);
     }
 
     @Override

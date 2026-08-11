@@ -18,7 +18,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
-import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +25,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.AbondanceArmorManager.applyDoubleCropsChance;
@@ -47,7 +46,7 @@ public class GoldenCropsListener implements Listener {
         ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (itemLoot == null) return;
 
-        Set<CustomLoot> loots = itemLoot.run(event.getPlayer(), event.getBlock().getLocation());
+        List<CustomLoot> loots = itemLoot.run(event.getPlayer(), event.getBlock().getLocation()).loots();
         if (loots.isEmpty()) return;
 
         giveRewards(itemLoot, event.getPlayer(), event.getBlock());
@@ -78,12 +77,9 @@ public class GoldenCropsListener implements Listener {
         KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
         if (keyBlockGolden == null) return;
 
-        if (!(event.getNewState() instanceof Ageable ageable)) return;
-        if (ageable.getAge() != ageable.getMaximumAge()) return;
-
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;
 
-        CustomBlock customBlock =  keyBlockGolden.getCustomBlock();
+        CustomBlock customBlock = keyBlockGolden.getCustomBlock();
         if (customBlock == null) return;
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
@@ -100,7 +96,7 @@ public class GoldenCropsListener implements Listener {
     }
 
     private void giveRewards(ItemLoot itemLoot, Player player, Block block) {
-        Collection<CustomLoot> loots = applyDoubleCropsChance(player, itemLoot.run(player, block.getLocation()));
+        Collection<CustomLoot> loots = applyDoubleCropsChance(player, itemLoot.run(player, block.getLocation()).loots());
         if (loots.isEmpty()) return;
 
         player.playSound(player.getLocation(), Sound.ITEM_GOLDEN_DANDELION_USE, 1, 0.3f);

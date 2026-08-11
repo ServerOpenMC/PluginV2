@@ -108,7 +108,7 @@ public class LootboxOpenMenu extends Menu {
             return items;
         }
 
-        List<CustomLoot> weightedPool = box.getLootTable().generateWeightedPool();
+        List<CustomLoot> weightedPool = box.getLootTable().generateWeightedPool().loots();
         for (int i = 0; i < displaySlots.size(); i++) {
             int lootIndex = (itemOffset + i) % weightedPool.size();
             CustomLoot loot = weightedPool.get(lootIndex);
@@ -180,7 +180,7 @@ public class LootboxOpenMenu extends Menu {
 
         winningLoot = box.getLootTable().selectRandomLoot();
 
-        List<CustomLoot> weightedPool = box.getLootTable().generateWeightedPool();
+        List<CustomLoot> weightedPool = box.getLootTable().generateWeightedPool().loots();
 
         animationTask = new BukkitRunnable() {
             @Override

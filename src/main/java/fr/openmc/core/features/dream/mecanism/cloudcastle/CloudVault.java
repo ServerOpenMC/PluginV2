@@ -45,7 +45,7 @@ public class CloudVault implements Listener {
         if (CLOUD_VAULT_LOOT_TABLE == null) return;
 
 
-        List<ItemLoot> itemLoots = CLOUD_VAULT_LOOT_TABLE.rollLootsWithAmount(player, 3)
+        List<ItemLoot> itemLoots = CLOUD_VAULT_LOOT_TABLE.rollLootsWithAmount(player, 3).loots()
                 .stream()
                 .filter(loot -> loot instanceof ItemLoot)
                 .map(item -> (ItemLoot) item).toList();
