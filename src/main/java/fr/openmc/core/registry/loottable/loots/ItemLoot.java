@@ -18,6 +18,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+// todo: enlever le concept d'avoir plusieurs items en une entrée
 @Getter
 public class ItemLoot implements CustomLoot, RepresentedItem {
     @Setter
