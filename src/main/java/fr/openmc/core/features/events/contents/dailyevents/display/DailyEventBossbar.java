@@ -84,7 +84,8 @@ public class DailyEventBossbar extends BaseBossbar {
     @Override
     protected boolean shouldDisplay(Player player) {
         return DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar;
+                && DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar
+                && player.getWorld().getName().equals(DailyEventsManager.getActiveDailyEvent().getWorldEvent());
     }
 
     /**
