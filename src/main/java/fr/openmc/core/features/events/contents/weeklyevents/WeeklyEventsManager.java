@@ -134,8 +134,10 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
                 0
         ) * 20L;
 
-        if (delayTicks <= 0) {
+        if (delayTicks < 0) {
             runPhase(getCurrentEvent(), nextPhase);
+            OMCLogger.infoFormatted("Phase passée ({}) de l'évenement weekly ({}) car il devrait etre passé)", nextPhase.getId(),
+                    getCurrentEvent().getId());
             return;
         }
 
@@ -186,6 +188,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Si c'était la dernière phase, passe à l'event suivant (et marque inactif).
      */
     private static void advancePhase() {
+        OMCLogger.info("[DEBUG] advancePhase: current avant = {}", data.getCurrentPhase());
         WeeklyEvent event = getCurrentEvent();
         WeeklyEventPhase current = getCurrentPhase();
 
