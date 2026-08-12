@@ -33,6 +33,11 @@ public abstract class CustomLootTable {
         List<CustomLoot> guaranted = this.getLoots().stream()
                 .filter(loot -> loot.getChance() >= 1.0)
                 .toList();
+
+        for (CustomLoot loot : guaranted) {
+            loot.run(receiver);
+        }
+
         List<CustomLoot> result = new ArrayList<>(guaranted);
         List<CustomLoot> remaining = new ArrayList<>(this.getLoots().stream()
                 .filter(loot -> loot.getChance() < 1.0).toList());

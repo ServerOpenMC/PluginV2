@@ -34,8 +34,8 @@ public abstract class ChatAnimation {
         else
             loot = reward.rollLoots(winner);
 
-        this.stop();
         ChatAnimationManager.onAnimationCompleted(this, winner, loot);
+        this.stop();
     }
 
     public final boolean isFinished() {

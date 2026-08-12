@@ -173,6 +173,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     public int getRandomAmount() {
+        if (minAmount == maxAmount) return minAmount;
         return minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
     }
 
