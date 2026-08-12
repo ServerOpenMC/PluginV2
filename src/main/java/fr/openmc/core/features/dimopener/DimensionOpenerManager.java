@@ -49,6 +49,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
 
     private static final Map<String, DimensionData> dimensions = new ConcurrentHashMap<>();
     private static final Map<String, DimensionProgress> progressMap = new ConcurrentHashMap<>();
+    private static final Set<UUID> canBypass = new HashSet<>();
 
     private static File dimensionsFolder;
     private static File progressFile;
@@ -354,6 +355,18 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         }
 
         return new ItemStack(material);
+    }
+
+    public static void addBypass(Player player) {
+        canBypass.add(player.getUniqueId());
+    }
+
+    public static void removeBypass(Player player) {
+        canBypass.remove(player.getUniqueId());
+    }
+
+    public static boolean hasBypass(Player player) {
+        return canBypass.contains(player.getUniqueId());
     }
 
     @Override

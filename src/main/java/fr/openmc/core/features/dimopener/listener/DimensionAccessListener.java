@@ -18,6 +18,8 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import javax.annotation.Nullable;
+
 public class DimensionAccessListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -42,7 +44,8 @@ public class DimensionAccessListener implements Listener {
         checkAccess(player, to.getWorld().getName(), event);
     }
 
-    public static boolean checkAccess(Player player, String worldName, Cancellable event) {
+    public static boolean checkAccess(Player player, String worldName, @Nullable Cancellable event) {
+        if (DimensionOpenerManager.hasBypass(player)) return true;
         DimensionData dim = DimensionOpenerManager.getDimensionByWorldName(worldName);
         if (dim == null) return true;
 
@@ -50,7 +53,8 @@ public class DimensionAccessListener implements Listener {
         DimensionState state = progress != null ? progress.getState() : null;
 
         if (state != DimensionState.OPENED) {
-            event.setCancelled(true);
+            if (event != null)
+                event.setCancelled(true);
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("feature.dimopener.access.denied"),

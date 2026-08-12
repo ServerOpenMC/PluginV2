@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dimopener.DimensionOpenerManager;
+import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -30,7 +30,7 @@ public class PlayerChangeWorldListener implements Listener {
         if (!DreamUtils.isDreamWorld(event.getTo())) return;
         if (DreamUtils.isDreamWorld(event.getFrom())) return;
 
-        if (!DimensionOpenerManager.isOpened(DreamDimensionManager.DIMENSION_NAME)) return;
+        if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
 
         try {
             DreamManager.addDreamPlayer(player, event.getFrom());

@@ -8,7 +8,7 @@ import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.cube.Cube;
-import fr.openmc.core.features.cube.CubeCommands;
+import fr.openmc.core.features.cube.commands.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.dream.DreamDimensionManager;
