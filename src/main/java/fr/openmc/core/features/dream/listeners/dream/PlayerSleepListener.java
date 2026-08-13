@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dimopener.DimensionOpenerManager;
+import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
@@ -42,11 +42,11 @@ public class PlayerSleepListener implements Listener {
 
     @EventHandler
     public void onNightSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP && DimensionOpenerManager.isOpened(DreamDimensionManager.DIMENSION_NAME)) {
-            if (isPlayerSleeping.isEmpty()) {
-                return;
-            }
+        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
+            if (isPlayerSleeping.isEmpty()) return;
+
             for (Player player : isPlayerSleeping) {
+                if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, null)) continue;
                 if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) {
                     player.addPotionEffect(new PotionEffect(
                             PotionEffectType.NAUSEA,

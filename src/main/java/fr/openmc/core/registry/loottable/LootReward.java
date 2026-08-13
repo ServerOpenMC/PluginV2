@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.loottable;
 
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
@@ -19,7 +20,11 @@ public record LootReward(List<CustomLoot> loots) {
         Component component = null;
 
         for (CustomLoot loot : loots) {
-            Component lootComponent = loot.buildLootComponent(-1);
+            int amount = -1;
+            if (loot instanceof ItemLoot itemLoot) {
+                amount = itemLoot.getRepresentativeItem().getAmount();
+            }
+            Component lootComponent = loot.buildLootComponent(amount);
             if (lootComponent == null) continue;
 
             if (component == null)
