@@ -29,7 +29,7 @@ public enum ContestPhase {
 
         @Override
         public DayOfWeek getStartDay() {
-            return DayOfWeek.THURSDAY;
+            return DayOfWeek.FRIDAY;
         }
 
         @Override
@@ -65,7 +65,7 @@ public enum ContestPhase {
 
         @Override
         public DayOfWeek getStartDay() {
-            return DayOfWeek.FRIDAY;
+            return DayOfWeek.SATURDAY;
         }
 
         @Override
@@ -101,7 +101,7 @@ public enum ContestPhase {
 
         @Override
         public DayOfWeek getStartDay() {
-            return DayOfWeek.SATURDAY;
+            return DayOfWeek.SUNDAY;
         }
 
         @Override
