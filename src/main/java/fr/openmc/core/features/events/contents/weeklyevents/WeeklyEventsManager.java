@@ -172,7 +172,9 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         data.setActive(true);
         save(data);
 
-        advancePhase();
+        if (event.getNextPhase(phase).isEmpty())
+            advanceToNextEvent();
+
         scheduleNextPhase();
 
         try {
@@ -181,24 +183,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         } catch (Exception e) {
             OMCLogger.error("Erreur lors de l'exécution de la phase {}", phase.getId(), e);
         }
-    }
-
-    /**
-     * Avance à la phase suivante.
-     * Si c'était la dernière phase, passe à l'event suivant (et marque inactif).
-     */
-    private static void advancePhase() {
-        OMCLogger.info("[DEBUG] advancePhase: current avant = {}", data.getCurrentPhase());
-        WeeklyEvent event = getCurrentEvent();
-        WeeklyEventPhase current = getCurrentPhase();
-
-        event.getNextPhase(current).ifPresentOrElse(
-                next -> {
-                    data.setCurrentPhase(next.getId());
-                    save(data);
-                },
-                WeeklyEventsManager::advanceToNextEvent
-        );
     }
 
     /**
@@ -248,9 +232,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
         WeeklyEvent event = getCurrentEvent();
         WeeklyEventPhase current = getCurrentPhase();
 
-        if (current == null) {
-            return event.getFirstPhase();
-        }
+        if (current == null) return event.getFirstPhase();
 
         return event.getNextPhase(current)
                 .or(() -> OMCRegistry.WEEKLY_EVENTS.getNextEvent(event).map(WeeklyEvent::getFirstPhase))
