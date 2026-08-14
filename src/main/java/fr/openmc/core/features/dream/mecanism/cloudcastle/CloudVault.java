@@ -18,7 +18,6 @@ import org.bukkit.event.block.BlockDispenseLootEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Set;
 
 public class CloudVault implements Listener {
     private final CustomLootTable CLOUD_VAULT_LOOT_TABLE = DreamLootTableRegistry.CLOUD_VAULT;
@@ -51,8 +50,7 @@ public class CloudVault implements Listener {
                 .map(item -> (ItemLoot) item).toList();
 
         List<ItemStack> itemStacks = itemLoots.stream()
-                .map(ItemLoot::getItems)
-                .flatMap(Set::stream)
+                .map(ItemLoot::getLoot)
                 .toList();
 
         event.setDispensedLoot(itemStacks);

@@ -13,36 +13,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-// todo: enlever le concept d'avoir plusieurs items en une entrée
 @Getter
 public class ItemLoot implements CustomLoot, RepresentedItem {
     @Setter
     private double chance;
-    private final Set<ItemStack> items;
+    private final ItemStack item;
     private Predicate<Player> predicateToLoot = null;
     private Supplier<ItemStack> itemSupplier = null;
-    private final ItemStack displayedItem;
     private final int minAmount;
     private final int maxAmount;
 
-    public ItemLoot(Set<ItemStack> items, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
-        this.chance = chance;
-        this.items = items;
-        this.displayedItem = displayedItem;
-        this.minAmount = minAmount;
-        this.maxAmount = maxAmount;
-    }
-
     public ItemLoot(Supplier<ItemStack> itemSupplier, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this.chance = chance;
-        this.items = Collections.singleton(displayedItem);
+        this.item = displayedItem;
         this.itemSupplier = itemSupplier;
-        this.displayedItem = displayedItem;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
     }
@@ -52,16 +40,14 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
-        this(Collections.singleton(item),
-                null,
-                chance,
-                minAmount,
-                maxAmount);
+        this.chance = chance;
+        this.item = item;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
     }
 
     public ItemLoot(ItemStack item, double chance, int amount) {
-        this(Collections.singleton(item),
-                null,
+        this(item,
                 chance,
                 amount,
                 amount);
@@ -74,103 +60,37 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 maxAmount);
     }
 
-    public ItemLoot(Material item, double chance, int amount) {
-        if (item == null) {
-            throw new IllegalArgumentException("CustomItem cannot be null");
-        }
-        this(Collections.singleton(ItemStack.of(item)),
-                null,
+    public ItemLoot(Material material, double chance, int amount) {
+        this(ItemStack.of(material),
                 chance,
-                amount,
                 amount);
     }
 
     public ItemLoot(CustomItem item, double chance, int amount) {
-        if (item == null) {
-            throw new IllegalArgumentException("CustomItem cannot be null");
-        }
-        this(Collections.singleton(item.getBest()),
-                null,
+        this(item.getBest(),
                 chance,
-                amount,
                 amount);
     }
 
     public ItemLoot(CustomItem item, Predicate<Player> predicate, double chance, int amount) {
-        if (item == null) throw new IllegalArgumentException("CustomItem cannot be null");
-        this(Collections.singleton(item.getBest()),
-                null,
+        this(item.getBest(),
                 chance,
-                amount,
                 amount);
 
         this.predicateToLoot = predicate;
     }
 
     public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
-        if (item == null) {
-            throw new IllegalArgumentException("CustomItem cannot be null");
-        }
-        this(Collections.singleton(item.getBest()),
-                null,
+        this(item.getBest(),
                 chance,
                 minAmount,
                 maxAmount);
     }
 
-    public ItemLoot(Material item, Material displayedItem, double chance, int minAmount, int maxAmount) {
-        this(ItemStack.of(item),
-                ItemStack.of(displayedItem),
-                chance,
-                minAmount,
-                maxAmount);
-    }
-
-    public ItemLoot(ItemStack item, Material displayedItem, double chance, int minAmount, int maxAmount) {
-        this(item,
-                ItemStack.of(displayedItem),
-                chance,
-                minAmount,
-                maxAmount);
-    }
-
-    public ItemLoot(ItemStack item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
-        this(Collections.singleton(item),
-                displayedItem,
-                chance,
-                minAmount,
-                maxAmount);
-    }
-
-    public ItemLoot(CustomItem item, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
-        if (item == null) {
-            throw new IllegalArgumentException("CustomItem cannot be null");
-        }
-        this(Collections.singleton(item.getBest()),
-                displayedItem,
-                chance,
-                minAmount,
-                maxAmount);
-    }
-
-    public ItemLoot(CustomItem item, CustomItem displayedItem, double chance, int minAmount, int maxAmount) {
-        if (item == null) throw new IllegalArgumentException("CustomItem cannot be null");
-        if (displayedItem == null) throw new IllegalArgumentException("CustomItem cannot be null");
-
-        this(Collections.singleton(item.getBest()),
-                displayedItem.getBest(),
-                chance,
-                minAmount,
-                maxAmount);
-    }
-
-    public ItemStack getFirstLoot() {
-        ItemStack item = items.stream().findFirst().orElse(null);
-        if (item == null) return null;
-
-        item = item.clone();
-        item.setAmount(Math.min(this.getRandomAmount(), 99));
-        return item;
+    public ItemStack getLoot() {
+        ItemStack itemLoot = item.clone();
+        itemLoot.setAmount(Math.min(this.getRandomAmount(), 99));
+        return itemLoot;
     }
 
     public int getRandomAmount() {
@@ -180,7 +100,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public Component getDisplayText() {
-        return getFirstLoot().displayName();
+        return getLoot().displayName();
     }
 
     /**
@@ -188,7 +108,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
      * @return un component contenant le nouveau nom du loot
      */
     public Component getSimpleText() {
-        return getFirstLoot().effectiveName().asHoverEvent().value()
+        return getLoot().effectiveName().asHoverEvent().value()
                 .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
@@ -222,21 +142,16 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
             return LootReward.loots(Collections.singleton(this));
         }
 
-        for (ItemStack lootItem : this.getItems()) {
-            ItemStack item = lootItem.clone();
-            item.setAmount(this.getRandomAmount());
+        ItemStack itemLoot = item.clone();
+        itemLoot.setAmount(this.getRandomAmount());
 
-            consumer.accept(item);
-        }
+        consumer.accept(itemLoot);
 
         return LootReward.loots(Collections.singleton(this));
     }
 
     @Override
     public ItemStack getRepresentativeItem() {
-        if (this.displayedItem != null)
-            return this.getDisplayedItem();
-        else
-            return getFirstLoot();
+        return getLoot();
     }
 }

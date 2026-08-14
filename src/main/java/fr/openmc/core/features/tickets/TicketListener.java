@@ -41,9 +41,7 @@ public class TicketListener implements Listener, NotInUnitTest {
 
         if (!(event.getLoot() instanceof ItemLoot itemLoot)) return;
 
-        boolean hasLootPelucheSeinyy = itemLoot.getItems().stream()
-                .filter(loot -> OMCRegistry.CUSTOM_ITEMS.get(loot).isPresent())
-                .anyMatch(loot -> OMCRegistry.CUSTOM_ITEMS.getOrThrow(loot).getId().equals(pelushKey));
+        boolean hasLootPelucheSeinyy = OMCRegistry.CUSTOM_ITEMS.getOrThrow(itemLoot.getLoot()).getId().equals(pelushKey);
 
         Player player = event.getPlayer();
         PlayerStats ps = TicketManager.getPlayerStats(player.getUniqueId());

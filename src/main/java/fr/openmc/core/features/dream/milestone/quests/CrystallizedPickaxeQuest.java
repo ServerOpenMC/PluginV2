@@ -23,7 +23,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
@@ -76,13 +75,11 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 		for (CustomLoot loot : e.getLoot()) {
 			if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-			for (ItemStack item : itemLoot.getItems()) {
-				DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
-				if (dreamItem == null) return;
-				if (dreamItem instanceof CrystalizedPickaxe) {
-					if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
-					this.incrementProgressInDream(player.getUniqueId());
-				}
+			DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getLoot());
+			if (dreamItem == null) return;
+			if (dreamItem instanceof CrystalizedPickaxe) {
+				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
+				this.incrementProgressInDream(player.getUniqueId());
 			}
 		}
 	}
