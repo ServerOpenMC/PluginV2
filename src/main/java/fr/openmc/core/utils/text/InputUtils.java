@@ -3,6 +3,7 @@ package fr.openmc.core.utils.text;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 
 public class InputUtils {
@@ -109,10 +110,16 @@ public class InputUtils {
     }
 
     public static Component pluralize(Component word, int count) {
+        if (count > 1 && word instanceof TextComponent textComponent) {
+            return Component.text(textComponent.content() + "s", textComponent.style());
+        }
         return word.append(Component.text((count > 1 ? "s" : "")));
     }
 
     public static Component pluralize(Component word, long count) {
+        if (count > 1 && word instanceof TextComponent textComponent) {
+            return Component.text(textComponent.content() + "s", textComponent.style());
+        }
         return word.append(Component.text((count > 1 ? "s" : "")));
     }
 }
