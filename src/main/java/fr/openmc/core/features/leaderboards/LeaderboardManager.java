@@ -5,7 +5,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Credit(developers = {"miseur"})
-public class LeaderboardManager extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
+public class LeaderboardManager extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter

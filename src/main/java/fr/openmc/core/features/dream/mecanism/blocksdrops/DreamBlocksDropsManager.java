@@ -13,7 +13,7 @@ public class DreamBlocksDropsManager {
     private final static HashMap<Material, ItemStack> customDrops = new HashMap<>();
 
     public static void init() {
-        OMCPlugin.registerEvents(new ChangeBlockDropsListener());
+        OMCPlugin.registerEvents(ChangeBlockDropsListener::new);
 
         registerCustomDrop(Material.SCULK, DreamItemRegistry.CORRUPTED_SCULK);
         registerCustomDrop(Material.PALE_OAK_WOOD, DreamItemRegistry.OLD_PALE_OAK_WOOD);

@@ -5,18 +5,20 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.utils.world.LocationUtils;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Credit(developers = {"Nocolm"}, graphist = {"Gexary"})
 public class ElevatorManager extends Feature implements HasListeners {
@@ -191,9 +193,7 @@ public class ElevatorManager extends Feature implements HasListeners {
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new ElevatorBlockListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(ElevatorBlockListener::new);
     }
 }

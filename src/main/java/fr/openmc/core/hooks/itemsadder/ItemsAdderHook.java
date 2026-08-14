@@ -46,7 +46,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
         api = ApiHook.super.api();
 
         OMCPlugin.registerEvents(
-                new BehaviourUpBlock()
+                BehaviourUpBlock::new
         );
 
         mergeResourcePack(Set.of("OpenMC/generated-rp-langs"));

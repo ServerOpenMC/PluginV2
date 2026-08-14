@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.bits.contents.items.KitchenBox;
@@ -29,7 +30,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -235,7 +235,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem OFFICE_FURNITURE_V2_BOARD_1 = register("elitecreatures:office_furniture_v2_board_1", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_BOARD_2 = register("elitecreatures:office_furniture_v2_board_2", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_CHAIRCEO = register("elitecreatures:office_furniture_v2_chairceo", Material.PAPER);
-    public final CustomItem OFFICE_FURNITURE_V2_CHAIR = register("elitecreatures:office_furniture_v2_chair", Material.PAPER);
+    public final CustomItem OFFICE_FURNITURE_V2_CHAIR = register("elitecretures:office_furniture_v2_chair", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_COMPUTER = register("elitecreatures:office_furniture_v2_computer", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_CUPBOARD_1 = register("elitecreatures:office_furniture_v2_cupboard_1", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_CUPBOARD_2 = register("elitecreatures:office_furniture_v2_cupboard_2", Material.PAPER);
@@ -281,12 +281,12 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem MEDIEVAL_BOX = register(new MedievalBox("omc_bits:medieval_box"));
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new BlockBreakListener(),
-                new EquipableItemListener(),
-                new InteractListener(),
-                new BlockPlaceListener()
+                BlockBreakListener::new,
+                EquipableItemListener::new,
+                InteractListener::new,
+                BlockPlaceListener::new
         );
     }
 

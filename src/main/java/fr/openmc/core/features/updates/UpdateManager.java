@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -12,7 +13,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
@@ -48,10 +48,8 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new UpdateListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(UpdateListener::new);
     }
 
     public static void sendUpdateMessage(Player player) {

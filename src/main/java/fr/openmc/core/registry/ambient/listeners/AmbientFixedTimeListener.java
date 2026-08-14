@@ -2,6 +2,7 @@ package fr.openmc.core.registry.ambient.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.RegionEnterEvent;
 import fr.openmc.core.events.RegionLeaveEvent;
 import fr.openmc.core.registry.ambient.CustomAmbient;
@@ -14,7 +15,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 
-public class AmbientFixedTimeListener implements Listener {
+public class AmbientFixedTimeListener implements Listener, NotLoadInUnitTest {
     @EventHandler
     public void onPlayerKill(PlayerDeathEvent event) {
         Player player = event.getPlayer();

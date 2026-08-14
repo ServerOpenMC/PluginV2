@@ -42,7 +42,7 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
-                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME, RegistryLoadingType.NOT_LOADED_UNIT_TEST),
             new RegistryContext(
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
                     RegistryLoadingType.AFTER_IA),
@@ -54,8 +54,8 @@ public final class OMCRegistry {
 
     public static void bootstrapAll(BootstrapContext context) {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (Arrays.stream(ctx.loadingTypes())
-                    .noneMatch(t -> t == RegistryLoadingType.BOOTSTRAP)) continue;
+            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
+            if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = load(ctx);
             try {
@@ -70,8 +70,8 @@ public final class OMCRegistry {
 
     public static void initAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (Arrays.stream(ctx.loadingTypes())
-                    .noneMatch(t -> t == RegistryLoadingType.RUNTIME)) continue;
+            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
+            if (isNotTyped(ctx, RegistryLoadingType.RUNTIME)) continue;
 
             LifecycleRegistry r = load(ctx);
 
@@ -85,8 +85,8 @@ public final class OMCRegistry {
 
     public static void postInitAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (Arrays.stream(ctx.loadingTypes())
-                    .noneMatch(t -> t == RegistryLoadingType.AFTER_IA)) continue;
+            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
+            if (isNotTyped(ctx, RegistryLoadingType.AFTER_IA)) continue;
 
             LifecycleRegistry r = load(ctx);
 
@@ -110,5 +110,13 @@ public final class OMCRegistry {
         LifecycleRegistry registry = ctx.registry().get();
         LOADED.add(registry);
         return registry;
+    }
+
+    private static boolean isNotTyped(RegistryContext ctx, RegistryLoadingType type) {
+        return Arrays.stream(ctx.loadingTypes()).noneMatch(t -> t == type);
+    }
+
+    private static boolean isTyped(RegistryContext ctx, RegistryLoadingType type) {
+        return Arrays.stream(ctx.loadingTypes()).anyMatch(t -> t == type);
     }
 }

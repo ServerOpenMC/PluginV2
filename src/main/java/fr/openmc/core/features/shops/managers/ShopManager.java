@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.shops.ShopCommand;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.ShopListener;
@@ -23,7 +24,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -61,8 +61,8 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, HasData
 	}
 	
 	@Override
-	public Set<Listener> getListeners() {
-		return Set.of(new ShopListener());
+	public Set<ListenerFactory> getListeners() {
+		return Set.of(ShopListener::new);
 	}
 	
 	// LOADING

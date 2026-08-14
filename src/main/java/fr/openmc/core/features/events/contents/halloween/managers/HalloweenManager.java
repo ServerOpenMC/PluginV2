@@ -14,6 +14,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
@@ -38,7 +39,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.damage.DamageType;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -62,10 +62,8 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new HalloweenNPCListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(HalloweenNPCListener::new);
     }
 
     public static void depositPumpkins(UUID playerUUID, int amount) {

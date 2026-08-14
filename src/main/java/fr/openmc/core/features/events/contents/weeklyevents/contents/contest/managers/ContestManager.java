@@ -87,7 +87,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
         // ** LISTENERS **
         if (ItemsAdderHook.isEnable()) {
             OMCPlugin.registerEvents(
-                    new ContestIntractEvents()
+                    ContestIntractEvents::new
             );
         }
 

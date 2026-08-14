@@ -5,9 +5,9 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.profile.command.ProfileCommand;
 import fr.openmc.core.features.profile.listeners.ProfileInteractionListener;
-import org.bukkit.event.Listener;
 
 import java.util.Set;
 
@@ -21,9 +21,7 @@ public class ProfileManager extends Feature implements LoadAfterItemsAdder, HasC
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new ProfileInteractionListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(ProfileInteractionListener::new);
     }
 }

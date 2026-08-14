@@ -3,6 +3,7 @@ package fr.openmc.core.commands.admin.freeze;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -12,7 +13,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashSet;
@@ -31,10 +31,8 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 	}
 
 	@Override
-	public Set<Listener> getListeners() {
-		return Set.of(
-				new FreezeListener()
-		);
+	public Set<ListenerFactory> getListeners() {
+		return Set.of(FreezeListener::new);
 	}
 
 	/**

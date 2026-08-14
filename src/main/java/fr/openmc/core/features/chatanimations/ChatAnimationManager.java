@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListener;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
@@ -21,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -46,11 +46,8 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
     private static BukkitTask endAnimationTask;
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new QuizzListener(),
-                new ChallengeListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(QuizzListener::new, ChallengeListener::new);
     }
 
     @Override

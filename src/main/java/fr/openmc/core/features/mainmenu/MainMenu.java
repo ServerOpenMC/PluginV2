@@ -7,7 +7,7 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
 import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.mainmenu.menus.Page1;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import java.util.Set;
 
 @Credit(developers = {"miseur"}, graphist = {"Tfloa"})
-public class MainMenu extends Feature implements NotInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
+public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
     @Override
     public void init() {
         new MainMenuListener(OMCPlugin.getInstance());

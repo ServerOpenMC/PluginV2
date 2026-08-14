@@ -10,13 +10,13 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.animations.commands.DebugAnimationCommand;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"})
-public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfEnable<ItemsAdderHook>, HasListeners, HasCommands {
+public class AnimationsManager extends Feature implements NotLoadInUnitTest, LoadIfEnable<ItemsAdderHook>, HasListeners, HasCommands {
 
     @Override
     public void init() {
@@ -48,11 +48,8 @@ public class AnimationsManager extends Feature implements NotInUnitTest, LoadIfE
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new EmoteListener(),
-                new PlayerFinishJoiningListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(EmoteListener::new, PlayerFinishJoiningListener::new);
     }
 
     @Override

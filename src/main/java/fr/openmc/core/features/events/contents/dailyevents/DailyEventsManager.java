@@ -7,12 +7,9 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.*;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
@@ -25,7 +22,6 @@ import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.DateUtils;
-import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
@@ -90,9 +86,9 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        Set<Listener> listeners = new HashSet<>(Set.of(
-                new DailyEventAmbientListeners()
+    public Set<ListenerFactory> getListeners() {
+        Set<ListenerFactory> listeners = new HashSet<>(Set.of(
+                DailyEventAmbientListeners::new
         ));
 
         for (DailyEvent event : EVENTS) {

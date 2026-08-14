@@ -71,10 +71,10 @@ public class DreamMobsRegistry {
     }
     public static void init() {
         OMCPlugin.registerEvents(
-                new PlainsMobSpawningListener(),
-                new SoulForestMobSpawningListener(),
-                new MudBeachMobSpawningListener(),
-                new DreamMobDamageListener()
+                PlainsMobSpawningListener::new,
+                SoulForestMobSpawningListener::new,
+                MudBeachMobSpawningListener::new,
+                DreamMobDamageListener::new
         );
 
         OMCRegistry.CUSTOM_MOBS.register(DREAM_MOB_REGISTRY);
