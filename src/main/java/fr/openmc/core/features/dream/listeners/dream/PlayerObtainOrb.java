@@ -92,7 +92,7 @@ public class PlayerObtainOrb implements Listener {
         for (CustomLoot loot : event.getLoot()) {
             if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-            DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getLoot());
+            DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getItemLootWithAmount());
 
             if (dreamItem == null) continue;
             if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;

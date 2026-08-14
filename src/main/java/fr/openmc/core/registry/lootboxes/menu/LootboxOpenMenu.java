@@ -115,8 +115,8 @@ public class LootboxOpenMenu extends Menu {
 
             ItemStack itemDisplay = loot.getRepresentativeItem();
 
-            if (loot instanceof ItemLoot itemLoot && itemLoot.getLoot() != null) {
-                itemDisplay = itemLoot.getLoot();
+            if (loot instanceof ItemLoot itemLoot && itemLoot.getItemLootWithAmount() != null) {
+                itemDisplay = itemLoot.getItemLootWithAmount();
             }
 
             if (itemDisplay == null) continue;

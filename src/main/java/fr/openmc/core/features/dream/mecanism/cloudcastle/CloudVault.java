@@ -50,7 +50,7 @@ public class CloudVault implements Listener {
                 .map(item -> (ItemLoot) item).toList();
 
         List<ItemStack> itemStacks = itemLoots.stream()
-                .map(ItemLoot::getLoot)
+                .map(ItemLoot::getItemLootWithAmount)
                 .toList();
 
         event.setDispensedLoot(itemStacks);

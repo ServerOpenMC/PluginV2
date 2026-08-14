@@ -75,7 +75,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 		for (CustomLoot loot : e.getLoot()) {
 			if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-			DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getLoot());
+			DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getItemLootWithAmount());
 			if (dreamItem == null) return;
 			if (dreamItem instanceof CrystalizedPickaxe) {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;

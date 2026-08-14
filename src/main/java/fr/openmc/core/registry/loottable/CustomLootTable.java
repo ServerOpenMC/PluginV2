@@ -23,7 +23,7 @@ public abstract class CustomLootTable {
         return this.getLoots().stream()
                 .filter(loot -> loot instanceof ItemLoot)
                 .map(loot -> (ItemLoot) loot)
-                .filter(loot -> ItemUtils.isSimilar(loot.getLoot(), item))
+                .filter(loot -> ItemUtils.isSimilar(loot.getItemLootWithAmount(), item))
                 .mapToDouble(CustomLoot::getChance)
                 .sum();
     }

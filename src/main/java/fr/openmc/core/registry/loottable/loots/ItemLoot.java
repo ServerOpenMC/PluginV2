@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -87,9 +88,9 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 maxAmount);
     }
 
-    public ItemStack getLoot() {
+    public ItemStack getItemLootWithAmount() {
         ItemStack itemLoot = item.clone();
-        itemLoot.setAmount(Math.min(this.getRandomAmount(), 99));
+        itemLoot.setAmount(this.getRandomAmount());
         return itemLoot;
     }
 
@@ -100,7 +101,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public Component getDisplayText() {
-        return getLoot().displayName();
+        return item.displayName();
     }
 
     /**
@@ -108,7 +109,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
      * @return un component contenant le nouveau nom du loot
      */
     public Component getSimpleText() {
-        return getLoot().effectiveName().asHoverEvent().value()
+        return item.effectiveName().asHoverEvent().value()
                 .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
@@ -116,11 +117,13 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     public LootReward run(Player receiver) {
         if (predicateToLoot != null && !predicateToLoot.test(receiver)) return null;
 
-        return runBase((item) -> {
-            if (ItemUtils.hasEnoughSpace(receiver, item)) {
-                receiver.getInventory().addItem(item);
-            } else {
-                receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+        return runBase((items) -> {
+            for (ItemStack item : items) {
+                if (ItemUtils.hasEnoughSpace(receiver, item)) {
+                    receiver.getInventory().addItem(item);
+                } else {
+                    receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+                }
             }
         });
     }
@@ -128,30 +131,35 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     public LootReward run(Player receiver, Location location) {
         if (predicateToLoot != null && !predicateToLoot.test(receiver)) return null;
 
-        return runBase((item) ->
-                receiver.getWorld().dropItemNaturally(location, item));
+        return runBase((items) -> {
+            for (ItemStack item : items) {
+                receiver.getWorld().dropItemNaturally(location, item);
+            }
+        });
     }
 
-    private LootReward runBase(Consumer<ItemStack> consumer) {
+    private LootReward runBase(Consumer<List<ItemStack>> consumer) {
+        ItemStack item;
+
         if (itemSupplier != null) {
-            ItemStack item = itemSupplier.get();
-            item.setAmount(this.getRandomAmount());
-
-            consumer.accept(item);
-
-            return LootReward.loots(Collections.singleton(this));
+            item = itemSupplier.get();
+        } else {
+            item = this.item.clone();
         }
 
-        ItemStack itemLoot = item.clone();
-        itemLoot.setAmount(this.getRandomAmount());
+        item.setAmount(this.getRandomAmount());
 
-        consumer.accept(itemLoot);
+        consumer.accept(ItemUtils.splitAmountIntoStack(item));
 
         return LootReward.loots(Collections.singleton(this));
     }
 
     @Override
     public ItemStack getRepresentativeItem() {
-        return getLoot();
+        ItemStack loot = getItemLootWithAmount();
+        if (loot.getAmount() > 99)
+            return item;
+
+        return getItemLootWithAmount();
     }
 }

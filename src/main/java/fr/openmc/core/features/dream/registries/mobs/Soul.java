@@ -125,7 +125,7 @@ public class Soul extends DreamMob<Vex> {
                     if (Math.random() >= loot.getChance()) return;
 
                     int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
-                    ItemStack drop = loot.getLoot().asQuantity(amount);
+                    ItemStack drop = loot.getItemLootWithAmount().asQuantity(amount);
                     dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
                 }
             } else if (dead.equals(stand) && vex.isValid()) {
@@ -134,7 +134,7 @@ public class Soul extends DreamMob<Vex> {
                     if (Math.random() >= loot.getChance()) return;
 
                     int amount = loot.getMinAmount() + (int) (Math.random() * (loot.getMaxAmount() - loot.getMinAmount() + 1));
-                    ItemStack drop = loot.getLoot().asQuantity(amount);
+                    ItemStack drop = loot.getItemLootWithAmount().asQuantity(amount);
                     dead.getWorld().dropItemNaturally(dead.getLocation(), drop);
                 }
             }
