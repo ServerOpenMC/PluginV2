@@ -3,24 +3,22 @@ package fr.openmc.core.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtils {
-    private static final Random random = ThreadLocalRandom.current();
 
     /**
      * Retourne un double aléatoire entre min et max.
      */
     public static double randomBetween(double min, double max) {
-        return ThreadLocalRandom.current().nextDouble(min, max + 1);
+        return ThreadLocalRandom.current().nextDouble(min, max);
     }
 
     /**
      * Retourne un float aléatoire entre min et max.
      */
     public static float randomBetween(float min, float max) {
-        return ThreadLocalRandom.current().nextFloat(min, max + 1);
+        return ThreadLocalRandom.current().nextFloat(min, max);
     }
 
     /**

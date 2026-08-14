@@ -48,6 +48,9 @@ public abstract class Feature {
 
             initialize = true;
             OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
+        } catch (DisableFeatureException e) {
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
+            OMCLogger.error(e.getMessage(), e);
         } catch (Exception e) {
             initialize = false;
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
