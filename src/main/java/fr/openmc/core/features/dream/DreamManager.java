@@ -10,6 +10,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.city.City;
@@ -154,11 +155,11 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
                 try {
                     savePlayerDao.delete(playerData);
                 } catch (SQLException e) {
-                    fr.openmc.core.bootstrap.integration.OMCLogger.error("Cannot load player save data", e);
+                    OMCLogger.error("Cannot load player save data", e);
                 }
             });
         } catch (SQLException e) {
-            fr.openmc.core.bootstrap.integration.OMCLogger.error("Cannot load player save data", e);
+            OMCLogger.error("Cannot load player save data", e);
         }
     }
 
@@ -167,7 +168,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
             try {
                 savePlayerDao.createOrUpdate(playerSave);
             } catch (SQLException e) {
-                fr.openmc.core.bootstrap.integration.OMCLogger.error("Cannot save player save data for player {}", uuid, e);
+                OMCLogger.error("Cannot save player save data for player {}", uuid, e);
             }
         });
     }
@@ -180,7 +181,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
                     cacheDreamPlayer.put(playerData.getPlayerUUID(), playerData)
             );
         } catch (SQLException e) {
-            fr.openmc.core.bootstrap.integration.OMCLogger.error("Cannot load dream player data", e);
+            OMCLogger.error("Cannot load dream player data", e);
         }
     }
 
@@ -189,7 +190,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
             try {
                 dreamPlayerDao.createOrUpdate(dbDreamPlayer);
             } catch (SQLException e) {
-                fr.openmc.core.bootstrap.integration.OMCLogger.error("Cannot save dream player data", e);
+                OMCLogger.error("Cannot save dream player data", e);
             }
         });
     }
@@ -208,7 +209,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
             }
 
         } catch (SQLException e) {
-            fr.openmc.core.bootstrap.integration.OMCLogger.error("Cannot save player save data", e);
+            OMCLogger.error("Cannot save player save data", e);
         }
     }
 
@@ -259,7 +260,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         playerSaveData.remove(player.getUniqueId());
 
         if (dreamPlayer == null) {
-            fr.openmc.core.bootstrap.integration.OMCLogger.warn("Cannot remove player {}({}) from Dream", player.getName(), player.getUniqueId());
+            OMCLogger.warn("Cannot remove player {}({}) from Dream", player.getName(), player.getUniqueId());
             return;
         }
 
@@ -298,7 +299,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
 
         if (playerSave == null) {
             player.teleportAsync(SpawnManager.getSpawnLocation());
-            fr.openmc.core.bootstrap.integration.OMCLogger.warn("Nothing to load from {}({})", player.getName(), player.getUniqueId());
+            OMCLogger.warn("Nothing to load from {}({})", player.getName(), player.getUniqueId());
             return;
         }
         PlayerInventory dreamInventory = player.getInventory();
@@ -352,7 +353,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
             DreamManager.saveDreamPlayerData(dreamPlayer);
             cache = DreamManager.getCacheDreamPlayer(player);
             if (cache == null) {
-                fr.openmc.core.bootstrap.integration.OMCLogger.warn("player ({}) had no cache even after saving it. [DreamManager#setMaxTime]", player.getUniqueId());
+                OMCLogger.warn("player ({}) had no cache even after saving it. [DreamManager#setMaxTime]", player.getUniqueId());
                 return;
             }
         }

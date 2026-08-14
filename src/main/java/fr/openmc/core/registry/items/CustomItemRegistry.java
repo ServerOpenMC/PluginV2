@@ -235,7 +235,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem OFFICE_FURNITURE_V2_BOARD_1 = register("elitecreatures:office_furniture_v2_board_1", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_BOARD_2 = register("elitecreatures:office_furniture_v2_board_2", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_CHAIRCEO = register("elitecreatures:office_furniture_v2_chairceo", Material.PAPER);
-    public final CustomItem OFFICE_FURNITURE_V2_CHAIR = register("elitecretures:office_furniture_v2_chair", Material.PAPER);
+    public final CustomItem OFFICE_FURNITURE_V2_CHAIR = register("elitecreatures:office_furniture_v2_chair", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_COMPUTER = register("elitecreatures:office_furniture_v2_computer", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_CUPBOARD_1 = register("elitecreatures:office_furniture_v2_cupboard_1", Material.PAPER);
     public final CustomItem OFFICE_FURNITURE_V2_CUPBOARD_2 = register("elitecreatures:office_furniture_v2_cupboard_2", Material.PAPER);
