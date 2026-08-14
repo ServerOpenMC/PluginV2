@@ -11,13 +11,16 @@ public class RandomUtils {
      * Retourne un double aléatoire entre min et max.
      */
     public static double randomBetween(double min, double max) {
+        if (min >= max) return min;
         return ThreadLocalRandom.current().nextDouble(min, max);
     }
+
 
     /**
      * Retourne un float aléatoire entre min et max.
      */
     public static float randomBetween(float min, float max) {
+        if (min >= max) return min;
         return ThreadLocalRandom.current().nextFloat(min, max);
     }
 
