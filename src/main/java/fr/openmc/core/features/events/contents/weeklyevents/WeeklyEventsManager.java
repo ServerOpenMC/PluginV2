@@ -39,12 +39,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
     public void init() {
         data = load();
 
-        WeeklyEventPhase currentPhase = getCurrentPhase();
-        if (data.isActive() && currentPhase != null && DateUtils.getCurrentDayOfWeek().equals(currentPhase.getStartDay())) {
-            runPhase(getCurrentEvent(), currentPhase);
-            return;
-        }
-
         scheduleNextPhase();
     }
 
