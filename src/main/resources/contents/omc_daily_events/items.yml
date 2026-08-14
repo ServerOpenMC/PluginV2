@@ -8,14 +8,17 @@ items:
       generate: true
       textures:
         - other/tenders
-      material: COOKED_CHICKEN
+      material: PAPER
+    consumable:
+      nutrition: 8
+      saturation: 1.4
     lore:
       - <lang:itemsadder.omc_daily_events.tenders.lore.0>
 
   bob_sponge:
     display_name: <lang:itemsadder.omc_daily_events.bob_sponge.name>
     resource:
-      material: SPONGE
+      material: PAPER
       generate: false
       model_path: "minecraft:item/sponge"
     lore:
@@ -25,13 +28,16 @@ items:
   kebab_fermented:
     display_name: <lang:itemsadder.omc_daily_events.kebab_fermented.name>
     resource:
-      material: COOKED_BEEF
+      material: PAPER
       generate: true
       textures:
         - "omc_foods:items/kebab"
     lore:
       - <lang:itemsadder.omc_daily_events.kebab_fermented.lore.0>
     glint: true
+    consumable:
+      nutrition: 15
+      saturation: 8
     attribute_modifiers:
       mainhand:
         luck: 1.1
@@ -42,7 +48,7 @@ items:
       generate: true
       textures:
         - other/fermentum
-      material: STICK
+      material: PAPER
     lore:
       - <lang:itemsadder.omc_daily_events.fermentum.lore.0>
       - <lang:itemsadder.omc_daily_events.fermentum.lore.1>
@@ -53,7 +59,7 @@ items:
       generate: true
       textures:
         - other/blessed_bread
-      material: STICK
+      material: PAPER
     enchants:
       - minecraft:sharpness:10
     lore:

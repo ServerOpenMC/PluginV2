@@ -29,7 +29,7 @@ public class MeteoWand extends DreamItem implements UsableItem {
                 "omc_dream:meteo_wand",
                 TranslationManager.translation("feature.dream.item.meteo_wand.name"),
                 DreamRarity.LEGENDARY,
-                Material.STICK,
+                Material.PAPER,
                 true
         ));
     }

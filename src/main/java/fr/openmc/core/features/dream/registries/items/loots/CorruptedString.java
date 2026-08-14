@@ -13,7 +13,7 @@ public class CorruptedString extends DreamItem {
                 "omc_dream:corrupted_string",
                 TranslationManager.translation("feature.dream.item.corrupted_string.name"),
                 DreamRarity.COMMON,
-                Material.STRING,
+                Material.PAPER,
                 false
         ));
     }

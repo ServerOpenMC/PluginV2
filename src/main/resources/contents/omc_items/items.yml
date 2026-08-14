@@ -7,23 +7,23 @@ items:
       - <lang:itemsadder.omc_items.aywenite.lore.0>
     resource:
       generate: true
-      material: EMERALD
+      material: PAPER
       textures:
         - aywenite.png
   mascot_stick:
     display_name: <lang:itemsadder.omc_items.mascot_stick.name>
     resource:
-      material: STICK
+      material: PAPER
       model_path: items/msctt_wand
   warp_stick:
     display_name: <lang:itemsadder.omc_items.warp_stick.name>
     resource:
-      material: STICK
+      material: PAPER
       model_path: items/warp_wand
   unknown_stick:
     display_name: <lang:itemsadder.omc_items.unknown_stick.name>
     resource:
-      material: STICK
+      material: PAPER
       model_path: items/rndm_wand
   renforced_stick:
     display_name: <lang:itemsadder.omc_items.renforced_stick.name>
