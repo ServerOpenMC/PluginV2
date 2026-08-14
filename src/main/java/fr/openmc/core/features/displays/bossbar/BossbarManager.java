@@ -108,7 +108,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
                     playerBars.put(id, existing);
 
                     base.update(player, existing);
-                    existing.progress(base.progress(player));
+                    existing.progress(Math.clamp(base.progress(player), 0f, 1f));
                     playerLastUpdate.put(id, now);
                     continue;
                 }
@@ -118,7 +118,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
 
                 if (now - last >= intervalMillis) {
                     base.update(player, existing);
-                    existing.progress(base.progress(player));
+                    existing.progress(Math.clamp(base.progress(player), 0f, 1f));
                     playerLastUpdate.put(id, now);
                 }
 
