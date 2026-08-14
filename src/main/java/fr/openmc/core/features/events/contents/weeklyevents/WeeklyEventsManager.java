@@ -32,8 +32,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
 
     /**
      * Initialise la gestion des WeeklyEvents.
-     * Au restart : si on est déjà le bon jour pour la phase courante et que l'event
-     * était actif, on relance l'action immédiatement.
      */
     @Override
     public void init() {
