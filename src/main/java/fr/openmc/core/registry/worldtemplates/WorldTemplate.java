@@ -5,15 +5,28 @@ import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+import net.kyori.adventure.key.Key;
+import org.bukkit.Registry;
+import org.bukkit.block.Biome;
 
 import java.io.File;
 
+// todo: add interface, GameruleWorld, onFirstStart, ...
 @SuppressWarnings("UnstableApiUsage")
 public abstract class WorldTemplate {
+    private static Registry<Biome> BIOME_REGISTRY = null;
     public abstract String getNamespace();
     public abstract String getId();
     public abstract DimensionTypeBuilder dimensionType();
     public abstract BiomeBuilder biome();
+
+    public Biome getBiome() {
+        if (BIOME_REGISTRY == null)
+            BIOME_REGISTRY = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME);
+        return BIOME_REGISTRY.getOrThrow(Key.key(getKey()));
+    }
 
     public String getKey() {
         return getNamespace() + ":" + getId();
