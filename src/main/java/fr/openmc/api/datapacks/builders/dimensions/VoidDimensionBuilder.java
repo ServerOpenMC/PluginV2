@@ -2,6 +2,7 @@ package fr.openmc.api.datapacks.builders.dimensions;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
 
@@ -21,7 +22,7 @@ import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
  *   }
  * }
  */
-public final class VoidDimensionBuilder implements DimensionBuilder {
+public final class VoidDimensionBuilder implements ContentBuilder {
     private String type = "minecraft:overworld";
     private String biome = "minecraft:plains";
 

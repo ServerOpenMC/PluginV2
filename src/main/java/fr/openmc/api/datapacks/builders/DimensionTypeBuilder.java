@@ -32,7 +32,7 @@ import net.minecraft.world.level.dimension.DimensionType;
  *   "timelines": "#minecraft:in_overworld"
  * }
  */
-public final class DimensionTypeBuilder {
+public final class DimensionTypeBuilder implements ContentBuilder {
     private JsonObject attributes;
     private Double ambientLight = 0.0;
     private Double coordinateScale = 1.0;

@@ -2,11 +2,8 @@ package fr.openmc.api.datapacks.injectors;
 
 import fr.openmc.api.datapacks.DatapackInjector;
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
@@ -34,22 +31,27 @@ public class BiomesInjector implements DatapackInjector {
     }
 
     @Override
-    public void inject(File rootFile) {
-        if (builder == null) return;
-
-        Path root = rootFile.toPath().resolve("data").resolve(namespace)
-                .resolve("worldgen").resolve("biome");
-        try {
-            Files.createDirectories(root);
-            Path biomeFile = root.resolve(id + ".json");
-            Files.createDirectories(biomeFile.getParent());
-            Files.writeString(biomeFile, GSON.toJson(builder.toJson()));
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot write biome files", e);
-        }
+    public String[] getPath() {
+        return new String[]{"worldgen", "biome"};
     }
 
-    public String getKey() {
-        return namespace + ":" + id;
+    @Override
+    public ContentBuilder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getExtension() {
+        return "json";
     }
 }

@@ -1,13 +1,10 @@
 package fr.openmc.api.datapacks.injectors;
 
 import fr.openmc.api.datapacks.DatapackInjector;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 import fr.openmc.api.datapacks.builders.TimelineBuilder;
 import lombok.Getter;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.function.Consumer;
 
 @Getter
@@ -36,22 +33,27 @@ public class TimelinesInjector implements DatapackInjector {
     }
 
     @Override
-    public void inject(File rootFile) {
-        if (builder == null) return;
-
-        Path root = rootFile.toPath().resolve("data").resolve(namespace).resolve("timeline");
-        try {
-            Files.createDirectories(root);
-
-            Path file = root.resolve(id + ".json");
-            Files.createDirectories(file.getParent());
-            Files.writeString(file, GSON.toJson(builder.toJson()));
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot write timeline files", e);
-        }
+    public String[] getPath() {
+        return new String[]{"timeline"};
     }
 
-    public String getKey() {
-        return namespace + ":" + id;
+    @Override
+    public ContentBuilder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getExtension() {
+        return "json";
     }
 }

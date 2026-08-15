@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  *   "temperature": 2
  * }
  */
-public final class BiomeBuilder {
+public final class BiomeBuilder implements ContentBuilder {
     private JsonObject attributes = new JsonObject();
     private final JsonArray carvers = new JsonArray();
     @Getter
