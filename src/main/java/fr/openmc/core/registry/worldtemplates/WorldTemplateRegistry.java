@@ -21,10 +21,17 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
 
     @Override
     public void bootstrap(BootstrapContext context) throws IOException {
+        // * Initialise le dimension type et le biome associé à la map
         for (WorldTemplate template : values()) {
             worldTemplateDatapack.addInjector(new DimensionTypesInjector(NAMESPACE, template.getId(), template.dimensionType()));
             worldTemplateDatapack.addInjector(new BiomesInjector(NAMESPACE, template.getId(), template.biome()));
         }
+
+        // * Transfère les chunks de la dimension dans son dossier
+        for (WorldTemplate template : values()) {
+            template.copyToDimensionsFolder(context);
+        }
+
         worldTemplateDatapack.buildBootstrap(context, false);
     }
 
