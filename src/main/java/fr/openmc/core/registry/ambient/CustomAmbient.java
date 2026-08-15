@@ -178,7 +178,7 @@ public abstract class CustomAmbient {
         foliageColor.ifPresent(builder::foliageColor);
         dryFoliageColor.ifPresent(builder::dryFoliageColor);
 
-        return new BiomesInjector(ambientId.getNamespace()).add(ambientId.getPath(), builder);
+        return new BiomesInjector(ambientId.getNamespace(), ambientId.getPath(), builder);
     }
 
     private boolean hasEffects(JsonObject effects, String envKey) {

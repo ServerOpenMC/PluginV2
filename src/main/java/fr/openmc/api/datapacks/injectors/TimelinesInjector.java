@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
@@ -21,41 +19,39 @@ import java.util.function.Consumer;
 public class TimelinesInjector implements DatapackInjector {
 
     private final String namespace;
-    private String id;
-    private final Map<String, TimelineBuilder> entries = new LinkedHashMap<>();
+    private final String id;
+    private final TimelineBuilder builder;
 
-    public TimelinesInjector(String namespace) {
+    public TimelinesInjector(String namespace, String id, TimelineBuilder builder) {
         this.namespace = namespace;
+        this.id = id;
+        this.builder = builder;
     }
 
-    public TimelinesInjector add(String id, Consumer<TimelineBuilder> builder) {
-        TimelineBuilder instance = new TimelineBuilder();
-        builder.accept(instance);
-        entries.put(id, instance);
+    public TimelinesInjector(String namespace, String id, Consumer<TimelineBuilder> builder) {
+        this.namespace = namespace;
         this.id = id;
-        return this;
-    }
-
-    public TimelinesInjector add(String id, TimelineBuilder builder) {
-        entries.put(id, builder);
-        this.id = id;
-        return this;
+        this.builder = new TimelineBuilder();
+        builder.accept(this.builder);
     }
 
     @Override
     public void inject(File rootFile) {
-        if (entries.isEmpty()) return;
+        if (builder == null) return;
 
         Path root = rootFile.toPath().resolve("data").resolve(namespace).resolve("timeline");
         try {
             Files.createDirectories(root);
-            for (var entry : entries.entrySet()) {
-                Path file = root.resolve(entry.getKey() + ".json");
-                Files.createDirectories(file.getParent());
-                Files.writeString(file, GSON.toJson(entry.getValue().toJson()));
-            }
+
+            Path file = root.resolve(id + ".json");
+            Files.createDirectories(file.getParent());
+            Files.writeString(file, GSON.toJson(builder.toJson()));
         } catch (IOException e) {
             throw new IllegalStateException("Cannot write timeline files", e);
         }
+    }
+
+    public String getKey() {
+        return namespace + ":" + id;
     }
 }

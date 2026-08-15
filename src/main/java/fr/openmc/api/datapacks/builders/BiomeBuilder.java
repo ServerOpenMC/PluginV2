@@ -58,17 +58,17 @@ public final class BiomeBuilder {
     }
 
     public BiomeBuilder temperatureModifier(String id) {
-        this.temperatureModifier =id;
+        this.temperatureModifier = id;
         return this;
     }
 
     public BiomeBuilder creatureSpawnProbability(Double value) {
-        this.creatureSpawnProbability=value;
+        this.creatureSpawnProbability = value;
         return this;
     }
 
     public BiomeBuilder downfall(Float value) {
-        this.downfall=value;
+        this.downfall = value;
         return this;
     }
 

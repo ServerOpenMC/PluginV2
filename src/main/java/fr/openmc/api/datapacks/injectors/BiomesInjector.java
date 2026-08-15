@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -19,39 +17,39 @@ import java.util.function.Consumer;
 public class BiomesInjector implements DatapackInjector {
 
     private final String namespace;
-    private final Map<String, BiomeBuilder> entries = new LinkedHashMap<>();
+    private final String id;
+    private final BiomeBuilder builder;
 
-    public BiomesInjector(String namespace) {
+    public BiomesInjector(String namespace, String id, BiomeBuilder builder) {
         this.namespace = namespace;
+        this.id = id;
+        this.builder = builder;
     }
 
-    public BiomesInjector add(String id, Consumer<BiomeBuilder> builder) {
-        BiomeBuilder instance = new BiomeBuilder();
-        builder.accept(instance);
-        entries.put(id, instance);
-        return this;
-    }
-
-    public BiomesInjector add(String id, BiomeBuilder builder) {
-        entries.put(id, builder);
-        return this;
+    public BiomesInjector(String namespace, String id, Consumer<BiomeBuilder> builder) {
+        this.namespace = namespace;
+        this.id = id;
+        this.builder = new BiomeBuilder();
+        builder.accept(this.builder);
     }
 
     @Override
     public void inject(File rootFile) {
-        if (entries.isEmpty()) return;
+        if (builder == null) return;
 
         Path root = rootFile.toPath().resolve("data").resolve(namespace)
                 .resolve("worldgen").resolve("biome");
         try {
             Files.createDirectories(root);
-            for (var entry : entries.entrySet()) {
-                Path biomeFile = root.resolve(entry.getKey() + ".json");
-                Files.createDirectories(biomeFile.getParent());
-                Files.writeString(biomeFile, GSON.toJson(entry.getValue().toJson()));
-            }
+            Path biomeFile = root.resolve(id + ".json");
+            Files.createDirectories(biomeFile.getParent());
+            Files.writeString(biomeFile, GSON.toJson(builder.toJson()));
         } catch (IOException e) {
             throw new IllegalStateException("Cannot write biome files", e);
         }
+    }
+
+    public String getKey() {
+        return namespace + ":" + id;
     }
 }

@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -18,38 +16,39 @@ import java.util.function.Consumer;
 public class DimensionTypesInjector implements DatapackInjector {
 
     private final String namespace;
-    private final Map<String, DimensionTypeBuilder> entries = new LinkedHashMap<>();
+    private final String id;
+    private final DimensionTypeBuilder builder;
 
-    public DimensionTypesInjector(String namespace) {
+    public DimensionTypesInjector(String namespace, String id, DimensionTypeBuilder builder) {
         this.namespace = namespace;
+        this.id = id;
+        this.builder = builder;
     }
 
-    public DimensionTypesInjector add(String id, Consumer<DimensionTypeBuilder> builder) {
-        DimensionTypeBuilder instance = new DimensionTypeBuilder();
-        builder.accept(instance);
-        entries.put(id, instance);
-        return this;
-    }
-
-    public DimensionTypesInjector add(String id, DimensionTypeBuilder builder) {
-        entries.put(id, builder);
-        return this;
+    public DimensionTypesInjector(String namespace, String id, Consumer<DimensionTypeBuilder> builder) {
+        this.namespace = namespace;
+        this.id = id;
+        this.builder = new DimensionTypeBuilder();
+        builder.accept(this.builder);
     }
 
     @Override
     public void inject(File rootFile) {
-        if (entries.isEmpty()) return;
+        if (builder == null) return;
 
         Path root = rootFile.toPath().resolve("data").resolve(namespace).resolve("dimension_type");
         try {
             Files.createDirectories(root);
-            for (var entry : entries.entrySet()) {
-                Path dimensionTypeFile = root.resolve(entry.getKey() + ".json");
-                Files.createDirectories(dimensionTypeFile.getParent());
-                Files.writeString(dimensionTypeFile, GSON.toJson(entry.getValue().toJson()));
-            }
+
+            Path dimensionTypeFile = root.resolve(id + ".json");
+            Files.createDirectories(dimensionTypeFile.getParent());
+            Files.writeString(dimensionTypeFile, GSON.toJson(builder.toJson()));
         } catch (IOException e) {
             throw new IllegalStateException("Cannot write dimension_type files", e);
         }
+    }
+
+    public String getKey() {
+        return namespace + ":" + id;
     }
 }
