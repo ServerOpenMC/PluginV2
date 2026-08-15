@@ -5,6 +5,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
 import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
@@ -31,6 +32,7 @@ public final class OMCRegistry {
 
     // * Registre des features
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
+    public static DailyEventsRegistry DAILY_EVENTS;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 

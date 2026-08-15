@@ -2,7 +2,6 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.loottable.CustomLootTable;
@@ -49,7 +48,7 @@ public class VampireBossLootManager {
                 ));
 
 
-        World world = DailyEventsManager.BLOODY_NIGHT.getWorld();
+        World world = OMCRegistry.DAILY_EVENTS.BLOODY_NIGHT.getWorld();
         if (world == null) return;
 
         if (orderedMap.isEmpty()) {

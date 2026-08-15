@@ -5,18 +5,12 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.*;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
-import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventAmbientListeners;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
@@ -36,17 +30,6 @@ import java.util.*;
 
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
-    // * Constantes
-    public static final List<DailyEvent> EVENTS = List.of(
-            new MiraculousFishingEvent(),
-            new GoldenHarvestEvent(),
-            new BloodyNightEvent()
-    );
-
-    public static final DailyEvent MIRACULOUS_FISHING = getDailyEvent("miraculous_fishing");
-    public static final DailyEvent GOLDEN_HARVEST = getDailyEvent("golden_harvest");
-    public static final DailyEvent BLOODY_NIGHT = getDailyEvent("bloody_night");
-
     private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
             9, 13, 16, 21
     ));
@@ -64,7 +47,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     @Override
     public void init() {
         // * Register les sous features
-        for (DailyEvent event : EVENTS) {
+        for (DailyEvent event : OMCRegistry.DAILY_EVENTS.values()) {
             if (!(event instanceof HasFeature hasFeature)) continue;
 
             OMCPlugin.registerFeature(hasFeature.getFeature());
@@ -95,7 +78,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
                 new DailyEventAmbientListeners()
         ));
 
-        for (DailyEvent event : EVENTS) {
+        for (DailyEvent event : OMCRegistry.DAILY_EVENTS.values()) {
             if (!(event instanceof HasListeners hasListeners)) continue;
             listeners.addAll(hasListeners.getListeners());
         }
@@ -157,7 +140,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         List<DailyEvent> copyEvents = new ArrayList<>(incomingEvent);
         for (int hourSlot : SLOT_HOURS_EVENTS) {
             if (copyEvents.isEmpty()) {
-                copyEvents = RandomUtils.generateRandomOrder(EVENTS);
+                copyEvents = RandomUtils.generateRandomOrder(OMCRegistry.DAILY_EVENTS.values().stream().toList());
             }
 
             LocalDateTime scheduledDailyEvent;
@@ -231,18 +214,6 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      */
     public static DailyEvent getActiveDailyEvent() {
         return outgoingEvent.getDailyEvent();
-    }
-
-    /**
-     * Permet d'obtenir un DailyEvent via l'id dans le registre des Evenements Journalier
-     * @param id l'id de l'event
-     * @return l'event
-     */
-    public static DailyEvent getDailyEvent(String id) {
-        return EVENTS.stream()
-                .filter(event -> event.getEventId().equals(id))
-                .findFirst()
-                .orElse(null);
     }
 
     /**

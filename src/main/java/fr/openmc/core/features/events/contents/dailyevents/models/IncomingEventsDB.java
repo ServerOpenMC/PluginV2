@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.dailyevents.models;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +37,7 @@ public class IncomingEventsDB {
      */
     public List<DailyEvent> getDailyEventsIncomings() {
         return Arrays.stream(dailyEventsIdIncomings)
-                .map(id -> DailyEventsManager.EVENTS.stream()
+                .map(id -> OMCRegistry.DAILY_EVENTS.values().stream()
                         .filter(event -> event.getEventId().equals(id))
                         .findFirst()
                         .orElseThrow(() -> new IllegalStateException("Aucun daily event trouvé pour l'id : " + id)))

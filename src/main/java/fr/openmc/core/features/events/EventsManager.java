@@ -142,7 +142,7 @@ public class EventsManager extends Feature implements LoadAfterItemsAdder, HasCo
     }
 
     public static List<Event> getAllEventsRegistred() {
-        List<Event> events = new ArrayList<>(DailyEventsManager.EVENTS);
+        List<Event> events = new ArrayList<>(OMCRegistry.DAILY_EVENTS.values());
         events.addAll(OMCRegistry.WEEKLY_EVENTS.values());
         return events;
     }
