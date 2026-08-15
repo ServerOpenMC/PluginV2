@@ -31,7 +31,7 @@ public class DimensionTypesInjector implements DatapackInjector {
 
     @Override
     public String[] getPath() {
-        return new String[]{"worldgen", "dimension_type"};
+        return new String[]{"dimension_type"};
     }
 
     @Override
