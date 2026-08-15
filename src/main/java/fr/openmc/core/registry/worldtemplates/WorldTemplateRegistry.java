@@ -13,8 +13,6 @@ import java.io.IOException;
 @SuppressWarnings("UnstableApiUsage")
 public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
         implements KeyedRegistry<String, WorldTemplate> {
-    public static final String NAMESPACE = "omc_world_template";
-    private final OMCDatapack worldTemplateDatapack = new OMCDatapack(NAMESPACE);
 
     // ** REGISTER WORLD TEMPLATES **
     public final WorldTemplate SINGULARITY_WORLD = register(new SingularityWorldTemplate());
@@ -23,16 +21,18 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     public void bootstrap(BootstrapContext context) throws IOException {
         // * Initialise le dimension type et le biome associé à la map
         for (WorldTemplate template : values()) {
-            worldTemplateDatapack.addInjector(new DimensionTypesInjector(NAMESPACE, template.getId(), template.dimensionType()));
-            worldTemplateDatapack.addInjector(new BiomesInjector(NAMESPACE, template.getId(), template.biome()));
+            OMCDatapack worldTemplateDatapack = new OMCDatapack(template.getNamespace());
+
+            worldTemplateDatapack.addInjector(new DimensionTypesInjector(template.getNamespace(), template.getId(), template.dimensionType()));
+            worldTemplateDatapack.addInjector(new BiomesInjector(template.getNamespace(), template.getId(), template.biome()));
+
+            worldTemplateDatapack.buildBootstrap(context, true); // todo: remettre sur false qd fini de debug
         }
 
         // * Transfère les chunks de la dimension dans son dossier
         for (WorldTemplate template : values()) {
             template.copyToDimensionsFolder(context);
         }
-
-        worldTemplateDatapack.buildBootstrap(context, true); // todo: remettre sur false qd fini de debug
     }
 
     @Override
