@@ -32,7 +32,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
             template.copyToDimensionsFolder(context);
         }
 
-        worldTemplateDatapack.buildBootstrap(context, false);
+        worldTemplateDatapack.buildBootstrap(context, true); // todo: remettre sur false qd fini de debug
     }
 
     @Override
