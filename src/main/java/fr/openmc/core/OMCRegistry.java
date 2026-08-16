@@ -55,6 +55,8 @@ public final class OMCRegistry {
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 
