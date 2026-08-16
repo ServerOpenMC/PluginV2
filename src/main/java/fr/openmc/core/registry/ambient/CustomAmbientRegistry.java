@@ -4,6 +4,7 @@ import fr.openmc.api.datapacks.OMCDatapack;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient.BloodyAmbient;
@@ -20,7 +21,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 
 import java.io.IOException;
 import java.util.Set;
@@ -39,12 +39,12 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
     public final CustomAmbient BLESSED = register(new BlessedAmbient());
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new CustomAmbientListener(),
-                new BiomesOnChunkLoad(),
-                new AmbientWeatherListener(),
-                new AmbientFixedTimeListener()
+                CustomAmbientListener::new,
+                () -> new BiomesOnChunkLoad(),
+                () -> new AmbientWeatherListener(),
+                () -> new AmbientFixedTimeListener()
         );
     }
 

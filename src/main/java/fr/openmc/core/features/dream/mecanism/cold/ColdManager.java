@@ -34,7 +34,7 @@ public class ColdManager {
 
     public static void init() {
         OMCPlugin.registerEvents(
-                new ColdListener()
+                ColdListener::new
         );
     }
 

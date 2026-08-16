@@ -142,8 +142,8 @@ public class DreamItemRegistry {
         );
 
         OMCPlugin.registerEvents(
-                new DreamItemConvertorListener(),
-                new DreamItemDropsListener()
+                DreamItemConvertorListener::new,
+                DreamItemDropsListener::new
         );
     }
 

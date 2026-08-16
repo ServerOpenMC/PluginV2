@@ -13,7 +13,7 @@ public class OldCreakingAxe extends DreamItem {
                 "omc_dream:old_creaking_axe",
                 TranslationManager.translation("feature.dream.item.old_creaking_axe.name"),
                 DreamRarity.COMMON,
-                Material.STONE_AXE,
+                Material.PAPER,
                 true
         ));
     }

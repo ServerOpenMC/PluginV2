@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -46,7 +47,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -101,28 +101,28 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
 
     // ** LISTENERS **
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new PlayerChangeWorldListener(),
-                new PlayerJoinListener(),
-                new PlayerQuitListener(),
-                new PlayerDeathListener(),
-                new PlayerCommandListener(),
-                new PlayerDreamTimeEndListener(),
-                new PlayerSleepListener(),
-                new PlayerEnteredBiome(),
-                new PlayerObtainOrb(),
-                new PlayerDamageListener(),
-                new ReplaceBlockListener(),
-                new PlayerEatSomnifere(),
-                new CloudStructureDispenserListener(),
-                new CraftingConvertorListener(),
-                new DreamItemEquipListener(),
-                new SingularityCraftListener(),
-                new PlayerDreamStructureListener(),
-                new PlayerFoodChangeListener(),
-                new DreamLootListener(),
-                new PlayerPickupListener()
+                PlayerChangeWorldListener::new,
+                PlayerJoinListener::new,
+                PlayerQuitListener::new,
+                PlayerDeathListener::new,
+                PlayerCommandListener::new,
+                PlayerDreamTimeEndListener::new,
+                PlayerSleepListener::new,
+                PlayerEnteredBiome::new,
+                PlayerObtainOrb::new,
+                PlayerDamageListener::new,
+                ReplaceBlockListener::new,
+                PlayerEatSomnifere::new,
+                CloudStructureDispenserListener::new,
+                CraftingConvertorListener::new,
+                DreamItemEquipListener::new,
+                SingularityCraftListener::new,
+                PlayerDreamStructureListener::new,
+                PlayerFoodChangeListener::new,
+                DreamLootListener::new,
+                PlayerPickupListener::new
         );
     }
 

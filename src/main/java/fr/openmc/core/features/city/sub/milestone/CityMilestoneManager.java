@@ -15,9 +15,9 @@ public class CityMilestoneManager {
         );
 
         OMCPlugin.registerEvents(
-                new CooldownEndListener(),
-                new CityRequirementListener(),
-                new MemberJoinListener()
+                CooldownEndListener::new,
+                CityRequirementListener::new,
+                MemberJoinListener::new
         );
     }
 }

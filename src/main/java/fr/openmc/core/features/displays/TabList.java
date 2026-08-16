@@ -11,7 +11,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -29,7 +29,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList extends Feature implements NotInUnitTest, LoadIfEnable<ProtocolLibHook> {
+public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<ProtocolLibHook> {
     private static ProtocolManager protocolManager = null;
 
     @Override

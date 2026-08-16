@@ -13,7 +13,7 @@ public class SoulAxe extends DreamItem {
                 "omc_dream:soul_axe",
                 TranslationManager.translation("feature.dream.item.soul_axe.name"),
                 DreamRarity.RARE,
-                Material.IRON_AXE,
+                Material.PAPER,
                 true
         ));
     }

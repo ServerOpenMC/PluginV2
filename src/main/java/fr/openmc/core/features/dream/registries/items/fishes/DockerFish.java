@@ -13,7 +13,7 @@ public class DockerFish extends DreamItem {
                 "omc_dream:dockerfish",
                 TranslationManager.translation("feature.dream.item.dockerfish.name"),
                 DreamRarity.RARE,
-                Material.COD,
+                Material.PAPER,
                 true
         ));
     }

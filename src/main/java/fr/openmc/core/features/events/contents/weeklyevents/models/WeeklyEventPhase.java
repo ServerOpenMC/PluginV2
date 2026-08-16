@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 
 public abstract class WeeklyEventPhase {
+    public abstract String getId();
     public abstract Component getName();
     public abstract List<Component> getDescription();
     public abstract DayOfWeek getStartDay();

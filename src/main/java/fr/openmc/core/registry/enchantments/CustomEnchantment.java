@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.enchantments;
 
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.RandomUtils;
 import io.papermc.paper.registry.RegistryAccess;
@@ -46,7 +47,12 @@ public abstract class CustomEnchantment {
                         .registryAccess()
                         .getRegistry(RegistryKey.ENCHANTMENT);
 
-                Enchantment enchantment = enchantmentRegistry.getOrThrow(RegistryKey.ENCHANTMENT.typedKey(getKey()));
+                Enchantment enchantment = enchantmentRegistry.get(RegistryKey.ENCHANTMENT.typedKey(getKey()));
+
+                if (enchantment == null) {
+                    enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(Key.key("minecraft:sharpness"));
+                    OMCLogger.warnFormatted("CustomEnchantment " + getKey().asMinimalString() + " pas trouvé dans les registres, mis a minecraft:sharpness par défaut.");
+                }
 
                 meta.addStoredEnchant(enchantment, level, false);
                 bookEnchanted.setItemMeta(meta);

@@ -13,12 +13,12 @@ public class WeeklyEventsData {
     private int id = 1;
 
     @Setter
-    @DatabaseField(columnName = "current_event_index")
-    private int currentEventIndex;
+    @DatabaseField(columnName = "current_event")
+    private String currentEvent;
 
     @Setter
-    @DatabaseField(columnName = "current_phase_index")
-    private int currentPhaseIndex;
+    @DatabaseField(columnName = "current_phase")
+    private String currentPhase;
 
     @Setter
     @DatabaseField(columnName = "is_active")
@@ -26,8 +26,11 @@ public class WeeklyEventsData {
 
     public WeeklyEventsData() {}
 
-    public WeeklyEventsData(int currentEventIndex, int currentPhaseIndex) {
-        this.currentEventIndex = currentEventIndex;
-        this.currentPhaseIndex = currentPhaseIndex;
+    public WeeklyEventsData(WeeklyEvent currentEvent, WeeklyEventPhase currentPhase) {
+        this.currentEvent = currentEvent.getId();
+        if (currentPhase == null)
+            this.currentPhase = null;
+        else
+            this.currentPhase = currentPhase.getId();
     }
 }

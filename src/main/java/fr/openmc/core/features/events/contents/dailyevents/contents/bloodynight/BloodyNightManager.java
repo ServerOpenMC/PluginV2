@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.AncientMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
@@ -17,7 +18,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
-import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Set;
@@ -35,10 +35,8 @@ public class BloodyNightManager extends Feature implements HasListeners {
     private static long lastTime;
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new MonsterSpawnListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(MonsterSpawnListener::new);
     }
 
     public static void start(BloodyNightEvent event) {

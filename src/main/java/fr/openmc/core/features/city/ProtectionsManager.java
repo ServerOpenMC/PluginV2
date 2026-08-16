@@ -25,22 +25,22 @@ public class ProtectionsManager {
 
 	public static void init() {
         OMCPlugin.registerEvents(
-                new BlockProtection(),
-                new BowProtection(),
-                new DamageProtection(),
-                new EntityProtection(),
-                new ExplodeProtection(),
-                new FireProtection(),
-                new FishProtection(),
-                new HangingProtection(),
-                new InteractProtection(),
-                new LeashProtection(),
-                new MountProtection(),
-                new PistonProtection(),
-                new PotionProtection(),
-                new TeleportProtection(),
-                new TramplingProtection(),
-                new VehicleProtection()
+                BlockProtection::new,
+                BowProtection::new,
+                DamageProtection::new,
+                EntityProtection::new,
+                ExplodeProtection::new,
+                FireProtection::new,
+                FishProtection::new,
+                HangingProtection::new,
+                InteractProtection::new,
+                LeashProtection::new,
+                MountProtection::new,
+                PistonProtection::new,
+                PotionProtection::new,
+                TeleportProtection::new,
+                TramplingProtection::new,
+                VehicleProtection::new
         );
     }
     

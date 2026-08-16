@@ -27,7 +27,7 @@ public class CloudFishingManager {
 
     public static void init() {
         OMCPlugin.registerEvents(
-                new PlayerFishListener()
+                PlayerFishListener::new
         );
     }
 

@@ -13,7 +13,7 @@ public class SoulOrb extends DreamItem {
                 "omc_dream:ame_orb",
                 TranslationManager.translation("feature.dream.item.ame_orb.name"),
                 DreamRarity.ONIRISIME,
-                Material.HEART_OF_THE_SEA,
+                Material.PAPER,
                 true
         ));
     }

@@ -13,7 +13,7 @@ public class CokkedPoissonion extends DreamItem {
                 "omc_dream:cooked_poissonion",
                 TranslationManager.translation("feature.dream.item.cooked_poissonion.name"),
                 DreamRarity.RARE,
-                Material.COOKED_COD,
+                Material.PAPER,
                 true
         ));
     }

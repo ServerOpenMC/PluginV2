@@ -8,9 +8,9 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.FileReader;
@@ -38,10 +38,8 @@ public class TicketManager extends Feature implements HasListeners {
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new TicketListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(TicketListener::new);
     }
 
     /**

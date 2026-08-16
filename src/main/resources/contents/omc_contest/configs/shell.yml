@@ -4,7 +4,7 @@ items:
   contest_shell:
     display_name: <lang:itemsadder.omc_contest.contest_shell.name>
     resource:
-      material: NAUTILUS_SHELL
+      material: PAPER
       model_path: items/shell
     lore:
       - <lang:itemsadder.omc_contest.contest_shell.lore.0>

@@ -4,17 +4,23 @@ items:
   courgette:
     display_name: <lang:itemsadder.omc_foods.courgette.name>
     resource:
-      material: DRIED_KELP
+      material: PAPER
       generate: true
       textures:
         - items/courgette.png
+    consumable:
+      nutrition: 1.4
+      saturation: 0.4
 
   gratin_courgette:
     display_name: <lang:itemsadder.omc_foods.gratin_courgette.name>
     resource:
-      material: MELON_SLICE
+      material: PAPER
       generate: false
       model_path: gratin_courgette
+    consumable:
+      nutrition: 12
+      saturation: 7.4
     events:
       eat:
         feed:
@@ -24,26 +30,35 @@ items:
   onion:
     display_name: <lang:itemsadder.omc_foods.onion.name>
     resource:
-      material: PORKCHOP
+      material: PAPER
       generate: true
       textures:
         - items/onion.png
+    consumable:
+      nutrition: 1
+      saturation: 0.6
 
   salade:
     display_name: <lang:itemsadder.omc_foods.salade.name>
     resource:
-      material: DRIED_KELP
+      material: PAPER
       generate: true
       textures:
         - items/salade.png
+    consumable:
+      nutrition: 1.1
+      saturation: 0.2
 
   tomate:
     display_name: <lang:itemsadder.omc_foods.tomate.name>
     resource:
-      material: BEETROOT
+      material: PAPER
       generate: true
       textures:
         - items/tomate.png
+    consumable:
+      nutrition: 1.5
+      saturation: 0.2
 
   the_mixture:
     display_name: <lang:itemsadder.omc_foods.the_mixture.name>
@@ -85,18 +100,24 @@ items:
     display_name: <lang:itemsadder.omc_foods.frite.name>
     permission: ayw.frite
     resource:
-      material: GOLDEN_CARROT
+      material: PAPER
       generate: true
       textures:
         - items/frite.png
+    consumable:
+      nutrition: 3
+      saturation: 0.7
 
   kebab:
     display_name: <lang:itemsadder.omc_foods.kebab.name>
     resource:
-      material: COOKED_BEEF
+      material: PAPER
       generate: true
       textures:
         - items/kebab.png
+    consumable:
+      nutrition: 8
+      saturation: 8
 
   spatule:
     display_name: <lang:itemsadder.omc_foods.spatule.name>

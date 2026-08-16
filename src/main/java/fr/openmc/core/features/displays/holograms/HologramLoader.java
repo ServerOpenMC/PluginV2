@@ -5,7 +5,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "miseur"})
-public class HologramLoader extends Feature implements NotInUnitTest, LoadAfterItemsAdder, HasCommands {
+public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     private static BukkitTask taskTimer;
