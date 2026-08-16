@@ -2,62 +2,49 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.*;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Centralise l'enregistrement des listeners Bukkit du plugin.
  */
 public class ListenersManager {
     /**
-     * Enregistre les listeners de base, puis ceux conditionnels (tests, hooks).
+     * Enregistre les listeners.
      */
     public static void init() {
+        // () -> : nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
         registerEvents(
-                new OMCPlayerCacheListener(),
-                new HappyGhastListener(),
-                new SessionsListener(),
-                new JoinQuitMessageListener(),
-                new ClockInfos(),
-                new ChronometerListener(),
-                new ItemInteraction(),
-                new ChatInput(),
-                new SleepListener(),
-                new PlayerDeathListener(),
-                new AsyncChatListener(OMCPlugin.getInstance()),
-                new NoMoreRabbit(),
-                new ArmorListener(),
-                new EntityGlowNMS(),
-                new RegionTrackingListener()
+                OMCPlayerCacheListener::new,
+                HappyGhastListener::new,
+                SessionsListener::new,
+                JoinQuitMessageListener::new,
+                ClockInfos::new,
+                ChronometerListener::new,
+                ItemInteraction::new,
+                ChatInput::new,
+                SleepListener::new,
+                PlayerDeathListener::new,
+                () -> new AsyncChatListener(OMCPlugin.getInstance()),
+                NoMoreRabbit::new,
+                ArmorListener::new,
+                () -> new EntityGlowNMS(),
+                () -> new RegionTrackingListener(),
+                () -> new SpawnerExtractorListener(),
+                () -> new ItemsAddersListener()
         );
-
-        if (!OMCPlugin.isUnitTestVersion()) {
-            registerEvents(
-                    new SpawnerExtractorListener()
-            );
-        }
-
-        if (ItemsAdderHook.isEnable()) {
-            registerEvents(new ItemsAddersListener());
-        }
     }
 
     /**
      * Enregistre une liste de listeners sur le plugin courant.
      *
-     * @param args Listeners a enregistrer
+     * @param listeners Listeners a enregistrer
      */
-    private static void registerEvents(Listener... args) {
-        Server server = Bukkit.getServer();
-        JavaPlugin plugin = OMCPlugin.getInstance();
-        for (Listener listener : args) {
-            server.getPluginManager().registerEvents(listener, plugin);
+    public static void registerEvents(ListenerFactory... listeners) {
+        for (ListenerFactory listenerFactory : listeners) {
+            listenerFactory.create(true);
         }
     }
 }

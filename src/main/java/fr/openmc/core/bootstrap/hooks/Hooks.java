@@ -3,7 +3,7 @@ package fr.openmc.core.bootstrap.hooks;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.plugin.PluginManager;
 
@@ -85,7 +85,7 @@ public abstract class Hooks {
      * @throws SQLException Si l'initialisation DB échoue
      */
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
-        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
+        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         if (this instanceof HasDatabase dbHook) {
             dbHook.initDB(connectionSource);
         }

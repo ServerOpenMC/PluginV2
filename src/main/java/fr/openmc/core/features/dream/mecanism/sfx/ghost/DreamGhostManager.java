@@ -34,7 +34,7 @@ public class DreamGhostManager {
 
     public static void init() {
         OMCPlugin.registerEvents(
-                new DreamPlayerEnteredListener()
+                DreamPlayerEnteredListener::new
         );
     }
 

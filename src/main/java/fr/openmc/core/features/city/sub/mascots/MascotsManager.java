@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
@@ -34,7 +35,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -86,17 +86,17 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     }
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new MascotsInteractionListener(),
-                new MascotsDamageListener(),
-                new MascotsDeathListener(),
-                new MascotsSleepingListener(),
-                new MascotImmuneListener(),
-                new MascotsTargetListener(),
-                new MascotsRenameListener(),
-                new MascotsPotionListener(),
-                new MascotsProtectionsListener()
+                MascotsInteractionListener::new,
+                MascotsDamageListener::new,
+                MascotsDeathListener::new,
+                MascotsSleepingListener::new,
+                MascotImmuneListener::new,
+                MascotsTargetListener::new,
+                MascotsRenameListener::new,
+                MascotsPotionListener::new,
+                MascotsProtectionsListener::new
         );
     }
 

@@ -2,6 +2,7 @@ package fr.openmc.core.features.itemsadder;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SpawnerExtractorListener implements Listener {
+public class SpawnerExtractorListener implements Listener, NotLoadInUnitTest {
     private static final double FAILURE_CHANCE = 0.4; // 40% chance d’échec
     private static final NamespacedKey KEY_SPAWNER_MOB = new NamespacedKey(OMCPlugin.getInstance(), "spawner_extractor_mob_spawner");
 

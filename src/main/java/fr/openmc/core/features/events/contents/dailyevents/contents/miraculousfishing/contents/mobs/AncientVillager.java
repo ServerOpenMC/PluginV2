@@ -2,7 +2,6 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousf
 
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
-import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Villager;
@@ -17,7 +16,7 @@ public class AncientVillager extends CustomMob<ZombieVillager> {
                 ZombieVillager.class,
                 100,
                 67,
-                RandomUtils.randomBetween(0.1, 0.1),
+                0.1,
                 List.of(
                         new XpLoot(100, 150, 0.5)
                 )

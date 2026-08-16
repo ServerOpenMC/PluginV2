@@ -1,5 +1,7 @@
 package fr.openmc.core.features.toor.utils;
 
+import fr.openmc.core.bootstrap.features.DisableFeatureException;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -26,9 +28,9 @@ public class RequestSigner {
             KeyFactory kf = KeyFactory.getInstance("Ed25519");
             PRIVATE_KEY = kf.generatePrivate(new PKCS8EncodedKeySpec(keyBytes));
         } catch (IOException e) {
-            throw new RuntimeException("Impossible de lire la cle privee a " + pemPath);
+            throw new DisableFeatureException("Impossible de lire la cle privee a " + pemPath);
         } catch (Exception e) {
-            throw new RuntimeException("Cle privee invalide", e);
+            throw new DisableFeatureException("Cle privee invalide", e);
         }
     }
 
@@ -41,7 +43,7 @@ public class RequestSigner {
             sig.update(payload.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(sig.sign());
         } catch (Exception e) {
-            throw new RuntimeException("Erreur de signature", e);
+            throw new DisableFeatureException("Erreur de signature", e);
         }
     }
 }

@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.hooks.Hooks;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.bootstrap.integration.ErrorReporter;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
@@ -67,7 +68,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -135,7 +135,7 @@ public class OMCPlugin extends JavaPlugin {
             ShopManager::new,
             HomeIconCacheManager::new,
             DimensionOpenerManager::new,
-            ElevatorManager::new
+            () -> new ElevatorManager()
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();
@@ -269,10 +269,8 @@ public class OMCPlugin extends JavaPlugin {
      *
      * @param listeners Listeners à enregistrer
      */
-    public static void registerEvents(Listener... listeners) {
-        for (Listener listener : listeners) {
-            instance.getServer().getPluginManager().registerEvents(listener, instance);
-        }
+    public static void registerEvents(ListenerFactory... listeners) {
+        ListenersManager.registerEvents(listeners);
     }
 
     /**
@@ -280,10 +278,8 @@ public class OMCPlugin extends JavaPlugin {
      *
      * @param listeners Listeners à enregistrer
      */
-    public static void registerEvents(Collection<Listener> listeners) {
-        for (Listener listener : listeners) {
-            instance.getServer().getPluginManager().registerEvents(listener, instance);
-        }
+    public static void registerEvents(Collection<ListenerFactory> listeners) {
+        registerEvents(listeners.toArray(new ListenerFactory[0]));
     }
 
     /**

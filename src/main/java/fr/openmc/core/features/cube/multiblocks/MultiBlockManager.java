@@ -5,8 +5,9 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.commands.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
@@ -20,13 +21,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, NotInUnitTest, HasListeners, HasCommands {
+public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, NotLoadInUnitTest, HasListeners, HasCommands {
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;
@@ -51,11 +51,11 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
     }
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new CubeListener(),
-                new MultiBlocksListeners(),
-                new RepulseEffectListener()
+                CubeListener::new,
+                MultiBlocksListeners::new,
+                RepulseEffectListener::new
         );
     }
 

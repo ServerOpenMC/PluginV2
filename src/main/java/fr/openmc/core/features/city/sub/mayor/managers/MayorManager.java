@@ -75,28 +75,28 @@ public class MayorManager {
         // LISTENERS
         new PhaseListener(OMCPlugin.getInstance());
         OMCPlugin.registerEvents(
-                new JoinListener(),
-                new RagePerk(),
-                new MinerPerk(),
-                new MascotFriendlyPerk(),
-                new DemonFruitPerk(),
-                new CityHunterPerk(),
-                new AyweniterPerk(),
-                new GPSTrackerPerk(),
-                new SymbiosisPerk(),
-                new ImpotCollection(),
-                new AgriculturalEssorPerk(),
-                new MineralRushPerk(),
-                new MilitaryDissuasion(),
-                new IdyllicRain());
+                JoinListener::new,
+                RagePerk::new,
+                MinerPerk::new,
+                MascotFriendlyPerk::new,
+                DemonFruitPerk::new,
+                CityHunterPerk::new,
+                AyweniterPerk::new,
+                GPSTrackerPerk::new,
+                SymbiosisPerk::new,
+                ImpotCollection::new,
+                AgriculturalEssorPerk::new,
+                MineralRushPerk::new,
+                MilitaryDissuasion::new,
+                IdyllicRain::new);
 
         if (ItemsAdderHook.isEnable()) {
             OMCPlugin.registerEvents(
-                    new UrneListener());
+                    UrneListener::new);
         }
         if (FancyNpcsHook.isEnable()) {
             OMCPlugin.registerEvents(
-                    new NPCManager());
+                    NPCManager::new);
         }
 
         CommandsManager.getHandler().register(

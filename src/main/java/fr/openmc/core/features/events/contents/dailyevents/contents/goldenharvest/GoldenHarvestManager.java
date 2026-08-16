@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
@@ -12,7 +13,6 @@ import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockType;
-import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,13 +40,13 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
     }
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new GoldenCropsListener(),
-                new ObeseCropsListener(),
-                new FixGoldenBlockListener(),
-                new PlantationLootListener(),
-                new PeeledObeseCropsListener()
+                GoldenCropsListener::new,
+                ObeseCropsListener::new,
+                FixGoldenBlockListener::new,
+                PlantationLootListener::new,
+                PeeledObeseCropsListener::new
         );
     }
 

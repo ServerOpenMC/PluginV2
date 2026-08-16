@@ -15,7 +15,7 @@ public class MetalDetectorManager {
 
     public static void init() {
         OMCPlugin.registerEvents(
-                new MetalDetectorListener()
+                MetalDetectorListener::new
         );
     }
 }

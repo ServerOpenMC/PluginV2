@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.bits.contents.items.KitchenBox;
@@ -29,7 +30,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -281,12 +281,12 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem MEDIEVAL_BOX = register(new MedievalBox("omc_bits:medieval_box"));
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new BlockBreakListener(),
-                new EquipableItemListener(),
-                new InteractListener(),
-                new BlockPlaceListener()
+                BlockBreakListener::new,
+                EquipableItemListener::new,
+                InteractListener::new,
+                BlockPlaceListener::new
         );
     }
 

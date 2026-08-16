@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.dimopener.commands.DimensionCommands;
 import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.features.dimopener.data.StepDimensionData;
@@ -27,7 +28,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -377,9 +377,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new DimensionAccessListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(DimensionAccessListener::new);
     }
 }

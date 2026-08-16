@@ -2,6 +2,7 @@ package fr.openmc.core.registry.mobs;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.ExplosiveVampireBat;
@@ -124,11 +125,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
     public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();
 
     @Override
-    public Set<Listener> getListeners() {
+    public Set<ListenerFactory> getListeners() {
         return Set.of(
-                new CustomMobDeathListener(),
-                new CustomMobBossbarListener(),
-                new CustomMobLoadListener()
+                CustomMobDeathListener::new,
+                CustomMobBossbarListener::new,
+                CustomMobLoadListener::new
         );
     }
 
@@ -148,8 +149,9 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
 
     @Override
     public CustomMobEntry register(CustomMobEntry mob) {
-        if (mob.factory().apply(mob.id()) instanceof Listener listener) {
-            OMCPlugin.registerEvents(listener);
+        CustomMob<?> customMob = mob.getMob();
+        if (customMob instanceof Listener listener) {
+            OMCPlugin.getInstance().getServer().getPluginManager().registerEvents(listener, OMCPlugin.getInstance());
         }
         return register(mob.id(), mob);
     }
