@@ -5,23 +5,19 @@ import fr.openmc.api.datapacks.builders.dimensions.VoidDimensionBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
-import fr.openmc.core.registry.worldtemplates.listeners.ForceBiomeOnTemplateWorldListener;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import org.bukkit.World;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 
 // todo: faire que dimension se crée une fois si la map n'est pas présente, et pas a chaque redem
 @SuppressWarnings("UnstableApiUsage")
 public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
-        implements KeyedRegistry<String, WorldTemplate>, HasListeners {
+        implements KeyedRegistry<String, WorldTemplate> {
 
     // ** REGISTER WORLD TEMPLATES **
     public final WorldTemplate SINGULARITY_WORLD = register(new SingularityWorldTemplate());
@@ -62,10 +58,5 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
 
         if (template.isEmpty()) return null;
         return template.get();
-    }
-
-    @Override
-    public Set<ListenerFactory> getListeners() {
-        return Set.of(ForceBiomeOnTemplateWorldListener::new);
     }
 }
