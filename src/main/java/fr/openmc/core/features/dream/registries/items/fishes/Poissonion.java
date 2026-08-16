@@ -13,7 +13,7 @@ public class Poissonion extends DreamItem {
                 "omc_dream:poissonion",
                 TranslationManager.translation("feature.dream.item.poissonion.name"),
                 DreamRarity.RARE,
-                Material.COD,
+                Material.PAPER,
                 true
         ));
     }

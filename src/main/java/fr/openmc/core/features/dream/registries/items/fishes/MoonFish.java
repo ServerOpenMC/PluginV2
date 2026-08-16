@@ -13,7 +13,7 @@ public class MoonFish extends DreamItem {
                 "omc_dream:moon_fish",
                 TranslationManager.translation("feature.dream.item.moon_fish.name"),
                 DreamRarity.RARE,
-                Material.SALMON,
+                Material.PAPER,
                 true
         ));
     }

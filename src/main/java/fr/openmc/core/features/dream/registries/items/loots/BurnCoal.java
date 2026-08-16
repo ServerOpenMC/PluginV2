@@ -13,7 +13,7 @@ public class BurnCoal extends DreamItem {
                 "omc_dream:coal_burn",
                 TranslationManager.translation("feature.dream.item.coal_burn.name"),
                 DreamRarity.EPIC,
-                Material.CHARCOAL,
+                Material.PAPER,
                 false
         ));
     }

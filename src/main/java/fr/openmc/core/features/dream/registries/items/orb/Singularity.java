@@ -17,7 +17,7 @@ public class Singularity extends DreamItem implements UsableItem {
                 "omc_dream:singularity",
                 TranslationManager.translation("feature.dream.item.singularity.name"),
                 DreamRarity.ONIRISIME,
-                Material.HEART_OF_THE_SEA,
+                Material.PAPER,
                 false
         ));
     }
