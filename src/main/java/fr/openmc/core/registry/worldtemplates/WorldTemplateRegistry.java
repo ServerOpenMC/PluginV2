@@ -6,13 +6,13 @@ import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
 import fr.openmc.core.registry.worldtemplates.listeners.ForceBiomeOnTemplateWorldListener;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import org.bukkit.World;
-import org.bukkit.event.Listener;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -65,7 +65,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(new ForceBiomeOnTemplateWorldListener());
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(ForceBiomeOnTemplateWorldListener::new);
     }
 }
