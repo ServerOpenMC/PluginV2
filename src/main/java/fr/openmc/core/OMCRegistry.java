@@ -55,6 +55,8 @@ public final class OMCRegistry {
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 
@@ -62,7 +64,6 @@ public final class OMCRegistry {
 
     public static void bootstrapAll(BootstrapContext context) {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
             if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = load(ctx);
