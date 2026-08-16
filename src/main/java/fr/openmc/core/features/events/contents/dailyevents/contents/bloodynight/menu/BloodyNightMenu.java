@@ -28,7 +28,7 @@ public class BloodyNightMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return DailyEventsManager.BLOODY_NIGHT.getName();
+        return OMCRegistry.DAILY_EVENTS.BLOODY_NIGHT.getName();
     }
 
     @Override

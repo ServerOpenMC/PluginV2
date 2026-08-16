@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
@@ -12,6 +13,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.ContributionMenu;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.VoteMenu;
+import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -36,7 +38,7 @@ public class ContestCommand {
     @Cooldown(4)
     @CommandPlaceholder()
     public static void mainCommand(Player player) {
-        Contest contest = (Contest) WeeklyEventsManager.getEvent(Contest.class);
+        WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.getEvent(Contest.class);
 
         if (!contest.isActive()) {
             int days = (ContestPhase.VOTE_CAMP.getPhase().getStartDay().getValue()
@@ -69,7 +71,9 @@ public class ContestCommand {
     @Description("Permet de lancer une procédure de phase")
     @CommandPermission("omc.admin.commands.contest.setphase")
     public void setPhase(@Named("phase") @SuggestWith(ContestPhaseAutoComplete.class) String phase) {
-        WeeklyEventsManager.forceEventAtPhase(WeeklyEventsManager.getEvent(Contest.class), ContestPhase.valueOf(phase).getPhase());
+        WeeklyEventsManager.forceEventAtPhase(
+                OMCRegistry.WEEKLY_EVENTS.getEvent(Contest.class),
+                ContestPhase.valueOf(phase).getPhase());
     }
 
     @Subcommand("setcontest")
@@ -82,7 +86,7 @@ public class ContestCommand {
             @Named("nom du camp 2") String camp2,
             @Named("couleur du camp 2") @SuggestWith(ColorContestAutoComplete.class) String color2
     ) {
-        Contest contest = (Contest) WeeklyEventsManager.getEvent(Contest.class);
+        WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.getEvent(Contest.class);
 
         if (!contest.isActive()) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.setcontest.not_active"), Prefix.STAFF, MessageType.ERROR, true);
@@ -154,7 +158,7 @@ public class ContestCommand {
             @Named("membre") @SuggestWith(OnlinePlayerAutoComplete.class) Player target,
             @Named("points") Integer points
     ) {
-        Contest contest = (Contest) WeeklyEventsManager.getEvent(Contest.class);
+        WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.getEvent(Contest.class);
 
         if (contest.getActivePhase() != ContestPhase.TRADE_PHASE.getPhase()) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.addpoints.not_started"), Prefix.STAFF, MessageType.ERROR, true);

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.commands.autocomplete.DailyEventAutoComplete;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
@@ -27,7 +28,7 @@ public class DailyEventCommand {
 
         // * on lance le evenement rentré en param
         DailyEventsManager.outgoingEvent = new ScheduleDailyEvent(
-                DailyEventsManager.getDailyEvent(dailyEvent), DateUtils.getLocalDateTime());
+                OMCRegistry.DAILY_EVENTS.getOrThrow(dailyEvent), DateUtils.getLocalDateTime());
         DailyEventsManager.outgoingEvent.getDailyEvent().start();
     }
 
