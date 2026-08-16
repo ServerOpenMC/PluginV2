@@ -62,7 +62,6 @@ public final class OMCRegistry {
 
     public static void bootstrapAll(BootstrapContext context) {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
             if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = load(ctx);
