@@ -168,7 +168,8 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
     private void launch(ChatAnimation animation) {
         animation.setFinished(false);
         currentAnimation = animation;
-        Bukkit.broadcast(currentAnimation.getAnnounceStart());
+        if (!Bukkit.getOnlinePlayers().isEmpty())
+            Bukkit.broadcast(currentAnimation.getAnnounceStart());
 
         long timeBeforeEndTicks = animation.getTimeBeforeEnd() * 20L;
         endAnimationTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
@@ -186,16 +187,18 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
             endAnimationTask = null;
         }
 
-        if (winner != null) {
-            Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.winner",
-                    winner.name().color(NamedTextColor.GOLD),
-                    animation.getName(),
-                    animation.getDescriptionResult(),
-                    loot.buildComponent()
-            ));
-        } else {
-            Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.no_winner",
-                    animation.getName(), animation.getDescriptionResult()));
+        if (!Bukkit.getOnlinePlayers().isEmpty()) {
+            if (winner != null) {
+                Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.winner",
+                        winner.name().color(NamedTextColor.GOLD),
+                        animation.getName(),
+                        animation.getDescriptionResult(),
+                        loot.buildComponent()
+                ));
+            } else {
+                Bukkit.broadcast(TranslationManager.translation("feature.chatanimations.no_winner",
+                        animation.getName(), animation.getDescriptionResult()));
+            }
         }
 
         lastAnimation = currentAnimation;
