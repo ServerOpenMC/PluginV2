@@ -70,6 +70,16 @@ public class Plantation extends CustomEnchantment implements Listener {
     public void onBreakCrops(BlockBreakEvent event) {
         if (event.isCancelled()) return;
 
+        Player player = event.getPlayer();
+
+        Enchantment enchant = this.getEnchantment();
+        if (enchant == null) return;
+
+        ItemStack tool = player.getInventory().getItemInMainHand();
+        if (!tool.getEnchantments().containsKey(enchant)) return;
+        int level = tool.getEnchantmentLevel(enchant);
+        if (level <= 0) return;
+
         Block block = event.getBlock();
         BlockData blockData = block.getBlockData();
 
@@ -79,13 +89,6 @@ public class Plantation extends CustomEnchantment implements Listener {
             event.setDropItems(false);
             return;
         }
-
-        Player player = event.getPlayer();
-        ItemStack tool = player.getInventory().getItemInMainHand();
-
-        Enchantment enchantment = getEnchantment();
-        int level = tool.getEnchantmentLevel(enchantment);
-        if (level <= 0) return;
 
         BlockData replantData = blockData.clone();
         Ageable ageableReplant = (Ageable) replantData;
