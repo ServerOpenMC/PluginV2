@@ -9,6 +9,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
+import fr.openmc.core.utils.nms.world.WorldBiomeNMS;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import org.bukkit.World;
 
@@ -61,9 +62,13 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
         for (WorldTemplate template : values()) {
             if (WorldTemplateConfig.hasBiomeLoaded(template)) continue;
 
-            OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}", template.getKey());
-            template.applyBiomeOnDimension();
-            OMCLogger.successFormatted("Biomes appliqués sur la dimension {}", template.getKey());
+            try {
+                OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}", template.getKey());
+                WorldBiomeNMS.applyBiome(template.getWorld(), template.getBiome());
+                OMCLogger.successFormatted("Biomes appliqués sur la dimension {}", template.getKey());
+            } catch (IOException e) {
+                OMCLogger.error("Erreur lors de l'appliquer les biomes sur la dimension {}", template.getKey());
+            }
             WorldTemplateConfig.addBiomeLoaded(template);
         }
     }

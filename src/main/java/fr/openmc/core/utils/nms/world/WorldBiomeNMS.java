@@ -1,62 +1,73 @@
 package fr.openmc.core.utils.nms.world;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraft.world.level.chunk.Strategy;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.storage.RegionFile;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftWorld;
 
-import java.lang.reflect.Field;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 public class WorldBiomeNMS {
-    private static Field SECTION_BIOMES;
-    static {
-        try {
-            SECTION_BIOMES = LevelChunkSection.class.getDeclaredField("biomes");
-            SECTION_BIOMES.setAccessible(true);
-        } catch (Exception e) {
-            OMCLogger.error(e.getMessage());
+    public static void applyBiome(World world, Biome biome) throws IOException {
+        File regionFolder = new File(world.getWorldFolder(), "region");
+        File[] mcaFiles = regionFolder.listFiles();
+        if (mcaFiles == null) return;
+
+        for (File mcaFile : mcaFiles) {
+            processRegionFile(world, mcaFile, biome.getKey().asString());
         }
     }
 
-    public static void setChunkBiome(LevelChunk chunk, Holder<Biome> biome) {
-        ServerLevel level = (ServerLevel) chunk.getLevel();
-        Strategy<Holder<Biome>> idMap = Strategy.createForBiomes(
-                level.registryAccess().lookupOrThrow(Registries.BIOME).asHolderIdMap()
-        );
+    private static void processRegionFile(World world, File mcaFile, String biomeId) throws IOException {
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
 
-        for (LevelChunkSection section : chunk.getSections()) {
-            PalettedContainer<Holder<Biome>> container = new PalettedContainer<>(biome, idMap, null);
-            try {
-                SECTION_BIOMES.set(section, container);
-            } catch (IllegalAccessException e) {
-                OMCLogger.error("Erreur d'accès à l'attribut biomes d'un LevelChunkSection");
+        try (RegionFile region = new RegionFile(
+                nmsWorld.moonrise$getChunkDataController().getCache().info(),
+                mcaFile.toPath(),
+                mcaFile.getParentFile().toPath(),
+                false)) {
+            for (int x = 0; x < 32; x++) {
+                for (int z = 0; z < 32; z++) {
+                    ChunkPos pos = new ChunkPos(x, z);
+                    if (!region.hasChunk(pos)) continue;
+
+                    CompoundTag chunkNbt;
+                    try (DataInputStream in = region.getChunkDataInputStream(pos)) {
+                        if (in == null) continue;
+                        chunkNbt = NbtIo.read(in);
+                    }
+
+                    modifyBiomes(chunkNbt, biomeId);
+
+                    try (DataOutputStream out = region.getChunkDataOutputStream(pos)) {
+                        NbtIo.write(chunkNbt, out);
+                    }
+                }
             }
         }
-
-        chunk.markUnsaved();
     }
 
-    public static void setWorldBiome(World world, int minChunkX, int maxChunkX, int minChunkZ, int maxChunkZ, Holder<Biome> biome) {
-        ServerLevel level = ((CraftWorld) world).getHandle();
+    private static void modifyBiomes(CompoundTag chunkNbt, String biomeId) {
+        ListTag sections = chunkNbt.getList("sections").orElseThrow();
+        for (int i = 0; i < sections.size(); i++) {
+            CompoundTag section = sections.getCompound(i).orElseThrow();
+            if (!section.contains("biomes")) continue;
 
-        for (int cx = minChunkX; cx <= maxChunkX; cx++) {
-            for (int cz = minChunkZ; cz <= maxChunkZ; cz++) {
-                if (!world.isChunkGenerated(cx, cz)) continue;
-
-                LevelChunk chunk = level.getChunkSource().getChunk(cx, cz, true);
-                if (chunk == null) continue;
-
-                setChunkBiome(chunk, biome);
-
-                world.unloadChunk(cx, cz, true);
-            }
+            CompoundTag biomes = section.getCompound("biomes").orElseThrow();
+            biomes.remove("data");
+            ListTag palette = new ListTag();
+            palette.add(StringTag.valueOf(biomeId));
+            biomes.put("palette", palette);
+            section.put("biomes", biomes);
         }
     }
 }
