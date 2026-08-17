@@ -8,23 +8,24 @@ items:
       model_path: peluche
     behaviours:
       furniture:
-        entity: armor_stand
-        generate: false
-        small: true
-        light_level: 13
-        solid: true
-        placeable_on:
-          floor: true
-        hitbox:
-          length: 1
-          width: 1
-          height: 1
-          width_offset: 0
-          height_offset: 
-          placeable_on:
-          walls: false
-          ceilling: false
-          floor: true
+        entity: item_display
+        display_transformation:
+          transform: HEAD
+          right_rotation:
+            axis_angle:
+              angle: 180
+              axis:
+                x: 0
+                y: 1
+                z: 0
+          translation:
+            x: 0
+            y: -0.15
+            z: 0
+          scale:
+            x: 0.45
+            y: 0.45
+            z: 0.45
   peluche_seinyy:
     display_name: <lang:itemsadder.omc_plush.peluche_seinyy.name>
     resource:
@@ -32,23 +33,24 @@ items:
       model_path: peluche_seiny
     behaviours:
       furniture:
-        entity: armor_stand
-        generate: false
-        small: true
-        light_level: 13
-        solid: true
-        placeable_on:
-          floor: true
-        hitbox:
-          length: 1
-          width: 1
-          height: 1
-          width_offset: 0
-          height_offset: 0
-          placeable_on:
-          walls: false
-          ceilling: false
-          floor: true
+        entity: item_display
+        display_transformation:
+          transform: HEAD
+          right_rotation:
+            axis_angle:
+              angle: 180
+              axis:
+                x: 0
+                y: 1
+                z: 0
+          translation:
+            x: 0
+            y: -0.15
+            z: 0
+          scale:
+            x: 0.45
+            y: 0.45
+            z: 0.45
   peluche_root:
     display_name: <lang:itemsadder.omc_plush.peluche_root.name>
     resource:
@@ -56,20 +58,21 @@ items:
       model_path: root_plush
     behaviours:
       furniture:
-        entity: armor_stand
-        generate: false
-        small: true
-        light_level: 13
-        solid: true
-        placeable_on:
-          floor: true
-        hitbox:
-          length: 1
-          width: 1
-          height: 1
-          width_offset: 0
-          height_offset:
-          placeable_on:
-          walls: false
-          ceilling: false
-          floor: true
+        entity: item_display
+        display_transformation:
+          transform: HEAD
+          right_rotation:
+            axis_angle:
+              angle: 180
+              axis:
+                x: 0
+                y: 1
+                z: 0
+          translation:
+            x: 0
+            y: -0.15
+            z: 0
+          scale:
+            x: 0.45
+            y: 0.45
+            z: 0.45
