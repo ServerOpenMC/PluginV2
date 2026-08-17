@@ -49,3 +49,27 @@ items:
           walls: false
           ceilling: false
           floor: true
+  peluche_root:
+    display_name: <lang:itemsadder.omc_plush.peluche_root.name>
+    resource:
+      material: PAPER
+      model_path: root_plush
+    behaviours:
+      furniture:
+        entity: armor_stand
+        generate: false
+        small: true
+        light_level: 13
+        solid: true
+        placeable_on:
+          floor: true
+        hitbox:
+          length: 1
+          width: 1
+          height: 1
+          width_offset: 0
+          height_offset:
+          placeable_on:
+          walls: false
+          ceilling: false
+          floor: true
