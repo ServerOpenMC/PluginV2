@@ -1,9 +1,6 @@
 package fr.openmc.core.features.events;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.events.commands.CalendarCommand;
 import fr.openmc.core.features.events.commands.EventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
@@ -13,6 +10,8 @@ import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.Event;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class EventsManager extends Feature implements LoadAfterItemsAdder, HasCommands {
+public class EventsManager extends Feature implements HasCommands {
     @Override
     public Set<Object> getCommands() {
         return Set.of(

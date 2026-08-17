@@ -5,14 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
@@ -21,6 +13,13 @@ import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.quests.objects.Quest;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -28,7 +27,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"iambibi_", "gab400"})
-public class MilestonesManager extends Feature implements HasDatabase, LoadAfterItemsAdder, HasListeners, HasCommands {
+public class MilestonesManager extends Feature implements HasDatabase, HasListeners, HasCommands {
     private static final Set<Milestone<?>> milestones = new HashSet<>();
 
     private static Dao<MilestoneModel, String> millestoneDao;

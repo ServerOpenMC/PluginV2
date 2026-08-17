@@ -1,6 +1,6 @@
 package fr.openmc.core.hooks;
 
-import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.lifecycle.hooks.Hooks;
 
 public class FancyNpcsHook extends Hooks {
     public static long FANCY_INIT_DELAY = 20L * 30; // 30 seconds

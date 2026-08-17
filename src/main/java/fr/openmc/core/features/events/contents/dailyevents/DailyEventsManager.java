@@ -6,11 +6,6 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.*;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventAmbientListeners;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
@@ -18,6 +13,14 @@ import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyE
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasFeature;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.scheduler.BukkitTask;
@@ -29,7 +32,7 @@ import java.util.*;
 
 
 @Credit(developers = {"iambibi_"})
-public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
+public class DailyEventsManager extends Feature implements HasDatabase, HasListeners, HasCommands {
     private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
             9, 13, 16, 21
     ));
@@ -50,7 +53,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         for (DailyEvent event : OMCRegistry.DAILY_EVENTS.values()) {
             if (!(event instanceof HasFeature hasFeature)) continue;
 
-            OMCPlugin.registerFeature(hasFeature.getFeature());
+            OMCRegistry.FEATURES.register(hasFeature.feature());
         }
 
         incomingEvents = loadIncomingEvents();

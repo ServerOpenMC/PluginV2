@@ -2,7 +2,7 @@ package fr.openmc.core.features.itemsadder;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

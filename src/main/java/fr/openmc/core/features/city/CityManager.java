@@ -9,13 +9,6 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
@@ -32,6 +25,12 @@ import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.view.CityViewManager;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
@@ -44,7 +43,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
-public class CityManager extends Feature implements HasDatabase, LoadAfterItemsAdder, HasListeners, HasCommands {
+public class CityManager extends Feature implements HasDatabase, HasListeners, HasCommands {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
@@ -55,6 +54,7 @@ public class CityManager extends Feature implements HasDatabase, LoadAfterItemsA
         loadCities();
 
         // SUB-FEATURE
+        // todo utiliser OMCRegistry.FEATURES.register
         MayorManager.init();
         ProtectionsManager.init();
         WarManager.init();

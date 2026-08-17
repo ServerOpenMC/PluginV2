@@ -1,67 +1,18 @@
 package fr.openmc.core;
 
 import com.j256.ormlite.logger.LoggerFactory;
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.FeatureFactory;
-import fr.openmc.core.bootstrap.features.FeatureLoadingType;
-import fr.openmc.core.bootstrap.hooks.Hooks;
-import fr.openmc.core.bootstrap.integration.DatabaseManager;
-import fr.openmc.core.bootstrap.integration.ErrorReporter;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
-import fr.openmc.core.commands.admin.freeze.FreezeManager;
-import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.analytics.AnalyticsManager;
-import fr.openmc.core.features.animations.AnimationsManager;
-import fr.openmc.core.features.bits.BitsManager;
-import fr.openmc.core.features.chatanimations.ChatAnimationManager;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
-import fr.openmc.core.features.dimopener.DimensionOpenerManager;
-import fr.openmc.core.features.displays.TabList;
-import fr.openmc.core.features.displays.bossbar.BossbarManager;
-import fr.openmc.core.features.displays.bossbar.contents.HelpConfigManager;
-import fr.openmc.core.features.displays.holograms.HologramLoader;
-import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
-import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.economy.BankManager;
-import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.features.events.EventsManager;
-import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
-import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
-import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
-import fr.openmc.core.features.friend.FriendManager;
-import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
-import fr.openmc.core.features.itemsadder.elevator.ElevatorManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
-import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.mainmenu.MainMenu;
-import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.privatemessage.PrivateMessageManager;
-import fr.openmc.core.features.privatemessage.SocialSpyManager;
-import fr.openmc.core.features.profile.ProfileManager;
-import fr.openmc.core.features.quests.QuestProgressSaveManager;
-import fr.openmc.core.features.quests.QuestsManager;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.shops.managers.ShopManager;
-import fr.openmc.core.features.tickets.TicketManager;
-import fr.openmc.core.features.toor.DiscordLinkManager;
-import fr.openmc.core.features.tpa.TPAManager;
-import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.hooks.Hooks;
+import fr.openmc.core.lifecycle.integration.DatabaseManager;
+import fr.openmc.core.lifecycle.integration.ErrorReporter;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.ItemsAddersListener;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
-import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -70,7 +21,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -86,59 +36,6 @@ public class OMCPlugin extends JavaPlugin {
     static FileConfiguration configs;
 
     public static final String VANISH_META_KEY = "omcstaff.vanished";
-
-    // ** Registry of OMC Features
-    // () -> : nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
-    public final List<FeatureFactory> REGISTRY_FEATURE = new ArrayList<>(List.of(
-            () -> new TicketManager(new File(this.getDataFolder(), "data/stats")),
-            PrivateMessageManager::new,
-            SocialSpyManager::new,
-            SpawnManager::new,
-            UpdateManager::new,
-            EconomyManager::new,
-            BankManager::new,
-            BitsManager::new,
-            ScoreboardManager::new,
-            HomesManager::new,
-            TPAManager::new,
-            FreezeManager::new,
-            TransactionsManager::new,
-            AnalyticsManager::new,
-            FriendManager::new,
-            () -> new TabList(),
-            AdminShopManager::new,
-            HelpConfigManager::new,
-            () -> new AnimationsManager(),
-            () -> new HalloweenManager(),
-            QuestProgressSaveManager::new,
-            MotdUtils::new,
-            MascotsManager::new,
-            PlayerSettingsManager::new,
-            MailboxManager::new,
-            DiscordLinkManager::new,
-            ProfileManager::new,
-            QuestsManager::new,
-            CityManager::new,
-            DynamicCooldownManager::new,
-            ContestManager::new,
-            WeeklyEventsManager::new,
-            DailyEventsManager::new,
-            ChatAnimationManager::new,
-            EventsManager::new,
-            DreamManager::new,
-            MultiBlockManager::new,
-            MilestonesManager::new,
-            () -> new LeaderboardManager(),
-            () -> new MainMenu(),
-            () -> new HologramLoader(),
-            BossbarManager::new,
-            ShopManager::new,
-            HomeIconCacheManager::new,
-            DimensionOpenerManager::new,
-            () -> new ElevatorManager()
-    ));
-
-    public static final List<Feature> loadedFeature = new ArrayList<>();
 
     // ** Registry of OMC Plugin Hooks
     public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
@@ -198,14 +95,6 @@ public class OMCPlugin extends JavaPlugin {
         /* REGISTRIES */
         OMCRegistry.initAll();
 
-        /* FEATURES */
-        REGISTRY_FEATURE
-                .forEach(f -> {
-                    Feature feature = f.create(FeatureLoadingType.RUNTIME);
-
-                    registerFeature(feature);
-                });
-
         // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
         if (!ItemsAdderHook.isEnable()) {
             loadAfterItemsAdder();
@@ -224,14 +113,6 @@ public class OMCPlugin extends JavaPlugin {
         /* REGISTRIES */
         OMCRegistry.postInitAll();
 
-        /* FEATURES */
-        REGISTRY_FEATURE
-                .forEach(f -> {
-                    Feature feature = f.create(FeatureLoadingType.AFTER_IA);
-
-                    registerFeature(feature);
-                });
-
         if (WorldGuardHook.isEnable()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
         }
@@ -245,10 +126,6 @@ public class OMCPlugin extends JavaPlugin {
         // ** SAVE **
         /* HOOKS */
         REGISTRY_HOOKS.forEach(Hooks::startSave);
-
-        for (Feature feature : loadedFeature) {
-            feature.startSave();
-        }
 
         /* REGISTRIES */
         OMCRegistry.stopAll();
@@ -280,18 +157,6 @@ public class OMCPlugin extends JavaPlugin {
      */
     public static void registerEvents(Collection<ListenerFactory> listeners) {
         registerEvents(listeners.toArray(new ListenerFactory[0]));
-    }
-
-    /**
-     * Enregistre une feature dans le registre des features
-     *
-     * @param feature Feature à register
-     */
-    public static void registerFeature(Feature feature) {
-        if (feature != null) {
-            feature.startInit();
-            loadedFeature.add(feature);
-        }
     }
 
     /**

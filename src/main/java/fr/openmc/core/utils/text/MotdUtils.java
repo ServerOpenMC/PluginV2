@@ -1,7 +1,7 @@
 package fr.openmc.core.utils.text;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.registry.features.Feature;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

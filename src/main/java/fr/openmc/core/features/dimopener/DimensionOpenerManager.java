@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.dimopener.commands.DimensionCommands;
 import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.FilesUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -42,7 +41,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands, LoadAfterItemsAdder {
+public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String DIMENSIONS_FOLDER = "data/dimensions";

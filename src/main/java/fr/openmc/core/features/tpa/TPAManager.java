@@ -1,12 +1,12 @@
 package fr.openmc.core.features.tpa;
 
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.tpa.commands.TPACancelCommand;
 import fr.openmc.core.features.tpa.commands.TPACommand;
 import fr.openmc.core.features.tpa.commands.TPADenyCommand;
 import fr.openmc.core.features.tpa.commands.TPAcceptCommand;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

@@ -2,9 +2,9 @@ package fr.openmc.core.registry.ambient.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.RegionEnterEvent;
 import fr.openmc.core.events.RegionLeaveEvent;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.PlayerSetTimeNMS;
 import org.bukkit.Bukkit;

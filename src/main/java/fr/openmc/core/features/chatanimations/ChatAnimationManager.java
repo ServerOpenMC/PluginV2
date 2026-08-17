@@ -2,15 +2,14 @@ package fr.openmc.core.features.chatanimations;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListener;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.RandomUtils;
@@ -31,7 +30,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Credit(developers = {"iambibi_"})
-public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners {
+public class ChatAnimationManager extends Feature implements HasListeners {
 
     private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 20 min
     private static final long MAX_DELAY_TICKS = 20 * 60 * 30L; // 30 min

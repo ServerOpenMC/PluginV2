@@ -2,12 +2,12 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
