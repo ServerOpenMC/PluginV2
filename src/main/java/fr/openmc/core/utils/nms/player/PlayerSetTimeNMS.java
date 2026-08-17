@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.nms;
+package fr.openmc.core.utils.nms.player;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;

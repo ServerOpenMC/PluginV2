@@ -5,6 +5,7 @@ import fr.openmc.api.datapacks.builders.dimensions.VoidDimensionBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
@@ -44,7 +45,19 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
 
         // * Transfère les chunks de la dimension dans son dossier
         for (WorldTemplate template : values()) {
+            if (template.isAlreadyCreated(context.getDataDirectory())) continue;
             template.copyToDimensionsFolder(context);
+        }
+    }
+
+    @Override
+    public void init() {
+        for (WorldTemplate template : values()) {
+            //todo: bloquer si déjà gen (a faire ds une config qui se delete si la map est crée pour pas ds bootstrap
+
+            OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}:", template.getKey());
+            template.applyBiomeOnDimension();
+            OMCLogger.successFormatted("Biomes appliqués sur la dimension {}:", template.getKey());
         }
     }
 

@@ -59,7 +59,7 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
 
             new RegistryContext(() -> WORLD_TEMPLATES = new WorldTemplateRegistry(),
-                    RegistryLoadingType.BOOTSTRAP),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
