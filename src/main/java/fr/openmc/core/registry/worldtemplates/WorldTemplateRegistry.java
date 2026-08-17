@@ -25,6 +25,8 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
 
     @Override
     public void bootstrap(BootstrapContext context) throws IOException {
+        WorldTemplateConfig.init(context.getDataDirectory().toFile());
+
         // * Initialise le dimension type et le biome associé à la map
         for (WorldTemplate template : values()) {
             if (!template.isAlreadyCreated(context.getDataDirectory()))
