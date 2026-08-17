@@ -28,6 +28,13 @@ public class WorldTemplateConfig {
         return worldTemplateConfig.getStringList("biomes_loaded").contains(template.getKey().asString());
     }
 
+    public static void addBiomeLoaded(WorldTemplate template) {
+        List<String> biomesLoaded = worldTemplateConfig.getStringList("biomes_loaded");
+        biomesLoaded.add(template.getKey().asString());
+        worldTemplateConfig.set("biomes_loaded", biomesLoaded);
+        saveConfig();
+    }
+
     public static void removeBiomeLoaded(WorldTemplate template) {
         List<String> biomesLoaded = worldTemplateConfig.getStringList("biomes_loaded");
         biomesLoaded.remove(template.getKey().asString());

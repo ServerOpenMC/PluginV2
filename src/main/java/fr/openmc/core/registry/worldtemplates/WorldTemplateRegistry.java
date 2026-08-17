@@ -52,17 +52,19 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
         for (WorldTemplate template : values()) {
             if (template.isAlreadyCreated(context.getDataDirectory())) continue;
             template.copyToDimensionsFolder(context);
+            OMCLogger.infoFormatted("La map " + template.getKey().asString() + " a été copié avec succès");
         }
     }
 
     @Override
     public void init() {
         for (WorldTemplate template : values()) {
-            if (!WorldTemplateConfig.hasBiomeLoaded(template)) continue;
+            if (WorldTemplateConfig.hasBiomeLoaded(template)) continue;
 
-            OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}:", template.getKey());
+            OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}", template.getKey());
             template.applyBiomeOnDimension();
-            OMCLogger.successFormatted("Biomes appliqués sur la dimension {}:", template.getKey());
+            OMCLogger.successFormatted("Biomes appliqués sur la dimension {}", template.getKey());
+            WorldTemplateConfig.addBiomeLoaded(template);
         }
     }
 
