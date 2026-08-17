@@ -8,12 +8,12 @@ import fr.openmc.core.utils.nms.world.WorldBiomeNMS;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import net.kyori.adventure.key.Key;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -38,14 +38,14 @@ public abstract class WorldTemplate {
     public Biome getBiome() {
         if (BIOME_REGISTRY == null)
             BIOME_REGISTRY = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME);
-        return BIOME_REGISTRY.getOrThrow(Key.key(getKey()));
+        return BIOME_REGISTRY.getOrThrow(getKey());
     }
 
     public Holder<net.minecraft.world.level.biome.Biome> getNMSBiome() {
         ServerLevel level = ((CraftWorld) world).getHandle();
         return level.registryAccess()
                 .lookupOrThrow(Registries.BIOME)
-                .get(Identifier.parse(getKey())).orElseThrow();
+                .get(Identifier.parse(getKey().asString())).orElseThrow();
     }
 
     public World getWorld() {
@@ -54,8 +54,8 @@ public abstract class WorldTemplate {
         return world;
     }
 
-    public String getKey() {
-        return getNamespace() + ":" + getId();
+    public NamespacedKey getKey() {
+        return NamespacedKey.fromString(getNamespace() + ":" + getId());
     }
 
     public void copyToDimensionsFolder(BootstrapContext context) {

@@ -27,6 +27,9 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     public void bootstrap(BootstrapContext context) throws IOException {
         // * Initialise le dimension type et le biome associé à la map
         for (WorldTemplate template : values()) {
+            if (!template.isAlreadyCreated(context.getDataDirectory()))
+                WorldTemplateConfig.removeBiomeLoaded(template);
+
             OMCDatapack worldTemplateDatapack = new OMCDatapack(template.getNamespace());
 
             DimensionTypesInjector dimTypeInjector = new DimensionTypesInjector(template.getNamespace(), template.getId(), template.dimensionType());
@@ -53,7 +56,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     @Override
     public void init() {
         for (WorldTemplate template : values()) {
-            //todo: bloquer si déjà gen (a faire ds une config qui se delete si la map est crée pour pas ds bootstrap
+            if (!WorldTemplateConfig.hasBiomeLoaded(template)) continue;
 
             OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}:", template.getKey());
             template.applyBiomeOnDimension();
@@ -63,7 +66,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
 
     @Override
     public String key(WorldTemplate registryObject) {
-        return registryObject.getKey();
+        return registryObject.getKey().asString();
     }
 
     public WorldTemplate getByWorld(World world) {
