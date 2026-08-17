@@ -3,7 +3,7 @@ info:
 items:
   peluche_awyen:
     display_name: <lang:itemsadder.omc_plush.peluche_awyen.name>
-    resource: 
+    resource:
       material: PAPER
       model_path: peluche
     behaviours:
@@ -13,14 +13,14 @@ items:
           transform: HEAD
           right_rotation:
             axis_angle:
-              angle: 180
+              angle: 0
               axis:
                 x: 0
                 y: 1
                 z: 0
           translation:
             x: 0
-            y: -0.15
+            y: 0.95
             z: 0
           scale:
             x: 0.45
@@ -38,14 +38,14 @@ items:
           transform: HEAD
           right_rotation:
             axis_angle:
-              angle: 180
+              angle: 0
               axis:
                 x: 0
                 y: 1
                 z: 0
           translation:
             x: 0
-            y: -0.15
+            y: 0.85
             z: 0
           scale:
             x: 0.45
@@ -70,9 +70,9 @@ items:
                 z: 0
           translation:
             x: 0
-            y: -0.15
+            y: -0.3
             z: 0
           scale:
-            x: 0.45
-            y: 0.45
-            z: 0.45
+            x: 0.8
+            y: 0.8
+            z: 0.8
