@@ -35,7 +35,7 @@ public class BloodyAmbient extends CustomAmbient {
                             obj.addProperty("visual/moon_angle", 67);
                             obj.addProperty("visual/star_brightness", 0.7);
 
-
+                            // marqueur qui va decider la texture de notre lune
                             obj.addProperty("visual/cloud_fog_end_distance", 512.0032);
 
                             obj.addProperty("visual/cloud_height", 65);

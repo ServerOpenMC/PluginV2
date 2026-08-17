@@ -2,7 +2,7 @@
 #moj_import <minecraft:fog.glsl>
 #moj_import <minecraft:dynamictransforms.glsl>
 
-#moj_import <omc_daily_events_rp:shift_texture.glsl>
+#moj_import <omc_celestials:shift_texture.glsl>
 
 in vec2 texCoord0;
 flat in int isCelestial;
@@ -20,12 +20,22 @@ void main() {
 
     if (isCelestial == 1)
     {
+        // scale the uv to pixel coordinates
         vec2 uv = texCoord0 * atlasSize;
 
-        uv = shiftTextureUV(uv, textureHeight, frames, textureShift);
+        // calculate the warped and shifted UV
+        if (texCoord0.x < 0.2)
+        {
+            uv = shiftTextureUV_special(uv, textureHeight, frames, textureShift);
+        }
+        else
+        {
+            uv = shiftTextureUV(uv, textureHeight, frames, textureShift);
+        }
 
+        // normalize the uv
         color = texture(Sampler0, uv / atlasSize);
-    } 
+    }
 
     fragColor = color * ColorModulator;
 }
