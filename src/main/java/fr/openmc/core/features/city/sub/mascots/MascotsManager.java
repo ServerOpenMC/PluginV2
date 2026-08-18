@@ -6,6 +6,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
@@ -14,7 +15,6 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
@@ -70,7 +70,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
         loadMascots();
 
-        if (ProtocolLibHook.isEnable())
+        if (OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
             new MascotsSoundListener();
 
         for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {

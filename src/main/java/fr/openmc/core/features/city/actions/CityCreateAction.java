@@ -11,7 +11,6 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -97,7 +96,7 @@ public class CityCreateAction {
     public static boolean finalizeCreation(Player player, Location mascotLocation) {
         Chunk chunk = mascotLocation.getChunk();
 
-        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.is_in_region"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

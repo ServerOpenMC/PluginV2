@@ -40,11 +40,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class NPCManager implements Listener {
+public class MayorNPCManager implements Listener {
     private static final HashMap<UUID, OwnerNPC> ownerNpcMap = new HashMap<>();
     private static final HashMap<UUID, MayorNPC> mayorNpcMap = new HashMap<>();
 
-    public NPCManager() {
+    private final FancyNpcsHook fancyNpcsHook;
+    public MayorNPCManager(FancyNpcsHook fancyNpcsHook) {
+        this.fancyNpcsHook = fancyNpcsHook;
+
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
@@ -69,9 +72,8 @@ public class NPCManager implements Listener {
         }, 20L * 30);
     }
 
-    public static void createNPCS(UUID cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
-        if (!FancyNpcsHook.isEnable()) return;
-
+    public void createNPCS(UUID cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
+        if (!fancyNpcsHook.isEnable()) return;
 
         City city = CityManager.getCity(cityUUID);
         if (city == null) return;
@@ -119,8 +121,8 @@ public class NPCManager implements Listener {
         npcOwner.spawnForAll();
     }
 
-    public static void removeNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.isEnable()) return;
+    public void removeNPCS(UUID cityUUID) {
+        if (!fancyNpcsHook.isEnable()) return;
         if (!ownerNpcMap.containsKey(cityUUID) || !mayorNpcMap.containsKey(cityUUID)) return;
 
         Npc ownerNpc = ownerNpcMap.remove(cityUUID).getNpc();
@@ -133,8 +135,8 @@ public class NPCManager implements Listener {
         mayorNpc.removeForAll();
     }
 
-    public static void updateNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.isEnable()) return;
+    public void updateNPCS(UUID cityUUID) {
+        if (!fancyNpcsHook.isEnable()) return;
 
         OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
         MayorNPC mayorNPC = mayorNpcMap.get(cityUUID);
@@ -148,8 +150,8 @@ public class NPCManager implements Listener {
         createNPCS(cityUUID, mayorNPC.getLocation(), ownerNPC.getLocation(), ownerNPC.getNpc().getData().getCreator());
     }
 
-    public static void updateAllNPCS() {
-        if (!FancyNpcsHook.isEnable()) return;
+    public void updateAllNPCS() {
+        if (!fancyNpcsHook.isEnable()) return;
 
         Set<UUID> cityUUIDs = new HashSet<>(ownerNpcMap.keySet()); // Copie
 
@@ -167,8 +169,8 @@ public class NPCManager implements Listener {
         }
     }
 
-    public static void moveNPC(String type, Location location, UUID cityUUID) {
-        if (!FancyNpcsHook.isEnable()) return;
+    public void moveNPC(String type, Location location, UUID cityUUID) {
+        if (!fancyNpcsHook.isEnable()) return;
 
         if (type.equalsIgnoreCase("owner")) {
             OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
@@ -185,15 +187,15 @@ public class NPCManager implements Listener {
         }
     }
 
-    public static boolean hasNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.isEnable()) return false;
+    public boolean hasNPCS(UUID cityUUID) {
+        if (!fancyNpcsHook.isEnable()) return false;
 
         return ownerNpcMap.containsKey(cityUUID) && mayorNpcMap.containsKey(cityUUID);
     }
 
     @EventHandler
     public void onInteractWithMayorNPC(NpcInteractEvent event) {
-        if (!FancyNpcsHook.isEnable()) return;
+        if (!fancyNpcsHook.isEnable()) return;
 
         Player player = event.getPlayer();
 
@@ -272,8 +274,8 @@ public class NPCManager implements Listener {
                                             return false;
                                         }
 
-                                        NPCManager.moveNPC("mayor", locationClick, city.getUniqueId());
-                                        NPCManager.updateNPCS(city.getUniqueId());
+                                        this.moveNPC("mayor", locationClick, city.getUniqueId());
+                                        this.updateNPCS(city.getUniqueId());
                                         return true;
                                     },
                                     null
@@ -361,8 +363,8 @@ public class NPCManager implements Listener {
                                             return false;
                                         }
 
-                                        NPCManager.moveNPC("owner", locationClick, city.getUniqueId());
-                                        NPCManager.updateNPCS(city.getUniqueId());
+                                        this.moveNPC("owner", locationClick, city.getUniqueId());
+                                        this.updateNPCS(city.getUniqueId());
                                         return true;
                                     },
                                     null

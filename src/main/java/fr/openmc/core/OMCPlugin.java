@@ -3,15 +3,11 @@ package fr.openmc.core;
 import com.j256.ormlite.logger.LoggerFactory;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
-import fr.openmc.core.hooks.*;
-import fr.openmc.core.hooks.github.GitHubHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.ErrorReporter;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.ItemsAddersListener;
-import fr.openmc.core.registry.hooks.Hooks;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
@@ -21,9 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Plugin principal OpenMC.
@@ -36,17 +30,6 @@ public class OMCPlugin extends JavaPlugin {
     static FileConfiguration configs;
 
     public static final String VANISH_META_KEY = "omcstaff.vanished";
-
-    // ** Registry of OMC Plugin Hooks
-    public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
-            new ProtocolLibHook(),
-            new LuckPermsHook(),
-            new PapiHook(),
-            new WorldGuardHook(),
-            new ItemsAdderHook(),
-            new FancyNpcsHook(),
-            new GitHubHook()
-    ));
 
     @Override
     public void onLoad() {
@@ -69,12 +52,6 @@ public class OMCPlugin extends JavaPlugin {
         /* EXTERNALS */
         MenuLib.init(this);
 
-        /* HOOKS */
-        REGISTRY_HOOKS.forEach(Hooks::startInit);
-
-        if (!OMCPlugin.isUnitTestVersion() && ProtocolLibHook.isEnable())
-            PacketMenuLib.init(this);
-
         OMCLogger.logLoadMessage(this);
         if (!OMCPlugin.isUnitTestVersion()) {
             Datapack pack = this.getServer().getDatapackManager().getPack(getPluginMeta().getName() + "/omc");
@@ -95,8 +72,11 @@ public class OMCPlugin extends JavaPlugin {
         /* REGISTRIES */
         OMCRegistry.initAll();
 
+        if (!OMCPlugin.isUnitTestVersion() && OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
+            PacketMenuLib.init(this);
+
         // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
-        if (!ItemsAdderHook.isEnable()) {
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             loadAfterItemsAdder();
         }
     }
@@ -108,12 +88,12 @@ public class OMCPlugin extends JavaPlugin {
         ItemsAddersListener.setLoaded(true);
 
         /* LOAD ITEMS ADDER CONTENTS */
-        ItemsAdderHook.loadContents();
+        OMCRegistry.HOOKS.ITEMS_ADDER.loadContents();
 
         /* REGISTRIES */
         OMCRegistry.postInitAll();
 
-        if (WorldGuardHook.isEnable()) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.isEnable()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
         }
     }
@@ -124,9 +104,6 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // ** SAVE **
-        /* HOOKS */
-        REGISTRY_HOOKS.forEach(Hooks::startSave);
-
         /* REGISTRIES */
         OMCRegistry.stopAll();
 

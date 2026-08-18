@@ -23,6 +23,14 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @CommandPermission("omc.commands.bits")
 public class BitsCommands {
 
+    private final BitsManager bitsManager;
+    private final GitHubHook gitHubHook;
+
+    public BitsCommands(BitsManager bitsManager, GitHubHook gitHubHook) {
+        this.bitsManager = bitsManager;
+        this.gitHubHook = gitHubHook;
+    }
+
     @CommandPlaceholder()
     public void getBits(
             Player sender
@@ -34,19 +42,19 @@ public class BitsCommands {
     @Description("Permet de définir les bits d'un joueur")
     @CommandPermission("omc.admin.commands.bits.set")
     public void setBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        BitsManager.setBits(target.getUniqueId(), amount);
+        bitsManager.setBits(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.set.success",
                         Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                        Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                        Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.set.target",
-                            Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -56,11 +64,11 @@ public class BitsCommands {
     @Description("Permet d'ajouter des bits à un joueur")
     @CommandPermission("omc.admin.commands.bits.add")
     public void addBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        BitsManager.addBits(target.getUniqueId(), amount);
+        bitsManager.addBits(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.add.success",
-                        Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
+                        Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
                         Component.text(target.getName()).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -68,7 +76,7 @@ public class BitsCommands {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.add.target",
-                            Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -78,11 +86,11 @@ public class BitsCommands {
     @Description("Permet de retirer des bits à un joueur")
     @CommandPermission("omc.admin.commands.bits.remove")
     public void removeBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        if (BitsManager.withdrawBits(target.getUniqueId(), amount)) {
+        if (bitsManager.withdrawBits(target.getUniqueId(), amount)) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.economy.bits.remove.success",
-                            Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
+                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
                             Component.text(target.getName()).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -103,7 +111,7 @@ public class BitsCommands {
     @Description("Permet de réinitialiser les bits d'un joueur")
     @CommandPermission("omc.admin.commands.bits.reset")
     public void resetBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target) {
-        BitsManager.setBits(target.getUniqueId(), 0);
+        bitsManager.setBits(target.getUniqueId(), 0);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.reset.success",
@@ -125,7 +133,7 @@ public class BitsCommands {
     @Description("Permet de forcer l'update des bits d'un joueur")
     @CommandPermission("omc.admin.commands.bits.forceupdate")
     public void forceBitsUpdate(CommandSender player, @SuggestWith(PlayerNameLinkedAutocomplete.class) Player target) {
-        Long githubId = GitHubHook.getContributorId(target.getUniqueId());
+        Long githubId = gitHubHook.getContributorId(target.getUniqueId());
 
         if (githubId == null) {
             MessagesManager.sendMessage(player,
@@ -136,7 +144,7 @@ public class BitsCommands {
             return;
         }
 
-        BitsManager.applyContributorBitsUpdate(githubId);
+        bitsManager.applyContributorBitsUpdate(githubId);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.forceupdate.success",

@@ -43,6 +43,8 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
+    private final MayorNPCManager mayorNPCManager;
+
     public static final int MEMBER_REQUEST_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
@@ -71,7 +73,7 @@ public class MayorManager {
 
     private static final Random RANDOM = new Random();
 
-    public static void init() {
+    public static void init(FancyNpcsHook fancyNpcsHook, ItemsAdderHook itemsAdderHook) {
         // LISTENERS
         new PhaseListener(OMCPlugin.getInstance());
         OMCPlugin.registerEvents(
@@ -90,13 +92,14 @@ public class MayorManager {
                 MilitaryDissuasion::new,
                 IdyllicRain::new);
 
-        if (ItemsAdderHook.isEnable()) {
-            OMCPlugin.registerEvents(
-                    UrneListener::new);
+        // todo: refaire avec ListenerFactory (interface LoadIfEnable)
+        if (itemsAdderHook.isEnable()) {
+            OMCPlugin.registerEvents(() -> new UrneListener(fancyNpcsHook));
         }
-        if (FancyNpcsHook.isEnable()) {
+        if (fancyNpcsHook.isEnable()) {
+            this.mayorNPCManager = new MayorNPCManager(fancyNpcsHook);
             OMCPlugin.registerEvents(
-                    NPCManager::new);
+                    () -> this.mayorNPCManager);
         }
 
         CommandsManager.getHandler().register(
@@ -310,7 +313,7 @@ public class MayorManager {
             initCityPhase1(city, copyCityMayor);
         }
 
-        NPCManager.updateAllNPCS();
+        MayorNPCManager.updateAllNPCS();
 
         Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase1"));
     }
@@ -326,7 +329,7 @@ public class MayorManager {
             initCityPhase2(city);
         }
 
-        NPCManager.updateAllNPCS();
+        MayorNPCManager.updateAllNPCS();
 
         Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase2"));
     }

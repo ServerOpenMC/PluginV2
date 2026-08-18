@@ -3,7 +3,6 @@ package fr.openmc.core.registry.items;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -76,7 +75,7 @@ public abstract class CustomItem {
      */
     public ItemStack getBest() {
         ItemStack item;
-        if (!ItemsAdderHook.isEnable() || getItemsAdder() == null) {
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() || getItemsAdder() == null) {
             item = getVanilla();
         } else {
             item = getItemsAdder();

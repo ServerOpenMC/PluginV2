@@ -22,17 +22,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GlobalTeamManager {
     private LuckPerms luckPerms = null;
+    private LuckPermsHook hook = null;
     private final ObjectCacheRepository<SternalBoard> boardCache;
     private final Map<String, Component> groupToPrefixCache = new ConcurrentHashMap<>();
     private record TeamState(Set<String> members, Component prefix) {}
     private final Map<String, TeamState> teams = new ConcurrentHashMap<>();
     private final Map<UUID, String> playerTeam = new ConcurrentHashMap<>();
 
-    public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache) {
+    public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache, LuckPermsHook hook) {
         this.boardCache = boardCache;
 
-        if (LuckPermsHook.isEnable()) {
-            this.luckPerms = LuckPermsHook.getApi();
+        if (hook.isEnable()) {
+            this.hook = hook;
+            this.luckPerms = hook.getApi();
             initSortedGroups();
 
             this.luckPerms.getEventBus().subscribe(
@@ -47,7 +49,7 @@ public class GlobalTeamManager {
         List<Group> sortedGroups = new ArrayList<>(luckPerms.getGroupManager().getLoadedGroups());
         sortedGroups.sort(Comparator.comparing(g -> -g.getWeight().orElse(0)));
         for (Group group : sortedGroups) {
-            groupToPrefixCache.put(group.getName(), LuckPermsHook.getFormattedPAPIPrefix(group));
+            groupToPrefixCache.put(group.getName(), hook.getFormattedPAPIPrefix(group));
         }
     }
 
@@ -62,7 +64,7 @@ public class GlobalTeamManager {
 
         Component prefix = groupToPrefixCache.computeIfAbsent(
                 playerGroup.getName(),
-                _ -> LuckPermsHook.getFormattedPAPIPrefix(playerGroup)
+                _ -> hook.getFormattedPAPIPrefix(playerGroup)
         );
 
         int weight = playerGroup.getWeight().orElse(0);

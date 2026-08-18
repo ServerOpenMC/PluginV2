@@ -10,6 +10,7 @@ import fr.openmc.core.lifecycle.registries.RegistryLoadingType;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.features.FeaturesRegistry;
+import fr.openmc.core.registry.hooks.HooksRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
@@ -25,6 +26,7 @@ import java.util.List;
 public final class OMCRegistry {
     // * Registre globaux
     public static FeaturesRegistry FEATURES;
+    public static HooksRegistry HOOKS;
 
     public static CustomItemRegistry CUSTOM_ITEMS;
     public static CustomMobRegistry CUSTOM_MOBS;
@@ -40,6 +42,9 @@ public final class OMCRegistry {
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
     private static final List<RegistryContext> ALL = new ArrayList<>(List.of(
+            new RegistryContext(
+                    () -> HOOKS = new HooksRegistry(),
+                    RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),

@@ -27,12 +27,12 @@ import java.util.Set;
 @SuppressWarnings("UnstableApiUsage")
 public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     @Getter
-    private static ItemsAdder api;
+    private ItemsAdder api;
 
     private static final String CONTENTS_FOLDER_NAME = "contents";
     private static final String MERGE_RESOURCEPACK_PATH = "resource-pack.zip.merge_other_plugins_resourcepacks_folders";
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(ItemsAdderHook.class);
     }
 
@@ -57,7 +57,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
      * Appelle {@code IAItemLoadEvent} et donne en meme temps le Yaml de l'item.
      * DOIT ETRE LANCE APRES QUE ITEMS ADDER SOIT COMPLETEMENT CHARGE
      */
-    public static void loadContents() {
+    public void loadContents() {
         File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/pluigns
         File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
         File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents

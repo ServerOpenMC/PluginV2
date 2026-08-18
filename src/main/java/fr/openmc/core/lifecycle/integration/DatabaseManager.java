@@ -6,6 +6,7 @@ import com.j256.ormlite.logger.LocalLogBackend;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.hooks.Hooks;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -32,7 +33,7 @@ public class DatabaseManager {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             }
         } catch (ClassNotFoundException e) {
-            OMCLogger.error("Database driver not found. Please ensure the MySQL or H2 driver is included in the classpath.");
+            OMCLogger.error("Le Driver de la Database n'est pas trouvé. Assurez vous que MYSQL ou H2 driver est dans le classpath.");
             throw new RuntimeException(e);
         }
 
@@ -43,46 +44,49 @@ public class DatabaseManager {
             String username = config.getString("database.username");
             String password = config.getString("database.password");
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
-
-            OMCPlugin.getInstance().REGISTRY_HOOKS
-                    .forEach(h -> {
-                        try {
-                            h.startDB(connectionSource);
-                        } catch (SQLException e) {
-                            OMCLogger.error("Failed to initialize the database connection.", e);
-                            throw new RuntimeException(e);
-                        } catch (ConnectionPendingException e) {
-                            OMCLogger.error("Database connection is pending. Please check your database configuration.");
-                            throw new RuntimeException(e);
-                        } catch (NoClassDefFoundError e) {
-                            OMCLogger.errorFormatted("Plugin has failed to start feature because {} does not exist.",
-                                    e.getMessage());
-                        }
-                    });
         } catch (SQLException e) {
-            OMCLogger.error("Failed to initialize the database connection.", e);
+            OMCLogger.error("Tentative d'initialisation de la base de donnée échouée.", e);
             throw new RuntimeException(e);
         } catch (ConnectionPendingException e) {
-            OMCLogger.error("Database connection is pending. Please check your database configuration.");
+            OMCLogger.error("La connection à la base de donnée est en attente. Veuillez vérifier votre configuration de base de données.");
             throw new RuntimeException(e);
         }
     }
 
     public static void startFeatureDB(Feature feature) {
         if (connectionSource == null) {
-            OMCLogger.error("Tentative de start une feature avant que DatabseManager soit init.");
+            OMCLogger.error("Tentative de start la DB d'une feature avant que DatabseManager soit init.");
             return;
         }
         try {
             feature.startDB(connectionSource);
         } catch (SQLException e) {
-            OMCLogger.error("Failed to initialize the database connection.", e);
+            OMCLogger.error("Tentative d'initialisation de la base de donnée d'une feature échouée.", e);
             throw new RuntimeException(e);
         } catch (ConnectionPendingException e) {
-            OMCLogger.error("Database connection is pending. Please check your database configuration.");
+            OMCLogger.error("La connection à la base de donnée est en attente. Veuillez vérifier votre configuration de base de données.");
             throw new RuntimeException(e);
         } catch (NoClassDefFoundError e) {
-            OMCLogger.errorFormatted("Plugin has failed to start feature because {} does not exist.", e.getMessage());
+            OMCLogger.errorFormatted("Le plugin a tenté de lancer une feature mais {} n'existe pas.", e.getMessage());
+        }
+    }
+
+    public static void startHookDB(Hooks hook) {
+        if (connectionSource == null) {
+            OMCLogger.error("Tentative de start la DB d'un hook avant que DatabseManager soit init.");
+            return;
+        }
+        try {
+            hook.startDB(connectionSource);
+        } catch (SQLException e) {
+            OMCLogger.error("Tentative d'initialisation de la base de donnée d'un hook échouée.", e);
+            throw new RuntimeException(e);
+        } catch (ConnectionPendingException e) {
+            OMCLogger.error("La connection à la base de donnée est en attente. Veuillez vérifier votre configuration de base de données.");
+            throw new RuntimeException(e);
+        } catch (NoClassDefFoundError e) {
+            OMCLogger.errorFormatted("Le plugin a tenté de lancer un hook mais {} n'existe pas.",
+                    e.getMessage());
         }
     }
 

@@ -18,9 +18,9 @@ import java.util.Objects;
 
 public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     @Getter
-    private static LuckPerms api;
+    private LuckPerms api;
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(LuckPermsHook.class);
     }
 
@@ -42,7 +42,7 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     /**
      * Retourne le garde d'une personne
      */
-    public static String getPrefix(Player player) {
+    public String getPrefix(Player player) {
         if (!isEnable()) return "";
 
         User user = getApi().getUserManager().getUser(player.getUniqueId());
@@ -52,7 +52,20 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
         return Objects.requireNonNullElse(prefix, "");
     }
 
-    public static String getFormattedPAPIPrefix(Player player) {
+    /**
+     * Retourne le suffix d'une personne
+     */
+    public String getSuffix(Player player) {
+        if (!isEnable()) return "";
+
+        User user = getApi().getUserManager().getUser(player.getUniqueId());
+        if (user == null) return "";
+
+        String prefix = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getSuffix();
+        return Objects.requireNonNullElse(prefix, "");
+    }
+
+    public String getFormattedPAPIPrefix(Player player) {
         if (!isEnable()) return "";
 
         String prefix = getPrefix(player);
@@ -65,7 +78,7 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
         return formattedPrefix;
     }
 
-    public static @NotNull Component getFormattedPAPIPrefix(Group group) {
+    public @NotNull Component getFormattedPAPIPrefix(Group group) {
         if (!isEnable()) return Component.empty();
 
         String prefix = group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();

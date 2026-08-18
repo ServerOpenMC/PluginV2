@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.actions;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -54,7 +54,7 @@ public class CityClaimAction {
         }
 
         Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
-        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.is_in_region"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;

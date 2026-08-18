@@ -9,6 +9,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
@@ -17,7 +18,7 @@ import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.milestone.CityMilestoneManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.rank.CityRankCommands;
@@ -25,6 +26,8 @@ import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.view.CityViewManager;
+import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
@@ -49,13 +52,19 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
     public static final Map<UUID, City> playerCities = new HashMap<>();
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
+    private ItemsAdderHook itemsAdderHook;
+    private FancyNpcsHook fancyNpcsHook;
+
     @Override
     public void init() {
+        this.itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
+        this.fancyNpcsHook = OMCRegistry.HOOKS.FANCY_NPCS;
+
         loadCities();
 
         // SUB-FEATURE
         // todo utiliser OMCRegistry.FEATURES.register
-        MayorManager.init();
+        MayorManager.init(fancyNpcsHook, itemsAdderHook);
         ProtectionsManager.init();
         WarManager.init();
         CityBankManager.init();
@@ -553,7 +562,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         }
 
         MascotsManager.removeMascotsFromCity(city);
-        NPCManager.removeNPCS(city.getUniqueId());
+        MayorNPCManager.removeNPCS(city.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {

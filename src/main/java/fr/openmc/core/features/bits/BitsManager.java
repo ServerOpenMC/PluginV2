@@ -6,6 +6,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.bits.models.BitsPlayer;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
@@ -28,6 +29,9 @@ import java.util.*;
 
 @Credit(developers = {"iambibi_"})
 public class BitsManager extends Feature implements HasDatabase, HasCommands {
+    private GitHubHook gitHubHook;
+    private ItemsAdderHook itemsAdderHook;
+
     @Getter
     private static Map<UUID, BitsPlayer> bitsData;
 
@@ -40,6 +44,9 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
 
     @Override
     public void init() {
+        this.gitHubHook = OMCRegistry.HOOKS.GITHUB;
+        this.itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
+
         bitsData = loadAllBits();
 
         updateBitsUpdateTimer();
@@ -49,7 +56,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new BitsCommands()
+                new BitsCommands(this, gitHubHook)
         );
     }
 
@@ -64,7 +71,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
         saveAllBits();
     }
 
-    public static Map<UUID, BitsPlayer> loadAllBits() {
+    private Map<UUID, BitsPlayer> loadAllBits() {
         Map<UUID, BitsPlayer> balances = new HashMap<>();
         try {
             List<BitsPlayer> dbBalances = playersBitsDao.queryForAll();
@@ -78,7 +85,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
         return balances;
     }
 
-    private static void saveAllBits() {
+    private void saveAllBits() {
         try {
             playersBitsDao.callBatchTasks(() -> {
                 for (BitsPlayer player : bitsData.values()) {
@@ -92,31 +99,31 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
         }
     }
 
-    public static double getBits(UUID playerUUID) {
+    public double getBits(UUID playerUUID) {
         BitsPlayer bitsPlayer = bitsData.get(playerUUID);
         return bitsPlayer == null ? 0 : bitsPlayer.getBits();
     }
 
-    public static void addBits(UUID playerUUID, double amount) {
+    public void addBits(UUID playerUUID, double amount) {
         BitsPlayer bitsPlayer = getBitsPlayer(playerUUID);
         bitsPlayer.deposit(amount);
     }
 
-    public static boolean withdrawBits(UUID playerUUID, double amount) {
+    public boolean withdrawBits(UUID playerUUID, double amount) {
         BitsPlayer bitsPlayer = getBitsPlayer(playerUUID);
         return bitsPlayer.withdraw(amount);
     }
 
-    public static void setBits(UUID playerUUID, double amount) {
+    public void setBits(UUID playerUUID, double amount) {
         BitsPlayer bitsPlayer = getBitsPlayer(playerUUID);
         bitsPlayer.setBits(amount);
     }
 
-    public static BitsPlayer getBitsPlayer(UUID playerUUID) {
+    public BitsPlayer getBitsPlayer(UUID playerUUID) {
         return bitsData.computeIfAbsent(playerUUID, BitsPlayer::new);
     }
 
-    public static String getFormattedBits(UUID playerUUID) {
+    public String getFormattedBits(UUID playerUUID) {
         String balance = String.valueOf(getBits(playerUUID));
         Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
@@ -126,19 +133,19 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
                 getBitsIcon());
     }
 
-    public static String getBitsIcon() {
-        if (ItemsAdderHook.isEnable()) {
+    public String getBitsIcon() {
+        if (itemsAdderHook.isEnable()) {
             return FontImageWrapper.replaceFontImages("§f:bits:");
         } else {
             return "✯";
         }
     }
 
-    public static void applyContributorBitsUpdate(Long githubID) {
-        UUID playerLinked = GitHubHook.getPlayerLinkTo(githubID);
+    public void applyContributorBitsUpdate(Long githubID) {
+        UUID playerLinked = gitHubHook.getPlayerLinkTo(githubID);
         if (playerLinked == null) return;
 
-        ContributorStats stats = GitHubHook.getStats(githubID);
+        ContributorStats stats = gitHubHook.getStats(githubID);
         if (stats == null) return;
 
         int lastSavedLines = getBitsPlayer(playerLinked).getLastSavedLines();
@@ -152,17 +159,17 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
         }
     }
 
-    public static void applyAllContributorBitsUpdate() {
-        Map<Long, String> contributors = GitHubHook.getContributors();
+    public void applyAllContributorBitsUpdate() {
+        Map<Long, String> contributors = gitHubHook.getContributors();
 
-        GitHubHook.fetchContributorStats();
+        gitHubHook.fetchContributorStats();
 
         for (Long githubID : contributors.keySet()) {
             applyContributorBitsUpdate(githubID);
         }
     }
 
-    public static void updateBitsUpdateTimer() {
+    public void updateBitsUpdateTimer() {
         if (OMCPlugin.isUnitTestVersion()) return;
 
         if (bitsUpdateTask != null) return;
@@ -181,7 +188,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
 
                     Bukkit.getScheduler().runTaskLater(
                             OMCPlugin.getInstance(),
-                            BitsManager::updateBitsUpdateTimer,
+                            this::updateBitsUpdateTimer,
                             20L * 10
                     );
                 },

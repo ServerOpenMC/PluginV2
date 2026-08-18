@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
@@ -157,8 +157,8 @@ public class MayorNpcMenu extends Menu {
                                     return false;
                                 }
 
-                                NPCManager.moveNPC("mayor", locationClick, city.getUniqueId());
-                                NPCManager.updateNPCS(city.getUniqueId());
+                                MayorNPCManager.moveNPC("mayor", locationClick, city.getUniqueId());
+                                MayorNPCManager.updateNPCS(city.getUniqueId());
                                 return true;
                             },
                             null

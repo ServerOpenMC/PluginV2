@@ -31,13 +31,13 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     public final static String REPO_OWNER = "ServerOpenMC";
     public final static String REPO_NAME = "PluginV2";
 
-    private static Dao<DBGithubMinecraft, String> linkGithubMinecraft;
+    private Dao<DBGithubMinecraft, String> linkGithubMinecraft;
 
-    public static final Map<UUID, DBGithubMinecraft> lastKnownLinkMap = new ConcurrentHashMap<>();
-    private static final Map<String, ContributorStats> contributorStatsMap = new ConcurrentHashMap<>();
+    public final Map<UUID, DBGithubMinecraft> lastKnownLinkMap = new ConcurrentHashMap<>();
+    private final Map<String, ContributorStats> contributorStatsMap = new ConcurrentHashMap<>();
 
-    private static final TtlCache<UUID, Long> githubLinkCache = new TtlCache<>(60, TimeUnit.SECONDS);
-    private static final TtlCache<Long, String> usernameCache = new TtlCache<>(10, TimeUnit.MINUTES);
+    private final TtlCache<UUID, Long> githubLinkCache = new TtlCache<>(60, TimeUnit.SECONDS);
+    private final TtlCache<Long, String> usernameCache = new TtlCache<>(10, TimeUnit.MINUTES);
 
     @Override
     public void init() {
@@ -56,11 +56,11 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         return "GitHubHook";
     }
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(GitHubHook.class);
     }
 
-    private static void loadAllPlayerLinkGithubData() {
+    private void loadAllPlayerLinkGithubData() {
         try {
             lastKnownLinkMap.clear();
             for (DBGithubMinecraft link : linkGithubMinecraft.queryForAll()) {
@@ -71,7 +71,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         }
     }
 
-    public static Long getContributorId(UUID playerUUID) {
+    public Long getContributorId(UUID playerUUID) {
         if (githubLinkCache.contains(playerUUID)) return githubLinkCache.get(playerUUID);
 
         InternalToorApiClient.GithubStatus status = InternalToorApiClient.checkGithubStatus(playerUUID);
@@ -88,7 +88,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         return null;
     }
 
-    private static void persistFallback(UUID playerUUID, long githubId) {
+    private void persistFallback(UUID playerUUID, long githubId) {
         DBGithubMinecraft link = new DBGithubMinecraft(playerUUID, githubId);
         lastKnownLinkMap.put(playerUUID, link);
         try {
@@ -98,7 +98,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         }
     }
 
-    private static void removeFallback(UUID playerUUID) {
+    private void removeFallback(UUID playerUUID) {
         if (lastKnownLinkMap.remove(playerUUID) != null) {
             try {
                 linkGithubMinecraft.deleteById(playerUUID.toString());
@@ -108,12 +108,12 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         }
     }
 
-    public static Long refreshContributorId(UUID playerUUID) {
+    public Long refreshContributorId(UUID playerUUID) {
         githubLinkCache.invalidate(playerUUID);
         return getContributorId(playerUUID);
     }
 
-    public static Map<Long, String> getContributors() {
+    public Map<Long, String> getContributors() {
         Map<Long, String> contributors = new HashMap<>();
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors?per_page=100",
                 REPO_OWNER, REPO_NAME);
@@ -153,7 +153,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     /**
      * Mets à jours les stats des contributeurs dans la map contributorStatsMap
      */
-    public static void fetchContributorStats() {
+    public void fetchContributorStats() {
         Collection<String> contributors = getContributors().values();
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors",
                 REPO_OWNER, REPO_NAME);
@@ -201,55 +201,55 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         }
     }
 
-    public static ContributorStats getStats(String nameGithub) {
+    public ContributorStats getStats(String nameGithub) {
         return contributorStatsMap.get(nameGithub);
     }
 
-    public static int getTotalLines(String nameGithub) {
+    public int getTotalLines(String nameGithub) {
         ContributorStats stats = contributorStatsMap.get(nameGithub);
         return stats == null ? 0 : stats.getTotalLines();
     }
 
-    public static int getTotalAddedLines(String nameGithub) {
+    public int getTotalAddedLines(String nameGithub) {
         ContributorStats stats = contributorStatsMap.get(nameGithub);
         return stats == null ? 0 : stats.totalAddLines();
     }
 
-    public static int getTotalRemovedLines(String nameGithub) {
+    public int getTotalRemovedLines(String nameGithub) {
         ContributorStats stats = contributorStatsMap.get(nameGithub);
         return stats == null ? 0 : stats.totalRemoveLines();
     }
 
-    public static String getContributorName(long idGithub) {
+    public String getContributorName(long idGithub) {
         return getContributors().getOrDefault(idGithub, "null");
     }
 
-    public static ContributorStats getStats(long idGithub) {
+    public ContributorStats getStats(long idGithub) {
         return contributorStatsMap.get(getContributorName(idGithub));
     }
 
-    public static int getTotalLines(long idGithub) {
+    public int getTotalLines(long idGithub) {
         ContributorStats stats = contributorStatsMap.get(getContributorName(idGithub));
         return stats == null ? 0 : stats.getTotalLines();
     }
 
-    public static int getTotalAddedLines(long idGithub) {
+    public int getTotalAddedLines(long idGithub) {
         ContributorStats stats = contributorStatsMap.get(getContributorName(idGithub));
         return stats == null ? 0 : stats.totalAddLines();
     }
 
-    public static int getTotalRemovedLines(long idGithub) {
+    public int getTotalRemovedLines(long idGithub) {
         ContributorStats stats = contributorStatsMap.get(getContributorName(idGithub));
         return stats == null ? 0 : stats.totalRemoveLines();
     }
 
-    public static DBGithubMinecraft getContributorLink(UUID uuid) {
+    public DBGithubMinecraft getContributorLink(UUID uuid) {
         Long githubId = getContributorId(uuid);
         if (githubId == null) return null;
         return lastKnownLinkMap.getOrDefault(uuid, new DBGithubMinecraft(uuid, githubId));
     }
 
-    public static UUID getPlayerLinkTo(long idGithub) {
+    public UUID getPlayerLinkTo(long idGithub) {
         return lastKnownLinkMap.values().stream()
                 .filter(data -> data.getGithubID() == idGithub)
                 .map(DBGithubMinecraft::getPlayerUUID)
@@ -257,11 +257,11 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
                 .orElse(null);
     }
 
-    public static Collection<DBGithubMinecraft> getKnownLinks() {
+    public Collection<DBGithubMinecraft> getKnownLinks() {
         return lastKnownLinkMap.values();
     }
 
-    public static String getUsernameById(long githubId) {
+    public String getUsernameById(long githubId) {
         return usernameCache.getOrCompute(githubId, InternalToorApiClient::getGithubUsername);
     }
 }

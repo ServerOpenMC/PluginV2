@@ -5,7 +5,7 @@ import fr.openmc.core.registry.hooks.Hooks;
 public class FancyNpcsHook extends Hooks {
     public static long FANCY_INIT_DELAY = 20L * 30; // 30 seconds
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(FancyNpcsHook.class);
     }
 

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class WorldGuardHook extends Hooks {
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(WorldGuardHook.class);
     }
 
@@ -25,7 +25,7 @@ public class WorldGuardHook extends Hooks {
         return "WorldGuard";
     }
 
-    public static boolean isRegionConflict(Location location) {
+    public boolean isRegionConflict(Location location) {
         if (!isEnable()) return false;
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -44,11 +44,11 @@ public class WorldGuardHook extends Hooks {
     /**
      * Retourne si la positon mise est dans une région
      */
-    public static boolean isInside(ProtectedRegion region, Location location) {
+    public boolean isInside(ProtectedRegion region, Location location) {
         return region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
-    public static boolean doesChunkContainWGRegion(Chunk chunk) {
+    public boolean doesChunkContainWGRegion(Chunk chunk) {
         if (!isEnable()) return false;
 
         org.bukkit.World world = chunk.getWorld();

@@ -3,7 +3,7 @@ package fr.openmc.core.hooks;
 import fr.openmc.core.registry.hooks.Hooks;
 
 public class PapiHook extends Hooks {
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(PapiHook.class);
     }
 

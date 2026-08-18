@@ -3,6 +3,7 @@ package fr.openmc.core.registry.features;
 import com.google.common.base.Supplier;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
@@ -47,8 +48,6 @@ import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
-import fr.openmc.core.hooks.*;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.features.loading.FeatureEntry;
@@ -66,12 +65,12 @@ public class FeaturesRegistry extends Registry<String, Feature>
 
     // * Flags pré enregistrés
     public final FeatureFlag NOT_IN_UNIT_TEST = new FeatureFlag.NotInUnitTest();
-    public final FeatureFlag NEED_FANCY_NPC = new FeatureFlag.NeedApi(FancyNpcsHook::isEnable, "FancyNPC");
-    public final FeatureFlag NEED_LUCK_PERMS = new FeatureFlag.NeedApi(LuckPermsHook::isEnable, "LuckPerms");
-    public final FeatureFlag NEED_ITEMS_ADDER = new FeatureFlag.NeedApi(ItemsAdderHook::isEnable, "ItemsAdder");
-    public final FeatureFlag NEED_PAPI = new FeatureFlag.NeedApi(PapiHook::isEnable, "PlaceHolderAPI");
-    public final FeatureFlag NEED_PROTOCOL_LIB = new FeatureFlag.NeedApi(ProtocolLibHook::isEnable, "ProtocolLib");
-    public final FeatureFlag NEED_WORLD_GUARD = new FeatureFlag.NeedApi(WorldGuardHook::isEnable, "WorldGuard");
+    public final FeatureFlag NEED_FANCY_NPC = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.FANCY_NPCS::isEnable, "FancyNPC");
+    public final FeatureFlag NEED_LUCK_PERMS = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.LUCK_PERMS::isEnable, "LuckPerms");
+    public final FeatureFlag NEED_ITEMS_ADDER = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.ITEMS_ADDER::isEnable, "ItemsAdder");
+    public final FeatureFlag NEED_PAPI = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.PAPI::isEnable, "PlaceHolderAPI");
+    public final FeatureFlag NEED_PROTOCOL_LIB = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.PROTOCOL_LIB::isEnable, "ProtocolLib");
+    public final FeatureFlag NEED_WORLD_GUARD = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.WORLD_GUARD::isEnable, "WorldGuard");
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 

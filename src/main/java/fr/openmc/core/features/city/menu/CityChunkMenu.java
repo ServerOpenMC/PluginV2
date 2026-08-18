@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -13,7 +14,6 @@ import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -123,7 +123,7 @@ public class CityChunkMenu extends Menu {
 
                         if (!newChunkInfoMap.containsKey(pos)) {
                             Chunk chunk = player.getWorld().getChunkAt(chunkX, chunkZ);
-                            boolean isProtected = WorldGuardHook.doesChunkContainWGRegion(chunk);
+                            boolean isProtected = OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk);
                             if (isProtected) {
                                 newChunkInfoMap.put(pos, new ChunkInfo(null, true));
                             } else {

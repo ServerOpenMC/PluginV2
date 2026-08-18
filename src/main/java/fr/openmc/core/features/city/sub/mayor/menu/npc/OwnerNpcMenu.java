@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
@@ -203,8 +203,8 @@ public class OwnerNpcMenu extends Menu {
                                 return false;
                             }
 
-                            NPCManager.moveNPC("owner", locationClick, city.getUniqueId());
-                            NPCManager.updateNPCS(city.getUniqueId());
+                            MayorNPCManager.moveNPC("owner", locationClick, city.getUniqueId());
+                            MayorNPCManager.updateNPCS(city.getUniqueId());
                             return true;
                         },
                         null
