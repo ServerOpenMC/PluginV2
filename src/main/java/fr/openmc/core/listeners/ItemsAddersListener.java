@@ -2,8 +2,8 @@ package fr.openmc.core.listeners;
 
 import dev.lone.itemsadder.api.Events.ItemsAdderLoadDataEvent;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
 import lombok.Setter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

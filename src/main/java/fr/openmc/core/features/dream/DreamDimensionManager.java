@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;

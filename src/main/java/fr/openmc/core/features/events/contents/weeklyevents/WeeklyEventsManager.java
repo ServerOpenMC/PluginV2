@@ -6,14 +6,13 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Credit(developers = {"iambibi_"})
-public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase {
+public class WeeklyEventsManager extends Feature implements HasDatabase {
 
     private static Dao<WeeklyEventsData, Integer> dao;
     private static WeeklyEventsData data;

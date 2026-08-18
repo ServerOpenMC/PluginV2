@@ -2,22 +2,21 @@ package fr.openmc.core.features.mainmenu;
 
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
 import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.mainmenu.menus.Page1;
 import fr.openmc.core.hooks.ProtocolLibHook;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
 
 @Credit(developers = {"miseur"}, graphist = {"Tfloa"})
-public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
+public class MainMenu extends Feature implements NotLoadInUnitTest, LoadIfEnable<ProtocolLibHook>, HasCommands {
     @Override
     public void init() {
         new MainMenuListener(OMCPlugin.getInstance());

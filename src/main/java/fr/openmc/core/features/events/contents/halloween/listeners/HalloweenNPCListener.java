@@ -1,9 +1,9 @@
 package fr.openmc.core.features.events.contents.halloween.listeners;
 
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.features.events.contents.halloween.menus.HalloweenPumpkinDepositMenu;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

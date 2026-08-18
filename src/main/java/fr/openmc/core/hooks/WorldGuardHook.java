@@ -8,7 +8,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.lifecycle.hooks.Hooks;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 

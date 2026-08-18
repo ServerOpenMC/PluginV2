@@ -26,9 +26,11 @@ public class ColorVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
     private static final Map<String, List<Material>> COLOR_VARIANTS = initColorVariants();
+    private final AdminShopManager manager;
 
-    public ColorVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
+    public ColorVariantsMenu(Player owner, AdminShopManager manager, String categoryId, ShopItem originalItem) {
         super(owner);
+        this.manager = manager;
         this.categoryId = categoryId;
         this.originalItem = originalItem;
     }
@@ -142,11 +144,11 @@ public class ColorVariantsMenu extends Menu {
 
 
                         if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         }
                     }));
         }

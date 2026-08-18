@@ -8,12 +8,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.DatabaseManager;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;
@@ -28,6 +22,11 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.integration.DatabaseManager;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -55,7 +54,7 @@ import java.util.stream.Collectors;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
 @Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
-public class ContestManager extends Feature implements HasDatabase, LoadAfterItemsAdder {
+public class ContestManager extends Feature implements HasDatabase {
 
     public static ContestData data;
     public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();

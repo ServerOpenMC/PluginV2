@@ -1,14 +1,13 @@
 package fr.openmc.core.features.displays.holograms;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -25,7 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "miseur"})
-public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
+public class HologramLoader extends Feature implements NotLoadInUnitTest, HasCommands {
 
     public static final HashMap<String, HologramInfo> displays = new HashMap<>();
     private static BukkitTask taskTimer;

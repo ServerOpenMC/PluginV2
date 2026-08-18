@@ -1,7 +1,5 @@
 package fr.openmc.core.registry.loottable;
 
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.bits.contents.loottables.KitchenLootTable;
 import fr.openmc.core.features.bits.contents.loottables.MedievalLootTable;
 import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
@@ -21,6 +19,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.FishingFurnitureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.LegendaryFishingTreasureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.RareFishingTreasureLootTable;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
 public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {

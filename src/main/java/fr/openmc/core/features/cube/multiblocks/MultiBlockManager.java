@@ -1,19 +1,18 @@
 package fr.openmc.core.features.cube.multiblocks;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.commands.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, NotLoadInUnitTest, HasListeners, HasCommands {
+public class MultiBlockManager extends Feature implements NotLoadInUnitTest, HasListeners, HasCommands {
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;

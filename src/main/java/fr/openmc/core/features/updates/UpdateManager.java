@@ -1,10 +1,10 @@
 package fr.openmc.core.features.updates;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;

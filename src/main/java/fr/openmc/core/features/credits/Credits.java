@@ -1,12 +1,10 @@
 package fr.openmc.core.features.credits;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.animations.AnimationsManager;
-import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.bits.BitsManager;
+import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
@@ -29,6 +27,8 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.Material;

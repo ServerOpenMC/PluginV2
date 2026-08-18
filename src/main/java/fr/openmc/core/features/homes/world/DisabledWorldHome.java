@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes.world;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -1,11 +1,11 @@
 package fr.openmc.core.features.events.contents.dailyevents;
 
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 
 public class DailyEventsRegistry extends Registry<String, DailyEvent>
         implements KeyedRegistry<String, DailyEvent>  {

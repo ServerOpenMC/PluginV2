@@ -2,10 +2,10 @@ package fr.openmc.core.features.itemsadder.elevator;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;

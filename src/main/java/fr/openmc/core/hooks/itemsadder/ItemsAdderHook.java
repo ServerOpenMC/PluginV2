@@ -2,12 +2,12 @@ package fr.openmc.core.hooks.itemsadder;
 
 import dev.lone.itemsadder.api.ItemsAdder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.hooks.ApiHook;
-import fr.openmc.core.bootstrap.hooks.Hooks;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
+import fr.openmc.core.lifecycle.hooks.ApiHook;
+import fr.openmc.core.lifecycle.hooks.Hooks;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;

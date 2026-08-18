@@ -1,11 +1,10 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class HomeIconCacheManager extends Feature implements LoadAfterItemsAdder {
+public class HomeIconCacheManager extends Feature {
 
     private static final ConcurrentHashMap<HomeIcon.IconCategory, List<CachedIconItem>> CACHED_ITEMS = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, List<CachedIconItem>> CACHED_SEARCH_RESULTS = new ConcurrentHashMap<>();

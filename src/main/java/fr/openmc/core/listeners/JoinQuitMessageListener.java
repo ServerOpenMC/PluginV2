@@ -1,7 +1,6 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -11,6 +10,7 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.github.GitHubHook;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

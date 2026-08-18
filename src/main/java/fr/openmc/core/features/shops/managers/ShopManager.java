@@ -2,20 +2,19 @@ package fr.openmc.core.features.shops.managers;
 
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.shops.ShopCommand;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.ShopListener;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.world.WorldUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -29,7 +28,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"gab400", "Nocolm", "Xernas78"}, graphist = {"Gexary"})
-public class ShopManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
+public class ShopManager extends Feature implements HasDatabase, HasListeners, HasCommands {
 	
 	@Getter
 	private static final Map<UUID, Shop> shops = new HashMap<>();

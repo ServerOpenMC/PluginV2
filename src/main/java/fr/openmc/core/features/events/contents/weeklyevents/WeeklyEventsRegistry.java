@@ -1,9 +1,9 @@
 package fr.openmc.core.features.events.contents.weeklyevents;
 
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 
 import java.util.List;
 import java.util.Optional;

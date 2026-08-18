@@ -3,12 +3,12 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.mobs.CustomMob;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

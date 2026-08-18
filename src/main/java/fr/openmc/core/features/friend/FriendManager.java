@@ -1,11 +1,11 @@
 package fr.openmc.core.features.friend;
 
 import com.j256.ormlite.support.ConnectionSource;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.features.friend.commands.FriendCommand;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import lombok.Getter;
 
 import java.sql.SQLException;

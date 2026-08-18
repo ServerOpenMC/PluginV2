@@ -1,13 +1,12 @@
 package fr.openmc.core.features.displays.bossbar;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
 import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.events.contents.dailyevents.display.DailyEventBossbar;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -19,7 +18,7 @@ import java.util.*;
 /**
  * Gère l'enregistrement, l'affichage et la mise à jour des boss bars.
  */
-public class BossbarManager extends Feature implements HasCommands, LoadAfterItemsAdder {
+public class BossbarManager extends Feature implements HasCommands {
     private static final List<BaseBossbar> registeredBossbar = new ArrayList<>();
 
     private static final Map<UUID, Map<String, BossBar>> activeBossbars = new HashMap<>();
