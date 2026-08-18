@@ -47,6 +47,8 @@ import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.hooks.*;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.utils.text.MotdUtils;
@@ -54,9 +56,19 @@ import fr.openmc.core.utils.text.MotdUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FeaturesRegistry extends Registry<String, Feature>
         implements KeyedRegistry<String, Feature> {
+
+    // * Flags pré enregistrés
+    private final FeatureFlag NOT_IN_UNIT_TEST = new FeatureFlag.NotInUnitTest();
+    private final FeatureFlag NEED_FANCY_NPC = new FeatureFlag.NeedApi(FancyNpcsHook::isEnable, "FancyNPC");
+    private final FeatureFlag NEED_LUCK_PERMS = new FeatureFlag.NeedApi(LuckPermsHook::isEnable, "LuckPerms");
+    private final FeatureFlag NEED_ITEMS_ADDER = new FeatureFlag.NeedApi(ItemsAdderHook::isEnable, "ItemsAdder");
+    private final FeatureFlag NEED_PAPI = new FeatureFlag.NeedApi(PapiHook::isEnable, "PlaceHolderAPI");
+    private final FeatureFlag NEED_PROTOCOL_LIB = new FeatureFlag.NeedApi(ProtocolLibHook::isEnable, "ProtocolLib");
+    private final FeatureFlag NEED_WORLD_GUARD = new FeatureFlag.NeedApi(WorldGuardHook::isEnable, "WorldGuard");
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 
@@ -78,7 +90,7 @@ public class FeaturesRegistry extends Registry<String, Feature>
     public final FeatureEntry<BitsManager> BITS = declare(FeatureLoadingType.RUNTIME,
             BitsManager::new);
     public final FeatureEntry<ScoreboardManager> SCOREBOARD = declare(FeatureLoadingType.RUNTIME,
-            () -> new ScoreboardManager(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new ScoreboardManager(), NOT_IN_UNIT_TEST, NEED_LUCK_PERMS);
     public final FeatureEntry<HomesManager> HOMES = declare(FeatureLoadingType.RUNTIME,
             HomesManager::new);
     public final FeatureEntry<TPAManager> TPA = declare(FeatureLoadingType.RUNTIME,
@@ -92,13 +104,13 @@ public class FeaturesRegistry extends Registry<String, Feature>
     public final FeatureEntry<FriendManager> FRIENDS = declare(FeatureLoadingType.RUNTIME,
             FriendManager::new);
     public final FeatureEntry<TabList> TAB = declare(FeatureLoadingType.RUNTIME,
-            () -> new TabList(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new TabList(), NOT_IN_UNIT_TEST, NEED_PROTOCOL_LIB);
     public final FeatureEntry<AdminShopManager> ADMIN_SHOP = declare(FeatureLoadingType.RUNTIME,
             AdminShopManager::new);
     public final FeatureEntry<HelpConfigManager> HELP_CONFIG = declare(FeatureLoadingType.RUNTIME,
             HelpConfigManager::new);
     public final FeatureEntry<AnimationsManager> ANIMATIONS = declare(FeatureLoadingType.RUNTIME,
-            () -> new AnimationsManager(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new AnimationsManager(), NOT_IN_UNIT_TEST, NEED_ITEMS_ADDER);
     public final FeatureEntry<HalloweenManager> HALLOWEEN = declare(FeatureLoadingType.RUNTIME,
             HalloweenManager::new);
     public final FeatureEntry<QuestProgressSaveManager> QUEST_PROGRESS = declare(FeatureLoadingType.RUNTIME,
@@ -114,7 +126,7 @@ public class FeaturesRegistry extends Registry<String, Feature>
     public final FeatureEntry<DiscordLinkManager> DISCORD_LINK = declare(FeatureLoadingType.RUNTIME,
             DiscordLinkManager::new);
     public final FeatureEntry<ElevatorManager> ELEVATOR = declare(FeatureLoadingType.RUNTIME,
-            ElevatorManager::new);
+            () -> new ElevatorManager(), NEED_ITEMS_ADDER);
     public final FeatureEntry<ProfileManager> PROFILE = declare(FeatureLoadingType.AFTER_IA,
             ProfileManager::new);
     public final FeatureEntry<QuestsManager> QUESTS = declare(FeatureLoadingType.AFTER_IA,
@@ -136,15 +148,15 @@ public class FeaturesRegistry extends Registry<String, Feature>
     public final FeatureEntry<DreamManager> DREAM = declare(FeatureLoadingType.AFTER_IA,
             DreamManager::new);
     public final FeatureEntry<MultiBlockManager> MULTIBLOCKS = declare(FeatureLoadingType.AFTER_IA,
-            () -> new MultiBlockManager(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new MultiBlockManager(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<MilestonesManager> MILESTONES = declare(FeatureLoadingType.AFTER_IA,
             MilestonesManager::new);
     public final FeatureEntry<LeaderboardManager> LEADERBOARD = declare(FeatureLoadingType.AFTER_IA,
-            () -> new LeaderboardManager(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new LeaderboardManager(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<MainMenu> MAIN_MENU = declare(FeatureLoadingType.AFTER_IA,
-            () -> new MainMenu(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new MainMenu(), NOT_IN_UNIT_TEST, NEED_PROTOCOL_LIB);
     public final FeatureEntry<HologramLoader> HOLOGRAM_LOADER = declare(FeatureLoadingType.AFTER_IA,
-            () -> new HologramLoader(), FeatureFlag.NOT_IN_UNIT_TEST);
+            () -> new HologramLoader(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<BossbarManager> BOSSBAR = declare(FeatureLoadingType.AFTER_IA,
             BossbarManager::new);
     public final FeatureEntry<ShopManager> SHOP = declare(FeatureLoadingType.AFTER_IA,
@@ -177,11 +189,13 @@ public class FeaturesRegistry extends Registry<String, Feature>
         }
     }
 
-    public Feature register(FeatureEntry<?> entry) {
+    public Optional<Feature> register(FeatureEntry<?> entry) {
+        if (!entry.shouldLoad()) return Optional.empty();
+
         Feature feature = entry.create();
         feature.startInit();
         register(key(feature), feature);
-        return feature;
+        return Optional.of(feature);
     }
 
     public void load(FeatureLoadingType loadingType) {

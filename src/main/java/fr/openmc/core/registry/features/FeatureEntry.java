@@ -1,6 +1,8 @@
 package fr.openmc.core.registry.features;
 
 import com.google.common.base.Supplier;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import lombok.Getter;
 
 import java.util.Set;
@@ -27,6 +29,22 @@ public class FeatureEntry<F extends Feature> {
             instance = supplier.get();
         }
         return instance;
+    }
+
+    public boolean shouldLoad() {
+        for (FeatureFlag flag : flags) {
+            if (flag == null) {
+                OMCLogger.errorFormatted("Un FeatureFlag est nul dans une feature");
+                return false;
+            }
+            
+            return !(switch (flag) {
+                case FeatureFlag.NotInUnitTest _ -> OMCPlugin.isUnitTestVersion();
+                case FeatureFlag.NeedApi needApi -> !needApi.isEnabled().get();
+                default -> throw new IllegalStateException("FeatureFlag non implémenter dans FeatureEntry#shouldLoad() : " + flag);
+            });
+        }
+        return true;
     }
 
     public F get() {
