@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class ConfirmMenu extends Menu {
+    private final AdminShopManager manager;
 
     private final ShopItem shopItem;
     private final boolean isBuying;
@@ -41,6 +42,7 @@ public class ConfirmMenu extends Menu {
         this.isBuying = isBuying;
         this.quantity = 1;
         this.maxQuantity = isBuying ? getMaxBuyQuantity(owner, shopItem) : countPlayerItems(owner, shopItem.getMaterial());
+        this.manager = OMCRegistry.FEATURES.ADMIN_SHOP.get();
     }
 
     @Override
@@ -75,9 +77,9 @@ public class ConfirmMenu extends Menu {
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
-                Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
+                Component.text(manager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
-                Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
+                Component.text(manager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 shiftRightSellAll
 
@@ -127,7 +129,7 @@ public class ConfirmMenu extends Menu {
                 case ClickType.SHIFT_RIGHT -> {
                     if (!isBuying && ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())) > 0) {
                         getOwner().closeInventory();
-                        AdminShopManager.sellItem(
+                        manager.sellItem(
                                 getOwner(),
                                 shopItem.getId(),
                                 ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())));
@@ -146,8 +148,8 @@ public class ConfirmMenu extends Menu {
             meta.displayName(TranslationManager.translation("messages.global.accept"));
         }).setOnClick(event -> {
             getOwner().closeInventory();
-            if (isBuying) AdminShopManager.buyItem(getOwner(), shopItem.getId(), quantity);
-            else AdminShopManager.sellItem(getOwner(), shopItem.getId(), quantity);
+            if (isBuying) manager.buyItem(getOwner(), shopItem.getId(), quantity);
+            else manager.sellItem(getOwner(), shopItem.getId(), quantity);
         }));
 
         return content;

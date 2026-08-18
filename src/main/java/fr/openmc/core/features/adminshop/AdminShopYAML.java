@@ -24,11 +24,13 @@ import java.util.Map;
 public class AdminShopYAML {
     private FileConfiguration config;
     private final File configFile;
+    private final AdminShopManager manager;
 
     /**
      * Constructs the AdminShopYAML manager.
      */
-    public AdminShopYAML() {
+    public AdminShopYAML(AdminShopManager manager) {
+        this.manager = manager;
         this.configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "adminshop.yml");
     }
 
@@ -46,14 +48,14 @@ public class AdminShopYAML {
      * Loads the shop categories from the YAML configuration and adds them to the manager.
      */
     private void loadCategories() {
-        AdminShopManager.categories.clear();
+        manager.categories.clear();
         List<Map<?, ?>> categoryList = config.getMapList("category");
 
         for (Map<?, ?> categoryMap : categoryList) {
             for (Map.Entry<?, ?> entry : categoryMap.entrySet()) {
                 String key = entry.getKey().toString();
                 Map<?, ?> section = (Map<?, ?>) entry.getValue();
-                AdminShopManager.categories.put(key, new ShopCategory(
+                manager.categories.put(key, new ShopCategory(
                         key,
                         MiniMessage.miniMessage().deserialize(section.get("name").toString()).decoration(TextDecoration.ITALIC, false),
                         Material.valueOf(section.get("material").toString()),
@@ -67,9 +69,9 @@ public class AdminShopYAML {
      * Loads all shop items from the YAML configuration and maps them by category.
      */
     private void loadItems() {
-        AdminShopManager.items.clear();
+        manager.items.clear();
 
-        for (String categoryId : AdminShopManager.categories.keySet()) {
+        for (String categoryId : manager.categories.keySet()) {
             List<Map<?, ?>> itemList = config.getMapList(categoryId);
             Map<String, ShopItem> categoryItems = new HashMap<>();
 
@@ -96,7 +98,7 @@ public class AdminShopYAML {
                 }
             }
 
-            if (!categoryItems.isEmpty()) AdminShopManager.items.put(categoryId, categoryItems);
+            if (!categoryItems.isEmpty()) manager.items.put(categoryId, categoryItems);
         }
     }
 
@@ -104,7 +106,7 @@ public class AdminShopYAML {
      * Saves all shop item data back to the YAML configuration file.
      */
     public void saveConfig() {
-        for (var entry : AdminShopManager.items.entrySet()) {
+        for (var entry : manager.items.entrySet()) {
             String categoryId = entry.getKey();
             List<Map<String, Object>> itemList = new ArrayList<>();
 
