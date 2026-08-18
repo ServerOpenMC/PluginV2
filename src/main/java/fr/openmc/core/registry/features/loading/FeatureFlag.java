@@ -1,4 +1,4 @@
-package fr.openmc.core.registry.features;
+package fr.openmc.core.registry.features.loading;
 
 import java.util.function.Supplier;
 

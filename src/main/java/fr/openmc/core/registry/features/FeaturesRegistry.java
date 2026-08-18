@@ -51,6 +51,9 @@ import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.Registry;
+import fr.openmc.core.registry.features.loading.FeatureEntry;
+import fr.openmc.core.registry.features.loading.FeatureFlag;
+import fr.openmc.core.registry.features.loading.FeatureLoadingType;
 import fr.openmc.core.utils.text.MotdUtils;
 
 import java.io.File;
@@ -62,13 +65,13 @@ public class FeaturesRegistry extends Registry<String, Feature>
         implements KeyedRegistry<String, Feature> {
 
     // * Flags pré enregistrés
-    private final FeatureFlag NOT_IN_UNIT_TEST = new FeatureFlag.NotInUnitTest();
-    private final FeatureFlag NEED_FANCY_NPC = new FeatureFlag.NeedApi(FancyNpcsHook::isEnable, "FancyNPC");
-    private final FeatureFlag NEED_LUCK_PERMS = new FeatureFlag.NeedApi(LuckPermsHook::isEnable, "LuckPerms");
-    private final FeatureFlag NEED_ITEMS_ADDER = new FeatureFlag.NeedApi(ItemsAdderHook::isEnable, "ItemsAdder");
-    private final FeatureFlag NEED_PAPI = new FeatureFlag.NeedApi(PapiHook::isEnable, "PlaceHolderAPI");
-    private final FeatureFlag NEED_PROTOCOL_LIB = new FeatureFlag.NeedApi(ProtocolLibHook::isEnable, "ProtocolLib");
-    private final FeatureFlag NEED_WORLD_GUARD = new FeatureFlag.NeedApi(WorldGuardHook::isEnable, "WorldGuard");
+    public final FeatureFlag NOT_IN_UNIT_TEST = new FeatureFlag.NotInUnitTest();
+    public final FeatureFlag NEED_FANCY_NPC = new FeatureFlag.NeedApi(FancyNpcsHook::isEnable, "FancyNPC");
+    public final FeatureFlag NEED_LUCK_PERMS = new FeatureFlag.NeedApi(LuckPermsHook::isEnable, "LuckPerms");
+    public final FeatureFlag NEED_ITEMS_ADDER = new FeatureFlag.NeedApi(ItemsAdderHook::isEnable, "ItemsAdder");
+    public final FeatureFlag NEED_PAPI = new FeatureFlag.NeedApi(PapiHook::isEnable, "PlaceHolderAPI");
+    public final FeatureFlag NEED_PROTOCOL_LIB = new FeatureFlag.NeedApi(ProtocolLibHook::isEnable, "ProtocolLib");
+    public final FeatureFlag NEED_WORLD_GUARD = new FeatureFlag.NeedApi(WorldGuardHook::isEnable, "WorldGuard");
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 
