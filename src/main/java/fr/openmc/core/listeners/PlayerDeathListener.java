@@ -1,7 +1,9 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -36,8 +38,18 @@ public class PlayerDeathListener implements Listener {
          }
 
         Component deathMessage = event.deathMessage();
-        if (deathMessage == null) return;
-        MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
-        event.deathMessage(null);
+        if (deathMessage != null) {
+            MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
+            event.deathMessage(null);
+        }
+
+        if (!CorpseManager.hasCorpseDB(player.getUniqueId())
+                &&!CorpseNPCManager.hasNPC(player.getUniqueId())) {
+            if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null))) {
+                event.setDroppedExp(0);
+                event.getDrops().clear();
+                System.out.println("test Drops ok");
+            }
+        }
     }
 }
