@@ -10,7 +10,6 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
-import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import lombok.Getter;
@@ -25,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class MultiBlockManager extends Feature implements NotLoadInUnitTest, HasListeners, HasCommands {
+public class MultiBlockManager extends Feature implements HasListeners, HasCommands {
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;

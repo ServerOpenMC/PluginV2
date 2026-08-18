@@ -10,10 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
-import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.adventure.PaperAdventure;
@@ -29,7 +26,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<ProtocolLibHook> {
+public class TabList extends Feature {
     private static ProtocolManager protocolManager = null;
 
     @Override

@@ -1,7 +1,7 @@
 package fr.openmc.core.lifecycle.interfaces;
 
-import fr.openmc.core.lifecycle.hooks.Hooks;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.hooks.Hooks;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

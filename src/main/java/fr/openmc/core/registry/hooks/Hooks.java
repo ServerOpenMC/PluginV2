@@ -1,4 +1,4 @@
-package fr.openmc.core.lifecycle.hooks;
+package fr.openmc.core.registry.hooks;
 
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;

@@ -8,12 +8,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.animations.commands.DebugAnimationCommand;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
-import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
-import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -29,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"})
-public class AnimationsManager extends Feature implements NotLoadInUnitTest, LoadIfEnable<ItemsAdderHook>, HasListeners, HasCommands {
+public class AnimationsManager extends Feature implements HasListeners, HasCommands {
 
     @Override
     public void init() {

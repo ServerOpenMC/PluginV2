@@ -5,7 +5,9 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.*;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 
 import java.sql.SQLException;
@@ -21,16 +23,6 @@ public abstract class Feature {
      * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)
      */
     public final void startInit() {
-        // Condition d'initialisation (si feature ne doit pas être lancée dans les tests ou qu'elle nécessite un hook)
-        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) {
-            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
-            return;
-        }
-        if (this instanceof LoadIfEnable<?> loadIfEnable && !loadIfEnable.shouldLoad()) {
-            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
-            return;
-        }
-
         try {
             DatabaseManager.startFeatureDB(this);
             init();
@@ -69,7 +61,6 @@ public abstract class Feature {
      * @throws SQLException Si l'initialisation DB échoue
      */
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
-        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         if (this instanceof HasDatabase dbF) {
             dbF.initDB(connectionSource);
         }
@@ -80,7 +71,6 @@ public abstract class Feature {
      */
     public final void startSave() {
         if (!initialize) return;
-        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) return;
 
         try {
             save();

@@ -1,6 +1,6 @@
 package fr.openmc.core.hooks;
 
-import fr.openmc.core.lifecycle.hooks.Hooks;
+import fr.openmc.core.registry.hooks.Hooks;
 
 public class ProtocolLibHook extends Hooks {
     public static boolean isEnable() {

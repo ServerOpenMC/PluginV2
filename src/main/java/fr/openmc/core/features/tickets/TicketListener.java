@@ -8,7 +8,6 @@ import fr.openmc.core.events.LootboxRewardEvent;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;
-import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -27,7 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TicketListener implements Listener, NotLoadInUnitTest {
+public class TicketListener implements Listener {
 
     private final Map<Location, String> machineHolograms = new ConcurrentHashMap<>();
 

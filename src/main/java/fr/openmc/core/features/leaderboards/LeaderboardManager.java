@@ -12,7 +12,6 @@ import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.PlayerNameCache;
@@ -40,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Credit(developers = {"miseur"})
-public class LeaderboardManager extends Feature implements NotLoadInUnitTest, HasCommands {
+public class LeaderboardManager extends Feature implements HasCommands {
     @Getter
     private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter

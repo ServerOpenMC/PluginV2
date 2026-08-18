@@ -2,8 +2,8 @@ package fr.openmc.core.hooks;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.lifecycle.hooks.ApiHook;
-import fr.openmc.core.lifecycle.hooks.Hooks;
+import fr.openmc.core.registry.hooks.ApiHook;
+import fr.openmc.core.registry.hooks.Hooks;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

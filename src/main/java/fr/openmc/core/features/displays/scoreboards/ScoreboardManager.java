@@ -10,8 +10,6 @@ import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
 import fr.openmc.core.features.dream.displays.DreamScoreboard;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
-import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
-import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
@@ -20,7 +18,7 @@ import org.bukkit.event.Listener;
 
 import java.util.*;
 
-public class ScoreboardManager extends Feature implements Listener, NotLoadInUnitTest, LoadIfEnable<LuckPermsHook>, HasListeners {
+public class ScoreboardManager extends Feature implements Listener, HasListeners {
     public static final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
     private static final List<BaseScoreboard> scoreboards = new ArrayList<>();
     private static GlobalTeamManager globalTeamManager;
