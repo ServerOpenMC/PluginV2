@@ -9,7 +9,6 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
@@ -54,7 +53,7 @@ public class MascotMenu extends Menu {
     public MascotMenu(Player owner, Mascot mascot) {
         super(owner);
         this.mascot = mascot;
-        this.city = CityManager.getPlayerCity(owner.getUniqueId());
+        this.city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(owner.getUniqueId());
     }
 
     @Override
@@ -141,7 +140,7 @@ public class MascotMenu extends Menu {
                             return;
                         }
 
-                        city = CityManager.getPlayerCity(getOwner().getUniqueId());
+                        city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(getOwner().getUniqueId());
                         if (city == null) {
                             MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                             getOwner().closeInventory();

@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
@@ -94,13 +93,14 @@ public class ProfileMenu extends Menu {
 
     @SuppressWarnings("UnstableApiUsage")
     private void addIdentityItem(Map<Integer, ItemMenuBuilder> inventory) {
+        GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
         String statusKey = target.isOnline()
                 ? "feature.profile.status.online"
                 : "feature.profile.status.offline";
 
         String discordUsername = DiscordLinkManager.getLinkedDiscordUsername(target.getUniqueId());
-        Long githubId = GitHubHook.getContributorId(target.getUniqueId());
-        String githubUsername = githubId == null ? null : GitHubHook.getUsernameById(githubId);
+        Long githubId = gitHubHook.getContributorId(target.getUniqueId());
+        String githubUsername = githubId == null ? null : gitHubHook.getUsernameById(githubId);
 
         List<Component> lore = new ArrayList<>(TranslationManager.translationLore(
                 "feature.profile.item.identity.lore",
@@ -128,7 +128,7 @@ public class ProfileMenu extends Menu {
             if (click.getWhoClicked().getUniqueId() == target.getUniqueId()) {
                 Player owner = getOwner();
                 Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                    GitHubHook.refreshContributorId(target.getUniqueId());
+                    gitHubHook.refreshContributorId(target.getUniqueId());
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         if (owner.isOnline()) {
                             new ProfileMenu(owner, target).open();
@@ -210,7 +210,7 @@ public class ProfileMenu extends Menu {
     }
 
     private void addCityItem(Map<Integer, ItemMenuBuilder> inventory) {
-        City city = CityManager.getPlayerCity(target.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(target.getUniqueId());
         if (city == null) {
             inventory.put(15, new ItemMenuBuilder(
                     this,

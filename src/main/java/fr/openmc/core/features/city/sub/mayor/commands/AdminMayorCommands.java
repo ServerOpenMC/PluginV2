@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -25,10 +25,11 @@ public class AdminMayorCommands {
             Player sender,
             @Named("phase") @Suggest({"1", "2"}) int phase
     ) {
+        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
         if (phase == 1) {
-            MayorManager.initPhase1();
+            mayorManager.initPhase1();
         } else if (phase == 2){
-            MayorManager.initPhase2();
+            mayorManager.initPhase2();
         }
     }
 
@@ -39,7 +40,7 @@ public class AdminMayorCommands {
             @Named("name") @SuggestWith(CityNameAutoComplete.class) String cityName,
             @Named("electionType") @Suggest({"owner_choose", "election"}) String electionType
     ) {
-        City city = CityManager.getCityByName(cityName);
+        City city = OMCRegistry.FEATURES.CITY.get().getCityByName(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);

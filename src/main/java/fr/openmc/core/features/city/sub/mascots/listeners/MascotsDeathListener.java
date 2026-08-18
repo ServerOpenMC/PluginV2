@@ -6,7 +6,6 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.city.sub.war.War;
-import fr.openmc.core.features.city.sub.war.WarManager;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -25,6 +24,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class MascotsDeathListener implements Listener {
+    private final CityManager cityManager;
+
+    public MascotsDeathListener(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
+
     @EventHandler
     void onMascotDied(EntityDeathEvent e) {
         Entity entity = e.getEntity();
@@ -35,7 +40,7 @@ public class MascotsDeathListener implements Listener {
         PersistentDataContainer data = entity.getPersistentDataContainer();
         UUID cityUUID = UUID.fromString(data.get(MascotsManager.mascotsKey, PersistentDataType.STRING));
 
-        City city = CityManager.getCity(cityUUID);
+        City city = cityManager.getCity(cityUUID);
 
         if (city == null) return;
 
@@ -50,7 +55,7 @@ public class MascotsDeathListener implements Listener {
 
         if (killer == null) return;
 
-        City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
+        City cityEnemy = cityManager.getPlayerCity(killer.getUniqueId());
 
         if (cityEnemy == null) return;
 
@@ -73,7 +78,7 @@ public class MascotsDeathListener implements Listener {
                 player.setVelocity(direction);
             }
 
-            WarManager.endWar(war);
+            cityManager.WAR.endWar(war);
         } else {
             // TODO: système de vulnerabilité d'une ville, check si la ville attaquée est vulnérable, si oui la ville attaquée est supprimée
         }

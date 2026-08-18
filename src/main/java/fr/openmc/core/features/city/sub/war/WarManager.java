@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
@@ -51,7 +52,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new WarCommand(),
+                new WarCommand(OMCRegistry.FEATURES.CITY.get()),
                 new AdminWarCommand()
         );
     }
@@ -59,7 +60,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                WarKillListener::new
+                () -> new WarKillListener(OMCRegistry.FEATURES.CITY.get())
         );
     }
 

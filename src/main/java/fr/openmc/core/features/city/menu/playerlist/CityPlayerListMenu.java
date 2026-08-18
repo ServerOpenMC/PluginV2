@@ -10,7 +10,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
@@ -69,7 +68,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
         assert city != null;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
@@ -152,7 +151,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         Player player = getOwner();
         OMCPlayer omcPlayer = OMCPlayer.of(player);
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));

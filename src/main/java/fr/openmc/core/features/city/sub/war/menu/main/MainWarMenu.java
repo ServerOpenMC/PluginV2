@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -41,9 +42,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MainWarMenu extends PaginatedMenu {
+    private final CityManager cityManager;
+    private final WarManager warManager;
+    private final MayorManager mayorManager;
 
     public MainWarMenu(Player owner) {
         super(owner);
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+        this.warManager = cityManager.WAR;
+        this.mayorManager = cityManager.MAYOR;
     }
 
     @Override
@@ -70,16 +77,15 @@ public class MainWarMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
-
-        List<City> warCities = CityManager.getCities().stream()
+        List<City> warCities = cityManager.getCities().stream()
                 .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
                 .toList();
 
         for (City city : warCities) {
-            if (city.getUniqueId().equals(CityManager.getPlayerCity(player.getUniqueId()).getUniqueId())) continue;
+            if (city.getUniqueId().equals(cityManager.getPlayerCity(player.getUniqueId()).getUniqueId())) continue;
             if (city.getType() != CityType.WAR) continue;
             if (city.isImmune()) continue;
-            if (WarManager.getPendingDefenseFor(city) != null) continue;
+            if (warManager.getPendingDefenseFor(city) != null) continue;
             if (city.isInWar()) continue;
 
             long onlineCount = city.getOnlineMembers().size();
@@ -113,7 +119,7 @@ public class MainWarMenu extends PaginatedMenu {
             ));
 
             Mayor mayor = city.getMayor();
-            if (MayorManager.phaseMayor == 2 && mayor != null) {
+            if (mayorManager.phaseMayor == 2 && mayor != null) {
                 Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
                 Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
                 Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());

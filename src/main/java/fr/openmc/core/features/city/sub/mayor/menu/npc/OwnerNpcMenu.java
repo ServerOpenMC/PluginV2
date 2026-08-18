@@ -5,11 +5,11 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
@@ -186,25 +186,24 @@ public class OwnerNpcMenu extends Menu {
 
                             Chunk chunk = locationClick.getChunk();
 
-                            City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                            CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+                            City cityByChunk = cityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
                             if (cityByChunk == null) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                 return false;
                             }
 
-                            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                            City playerCity = cityManager.getPlayerCity(player.getUniqueId());
 
-                            if (playerCity == null) {
-                                return false;
-                            }
+                            if (playerCity == null) return false;
 
                             if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                 return false;
                             }
 
-                            MayorNPCManager.moveNPC("owner", locationClick, city.getUniqueId());
-                            MayorNPCManager.updateNPCS(city.getUniqueId());
+                            cityManager.MAYOR.mayorNPCManager.moveNPC("owner", locationClick, city.getUniqueId());
+                            cityManager.MAYOR.mayorNPCManager.updateNPCS(city.getUniqueId());
                             return true;
                         },
                         null

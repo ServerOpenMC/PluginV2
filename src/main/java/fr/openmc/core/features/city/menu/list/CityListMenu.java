@@ -10,7 +10,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -39,6 +38,8 @@ public class CityListMenu extends PaginatedMenu {
 	
 	private final List<City> cities;
 	private SortType sortType;
+
+	private final CityManager cityManager;
 	
 	/**
 	 * Constructor for CityListMenu.
@@ -57,7 +58,8 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	public CityListMenu(Player owner, SortType sortType) {
 		super(owner);
-		this.cities = new ArrayList<>(CityManager.getCities());
+		this.cityManager = OMCRegistry.FEATURES.CITY.get();
+		this.cities = new ArrayList<>(cityManager.getCities());
 		setSortType(sortType);
 	}
 	
@@ -89,7 +91,7 @@ public class CityListMenu extends PaginatedMenu {
 			Component typeComponent = city.getType().getDisplayName();
 			Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
 			Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
-			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+			if (cityManager.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 				Component mayorCity = city.getMayor() == null
 						? TranslationManager.translation("messages.menus.none")
 						: city.getMayor().getName();

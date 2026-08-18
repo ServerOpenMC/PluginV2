@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.rank;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -22,11 +23,16 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"city ranks", "ville grades"})
 public class CityRankCommands {
+	private final CityManager cityManager;
+
+	public CityRankCommands(CityManager cityManager) {
+		this.cityManager = cityManager;
+	}
 
 	@CommandPlaceholder()
 	@CommandPermission("omc.commands.city.rank")
 	public void rank(Player player) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = cityManager.getPlayerCity(player.getUniqueId());
 
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -56,7 +62,7 @@ public class CityRankCommands {
 			Player player,
 			@Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName
 	) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = cityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -77,7 +83,7 @@ public class CityRankCommands {
 	 * @param permission The permission to swap.
 	 */
 	public static void swapPermission(Player player, DBCityRank rank, CityPermission permission) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -104,7 +110,7 @@ public class CityRankCommands {
 	 * @param rank   The rank to add the permissions to.
 	 */
 	public static void addAllPermissions(Player player, DBCityRank rank) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -131,7 +137,7 @@ public class CityRankCommands {
 	 * @param rank   The rank to remove the permissions from.
 	 */
 	public static void removeAllPermissions(Player player, DBCityRank rank) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;

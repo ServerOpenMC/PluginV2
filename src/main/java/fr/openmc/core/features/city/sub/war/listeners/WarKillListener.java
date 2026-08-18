@@ -11,6 +11,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import java.util.UUID;
 
 public class WarKillListener implements Listener {
+    private final CityManager cityManager;
+
+    public WarKillListener(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -22,8 +27,8 @@ public class WarKillListener implements Listener {
         UUID victimUUID = victim.getUniqueId();
         UUID killerUUID = killer.getUniqueId();
 
-        City victimCity = CityManager.getPlayerCity(victimUUID);
-        City killerCity = CityManager.getPlayerCity(killerUUID);
+        City victimCity = cityManager.getPlayerCity(victimUUID);
+        City killerCity = cityManager.getPlayerCity(killerUUID);
 
         if (victimCity == null || killerCity == null) return;
 

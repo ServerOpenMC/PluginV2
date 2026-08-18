@@ -54,6 +54,12 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
+    private final CityManager cityManager;
+
+    public MascotsManager(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
+
     @Override
     public void init() {
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
@@ -88,13 +94,13 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                MascotsInteractionListener::new,
+                () -> new MascotsInteractionListener(cityManager),
                 MascotsDamageListener::new,
-                MascotsDeathListener::new,
+                () -> new MascotsDeathListener(cityManager),
                 MascotsSleepingListener::new,
-                MascotImmuneListener::new,
+                () -> new MascotImmuneListener(cityManager),
                 MascotsTargetListener::new,
-                MascotsRenameListener::new,
+                () -> new MascotsRenameListener(cityManager),
                 MascotsPotionListener::new,
                 MascotsProtectionsListener::new
         );
@@ -175,7 +181,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     }
 
     public static void upgradeMascots(UUID cityUUID) {
-        City city = CityManager.getCity(cityUUID);
+        City city = OMCRegistry.FEATURES.CITY.get().getCity(cityUUID);
         if (city == null) return;
 
         Mascot mascot = city.getMascot();

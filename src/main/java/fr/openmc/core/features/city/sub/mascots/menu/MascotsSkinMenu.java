@@ -5,7 +5,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotType;
 import fr.openmc.core.features.city.sub.milestone.rewards.MascotsSkinUnlockRewards;
@@ -69,7 +68,7 @@ public class MascotsSkinMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        City playerCity = CityManager.getPlayerCity(getOwner().getUniqueId());
+        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(getOwner().getUniqueId());
 
         if (playerCity == null) return map;
 

@@ -5,8 +5,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -69,7 +69,7 @@ public class PersonalBankMenu extends Menu {
             new PersonalBankDepositMenu(player).open();
         }));
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player,

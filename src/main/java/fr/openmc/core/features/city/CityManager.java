@@ -92,7 +92,7 @@ public class CityManager extends Feature
                 new CityChatCommand(),
                 new CityPermsCommands(),
                 new CityChestCommand(),
-                new CityRankCommands(),
+                new CityRankCommands(this),
                 new CityTopCommands(this),
                 new CityInviteCommands(),
                 new CityClaimCommands()

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -38,7 +39,9 @@ public class WarActions {
      */
     public static void beginLaunchWar(Player player, City cityAttack) {
         UUID launcherUUID = player.getUniqueId();
-        City launchCity = CityManager.getPlayerCity(launcherUUID);
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+        WarManager warManager = OMCRegistry.FEATURES.CITY.get().WAR;
+        City launchCity = cityManager.getPlayerCity(launcherUUID);
 
         if (launchCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -75,7 +78,7 @@ public class WarActions {
             return;
         }
 
-        if (WarManager.getPendingDefenseFor(launchCity) != null) {
+        if (warManager.getPendingDefenseFor(launchCity) != null) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.war.begin.already_declared"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -89,7 +92,7 @@ public class WarActions {
             return;
         }
 
-        if (WarManager.getPendingDefenseFor(cityAttack) != null) {
+        if (warManager.getPendingDefenseFor(cityAttack) != null) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.war.begin.target_preparing"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -278,7 +281,7 @@ public class WarActions {
         ), Prefix.CITY, MessageType.INFO, false);
 
         WarPendingDefense pending = new WarPendingDefense(cityLaunch, cityAttack, attackers, requiredParticipants);
-        WarManager.addPendingDefense(pending);
+        OMCRegistry.FEATURES.CITY.get().WAR.addPendingDefense(pending);
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (pending.isAlreadyExecuted()) return;
@@ -344,6 +347,6 @@ public class WarActions {
             }
         }
 
-        WarManager.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
+        OMCRegistry.FEATURES.CITY.get().WAR.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
     }
 }

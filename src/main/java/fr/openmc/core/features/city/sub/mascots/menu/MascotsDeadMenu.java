@@ -6,8 +6,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -75,7 +75,7 @@ public class MascotsDeadMenu extends Menu {
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
                 ));
             }).setOnClick(inventoryClickEvent -> {
-                City city = CityManager.getCity(cityUUID);
+                City city = OMCRegistry.FEATURES.CITY.get().getCity(cityUUID);
                 if (city == null) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                     player.closeInventory();

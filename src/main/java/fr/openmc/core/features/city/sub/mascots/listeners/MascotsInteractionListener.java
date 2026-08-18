@@ -24,6 +24,12 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.UUID;
 
 public class MascotsInteractionListener implements Listener {
+    private final CityManager cityManager;
+
+    public MascotsInteractionListener(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
+
     @SneakyThrows
     @EventHandler
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
@@ -39,7 +45,7 @@ public class MascotsInteractionListener implements Listener {
         if (mascotsData == null) return;
         UUID mascotsUUID = UUID.fromString(mascotsData);
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = cityManager.getPlayerCity(player.getUniqueId());
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

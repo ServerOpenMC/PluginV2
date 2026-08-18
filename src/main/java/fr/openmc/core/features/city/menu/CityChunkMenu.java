@@ -49,15 +49,18 @@ public class CityChunkMenu extends Menu {
     private final int aywenite;
     private Map<ChunkPos, ChunkInfo> chunkInfoMap;
 
+    private final CityManager cityManager;
+
     public CityChunkMenu(Player owner) {
         super(owner);
         this.player = owner;
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
 
         this.playerChunkX = player.getLocation().getChunk().getX();
         this.playerChunkZ = player.getLocation().getChunk().getZ();
         this.startX = playerChunkX - 4;
         this.startZ = playerChunkZ - 2;
-        this.playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        this.playerCity = cityManager.getPlayerCity(player.getUniqueId());
 
         boolean tempHasPermissionClaim = false;
         boolean tempHasFreeClaimAvailable = false;
@@ -107,7 +110,7 @@ public class CityChunkMenu extends Menu {
                     int chunkZ = startZ + row;
                     ChunkPos pos = new ChunkPos(chunkX, chunkZ);
 
-                    City city = CityManager.getCityFromChunk(chunkX, chunkZ);
+                    City city = cityManager.getCityFromChunk(chunkX, chunkZ);
                     if (city != null) {
                         newChunkInfoMap.put(pos, new ChunkInfo(city, false));
                     }
@@ -334,7 +337,7 @@ public class CityChunkMenu extends Menu {
     }
 
     private void handleChunkClaimClick(Player player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
-        City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+        City cityCheck = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -370,7 +373,7 @@ public class CityChunkMenu extends Menu {
     }
 
     private void handleChunkUnclaimClick(Player player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
-        City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+        City cityCheck = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

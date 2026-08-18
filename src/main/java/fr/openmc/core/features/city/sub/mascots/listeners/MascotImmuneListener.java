@@ -14,12 +14,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class MascotImmuneListener implements Listener {
+    private final CityManager cityManager;
+
+    public MascotImmuneListener(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
 
     @EventHandler
     void onStartMascotImmune(CooldownStartEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = CityManager.getCity(event.getCooldownUUID());
+        City cityImmune = cityManager.getCity(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 
@@ -36,7 +41,7 @@ public class MascotImmuneListener implements Listener {
     void onEndMascotImmune(CooldownEndEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = CityManager.getCity(event.getCooldownUUID());
+        City cityImmune = cityManager.getCity(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 

@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.view;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -55,7 +55,7 @@ public class CityViewManager {
             );
         }
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         ScheduledTask task = createViewTask(player, playerCity);
         activeViewers.put(player.getUniqueId(), new CityViewData(task, claimsToShow));
@@ -117,6 +117,7 @@ public class CityViewManager {
     private static Object2ObjectMap<ChunkPos, City> collectClaimsInRadius(@NotNull Player player) {
         Object2ObjectMap<ChunkPos, City> claims = new Object2ObjectOpenHashMap<>();
         ChunkPos playerChunk = ChunkPos.fromChunk(player.getChunk());
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
         for (int x = -VIEW_RADIUS_CHUNKS; x <= VIEW_RADIUS_CHUNKS; x++) {
             for (int z = -VIEW_RADIUS_CHUNKS; z <= VIEW_RADIUS_CHUNKS; z++) {
@@ -124,7 +125,7 @@ public class CityViewManager {
                 int chunkZ = playerChunk.z() + z;
 
                 ChunkPos claim = new ChunkPos(chunkX, chunkZ);
-                City city = CityManager.getCityFromChunk(claim);
+                City city = cityManager.getCityFromChunk(claim);
                 if (city == null)
                     continue;
 
@@ -149,7 +150,7 @@ public class CityViewManager {
                 return;
 
             viewData.claims().forEach((chunkPos, city) -> {
-                showChunkBorders(player, chunkPos, city, city.equals(playerCity), WorldGuardHook.doesChunkContainWGRegion(chunkPos.getChunkInWorld()), player.getLocation().getBlockY() + 1);
+                showChunkBorders(player, chunkPos, city, city.equals(playerCity), OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunkPos.getChunkInWorld()), player.getLocation().getBlockY() + 1);
             });
         }, 0L, VIEW_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }

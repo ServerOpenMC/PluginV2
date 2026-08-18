@@ -160,7 +160,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                 MineralRushPerk::new,
                 MilitaryDissuasion::new,
                 IdyllicRain::new,
-                () -> new UrneListener(fancyNpcsHook),
+                () -> new UrneListener(fancyNpcsHook, cityManager, this),
                 () -> this.mayorNPCManager
         );
     }

@@ -75,13 +75,14 @@ public class MainScoreboard extends BaseScoreboard {
 
     public static List<Component> getDefaultLines(Player player) {
         BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
         Component rank = OMCRegistry.HOOKS.LUCK_PERMS.isEnable()
                 ? Component.text(OMCRegistry.HOOKS.LUCK_PERMS.getFormattedPAPIPrefix(player))
                 : TranslationManager.translation("feature.displays.scoreboard.rank.none.to_small").color(TextColor.color(0xFF1FCC));
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
+        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City chunkCity = cityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
         boolean isInRegion = OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(player.getLocation());
         Component location = isInRegion
                 ? TranslationManager.translation("feature.displays.scoreboard.location.protected.to_small")

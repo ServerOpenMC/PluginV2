@@ -6,8 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
@@ -120,7 +120,7 @@ public class BankManager extends Feature implements HasDatabase {
         }
 
         double amount = InputUtils.convertToMoneyValue(input);
-        City city = CityManager.getPlayerCity(playerUUID);
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(offlinePlayer,
@@ -213,7 +213,7 @@ public class BankManager extends Feature implements HasDatabase {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            City city = CityManager.getPlayerCity(playerUUID);
+            City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
             if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }
@@ -226,7 +226,7 @@ public class BankManager extends Feature implements HasDatabase {
         double interest = calculatePlayerInterest(playerUUID);
         double amount = getBankBalance(playerUUID) * interest;
 
-        City city = CityManager.getPlayerCity(playerUUID);
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
         if (city == null) return;
 
 

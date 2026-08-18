@@ -3,8 +3,8 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityChangeAction;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
@@ -53,7 +53,7 @@ public class CityTypeMenu extends Menu {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
         boolean enchantPeace = city.getType() == CityType.PEACE;
         List<Component> peaceInfo = TranslationManager.translationLore("feature.city.menus.type.peace.lore");
 

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.mascots.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -25,7 +25,7 @@ public class AdminMascotsCommands {
             Player sender,
             @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
-        City city = CityManager.getCityByName(cityName);
+        City city = OMCRegistry.FEATURES.CITY.get().getCityByName(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.CITY, MessageType.ERROR, false);

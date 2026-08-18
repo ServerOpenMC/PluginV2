@@ -9,7 +9,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
@@ -34,9 +33,13 @@ import java.util.Objects;
 
 public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
     private final FancyNpcsHook fancyNpcHook;
+    private final CityManager cityManager;
+    private final MayorManager mayorManager;
 
-    public UrneListener(FancyNpcsHook fancyNpcsHook) {
+    public UrneListener(FancyNpcsHook fancyNpcsHook, CityManager cityManager, MayorManager mayorManager) {
         this.fancyNpcHook = fancyNpcsHook;
+        this.cityManager = cityManager;
+        this.mayorManager = mayorManager;
     }
 
     @EventHandler
@@ -44,10 +47,10 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
         if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
 
         Chunk chunk = event.getFurniture().getEntity().getChunk();
-        City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+        City city = cityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.mysterious"), Prefix.MAYOR, MessageType.INFO, false);
@@ -76,12 +79,12 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
         }
 
-        if (MayorManager.phaseMayor != 1) {
+        if (mayorManager.phaseMayor != 1) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.election_already"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (MayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
+        if (mayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.no_candidate"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }
@@ -102,7 +105,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
         }
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.need_city"), Prefix.MAYOR, MessageType.WARNING, false);
@@ -110,7 +113,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
         }
 
         Chunk placedInChunk = event.getLocation().getChunk();
-        City chunkCity = CityManager.getCityFromChunk(placedInChunk.getX(), placedInChunk.getZ());
+        City chunkCity = cityManager.getCityFromChunk(placedInChunk.getX(), placedInChunk.getZ());
         if (chunkCity == null) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.must_be_in_city"), Prefix.MAYOR, MessageType.WARNING, false);
@@ -132,7 +135,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
         }
 
-        if (MayorNPCManager.hasNPCS(playerCity.getUniqueId())) {
+        if (mayorManager.mayorNPCManager.hasNPCS(playerCity.getUniqueId())) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.already_has_npc"), Prefix.MAYOR, MessageType.ERROR, false);
         }
@@ -148,18 +151,18 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
 
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
         Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
         Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
-        if (CityManager.getCityFromChunk(locationMayor.getChunk()) == null) {
+        if (cityManager.getCityFromChunk(locationMayor.getChunk()) == null) {
             locationMayor = urneLocation.clone().add(0, 1, 0);
         }
-        if (CityManager.getCityFromChunk(locationOwner.getChunk()) == null) {
+        if (cityManager.getCityFromChunk(locationOwner.getChunk()) == null) {
             locationOwner = urneLocation.clone().add(0, 1, 0);
         }
 
-        MayorNPCManager.createNPCS(playerCity.getUniqueId(), locationMayor, locationOwner, player.getUniqueId());
+        mayorManager.mayorNPCManager.createNPCS(playerCity.getUniqueId(), locationMayor, locationOwner, player.getUniqueId());
     }
 
     @EventHandler
@@ -168,7 +171,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
 
         Player player = event.getPlayer();
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             event.setCancelled(true);
             return;
@@ -182,6 +185,6 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
 
         if (!fancyNpcHook.isEnable()) return;
 
-        MayorNPCManager.removeNPCS(playerCity.getUniqueId());
+        mayorManager.mayorNPCManager.removeNPCS(playerCity.getUniqueId());
     }
 }

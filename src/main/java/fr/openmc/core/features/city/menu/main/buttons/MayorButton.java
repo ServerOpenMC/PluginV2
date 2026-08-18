@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -44,6 +45,7 @@ public class MayorButton {
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
+        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
         Component mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
                 ? city.getMayor().getName()
@@ -53,7 +55,7 @@ public class MayorButton {
 
         List<Component> lore;
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-            lore = switch (MayorManager.phaseMayor) {
+            lore = switch (mayorManager.phaseMayor) {
                 case 2 -> TranslationManager.translationLore(
                         "feature.city.menus.main.mayor.locked.phase2",
                         Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
@@ -70,7 +72,7 @@ public class MayorButton {
             };
         } else {
             if (city.getElectionType() == ElectionType.ELECTION) {
-                lore = switch (MayorManager.phaseMayor) {
+                lore = switch (mayorManager.phaseMayor) {
                     case 2 -> TranslationManager.translationLore(
                             "feature.city.menus.main.mayor.election.phase2",
                             mayorComponent
@@ -82,7 +84,7 @@ public class MayorButton {
                     default -> TranslationManager.translationLore("feature.city.menus.main.mayor.election.error");
                 };
             } else {
-                switch (MayorManager.phaseMayor) {
+                switch (mayorManager.phaseMayor) {
                     case 2 -> lore = TranslationManager.translationLore(
                             "feature.city.menus.main.mayor.owner.phase2",
                             mayorComponent,

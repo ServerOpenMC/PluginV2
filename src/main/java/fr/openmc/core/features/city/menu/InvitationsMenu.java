@@ -7,8 +7,8 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -66,7 +66,7 @@ public class InvitationsMenu extends PaginatedMenu {
         List<Component> invitationLore = TranslationManager.translationLore("feature.city.menus.invitations.item.lore");
 
         for (Player inviter : invitations) {
-            City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+            City inviterCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(inviter.getUniqueId());
 
             if (inviterCity == null) {
                 invitations.remove(inviter);

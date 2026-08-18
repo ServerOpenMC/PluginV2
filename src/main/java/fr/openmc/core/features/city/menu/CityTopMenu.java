@@ -3,10 +3,10 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -39,6 +39,8 @@ public class CityTopMenu extends PaginatedMenu {
     private final List<City> cities;
     private SortType sortType;
 
+    private final CityManager cityManager;
+
     /**
      * Constructor for CityListMenu.
      *
@@ -56,7 +58,8 @@ public class CityTopMenu extends PaginatedMenu {
      */
     public CityTopMenu(Player owner, SortType sortType) {
         super(owner);
-        this.cities = new ArrayList<>(CityManager.getCities());
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+        this.cities = new ArrayList<>(cityManager.getCities());
         setSortType(sortType);
     }
 
@@ -94,7 +97,7 @@ public class CityTopMenu extends PaginatedMenu {
                 Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
                 Component powerComponent = Component.text(city.getPowerPoints()).color(NamedTextColor.RED);
 
-                if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+                if (cityManager.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
                     Component mayorName = city.getMayor() == null
                             ? TranslationManager.translation("messages.menus.none")
                             : city.getMayor().getName();

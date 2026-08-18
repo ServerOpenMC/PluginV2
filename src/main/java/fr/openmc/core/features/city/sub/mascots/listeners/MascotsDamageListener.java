@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.IronBloodPerk;
@@ -95,7 +95,8 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+        City city = cityManager.getPlayerCity(player.getUniqueId());
         City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -181,7 +182,7 @@ public class MascotsDamageListener implements Listener {
         MascotUtils.updateDisplayName(mob, cityMob.getMascot(), e.getFinalDamage());
 
         try {
-            if (MayorManager.phaseMayor != 2) return;
+            if (cityManager.MAYOR.phaseMayor != 2) return;
 
             if (!PerkUtils.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
 

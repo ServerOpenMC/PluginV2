@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
@@ -25,12 +25,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class GPSTrackerPerk implements Listener {
+    private final CityManager cityManager;
+
+    public GPSTrackerPerk() {
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+    }
 
     private final Map<UUID, City> lastCityMap = new HashMap<>();
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (MayorManager.phaseMayor != 2) return;
+        if (cityManager.MAYOR.phaseMayor != 2) return;
 
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
@@ -38,7 +43,7 @@ public class GPSTrackerPerk implements Listener {
         Chunk newChunk = event.getTo().getChunk();
         if (event.getFrom().getChunk().equals(newChunk)) return;
 
-        City newCity = CityManager.getCityFromChunk(
+        City newCity = cityManager.getCityFromChunk(
                 newChunk.getX(),
                 newChunk.getZ()
         );

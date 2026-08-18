@@ -4,8 +4,8 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
@@ -36,7 +36,7 @@ public class LeaveButton {
                 }).setOnClick(inventoryClickEvent -> {
                     if (hasPermissionOwner) return;
 
-                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                    City cityCheck = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
                     if (!CityLeaveCondition.canCityLeave(cityCheck, player)) return;
 
                     new ConfirmMenu(player,

@@ -1,10 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -28,7 +27,7 @@ public class MayorCommands {
     @Command({"city warp", "ville warp"})
     @Description("Teleporte au warp commun de la ville")
     void warp(Player player) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) return;
 
@@ -36,7 +35,7 @@ public class MayorCommands {
         Location warp = law.getWarp();
 
         if (warp == null) {
-            if (MayorManager.phaseMayor == 2) {
+            if (OMCRegistry.FEATURES.CITY.get().MAYOR.phaseMayor == 2) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }

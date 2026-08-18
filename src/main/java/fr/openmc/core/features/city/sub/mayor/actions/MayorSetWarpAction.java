@@ -4,7 +4,6 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
@@ -25,7 +24,7 @@ import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_
 
 public class MayorSetWarpAction {
     public static void setWarp(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         if (city == null) return;
 
