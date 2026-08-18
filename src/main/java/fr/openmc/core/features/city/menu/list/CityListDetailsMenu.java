@@ -10,8 +10,8 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
@@ -81,9 +81,9 @@ public class CityListDetailsMenu extends Menu {
 		if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 			Mayor mayor = this.city.getMayor();
 			ElectionType electionType = mayor.getElectionType();
-			Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-			Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+			Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+			Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+			Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
 			loreOwner.add(Component.empty());
 			loreOwner.add(perk1 == null ? TranslationManager.translation("feature.city.menus.common.error") :

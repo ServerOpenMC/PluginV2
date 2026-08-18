@@ -10,8 +10,8 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -78,7 +78,7 @@ public class OwnerNpcMenu extends Menu {
 
         String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName();
 
-        Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+        Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
         if (electionType == ElectionType.ELECTION) {
             List<Component> loreOwner = new ArrayList<>(List.of(
                     TranslationManager.translation(
@@ -105,8 +105,8 @@ public class OwnerNpcMenu extends Menu {
                 itemMeta.lore(lorePerk1);
             }).hide(perk1 == null ? null : perk1.getToHide()));
         } else {
-            Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-            Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+            Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+            Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
             List<Component> loreOwner = new ArrayList<>(List.of(
                     TranslationManager.translation(

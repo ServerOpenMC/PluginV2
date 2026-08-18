@@ -1,7 +1,7 @@
 package fr.openmc.core.utils.text;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -82,7 +82,7 @@ public class InputUtils {
             return false;
         }
 
-        for (City city : CityManager.getCities()) {
+        for (City city : OMCRegistry.FEATURES.CITY.get().getCities()) {
             String testCityName = city.getName();
             if (testCityName.equalsIgnoreCase(input)) {
                 return false;

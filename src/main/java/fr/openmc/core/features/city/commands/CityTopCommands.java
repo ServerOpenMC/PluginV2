@@ -16,11 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CityTopCommands {
+    private final CityManager cityManager;
+
+    public CityTopCommands(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
+
     @Command({"city top", "citytop"})
     @CommandPermission("omc.commands.city.top")
     @Description("Ouvre les classements inter saison des villes")
-    void notationTest(Player sender) {
-        List<City> cities = new ArrayList<>(CityManager.getCities());
+    public void notationTest(Player sender) {
+        List<City> cities = new ArrayList<>(cityManager.getCities());
         if (cities.isEmpty()) {
 	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.commands.top.empty"), Prefix.CITY, MessageType.ERROR, true);
             return;

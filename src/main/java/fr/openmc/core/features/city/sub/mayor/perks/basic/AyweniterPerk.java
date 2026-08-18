@@ -4,7 +4,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -43,7 +43,7 @@ public class AyweniterPerk implements Listener {
             if (blockCity != playerCity) return;
 
         if (MayorManager.phaseMayor == 2) {
-            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
+            if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
                 ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();

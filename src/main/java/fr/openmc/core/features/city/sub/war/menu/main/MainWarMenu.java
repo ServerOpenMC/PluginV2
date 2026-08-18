@@ -12,8 +12,8 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
@@ -114,9 +114,9 @@ public class MainWarMenu extends PaginatedMenu {
 
             Mayor mayor = city.getMayor();
             if (MayorManager.phaseMayor == 2 && mayor != null) {
-                Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-                Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-                Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+                Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+                Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+                Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
                 loreCity.add(TranslationManager.translation("feature.city.war.menu.main.reforms").color(NamedTextColor.GRAY));
                 if (perk1 != null) loreCity.add(Component.text(" - ")

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
@@ -22,7 +22,7 @@ public class CityClaimCommands {
     @Description("Claim un chunk pour votre ville")
     @CommandPlaceholder()
     void claim(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (!CityClaimCondition.canCityClaim(city, sender)) return;
 
@@ -35,7 +35,7 @@ public class CityClaimCommands {
     @CommandPermission("omc.commands.city.unclaim")
     @Description("Unclaim un chunk pour votre ville")
     void unclaim(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (!CityUnclaimCondition.canCityUnclaim(city, sender)) return;
 

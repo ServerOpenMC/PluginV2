@@ -1,7 +1,7 @@
 package fr.openmc.core.features.settings;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
@@ -214,7 +214,7 @@ public class PlayerSettings {
      * @return true if both players are members of the same city, false otherwise
      */
     private boolean areSameCityMembers(UUID player1UUID, UUID player2UUID) {
-        City player2City = CityManager.getPlayerCity(player2UUID);
+        City player2City = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player2UUID);
         Player player1 = Bukkit.getPlayer(player1UUID);
         return player1 != null && player2City != null && player2City.isMember(player1);
     }

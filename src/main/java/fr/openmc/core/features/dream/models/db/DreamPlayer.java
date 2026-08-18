@@ -3,7 +3,7 @@ package fr.openmc.core.features.dream.models.db;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
@@ -53,7 +53,7 @@ public class DreamPlayer {
         this.dreamTime = cacheData == null ? DreamManager.BASE_DREAM_TIME : cacheData.getMaxDreamTime();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.GREAT_DREAM.getId())) {
+        if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.GREAT_DREAM.getId())) {
             this.dreamTime = (long) (this.dreamTime * 1.6);
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.dream.message.great_dream_bonus"), Prefix.MAYOR, MessageType.INFO, false

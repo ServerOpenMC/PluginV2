@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -26,7 +25,7 @@ public class CityUnclaimAction {
     }
 
     public static void startUnclaim(Player sender, int chunkX, int chunkZ) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
         World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.cant_claim_here"), Prefix.CITY, MessageType.ERROR, false);

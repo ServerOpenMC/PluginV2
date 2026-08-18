@@ -18,7 +18,6 @@ import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.milestone.CityMilestoneManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.rank.CityRankCommands;
@@ -46,11 +45,22 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
-public class CityManager extends Feature implements HasDatabase, HasListeners, HasCommands {
+public class CityManager extends Feature
+        implements HasDatabase, HasListeners, HasCommands {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
+
+    // * SUB-FEATURE
+    public MayorManager MAYOR;
+    public ProtectionsManager PROTECTIONS;
+    public WarManager WAR;
+    public CityBankManager CITY_BANK;
+    public CityStatisticsManager STATS;
+    public NotationManager NOTATION;
+    public CityRankManager RANKS;
+    public CityMilestoneManager CITY_MILESTONE;
 
     private ItemsAdderHook itemsAdderHook;
     private FancyNpcsHook fancyNpcsHook;
@@ -64,26 +74,26 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
 
         // SUB-FEATURE
         // todo utiliser OMCRegistry.FEATURES.register
-        MayorManager.init(fancyNpcsHook, itemsAdderHook);
-        ProtectionsManager.init();
-        WarManager.init();
-        CityBankManager.init();
-        CityStatisticsManager.init();
-        NotationManager.init();
-        CityRankManager.init();
-        CityMilestoneManager.init();
+        this.MAYOR = OMCRegistry.FEATURES.register(new MayorManager(this, fancyNpcsHook, itemsAdderHook));
+        this.PROTECTIONS = OMCRegistry.FEATURES.register(new ProtectionsManager(this));
+        this.WAR = OMCRegistry.FEATURES.register(new WarManager());
+        this.CITY_BANK = OMCRegistry.FEATURES.register(new CityBankManager(this, MAYOR));
+        this.STATS = OMCRegistry.FEATURES.register(new CityStatisticsManager());
+        this.NOTATION = OMCRegistry.FEATURES.register(new NotationManager(this));
+        this.RANKS = OMCRegistry.FEATURES.register(new CityRankManager(this));
+        this.CITY_MILESTONE = OMCRegistry.FEATURES.register(new CityMilestoneManager());
     }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new AdminCityCommands(),
-                new CityCommands(),
+                new AdminCityCommands(this),
+                new CityCommands(this),
                 new CityChatCommand(),
                 new CityPermsCommands(),
                 new CityChestCommand(),
                 new CityRankCommands(),
-                new CityTopCommands(),
+                new CityTopCommands(this),
                 new CityInviteCommands(),
                 new CityClaimCommands()
         );
@@ -94,25 +104,6 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         return Set.of(
                 CityChatListener::new
         );
-    }
-
-    @Override
-    public void save() {
-        // - War
-        WarManager.saveWarHistories();
-
-        // - CityStatistics
-        CityStatisticsManager.saveCityStatistics();
-
-        // - Notation des Villes
-        NotationManager.saveNotations();
-
-        // - Maires
-        MayorManager.saveMayorConstant();
-        MayorManager.savePlayersVote();
-        MayorManager.saveMayorCandidates();
-        MayorManager.saveCityMayors();
-        MayorManager.saveCityLaws();
     }
 
     private static Dao<DBCity, String> citiesDao;
@@ -137,17 +128,11 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityChest.class);
         chestsDao = DaoManager.createDao(connectionSource, DBCityChest.class);
-
-        WarManager.initDB(connectionSource);
-        NotationManager.initDB(connectionSource);
-        MayorManager.initDB(connectionSource);
-        CityRankManager.initDB(connectionSource);
-        CityStatisticsManager.initDB(connectionSource);
     }
 
     // ==================== Database Methods ====================
 
-    private static void loadCities() {
+    private void loadCities() {
         try {
             cities.clear();
             for (DBCity dbCity : citiesDao.queryForAll()) {
@@ -178,7 +163,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         }
     }
 
-    public static void saveCity(City city) {
+    public void saveCity(City city) {
         try {
             citiesDao.createOrUpdate(city.serialize());
         } catch (SQLException e) {
@@ -192,7 +177,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param city   The city to add the player to
      * @param playerUUID The playerUUID to add to the city
      */
-    public static void addPlayerToCity(City city, UUID playerUUID) {
+    public void addPlayerToCity(City city, UUID playerUUID) {
         if (city == null || playerUUID == null) return;
 
         playerCities.put(playerUUID, city);
@@ -213,7 +198,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param city   The city to remove the player from
      * @param playerUUID The playerUUID to remove from the city
      */
-    public static void removePlayerFromCity(City city, UUID playerUUID) {
+    public void removePlayerFromCity(City city, UUID playerUUID) {
         if (city == null || playerUUID == null) return;
 
         playerCities.remove(playerUUID);
@@ -228,7 +213,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         });
     }
 
-    public static HashMap<UUID, Set<CityPermission>> getCityPermissions(City city) {
+    public HashMap<UUID, Set<CityPermission>> getCityPermissions(City city) {
         HashMap<UUID, Set<CityPermission>> permissions = new HashMap<>();
 
         try {
@@ -249,7 +234,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         return permissions;
     }
 
-    public static void addPlayerPermission(City city, UUID playerUUID, CityPermission permission) {
+    public void addPlayerPermission(City city, UUID playerUUID, CityPermission permission) {
         try {
             permissionsDao.create(new DBCityPermission(city.getUniqueId(), playerUUID, permission.name()));
         } catch (SQLException e) {
@@ -257,7 +242,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         }
     }
 
-    public static void removePlayerPermission(City city, UUID playerUUID, CityPermission permission) {
+    public void removePlayerPermission(City city, UUID playerUUID, CityPermission permission) {
         try {
             DeleteBuilder<DBCityPermission, String> delete = permissionsDao.deleteBuilder();
             delete.where()
@@ -272,7 +257,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         }
     }
 
-    public static HashMap<Integer, ItemStack[]> getCityChestContent(City city) {
+    public HashMap<Integer, ItemStack[]> getCityChestContent(City city) {
         HashMap<Integer, ItemStack[]> pages = new HashMap<>();
 
         try {
@@ -288,7 +273,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         return pages;
     }
 
-    public static void saveChestPage(City city, int page, ItemStack[] content) {
+    public void saveChestPage(City city, int page, ItemStack[] content) {
         try {
             DeleteBuilder<DBCityChest, String> delete = chestsDao.deleteBuilder();
             delete.where().eq("city_uuid", city.getUniqueId()).and().eq("page", page);
@@ -300,7 +285,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         }
     }
 
-    public static void claimChunk(City city, ChunkPos chunkPos) {
+    public void claimChunk(City city, ChunkPos chunkPos) {
         claimedChunks.put(chunkPos, city);
         CityViewManager.updateAllViews();
 
@@ -313,7 +298,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         });
     }
 
-    public static void unclaimChunk(City city, ChunkPos chunkPos) {
+    public void unclaimChunk(City city, ChunkPos chunkPos) {
         claimedChunks.remove(chunkPos);
         CityViewManager.updateAllViews();
 
@@ -338,7 +323,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      *
      * @return cities
      */
-    public static Collection<City> getCities() {
+    public Collection<City> getCities() {
         return cities.values();
     }
 
@@ -347,7 +332,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      *
      * @return A list of all city UUIDs
      */
-    public static List<UUID> getAllCityUUIDs() {
+    public List<UUID> getAllCityUUIDs() {
         List<UUID> uuidList = new ArrayList<>();
         cities.forEach((name, city) -> uuidList.add(city.getUniqueId()));
         return uuidList;
@@ -360,7 +345,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param z The z coordinate of the chunk
      * @return true if the chunk is claimed, false otherwise
      */
-    public static boolean isChunkClaimed(int x, int z) {
+    public boolean isChunkClaimed(int x, int z) {
         return getCityFromChunk(x, z) != null;
     }
     
@@ -371,7 +356,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param chunk The chunk
      * @return true if the chunk is claimed, false otherwise
      */
-    public static boolean isChunkClaimed(Chunk chunk) {
+    public boolean isChunkClaimed(Chunk chunk) {
         return getCityFromChunk(chunk) != null;
     }
 
@@ -382,10 +367,10 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param radius The radius
      * @return true if the chunk is claimed, false otherwise
      */
-    public static boolean isChunkClaimedInRadius(Chunk chunk, int radius) {
+    public boolean isChunkClaimedInRadius(Chunk chunk, int radius) {
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                if (CityManager.isChunkClaimed(chunk.getX() + x, chunk.getZ() + z)) {
+                if (this.isChunkClaimed(chunk.getX() + x, chunk.getZ() + z)) {
                     return true;
                 }
             }
@@ -399,7 +384,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param cityUUID The {@link UUID} of the city
      * @return The {@link City}, or null if not found
      */
-    public static City getCity(UUID cityUUID) {
+    public City getCity(UUID cityUUID) {
         return cities.get(cityUUID);
     }
 
@@ -409,7 +394,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param name The name of the city
      * @return The city object, or null if not found
      */
-    public static City getCityByName(String name) {
+    public City getCityByName(String name) {
         return citiesByName.get(name);
     }
 
@@ -419,7 +404,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param inCity The cities whose chunks are requested
      * @return The cities claimed chunks
      */
-    public static Set<ChunkPos> getCityChunks(City inCity) {
+    public Set<ChunkPos> getCityChunks(City inCity) {
         Set<ChunkPos> chunks = new HashSet<>();
 
         claimedChunks.forEach((chunk, city) -> {
@@ -437,7 +422,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param inCity The cities whose members are requested
      * @return The city members
      */
-    public static Set<UUID> getCityMembers(City inCity) {
+    public Set<UUID> getCityMembers(City inCity) {
         Set<UUID> members = new HashSet<>();
 
         playerCities.forEach((player, city) -> {
@@ -454,7 +439,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @param playerUUID The UUID of the member
      * @return The city object, or null if not found
      */
-    public static City getPlayerCity(UUID playerUUID) {
+    public City getPlayerCity(UUID playerUUID) {
         return playerCities.get(playerUUID);
     }
 
@@ -466,7 +451,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @return The city object, or null if not found
      */
     @Nullable
-    public static City getCityFromChunk(int x, int z) {
+    public City getCityFromChunk(int x, int z) {
         return claimedChunks.get(new ChunkPos(x, z));
     }
 
@@ -477,7 +462,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @return The city object, or null if not found
      */
     @Nullable
-    public static City getCityFromChunk(Chunk chunk) {
+    public City getCityFromChunk(Chunk chunk) {
         return claimedChunks.get(new ChunkPos(chunk.getX(), chunk.getZ()));
     }
 
@@ -488,7 +473,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      * @return The city object, or null if not found
      */
     @Nullable
-    public static City getCityFromChunk(ChunkPos chunkPos) {
+    public City getCityFromChunk(ChunkPos chunkPos) {
         return claimedChunks.get(chunkPos);
     }
 
@@ -497,7 +482,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      *
      * @param city The city object
      */
-    public static void registerCity(City city) {
+    public void registerCity(City city) {
         cities.put(city.getUniqueId(), city);
         citiesByName.put(city.getName(), city);
     }
@@ -507,12 +492,12 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
      *
      * @param city The city
      */
-    public static void deleteCity(City city) {
+    public void deleteCity(City city) {
         if (city == null) return;
 
-        MayorManager.cityMayor.remove(city.getUniqueId());
-        MayorManager.cityElections.remove(city.getUniqueId());
-        MayorManager.playerVote.remove(city.getUniqueId());
+        MAYOR.cityMayor.remove(city.getUniqueId());
+        MAYOR.cityElections.remove(city.getUniqueId());
+        MAYOR.playerVote.remove(city.getUniqueId());
 
         List<UUID> membersCopy = new ArrayList<>(city.getMembers());
         for (UUID memberId : membersCopy) {
@@ -562,7 +547,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
         }
 
         MascotsManager.removeMascotsFromCity(city);
-        MayorNPCManager.removeNPCS(city.getUniqueId());
+        MAYOR.mayorNPCManager.removeNPCS(city.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -576,7 +561,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
                 permissionsDelete.where().eq("city_uuid", city.getUniqueId());
                 permissionsDao.delete(permissionsDelete.prepare());
 
-                CityRankManager.removeRanks(city);
+                RANKS.removeRanks(city);
 
                 DeleteBuilder<DBCityClaim, String> claimsDelete = claimsDao.deleteBuilder();
                 claimsDelete.where().eq("city_uuid", city.getUniqueId());
@@ -586,7 +571,7 @@ public class CityManager extends Feature implements HasDatabase, HasListeners, H
                 chestsDelete.where().eq("city_uuid", city.getUniqueId());
                 chestsDao.delete(chestsDelete.prepare());
 
-                MayorManager.removeCity(city);
+                MAYOR.removeCity(city);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

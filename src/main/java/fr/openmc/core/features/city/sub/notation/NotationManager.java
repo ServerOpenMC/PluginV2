@@ -4,7 +4,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -15,6 +14,11 @@ import fr.openmc.core.features.city.sub.notation.models.ActivityTimePlayed;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.Bukkit;
@@ -36,61 +40,49 @@ import static fr.openmc.core.features.city.sub.notation.NotationNote.getMaxTotal
  * de toutes les villes. Elle interagit avec la base de données via ORMLite et planifie des
  * exécutions périodiques pour recalculer les scores et attribuer les récompenses.</p>
  */
-public class NotationManager {
+public class NotationManager extends Feature implements HasCommands, HasListeners, HasDatabase {
 
+    private final CityManager cityManager;
     /**
      * Jour d'application de la notation.
      */
     private static final DayOfWeek APPLY_NOTATION_DAY = DayOfWeek.SUNDAY;
-    private static boolean isApplied;
+    private boolean isApplied;
 
-    
-    /**
-     * Map des notations par semaine (clé : chaine de la semaine, valeur : liste de CityNotation).
-     */
-    public static final Map<String, List<CityNotation>> notationPerWeek = new HashMap<>();
+    // Map des notations par semaine (clé : chaine de la semaine, valeur : liste de CityNotation).
+    public final Map<String, List<CityNotation>> notationPerWeek = new HashMap<>();
 
-    /**
-     * Map des notations par ville (clé : UUID de la ville, valeur : liste de CityNotation).
-     */
-    public static final Map<UUID, List<CityNotation>> cityNotations = new HashMap<>();
+    // Map des notations par ville (clé : UUID de la ville, valeur : liste de CityNotation).
+    public final Map<UUID, List<CityNotation>> cityNotations = new HashMap<>();
 
-    /**
-     * Map des temps d'activité des joueurs (clé : UUID du joueur, valeur : temps).
-     */
-    public static final Map<UUID, Long> activityNotation = new HashMap<>();
+    // Map des temps d'activité des joueurs (clé : UUID du joueur, valeur : temps).
+    public final Map<UUID, Long> activityNotation = new HashMap<>();
 
-    /**
-     * Ensemble des 10 meilleures villes.
-     */
-    public static final Set<UUID> top10Cities = new HashSet<>();
+    // Ensemble des 10 meilleures villes.
+    public final Set<UUID> top10Cities = new HashSet<>();
 
-    /**
-     * DAO pour la table des temps d'activité.
-     */
-    private static Dao<ActivityTimePlayed, String> activityTimePlayedDao;
+    private Dao<ActivityTimePlayed, String> activityTimePlayedDao;
+    private Dao<CityNotation, String> notationDao;
 
-    /**
-     * DAO pour la table des notations de ville.
-     */
-    private static Dao<CityNotation, String> notationDao;
-
+    public NotationManager(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
     /**
      * Constructeur de NotationManager.
      *
      * <p>Charge les notations, enregistre les commandes et les listeners, et planifie la tâche nocturne.</p>
      */
-    public static void init() {
+    @Override
+    public void init() {
         loadNotations();
-        CommandsManager.getHandler().register(
-                new NotationCommands(),
-                new AdminNotationCommands()
-        );
-        OMCPlugin.registerEvents(
-                PlayerJoinListener::new
-        );
+
         scheduleMidnightTask();
         loadTop10Cities();
+    }
+
+    @Override
+    public void save() {
+        saveNotations();
     }
 
     /**
@@ -99,7 +91,8 @@ public class NotationManager {
      * @param connectionSource la source de connexion de la base de données
      * @throws SQLException en cas d'erreur SQL
      */
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, CityNotation.class);
         notationDao = DaoManager.createDao(connectionSource, CityNotation.class);
 
@@ -112,15 +105,30 @@ public class NotationManager {
                 ));
     }
 
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new NotationCommands(),
+                new AdminNotationCommands(cityManager)
+        );
+    }
+
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                PlayerJoinListener::new
+        );
+    }
+
     /**
      * Charge les notations depuis la base de données et les répartit dans les maps.
      */
-    public static void loadNotations() {
+    public void loadNotations() {
         try {
             List<CityNotation> notations = notationDao.queryForAll();
             for (CityNotation notation : notations) {
                 UUID cityUUID = notation.getCityUUID();
-                City city = CityManager.getCity(cityUUID);
+                City city = cityManager.getCity(cityUUID);
                 if (city == null) continue;
 
                 String weekStr = notation.getWeekStr();
@@ -135,7 +143,7 @@ public class NotationManager {
     /**
      * Sauvegarde toutes les notations dans la base de données.
      */
-    public static void saveNotations() {
+    public void saveNotations() {
         try {
             notationDao.delete(notationDao.queryForAll());
         } catch (SQLException e) {
@@ -158,7 +166,7 @@ public class NotationManager {
      *
      * @param notation la notation à créer ou mettre à jour
      */
-    public static void createOrUpdateNotation(CityNotation notation) {
+    public void createOrUpdateNotation(CityNotation notation) {
         try {
             notationDao.createOrUpdate(notation);
 
@@ -185,7 +193,7 @@ public class NotationManager {
     /**
      * Charge les 10 meilleures villes en fonction des notations.
      */
-    public static void loadTop10Cities() {
+    public void loadTop10Cities() {
         top10Cities.clear();
         for (String weekStr : notationPerWeek.keySet()) {
             getSortedNotationForWeek(weekStr).stream()
@@ -201,7 +209,7 @@ public class NotationManager {
      * @param weekStr la chaîne représentant la semaine
      * @return liste de notations triées par note architecturale et cohérence, ordre décroissant
      */
-    public static List<CityNotation> getSortedNotationForWeek(String weekStr) {
+    public List<CityNotation> getSortedNotationForWeek(String weekStr) {
         List<CityNotation> notations = notationPerWeek.getOrDefault(weekStr, Collections.emptyList());
         return notations.stream()
                 .sorted(Comparator.comparingDouble(
@@ -217,7 +225,7 @@ public class NotationManager {
      * @return le score moyen d'activité des membres de la ville
      * @throws SQLException en cas d'erreur SQL
      */
-    public static double getActivityScore(City city) throws SQLException {
+    public double getActivityScore(City city) throws SQLException {
         double totalScore = 0;
         int playerCount = 0;
         for (UUID playerUUID : city.getMembers()) {
@@ -242,7 +250,7 @@ public class NotationManager {
      * @param city la ville concernée
      * @return le score militaire calculé
      */
-    public static double getMilitaryScore(City city) {
+    public double getMilitaryScore(City city) {
         int powerPoints = city.getPowerPoints();
         int maxNote = NotationNote.NOTE_MILITARY.getMaxNote();
         int pointsToGetMaxNote = 30;
@@ -263,7 +271,7 @@ public class NotationManager {
      * @param city la ville concernée
      * @return le score économique (entre 0 et 15)
      */
-    public static double getEconomyScore(City city) {
+    public double getEconomyScore(City city) {
         double totalMoney = 0;
 
         totalMoney += city.getBalance();
@@ -287,13 +295,13 @@ public class NotationManager {
      * @param weekStr la chaîne représentant la semaine
      * @throws SQLException en cas d'erreur SQL
      */
-    public static void calculateAllCityScore(String weekStr) throws SQLException {
+    public void calculateAllCityScore(String weekStr) throws SQLException {
         List<CityNotation> notationsCopy = new ArrayList<>(
                 notationPerWeek.getOrDefault(weekStr, Collections.emptyList())
         );
 
         for (CityNotation notation : notationsCopy) {
-            City city = CityManager.getCity(notation.getCityUUID());
+            City city = cityManager.getCity(notation.getCityUUID());
             notation.setNoteActivity(getActivityScore(city));
             notation.setNoteMilitary(getMilitaryScore(city));
             double economyScore = getEconomyScore(city);
@@ -308,7 +316,7 @@ public class NotationManager {
      * @param notation la notation de la ville
      * @return le montant de la récompense
      */
-    public static double calculateReward(CityNotation notation) {
+    public double calculateReward(CityNotation notation) {
         double points = notation.getTotalNote();
         double money = points * (45000.0 / getMaxTotalNote());
 
@@ -323,11 +331,11 @@ public class NotationManager {
      *
      * @param weekStr la chaîne représentant la semaine
      */
-    public static void giveReward(String weekStr) {
+    public void giveReward(String weekStr) {
         List<CityNotation> notations = notationPerWeek.getOrDefault(weekStr, Collections.emptyList());
 
         for (CityNotation notation : notations) {
-            City city = CityManager.getCity(notation.getCityUUID());
+            City city = cityManager.getCity(notation.getCityUUID());
             if (city != null) {
                 city.setBalance(city.getBalance() + calculateReward(notation));
             }
@@ -337,7 +345,7 @@ public class NotationManager {
     /**
      * Planifie l'exécution de la tâche de minuit qui calcule les scores et attribue les récompenses.
      */
-    private static void scheduleMidnightTask() {
+    private void scheduleMidnightTask() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekTime(APPLY_NOTATION_DAY, 0, 0, 0) * 20;
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (!isApplied) {

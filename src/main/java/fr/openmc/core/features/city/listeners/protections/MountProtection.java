@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -11,6 +12,12 @@ import org.bukkit.event.entity.EntityMountEvent;
 import java.util.UUID;
 
 public class MountProtection implements Listener {
+    private final ProtectionsManager protectionsManager;
+
+    public MountProtection(CityManager cityManager) {
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onEntityMount(EntityMountEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
@@ -25,15 +32,15 @@ public class MountProtection implements Listener {
             if (ownerUUID == null) return;
 
             if (!ownerUUID.equals(player.getUniqueId())) {
-                if (!ProtectionsManager.canInteract(player, mount.getLocation())) {
+                if (!protectionsManager.canInteract(player, mount.getLocation())) {
                     event.setCancelled(true);
-                    ProtectionsManager.cancelMessage(player);
+                    protectionsManager.cancelMessage(player);
                 } else {
-                    ProtectionsManager.verify(player, event, mount.getLocation());
+                    protectionsManager.verify(player, event, mount.getLocation());
                 }
             }
         } else {
-            ProtectionsManager.verify(player, event, mount.getLocation());
+            protectionsManager.verify(player, event, mount.getLocation());
         }
     }
 }

@@ -7,8 +7,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -68,9 +68,9 @@ public class WarCityDetailsMenu extends Menu {
 
         Mayor mayor = city.getMayor();
         if (MayorManager.phaseMayor == 2 && mayor != null) {
-            Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-            Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-            Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+            Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+            Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+            Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
             ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :

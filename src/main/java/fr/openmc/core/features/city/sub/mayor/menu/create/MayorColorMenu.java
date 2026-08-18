@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -73,8 +74,10 @@ public class MayorColorMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+        MayorManager mayorManager = cityManager.MAYOR;
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = cityManager.getPlayerCity(player.getUniqueId());
         Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
         {
             colorSlot.put(NamedTextColor.RED, 12);
@@ -132,7 +135,7 @@ public class MayorColorMenu extends Menu {
                                 try {
                                     if (menuType == MenuType.CANDIDATE) {
                                         MayorCandidate candidate = new MayorCandidate(city.getUniqueId(), player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
-                                        MayorManager.createCandidate(city, candidate);
+                                        mayorManager.createCandidate(city, candidate);
 
                                         for (UUID uuid : city.getMembers()) {
                                             OfflinePlayer playerMember = CacheOfflinePlayer.getOfflinePlayer(uuid);
@@ -146,7 +149,7 @@ public class MayorColorMenu extends Menu {
                                             }
                                         }
                                     } else { // donc si c MenuType.OWNER
-                                        MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
+                                        mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
                                     }
                                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.color.candidate.success"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
@@ -195,7 +198,7 @@ public class MayorColorMenu extends Menu {
                         );
                         menu.open();
                     } else {
-                        MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
+                        MayorCandidate mayorCandidate = mayorManager.getCandidate(player.getUniqueId());
                         NamedTextColor thisColor = mayorCandidate.getCandidateColor();
                         Component fromColor = TranslationManager.translation("feature.city.mayor.label.color")
                                 .decoration(TextDecoration.ITALIC, false).color(thisColor);

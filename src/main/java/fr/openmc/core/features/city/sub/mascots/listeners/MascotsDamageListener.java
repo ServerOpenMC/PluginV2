@@ -8,7 +8,7 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.IronBloodPerk;
 import fr.openmc.core.features.city.sub.war.War;
@@ -183,7 +183,7 @@ public class MascotsDamageListener implements Listener {
         try {
             if (MayorManager.phaseMayor != 2) return;
 
-            if (!PerkManager.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
+            if (!PerkUtils.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
 
             IronBloodPerk.spawnGolem(player, cityMob, mob);
         } catch (Exception ex) {

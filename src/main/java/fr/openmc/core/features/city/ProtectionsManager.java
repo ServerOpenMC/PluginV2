@@ -1,9 +1,11 @@
 package fr.openmc.core.features.city;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.protections.*;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.shops.managers.ShopManager;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -17,33 +19,40 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ProtectionsManager {
-    public static final Set<UUID> canBypassPlayer = new HashSet<>();
+public class ProtectionsManager extends Feature implements HasListeners {
+    public final Set<UUID> canBypassPlayer = new HashSet<>();
 
-    private static final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
-    private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
+    private final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
+    private final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
 
-	public static void init() {
-        OMCPlugin.registerEvents(
-                BlockProtection::new,
-                BowProtection::new,
-                DamageProtection::new,
-                EntityProtection::new,
-                ExplodeProtection::new,
-                FireProtection::new,
-                FishProtection::new,
-                HangingProtection::new,
-                InteractProtection::new,
-                LeashProtection::new,
-                MountProtection::new,
-                PistonProtection::new,
-                PotionProtection::new,
-                TeleportProtection::new,
-                TramplingProtection::new,
-                VehicleProtection::new
-        );
-    }
-    
+	private final CityManager cityManager;
+
+	public ProtectionsManager(CityManager cityManager) {
+		this.cityManager = cityManager;
+	}
+
+	@Override
+	public Set<ListenerFactory> getListeners() {
+		return Set.of(
+				() -> new BlockProtection(cityManager),
+				() -> new BowProtection(cityManager),
+				() -> new DamageProtection(cityManager),
+				() -> new EntityProtection(cityManager),
+				() -> new ExplodeProtection(cityManager),
+				() -> new FireProtection(cityManager),
+				() -> new FishProtection(cityManager)	,
+				() -> new HangingProtection(cityManager),
+				() -> new InteractProtection(cityManager),
+				() -> new LeashProtection(cityManager),
+				() -> new MountProtection(cityManager),
+				() -> new PistonProtection(cityManager),
+				() -> new PotionProtection(cityManager),
+				() -> new TeleportProtection(cityManager),
+				() -> new TramplingProtection(cityManager),
+				() -> new VehicleProtection(cityManager)
+		);
+	}
+
     /**
      * Vérifie si le joueur est dans une ville et s'il en est membre.<br>
      * Si le joueur n'en est pas membre, l'événement est annulé.
@@ -51,12 +60,12 @@ public class ProtectionsManager {
      * @param player Le joueur à vérifier
      * @param loc La localisation pour vérifier la ville
      */
-    public static boolean canInteract(Player player, Location loc) {
+    public boolean canInteract(Player player, Location loc) {
         if (!player.getWorld().getName().equals("world")) return true;
 		
         if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
 
-        City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        City cityAtLoc = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
 
 		if (cityAtLoc == null) return true;
 
@@ -64,7 +73,7 @@ public class ProtectionsManager {
 
         War war = cityAtLoc.getWar();
         if (cityAtLoc.isInWar() && war != null && war.getPhase() == War.WarPhase.COMBAT) {
-            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            City playerCity = cityManager.getPlayerCity(player.getUniqueId());
             if (playerCity != null && war.equals(playerCity.getWar())) {
                 return war.getAttackers().contains(player.getUniqueId())
                         || war.getDefenders().contains(player.getUniqueId());
@@ -74,12 +83,12 @@ public class ProtectionsManager {
         return false;
     }
 
-    public static boolean canExplodeNaturally(Location loc) {
-        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+    public boolean canExplodeNaturally(Location loc) {
+        City city = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         return city == null;
     }
     
-    public static void checkCity(Player player, Cancellable event, City city, boolean allowByPassInWar) {
+    public void checkCity(Player player, Cancellable event, City city, boolean allowByPassInWar) {
         if (!player.getWorld().getName().equals("world")) return;
         
 		if (city == null) return; // Pas de ville, pas de protection
@@ -94,7 +103,7 @@ public class ProtectionsManager {
         }
     }
 	
-	public static void verify(Entity entity, Cancellable event, Location loc) {
+	public void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
 		if (ShopManager.getShopAt(loc) != null) {
@@ -103,7 +112,7 @@ public class ProtectionsManager {
 			return;
 		}
 		
-		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
+		City city = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
 		if (city == null || city.isInWar()) return;
 
 		if (entity instanceof Player player) {
@@ -123,7 +132,7 @@ public class ProtectionsManager {
 	 *
 	 * @param player Le joueur à qui envoyer le message
 	 */
-	public static void cancelMessage(Player player) {
+	public void cancelMessage(Player player) {
 		long now = System.currentTimeMillis();
 		long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
 		if (now - last >= ERROR_MESSAGE_COOLDOWN) {
@@ -139,13 +148,13 @@ public class ProtectionsManager {
 		}
 	}
 	
-	public static void checkPermissions(@NotNull Player player, Cancellable event, City city, CityPermission permission) {
+	public void checkPermissions(@NotNull Player player, Cancellable event, City city, CityPermission permission) {
 		if (!player.getWorld().getName().equals("world")) return;
-		
+
 		if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 		if (city == null) return; // Pas de ville, pas de protection
 		if (city.isInWar()) return; // En guerre, pas de protection
-		
+
 		if (city.isMember(player)) {
 			if (!city.hasPermission(player.getUniqueId(), permission)) {
 				event.setCancelled(true);

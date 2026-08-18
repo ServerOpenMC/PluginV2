@@ -7,7 +7,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.DateUtils;
@@ -40,7 +40,7 @@ public class MineralRushPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
@@ -61,7 +61,7 @@ public class MineralRushPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
         for (UUID memberUUID : city.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID);
@@ -83,7 +83,7 @@ public class MineralRushPerk implements Listener {
 
         if (city.getMayor() == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
         if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
@@ -111,7 +111,7 @@ public class MineralRushPerk implements Listener {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (city == null) return;
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         String namespace = event.getNamespacedID();

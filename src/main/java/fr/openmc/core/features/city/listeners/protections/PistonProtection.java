@@ -12,17 +12,22 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import java.util.Objects;
 
 public class PistonProtection implements Listener {
+    private final CityManager cityManager;
+
+    public PistonProtection(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
         Block piston = event.getBlock();
         Chunk fromChunk = piston.getChunk();
-        City fromCity = CityManager.getCityFromChunk(fromChunk.getX(), fromChunk.getZ());
+        City fromCity = cityManager.getCityFromChunk(fromChunk.getX(), fromChunk.getZ());
 
         for (Block moved : event.getBlocks()) {
             Block toBlock = moved.getRelative(event.getDirection());
             Chunk toChunk = toBlock.getChunk();
-            City toCity = CityManager.getCityFromChunk(toChunk.getX(), toChunk.getZ());
+            City toCity = cityManager.getCityFromChunk(toChunk.getX(), toChunk.getZ());
 
             if (isIllegalMovement(fromCity, toCity)) {
                 event.setCancelled(true);
@@ -37,12 +42,12 @@ public class PistonProtection implements Listener {
 
         Block piston = event.getBlock();
         Chunk fromChunk = piston.getChunk();
-        City fromCity = CityManager.getCityFromChunk(fromChunk.getX(), fromChunk.getZ());
+        City fromCity = cityManager.getCityFromChunk(fromChunk.getX(), fromChunk.getZ());
 
         for (Block moved : event.getBlocks()) {
             Block toBlock = moved.getRelative(event.getDirection());
             Chunk toChunk = toBlock.getChunk();
-            City toCity = CityManager.getCityFromChunk(toChunk.getX(), toChunk.getZ());
+            City toCity = cityManager.getCityFromChunk(toChunk.getX(), toChunk.getZ());
 
             if (isIllegalMovement(fromCity, toCity)) {
                 event.setCancelled(true);

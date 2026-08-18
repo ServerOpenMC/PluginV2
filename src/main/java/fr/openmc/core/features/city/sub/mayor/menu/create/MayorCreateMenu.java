@@ -232,7 +232,9 @@ public class MayorCreateMenu extends Menu {
         }).setOnClick(_ -> {
             if (canConfirmPerk) {
                 if (type == MenuType.OWNER_1) {
-                    MayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);
+                    CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+                    MayorManager mayorManager = cityManager.MAYOR;
+                    mayorManager.put1Perk(cityManager.getPlayerCity(player.getUniqueId()), perk1);
                     MessagesManager.sendMessage(player, TranslationManager.translation(
                             "feature.city.mayor.menu.create.confirm.owner.success",
                             TranslationManager.translation(perk1.getNameKey())

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
 import fr.openmc.core.features.city.commands.autocomplete.CityPermissionsAutoComplete;
@@ -27,7 +27,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
 
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -67,7 +67,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
       
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -105,7 +105,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
   
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -148,7 +148,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
         
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -173,7 +173,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;

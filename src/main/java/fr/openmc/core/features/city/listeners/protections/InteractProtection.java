@@ -28,6 +28,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class InteractProtection implements Listener {
+    private final CityManager cityManager;
+    private final ProtectionsManager protectionsManager;
+
+    public InteractProtection(CityManager cityManager) {
+        this.cityManager = cityManager;
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
@@ -59,19 +66,19 @@ public class InteractProtection implements Listener {
                 return;
             }
             
-            City city = CityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
+            City city = cityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
             if (city == null) return;
             
             if (city.isMember(player)) {
                 if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
                 if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
-                    ProtectionsManager.checkPermissions(player, event, city, CityPermission.OPEN_CHEST);
+                    protectionsManager.checkPermissions(player, event, city, CityPermission.OPEN_CHEST);
                 } else {
-                    ProtectionsManager.checkPermissions(player, event, city, CityPermission.INTERACT);
+                    protectionsManager.checkPermissions(player, event, city, CityPermission.INTERACT);
                 }
 
             } else {
-                ProtectionsManager.checkCity(player, event, city, true);
+                protectionsManager.checkCity(player, event, city, true);
             }
 
         }
@@ -79,7 +86,7 @@ public class InteractProtection implements Listener {
         if (!isMinecart) return;
         if (isTnt) return;
 
-        ProtectionsManager.verify(player, event, location);
+        protectionsManager.verify(player, event, location);
     }
 
     private final Set<EntityType> INTERACTION_REFUSED = new HashSet<>(Set.of(
@@ -99,17 +106,17 @@ public class InteractProtection implements Listener {
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;
 
-        ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
+        protectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
     }
 
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+        protectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
     }
 
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+        protectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
     }
 
     private boolean isMinecart(Material type) {

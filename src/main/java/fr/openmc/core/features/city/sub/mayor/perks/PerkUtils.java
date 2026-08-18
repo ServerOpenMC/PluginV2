@@ -1,9 +1,7 @@
-package fr.openmc.core.features.city.sub.mayor.managers;
+package fr.openmc.core.features.city.sub.mayor.perks;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
-import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
-import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class PerkManager {
+public class PerkUtils {
     private static final Random RANDOM = new Random();
 
     /**

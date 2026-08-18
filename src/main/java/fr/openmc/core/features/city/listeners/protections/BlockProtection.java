@@ -10,27 +10,35 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockProtection implements Listener {
+    private final CityManager cityManager;
+    private final ProtectionsManager protectionsManager;
+
+    public BlockProtection(CityManager cityManager) {
+        this.cityManager = cityManager;
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
+        City city = cityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
       
         if (city.isMember(event.getPlayer())) {
-            ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.PLACE);
+            protectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.PLACE);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city, true);
+            protectionsManager.checkCity(event.getPlayer(), event, city, true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     void onBlockBreak(BlockBreakEvent event) {
-        City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
+        City city = cityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
         
         if (city.isMember(event.getPlayer())) {
-            ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.BREAK);
+            protectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.BREAK);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city, false);
+            protectionsManager.checkCity(event.getPlayer(), event, city, false);
         }
     }
 }

@@ -5,7 +5,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.DateUtils;
@@ -38,7 +38,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
@@ -59,7 +59,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         for (UUID memberUUID : city.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID);
@@ -79,7 +79,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) return;
 

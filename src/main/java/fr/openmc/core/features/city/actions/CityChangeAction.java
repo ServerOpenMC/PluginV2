@@ -2,8 +2,8 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -31,7 +31,7 @@ public class CityChangeAction {
     private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
 
     public static void beginChangeCity(Player player, CityType typeChange) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
 
@@ -73,7 +73,7 @@ public class CityChangeAction {
     }
 
     public static void finishChange(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);

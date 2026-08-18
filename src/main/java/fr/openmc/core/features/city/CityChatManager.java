@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -56,7 +57,7 @@ public class CityChatManager {
 	 * @param message Le message à envoyer
 	 */
 	public static void sendCityChatMessage(Player sender, Component message) {
-		City city = CityManager.getPlayerCity(sender.getUniqueId());
+		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"),
 					Prefix.CITY, MessageType.ERROR, false);

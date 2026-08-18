@@ -18,11 +18,16 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
 
-import static fr.openmc.core.features.city.sub.notation.NotationManager.calculateAllCityScore;
-import static fr.openmc.core.features.city.sub.notation.NotationManager.giveReward;
-
 
 public class AdminNotationCommands {
+    private final CityManager cityManager;
+    private final NotationManager notationManager;
+
+    public AdminNotationCommands(CityManager cityManager) {
+        this.cityManager = cityManager;
+        this.notationManager = cityManager.NOTATION;
+    }
+
     @Command({"admcity notation edit"})
     @CommandPermission("omc.admins.commands.admcity.notation")
     public void editNotations(Player sender) {
@@ -38,7 +43,7 @@ public class AdminNotationCommands {
                         return;
                     }
 
-                    List<City> cities = CityManager.getCities()
+                    List<City> cities = cityManager.getCities()
                             .stream()
                             .filter(city -> FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.NOTATION))
                             .toList();
@@ -61,19 +66,19 @@ public class AdminNotationCommands {
     public void publishNotations(Player sender) {
         String weekStr = DateUtils.getWeekFormat();
 
-        if (!NotationManager.notationPerWeek.containsKey(weekStr)) {
+        if (!notationManager.notationPerWeek.containsKey(weekStr)) {
 	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.publish.missing",
                     Component.text(weekStr)), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         try {
-            calculateAllCityScore(weekStr);
+            notationManager.calculateAllCityScore(weekStr);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        giveReward(weekStr);
+        notationManager.giveReward(weekStr);
 	    
 	    MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.publish.success",
                 Component.text(weekStr)), Prefix.STAFF, MessageType.ERROR, false);

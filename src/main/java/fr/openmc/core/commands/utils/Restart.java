@@ -1,8 +1,8 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -43,7 +43,7 @@ public class Restart {
         remainingTime = 60;
 
         // protection pour le bug de duplication
-        for (City city : CityManager.getCities()) {
+        for (City city : OMCRegistry.FEATURES.CITY.get().getCities()) {
             UUID watcherUUID = city.getChestWatcher();
             if (watcherUUID == null) continue;
             Player player = Bukkit.getPlayer(watcherUUID);

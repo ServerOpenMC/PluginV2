@@ -3,8 +3,8 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -72,7 +72,7 @@ public class GPSTrackerPerk implements Listener {
 
     private boolean hasGpsTrackerPerk(City city) {
         Mayor mayor = city.getMayor();
-        return PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
+        return PerkUtils.hasPerk(mayor, Perks.GPS_TRACKER.getId());
     }
 
     private void applyGlowing(Player player) {

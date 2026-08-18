@@ -2,6 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.city.models.DBCityRank;
@@ -67,10 +68,24 @@ public class City {
     @Getter
     private int level;
 
+    private final CityManager cityManager;
+    private final MayorManager mayorManager;
+    private final CityRankManager cityRankManager;
+    private final NotationManager notationManager;
+    private final CityBankManager cityBankManager;
+    private final WarManager warManager;
+
     /**
      * Constructor used for City creation
      */
     public City(UUID uniqueId, String name, Player owner, CityType type, Chunk chunk) {
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+        this.mayorManager = cityManager.MAYOR;
+        this.cityRankManager = cityManager.RANKS;
+        this.notationManager = cityManager.NOTATION;
+        this.cityBankManager = cityManager.CITY_BANK;
+        this.warManager = cityManager.WAR;
+
         this.uniqueId = uniqueId;
         this.name = name;
         this.type = type;
@@ -78,10 +93,10 @@ public class City {
         this.level = 1;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
 
-        CityManager.registerCity(this);
+        cityManager.registerCity(this);
 
         this.members = new HashSet<>();
         this.permissions = new HashMap<>();
@@ -94,7 +109,7 @@ public class City {
         addPlayer(owner.getUniqueId());
         addPermission(owner.getUniqueId(), CityPermission.OWNER);
         saveChestContent(1, null);
-        CityRankManager.loadCityRanks(this);
+        cityRankManager.loadCityRanks(this);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 Bukkit.getPluginManager().callEvent(new CityCreationEvent(this, owner))
@@ -105,6 +120,14 @@ public class City {
      * Constructor used to deserialize a City database object
      */
     public City(UUID uniqueId, String name, double balance, String type, int power, int freeClaims, int level) {
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+        this.mayorManager = cityManager.MAYOR;
+        this.cityRankManager = cityManager.RANKS;
+        this.notationManager = cityManager.NOTATION;
+        this.cityBankManager = cityManager.CITY_BANK;
+        this.warManager = cityManager.WAR;
+
+
         this.uniqueId = uniqueId;
         this.name = name;
         this.balance = balance;
@@ -113,7 +136,7 @@ public class City {
         this.type = CityType.valueOf(type.toUpperCase());
         this.level = level;
 
-        CityManager.registerCity(this);
+        cityManager.registerCity(this);
     }
 
     /**
@@ -130,7 +153,7 @@ public class City {
      */
     public Set<UUID> getMembers() {
         if (this.members == null)
-            this.members = CityManager.getCityMembers(this);
+            this.members = cityManager.getCityMembers(this);
 
         return this.members;
     }
@@ -140,7 +163,7 @@ public class City {
      */
     public Set<ChunkPos> getChunks() {
         if (this.chunks == null)
-            this.chunks = CityManager.getCityChunks(this);
+            this.chunks = cityManager.getCityChunks(this);
 
         return this.chunks;
     }
@@ -153,7 +176,7 @@ public class City {
         this.name = newName;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
     }
 
@@ -162,7 +185,7 @@ public class City {
         else if (this.type == CityType.PEACE) this.type = CityType.WAR;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
     }
 
@@ -198,13 +221,13 @@ public class City {
      */
     public void addPlayer(UUID player) {
         if (this.members == null)
-            this.members = CityManager.getCityMembers(this);
+            this.members = cityManager.getCityMembers(this);
 
         members.add(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 Bukkit.getPluginManager().callEvent(new MemberJoinEvent(CacheOfflinePlayer.getOfflinePlayer(player), this))
         );
-        CityManager.addPlayerToCity(this, player);
+        cityManager.addPlayerToCity(this, player);
     }
 
     /**
@@ -215,7 +238,7 @@ public class City {
      */
     public void removePlayer(UUID playerUUID) {
         if (this.members == null)
-            this.members = CityManager.getCityMembers(this);
+            this.members = cityManager.getCityMembers(this);
 
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
@@ -228,7 +251,7 @@ public class City {
             Bukkit.getPluginManager()
                     .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(playerUUID), this))
         );
-        CityManager.removePlayerFromCity(this, playerUUID);
+        cityManager.removePlayerFromCity(this, playerUUID);
     }
 
     /**
@@ -249,7 +272,7 @@ public class City {
     public void updateFreeClaims(int diff) {
         freeClaims += diff;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
     }
 
@@ -263,7 +286,7 @@ public class City {
      */
     public ItemStack[] getChestContent(int page) {
         if (this.chestContent == null)
-            this.chestContent = CityManager.getCityChestContent(this);
+            this.chestContent = cityManager.getCityChestContent(this);
 
         if (page > getChestPages())
             page = getChestPages();
@@ -279,12 +302,12 @@ public class City {
      */
     public void saveChestContent(int page, ItemStack[] content) {
         if (this.chestContent == null)
-            this.chestContent = CityManager.getCityChestContent(this);
+            this.chestContent = cityManager.getCityChestContent(this);
 
         chestContent.put(page, content);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveChestPage(this, page, content)
+                cityManager.saveChestPage(this, page, content)
         );
     }
 
@@ -295,7 +318,7 @@ public class City {
      */
     public @NotNull Integer getChestPages() {
         if (this.chestContent == null)
-            this.chestContent = CityManager.getCityChestContent(this);
+            this.chestContent = cityManager.getCityChestContent(this);
 
         if (this.chestContent.isEmpty())
             saveChestContent(1, null);
@@ -314,14 +337,14 @@ public class City {
      */
     public void addChunk(int x, int z) {
         if (this.chunks == null)
-            this.chunks = CityManager.getCityChunks(this);
+            this.chunks = cityManager.getCityChunks(this);
 
         ChunkPos chunkPos = new ChunkPos(x, z);
         if (chunks.contains(chunkPos))
             return;
         chunks.add(chunkPos);
 
-        CityManager.claimChunk(this, chunkPos);
+        cityManager.claimChunk(this, chunkPos);
     }
 
     /**
@@ -333,12 +356,12 @@ public class City {
      */
     public void removeChunk(int chunkX, int chunkZ) {
         if (this.chunks == null)
-            this.chunks = CityManager.getCityChunks(this);
+            this.chunks = cityManager.getCityChunks(this);
 
         ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
         chunks.remove(chunkPos);
 
-        CityManager.unclaimChunk(this, chunkPos);
+        cityManager.unclaimChunk(this, chunkPos);
     }
 
     /**
@@ -350,7 +373,7 @@ public class City {
      */
     public boolean hasChunk(int x, int z) {
         if (this.chunks == null)
-            this.chunks = CityManager.getCityChunks(this);
+            this.chunks = cityManager.getCityChunks(this);
 
         return chunks.contains(new ChunkPos(x, z));
     }
@@ -369,7 +392,7 @@ public class City {
 
         // Sauvegarde async
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
 
         // Event sync
@@ -396,7 +419,7 @@ public class City {
      * @param input  The input string to get the money value
      */
     public void depositCityBank(Player player, String input) {
-        CityBankManager.depositCityBank(this, player, input);
+        cityBankManager.depositCityBank(this, player, input);
     }
 
     /**
@@ -406,7 +429,7 @@ public class City {
      * @param input  The input string to get the money value
      */
     public void withdrawCityBank(Player player, String input) {
-        CityBankManager.withdrawCityBank(this, player, input);
+        cityBankManager.withdrawCityBank(this, player, input);
     }
 
     /**
@@ -416,14 +439,14 @@ public class City {
      * @return The calculated interest as a double.
      */
     public double calculateCityInterest() {
-        return CityBankManager.calculateCityInterest(this);
+        return cityBankManager.calculateCityInterest(this);
     }
 
     /**
      * Applies the interest to the city balance and updates it in the database.
      */
     public void applyCityInterest() {
-        CityBankManager.applyCityInterest(this);
+        cityBankManager.applyCityInterest(this);
     }
 
     // ==================== Permissions Methods ====================
@@ -436,7 +459,7 @@ public class City {
      */
     public UUID getPlayerWithPermission(CityPermission permission) {
         if (this.permissions == null)
-            this.permissions = CityManager.getCityPermissions(this);
+            this.permissions = cityManager.getCityPermissions(this);
 
         for (UUID player : permissions.keySet()) {
             if (permissions.get(player).contains(permission)) {
@@ -454,7 +477,7 @@ public class City {
      */
     public Set<CityPermission> getPermissions(UUID player) {
         if (this.permissions == null)
-            this.permissions = CityManager.getCityPermissions(this);
+            this.permissions = cityManager.getCityPermissions(this);
 
         return permissions.get(player);
     }
@@ -468,7 +491,7 @@ public class City {
      */
     public boolean hasPermission(UUID uuid, CityPermission permission) {
         if (this.permissions == null)
-            this.permissions = CityManager.getCityPermissions(this);
+            this.permissions = cityManager.getCityPermissions(this);
 
         Set<CityPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
         
@@ -488,7 +511,7 @@ public class City {
      */
     public void addPermission(UUID playerUUID, CityPermission permission) {
         if (this.permissions == null)
-            this.permissions = CityManager.getCityPermissions(this);
+            this.permissions = cityManager.getCityPermissions(this);
 
         Set<CityPermission> playerPerms = permissions.getOrDefault(playerUUID, new HashSet<>());
 
@@ -499,7 +522,7 @@ public class City {
         permissions.put(playerUUID, playerPerms);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.addPlayerPermission(this, playerUUID, permission)
+                cityManager.addPlayerPermission(this, playerUUID, permission)
         );
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
@@ -516,7 +539,7 @@ public class City {
      * @param permission The permission to remove.
      */
     public void removePermission(UUID playerUUID, CityPermission permission) {
-        if (this.permissions == null) this.permissions = CityManager.getCityPermissions(this);
+        if (this.permissions == null) this.permissions = cityManager.getCityPermissions(this);
 
         Set<CityPermission> playerPerms = permissions.get(playerUUID);
         
@@ -528,7 +551,7 @@ public class City {
         permissions.put(playerUUID, playerPerms);
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.removePlayerPermission(this, playerUUID, permission));
+                cityManager.removePlayerPermission(this, playerUUID, permission));
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
                         CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false)));
@@ -548,7 +571,7 @@ public class City {
      * @return The mayor of the city, or null if not found.
      */
     public Mayor getMayor() {
-        return MayorManager.cityMayor.get(this.getUniqueId());
+        return mayorManager.cityMayor.get(this.getUniqueId());
     }
 
     /**
@@ -557,7 +580,7 @@ public class City {
      * @return True if the city has a mayor, false otherwise.
      */
     public boolean hasMayor() {
-        Mayor mayor = MayorManager.cityMayor.get(this.getUniqueId());
+        Mayor mayor = mayorManager.cityMayor.get(this.getUniqueId());
         if (mayor == null) return false;
 
         return mayor.getMayorUUID() != null;
@@ -569,7 +592,7 @@ public class City {
      * @return The election type of the city, or null if not found.
      */
     public ElectionType getElectionType() {
-        Mayor mayor = MayorManager.cityMayor.get(this.getUniqueId());
+        Mayor mayor = mayorManager.cityMayor.get(this.getUniqueId());
         if (mayor == null) return null;
 
         return mayor.getElectionType();
@@ -581,7 +604,7 @@ public class City {
      * @return The law of the city, or null if not found.
      */
     public CityLaw getLaw() {
-        return MayorManager.cityLaws.get(this.getUniqueId());
+        return mayorManager.cityLaws.get(this.getUniqueId());
     }
 
     // ==================== War Methods ====================
@@ -592,7 +615,7 @@ public class City {
      * @return True if the city is in war, false otherwise.
      */
     public boolean isInWar() {
-        return WarManager.isCityInWar(this.getUniqueId());
+        return warManager.isCityInWar(this.getUniqueId());
     }
 
     /**
@@ -601,7 +624,7 @@ public class City {
      * @return The War object associated with the city or null if not in war.
      */
     public War getWar() {
-        return WarManager.getWarByCity(this.getUniqueId());
+        return warManager.getWarByCity(this.getUniqueId());
     }
 
     /**
@@ -624,7 +647,7 @@ public class City {
     public void updatePowerPoints(int diff) {
         powerPoints += diff;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
     }
     
@@ -702,7 +725,7 @@ public class City {
             throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
         }
         cityRanks.add(rank);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityRankManager.addCityRank(rank));
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> cityRankManager.addCityRank(rank));
     }
     
     /**
@@ -719,7 +742,7 @@ public class City {
             throw new IllegalArgumentException("Cannot delete the default rank (priority 0).");
         }
         cityRanks.remove(rank);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityRankManager.removeCityRank(rank));
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> cityRankManager.removeCityRank(rank));
     }
     
     /**
@@ -731,7 +754,7 @@ public class City {
      */
     public void updateRank(DBCityRank oldRank, DBCityRank newRank) {
         if (cityRanks.contains(oldRank)) {
-            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityRankManager.updateCityRank(newRank));
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> cityRankManager.updateCityRank(newRank));
             cityRanks.remove(oldRank);
             cityRanks.add(newRank);
         } else {
@@ -824,10 +847,10 @@ public class City {
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             if (currentRank != null) {
-                CityRankManager.updateCityRank(currentRank);
+                cityRankManager.updateCityRank(currentRank);
             }
 
-            CityRankManager.updateCityRank(newRank);
+            cityRankManager.updateCityRank(newRank);
         });
     }
 
@@ -840,19 +863,19 @@ public class City {
      * @return The CityNotation object representing the city's notation for the specified week, or null if not found.
      */
     public CityNotation getNotationOfWeek(String weekStr) {
-        if (!NotationManager.notationPerWeek.containsKey(weekStr)) {
+        if (!notationManager.notationPerWeek.containsKey(weekStr)) {
             return null;
         }
-        return NotationManager.notationPerWeek.get(weekStr).stream()
+        return notationManager.notationPerWeek.get(weekStr).stream()
                 .filter(notation -> notation.getCityUUID().equals(this.getUniqueId()))
                 .findFirst()
                 .orElse(null);
     }
 
     public List<CityNotation> getAvailableNotation() {
-        if (NotationManager.cityNotations.get(this.getUniqueId()) == null) return List.of();
+        if (notationManager.cityNotations.get(this.getUniqueId()) == null) return List.of();
 
-        return NotationManager.cityNotations.get(this.getUniqueId()).stream()
+        return notationManager.cityNotations.get(this.getUniqueId()).stream()
                 .filter(notation -> notation.getCityUUID().equals(this.getUniqueId()))
                 .filter(notation -> DateUtils.isBefore(notation.getWeekStr(), DateUtils.getWeekFormat()))
                 .toList();
@@ -867,13 +890,13 @@ public class City {
      * @param description      A description of the notation.
      */
     public void setNotationOfWeek(String weekStr, double architecturalNote, double coherenceNote, String description) {
-        NotationManager.createOrUpdateNotation(new CityNotation(this.getUniqueId(), architecturalNote, coherenceNote, description, weekStr));
+        notationManager.createOrUpdateNotation(new CityNotation(this.getUniqueId(), architecturalNote, coherenceNote, description, weekStr));
     }
 
     public void setLevel(int newLevel) {
         this.level = newLevel;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+                cityManager.saveCity(this)
         );
     }
 }

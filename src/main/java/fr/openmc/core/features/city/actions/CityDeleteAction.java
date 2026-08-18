@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
@@ -20,9 +21,10 @@ import java.util.UUID;
 
 public class CityDeleteAction {
     public static void startDeleteCity(Player player) {
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
         UUID uuid = player.getUniqueId();
 
-        City city = CityManager.getPlayerCity(uuid);
+        City city = cityManager.getPlayerCity(uuid);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, true);
@@ -40,7 +42,7 @@ public class CityDeleteAction {
                         }
                     }
 
-                    CityManager.deleteCity(city);
+                    cityManager.deleteCity(city);
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, MessageType.SUCCESS, false);
 
                     DynamicCooldownManager.use(uuid, "city:big", 60000); // 1 minute

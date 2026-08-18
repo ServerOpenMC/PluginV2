@@ -13,6 +13,8 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -30,7 +32,7 @@ import org.bukkit.event.Listener;
 
 import java.util.Objects;
 
-public class UrneListener implements Listener {
+public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
     private final FancyNpcsHook fancyNpcHook;
 
     public UrneListener(FancyNpcsHook fancyNpcsHook) {

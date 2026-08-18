@@ -10,10 +10,10 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorModifyMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.DateUtils;
@@ -121,7 +121,7 @@ public class MayorElectionMenu extends Menu {
         if (hasPermissionOwner) {
             List<Component> lorePerkOwner;
             if (MayorManager.hasChoicePerkOwner(player)) {
-                Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
+                Perks perk1 = PerkUtils.getPerkById(city.getMayor().getIdPerk1());
                 if (perk1 == null) return Map.of();
                 lorePerkOwner = new ArrayList<>(List.of(
                         TranslationManager.translation("feature.city.mayor.menu.election.owner_reform.lore.chosen")

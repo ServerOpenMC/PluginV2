@@ -11,32 +11,39 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener  {
+    private final CityManager cityManager;
+    private final MayorManager mayorManager;
+
+    public JoinListener(CityManager cityManager, MayorManager mayorManager) {
+        this.cityManager = cityManager;
+        this.mayorManager = mayorManager;
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) return;
 
         if (playerCity.getLaw() == null) {
-            MayorManager.createCityLaws(playerCity, false, null);
+            mayorManager.createCityLaws(playerCity, false, null);
         }
 
         if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.MAYOR)) return;
 
-        if (MayorManager.phaseMayor == 2 && MayorManager.cityMayor.get(playerCity.getUniqueId()) == null) {
+        if (mayorManager.phaseMayor == 2 && mayorManager.cityMayor.get(playerCity.getUniqueId()) == null) {
             if (playerCity.getMembers().size() >= MayorManager.MEMBER_REQUEST_ELECTION) {
-                MayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.ELECTION);
+                mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.ELECTION);
             }
-            MayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
+            mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
 
-            MayorManager.runSetupMayor(playerCity);
-        } else if (MayorManager.phaseMayor == 1 && MayorManager.cityMayor.get(playerCity.getUniqueId()) == null) {
+            mayorManager.runSetupMayor(playerCity);
+        } else if (mayorManager.phaseMayor == 1 && mayorManager.cityMayor.get(playerCity.getUniqueId()) == null) {
             if (playerCity.getMembers().size()>=MayorManager.MEMBER_REQUEST_ELECTION) {
-                MayorManager.createMayor(null,null, playerCity, null, null, null, null, ElectionType.ELECTION);
+                mayorManager.createMayor(null,null, playerCity, null, null, null, null, ElectionType.ELECTION);
             }
-            MayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
+            mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
 
         }
     }

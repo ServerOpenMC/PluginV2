@@ -13,6 +13,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DamageProtection implements Listener {
+    private final CityManager cityManager;
+    private final ProtectionsManager protectionsManager;
+
+    public DamageProtection(CityManager cityManager) {
+        this.cityManager = cityManager;
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity victim = event.getEntity();
@@ -27,7 +35,7 @@ public class DamageProtection implements Listener {
 
         if (victim instanceof Player victimPlayer && attacker != null) {
             Location loc = victimPlayer.getLocation();
-            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            City city = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
 
             if (city != null
                     && city.isMember(victimPlayer)
@@ -42,13 +50,13 @@ public class DamageProtection implements Listener {
         }
 
         if (victim instanceof Player victimPlayer) {
-            ProtectionsManager.verify(victimPlayer, event, victimPlayer.getLocation());
+            protectionsManager.verify(victimPlayer, event, victimPlayer.getLocation());
         }
 
         if (MascotUtils.canBeAMascot(victim)) return;
 
         if (attacker != null) {
-            ProtectionsManager.verify(attacker, event, victim.getLocation());
+            protectionsManager.verify(attacker, event, victim.getLocation());
         }
     }
 }

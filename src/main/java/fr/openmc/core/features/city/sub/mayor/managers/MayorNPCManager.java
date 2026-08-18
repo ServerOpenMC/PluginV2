@@ -18,6 +18,7 @@ import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -40,20 +41,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class MayorNPCManager implements Listener {
+public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
     private static final HashMap<UUID, OwnerNPC> ownerNpcMap = new HashMap<>();
     private static final HashMap<UUID, MayorNPC> mayorNpcMap = new HashMap<>();
 
+    private final CityManager cityManager;
     private final FancyNpcsHook fancyNpcsHook;
-    public MayorNPCManager(FancyNpcsHook fancyNpcsHook) {
+
+    public MayorNPCManager(CityManager cityManager, FancyNpcsHook fancyNpcsHook) {
         this.fancyNpcsHook = fancyNpcsHook;
+        this.cityManager = cityManager;
 
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
                 if (npc.getData().getName().startsWith("owner-")) {
                     UUID cityUUID = UUID.fromString(npc.getData().getName().replace("owner-", ""));
-                    if (CityManager.getCity(cityUUID) != null) {
+                    if (cityManager.getCity(cityUUID) != null) {
                         ownerNpcMap.put(cityUUID, new OwnerNPC(npc, cityUUID, npc.getData().getLocation()));
                     } else {
                         FancyNpcsPlugin.get().getNpcManager().removeNpc(npc);
@@ -61,7 +65,7 @@ public class MayorNPCManager implements Listener {
                     }
                 } else if (npc.getData().getName().startsWith("mayor-")) {
                     UUID cityUUID = UUID.fromString(npc.getData().getName().replace("mayor-", ""));
-                    if (CityManager.getCity(cityUUID) != null) {
+                    if (cityManager.getCity(cityUUID) != null) {
                         mayorNpcMap.put(cityUUID, new MayorNPC(npc, cityUUID, npc.getData().getLocation()));
                     } else {
                         FancyNpcsPlugin.get().getNpcManager().removeNpc(npc);
@@ -75,7 +79,7 @@ public class MayorNPCManager implements Listener {
     public void createNPCS(UUID cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
         if (!fancyNpcsHook.isEnable()) return;
 
-        City city = CityManager.getCity(cityUUID);
+        City city = cityManager.getCity(cityUUID);
         if (city == null) return;
 
         NpcData dataMayor = new NpcData("mayor-" + cityUUID, creatorUUID, locationMayor);
@@ -143,7 +147,7 @@ public class MayorNPCManager implements Listener {
 
         if (ownerNPC == null || mayorNPC == null) return;
 
-        City city = CityManager.getCity(cityUUID);
+        City city = cityManager.getCity(cityUUID);
         if (city == null) return;
 
         removeNPCS(cityUUID);
@@ -161,7 +165,7 @@ public class MayorNPCManager implements Listener {
 
             if (ownerNPC == null || mayorNPC == null) continue;
 
-            City city = CityManager.getCity(cityUUID);
+            City city = cityManager.getCity(cityUUID);
             if (city == null) continue;
 
             removeNPCS(cityUUID);
@@ -203,7 +207,7 @@ public class MayorNPCManager implements Listener {
 
         if (npc.getData().getName().startsWith("mayor-")) {
             UUID cityUUID = UUID.fromString(npc.getData().getName().replace("mayor-", ""));
-            City city = CityManager.getCity(cityUUID);
+            City city = cityManager.getCity(cityUUID);
             if (city == null) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
@@ -228,7 +232,7 @@ public class MayorNPCManager implements Listener {
                 return;
             }
 
-            if (MayorManager.phaseMayor == 1) {
+            if (cityManager.MAYOR.phaseMayor == 1) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_mayor_yet"), Prefix.MAYOR, MessageType.INFO, true);
                     return;
@@ -257,13 +261,13 @@ public class MayorNPCManager implements Listener {
 
                                         Chunk chunk = locationClick.getChunk();
 
-                                        City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                                        City cityByChunk = cityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
                                         if (cityByChunk == null) {
                                             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                             return false;
                                         }
 
-                                        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                                        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
 
                                         if (playerCity == null) {
                                             return false;
@@ -297,7 +301,7 @@ public class MayorNPCManager implements Listener {
             new MayorNpcMenu(player, city).open();
         } else if (npc.getData().getName().startsWith("owner-")) {
             UUID cityUUID = UUID.fromString(npc.getData().getName().replace("owner-", ""));
-            City city = CityManager.getCity(cityUUID);
+            City city = cityManager.getCity(cityUUID);
             if (city == null) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
@@ -320,7 +324,7 @@ public class MayorNPCManager implements Listener {
                 return;
             }
 
-            if (MayorManager.phaseMayor == 1) {
+            if (cityManager.MAYOR.phaseMayor == 1) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) return;
 
                 Component message = TranslationManager.translation("feature.city.mayor.npc.move.prompt")
@@ -346,13 +350,13 @@ public class MayorNPCManager implements Listener {
 
                                         Chunk chunk = locationClick.getChunk();
 
-                                        City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                                        City cityByChunk = cityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
                                         if (cityByChunk == null) {
                                             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                             return false;
                                         }
 
-                                        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                                        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
 
                                         if (playerCity == null) {
                                             return false;

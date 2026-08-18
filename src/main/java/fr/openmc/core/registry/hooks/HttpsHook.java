@@ -3,7 +3,7 @@ package fr.openmc.core.registry.hooks;
 public abstract class HttpsHook extends Hooks {
     abstract public String getName();
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(HttpsHook.class);
     }
 

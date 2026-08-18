@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.entity.Entity;
@@ -12,6 +13,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 
 public class VehicleProtection implements Listener {
+    private final ProtectionsManager protectionsManager;
+
+    public VehicleProtection(CityManager cityManager) {
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onVehicleDestroy(VehicleDestroyEvent event) {
@@ -19,7 +25,7 @@ public class VehicleProtection implements Listener {
 
         if (MascotUtils.canBeAMascot(event.getVehicle())) return;
 
-        ProtectionsManager.verify(player, event, event.getVehicle().getLocation());
+        protectionsManager.verify(player, event, event.getVehicle().getLocation());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -39,7 +45,7 @@ public class VehicleProtection implements Listener {
         }
 
         if (player != null) {
-            ProtectionsManager.verify(player, event, victim.getLocation());
+            protectionsManager.verify(player, event, victim.getLocation());
         }
     }
 }

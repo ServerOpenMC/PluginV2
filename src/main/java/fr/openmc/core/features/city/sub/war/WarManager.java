@@ -5,8 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.CommandsManager;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
@@ -14,6 +12,11 @@ import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
@@ -28,7 +31,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class WarManager {
+public class WarManager extends Feature implements HasListeners, HasCommands, HasDatabase {
     public static final int TIME_PREPARATION = 5; // in minutes
     public static final int TIME_FIGHT = 30; // in minutes
 
@@ -36,32 +39,46 @@ public class WarManager {
     public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jour en millisecondes
     public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
-    public static final Map<UUID, War> warsByAttacker = new HashMap<>();
-    public static final Map<UUID, War> warsByDefender = new HashMap<>();
+    public final Map<UUID, War> warsByAttacker = new HashMap<>();
+    public final Map<UUID, War> warsByDefender = new HashMap<>();
 
-    private static final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
+    private final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
 
-    private static Dao<WarHistory, String> warHistoryDeo;
+    private Dao<WarHistory, String> warHistoryDeo;
 
-    public static final Map<UUID, WarHistory> warHistory = new HashMap<>();
+    public final Map<UUID, WarHistory> warHistory = new HashMap<>();
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new WarCommand(),
+                new AdminWarCommand()
+        );
+    }
+
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                WarKillListener::new
+        );
+    }
+
 
     /**
      * Initializes the WarManager by registering commands and listeners.
      */
-    public static void init() {
-        CommandsManager.getHandler().register(
-                new WarCommand(),
-                new AdminWarCommand()
-        );
-
-        OMCPlugin.registerEvents(
-                WarKillListener::new
-        );
-
+    @Override
+    public void init() {
         loadWarHistories();
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void save() {
+        saveWarHistories();
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, WarHistory.class);
         warHistoryDeo = DaoManager.createDao(connectionSource, WarHistory.class);
 
@@ -70,7 +87,7 @@ public class WarManager {
         }
     }
 
-    public static void loadWarHistories() {
+    public void loadWarHistories() {
         try {
             List<WarHistory> warHistories = warHistoryDeo.queryForAll();
 
@@ -84,7 +101,7 @@ public class WarManager {
         }
     }
 
-    public static void saveWarHistories() {
+    public void saveWarHistories() {
         warHistory.forEach((cityUUID, warHistory) -> {
                     try {
                         warHistoryDeo.createOrUpdate(warHistory);
@@ -95,7 +112,7 @@ public class WarManager {
         );
     }
 
-    public static WarHistory createOrGetWarHistory(City city) throws SQLException {
+    public WarHistory createOrGetWarHistory(City city) throws SQLException {
         WarHistory history = warHistory.get(city.getUniqueId());
 
         if (history == null) {
@@ -114,7 +131,7 @@ public class WarManager {
      * @param cityUUID The UUID of the city to check.
      * @return true if the city is in war, false otherwise.
      */
-    public static boolean isCityInWar(UUID cityUUID) {
+    public boolean isCityInWar(UUID cityUUID) {
         return warsByAttacker.containsKey(cityUUID) || warsByDefender.containsKey(cityUUID);
     }
 
@@ -124,7 +141,7 @@ public class WarManager {
      * @param cityUUID The UUID of the city.
      * @return The War object if found, null otherwise.
      */
-    public static War getWarByCity(UUID cityUUID) {
+    public War getWarByCity(UUID cityUUID) {
         War war = warsByAttacker.get(cityUUID);
         if (war != null) return war;
 
@@ -140,7 +157,7 @@ public class WarManager {
      * @param attackers The list of UUIDs of the players in the attacking city.
      * @param defenders The list of UUIDs of the players in the defending city.
      */
-    public static void startWar(City attacker, City defender, List<UUID> attackers, List<UUID> defenders) {
+    public void startWar(City attacker, City defender, List<UUID> attackers, List<UUID> defenders) {
         War war = new War(attacker, defender, attackers, defenders);
 
         warsByAttacker.put(attacker.getUniqueId(), war);
@@ -154,7 +171,7 @@ public class WarManager {
      *
      * @param war The War object representing the war to be ended.
      */
-    public static void endWar(War war) {
+    public void endWar(War war) {
         War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUniqueId());
         warsByDefender.remove(war.getCityDefender().getUniqueId());
 
@@ -289,7 +306,7 @@ public class WarManager {
      * @param bonusMoney Additional bonus money awarded to the winning city.
      * @param claimNumber The number of claims transferred to the winning city.
      */
-    public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, double bonusMoney, int claimNumber) {
+    public void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, double bonusMoney, int claimNumber) {
         int killsWinner = war.getCityAttacker().equals(winner) ? war.getAttackersKill() : war.getDefendersKill();
         int killsLoser = war.getCityAttacker().equals(loser) ? war.getAttackersKill() : war.getDefendersKill();
 
@@ -416,7 +433,7 @@ public class WarManager {
      * @param claimAmount The number of chunks to transfer.
      * @return The number of chunks actually transferred.
      */
-    public static int transferChunksAfterWar(City winner, City loser, int claimAmount) {
+    public int transferChunksAfterWar(City winner, City loser, int claimAmount) {
         if (claimAmount <= 0) return 0;
 
         ChunkPos mascotVec = new ChunkPos(
@@ -530,7 +547,7 @@ public class WarManager {
      * @param phase The war phase to format.
      * @return A string representing the formatted phase.
      */
-    public static String getFormattedPhase(War.WarPhase phase) {
+    public String getFormattedPhase(War.WarPhase phase) {
         return switch (phase) {
             case PREPARATION -> "Préparation";
             case COMBAT -> "Combat";
@@ -543,7 +560,7 @@ public class WarManager {
      *
      * @param defense The WarPendingDefense object containing the defense details.
      */
-    public static void addPendingDefense(WarPendingDefense defense) {
+    public void addPendingDefense(WarPendingDefense defense) {
         pendingDefenses.put(defense.getDefender().getUniqueId(), defense);
     }
 
@@ -552,7 +569,7 @@ public class WarManager {
      *
      * @param city The city for which the pending defense is to be removed.
      */
-    public static WarPendingDefense getPendingDefenseFor(City city) {
+    public WarPendingDefense getPendingDefenseFor(City city) {
         return pendingDefenses.get(city.getUniqueId());
     }
 

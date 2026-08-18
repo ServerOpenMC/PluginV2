@@ -9,7 +9,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.bits.models.BitsPlayer;
-import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -181,7 +180,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
                 () -> {
                     OMCLogger.info("Applying all bits update for contributors");
                     applyAllContributorBitsUpdate();
-                    CityBankManager.applyAllCityInterests();
+                    OMCRegistry.FEATURES.CITY.get().CITY_BANK.applyAllCityInterests();
                     OMCLogger.info("All bits update for contributors applied successfully.");
 
                     bitsUpdateTask = null;

@@ -15,4 +15,6 @@ public interface HasDatabase {
      * @throws SQLException Si l'initialisation DB échoue
      */
     void initDB(ConnectionSource connectionSource) throws SQLException;
+
+    // todo interface qui fait des load et des saves d'un dao dans une type de map choisies?
 }

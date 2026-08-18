@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -14,8 +15,10 @@ import java.util.UUID;
 
 public class CityPermsConditions {
     public static boolean canSeePerms(Player sender, UUID playerUUID) {
-        City city = CityManager.getPlayerCity(playerUUID);
-        City senderCity = CityManager.getPlayerCity(sender.getUniqueId());
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+
+        City city = cityManager.getPlayerCity(playerUUID);
+        City senderCity = cityManager.getPlayerCity(sender.getUniqueId());
 
         if (senderCity == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_no_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -46,7 +49,7 @@ public class CityPermsConditions {
     }
 
     public static boolean canModifyPerms(Player sender, CityPermission permission) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

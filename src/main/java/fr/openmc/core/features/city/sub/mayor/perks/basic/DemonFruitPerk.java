@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.NamespacedKey;
@@ -110,7 +110,7 @@ public class DemonFruitPerk implements Listener {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
             if (playerCity == null) return;
 
-            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;
+            if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;
 
             if (!hasRangeAttribute(player)) applyReachBonus(player);
         } else {
@@ -142,7 +142,7 @@ public class DemonFruitPerk implements Listener {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
             if (playerCity == null) return;
 
-            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;
+            if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;
 
             if (!hasRangeAttribute(player)) applyReachBonus(player);
         } else {

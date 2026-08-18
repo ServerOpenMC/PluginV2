@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
@@ -30,7 +30,7 @@ public class CityHunterPerk implements Listener {
 
         if (MayorManager.phaseMayor != 2) return;
 
-        if (!PerkManager.hasPerk(attackerCity.getMayor(), Perks.CITY_HUNTER.getId())) {
+        if (!PerkUtils.hasPerk(attackerCity.getMayor(), Perks.CITY_HUNTER.getId())) {
             return;
         }
 

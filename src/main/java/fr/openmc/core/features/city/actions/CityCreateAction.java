@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -101,7 +100,9 @@ public class CityCreateAction {
             return false;
         }
 
-        if (CityManager.isChunkClaimedInRadius(chunk, 1)) {
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+
+        if (cityManager.isChunkClaimedInRadius(chunk, 1)) {
 	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
                     Prefix.CITY, MessageType.ERROR, false);
             return false;
@@ -116,7 +117,7 @@ public class CityCreateAction {
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
         // Lois
-        MayorManager.createCityLaws(city, false, null);
+        cityManager.MAYOR.createCityLaws(city, false, null);
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);

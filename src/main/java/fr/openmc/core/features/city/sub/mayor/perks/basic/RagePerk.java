@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.models.Home;
@@ -32,7 +32,7 @@ public class RagePerk implements Listener {
         City playerCity = CityManager.getPlayerCity(uuid);
         if (playerCity == null) return;
 
-        if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
+        if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
 
         City currentCity = CityManager.getCityFromChunk(
                 event.getTo().getChunk().getX(),
@@ -52,7 +52,7 @@ public class RagePerk implements Listener {
         City playerCity = CityManager.getPlayerCity(uuid);
         if (playerCity == null) return;
 
-        if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
+        if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
 
         Home home = event.getHome();
 
