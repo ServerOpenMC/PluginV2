@@ -59,7 +59,7 @@ public class AdminShopManager extends Feature implements HasCommands {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmMenu(player, item, true).open();
+        new ConfirmMenu(player, this, item, true).open();
     }
 
     /**
@@ -78,7 +78,7 @@ public class AdminShopManager extends Feature implements HasCommands {
             return;
         }
 
-        new ConfirmMenu(player, item, false).open();
+        new ConfirmMenu(player, this, item, false).open();
     }
 
     /**

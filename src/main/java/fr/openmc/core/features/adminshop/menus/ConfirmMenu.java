@@ -36,13 +36,13 @@ public class ConfirmMenu extends Menu {
     private int quantity;
     private final int maxQuantity;
 
-    public ConfirmMenu(Player owner, ShopItem shopItem, boolean isBuying) {
+    public ConfirmMenu(Player owner, AdminShopManager manager, ShopItem shopItem, boolean isBuying) {
         super(owner);
+        this.manager = manager;
         this.shopItem = shopItem;
         this.isBuying = isBuying;
         this.quantity = 1;
         this.maxQuantity = isBuying ? getMaxBuyQuantity(owner, shopItem) : countPlayerItems(owner, shopItem.getMaterial());
-        this.manager = OMCRegistry.FEATURES.ADMIN_SHOP.get();
     }
 
     @Override
