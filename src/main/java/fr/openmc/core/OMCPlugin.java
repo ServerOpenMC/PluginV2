@@ -118,6 +118,8 @@ public class OMCPlugin extends JavaPlugin {
             MailboxManager::new,
             DiscordLinkManager::new,
             ProfileManager::new,
+            ElevatorManager::new,
+            CorpseManager::new,
             QuestsManager::new,
             CityManager::new,
             DynamicCooldownManager::new,
@@ -135,9 +137,7 @@ public class OMCPlugin extends JavaPlugin {
             BossbarManager::new,
             ShopManager::new,
             HomeIconCacheManager::new,
-            DimensionOpenerManager::new,
-            ElevatorManager::new,
-            CorpseManager::new
+            DimensionOpenerManager::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();
