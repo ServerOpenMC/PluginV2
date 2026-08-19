@@ -48,7 +48,6 @@ public class PlayerDeathListener implements Listener {
             if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null))) {
                 event.setDroppedExp(0);
                 event.getDrops().clear();
-                System.out.println("test Drops ok");
             }
         }
     }
