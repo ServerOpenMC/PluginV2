@@ -19,26 +19,26 @@ public class WorldTemplateConfig {
 
         // * Premier lancement du plugin où suppression du fichier par une classe externe (ex CustomAmbientRegistry)
         if (!worldTemplateFile.exists()) {
-            worldTemplateConfig.set("biomes_loaded", new ArrayList<>());
+            worldTemplateConfig.set("first_loaded", new ArrayList<>());
             saveConfig();
         }
     }
 
-    public static boolean hasBiomeLoaded(WorldTemplate template) {
-        return worldTemplateConfig.getStringList("biomes_loaded").contains(template.getKey().asString());
+    public static boolean hasFirstLoaded(WorldTemplate template) {
+        return worldTemplateConfig.getStringList("first_loaded").contains(template.getKey().asString());
     }
 
-    public static void addBiomeLoaded(WorldTemplate template) {
-        List<String> biomesLoaded = worldTemplateConfig.getStringList("biomes_loaded");
+    public static void addFirstLoaded(WorldTemplate template) {
+        List<String> biomesLoaded = worldTemplateConfig.getStringList("first_loaded");
         biomesLoaded.add(template.getKey().asString());
-        worldTemplateConfig.set("biomes_loaded", biomesLoaded);
+        worldTemplateConfig.set("first_loaded", biomesLoaded);
         saveConfig();
     }
 
-    public static void removeBiomeLoaded(WorldTemplate template) {
-        List<String> biomesLoaded = worldTemplateConfig.getStringList("biomes_loaded");
+    public static void removeFirstLoaded(WorldTemplate template) {
+        List<String> biomesLoaded = worldTemplateConfig.getStringList("first_loaded");
         biomesLoaded.remove(template.getKey().asString());
-        worldTemplateConfig.set("biomes_loaded", biomesLoaded);
+        worldTemplateConfig.set("first_loaded", biomesLoaded);
         saveConfig();
     }
 
@@ -46,7 +46,7 @@ public class WorldTemplateConfig {
         try {
             worldTemplateConfig.save(worldTemplateFile);
         } catch (IOException e) {
-            OMCLogger.error("Cannot save registriesConfigFile", e);
+            OMCLogger.error("Cannot save worldTemplateConfigFile", e);
         }
     }
 }

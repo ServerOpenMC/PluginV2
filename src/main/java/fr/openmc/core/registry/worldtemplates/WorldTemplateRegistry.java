@@ -16,7 +16,6 @@ import org.bukkit.World;
 import java.io.IOException;
 import java.util.Optional;
 
-// todo: faire que dimension se crée une fois si la map n'est pas présente, et pas a chaque redem
 @SuppressWarnings("UnstableApiUsage")
 public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
         implements KeyedRegistry<String, WorldTemplate> {
@@ -31,7 +30,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
         // * Initialise le dimension type et le biome associé à la map
         for (WorldTemplate template : values()) {
             if (!template.isAlreadyCreated(context.getDataDirectory()))
-                WorldTemplateConfig.removeBiomeLoaded(template);
+                WorldTemplateConfig.removeFirstLoaded(template);
 
             OMCDatapack worldTemplateDatapack = new OMCDatapack(template.getNamespace());
 
@@ -60,7 +59,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     @Override
     public void init() {
         for (WorldTemplate template : values()) {
-            if (WorldTemplateConfig.hasBiomeLoaded(template)) continue;
+            if (WorldTemplateConfig.hasFirstLoaded(template)) continue;
 
             try {
                 OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}", template.getKey());
@@ -69,7 +68,9 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
             } catch (IOException e) {
                 OMCLogger.error("Erreur lors de l'appliquer les biomes sur la dimension {}", template.getKey());
             }
-            WorldTemplateConfig.addBiomeLoaded(template);
+            template.onFirstLoad();
+
+            WorldTemplateConfig.addFirstLoaded(template);
         }
     }
 
