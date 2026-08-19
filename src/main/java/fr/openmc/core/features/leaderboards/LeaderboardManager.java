@@ -517,16 +517,33 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      */
     public static void updatePlayTimeMap() {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Map<UUID, Long> playtimes = new HashMap<>();
+
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                long playtime = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
+                playtimes.put(player.getUniqueId(), playtime);
+            }
+
+            List<Map.Entry<UUID, Long>> sorted = playtimes.entrySet().stream()
+                    .sorted(Map.Entry.<UUID, Long>comparingByKey().reversed())
+                    .limit(10)
+                    .toList();
+
             Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
             int rank = 1;
-            for (OfflinePlayer player : Arrays.stream(Bukkit.getOfflinePlayers())
-                    .sorted((entry1, entry2) -> Long.compare(entry2.getStatistic(Statistic.PLAY_ONE_MINUTE), entry1.getStatistic(Statistic.PLAY_ONE_MINUTE)))
-                    .limit(10)
-                    .toList()) {
+
+            for (Map.Entry<UUID, Long> entry : sorted) {
+                OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
+
                 String playerName = player.getName();
-                String playTime = DateUtils.convertTime(player.getStatistic(Statistic.PLAY_ONE_MINUTE));
-                newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
+                String playTime = DateUtils.convertTime(entry.getValue());
+
+                newMap.put(
+                        rank++,
+                        new AbstractMap.SimpleEntry<>(playerName, playTime)
+                );
             }
+
             playTimeMap = newMap;
         });
     }
