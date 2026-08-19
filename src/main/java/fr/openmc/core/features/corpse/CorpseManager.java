@@ -12,6 +12,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.corpse.commnads.CorpseCommand;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -165,14 +166,21 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
                 DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
-                        Prefix.OPENMC, MessageType.SUCCESS, true);
+                        Prefix.CORPSE, MessageType.SUCCESS, true);
             }
 
             case NOT_FOUND -> MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_found")
                             .color(TextColor.color(Color.YELLOW.asRGB())),
-                    Prefix.OPENMC, MessageType.WARNING, true);
+                    Prefix.CORPSE, MessageType.WARNING, true);
 
             case STRIP -> DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
+
+            case ABORT -> {
+                DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
+                MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.abort")
+                                .color(TextColor.color(Color.GREEN.asRGB())),
+                        Prefix.CORPSE, MessageType.SUCCESS, true);
+            }
         }
     }
 
@@ -215,6 +223,8 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
 
     @Override
     public Set<Object> getCommands() {
-        return Set.of();
+        return Set.of(
+                new CorpseCommand()
+        );
     }
 }

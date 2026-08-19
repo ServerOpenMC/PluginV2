@@ -45,7 +45,6 @@ public class CorpseListener implements Listener {
 
         Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 
-        // On enregistre seulement si le joueur est sur un bloc solide
         if (blockUnder.getType().isSolid()) {
             lastSafeLocation.put(player.getUniqueId(), loc.clone());
         }
@@ -113,12 +112,12 @@ public class CorpseListener implements Listener {
                     MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.strip",
                                     Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
                                     .color(TextColor.color(Color.YELLOW.asRGB())),
-                            Prefix.OPENMC, MessageType.INFO, true);
+                            Prefix.CORPSE, MessageType.INFO, true);
 
                 if (offlineOwner != null)
                     MessagesManager.sendMessage(offlineOwner, TranslationManager.translation("feature.corpse.messages.warn_strip")
                                     .color(TextColor.color(Color.YELLOW.asRGB())),
-                            Prefix.OPENMC, MessageType.WARNING, true);
+                            Prefix.CORPSE, MessageType.WARNING, true);
 
                 corpse.dropLoot();
                 CorpseManager.deleteCorpse(ownerUUID, FoundTypes.STRIP);
@@ -128,7 +127,7 @@ public class CorpseListener implements Listener {
             if (!player.getUniqueId().equals(corpse.getPlayerUUID())) {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_owner"),
-                        Prefix.OPENMC, MessageType.WARNING, true);
+                        Prefix.CORPSE, MessageType.WARNING, true);
                 return;
             }
 

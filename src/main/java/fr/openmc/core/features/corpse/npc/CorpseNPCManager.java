@@ -47,7 +47,7 @@ public class CorpseNPCManager {
                                     npc.getData().getEquipment().get(NpcEquipmentSlot.FEET),
                                     Pose.valueOf(npc.getData().getAttributes()
                                             .get(FancyNpcsPlugin.get().getAttributeManager()
-                                            .getAttributeByName(EntityType.PLAYER, "pose"))),
+                                            .getAttributeByName(EntityType.PLAYER, "pose")).toUpperCase()),
                                     CorpseManager.getCorpsesDB().get(ownerUUID).isKillByPlayer()
                                 )
                         );
