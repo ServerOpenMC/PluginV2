@@ -12,7 +12,6 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.corpse.model.DBCorpse;
-import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -22,6 +21,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -148,11 +148,14 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         return corpsesDB.containsKey(playerUUID);
     }
 
-    public static String getRemainingTime(UUID playerUUID) {
-        if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return "already end";
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP) == null) return "already end";
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).isReady()) return "already end";
-        return DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).getRemaining());
+    public static Component getRemainingTime(UUID playerUUID) {
+
+        Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
+
+        if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
+        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
+        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
+        return Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).getRemaining()));
     }
 
     @Override
