@@ -46,7 +46,7 @@ public enum Credits {
     BITS(Material.LAPIS_LAZULI, "feature.credits.feature.bits", BitsManager.class),
     CUBE(Material.LAPIS_BLOCK, "feature.credits.feature.cube", Set.of("iambibi_")),
     CHAT_ANIMATION(Material.FIREWORK_ROCKET, "feature.credits.feature.chat_animation", ChatAnimationManager.class),
-    CORPSE(Material.PLAYER_HEAD, "feature.credits.feature.corpse", CorpseManager.class), // TODO
+    CORPSE(Material.PLAYER_HEAD, "feature.credits.feature.corpse", CorpseManager.class),
     CITY(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_AXENQ, "feature.credits.feature.city", CityManager.class),
     DREAM(Material.SCULK, "feature.credits.feature.dream", DreamManager.class),
     DREAM_MILESTONE(DreamItemRegistry.SINGULARITY, "feature.credits.feature.dream_milestone", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
