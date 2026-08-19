@@ -1,9 +1,7 @@
 package fr.openmc.core.features.corpse.commnads;
 
-import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.FoundTypes;
-import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.utils.text.messages.MessageType;
