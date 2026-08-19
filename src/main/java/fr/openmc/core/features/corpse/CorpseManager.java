@@ -12,10 +12,12 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.corpse.commnads.CorpseCommand;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -31,7 +33,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -214,10 +215,8 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new CorpseListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(CorpseListener::new);
     }
 
     @Override
