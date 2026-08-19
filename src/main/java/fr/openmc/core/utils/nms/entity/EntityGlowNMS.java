@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.nms.entity;
 
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EntityGlowNMS implements Listener {
+public class EntityGlowNMS implements Listener, NotLoadInUnitTest {
     private static final Scoreboard NMS_SCOREBOARD = new Scoreboard();
     private static final Map<TeamColor, PlayerTeam> TEAM_MAP = new HashMap<>();
     private static final Map<UUID, TeamColor> entitiesGlowing = new ConcurrentHashMap<>();

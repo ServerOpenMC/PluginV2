@@ -7,7 +7,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
@@ -19,7 +20,7 @@ import org.bukkit.event.Listener;
 
 import java.util.*;
 
-public class ScoreboardManager extends Feature implements Listener, NotInUnitTest, LoadIfEnable<LuckPermsHook>, HasListeners {
+public class ScoreboardManager extends Feature implements Listener, NotLoadInUnitTest, LoadIfEnable<LuckPermsHook>, HasListeners {
     public static final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
     private static final List<BaseScoreboard> scoreboards = new ArrayList<>();
     private static GlobalTeamManager globalTeamManager;
@@ -47,10 +48,8 @@ public class ScoreboardManager extends Feature implements Listener, NotInUnitTes
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new ScoreboardListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(ScoreboardListener::new);
     }
 
     public static void updateAllBoards() {

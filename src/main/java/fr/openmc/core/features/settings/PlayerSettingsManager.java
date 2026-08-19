@@ -12,12 +12,12 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
 import fr.openmc.core.features.settings.models.PlayerSettingEntity;
 import lombok.Getter;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -47,10 +47,8 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new PlayerSettingsListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(PlayerSettingsListener::new);
     }
 
     @Override

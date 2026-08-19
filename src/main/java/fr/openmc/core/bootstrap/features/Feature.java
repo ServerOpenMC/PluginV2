@@ -5,7 +5,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.*;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import org.bukkit.event.Listener;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 
 import java.sql.SQLException;
 
@@ -21,7 +21,7 @@ public abstract class Feature {
      */
     public final void startInit() {
         // Condition d'initialisation (si feature ne doit pas être lancée dans les tests ou qu'elle nécessite un hook)
-        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
+        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) {
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée dans les Unit Tests");
             return;
         }
@@ -35,17 +35,7 @@ public abstract class Feature {
 
             // Enregistre les listeners
             if (this instanceof HasListeners hasListeners) {
-                for (Listener listener : hasListeners.getListeners()) {
-                    if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) {
-                        OMCLogger.errorFormatted("Listener " + listener.getClass().getSimpleName() + " de Feature " + this.getClass().getSimpleName() + " non chargée dans les Unit Tests");
-                        continue;
-                    }
-
-                    if (this instanceof LoadIfEnable<?> loadIfEnable && !loadIfEnable.shouldLoad()) {
-                        OMCLogger.errorFormatted("Listener " + listener.getClass().getSimpleName() + " de Feature " + this.getClass().getSimpleName() + " non initialisée car le hook associé n'est pas activé");
-                        continue;
-                    }
-
+                for (ListenerFactory listener : hasListeners.getListeners()) {
                     OMCPlugin.registerEvents(listener);
                 }
             }
@@ -58,6 +48,9 @@ public abstract class Feature {
 
             initialize = true;
             OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
+        } catch (DisableFeatureException e) {
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
+            OMCLogger.error(e.getMessage(), e);
         } catch (Exception e) {
             initialize = false;
             OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
@@ -74,7 +67,7 @@ public abstract class Feature {
      * @throws SQLException Si l'initialisation DB échoue
      */
     public final void startDB(ConnectionSource connectionSource) throws SQLException {
-        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
+        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) return;
         if (this instanceof HasDatabase dbF) {
             dbF.initDB(connectionSource);
         }
@@ -85,7 +78,7 @@ public abstract class Feature {
      */
     public final void startSave() {
         if (!initialize) return;
-        if (this instanceof NotInUnitTest && OMCPlugin.isUnitTestVersion()) return;
+        if (this instanceof NotLoadInUnitTest && OMCPlugin.isUnitTestVersion()) return;
 
         try {
             save();

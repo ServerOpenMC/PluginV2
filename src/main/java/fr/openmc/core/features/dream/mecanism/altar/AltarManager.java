@@ -33,7 +33,7 @@ public class AltarManager {
     public static void init() {
         new AltarCheckTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
         new AltarParticlesTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
-        OMCPlugin.registerEvents(new AltarListener());
+        OMCPlugin.registerEvents(AltarListener::new);
     }
 
     public static boolean hasItem(Location loc) {

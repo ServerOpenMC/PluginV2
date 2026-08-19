@@ -31,9 +31,9 @@ public class DreamBlocksRegistry {
 
     public static void init() {
         OMCPlugin.registerEvents(
-                new DreamBlocksListeners(),
-                new CloudVault(),
-                new BossCloudSpawner()
+                DreamBlocksListeners::new,
+                CloudVault::new,
+                BossCloudSpawner::new
         );
 
         ConfigurationSerialization.registerClass(DreamBlock.class);

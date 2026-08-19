@@ -19,7 +19,7 @@ import java.util.UUID;
 public class GlaciteNpcManager implements Listener {
     public static void init() {
         OMCPlugin.registerEvents(
-                new GlaciteTraderInteractListener()
+                GlaciteTraderInteractListener::new
         );
         if (DreamDimensionManager.hasSeedChanged()) {
             OMCLogger.info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");

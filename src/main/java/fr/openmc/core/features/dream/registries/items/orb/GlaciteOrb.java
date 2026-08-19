@@ -13,7 +13,7 @@ public class GlaciteOrb extends DreamItem {
                 "omc_dream:glacite_orb",
                 TranslationManager.translation("feature.dream.item.glacite_orb.name"),
                 DreamRarity.ONIRISIME,
-                Material.HEART_OF_THE_SEA,
+                Material.PAPER,
                 true
         ));
     }

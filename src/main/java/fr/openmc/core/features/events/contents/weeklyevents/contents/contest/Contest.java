@@ -31,6 +31,11 @@ public class Contest extends WeeklyEvent implements HasMenu {
     }
 
     @Override
+    public String getId() {
+        return "omc_contest:contest";
+    }
+
+    @Override
     public List<WeeklyEventPhase> getPhases() {
         return Arrays.stream(ContestPhase.values()).map(ContestPhase::getPhase).toList();
     }

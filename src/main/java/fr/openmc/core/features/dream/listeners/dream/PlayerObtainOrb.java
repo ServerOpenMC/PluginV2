@@ -92,19 +92,16 @@ public class PlayerObtainOrb implements Listener {
         for (CustomLoot loot : event.getLoot()) {
             if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-            for (ItemStack item : itemLoot.getItems()) {
-                DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+            DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getItemLootWithAmount());
 
-                if (dreamItem == null) continue;
-                if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;
+            if (dreamItem == null) continue;
+            if (!dreamItem.getId().equals(DreamItemRegistry.MUD_ORB.getId())) continue;
 
-                setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
+            setProgressionOrb(player, MUD_BEACH_ORB, DreamBiome.GLACITE_GROTTO);
 
-                // * SFX
-                player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
-                ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5, null);
-                break;
-            }
+            // * SFX
+            player.getWorld().playSound(player.getLocation(), "minecraft:entity.wither.spawn", 1f, 2f);
+            ParticleUtils.spawnDispersingParticles(player.getLocation(), Particle.ASH, 15, 15, 0.5, null);
         }
     }
 

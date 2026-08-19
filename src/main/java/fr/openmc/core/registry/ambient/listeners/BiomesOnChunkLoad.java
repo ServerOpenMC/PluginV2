@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.ambient.listeners;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
@@ -19,7 +20,7 @@ import org.bukkit.event.Listener;
  * - le joueur a une ambience
  * - et que l'ambience utilise un biome ou non
  */
-public class BiomesOnChunkLoad implements Listener {
+public class BiomesOnChunkLoad implements Listener, NotLoadInUnitTest {
 
     @EventHandler
     public void onChunkLoad(PlayerChunkLoadEvent event) {

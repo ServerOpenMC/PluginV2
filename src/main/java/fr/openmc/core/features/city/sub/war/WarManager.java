@@ -55,7 +55,7 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                new WarKillListener()
+                WarKillListener::new
         );
 
         loadWarHistories();

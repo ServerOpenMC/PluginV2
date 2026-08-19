@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
-import fr.openmc.core.OMCPlugin;
+import  fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
@@ -68,6 +68,7 @@ public class PlayerChangeWorldListener implements Listener {
 
         // * SFX
         sendSFX(player);
+        PlayerCloneNpc.deleteCloneNpc(player);
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
             sendSFX(player), 20);
     }

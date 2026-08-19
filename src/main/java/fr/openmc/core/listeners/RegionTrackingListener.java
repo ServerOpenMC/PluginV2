@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.RegionEnterEvent;
 import fr.openmc.core.events.RegionLeaveEvent;
 import org.bukkit.Bukkit;
@@ -19,7 +20,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 
-public class RegionTrackingListener implements Listener {
+public class RegionTrackingListener implements Listener, NotLoadInUnitTest {
     private final Map<UUID, Set<ProtectedRegion>> playerRegions = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)

@@ -13,7 +13,7 @@ public class DominationOrb extends DreamItem {
                 "omc_dream:domination_orb",
                 TranslationManager.translation("feature.dream.item.domination_orb.name"),
                 DreamRarity.ONIRISIME,
-                Material.HEART_OF_THE_SEA,
+                Material.PAPER,
                 true
         ));
     }

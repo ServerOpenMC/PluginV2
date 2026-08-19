@@ -28,7 +28,7 @@ public class MiraculousFishingMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return DailyEventsManager.MIRACULOUS_FISHING.getName();
+        return OMCRegistry.DAILY_EVENTS.MIRACULOUS_FISHING.getName();
     }
 
     @Override

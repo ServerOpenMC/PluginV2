@@ -87,7 +87,7 @@ public class NotationManager {
                 new AdminNotationCommands()
         );
         OMCPlugin.registerEvents(
-                new PlayerJoinListener()
+                PlayerJoinListener::new
         );
         scheduleMidnightTask();
         loadTop10Cities();

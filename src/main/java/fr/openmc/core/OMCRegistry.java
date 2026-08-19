@@ -5,6 +5,8 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
 import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
+import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
@@ -20,13 +22,17 @@ import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class OMCRegistry {
-
+    // * Registre globaux
     public static CustomItemRegistry CUSTOM_ITEMS;
     public static CustomMobRegistry CUSTOM_MOBS;
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
     public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
+
+    // * Registre des features
+    public static WeeklyEventsRegistry WEEKLY_EVENTS;
+    public static DailyEventsRegistry DAILY_EVENTS;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
@@ -42,11 +48,15 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
-                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME, RegistryLoadingType.NOT_LOADED_UNIT_TEST),
             new RegistryContext(
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA)
     );
 
@@ -54,8 +64,7 @@ public final class OMCRegistry {
 
     public static void bootstrapAll(BootstrapContext context) {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (Arrays.stream(ctx.loadingTypes())
-                    .noneMatch(t -> t == RegistryLoadingType.BOOTSTRAP)) continue;
+            if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = load(ctx);
             try {
@@ -70,8 +79,8 @@ public final class OMCRegistry {
 
     public static void initAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (Arrays.stream(ctx.loadingTypes())
-                    .noneMatch(t -> t == RegistryLoadingType.RUNTIME)) continue;
+            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
+            if (isNotTyped(ctx, RegistryLoadingType.RUNTIME)) continue;
 
             LifecycleRegistry r = load(ctx);
 
@@ -85,8 +94,8 @@ public final class OMCRegistry {
 
     public static void postInitAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (Arrays.stream(ctx.loadingTypes())
-                    .noneMatch(t -> t == RegistryLoadingType.AFTER_IA)) continue;
+            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
+            if (isNotTyped(ctx, RegistryLoadingType.AFTER_IA)) continue;
 
             LifecycleRegistry r = load(ctx);
 
@@ -110,5 +119,13 @@ public final class OMCRegistry {
         LifecycleRegistry registry = ctx.registry().get();
         LOADED.add(registry);
         return registry;
+    }
+
+    private static boolean isNotTyped(RegistryContext ctx, RegistryLoadingType type) {
+        return Arrays.stream(ctx.loadingTypes()).noneMatch(t -> t == type);
+    }
+
+    private static boolean isTyped(RegistryContext ctx, RegistryLoadingType type) {
+        return Arrays.stream(ctx.loadingTypes()).anyMatch(t -> t == type);
     }
 }

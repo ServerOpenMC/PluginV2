@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.commands.autocomplete;
 
-import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
@@ -13,7 +13,7 @@ public class DailyEventAutoComplete implements SuggestionProvider<BukkitCommandA
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return DailyEventsManager.EVENTS.stream()
+        return OMCRegistry.DAILY_EVENTS.values().stream()
                 .map(DailyEvent::getEventId)
                 .toList();
     }

@@ -13,7 +13,7 @@ public class SunFish extends DreamItem {
                 "omc_dream:sun_fish",
                 TranslationManager.translation("feature.dream.item.sun_fish.name"),
                 DreamRarity.RARE,
-                Material.COOKED_SALMON,
+                Material.PAPER,
                 true
         ));
     }

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
@@ -61,8 +62,18 @@ public class EventsManager extends Feature implements LoadAfterItemsAdder, HasCo
                     }
 
                     @Override
+                    public String getId() {
+                        return "omc_weekly_event:unknown_event_" + weekOffset;
+                    }
+
+                    @Override
                     public List<WeeklyEventPhase> getPhases() {
                         return List.of(new WeeklyEventPhase() {
+                            @Override
+                            public String getId() {
+                                return "unknown_phase";
+                            }
+
                             @Override
                             public Component getName() {
                                 return TranslationManager.translation("feature.events.calendar.unknown_phase");
@@ -131,8 +142,8 @@ public class EventsManager extends Feature implements LoadAfterItemsAdder, HasCo
     }
 
     public static List<Event> getAllEventsRegistred() {
-        List<Event> events = new ArrayList<>(DailyEventsManager.EVENTS);
-        events.addAll(WeeklyEventsManager.EVENTS);
+        List<Event> events = new ArrayList<>(OMCRegistry.DAILY_EVENTS.values());
+        events.addAll(OMCRegistry.WEEKLY_EVENTS.values());
         return events;
     }
 

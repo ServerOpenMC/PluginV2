@@ -12,6 +12,7 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
@@ -48,10 +49,8 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
     }
 
     @Override
-    public Set<Listener> getListeners() {
-        return Set.of(
-                new PlayerJoinListener()
-        );
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(PlayerJoinListener::new);
     }
 
     @Override
@@ -215,7 +214,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
     public static void registerQuestMilestone(Milestone<?> milestone) {
         for (Quest quest : milestone.getSteps()) {
             if (quest instanceof Listener listener) {
-                OMCPlugin.registerEvents(listener);
+                OMCPlugin.getInstance().getServer().getPluginManager().registerEvents(listener, OMCPlugin.getInstance());
             }
         }
     }

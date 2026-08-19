@@ -1,5 +1,6 @@
 name: OpenMC
 version: ${version}
 main: fr.openmc.core.OMCPlugin
+bootstrapper: fr.openmc.core.OMCBootstrap
 api-version: '26.2'
 prefix: OMC

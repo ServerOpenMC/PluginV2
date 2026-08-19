@@ -70,7 +70,7 @@ public class CustomEnchantmentRegistry extends Registry<Key, CustomEnchantment> 
             }
 
             if (e instanceof Listener listener) {
-                OMCPlugin.registerEvents(listener);
+                OMCPlugin.registerEvents(() -> listener);
             }
         }
     }

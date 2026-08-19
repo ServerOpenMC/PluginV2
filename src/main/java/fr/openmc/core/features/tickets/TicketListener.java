@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.types.NotInUnitTest;
+import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.LootboxRewardEvent;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TicketListener implements Listener, NotInUnitTest {
+public class TicketListener implements Listener, NotLoadInUnitTest {
 
     private final Map<Location, String> machineHolograms = new ConcurrentHashMap<>();
 
@@ -41,9 +41,11 @@ public class TicketListener implements Listener, NotInUnitTest {
 
         if (!(event.getLoot() instanceof ItemLoot itemLoot)) return;
 
-        boolean hasLootPelucheSeinyy = itemLoot.getItems().stream()
-                .filter(loot -> OMCRegistry.CUSTOM_ITEMS.get(loot).isPresent())
-                .anyMatch(loot -> OMCRegistry.CUSTOM_ITEMS.getOrThrow(loot).getId().equals(pelushKey));
+        boolean hasLootPelucheSeinyy = false;
+        if (OMCRegistry.CUSTOM_ITEMS.get(itemLoot.getItemLootWithAmount()).isPresent()) {
+            hasLootPelucheSeinyy = OMCRegistry.CUSTOM_ITEMS.getOrThrow(itemLoot.getItemLootWithAmount())
+                    .getId().equals(pelushKey);
+        }
 
         Player player = event.getPlayer();
         PlayerStats ps = TicketManager.getPlayerStats(player.getUniqueId());

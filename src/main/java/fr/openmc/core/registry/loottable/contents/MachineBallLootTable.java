@@ -8,7 +8,6 @@ import fr.openmc.core.utils.bukkit.ItemBuilder;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,7 +28,6 @@ public class MachineBallLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(
-                        Set.of(OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY.getBest()),
                         new ItemBuilder(
                             OMCRegistry.CUSTOM_ITEMS.PELUCHE_SEINYY,
                             meta -> {
@@ -42,7 +40,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         1
                 ),
                 new ItemLoot(
-                        Set.of(ItemStack.of(Material.DIAMOND)),
                         new ItemBuilder(
                             Material.DIAMOND,
                             meta -> {
@@ -55,7 +52,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         3
                 ),
                 new ItemLoot(
-                        Set.of(ItemStack.of(Material.IRON_INGOT)),
                         new ItemBuilder(
                                 Material.IRON_INGOT,
                                 meta -> {
@@ -68,7 +64,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         10
                 ),
                 new ItemLoot(
-                        Set.of(ItemStack.of(Material.NETHERITE_INGOT)),
                         new ItemBuilder(
                                 Material.NETHERITE_INGOT,
                                 meta -> {
@@ -81,7 +76,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         1
                 ),
                 new ItemLoot(
-                        Set.of(ItemStack.of(Material.OAK_LOG)),
                         new ItemBuilder(
                                 Material.OAK_LOG,
                                 meta -> {
@@ -94,7 +88,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         32
                 ),
                 new ItemLoot(
-                        Set.of(ItemStack.of(Material.COOKED_BEEF)),
                         new ItemBuilder(
                                 Material.COOKED_BEEF,
                                 meta -> {
@@ -107,7 +100,6 @@ public class MachineBallLootTable extends CustomLootTable {
                         16
                 ),
                 new ItemLoot(
-                        Set.of(ItemStack.of(Material.COAL)),
                         new ItemBuilder(
                                 Material.COAL,
                                 meta -> {

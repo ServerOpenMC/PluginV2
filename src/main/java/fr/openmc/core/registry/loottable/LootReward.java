@@ -22,7 +22,7 @@ public record LootReward(List<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
             int amount = -1;
             if (loot instanceof ItemLoot itemLoot) {
-                amount = itemLoot.getRepresentativeItem().getAmount();
+                amount = itemLoot.getItemLootWithAmount().getAmount();
             }
             Component lootComponent = loot.buildLootComponent(amount);
             if (lootComponent == null) continue;

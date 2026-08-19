@@ -81,7 +81,7 @@ public class LootsInfoMenu extends PaginatedMenu {
                     seaCreatureLoot.showLoot(getOwner());
                 } else if (isLootItemLinkedToLootbox(loot)) {
                     if (!(loot instanceof ItemLoot itemLoot)) return;
-                    ItemStack item = itemLoot.getFirstLoot();
+                    ItemStack item = itemLoot.getItemLootWithAmount();
                     Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(item);
                     if (customItem.isPresent() && customItem.get() instanceof LootboxBlock lootboxBlock) {
                         lootboxBlock.getLootbox().openInfo(getOwner());
@@ -140,7 +140,7 @@ public class LootsInfoMenu extends PaginatedMenu {
     private boolean isLootItemLinkedToLootbox(CustomLoot loot) {
         if (!(loot instanceof ItemLoot itemLoot)) return false;
 
-        ItemStack item = itemLoot.getFirstLoot();
+        ItemStack item = itemLoot.getItemLootWithAmount();
         Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(item);
         if (customItem.isEmpty()) return false;
 

@@ -29,7 +29,7 @@ public class GoldenHarvestMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return DailyEventsManager.GOLDEN_HARVEST.getName();
+        return OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.getName();
     }
 
     @Override
