@@ -8,6 +8,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
@@ -38,7 +39,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"Nocolm"})
-public class CorpseManager extends Feature implements HasDatabase, HasListeners {
+public class CorpseManager extends Feature implements HasDatabase, HasListeners, HasCommands {
 
     @Getter
     private static Map<UUID, DBCorpse> corpsesDB;
@@ -199,7 +200,10 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
         if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
         if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
-        return Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).getRemaining()));
+        return Component.text(
+                DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID)
+                        .get(CorpseNPCManager.COOLDOWN_GROUP)
+                        .getRemaining()), TextColor.color(0xFF8F06));
     }
 
     @Override
@@ -207,5 +211,10 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         return Set.of(
                 new CorpseListener()
         );
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of();
     }
 }

@@ -68,7 +68,7 @@ public class MainScoreboard extends BaseScoreboard {
             lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.displays.scoreboard.corpse.ends.to_small").color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(CorpseManager.getRemainingTime(player.getUniqueId())).color(TextColor.color(0xFF8F06))
+                    .append(CorpseManager.getRemainingTime(player.getUniqueId()))
             );
         }
 
