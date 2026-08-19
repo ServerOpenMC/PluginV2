@@ -29,7 +29,7 @@ public class CorpseNPCManager {
 
     public static final String COOLDOWN_GROUP = "corpse";
 
-    public CorpseNPCManager() {
+    public static void init() {
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
@@ -66,7 +66,7 @@ public class CorpseNPCManager {
                 corpseNPC.getChestplate(),
                 corpseNPC.getLeggings(),
                 corpseNPC.getBoots(),
-                corpseNPC.killByPlayer
+                corpseNPC.isKillByPlayer()
         );
     }
 
@@ -94,9 +94,9 @@ public class CorpseNPCManager {
         dataCorpse.setSkin(ownerName);
 
         String ownerDisplayName = LegacyComponentSerializer.legacySection()
-                .serialize(TranslationManager.translation("feature.city.mayor.npc.display.owner", Component.text(ownerName))); //TODO
+                .serialize(TranslationManager.translation("feature.corpse.npc.display.owner", Component.text(ownerName)));
 
-        dataCorpse.setDisplayName("<yellow>" + ownerDisplayName + "</yellow>");
+        dataCorpse.setDisplayName("<red>☠</red>" + "<gray> " + ownerDisplayName + "</gray>");
 
         dataCorpse.addEquipment(NpcEquipmentSlot.HEAD, helmet);
         dataCorpse.addEquipment(NpcEquipmentSlot.CHEST, chestplate);
@@ -115,7 +115,9 @@ public class CorpseNPCManager {
 
         FancyNpcsPlugin.get().getNpcManager().registerNpc(npcCorpse);
 
-        npcCorpse.create();Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+        npcCorpse.create();
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             if (!all)
                 npcCorpse.spawn(owner);
             else
@@ -126,7 +128,7 @@ public class CorpseNPCManager {
         if (DynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
                 && DynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
             DynamicCooldownManager.clear(owner.getUniqueId(), COOLDOWN_GROUP, false);
-        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 7200000);
+        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 30000); // 2h 7200000
 
         return true;
     }

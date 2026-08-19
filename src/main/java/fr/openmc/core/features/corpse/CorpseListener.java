@@ -3,9 +3,18 @@ package fr.openmc.core.features.corpse;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +26,8 @@ import java.util.UUID;
 
 public class CorpseListener implements Listener {
 
+    private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
+
     @EventHandler
     public void onCooldownEndEvent(CooldownEndEvent event) {
         UUID ownerUUID = event.getCooldownUUID();
@@ -25,7 +36,7 @@ public class CorpseListener implements Listener {
         if (ownerUUID == null) return;
         if (group == null || !group.equals(CorpseNPCManager.COOLDOWN_GROUP)) return;
 
-        CorpseManager.deleteCorpse(ownerUUID, false);
+        CorpseManager.deleteCorpse(ownerUUID, FoundTypes.NOT_FOUND);
     }
 
     @EventHandler
@@ -39,32 +50,45 @@ public class CorpseListener implements Listener {
             UUID ownerUUID = UUID.fromString(event.getNpc().getData().getName().replace("corpse-", ""));
 
             if (!CorpseManager.hasCorpseDB(ownerUUID)) {
-                System.out.println("pas dans la db");
+                OMCPlugin.getInstance().getLogger().warning("Corpse found with no DB");
                 return;
-            } // TODO erreur chelou
+            }
 
             DBCorpse corpse = CorpseManager.getCorpsesDB().get(ownerUUID);
 
             if (!corpse.getPlayerUUID().equals(ownerUUID)) {
-                System.out.println("wtf ???");
+                OMCPlugin.getInstance().getLogger().warning("The ownerUUID did not match with the corpse's playerUUID");
                 return;
             }
 
             if (corpse.isKillByPlayer()) {
-                // Drop Stuff
+                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
+                OfflinePlayer offlineOwner = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
+
+                if (offlinePlayer != null)
+                    MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.strip",
+                                    Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player")),
+                            Prefix.OPENMC, MessageType.INFO, true);
+
+                if (offlineOwner != null)
+                    MessagesManager.sendMessage(offlineOwner, TranslationManager.translation("feature.corpse.messages.warn_strip"),
+                            Prefix.OPENMC, MessageType.WARNING, true);
+
+                corpse.dropLoot();
+                CorpseManager.deleteCorpse(ownerUUID, FoundTypes.STRIP);
                 return;
             }
 
             if (!player.getUniqueId().equals(corpse.getPlayerUUID())) {
-                System.out.println("pas ton cadavre");
-                System.out.println(player.getUniqueId());
-                System.out.println(corpse.getPlayerUUID());
+                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
+                MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_owner"),
+                        Prefix.OPENMC, MessageType.WARNING, true);
                 return;
             }
 
             ItemStack[] inventory = corpse.getInventoryContent().clone();
-            float exp = corpse.getExp();
-            int level = corpse.getLevel();
+
+            int exp = corpse.getExp();
 
             if (player.getInventory().isEmpty()) {
                 player.getInventory().setContents(inventory);
@@ -86,10 +110,11 @@ public class CorpseListener implements Listener {
                 }
             }
 
-            player.setExp(exp);
-            player.setLevel(level);
+            player.setExperienceLevelAndProgress(exp);
 
-            CorpseManager.deleteCorpse(ownerUUID, true);
+            player.playSound(player.getLocation(), equipSound, 1f, 0);
+
+            CorpseManager.deleteCorpse(ownerUUID, FoundTypes.FOUND);
         }
     }
 

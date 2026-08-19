@@ -7,12 +7,18 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.util.*;
 
+@Credit(developers = {"Nocolm"})
 public class CorpseManager extends Feature implements HasDatabase, HasListeners {
 
     @Getter
@@ -30,12 +37,9 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
 
     private static Dao<DBCorpse, String> corpsesDao;
 
-    public CorpseManager() {
-        new CorpseNPCManager();
-    }
-
     @Override
     public void init() {
+        CorpseNPCManager.init();
         corpsesDB = loadAllCorpses();
     }
 
@@ -65,8 +69,10 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
 
     public static Map<UUID, DBCorpse> loadAllCorpses() {
         Map<UUID, DBCorpse> corpses = new HashMap<>();
+
         try {
             List<DBCorpse> dbCorpses = corpsesDao.queryForAll();
+
             for (DBCorpse corpse : dbCorpses) {
                 corpses.put(corpse.getPlayerUUID(), corpse);
             }
@@ -79,15 +85,14 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
 
     public static boolean createCorpse(Player player, boolean killByPlayer) {
         ItemStack[] contents = player.getInventory().getContents().clone();
-        float exp = player.getExp();
-        int level = player.getLevel();
-
-        System.out.println("total : "+ exp);
+        float percentage = player.getExp();
+        // keep 40% off the current experience of the player
+        int exp = (int) ((getLevelToExp(player.getLevel()) + getExpToLevelUp(player.getLevel()) * percentage) * 0.4);
 
         if (hasCorpseDB(player.getUniqueId())) return false;
 
         corpsesDB.put(player.getUniqueId(), new DBCorpse(
-                player.getUniqueId(), contents, player.getLocation(), exp, level, killByPlayer
+                player.getUniqueId(), contents, player.getLocation(), exp, killByPlayer
         ));
 
         return CorpseNPCManager.createNPCS(
@@ -101,7 +106,7 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         );
     }
 
-    public static void deleteCorpse(UUID ownerUUID, boolean found) {
+    public static void deleteCorpse(UUID ownerUUID, FoundTypes found) {
         DBCorpse dbCorpse = corpsesDB.remove(ownerUUID);
 
         try {
@@ -111,11 +116,20 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         }
 
         CorpseNPCManager.removeNPCS(ownerUUID);
-        if (found) {
-            DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
-            // TODO message
-        } else {
-            //TODO message
+
+        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
+
+        switch (found) {
+            case FOUND -> {
+                DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
+                MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found"),
+                        Prefix.OPENMC, MessageType.WARNING, true);
+            }
+
+            case NOT_FOUND -> MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_found"),
+                    Prefix.OPENMC, MessageType.WARNING, true);
+
+            case STRIP -> DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
         }
     }
 
@@ -124,6 +138,26 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
             if (!MailboxManager.sendItems(player, receiver, items))
                 MailboxManager.givePlayerItems(player, items);
         });
+    }
+
+    private static int getExpToLevelUp(int level){
+        if(level <= 15){
+            return 2*level+7;
+        } else if(level <= 30){
+            return 5*level-38;
+        } else {
+            return 9*level-158;
+        }
+    }
+
+    private static int getLevelToExp(int level) {
+        if(level <= 16){
+            return (int) (Math.pow(level,2) + 6*level);
+        } else if(level <= 31){
+            return (int) (2.5*Math.pow(level,2) - 40.5*level + 360.0);
+        } else {
+            return (int) (4.5*Math.pow(level,2) - 162.5*level + 2220.0);
+        }
     }
 
     public static boolean hasCorpseDB(UUID playerUUID) {

@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Getter
@@ -19,10 +20,9 @@ public class DBCorpse {
 
         @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
         private byte[] inventoryContent;
+
         @DatabaseField(canBeNull = false)
-        private float exp;
-        @DatabaseField(canBeNull = false)
-        private int level;
+        private int exp;
 
         @DatabaseField(canBeNull = false)
         private boolean killByPlayer;
@@ -45,7 +45,7 @@ public class DBCorpse {
         // required for ORMLite
     }
 
-    public DBCorpse(UUID playerUUID, ItemStack[] inventoryContent, Location location, float exp, int level, boolean killByPlayer) {
+    public DBCorpse(UUID playerUUID, ItemStack[] inventoryContent, Location location, int exp, boolean killByPlayer) {
         this.playerUUID = playerUUID;
 
         try {
@@ -55,7 +55,6 @@ public class DBCorpse {
         }
 
         this.exp = exp;
-        this.level = level;
         this.killByPlayer = killByPlayer;
 
         setLocation(location);
@@ -76,5 +75,18 @@ public class DBCorpse {
 
     public Location getLocation() {
         return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+    }
+
+    public void dropLoot() {
+        Location location = getLocation();
+
+        for (ItemStack item : getInventoryContent())
+            location.getWorld().dropItem(location, item);
+
+        try {
+            inventoryContent = BukkitSerializer.serializeItemStacks(new ItemStack[0]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
