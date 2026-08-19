@@ -42,13 +42,5 @@ public class PlayerDeathListener implements Listener {
             MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
             event.deathMessage(null);
         }
-
-        if (!CorpseManager.hasCorpseDB(player.getUniqueId())
-                &&!CorpseNPCManager.hasNPC(player.getUniqueId())) {
-            if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null))) {
-                event.setDroppedExp(0);
-                event.getDrops().clear();
-            }
-        }
     }
 }

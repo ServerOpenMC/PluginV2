@@ -18,6 +18,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -27,6 +28,19 @@ import java.util.UUID;
 public class CorpseListener implements Listener {
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+
+        if (!CorpseManager.hasCorpseDB(player.getUniqueId())
+                &&!CorpseNPCManager.hasNPC(player.getUniqueId())) {
+            if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null))) {
+                event.setDroppedExp(0);
+                event.getDrops().clear();
+            }
+        }
+    }
 
     @EventHandler
     public void onCooldownEndEvent(CooldownEndEvent event) {
