@@ -88,9 +88,9 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         if (hasCorpseDB(player.getUniqueId())) return false;
 
         ItemStack[] contents = player.getInventory().getContents().clone();
-        float percentage = player.getExp();
+
         // keep 40% of the current experience of the player
-        int exp = (int) ((getLevelToExp(player.getLevel()) + getExpToLevelUp(player.getLevel()) * percentage) * 0.4);
+        int exp = (int) (player.calculateTotalExperiencePoints() * 0.4);
 
         corpsesDB.put(player.getUniqueId(), new DBCorpse(
                 player.getUniqueId(), contents, player.getLocation(), exp, killByPlayer
@@ -139,26 +139,6 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
             if (!MailboxManager.sendItems(player, receiver, items))
                 MailboxManager.givePlayerItems(player, items);
         });
-    }
-
-    private static int getExpToLevelUp(int level){
-        if(level <= 15){
-            return 2*level+7;
-        } else if(level <= 30){
-            return 5*level-38;
-        } else {
-            return 9*level-158;
-        }
-    }
-
-    private static int getLevelToExp(int level) {
-        if(level <= 16){
-            return (int) (Math.pow(level,2) + 6*level);
-        } else if(level <= 31){
-            return (int) (2.5*Math.pow(level,2) - 40.5*level + 360.0);
-        } else {
-            return (int) (4.5*Math.pow(level,2) - 162.5*level + 2220.0);
-        }
     }
 
     public static boolean hasCorpseDB(UUID playerUUID) {
