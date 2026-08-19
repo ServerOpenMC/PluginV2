@@ -84,12 +84,13 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
     }
 
     public static boolean createCorpse(Player player, boolean killByPlayer) {
-        ItemStack[] contents = player.getInventory().getContents().clone();
-        float percentage = player.getExp();
-        // keep 40% off the current experience of the player
-        int exp = (int) ((getLevelToExp(player.getLevel()) + getExpToLevelUp(player.getLevel()) * percentage) * 0.4);
 
         if (hasCorpseDB(player.getUniqueId())) return false;
+
+        ItemStack[] contents = player.getInventory().getContents().clone();
+        float percentage = player.getExp();
+        // keep 40% of the current experience of the player
+        int exp = (int) ((getLevelToExp(player.getLevel()) + getExpToLevelUp(player.getLevel()) * percentage) * 0.4);
 
         corpsesDB.put(player.getUniqueId(), new DBCorpse(
                 player.getUniqueId(), contents, player.getLocation(), exp, killByPlayer
