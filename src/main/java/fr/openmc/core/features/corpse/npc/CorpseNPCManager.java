@@ -45,6 +45,9 @@ public class CorpseNPCManager {
                                     npc.getData().getEquipment().get(NpcEquipmentSlot.CHEST),
                                     npc.getData().getEquipment().get(NpcEquipmentSlot.LEGS),
                                     npc.getData().getEquipment().get(NpcEquipmentSlot.FEET),
+                                    Pose.valueOf(npc.getData().getAttributes()
+                                            .get(FancyNpcsPlugin.get().getAttributeManager()
+                                            .getAttributeByName(EntityType.PLAYER, "pose"))),
                                     CorpseManager.getCorpsesDB().get(ownerUUID).isKillByPlayer()
                                 )
                         );
@@ -66,6 +69,7 @@ public class CorpseNPCManager {
                 corpseNPC.getChestplate(),
                 corpseNPC.getLeggings(),
                 corpseNPC.getBoots(),
+                corpseNPC.getPose(),
                 corpseNPC.isKillByPlayer()
         );
     }
@@ -77,11 +81,12 @@ public class CorpseNPCManager {
                 null,
                 null,
                 null,
+                Pose.SWIMMING,
                 corpse.isKillByPlayer()
         );
     }
 
-    public static boolean createNPCS(Player owner, Location deathLocation, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, boolean all) {
+    public static boolean createNPCS(Player owner, Location deathLocation, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, Pose pose,  boolean all) {
         if (!FancyNpcsHook.isEnable()) return false;
 
         UUID ownerUUID = owner.getUniqueId();
@@ -106,12 +111,12 @@ public class CorpseNPCManager {
         dataCorpse.addAttribute(
                 FancyNpcsPlugin.get().getAttributeManager()
                         .getAttributeByName(EntityType.PLAYER, "pose"),
-                Pose.SWIMMING.name().toLowerCase()
+                pose.name().toLowerCase()
         );
 
         Npc npcCorpse = FancyNpcsPlugin.get().getNpcAdapter().apply(dataCorpse);
 
-        corpseNpcMap.put(ownerUUID, new CorpseNPC(npcCorpse, deathLocation, ownerUUID, helmet, chestplate, leggings, boots, all));
+        corpseNpcMap.put(ownerUUID, new CorpseNPC(npcCorpse, deathLocation, ownerUUID, helmet, chestplate, leggings, boots, pose, all));
 
         FancyNpcsPlugin.get().getNpcManager().registerNpc(npcCorpse);
 

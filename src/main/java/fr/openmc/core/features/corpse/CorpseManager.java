@@ -22,10 +22,16 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
@@ -85,7 +91,7 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         return corpses;
     }
 
-    public static boolean createCorpse(Player player, boolean killByPlayer) {
+    public static boolean createCorpse(Player player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
 
         if (hasCorpseDB(player.getUniqueId())) return false;
 
@@ -98,13 +104,44 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
                 player.getUniqueId(), contents, player.getLocation(), exp, killByPlayer
         ));
 
+        Location location = player.getLocation();
+        Pose pose = Pose.SWIMMING;
+
+        switch (cause) {
+            case LAVA, DROWNING -> { // if the corpse is in the water / lava, found air, otherwise let the corpse where the player died
+                int iteration = player.getWorld().getMaxHeight() - player.getLocation().getBlockY();
+                Location deathLoc = location.clone();
+                Location exposedLocation = null;
+
+                for (int y = 0; y < iteration; y++) {
+                    deathLoc.add(0, 1, 0);
+
+                    if (deathLoc.getBlock().isLiquid()) continue;
+
+                    if (deathLoc.getBlock().getType().isAir()) {
+                        exposedLocation = deathLoc;
+                        break;
+                    }
+                    if (deathLoc.getBlock().isSolid()) break;
+                }
+
+                if (exposedLocation != null)
+                    location = exposedLocation;
+            }
+            case VOID -> {
+                location = getLastSafePositionOf(player);
+                pose = Pose.SITTING;
+            }
+        }
+
         return CorpseNPCManager.createNPCS(
                 player,
-                player.getLocation(),
+                location,
                 player.getEquipment().getHelmet(),
                 player.getEquipment().getChestplate(),
                 player.getEquipment().getLeggings(),
                 player.getEquipment().getBoots(),
+                pose,
                 killByPlayer
         );
     }
@@ -125,11 +162,13 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
         switch (found) {
             case FOUND -> {
                 DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
-                MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found"),
-                        Prefix.OPENMC, MessageType.WARNING, true);
+                MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found")
+                                .color(TextColor.color(Color.GREEN.asRGB())),
+                        Prefix.OPENMC, MessageType.SUCCESS, true);
             }
 
-            case NOT_FOUND -> MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_found"),
+            case NOT_FOUND -> MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_found")
+                            .color(TextColor.color(Color.YELLOW.asRGB())),
                     Prefix.OPENMC, MessageType.WARNING, true);
 
             case STRIP -> DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
@@ -146,6 +185,11 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners 
     public static boolean hasCorpseDB(UUID playerUUID) {
         if (corpsesDB == null) return false;
         return corpsesDB.containsKey(playerUUID);
+    }
+
+    public static Location getLastSafePositionOf(Player player) {
+        if (!CorpseListener.lastSafeLocation.containsKey(player.getUniqueId())) return player.getLocation();
+        return CorpseListener.lastSafeLocation.get(player.getUniqueId());
     }
 
     public static Component getRemainingTime(UUID playerUUID) {

@@ -13,29 +13,54 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.damage.DeathMessageType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CorpseListener implements Listener {
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
 
+    public static final Map<UUID, Location> lastSafeLocation = new HashMap<>();
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        Location loc = player.getLocation();
+
+        Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
+
+        // On enregistre seulement si le joueur est sur un bloc solide
+        if (blockUnder.getType().isSolid()) {
+            lastSafeLocation.put(player.getUniqueId(), loc.clone());
+        }
+    }
+
+
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
+        EntityDamageEvent.DamageCause cause = null;
+
+        if (player.getLastDamageCause() != null)
+            cause = player.getLastDamageCause().getCause();
 
         if (!CorpseManager.hasCorpseDB(player.getUniqueId())
                 &&!CorpseNPCManager.hasNPC(player.getUniqueId())) {
-            if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null))) {
+            if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null), cause)) {
                 event.setDroppedExp(0);
                 event.getDrops().clear();
             }
@@ -81,11 +106,13 @@ public class CorpseListener implements Listener {
 
                 if (offlinePlayer != null)
                     MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.strip",
-                                    Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player")),
+                                    Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
+                                    .color(TextColor.color(Color.YELLOW.asRGB())),
                             Prefix.OPENMC, MessageType.INFO, true);
 
                 if (offlineOwner != null)
-                    MessagesManager.sendMessage(offlineOwner, TranslationManager.translation("feature.corpse.messages.warn_strip"),
+                    MessagesManager.sendMessage(offlineOwner, TranslationManager.translation("feature.corpse.messages.warn_strip")
+                                    .color(TextColor.color(Color.YELLOW.asRGB())),
                             Prefix.OPENMC, MessageType.WARNING, true);
 
                 corpse.dropLoot();
