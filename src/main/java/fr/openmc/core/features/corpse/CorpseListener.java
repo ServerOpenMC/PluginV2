@@ -6,6 +6,8 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -53,6 +55,9 @@ public class CorpseListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
+
+        if (!(boolean) PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.CORPSE)) return;
+
         EntityDamageEvent.DamageCause cause = null;
 
         if (player.getLastDamageCause() != null)
