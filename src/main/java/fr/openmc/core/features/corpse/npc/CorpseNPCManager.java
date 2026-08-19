@@ -128,7 +128,7 @@ public class CorpseNPCManager {
         if (DynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
                 && DynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
             DynamicCooldownManager.clear(owner.getUniqueId(), COOLDOWN_GROUP, false);
-        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 30000); // 2h 7200000
+        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 7200000); // 2h -> 7200000
 
         return true;
     }
@@ -196,4 +196,9 @@ public class CorpseNPCManager {
         return corpseNpcMap.containsKey(ownerUUID);
     }
 
+    public static CorpseNPC getNPC(UUID ownerUUID) {
+        if (!FancyNpcsHook.isEnable()) return null;
+        if (!corpseNpcMap.containsKey(ownerUUID)) return null;
+        return corpseNpcMap.get(ownerUUID);
+    }
 }

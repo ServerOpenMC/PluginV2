@@ -3,10 +3,14 @@ package fr.openmc.core.features.displays.scoreboards.sb;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.corpse.CorpseManager;
+import fr.openmc.core.features.corpse.npc.CorpseNPC;
+import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
@@ -19,6 +23,7 @@ import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.DirectionUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -46,6 +51,26 @@ public class MainScoreboard extends BaseScoreboard {
     @Override
     public void update(Player player, SternalBoard board) {
         List<Component> lines = new ArrayList<>(getDefaultLines(player));
+
+        // Corpse
+        if (CorpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
+
+            lines.add(MiniMessage.miniMessage().deserialize(
+                    "<gradient:#F82C5D:#F64545><title></gradient>",
+                    Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title.to_small"))
+            ).decoration(TextDecoration.BOLD, true));
+
+            lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation("feature.displays.scoreboard.corpse.direction.to_small").color(NamedTextColor.GRAY))
+                    .appendSpace()
+                    .append(text(DirectionUtils.getDirectionArrow(player, corpse.getLocation()), TextColor.color(0xFF8F06)))
+            );
+            lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation("feature.displays.scoreboard.corpse.ends.to_small").color(NamedTextColor.GRAY))
+                    .appendSpace()
+                    .append(text(CorpseManager.getRemainingTime(player.getUniqueId()), TextColor.color(0xFF8F06)))
+            );
+        }
 
         // Contest
         if (WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
