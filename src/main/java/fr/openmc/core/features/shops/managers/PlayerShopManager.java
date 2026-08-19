@@ -70,6 +70,7 @@ public class PlayerShopManager {
     private static boolean createShop(Player player, Location location) {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
 
+        if (!location.getWorld().equals(Bukkit.getWorld("world"))) return false;
         if (WorldGuardHook.isRegionConflict(location)) return false;
         if (!ProtectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
             if ((CityManager.isChunkClaimed(location.getChunk())
