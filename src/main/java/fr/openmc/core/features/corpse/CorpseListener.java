@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corpse;
 
+import com.sk89q.worldedit.util.eventbus.Subscribe;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
@@ -30,25 +31,32 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CorpseListener implements Listener {
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
 
-    public static final Map<UUID, Location> lastSafeLocation = new HashMap<>();
+    private int tick = 0;
 
-    @EventHandler
+    public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
+
+    @Subscribe
     public void onMove(PlayerMoveEvent event) {
+
+        tick++;
+        if (tick < 20) return;
+        tick = 0;
+
         Player player = event.getPlayer();
         Location loc = player.getLocation();
 
         Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 
         if (blockUnder.getType().isSolid()) {
-            lastSafeLocation.put(player.getUniqueId(), loc.clone());
+            lastSafeLocation.put(player.getUniqueId(), blockUnder.getLocation());
         }
     }
-
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
