@@ -151,6 +151,9 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
     public static void deleteCorpse(UUID ownerUUID, FoundTypes found) {
         DBCorpse dbCorpse = corpsesDB.remove(ownerUUID);
 
+        ItemStack[] items = dbCorpse.getInventoryContent().clone();
+        Location deathLoc = dbCorpse.getLocation().clone();
+
         try {
             corpsesDao.delete(dbCorpse);
         } catch (SQLException e) {
@@ -176,6 +179,9 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
             case STRIP -> DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
 
             case ABORT -> {
+                for (ItemStack item : items)
+                    deathLoc.getWorld().dropItem(deathLoc, item);
+
                 DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.abort")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
