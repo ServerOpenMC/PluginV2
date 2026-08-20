@@ -41,6 +41,10 @@ public class SingularityWorldTemplate extends WorldTemplate
         gamerules.put(GameRules.ADVANCE_WEATHER, Boolean.FALSE);
         gamerules.put(GameRules.LOCATOR_BAR, Boolean.FALSE);
         gamerules.put(GameRules.PVP, Boolean.FALSE);
+        gamerules.put(GameRules.ALLOW_ENTERING_NETHER_USING_PORTALS, Boolean.FALSE);
+
+        gamerules.put(GameRules.TNT_EXPLODES, Boolean.FALSE);
+
         gamerules.put(GameRules.SPAWN_MOBS, Boolean.FALSE);
         gamerules.put(GameRules.SPAWN_MONSTERS, Boolean.FALSE);
         gamerules.put(GameRules.SPAWN_PATROLS, Boolean.FALSE);
@@ -48,9 +52,6 @@ public class SingularityWorldTemplate extends WorldTemplate
         gamerules.put(GameRules.SPAWN_WARDENS, Boolean.FALSE);
         gamerules.put(GameRules.SPAWN_WANDERING_TRADERS, Boolean.FALSE);
         gamerules.put(GameRules.SPAWNER_BLOCKS_WORK, Boolean.FALSE);
-
-        // marche aussi avec un autre type de règle, sans souci de compilation
-        // gamerules.put(GameRules.RANDOM_TICK_SPEED, 3);
 
         return gamerules;
     }
