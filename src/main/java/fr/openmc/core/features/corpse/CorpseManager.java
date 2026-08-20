@@ -214,6 +214,10 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
                         .getRemaining()), TextColor.color(0xFF8F06));
     }
 
+    public static Component getLocation(Location location) {
+        return Component.text("x: " + location.getBlockX() + " y: " + location.getBlockY() + " z: " + location.getBlockZ());
+    }
+
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(CorpseListener::new);

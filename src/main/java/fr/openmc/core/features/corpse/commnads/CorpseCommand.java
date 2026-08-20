@@ -39,7 +39,8 @@ public class CorpseCommand {
     @CommandPermission("omc.admins.commands.corpse.locate")
     void onLocate(CommandSender sender, @Named("player") @SuggestWith(CorpseOwnersAutoComplete.class) OfflinePlayer target) {
         if (CorpseNPCManager.getNPC(target.getUniqueId()) instanceof CorpseNPC npc) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.command.locate", Component.text(npc.getLocation().toString())),
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.command.locate",
+                            CorpseManager.getLocation(npc.getLocation())),
                     Prefix.CORPSE, MessageType.SUCCESS, true);
         } else
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.no_corpse_found"),
@@ -53,7 +54,7 @@ public class CorpseCommand {
 
             sender.teleport(npc.getLocation());
 
-            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.command.teleport", Component.text(npc.getLocation().toString())),
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.command.teleport", CorpseManager.getLocation(npc.getLocation())),
                     Prefix.CORPSE, MessageType.SUCCESS, true);
         } else
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.no_corpse_found"),
