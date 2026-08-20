@@ -70,7 +70,7 @@ public final class KeyBlock {
         if (block == null) return false;
 
         CustomBlock placed = CustomBlock.byAlreadyPlaced(block);
-        if (isCustom()) return customBlock.getNamespacedID().equals(placed.getNamespacedID());
+        if (placed != null && isCustom()) return customBlock.getNamespacedID().equals(placed.getNamespacedID());
 
         return blockType == block.getType().asBlockType();
     }
