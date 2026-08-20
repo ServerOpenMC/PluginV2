@@ -15,8 +15,8 @@ public class OnlinePlayerAutoComplete implements SuggestionProvider<BukkitComman
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         return Bukkit.getOnlinePlayers().stream()
+                .filter(target -> !target.hasMetadata(OMCPlugin.VANISH_META_KEY))
                 .map(Player::getName)
-                .filter(name -> !context.actor().requirePlayer().hasMetadata(OMCPlugin.VANISH_META_KEY))
                 .toList();
     }
 }
