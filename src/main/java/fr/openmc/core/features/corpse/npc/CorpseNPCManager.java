@@ -133,7 +133,7 @@ public class CorpseNPCManager {
         if (DynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
                 && DynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
             DynamicCooldownManager.clear(owner.getUniqueId(), COOLDOWN_GROUP, false);
-        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 7200000); // 2h -> 7200000
+        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 20 * 60 * 60 * 100); // 2h -> 7200000
 
         return true;
     }
