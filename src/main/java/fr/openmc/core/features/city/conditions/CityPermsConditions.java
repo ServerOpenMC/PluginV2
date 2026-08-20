@@ -48,6 +48,11 @@ public class CityPermsConditions {
     public static boolean canModifyPerms(Player sender, CityPermission permission) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
+        if (permission == CityPermission.OWNER) {
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.cant_do_this"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
