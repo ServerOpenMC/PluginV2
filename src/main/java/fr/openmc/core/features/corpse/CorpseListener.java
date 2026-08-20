@@ -1,6 +1,5 @@
 package fr.openmc.core.features.corpse;
 
-import com.sk89q.worldedit.util.eventbus.Subscribe;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
@@ -41,7 +40,7 @@ public class CorpseListener implements Listener {
 
     public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
 
-    @Subscribe
+    @EventHandler
     public void onMove(PlayerMoveEvent event) {
 
         tick++;
