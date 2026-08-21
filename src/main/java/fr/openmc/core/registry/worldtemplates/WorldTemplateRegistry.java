@@ -5,11 +5,9 @@ import fr.openmc.api.datapacks.builders.dimensions.VoidDimensionBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
-import fr.openmc.core.utils.nms.world.WorldBiomeNMS;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import org.bukkit.World;
 
@@ -47,29 +45,13 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
 
             worldTemplateDatapack.buildBootstrap(context, true); // todo: remettre sur false qd fini de debug
         }
-
-        // * Transfère les chunks de la dimension dans son dossier
-        for (WorldTemplate template : values()) {
-            if (template.isAlreadyCreated(context.getDataDirectory())) continue;
-            template.copyToDimensionsFolder(context);
-            OMCLogger.infoFormatted("La map " + template.getKey().asString() + " a été copié avec succès");
-        }
     }
 
     @Override
     public void init() {
         for (WorldTemplate template : values()) {
             if (WorldTemplateConfig.hasFirstLoaded(template)) continue;
-
-            try {
-                OMCLogger.infoFormatted("Applique les biomes sur la dimension en cours {}", template.getKey());
-                WorldBiomeNMS.applyBiome(template.getWorld(), template.getBiome());
-                OMCLogger.successFormatted("Biomes appliqués sur la dimension {}", template.getKey());
-            } catch (IOException e) {
-                OMCLogger.error("Erreur lors de l'appliquer les biomes sur la dimension {}", template.getKey());
-            }
-            template.onFirstLoad();
-
+            template.firstLoad();
             WorldTemplateConfig.addFirstLoaded(template);
         }
     }
