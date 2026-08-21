@@ -15,22 +15,24 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.corpse.commnads.CorpseCommand;
 import fr.openmc.core.features.corpse.model.DBCorpse;
+import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.DirectionUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import fr.openmc.core.utils.world.WorldUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -207,6 +209,18 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
         return CorpseListener.lastSafeLocation.get(player.getUniqueId());
     }
 
+    public static Component getCorpseDirection(Player player, CorpseNPC corpse) {
+
+        if (player.getWorld() != corpse.getLocation().getWorld())
+            return TranslationManager.translation(WorldUtils.getDisplayedWorldName(corpse.getLocation().getWorld().getName()))
+                    .color(TextColor.color(0xFF8F06))
+                    .decoration(TextDecoration.BOLD, false);
+        else
+            return Component.text(
+                            DirectionUtils.getDirectionArrow(player, corpse.getLocation()),
+                    TextColor.color(0xFF8F06)).decoration(TextDecoration.BOLD, false);
+    }
+
     public static Component getRemainingTime(UUID playerUUID) {
 
         Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
@@ -217,11 +231,15 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
         return Component.text(
                 DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID)
                         .get(CorpseNPCManager.COOLDOWN_GROUP)
-                        .getRemaining()), TextColor.color(0xFF8F06));
+                        .getRemaining()), NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
     }
 
     public static Component getLocation(Location location) {
-        return Component.text("x: " + location.getBlockX() + " y: " + location.getBlockY() + " z: " + location.getBlockZ());
+        return Component.text("world : " + TranslationManager.translation(WorldUtils.getDisplayedWorldName(location.getWorld().getName()))
+                + " x: " + location.getBlockX()
+                + " y: " + location.getBlockY()
+                + " z: " + location.getBlockZ()
+        );
     }
 
     @Override

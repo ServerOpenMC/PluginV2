@@ -46,7 +46,7 @@ public class CorpseListener implements Listener {
     public void onMove(PlayerMoveEvent event) {
 
         tick++; // it's more a step counter
-        if (tick < 20) return;
+        if (tick < 10) return;
         tick = 0;
 
         Player player = event.getPlayer();
@@ -55,7 +55,7 @@ public class CorpseListener implements Listener {
         Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 
         if (blockUnder.getType().isSolid()) {
-            lastSafeLocation.put(player.getUniqueId(), blockUnder.getLocation());
+            lastSafeLocation.put(player.getUniqueId(), loc);
         }
     }
 

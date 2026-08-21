@@ -3,7 +3,6 @@ package fr.openmc.core.features.displays.scoreboards.sb;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.City;
@@ -57,16 +56,10 @@ public class MainScoreboard extends BaseScoreboard {
 
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
-                    Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title.to_small"))
-            ).decoration(TextDecoration.BOLD, true));
-
-            lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.displays.scoreboard.corpse.direction.to_small").color(NamedTextColor.GRAY))
+                    Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title.to_small")))
+                    .decoration(TextDecoration.BOLD, true)
                     .appendSpace()
-                    .append(text(DirectionUtils.getDirectionArrow(player, corpse.getLocation()), TextColor.color(0xFF8F06)))
-            );
-            lines.add(Component.text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.displays.scoreboard.corpse.ends.to_small").color(NamedTextColor.GRAY))
+                    .append(CorpseManager.getCorpseDirection(player, corpse))
                     .appendSpace()
                     .append(CorpseManager.getRemainingTime(player.getUniqueId()))
             );

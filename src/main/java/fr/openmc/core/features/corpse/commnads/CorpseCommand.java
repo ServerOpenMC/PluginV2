@@ -8,7 +8,6 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,8 +35,18 @@ public class CorpseCommand {
     }
 
     @Subcommand("locate")
+    void onLocate(Player sender) {
+        if (CorpseNPCManager.getNPC(sender.getUniqueId()) instanceof CorpseNPC npc) {
+            MessagesManager.sendMessage(sender, CorpseManager.getCorpseDirection(sender, npc),
+                    Prefix.CORPSE, MessageType.SUCCESS, true);
+        } else
+            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.no_corpse_found"),
+                    Prefix.CORPSE, MessageType.WARNING, true);
+    }
+
+    @Subcommand("locate")
     @CommandPermission("omc.admins.commands.corpse.locate")
-    void onLocate(CommandSender sender, @Named("player") @SuggestWith(CorpseOwnersAutoComplete.class) OfflinePlayer target) {
+    void onLocateAdmin(CommandSender sender, @Named("player") @SuggestWith(CorpseOwnersAutoComplete.class) OfflinePlayer target) {
         if (CorpseNPCManager.getNPC(target.getUniqueId()) instanceof CorpseNPC npc) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.command.locate",
                             CorpseManager.getLocation(npc.getLocation())),
