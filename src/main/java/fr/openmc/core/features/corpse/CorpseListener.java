@@ -3,7 +3,9 @@ package fr.openmc.core.features.corpse;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -43,7 +45,7 @@ public class CorpseListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
 
-        tick++;
+        tick++; // it's more a step counter
         if (tick < 20) return;
         tick = 0;
 
@@ -61,7 +63,12 @@ public class CorpseListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
 
-        if (!(boolean) PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.CORPSE)) return;
+        OMCPlayer omcPlayer = OMCPlayer.of(player);
+
+        //if (!(boolean) PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.CORPSE)) return;
+
+        if (omcPlayer.city().hasCity())
+            if (omcPlayer.city().getCity().isInWar()) return;
 
         EntityDamageEvent.DamageCause cause = null;
 
