@@ -88,7 +88,7 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
 
             for (Player player : Bukkit.getOnlinePlayers()) {
 
-                if (!player.getWorld().getEnvironment().equals(World.Environment.THE_END)) continue;
+                if (!player.getWorld().getName().equals("world_the_end")) continue;
 
                 Location loc = player.getLocation();
 
