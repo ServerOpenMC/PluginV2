@@ -34,8 +34,6 @@ public enum SettingType {
             Material.ENDER_PEARL, Material.GRAY_DYE, "feature.settings.type.teleport_title_fade.description"),
     JOIN_ANIMATION(ValueType.BOOLEAN, true, "feature.settings.type.join_animation.name",
             Material.GLOW_INK_SAC, Material.INK_SAC, "feature.settings.type.join_animation.description"),
-    //CORPSE(ValueType.BOOLEAN, true, "feature.settings.type.corpse.name",
-    //        Material.SKELETON_SKULL, Material.WITHER_SKELETON_SKULL, "feature.settings.type.corpse.description"),
 
     ;
 
