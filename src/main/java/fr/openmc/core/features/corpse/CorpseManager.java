@@ -18,7 +18,6 @@ import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.DirectionUtils;
@@ -33,6 +32,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -40,6 +40,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Nocolm"})
 public class CorpseManager extends Feature implements HasDatabase, HasListeners, HasCommands {
@@ -49,10 +50,13 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
 
     private static Dao<DBCorpse, String> corpsesDao;
 
+    public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
+
     @Override
     public void init() {
         CorpseNPCManager.init();
         corpsesDB = loadAllCorpses();
+        startVoidDetection();
     }
 
     @Override
@@ -77,6 +81,27 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
         } catch (Exception e) {
             OMCLogger.error("Impossible de sauvegarder les corpses pendant l'arret.", e);
         }
+    }
+
+    private static void startVoidDetection() {
+        Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+
+                if (!player.getWorld().getEnvironment().equals(World.Environment.THE_END)) continue;
+
+                Location loc = player.getLocation();
+
+                if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
+
+                Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
+
+                if (blockUnder.getType().isSolid()) {
+                    lastSafeLocation.put(player.getUniqueId(), loc.clone());
+                }
+            }
+
+        }, 0L, 10L);
     }
 
     public static Map<UUID, DBCorpse> loadAllCorpses() {
@@ -205,8 +230,8 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
     }
 
     public static Location getLastSafePositionOf(Player player) {
-        if (!CorpseListener.lastSafeLocation.containsKey(player.getUniqueId())) return player.getLocation();
-        return CorpseListener.lastSafeLocation.get(player.getUniqueId());
+        if (!lastSafeLocation.containsKey(player.getUniqueId())) return player.getLocation();
+        return lastSafeLocation.get(player.getUniqueId());
     }
 
     public static Component getCorpseDirection(Player player, CorpseNPC corpse) {

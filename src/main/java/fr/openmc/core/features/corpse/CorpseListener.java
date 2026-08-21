@@ -5,11 +5,8 @@ import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -19,53 +16,26 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CorpseListener implements Listener {
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
-
-    private int tick = 0;
-
-    public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-
-        tick++; // it's more a step counter
-        if (tick < 10) return;
-        tick = 0;
-
-        Player player = event.getPlayer();
-        Location loc = player.getLocation();
-
-        Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
-
-        if (blockUnder.getType().isSolid()) {
-            lastSafeLocation.put(player.getUniqueId(), loc);
-        }
-    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
 
         OMCPlayer omcPlayer = OMCPlayer.of(player);
-
-        //if (!(boolean) PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.CORPSE)) return;
 
         if (omcPlayer.city().hasCity())
             if (omcPlayer.city().getCity().isInWar()) return;
