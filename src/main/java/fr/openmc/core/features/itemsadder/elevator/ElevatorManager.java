@@ -5,7 +5,9 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -21,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Credit(developers = {"Nocolm"}, graphist = {"Gexary"})
-public class ElevatorManager extends Feature implements HasListeners {
+public class ElevatorManager extends Feature implements LoadIfEnable<ItemsAdderHook>, HasListeners {
 
     // Map<(X,Z), Set<Y>>
     public static Map<Vector2i, Set<Integer>> elevatorsPerColumn = new HashMap<>();
