@@ -94,7 +94,8 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
                 Location loc = player.getLocation();
 
-                if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
+                if (lastSafeLocation.containsKey(player.getUniqueId()))
+                    if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
 
                 Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 
