@@ -15,6 +15,7 @@ public class CityPermissionsAutoComplete implements SuggestionProvider<BukkitCom
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         return Arrays.stream(CityPermission.values())
+                .filter(c->!c.equals(CityPermission.OWNER))
                 .map(CityPermission::name)
                 .collect(Collectors.toList());
     }
