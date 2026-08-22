@@ -21,6 +21,7 @@ import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.displays.TabList;
@@ -118,6 +119,7 @@ public class OMCPlugin extends JavaPlugin {
             DiscordLinkManager::new,
             ProfileManager::new,
             () -> new ElevatorManager(),
+            () -> new CorpseManager(),
             QuestsManager::new,
             CityManager::new,
             DynamicCooldownManager::new,
