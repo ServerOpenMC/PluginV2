@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.corpse.commnads.CorpseCommand;
@@ -18,6 +19,7 @@ import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.DirectionUtils;
@@ -43,7 +45,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Nocolm"})
-public class CorpseManager extends Feature implements HasDatabase, HasListeners, HasCommands {
+public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook>, HasDatabase, HasListeners, HasCommands {
 
     @Getter
     private static Map<UUID, DBCorpse> corpsesDB;
