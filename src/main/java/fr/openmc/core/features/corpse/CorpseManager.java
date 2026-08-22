@@ -158,7 +158,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                 }
 
                 if (exposedLocation != null)
-                    location = exposedLocation;
+                    location = exposedLocation.add(0, -0.4, 0);
             }
             case VOID -> {
                 location = getLastSafePositionOf(player);
