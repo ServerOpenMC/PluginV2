@@ -2,11 +2,14 @@ package fr.openmc.core.features.singularity.contents.worldtemplates;
 
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
+import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
 import fr.openmc.core.registry.worldtemplates.WorldTemplate;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasGamerules;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasWorldBorder;
+import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.GameRule;
 import org.bukkit.GameRules;
+import org.bukkit.Particle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +28,35 @@ public class SingularityWorldTemplate extends WorldTemplate
 
     @Override
     public DimensionTypeBuilder dimensionType() {
-        return new DimensionTypeBuilder();
+        return new DimensionTypeBuilder()
+                .attributesBuilder(new EnvironnementAttributeBuilder()
+                        .attributes(obj -> {
+                            obj.addProperty("visual/ambient_light_color", "#C4C4C4");
+                            obj.addProperty("visual/block_light_tint", "#1AFFE4");
+                            obj.addProperty("visual/night_vision_color", "#61F5FF");
+
+                            obj.addProperty("visual/fog_start_distance", 64);
+                            obj.addProperty("visual/fog_end_distance", 174);
+
+                            obj.addProperty("minecraft:visual/sky_light_color", "#f7f7f7");
+                            obj.addProperty("visual/fog_color","#E8E8E8");
+                        })
+                        .ambientParticles(Particle.ENCHANT, 0.02f)
+                        .ambientParticles(Particle.FLASH, 0.0007f, Map.of("color", 14342874)))
+                .defaultClock(null)
+                .ambientLight(0f)
+                .cardinalLight("nether")
+                .timelines("#minecraft:in_nether")
+                .skybox(DimensionType.Skybox.NONE)
+                .hasSkylight(true)
+                .hasCeiling(true)
+                .hasFixedTime(true);
     }
 
     @Override
     public BiomeBuilder biome() {
-        return new BiomeBuilder();
+        return new BiomeBuilder()
+                .grassColor("#ADADAD");
     }
 
     @Override
