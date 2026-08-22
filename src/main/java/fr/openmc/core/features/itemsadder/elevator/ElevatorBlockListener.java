@@ -105,7 +105,7 @@ public class ElevatorBlockListener implements Listener {
 
             CustomStack custom = CustomStack.byItemStack(item);
 
-            if (ElevatorIAUtils.isElevator(custom)) {
+            if (custom != null && ElevatorManager.isElevator(custom)) {
                 block = custom;
                 continue;
             }

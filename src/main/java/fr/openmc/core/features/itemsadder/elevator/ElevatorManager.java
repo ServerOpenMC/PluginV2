@@ -1,5 +1,7 @@
 package fr.openmc.core.features.itemsadder.elevator;
 
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
@@ -34,7 +36,11 @@ public class ElevatorManager extends Feature implements LoadIfEnable<ItemsAdderH
 
         if (blockUnderPlayer.isEmpty()) return false;
 
-        return ElevatorIAUtils.isElevator(ElevatorIAUtils.getCustomBlock(blockUnderPlayer));
+        CustomBlock cBlock = CustomBlock.byAlreadyPlaced(blockUnderPlayer);
+
+        if (cBlock == null) return false;
+
+        return isElevator(cBlock);
     }
 
     /**
@@ -52,7 +58,12 @@ public class ElevatorManager extends Feature implements LoadIfEnable<ItemsAdderH
         for (int y = minY; y < maxY; y++) {
             Block block = loc.getWorld().getBlockAt(x, y, z);
 
-            if (ElevatorIAUtils.isElevator(ElevatorIAUtils.getCustomBlock(block))) {
+            CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
+
+            if (customBlock == null)
+                continue;
+
+            if (isElevator(customBlock)) {
                 elevators.add(y);
             }
         }
@@ -153,6 +164,11 @@ public class ElevatorManager extends Feature implements LoadIfEnable<ItemsAdderH
         for (ElevatorColor variant : ElevatorColor.values())
             if (variant.getElevatorId().matches(namespaceID)) return true;
         return false;
+    }
+
+    public static boolean isElevator(CustomStack item) {
+        if (item == null) return false;
+        return isElevator(item.getNamespacedID());
     }
 
     public static boolean isSafeGround(Location loc) {
