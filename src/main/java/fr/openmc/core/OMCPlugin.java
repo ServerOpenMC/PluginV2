@@ -118,7 +118,7 @@ public class OMCPlugin extends JavaPlugin {
             MailboxManager::new,
             DiscordLinkManager::new,
             ProfileManager::new,
-            ElevatorManager::new,
+            () -> new ElevatorManager(),
             () -> new CorpseManager(),
             QuestsManager::new,
             CityManager::new,
