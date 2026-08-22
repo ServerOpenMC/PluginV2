@@ -119,7 +119,7 @@ public class OMCPlugin extends JavaPlugin {
             DiscordLinkManager::new,
             ProfileManager::new,
             ElevatorManager::new,
-            CorpseManager::new,
+            () -> new CorpseManager(),
             QuestsManager::new,
             CityManager::new,
             DynamicCooldownManager::new,
