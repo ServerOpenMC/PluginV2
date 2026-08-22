@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.nms;
+package fr.openmc.core.utils.nms.player;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.ambient.CustomAmbient;

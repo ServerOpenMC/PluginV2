@@ -30,7 +30,7 @@ class EconomyFormattingTest {
     @DisplayName("Format thousands with k suffix")
     void testFormat_Thousands() {
         String result = EconomyManager.getFormattedSimplifiedNumber(1500);
-        Assertions.assertEquals("1.5k", result);
+        Assertions.assertEquals("1,5k", result);
     }
 
     @Test
@@ -55,7 +55,7 @@ class EconomyFormattingTest {
     @DisplayName("Format with decimal truncation")
     void testFormat_Decimal() {
         String result = EconomyManager.getFormattedSimplifiedNumber(2_500_000);
-        Assertions.assertEquals("2.5M", result);
+        Assertions.assertEquals("2,5M", result);
     }
 
     @Test

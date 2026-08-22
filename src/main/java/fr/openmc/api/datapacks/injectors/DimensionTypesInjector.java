@@ -1,14 +1,9 @@
 package fr.openmc.api.datapacks.injectors;
 
 import fr.openmc.api.datapacks.DatapackInjector;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -18,38 +13,44 @@ import java.util.function.Consumer;
 public class DimensionTypesInjector implements DatapackInjector {
 
     private final String namespace;
-    private final Map<String, DimensionTypeBuilder> entries = new LinkedHashMap<>();
+    private final String id;
+    private final DimensionTypeBuilder builder;
 
-    public DimensionTypesInjector(String namespace) {
+    public DimensionTypesInjector(String namespace, String id, DimensionTypeBuilder builder) {
         this.namespace = namespace;
+        this.id = id;
+        this.builder = builder;
     }
 
-    public DimensionTypesInjector add(String id, Consumer<DimensionTypeBuilder> builder) {
-        DimensionTypeBuilder instance = new DimensionTypeBuilder();
-        builder.accept(instance);
-        entries.put(id, instance);
-        return this;
-    }
-
-    public DimensionTypesInjector add(String id, DimensionTypeBuilder builder) {
-        entries.put(id, builder);
-        return this;
+    public DimensionTypesInjector(String namespace, String id, Consumer<DimensionTypeBuilder> builder) {
+        this.namespace = namespace;
+        this.id = id;
+        this.builder = new DimensionTypeBuilder();
+        builder.accept(this.builder);
     }
 
     @Override
-    public void inject(File rootFile) {
-        if (entries.isEmpty()) return;
+    public String[] getPath() {
+        return new String[]{"dimension_type"};
+    }
 
-        Path root = rootFile.toPath().resolve("data").resolve(namespace).resolve("dimension_type");
-        try {
-            Files.createDirectories(root);
-            for (var entry : entries.entrySet()) {
-                Path dimensionTypeFile = root.resolve(entry.getKey() + ".json");
-                Files.createDirectories(dimensionTypeFile.getParent());
-                Files.writeString(dimensionTypeFile, GSON.toJson(entry.getValue().toJson()));
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot write dimension_type files", e);
-        }
+    @Override
+    public ContentBuilder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getExtension() {
+        return "json";
     }
 }
