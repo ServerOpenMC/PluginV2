@@ -72,10 +72,10 @@ public class VampireBossLootManager {
                         PlayerNameCache.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
-            } else {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(entry.getKey());
-                if (offlinePlayer == null) continue;
-                if (!offlinePlayer.isOnline()) continue;
+            }
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(entry.getKey());
+
+            if (offlinePlayer != null && offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
                 Player player = offlinePlayer.getPlayer();
                 if (player == null) continue;
 

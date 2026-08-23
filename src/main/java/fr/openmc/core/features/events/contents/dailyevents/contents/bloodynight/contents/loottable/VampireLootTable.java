@@ -26,13 +26,13 @@ public class VampireLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,1, 1, 5),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,1, 1, 10),
                 new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(
-                        o -> o.setAmplifier(4)),0.6, 1),
+                        o -> o.setAmplifier(4)),0.7, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD,0.50, 1),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1, 2),
-                        0.25,
+                        0.35,
                         1
                 )
         ));

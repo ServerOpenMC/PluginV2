@@ -57,6 +57,8 @@ public class BitsShopMenu extends Menu {
         inventory.put(14, createBuyButton(OMCRegistry.CUSTOM_ITEMS.OFFICE_BOX, 500));
         inventory.put(15, createBuyButton(OMCRegistry.CUSTOM_ITEMS.KITCHEN_BOX, 500));
 
+        inventory.put(22, createBuyButton(OMCRegistry.CUSTOM_ITEMS.PELUCHE_ROOT, 2000));
+
         return inventory;
     }
 

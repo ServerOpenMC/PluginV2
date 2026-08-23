@@ -57,7 +57,7 @@ jobs:
           files: builds/**
 
       - name: Deploy to server
-        uses: blobles-dev/pterodactyl-upload-action@pterodactyl-file-upload-modification-allow-http-200-fileupload
+        uses: ServerOpenMC/pterodactyl-upload-action@1.0.0
         with:
           panel-host: ${{ secrets.PANEL_HOST }}
           api-key: ${{ secrets.API_KEY }}

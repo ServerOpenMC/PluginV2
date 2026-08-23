@@ -225,6 +225,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         if (!isActiveDailyEvent()) return -1;
         if (getActiveDailyEvent() != event) return -1;
 
-        return DateUtils.getLocalDateTime().until(outgoingEvent.getScheduledEndDate(), ChronoUnit.SECONDS);
+        float remainingTime = DateUtils.getLocalDateTime().until(outgoingEvent.getScheduledEndDate(), ChronoUnit.SECONDS);
+        return remainingTime < 0 ? 0 : remainingTime;
     }
 }
