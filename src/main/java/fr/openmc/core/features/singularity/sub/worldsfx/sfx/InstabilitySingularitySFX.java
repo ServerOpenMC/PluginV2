@@ -14,7 +14,7 @@ public class InstabilitySingularitySFX {
     private final Location origin;
 
     private final int MIN_INTERVAL = 1; // en secondes
-    private final int MAX_INTERVAL = 6; // en secondes
+    private final int MAX_INTERVAL = 4; // en secondes
 
     public InstabilitySingularitySFX(Location origin) {
         this.origin = origin;
@@ -35,7 +35,7 @@ public class InstabilitySingularitySFX {
         currentTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (!origin.getWorld().getPlayers().isEmpty())
                 ParticleUtils.spawnParticlesInCube(
-                        origin, Particle.FLASH, 100, 100,
+                        origin, Particle.FLASH, 40, 20,
                         Color.fromRGB(92, 250, 235));
 
             long nextDelay = RandomUtils.randomBetween(MIN_INTERVAL, MAX_INTERVAL) * 20L;
