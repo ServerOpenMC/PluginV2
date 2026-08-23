@@ -103,7 +103,7 @@ public class CorpseNPCManager {
 
         dataCorpse.setSkin(ownerName);
 
-        dataCorpse.setDisplayName("<red>☠</red><gray><lang:feature.corpse.npc.display.owner:" + ownerName + "></gray>");
+        dataCorpse.setDisplayName("<red>☠ </red><gray><lang:feature.corpse.npc.display.owner:" + ownerName + "></gray>");
 
         dataCorpse.addEquipment(NpcEquipmentSlot.HEAD, helmet);
         dataCorpse.addEquipment(NpcEquipmentSlot.CHEST, chestplate);
