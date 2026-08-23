@@ -37,6 +37,7 @@ import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
@@ -61,7 +62,6 @@ import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.ItemsAddersListener;
-import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
@@ -235,7 +235,7 @@ public class OMCPlugin extends JavaPlugin {
                 });
 
         if (WorldGuardHook.isEnable()) {
-            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
+            ContestParticlesUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
         }
     }
 

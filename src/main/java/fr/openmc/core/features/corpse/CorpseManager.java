@@ -54,6 +54,12 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
     public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
 
+    public static final List<String> ALLOWED_DIM = List.of(
+            "world", "world_nether", "world_the_end"
+    );
+
+
+
     @Override
     public void init() {
         CorpseNPCManager.init();
@@ -94,7 +100,8 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
                 Location loc = player.getLocation();
 
-                if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
+                if (lastSafeLocation.containsKey(player.getUniqueId()))
+                    if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
 
                 Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 
@@ -157,7 +164,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                 }
 
                 if (exposedLocation != null)
-                    location = exposedLocation;
+                    location = exposedLocation.add(0, -0.4, 0);
             }
             case VOID -> {
                 location = getLastSafePositionOf(player);

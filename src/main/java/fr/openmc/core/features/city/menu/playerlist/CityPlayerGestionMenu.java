@@ -11,7 +11,7 @@ import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -76,7 +76,7 @@ public class CityPlayerGestionMenu extends Menu {
             } else {
                 loreKick = TranslationManager.translationLore(
                         "feature.city.menus.members.manage.kick.info",
-                        PlayerNameCache.name(playerTarget.getUniqueId()).color(NamedTextColor.GRAY)
+                        CachePlayerName.name(playerTarget.getUniqueId()).color(NamedTextColor.GRAY)
                 );
             }
         } else {

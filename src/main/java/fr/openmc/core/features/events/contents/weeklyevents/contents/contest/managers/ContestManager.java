@@ -15,6 +15,7 @@ import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.listeners.ContestIntractEvents;
@@ -28,7 +29,6 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -105,7 +105,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
 
         // ** PARTICLE REGION **
         if (WorldGuardHook.isEnable()) {
-            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+            ContestParticlesUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
     }
 
@@ -210,8 +210,8 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * - Diffuse un message et joue un son aux joueurs connectés
      */
     public static void initPhase1() {
-        ParticleUtils.color1 = null;
-        ParticleUtils.color2 = null;
+        ContestParticlesUtils.color1 = null;
+        ContestParticlesUtils.color2 = null;
 
         Bukkit.broadcast(TranslationManager.translation("feature.events.contest.broadcast.phase1"));
 
@@ -253,8 +253,8 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * - Réinitialise les données en DB pour le prochain contest
      */
     public static void initPhase3() {
-        ParticleUtils.color1 = null;
-        ParticleUtils.color2 = null;
+        ContestParticlesUtils.color1 = null;
+        ContestParticlesUtils.color2 = null;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             InventoryView openInv = player.getOpenInventory();

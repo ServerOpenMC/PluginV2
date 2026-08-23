@@ -16,7 +16,8 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.utils.cache.CachePlaytime;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.entities.TextDisplay;
@@ -29,7 +30,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -487,7 +487,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
                 .limit(10)
                 .toList()) {
-            String playerName = PlayerNameCache.getName(entry.getKey());
+            String playerName = CachePlayerName.getName(entry.getKey());
             String formattedBalance = EconomyManager.getFormattedSimplifiedNumber(entry.getValue());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
         }
@@ -516,36 +516,23 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      * Updates the playtime leaderboard map by sorting and formatting player playtime.
      */
     public static void updatePlayTimeMap() {
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Map<UUID, Long> playtimes = new HashMap<>();
+        Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
+        int rank = 1;
 
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                long playtime = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
-                playtimes.put(player.getUniqueId(), playtime);
-            }
+        List<Map.Entry<OfflinePlayer, Long>> sorted = Arrays.stream(Bukkit.getOfflinePlayers())
+                .filter(p -> p.getName() != null)
+                .map(p -> Map.entry(p, CachePlaytime.getPlaytime(p)))
+                .sorted(Map.Entry.<OfflinePlayer, Long>comparingByValue().reversed())
+                .limit(10)
+                .toList();
 
-            List<Map.Entry<UUID, Long>> sorted = playtimes.entrySet().stream()
-                    .sorted(Map.Entry.<UUID, Long>comparingByKey().reversed())
-                    .limit(10)
-                    .toList();
+        for (var entry : sorted) {
+            String playerName = entry.getKey().getName();
+            String playTime = DateUtils.convertTime(entry.getValue());
+            newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
+        }
 
-            Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
-            int rank = 1;
-
-            for (Map.Entry<UUID, Long> entry : sorted) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
-
-                String playerName = player.getName();
-                String playTime = DateUtils.convertTime(entry.getValue());
-
-                newMap.put(
-                        rank++,
-                        new AbstractMap.SimpleEntry<>(playerName, playTime)
-                );
-            }
-
-            playTimeMap = newMap;
-        });
+        playTimeMap = newMap;
     }
 
     public static void updatePumpkinCountMap() {
@@ -557,7 +544,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
                 .limit(10)
                 .toList()) {
-            String playerName = PlayerNameCache.getName(entry.getKey());
+            String playerName = CachePlayerName.getName(entry.getKey());
             String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }

@@ -20,7 +20,7 @@ import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -95,7 +95,7 @@ public class MainWarMenu extends PaginatedMenu {
                     Component.empty(),
                     TranslationManager.translation(
                             "feature.city.war.menu.main.owner",
-                            Component.text(PlainTextComponentSerializer.plainText().serialize(PlayerNameCache.name(player.getUniqueId())))
+                            Component.text(PlainTextComponentSerializer.plainText().serialize(CachePlayerName.name(player.getUniqueId())))
                                     .color(NamedTextColor.LIGHT_PURPLE)
                     ).color(NamedTextColor.GRAY),
                     TranslationManager.translation(
