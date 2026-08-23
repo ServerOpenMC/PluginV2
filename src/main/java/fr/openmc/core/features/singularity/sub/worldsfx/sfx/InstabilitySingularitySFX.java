@@ -33,9 +33,10 @@ public class InstabilitySingularitySFX {
 
     private void scheduleNextPulse(long delay) {
         currentTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            ParticleUtils.spawnParticlesInCube(
-                    origin, Particle.FLASH, 120, 100,
-                    Color.fromRGB(92, 250, 235));
+            if (!origin.getWorld().getPlayers().isEmpty())
+                ParticleUtils.spawnParticlesInCube(
+                        origin, Particle.FLASH, 100, 100,
+                        Color.fromRGB(92, 250, 235));
 
             long nextDelay = RandomUtils.randomBetween(MIN_INTERVAL, MAX_INTERVAL) * 20L;
             scheduleNextPulse(nextDelay);

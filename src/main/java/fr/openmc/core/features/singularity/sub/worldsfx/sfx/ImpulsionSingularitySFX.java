@@ -24,7 +24,8 @@ public class ImpulsionSingularitySFX {
         currentTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
             lastImpulsion = LocalDateTime.now();
 
-            ParticleUtils.spawnRepulsedParticlesSpherical(origin, Particle.SNEEZE, 500, 400, 20 * 50, null);
+            if (!origin.getWorld().getPlayers().isEmpty())
+                ParticleUtils.spawnRepulsedParticlesSpherical(origin, Particle.SNEEZE, 500, 400, 20 * 50, null);
         }, 0L, IMPULSION_INTERVAL * 60 * 20);
     }
 

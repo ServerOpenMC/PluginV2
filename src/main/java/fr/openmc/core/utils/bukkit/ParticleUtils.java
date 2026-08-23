@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.openmc.core.OMCPlugin;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -85,8 +86,32 @@ public class ParticleUtils {
     }
 
     public static <T> void sendParticlePacket(Collection<Player> receivers, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
+        Object resolvedData;
+        if (data != null) {
+            resolvedData = data;
+        } else {
+            Supplier<Object> fallback = PARTICLE_FALLBACKS.get(particle.getKey().getKey());
+            if (fallback != null) {
+                resolvedData = fallback.get();
+            } else {
+                resolvedData = null;
+            }
+        }
+
+        ParticleOptions particleParam = CraftParticle.createParticleParam(particle, resolvedData);
+
+        ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
+                particleParam,
+                false,
+                false,
+                location.x(), location.y(), location.z(),
+                (float) offsetX, (float) offsetY, (float) offsetZ,
+                (float) speed,
+                count
+        );
+
         for (Player player : receivers) {
-            sendParticlePacket(player, particle, location, count, offsetX, offsetY, offsetZ, speed, data);
+            ((CraftPlayer) player).getHandle().connection.send(packet);
         }
     }
 
@@ -122,13 +147,16 @@ public class ParticleUtils {
     }
 
     public static <T> void spawnParticlesInCube(Location origin, Particle particle, int count, int size, T data) {
+        Collection<Player> receivers = origin.getNearbyEntitiesByType(Player.class, 64);
+        if (receivers.isEmpty()) return;
+
         for (int i = 0; i < count; i++) {
-            double x = (Math.random() * 2 - 1) * size; // de -radius à +radius
+            double x = (Math.random() * 2 - 1) * size;
             double y = (Math.random() * 2 - 1) * size;
             double z = (Math.random() * 2 - 1) * size;
 
             Location loc = origin.clone().add(x, y, z);
-            sendParticlePacket(particle, loc, 64, data);
+            sendParticlePacket(receivers, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, data);
         }
     }
 
@@ -249,21 +277,19 @@ public class ParticleUtils {
                     return;
                 }
 
-                double progress = (double) tick / durationTicks;
+                Collection<Player> receivers = target.getNearbyEntitiesByType(Player.class, 64);
+                if (!receivers.isEmpty()) {
+                    double progress = (double) tick / durationTicks;
 
-                for (Location start : startPoints) {
-                    double x = start.getX() + (target.getX() - start.getX()) * progress;
-                    double y = start.getY() + (target.getY() - start.getY()) * progress;
-                    double z = start.getZ() + (target.getZ() - start.getZ()) * progress;
+                    for (Location start : startPoints) {
+                        double x = start.getX() + (target.getX() - start.getX()) * progress;
+                        double y = start.getY() + (target.getY() - start.getY()) * progress;
+                        double z = start.getZ() + (target.getZ() - start.getZ()) * progress;
 
-                    Location point = new Location(target.getWorld(), x, y, z);
+                        Location point = new Location(target.getWorld(), x, y, z);
 
-                    particle.builder()
-                            .location(point)
-                            .count(1)
-                            .receivers(64, true)
-                            .data(data)
-                            .spawn();
+                        sendParticlePacket(receivers, particle, point, 1, 0.0, 0.0, 0.0, 0.0, data);
+                    }
                 }
 
                 tick++;
@@ -297,21 +323,20 @@ public class ParticleUtils {
                     return;
                 }
 
-                double progress = (double) tick / durationTicks; // 0.0 -> 1.0
+                Collection<Player> receivers = target.getNearbyEntitiesByType(Player.class, 64);
+                if (!receivers.isEmpty()) {
+                    double progress = (double) tick / durationTicks;
 
-                for (Location end : endPoints) {
-                    double x = target.getX() + (end.getX() - target.getX()) * progress;
-                    double y = target.getY() + (end.getY() - target.getY()) * progress;
-                    double z = target.getZ() + (end.getZ() - target.getZ()) * progress;
+                    for (Location end : endPoints) {
+                        double x = target.getX() + (end.getX() - target.getX()) * progress;
+                        double y = target.getY() + (end.getY() - target.getY()) * progress;
+                        double z = target.getZ() + (end.getZ() - target.getZ()) * progress;
 
-                    Location point = new Location(target.getWorld(), x, y, z);
+                        Location point = new Location(target.getWorld(), x, y, z);
 
-                    particle.builder()
-                            .location(point)
-                            .count(1)
-                            .receivers(64, true)
-                            .data(data)
-                            .spawn();
+
+                        sendParticlePacket(receivers, particle, point, 1, 0.0, 0.0, 0.0, 0.0, data);
+                    }
                 }
 
                 tick++;

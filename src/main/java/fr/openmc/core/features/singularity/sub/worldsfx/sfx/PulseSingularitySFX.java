@@ -40,11 +40,12 @@ public class PulseSingularitySFX {
 
     private void pulse() {
         long nextInverval = getNextInterval();
-        if (isConverging) {
-            ParticleUtils.spawnConvergingParticlesSpherical(origin, Particle.GLOW_SQUID_INK, 250, 100.0, (int) nextInverval + 40, null);
-        } else {
-            ParticleUtils.spawnRepulsedParticlesSpherical(origin, Particle.FLASH, 400, 120, (int) nextInverval + 40, Color.fromRGB(93, 217, 210));
-        }
+        if (!origin.getWorld().getPlayers().isEmpty())
+            if (isConverging) {
+                ParticleUtils.spawnConvergingParticlesSpherical(origin, Particle.GLOW_SQUID_INK, 250, 100.0, (int) nextInverval + 40, null);
+            } else {
+                ParticleUtils.spawnRepulsedParticlesSpherical(origin, Particle.FLASH, 400, 120, (int) nextInverval + 40, Color.fromRGB(93, 217, 210));
+            }
 
         isConverging = !isConverging;
 
