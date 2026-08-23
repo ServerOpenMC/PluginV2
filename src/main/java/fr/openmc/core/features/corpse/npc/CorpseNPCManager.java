@@ -9,7 +9,7 @@ import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -95,7 +95,7 @@ public class CorpseNPCManager {
         UUID ownerUUID = owner.getUniqueId();
 
         NpcData dataCorpse = new NpcData("corpse-" + ownerUUID, ownerUUID, deathLocation);
-        String ownerName = PlayerNameCache.getName(ownerUUID);
+        String ownerName = CachePlayerName.getName(ownerUUID);
 
         if (ownerName == null) return false;
 
