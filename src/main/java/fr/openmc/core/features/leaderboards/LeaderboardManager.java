@@ -525,7 +525,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
             }
 
             List<Map.Entry<UUID, Long>> sorted = playtimes.entrySet().stream()
-                    .sorted(Map.Entry.<UUID, Long>comparingByKey().reversed())
+                    .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
                     .limit(10)
                     .toList();
 
