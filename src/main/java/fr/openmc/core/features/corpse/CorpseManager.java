@@ -54,6 +54,12 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
     public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
 
+    public static final List<String> ALLOWED_DIM = List.of(
+            "world", "world_nether", "world_the_end"
+    );
+
+
+
     @Override
     public void init() {
         CorpseNPCManager.init();

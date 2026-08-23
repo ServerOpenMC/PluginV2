@@ -13,6 +13,7 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import fr.openmc.core.utils.world.WorldUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
@@ -20,9 +21,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -31,11 +34,31 @@ public class CorpseListener implements Listener {
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
 
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        if (CorpseManager.hasCorpseDB(player.getUniqueId())) {
+
+            DBCorpse dbCorpse = CorpseManager.getCorpsesDB().get(player.getUniqueId());
+
+            if (dbCorpse.isKillByPlayer()) return;
+
+            if (!player.hasPermission("fancynpcs.npc.corpse-" + player.getUniqueId() + ".see"))
+                player.addAttachment(OMCPlugin.getInstance(), "fancynpcs.npc.corpse-" + player.getUniqueId() + ".see", true);
+        }
+    }
+
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+
+        if (!CorpseManager.ALLOWED_DIM.contains(event.getPlayer().getWorld().getName())) return;
+
         Player player = event.getPlayer();
 
         OMCPlayer omcPlayer = OMCPlayer.of(player);
+
+        boolean killByPlayer = false;
 
         if (omcPlayer.city().hasCity())
             if (omcPlayer.city().getCity().isInWar()) return;
@@ -45,9 +68,12 @@ public class CorpseListener implements Listener {
         if (player.getLastDamageCause() != null)
             cause = player.getLastDamageCause().getCause();
 
+        if (event.getEntity().getKiller() != null && !event.getEntity().getKiller().getUniqueId().equals(player.getUniqueId()))
+            killByPlayer = true;
+
         if (!CorpseManager.hasCorpseDB(player.getUniqueId())
                 &&!CorpseNPCManager.hasNPC(player.getUniqueId())) {
-            if (CorpseManager.createCorpse(player, (event.getEntity().getKiller() != null), cause)) {
+            if (CorpseManager.createCorpse(player, killByPlayer, cause)) {
                 event.setDroppedExp(0);
                 event.getDrops().clear();
             }
@@ -70,8 +96,6 @@ public class CorpseListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (DynamicCooldownManager.isReady(player.getUniqueId(), "corpse")) return;
-
         if (event.getNpc().getData().getName().startsWith("corpse-")) {
             UUID ownerUUID = UUID.fromString(event.getNpc().getData().getName().replace("corpse-", ""));
 
@@ -87,13 +111,15 @@ public class CorpseListener implements Listener {
                 return;
             }
 
-            if (corpse.isKillByPlayer()) {
+            if (DynamicCooldownManager.isReady(ownerUUID, "corpse")) return;
+
+            if (corpse.isKillByPlayer() && !player.getUniqueId().equals(corpse.getPlayerUUID())) {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
                 OfflinePlayer offlineOwner = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
 
                 if (offlinePlayer != null)
                     MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.strip",
-                                    Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
+                                            Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
                                     .color(TextColor.color(Color.YELLOW.asRGB())),
                             Prefix.CORPSE, MessageType.INFO, true);
 
@@ -108,8 +134,7 @@ public class CorpseListener implements Listener {
             }
 
             if (!player.getUniqueId().equals(corpse.getPlayerUUID())) {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
-                MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.not_owner"),
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.corpse.messages.not_owner"),
                         Prefix.CORPSE, MessageType.WARNING, true);
                 return;
             }
