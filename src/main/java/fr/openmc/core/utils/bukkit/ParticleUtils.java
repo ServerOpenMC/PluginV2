@@ -61,6 +61,19 @@ public class ParticleUtils {
         PARTICLE_FALLBACKS.put("flash", () -> Color.WHITE);
         PARTICLE_FALLBACKS.put("effect", () -> new Particle.Spell(Color.WHITE, 1.0f));
         PARTICLE_FALLBACKS.put("instant_effect", () -> new Particle.Spell(Color.WHITE, 1.0f));
+        PARTICLE_FALLBACKS.put("vibration", () -> new Vibration(
+                new Vibration.Destination.BlockDestination(new Location(null, 0, 0, 0)),
+                20
+        ));
+        PARTICLE_FALLBACKS.put("trail", () -> new Particle.Trail(
+                new Location(null, 0, 0, 0),
+                Color.RED,
+                20
+        ));
+        PARTICLE_FALLBACKS.put("geyser", () -> new Particle.Geyser(1));
+        PARTICLE_FALLBACKS.put("geyser_plume", () -> new Particle.Geyser(1));
+        PARTICLE_FALLBACKS.put("geyser_base", () -> new Particle.GeyserBase(1, 1.0f));
+        PARTICLE_FALLBACKS.put("geyser_poof", () -> new Particle.GeyserBase(1, 1.0f));
     }
 
     public static void sendRandomCubeParticles(Player player, Particle particle, double radius, int amount) {
