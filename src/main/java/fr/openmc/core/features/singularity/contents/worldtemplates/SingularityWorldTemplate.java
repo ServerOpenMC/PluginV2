@@ -3,6 +3,9 @@ package fr.openmc.core.features.singularity.contents.worldtemplates;
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
+import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.bootstrap.features.types.HasFeature;
+import fr.openmc.core.features.singularity.sub.worldsfx.SingularityWorldManager;
 import fr.openmc.core.registry.worldtemplates.WorldTemplate;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasGamerules;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasWorldBorder;
@@ -15,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SingularityWorldTemplate extends WorldTemplate
-        implements HasWorldBorder, HasGamerules {
+        implements HasWorldBorder, HasGamerules, HasFeature {
     @Override
     public String getNamespace() {
         return "omc_singularity";
@@ -93,5 +96,10 @@ public class SingularityWorldTemplate extends WorldTemplate
     @Override
     public double getSize() {
         return 5000;
+    }
+
+    @Override
+    public Feature getFeature() {
+        return new SingularityWorldManager(this);
     }
 }

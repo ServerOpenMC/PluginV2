@@ -5,6 +5,8 @@ import fr.openmc.api.datapacks.builders.dimensions.VoidDimensionBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
@@ -50,6 +52,9 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     @Override
     public void init() {
         for (WorldTemplate template : values()) {
+            if (template instanceof HasFeature hasFeature)
+                OMCPlugin.registerFeature(hasFeature.getFeature());
+
             if (WorldTemplateConfig.hasFirstLoaded(template)) continue;
             template.firstLoad();
             WorldTemplateConfig.addFirstLoaded(template);

@@ -24,10 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
@@ -58,64 +55,23 @@ public class ParticleUtils {
         PARTICLE_FALLBACKS.put("shriek",() -> 0);
         PARTICLE_FALLBACKS.put("entity_effect", () -> Color.WHITE);
         PARTICLE_FALLBACKS.put("tinted_leaves", () -> Color.WHITE);
-        PARTICLE_FALLBACKS.put("flash", () -> Color.WHITE);
+        PARTICLE_FALLBACKS.put("flash", () -> Color.RED);
         PARTICLE_FALLBACKS.put("effect", () -> new Particle.Spell(Color.WHITE, 1.0f));
         PARTICLE_FALLBACKS.put("instant_effect", () -> new Particle.Spell(Color.WHITE, 1.0f));
     }
 
-    public static void sendRandomCubeParticles(Player player, Particle particle, double radius, int amount) {
-        Location center = player.getLocation();
-
-        for (int i = 0; i < amount; i++) {
-            double x = (Math.random() * 2 - 1) * radius; // de -radius à +radius
-            double y = (Math.random() * 2 - 1) * radius;
-            double z = (Math.random() * 2 - 1) * radius;
-
-            Location loc = center.clone().add(x, y, z);
-            sendParticlePacket(player, particle, loc);
-        }
-    }
-
-    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, int amountPer2Tick, int minHeight, int maxHeight) {
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
-        if (regionManager == null) return;
-
-        ProtectedRegion region = regionManager.getRegion(regionId);
-        if (region == null) return;
-
-        BlockVector3 min = region.getMinimumPoint();
-        BlockVector3 max = region.getMaximumPoint();
-
-        Location minLocation = new Location(world, min.x(), minHeight, min.z());
-        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
-                if (WeeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
-
-                for (int i = 0; i < amountPer2Tick; i++) {
-                    double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
-                    double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
-                    double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
-
-                    Location particleLocation = new Location(world, x, y, z);
-
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (!player.getWorld().equals(world)) continue;
-
-                        if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
-
-                        sendParticlePacket(player, particle, particleLocation);
-                    }
-                }
-            }
-        }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
-    }
-
     public static void sendParticlePacket(Particle particle, Location loc, int radius) {
         sendParticlePacket(particle, loc, loc.getNearbyEntitiesByType(Player.class, radius));
+    }
+
+    public static <T> void sendParticlePacket(Particle particle, Location loc, int radius, T data) {
+        sendParticlePacket(particle, loc, loc.getNearbyEntitiesByType(Player.class, radius), data);
+    }
+
+    public static <T> void sendParticlePacket(Particle particle, Location loc, Collection<Player> receivers, T data) {
+        for (Player player : receivers) {
+            sendParticlePacket(player, particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, data);
+        }
     }
 
     public static void sendParticlePacket(Particle particle, Location loc, Collection<Player> receivers) {
@@ -163,6 +119,55 @@ public class ParticleUtils {
         );
 
         nmsPlayer.connection.send(packet);
+    }
+
+    public static <T> void spawnParticlesInCube(Location origin, Particle particle, int count, int size, T data) {
+        for (int i = 0; i < count; i++) {
+            double x = (Math.random() * 2 - 1) * size; // de -radius à +radius
+            double y = (Math.random() * 2 - 1) * size;
+            double z = (Math.random() * 2 - 1) * size;
+
+            Location loc = origin.clone().add(x, y, z);
+            sendParticlePacket(particle, loc, 64, data);
+        }
+    }
+
+    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, int amountPer2Tick, int minHeight, int maxHeight) {
+        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+        if (regionManager == null) return;
+
+        ProtectedRegion region = regionManager.getRegion(regionId);
+        if (region == null) return;
+
+        BlockVector3 min = region.getMinimumPoint();
+        BlockVector3 max = region.getMaximumPoint();
+
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
+                if (WeeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
+
+                for (int i = 0; i < amountPer2Tick; i++) {
+                    double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
+                    double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
+                    double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
+
+                    Location particleLocation = new Location(world, x, y, z);
+
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (!player.getWorld().equals(world)) continue;
+
+                        if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
+
+                        sendParticlePacket(player, particle, particleLocation);
+                    }
+                }
+            }
+        }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
     }
 
     public static void spawnContestParticlesInRegion(String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
@@ -316,6 +321,102 @@ public class ParticleUtils {
                     .receivers(32, true)
                     .spawn();
         }
+    }
+
+    public static <T> void spawnConvergingParticlesSpherical(Location target, Particle particle, int count, double radius, int durationTicks, T data) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        List<Location> startPoints = new ArrayList<>(count);
+
+        for (int i = 0; i < count; i++) {
+            double theta = random.nextDouble() * 2 * Math.PI;
+            double phi = Math.acos(2 * random.nextDouble() - 1);
+
+            double x = radius * Math.sin(phi) * Math.cos(theta);
+            double y = radius * Math.cos(phi);
+            double z = radius * Math.sin(phi) * Math.sin(theta);
+
+            startPoints.add(target.clone().add(x, y, z));
+        }
+
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick > durationTicks) {
+                    cancel();
+                    return;
+                }
+
+                double progress = (double) tick / durationTicks;
+
+                for (Location start : startPoints) {
+                    double x = start.getX() + (target.getX() - start.getX()) * progress;
+                    double y = start.getY() + (target.getY() - start.getY()) * progress;
+                    double z = start.getZ() + (target.getZ() - start.getZ()) * progress;
+
+                    Location point = new Location(target.getWorld(), x, y, z);
+
+                    particle.builder()
+                            .location(point)
+                            .count(1)
+                            .receivers(64, true)
+                            .data(data)
+                            .spawn();
+                }
+
+                tick++;
+            }
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 1L);
+    }
+
+    public static <T> void spawnRepulsedParticlesSpherical(Location target, Particle particle, int count, double radius, int durationTicks, T data) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        List<Location> endPoints = new ArrayList<>(count);
+
+        for (int i = 0; i < count; i++) {
+            double theta = random.nextDouble() * 2 * Math.PI;
+            double phi = Math.acos(2 * random.nextDouble() - 1);
+
+            double x = radius * Math.sin(phi) * Math.cos(theta);
+            double y = radius * Math.cos(phi);
+            double z = radius * Math.sin(phi) * Math.sin(theta);
+
+            endPoints.add(target.clone().add(x, y, z));
+        }
+
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick > durationTicks) {
+                    cancel();
+                    return;
+                }
+
+                double progress = (double) tick / durationTicks; // 0.0 -> 1.0
+
+                for (Location end : endPoints) {
+                    double x = target.getX() + (end.getX() - target.getX()) * progress;
+                    double y = target.getY() + (end.getY() - target.getY()) * progress;
+                    double z = target.getZ() + (end.getZ() - target.getZ()) * progress;
+
+                    Location point = new Location(target.getWorld(), x, y, z);
+
+                    particle.builder()
+                            .location(point)
+                            .count(1)
+                            .receivers(64, true)
+                            .data(data)
+                            .spawn();
+                }
+
+                tick++;
+            }
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 1L);
     }
 
     public static <T> void spawnDispersingParticles(Location target, Particle particle, int count, int radius, double speed, T data) {
