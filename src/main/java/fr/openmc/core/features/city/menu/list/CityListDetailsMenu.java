@@ -17,7 +17,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -106,7 +106,7 @@ public class CityListDetailsMenu extends Menu {
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation(
 								"feature.city.menus.list.details.owner",
-								PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY)
+								CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY)
 						));
 						itemMeta.lore(loreOwner);
 					}).hide(ItemUtils.getDataComponentType())
@@ -140,7 +140,7 @@ public class CityListDetailsMenu extends Menu {
 			map.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
 					itemMeta -> itemMeta.displayName(TranslationManager.translation(
 							"feature.city.menus.list.details.owner",
-							PlayerNameCache.name(this.city.getPlayerWithPermission(CityPermission.OWNER)).color(NamedTextColor.GRAY)
+							CachePlayerName.name(this.city.getPlayerWithPermission(CityPermission.OWNER)).color(NamedTextColor.GRAY)
 					)))
 			);
 		}

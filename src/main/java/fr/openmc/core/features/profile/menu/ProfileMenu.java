@@ -14,7 +14,7 @@ import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -51,7 +51,7 @@ public class ProfileMenu extends Menu {
     public @NotNull Component getName() {
         return TranslationManager.translation(
                 "feature.profile.menu.title",
-                PlayerNameCache.name(target.getUniqueId()).color(NamedTextColor.GOLD)
+                CachePlayerName.name(target.getUniqueId()).color(NamedTextColor.GOLD)
         );
     }
 
@@ -120,7 +120,7 @@ public class ProfileMenu extends Menu {
                 meta -> {
                     meta.displayName(TranslationManager.translation(
                             "feature.profile.item.identity.name",
-                            PlayerNameCache.name(target.getUniqueId()).color(NamedTextColor.GOLD)
+                            CachePlayerName.name(target.getUniqueId()).color(NamedTextColor.GOLD)
                     ));
                     meta.lore(lore);
                 }
@@ -167,7 +167,7 @@ public class ProfileMenu extends Menu {
                 : "feature.profile.item.friends.add_lore";
         return TranslationManager.translation(
                 translationKey,
-                PlayerNameCache.name(target.getUniqueId()).color(NamedTextColor.GOLD)
+                CachePlayerName.name(target.getUniqueId()).color(NamedTextColor.GOLD)
         );
     }
 
@@ -176,7 +176,7 @@ public class ProfileMenu extends Menu {
             runCommand("friends list");
             return;
         }
-        runCommand("friends add " + PlayerNameCache.getName(target.getUniqueId()));
+        runCommand("friends add " + CachePlayerName.getName(target.getUniqueId()));
     }
 
     private void addMailboxItem(Map<Integer, ItemMenuBuilder> inventory) {
@@ -197,7 +197,7 @@ public class ProfileMenu extends Menu {
         }
         return TranslationManager.translation(
                 "feature.profile.item.mailbox.send_lore",
-                PlayerNameCache.name(target.getUniqueId()).color(NamedTextColor.GOLD)
+                CachePlayerName.name(target.getUniqueId()).color(NamedTextColor.GOLD)
         );
     }
 
