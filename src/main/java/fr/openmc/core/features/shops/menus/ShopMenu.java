@@ -10,7 +10,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.managers.PlayerShopManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -55,7 +55,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.shop.menu.main.title", PlayerNameCache.name(getOwner().getUniqueId()));
+        return TranslationManager.translation("feature.shop.menu.main.title", CachePlayerName.name(getOwner().getUniqueId()));
     }
 
     @Override

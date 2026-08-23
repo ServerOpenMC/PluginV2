@@ -19,7 +19,7 @@ import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -805,7 +805,7 @@ public class City {
             MessagesManager.sendMessage(sender,
                     TranslationManager.translation("feature.city.grade.remove_grade",
                             Component.text(currentRank.getName()).color(NamedTextColor.YELLOW),
-                            PlayerNameCache.name(playerUUID).color(NamedTextColor.GOLD)),
+                            CachePlayerName.name(playerUUID).color(NamedTextColor.GOLD)),
                     Prefix.CITY, MessageType.SUCCESS, true);
         }
         
@@ -817,7 +817,7 @@ public class City {
             MessagesManager.sendMessage(sender,
                     TranslationManager.translation("feature.city.grade.assign_grade",
                             Component.text(newRank.getName()).color(NamedTextColor.YELLOW),
-                            PlayerNameCache.name(playerUUID).color(NamedTextColor.GOLD)
+                            CachePlayerName.name(playerUUID).color(NamedTextColor.GOLD)
                     ),
                     Prefix.CITY, MessageType.SUCCESS, true);
         }

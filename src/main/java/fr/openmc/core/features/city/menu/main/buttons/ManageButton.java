@@ -7,7 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.CityModifyMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -62,7 +62,7 @@ public class ManageButton {
         if (hasPermissionRenameCity || hasPermissionOwner) {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.manage.lore.edit",
-                    PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY),
+                    CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY),
                     mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false),
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.LIGHT_PURPLE)
@@ -70,7 +70,7 @@ public class ManageButton {
         } else {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.manage.lore.view",
-                    PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY),
+                    CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY),
                     mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false),
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.LIGHT_PURPLE)

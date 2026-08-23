@@ -12,7 +12,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -85,7 +85,7 @@ public class CityTopMenu extends PaginatedMenu {
             if (ownerUUID != null) {
                 List<Component> cityLore = new ArrayList<>();
 
-                Component ownerComponent = PlayerNameCache.name(ownerUUID).color(NamedTextColor.GRAY);
+                Component ownerComponent = CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY);
                 Component levelComponent = Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA);
                 Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
                 Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
