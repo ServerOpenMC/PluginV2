@@ -1,6 +1,7 @@
 package fr.openmc.core.features.corpse.npc;
 
 import de.oliver.fancynpcs.api.*;
+import de.oliver.fancynpcs.api.data.property.NpcVisibility;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
@@ -8,11 +9,13 @@ import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
@@ -92,16 +95,15 @@ public class CorpseNPCManager {
         UUID ownerUUID = owner.getUniqueId();
 
         NpcData dataCorpse = new NpcData("corpse-" + ownerUUID, ownerUUID, deathLocation);
-        String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
+        String ownerName = PlayerNameCache.getName(ownerUUID);
 
         if (ownerName == null) return false;
 
+        dataCorpse.setType(EntityType.PLAYER);
+
         dataCorpse.setSkin(ownerName);
 
-        String ownerDisplayName = LegacyComponentSerializer.legacySection()
-                .serialize(TranslationManager.translation("feature.corpse.npc.display.owner", Component.text(ownerName)));
-
-        dataCorpse.setDisplayName("<red>☠</red>" + "<gray> " + ownerDisplayName + "</gray>");
+        dataCorpse.setDisplayName("<red>☠ </red><gray><lang:feature.corpse.npc.display.owner:" + ownerName + "></gray>");
 
         dataCorpse.addEquipment(NpcEquipmentSlot.HEAD, helmet);
         dataCorpse.addEquipment(NpcEquipmentSlot.CHEST, chestplate);
@@ -114,6 +116,13 @@ public class CorpseNPCManager {
                 pose.name().toLowerCase()
         );
 
+        if (!all) {
+            dataCorpse.setVisibility(NpcVisibility.PERMISSION_REQUIRED);
+            owner.addAttachment(OMCPlugin.getInstance(), "fancynpcs.npc." + dataCorpse.getName() + ".see", true);
+        }
+        else
+            dataCorpse.setVisibility(NpcVisibility.ALL);
+
         Npc npcCorpse = FancyNpcsPlugin.get().getNpcAdapter().apply(dataCorpse);
 
         corpseNpcMap.put(ownerUUID, new CorpseNPC(npcCorpse, deathLocation, ownerUUID, helmet, chestplate, leggings, boots, pose, all));
@@ -122,13 +131,7 @@ public class CorpseNPCManager {
 
         npcCorpse.create();
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            if (!all)
-                npcCorpse.spawn(owner);
-            else
-                npcCorpse.spawnForAll();
-            npcCorpse.getData().setSpawnEntity(true);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), npcCorpse::spawnForAll);
 
         if (DynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
                 && DynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
