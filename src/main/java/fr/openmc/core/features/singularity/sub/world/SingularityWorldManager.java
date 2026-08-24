@@ -1,23 +1,33 @@
-package fr.openmc.core.features.singularity.sub.worldsfx;
+package fr.openmc.core.features.singularity.sub.world;
 
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.features.singularity.sub.worldsfx.sfx.ImpulsionSingularitySFX;
-import fr.openmc.core.features.singularity.sub.worldsfx.sfx.InstabilitySingularitySFX;
-import fr.openmc.core.features.singularity.sub.worldsfx.sfx.PulseSingularitySFX;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.singularity.sub.world.gravity.GravityListener;
+import fr.openmc.core.features.singularity.sub.world.sfx.ImpulsionSingularitySFX;
+import fr.openmc.core.features.singularity.sub.world.sfx.InstabilitySingularitySFX;
+import fr.openmc.core.features.singularity.sub.world.sfx.PulseSingularitySFX;
 import fr.openmc.core.registry.worldtemplates.WorldTemplate;
 import lombok.Getter;
 import org.bukkit.Location;
 
+import java.util.Set;
+
 /**
- * Classe gérant les SFX (Effets Spéciaux) de la Dimension inclus dedans :
+ * Classe gérant les choses lié à la Dimension inclus dedans :
  * - les Impulsions de la Singularité
  * - la gravité des joueurs
  * - les intéractions avec la Singularité
+ * - gravité spéciale
  */
-public class SingularityWorldManager extends Feature {
+public class SingularityWorldManager extends Feature implements HasListeners {
 
-    public static Location origin;
-    public static WorldTemplate worldTemplate;
+    @Getter
+    private static Location origin;
+    @Getter
+    private static WorldTemplate worldTemplate;
+
+    public static final String SINGULARITY_WORLD_NAME = "world_omc_singularity_singularity_world";
 
     @Getter
     private PulseSingularitySFX pulseSingularitySFX;
@@ -47,5 +57,12 @@ public class SingularityWorldManager extends Feature {
         pulseSingularitySFX.stop();
         impulsionSingularitySFX.stop();
         instabilitySingularitySFX.stop();
+    }
+
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                GravityListener::new
+        );
     }
 }

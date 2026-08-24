@@ -5,7 +5,7 @@ import fr.openmc.api.datapacks.builders.DimensionTypeBuilder;
 import fr.openmc.api.datapacks.builders.EnvironnementAttributeBuilder;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasFeature;
-import fr.openmc.core.features.singularity.sub.worldsfx.SingularityWorldManager;
+import fr.openmc.core.features.singularity.sub.world.SingularityWorldManager;
 import fr.openmc.core.registry.worldtemplates.WorldTemplate;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasGamerules;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasWorldBorder;
@@ -72,6 +72,7 @@ public class SingularityWorldTemplate extends WorldTemplate
         gamerules.put(GameRules.PVP, Boolean.FALSE);
         gamerules.put(GameRules.ALLOW_ENTERING_NETHER_USING_PORTALS, Boolean.FALSE);
 
+        gamerules.put(GameRules.FALL_DAMAGE, Boolean.FALSE);
         gamerules.put(GameRules.TNT_EXPLODES, Boolean.FALSE);
 
         gamerules.put(GameRules.SPAWN_MOBS, Boolean.FALSE);

@@ -1,4 +1,4 @@
-package fr.openmc.core.features.singularity.sub.worldsfx.sfx;
+package fr.openmc.core.features.singularity.sub.world.sfx;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
