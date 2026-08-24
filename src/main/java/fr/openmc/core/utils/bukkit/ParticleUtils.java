@@ -251,7 +251,7 @@ public class ParticleUtils {
         }
     }
 
-    public static <T> void spawnConvergingParticlesSpherical(Location target, Particle particle, int count, double radius, int durationTicks, T data) {
+    public static <T> void spawnConvergingParticlesSpherical(Location target, Particle particle, int count, double radius, double radiusPlayer, int durationTicks, T data) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
         List<Location> startPoints = new ArrayList<>(count);
@@ -277,7 +277,7 @@ public class ParticleUtils {
                     return;
                 }
 
-                Collection<Player> receivers = target.getNearbyEntitiesByType(Player.class, 64);
+                Collection<Player> receivers = target.getNearbyEntitiesByType(Player.class, radiusPlayer);
                 if (!receivers.isEmpty()) {
                     double progress = (double) tick / durationTicks;
 
@@ -297,7 +297,7 @@ public class ParticleUtils {
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 1L);
     }
 
-    public static <T> void spawnRepulsedParticlesSpherical(Location target, Particle particle, int count, double radius, int durationTicks, T data) {
+    public static <T> void spawnRepulsedParticlesSpherical(Location target, Particle particle, int count, double radius, double radiusPlayer, int durationTicks, T data) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
         List<Location> endPoints = new ArrayList<>(count);
@@ -323,7 +323,7 @@ public class ParticleUtils {
                     return;
                 }
 
-                Collection<Player> receivers = target.getNearbyEntitiesByType(Player.class, 64);
+                Collection<Player> receivers = target.getNearbyEntitiesByType(Player.class, radiusPlayer);
                 if (!receivers.isEmpty()) {
                     double progress = (double) tick / durationTicks;
 
