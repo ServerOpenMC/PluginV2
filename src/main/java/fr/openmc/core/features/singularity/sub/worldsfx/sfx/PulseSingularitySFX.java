@@ -39,10 +39,10 @@ public class PulseSingularitySFX {
         long nextInverval = getNextInterval();
         if (!origin.getWorld().getPlayers().isEmpty())
             if (isConverging) {
-                origin.getWorld().playSound(origin, Sound.ENTITY_WARDEN_SONIC_CHARGE, 6.0f, 0.6f);
+                origin.getWorld().playSound(origin, Sound.ENTITY_WARDEN_SONIC_CHARGE, 10.0f, 0.6f);
                 ParticleUtils.spawnConvergingParticlesSpherical(origin, Particle.GLOW_SQUID_INK, 250, 100.0, 150, (int) nextInverval + 40, null);
             } else {
-                origin.getWorld().playSound(origin, Sound.ENTITY_WARDEN_SONIC_BOOM, 7.0f, 0.5f);
+                origin.getWorld().playSound(origin, Sound.ENTITY_WARDEN_SONIC_BOOM, 11.0f, 0.5f);
                 ParticleUtils.spawnRepulsedParticlesSpherical(origin, Particle.FLASH, 400, 120, 150,(int) nextInverval + 40, Color.fromRGB(93, 217, 210));
             }
 
