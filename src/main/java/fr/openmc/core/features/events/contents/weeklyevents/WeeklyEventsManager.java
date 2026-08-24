@@ -81,7 +81,6 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Retourne l'event en cours.
      */
     public static WeeklyEvent getCurrentEvent() {
-        if (!WeeklyEventsManager.isEventActive()) return null;
         return OMCRegistry.WEEKLY_EVENTS.get(data.getCurrentEvent()).orElse(null);
     }
 

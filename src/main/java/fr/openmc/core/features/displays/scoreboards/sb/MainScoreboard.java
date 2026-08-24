@@ -22,7 +22,6 @@ import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.text.DirectionUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -66,7 +65,8 @@ public class MainScoreboard extends BaseScoreboard {
         }
 
         // Contest
-        if (WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
+        if (WeeklyEventsManager.isEventActive() &&
+                WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
             ContestData data = ContestManager.data;
             if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
                 lines.add(MiniMessage.miniMessage().deserialize(
