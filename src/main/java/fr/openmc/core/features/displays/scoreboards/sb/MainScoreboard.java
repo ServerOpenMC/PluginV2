@@ -66,7 +66,8 @@ public class MainScoreboard extends BaseScoreboard {
         }
 
         // Contest
-        if (WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
+        if (WeeklyEventsManager.isEventActive() &&
+                WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
             ContestData data = ContestManager.data;
             if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
                 lines.add(MiniMessage.miniMessage().deserialize(
