@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallCaps;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -49,7 +49,7 @@ public class DreamScoreboard extends BaseScoreboard {
 
         lines.add(empty());
         lines.add(MiniMessage.miniMessage().deserialize("<gradient:#0011ff:#2556b6>%s</gradient>"
-                .formatted(toSmallCaps(player.getName()))).decoration(TextDecoration.BOLD, true));
+                .formatted(toSmall(player.getName()))).decoration(TextDecoration.BOLD, true));
 
         if (dreamPlayer != null) {
             Long time = dreamPlayer.getDreamTime();
@@ -58,7 +58,7 @@ public class DreamScoreboard extends BaseScoreboard {
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.dream.scoreboard.time", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(toSmallCaps(DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
+                    .append(toSmall(DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
             );
 
             if (cold > 0)
@@ -85,7 +85,7 @@ public class DreamScoreboard extends BaseScoreboard {
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.dream.scoreboard.location", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(toSmallCaps(nameLocation))
+                    .append(toSmall(nameLocation))
             );
         }
 

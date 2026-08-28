@@ -35,7 +35,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallCaps;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -103,7 +103,7 @@ public class MainScoreboard extends BaseScoreboard {
         Component location = isInRegion
                 ? TranslationManager.translation("feature.displays.scoreboard.location.protected", true)
                 : TranslationManager.translation("feature.displays.scoreboard.location.wilderness", true);
-        location = (chunkCity != null) ? toSmallCaps(chunkCity.getName()) : location;
+        location = (chunkCity != null) ? toSmall(chunkCity.getName()) : location;
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
         double bits = BitsManager.getBits(player.getUniqueId());
@@ -111,7 +111,7 @@ public class MainScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FF45B9:#FF1FCC>%s</gradient>".formatted(toSmallCaps(player.getName()))).decoration(TextDecoration.BOLD, true));
+        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FF45B9:#FF1FCC><font:omc_fonts:small_caps>%s</font></gradient>".formatted(player.getName())).decoration(TextDecoration.BOLD, true));
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.rank.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
@@ -121,13 +121,13 @@ public class MainScoreboard extends BaseScoreboard {
                 .append(TranslationManager.translation("feature.displays.scoreboard.city.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(city != null
-                        ? toSmallCaps(city.getName()).color(TextColor.color(0xFF06DC))
+                        ? toSmall(city.getName()).color(TextColor.color(0xFF06DC))
                         : TranslationManager.translation("feature.displays.scoreboard.city.none", true).color(TextColor.color(0xFF06DC)))
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
-                .append(toSmallCaps(balance).color(TextColor.color(0xFF06DC)))
+                .append(toSmall(balance).color(TextColor.color(0xFF06DC)))
                 .appendSpace()
                 .append(text(EconomyManager.getEconomyIcon()))
         );
@@ -135,7 +135,7 @@ public class MainScoreboard extends BaseScoreboard {
             lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(toSmallCaps(EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                    .append(toSmall(EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
                     .appendSpace()
                     .append(text(BitsManager.getBitsIcon()))
             );
@@ -156,7 +156,7 @@ public class MainScoreboard extends BaseScoreboard {
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation("feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(toSmallCaps(pumpkinCount).color(TextColor.color(0xFF7518)))
+                        .append(toSmall(pumpkinCount).color(TextColor.color(0xFF7518)))
                 );
             }
         }

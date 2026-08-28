@@ -128,7 +128,7 @@ public class TranslationManager {
         ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 
         if (toSmall) {
-            translated = SmallCapsUtils.toSmallCaps(translated);
+            translated = SmallCapsUtils.toSmallComponent(translated);
         }
 
         return translated;

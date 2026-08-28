@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallCaps;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -58,18 +58,18 @@ public class CityWarScoreboard extends BaseScoreboard {
         lines.add(text("  • ", net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label", true).color(TextColor.color(0xAAAAAA)))
                 .appendSpace()
-                .append(toSmallCaps(enemyCity.getName()).color(TextColor.color(0xFF0634)))
+                .append(toSmall(enemyCity.getName()).color(TextColor.color(0xFF0634)))
         );
 
         Component phaseComponent;
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
-                    .deserialize("<gradient:#FF7518:#FFD580>%s</gradient>".formatted(toSmallCaps(WarManager.getFormattedPhase(war.getPhase()))));
-            case COMBAT -> phaseComponent = toSmallCaps(WarManager.getFormattedPhase(war.getPhase()))
+                    .deserialize("<gradient:#FF7518:#FFD580>%s</gradient>".formatted(toSmall(WarManager.getFormattedPhase(war.getPhase()))));
+            case COMBAT -> phaseComponent = toSmall(WarManager.getFormattedPhase(war.getPhase()))
                     .color(TextColor.color(0xFC1C1C));
-            case ENDED -> phaseComponent = toSmallCaps(WarManager.getFormattedPhase(war.getPhase()))
+            case ENDED -> phaseComponent = toSmall(WarManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.GRAY);
-            default -> phaseComponent = toSmallCaps(WarManager.getFormattedPhase(war.getPhase()))
+            default -> phaseComponent = toSmall(WarManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.WHITE);
         }
 
