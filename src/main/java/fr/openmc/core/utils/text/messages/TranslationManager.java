@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
 import fr.openmc.core.utils.text.ComponentUtils;
+import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.kyori.adventure.text.Component;
@@ -108,6 +109,32 @@ public class TranslationManager {
     }
 
     /**
+     * Crée un composant texte traduisible avec arguments.
+     * Le client Minecraft cherchera la traduction dans son resource pack.
+     *
+     * @param key La clé de traduction (ex: "command.fun.playtime.success")
+     * @param toSmall si le texte doit etre en toSmall
+     * @param args Les arguments à interpoler dans la traduction
+     * @return Un composant Paper Adventure traduisible (italique désactivé)
+     */
+    public static Component translation(String key, boolean toSmall, ComponentLike... args) {
+        String fallback = getFallbackTranslation(key);
+        ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(args);
+
+        Component translated = Component.translatable(
+                key,
+                fallback,
+                normalizedArgs
+        ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+
+        if (toSmall) {
+            translated = SmallCapsUtils.toSmallComponent(translated);
+        }
+
+        return translated;
+    }
+
+    /**
      * Retourne une traduction sous forme de String au format legacy.
      * ATTENTION RETOURNE DIRECTEMENT LE FALLBACK
      * 
@@ -163,15 +190,9 @@ public class TranslationManager {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, String> entry : miniMessageMap.entrySet()) {
             String key = entry.getKey();
-            if (key.endsWith(".to_small")) continue;
 
             String value = MessageConvertor.toLegacy(entry.getValue());
             result.put(key, value);
-
-            if (miniMessageMap.get(key + ".to_small") != null &&
-                    miniMessageMap.get(key + ".to_small").equalsIgnoreCase("true")) {
-                result.put(key + ".to_small", MessagesManager.textToSmall(value));
-            }
         }
         return result;
     }

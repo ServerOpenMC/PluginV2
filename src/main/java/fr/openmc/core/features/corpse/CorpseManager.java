@@ -29,11 +29,15 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.WorldUtils;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
@@ -252,7 +256,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         else
             return Component.text(
                             DirectionUtils.getDirectionArrow(player, corpse.getLocation()),
-                    TextColor.color(0xFF8F06)).decoration(TextDecoration.BOLD, false);
+                    TextColor.color(0xFF8F06)).decoration(TextDecoration.BOLD, false).font(Key.key("minecraft", "default"));
     }
 
     public static Component getRemainingTime(UUID playerUUID) {
