@@ -96,13 +96,13 @@ public class ContestData {
     }
 
     public Component getCamp1ToSmall() {
-        return TranslationManager.translation(keyCamp1 + ".to_small")
+        return TranslationManager.translation(keyCamp1, true)
                 .decoration(TextDecoration.ITALIC, false)
                 .color(getColor1AsNamedTextColor());
     }
 
     public Component getCamp2ToSmall() {
-        return TranslationManager.translation(keyCamp2  + ".to_small")
+        return TranslationManager.translation(keyCamp2, true)
                 .decoration(TextDecoration.ITALIC, false)
                 .color(getColor2AsNamedTextColor());
     }
