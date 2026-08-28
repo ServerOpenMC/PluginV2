@@ -22,6 +22,7 @@ import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -54,7 +55,8 @@ public class MainScoreboard extends BaseScoreboard {
 
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
-                    Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title", true)))
+                    Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title")))
+                    .font(SmallCapsUtils.SMALL_CAPS_FONT)
                     .decoration(TextDecoration.BOLD, true)
                     .appendSpace()
                     .append(CorpseManager.getCorpseDirection(player, corpse))
@@ -111,7 +113,9 @@ public class MainScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#FF45B9:#FF1FCC><font:omc_fonts:small_caps>%s</font></gradient>".formatted(player.getName())).decoration(TextDecoration.BOLD, true));
+        lines.add(MiniMessage.miniMessage().deserialize(
+                "<gradient:#FF45B9:#FF1FCC><font:omc_fonts:small_caps>%s</font></gradient>".formatted(
+                        player.getName())).decoration(TextDecoration.BOLD, true));
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.rank.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()

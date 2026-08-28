@@ -48,11 +48,11 @@ public class DreamScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#0011ff:#2556b6>%s</gradient>"
-                .formatted(toSmall(player.getName()))).decoration(TextDecoration.BOLD, true));
+        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#0011ff:#2556b6><font:omc_fonts:small_caps>%s</font></gradient>"
+                .formatted(player.getName())).decoration(TextDecoration.BOLD, true));
 
         if (dreamPlayer != null) {
-            Long time = dreamPlayer.getDreamTime();
+            long time = dreamPlayer.getDreamTime();
             int cold = dreamPlayer.getCold();
 
             lines.add(text(" • ", NamedTextColor.DARK_GRAY)

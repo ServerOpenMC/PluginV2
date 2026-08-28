@@ -55,7 +55,7 @@ public class CityWarScoreboard extends BaseScoreboard {
                 )
                 .decoration(TextDecoration.BOLD, true));
 
-        lines.add(text("  • ", net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY)
+        lines.add(text("  • ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label", true).color(TextColor.color(0xAAAAAA)))
                 .appendSpace()
                 .append(toSmall(enemyCity.getName()).color(TextColor.color(0xFF0634)))
