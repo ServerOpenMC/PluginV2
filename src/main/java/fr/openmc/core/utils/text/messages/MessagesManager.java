@@ -1,7 +1,6 @@
 package fr.openmc.core.utils.text.messages;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,7 +28,7 @@ public class MessagesManager {
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(prefix.getPrefix().font(Key.key("omc_fonts", "small_caps")))
+                        .append(prefix.getPrefixComponent())
                         .append(Component.text(" §7» ")
                         .append(message)
                 );
@@ -93,7 +92,7 @@ public class MessagesManager {
     public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(prefix.getPrefix().font(Key.key("omc_fonts", "small_caps")))
+                        .append(prefix.getPrefixComponent())
                         .append(Component.text(" §7» ")
                         .append(message)
                 );
@@ -113,7 +112,7 @@ public class MessagesManager {
     public static void broadcastMessage(World world, Component message, Prefix prefix, MessageType type) {
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(prefix.getPrefix().font(Key.key("omc_fonts", "small_caps")))
+                        .append(prefix.getPrefixComponent())
                         .append(Component.text(" §7» ")
                                 .append(message)
                         );

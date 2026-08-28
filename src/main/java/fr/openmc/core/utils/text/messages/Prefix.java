@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.text.messages;
 
+import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -26,7 +27,7 @@ public enum Prefix {
     BANK("<gradient:#084CFB:#ADB6FD>bank</gradient>"),
     SHOP("<gradient:#084CFB:#5AAFC4>shop</gradient>"),
     ADMINSHOP("<gradient:#EE2222:#F04949>adminshop</gradient>"),
-    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>"),
+    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>", false),
     SETTINGS("<gradient:#2C82E0:#67C8FF>settings</gradient>"),
     MILLESTONE("<gradient:#A2D182:#B8E89D>milestones</gradient>"),
     DREAM("<gradient:#4498DB:#412AEF>dream</gradient>"),
@@ -38,8 +39,21 @@ public enum Prefix {
 
     @Getter
     private final Component prefix;
+    @Getter
+    private final boolean toSmall;
 
     Prefix(String prefix) {
         this.prefix = MiniMessage.miniMessage().deserialize(prefix);
+        this.toSmall = true;
+    }
+
+    Prefix(String prefix, boolean toSmall) {
+        this.prefix = MiniMessage.miniMessage().deserialize(prefix);
+        this.toSmall = toSmall;
+    }
+
+    public Component getPrefixComponent() {
+        if (!toSmall) return prefix;
+        return prefix.font(SmallCapsUtils.SMALL_CAPS_FONT);
     }
 }
