@@ -7,8 +7,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
-import io.papermc.paper.registry.event.RegistryEvents;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +39,7 @@ public class OMCBootstrap implements PluginBootstrap {
 
         // ** LOAD TRANSLATION **
         // this creates resource pack who is needed for item adder
-        TranslationManager.init(
+        TranslationManager.bootstrap(
                 context,
                 Locale.FRANCE,
                 Locale.US,

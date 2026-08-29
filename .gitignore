@@ -134,3 +134,6 @@ spigot.yml
 .project
 .settings/
 bin/
+
+# Rift Engine lib
+!RiftEngine-*.jar

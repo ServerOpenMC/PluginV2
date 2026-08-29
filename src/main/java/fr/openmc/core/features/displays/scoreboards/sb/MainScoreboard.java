@@ -116,21 +116,21 @@ public class MainScoreboard extends BaseScoreboard {
         lines.add(empty());
         lines.add(MiniMessage.miniMessage().deserialize(
                 "<gradient:#FF45B9:#FF1FCC><font:omc_fonts:small_caps>%s</font></gradient>".formatted(
-                        player.getName())).decoration(TextDecoration.BOLD, true));
+                        SmallCapsUtils.toSmallCapsChar(player.getName()))).decoration(TextDecoration.BOLD, true));
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.rank.label", true).color(NamedTextColor.GRAY))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.rank.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(rank)
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.city.label", true).color(NamedTextColor.GRAY))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.city.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(city != null
                         ? toSmall(city.getName()).color(TextColor.color(0xFF06DC))
-                        : TranslationManager.translation("feature.displays.scoreboard.city.none", true).color(TextColor.color(0xFF06DC)))
+                        : TranslationManager.translation(player, "feature.displays.scoreboard.city.none", true).color(TextColor.color(0xFF06DC)))
         );
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(toSmall(balance).color(TextColor.color(0xFF06DC)))
                 .appendSpace()
@@ -138,7 +138,7 @@ public class MainScoreboard extends BaseScoreboard {
         );
         if (bits > 0) {
             lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
+                    .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(toSmall(EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
                     .appendSpace()
@@ -146,7 +146,7 @@ public class MainScoreboard extends BaseScoreboard {
             );
         }
         lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.location.label", true).color(NamedTextColor.GRAY))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.location.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(location.color(TextColor.color(0xFF06DC)))
         );
@@ -159,7 +159,7 @@ public class MainScoreboard extends BaseScoreboard {
             if (halloweenNPC != null) {
                 String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  • ", NamedTextColor.DARK_GRAY)
-                        .append(TranslationManager.translation("feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
+                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(toSmall(pumpkinCount).color(TextColor.color(0xFF7518)))
                 );

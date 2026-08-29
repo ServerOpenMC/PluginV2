@@ -9,15 +9,20 @@ import fr.openmc.core.utils.text.ComponentUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationStore;
+import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -32,7 +37,7 @@ public class TranslationManager {
             .setPrettyPrinting()
             .create();
 
-    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.plainText();
+    private static TranslationStore.StringBased<MessageFormat> adventureStore;
 
     /**
      * Initialise le gestionnaire de traductions et génère les ressource packs.
@@ -42,7 +47,7 @@ public class TranslationManager {
      * @param defaultLang La langue par défaut du serveur (fallback)
      * @param langsSuppoorted Les langues additionnelles à supporter
      */
-    public static void init(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
+    public static void bootstrap(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
         // * Generate resource pack
         Path resourcePackFolder;
         try {
@@ -53,6 +58,15 @@ public class TranslationManager {
             OMCLogger.errorFormatted("Erreur lors de la génération du resource pack de langues !", e);
             return;
         }
+
+        // * Enregistre les clés coté serveur afin de pouvoir transformer le text pour bedrock
+        if (adventureStore != null) {
+            GlobalTranslator.translator().removeSource(adventureStore);
+        }
+        adventureStore = TranslationStore.messageFormat(Key.key("omc", "translations"));
+        adventureStore.defaultLocale(defaultLang);
+        GlobalTranslator.translator().addSource(adventureStore);
+
 
         // * Load default lang
         MultiResourceBundle defaultBundle = new MultiResourceBundle(
@@ -78,6 +92,8 @@ public class TranslationManager {
 
             translations.putAll(localeTranslations);
 
+            registerAdventureTranslations(locale, translations);
+
             try {
                 injectLangs(resourcePackFolder, translations, locale);
             } catch (Exception e) {
@@ -87,6 +103,14 @@ public class TranslationManager {
 
             OMCLogger.successFormatted("Chargement de la langue {} !", locale.getDisplayName());
         }
+    }
+
+    private static void registerAdventureTranslations(Locale locale, Map<String, String> translations) {
+        Map<String, MessageFormat> formats = new HashMap<>();
+        for (Map.Entry<String, String> entry : translations.entrySet()) {
+            formats.put(entry.getKey(), MessageConvertor.toMessageFormat(entry.getValue(), locale));
+        }
+        adventureStore.registerAll(locale, formats);
     }
 
     /**
@@ -135,13 +159,27 @@ public class TranslationManager {
     }
 
     /**
-     * Retourne une traduction sous forme de String au format legacy.
-     * ATTENTION RETOURNE DIRECTEMENT LE FALLBACK
-     * 
-     * @param key La clé de traduction
-     * @param args Les arguments à interpoler
-     * @return Une chaîne au format legacy (codes §)
+     * Creer un component translatable, safe pour bedrock.
+     * (utiliser le uniquement lorsque vous voulez appliquer un font (comme toSmall)
+     * @param player le joueur
+     * @param key la clé
+     * @param toSmall si c'est avec le font to small
+     * @param args les arguments de la clé
+     * @return le component translatable
      */
+    public static Component translation(Player player, String key, boolean toSmall, ComponentLike... args) {
+        // si joueur java
+        if (!FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+            return translation(key, toSmall, args);
+        }
+
+        // sinon joueur bedrock
+        Component translatable = translation(key, args);
+        Component rendered = GlobalTranslator.render(translatable, player.locale());
+
+        return toSmall ? SmallCapsUtils.toSmallComponentBedrock(rendered) : rendered;
+    }
+    
     /**
      * Crée une liste de lignes traduisibles pour une lore d'objet.
      * Divise le texte en plusieurs lignes (séparées par \n).

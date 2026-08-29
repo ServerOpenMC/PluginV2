@@ -31,12 +31,12 @@ public class QuestStep {
     /**
      * Get the description of the step.
      * <p>
-     * The description can contain the placeholder {target} which will be replaced by the target number.
+     * The description can contain the placeholder [target] which will be replaced by the target number.
      * @return The description of the step with the target number replaced
      */
     public Component getDescription() {
         return this.description.replaceText(b -> {
-            b.matchLiteral("{target}");
+            b.matchLiteral("[target]");
             b.replacement(String.valueOf(this.target));
         });
     }
