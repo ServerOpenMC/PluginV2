@@ -41,8 +41,7 @@ public class SmallCapsUtils {
         while (i < input.length()) {
             String charStr = input.substring(i, i + 1);
 
-            String namespacedId = SMALL_CAPS_FONT.namespace() + ":"
-                    + SMALL_CAPS_FONT.key() + ":" + charStr;
+            String namespacedId = SMALL_CAPS_FONT.key() + ":" + charStr;
             System.out.println(namespacedId);
             Glyph glyph = RiftRegistry.GLYPHS.get(namespacedId).orElse(null);
 
