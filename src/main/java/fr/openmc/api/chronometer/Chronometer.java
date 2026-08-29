@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Chronometer{
+public class Chronometer {
 
     // Map structure: UUID -> (Group -> Time)
     public static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
@@ -197,14 +197,14 @@ public class Chronometer{
     /**
      * @return the remaining time
      */
-    public static int getRemainingTime(UUID entityUUID, String group){
+    public static int getRemainingTime(UUID entityUUID, String group) {
         return chronometer.get(entityUUID).get(group);
     }
 
     /**
      * @return true if the chronometer has expired
      */
-    public static boolean timerEnd(UUID entityUUID, String group){
+    public static boolean timerEnd(UUID entityUUID, String group) {
         return chronometer.get(entityUUID).get(group) <= 0;
     }
 
