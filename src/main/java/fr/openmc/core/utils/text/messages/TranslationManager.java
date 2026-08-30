@@ -42,7 +42,7 @@ public class TranslationManager {
     /**
      * Initialise le gestionnaire de traductions et génère les ressource packs.
      * Charge les traductions en MiniMessage et les convertit en format legacy pour Minecraft.
-     * 
+     *
      * @param context Le contexte de bootstrap du plugin Paper
      * @param defaultLang La langue par défaut du serveur (fallback)
      * @param langsSuppoorted Les langues additionnelles à supporter
@@ -75,6 +75,7 @@ public class TranslationManager {
         );
 
         fallbackTranslations = toLegacyMap(defaultBundle.getAllTranslations());
+        registerAdventureTranslations(defaultLang, fallbackTranslations);
         try {
             injectLangs(resourcePackFolder, fallbackTranslations, defaultLang);
         } catch (Exception e) {
@@ -116,7 +117,7 @@ public class TranslationManager {
     /**
      * Crée un composant texte traduisible avec arguments.
      * Le client Minecraft cherchera la traduction dans son resource pack.
-     * 
+     *
      * @param key La clé de traduction (ex: "command.fun.playtime.success")
      * @param args Les arguments à interpoler dans la traduction
      * @return Un composant Paper Adventure traduisible (italique désactivé)
@@ -179,11 +180,11 @@ public class TranslationManager {
 
         return toSmall ? SmallCapsUtils.toSmallComponentBedrock(rendered) : rendered;
     }
-    
+
     /**
      * Crée une liste de lignes traduisibles pour une lore d'objet.
      * Divise le texte en plusieurs lignes (séparées par \n).
-     * 
+     *
      * @param key La clé de traduction
      * @param componentsArgs Les arguments de composants à interpoler
      * @return Une liste de composants, un par ligne (italique désactivé)
@@ -220,7 +221,7 @@ public class TranslationManager {
 
     /**
      * Convertit une carte de traductions du format MiniMessage au format legacy.
-     * 
+     *
      * @param miniMessageMap La carte de traductions en format MiniMessage
      * @return Une nouvelle carte avec les valeurs converties en format legacy (§)
      */
@@ -237,7 +238,7 @@ public class TranslationManager {
 
     /**
      * Récupère la traduction de secours (fallback) pour une clé.
-     * 
+     *
      * @param key La clé de traduction
      * @return La traduction de fallback, ou la clé si elle n'existe pas
      */
@@ -248,7 +249,7 @@ public class TranslationManager {
     /**
      * Génère le fichier JSON de traductions pour une locale donnée.
      * Crée un fichier dans assets/minecraft/lang/{locale}.json du resource pack.
-     * 
+     *
      * @param resourcePackFolder Le chemin racine du resource pack
      * @param translations La carte des traductions à injecter
      * @param locale La locale cible (ex: fr_FR, en_US)

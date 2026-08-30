@@ -29,7 +29,7 @@ public class MessagesManager {
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + (sender instanceof Player player ? type.getPrefix(player) : type.getBedrockPrefix()) + "§7) ")
                         .append(sender instanceof Player player ? prefix.getPrefixComponent(player) : prefix.getPrefixComponent(null))
-                        .append(Component.text(" §7» ")
+                        .append(Component.text(" §7» §r")
                         .append(message)
                 );
 
@@ -93,7 +93,7 @@ public class MessagesManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix(player) + "§7) ")
                     .append(prefix.getPrefixComponent(player))
-                    .append(Component.text(" §7» ")
+                    .append(Component.text(" §7» §r")
                             .append(message)
                     ));
         }
@@ -112,7 +112,7 @@ public class MessagesManager {
         for (Player player : world.getPlayers()) {
             player.sendMessage(Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix(player) + "§7) ")
                     .append(prefix.getPrefixComponent(player))
-                    .append(Component.text(" §7» ")
+                    .append(Component.text(" §7» §")
                             .append(message)
                     ));
         }

@@ -31,7 +31,13 @@ public class MessageConvertor {
     }
 
     public static MessageFormat toMessageFormat(String legacyPattern, Locale locale) {
-        return new MessageFormat(convert(legacyPattern), locale);
+        String converted = convert(legacyPattern);
+        String escaped = escapeMessageFormatQuotes(converted); // fix les ' qui annulent le MessageFormat
+        return new MessageFormat(escaped, locale);
+    }
+
+    private static String escapeMessageFormatQuotes(String pattern) {
+        return pattern.replace("'", "''");
     }
 
     public static String toLegacy(String miniMessage) {
