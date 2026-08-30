@@ -30,15 +30,15 @@ dependencies:
     FastAsyncWorldEdit:
       load: BEFORE
       required: false
-    Geyser-Spigot:
-      load: BEFORE
-      required: false
-    floodgate:
-      load: BEFORE
-      required: false
-    RiftEngine:
-      load: AFTER
-      required: false
+#    Geyser-Spigot:
+#      load: BEFORE
+#      required: false
+#    floodgate:
+#      load: BEFORE
+#      required: false
+#    RiftEngine:
+#      load: AFTER
+#      required: false
 
 prefix: OMC
 authors: [ La communauté ]

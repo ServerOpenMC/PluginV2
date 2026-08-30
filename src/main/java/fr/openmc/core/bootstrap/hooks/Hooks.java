@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class Hooks {
     private static final Map<Class<? extends Hooks>, Boolean> ENABLED = new ConcurrentHashMap<>();
 
-    public boolean arePluginEnable() {
+    public boolean arePluginEnabled() {
         if (!(this instanceof HttpsHook)) return true;
         boolean enabled = true;
 
@@ -53,7 +53,7 @@ public abstract class Hooks {
 
         String hookName = this.getClass().getSimpleName();
         try {
-            boolean enabled = arePluginEnable();
+            boolean enabled = arePluginEnabled();
             if (enabled) {
                 ENABLED.put(getClass(), enabled);
                 this.init();
@@ -81,7 +81,7 @@ public abstract class Hooks {
             return;
         }
 
-        boolean enabled = arePluginEnable() && ENABLED.get(getClass()) != null
+        boolean enabled = arePluginEnabled() && ENABLED.get(getClass()) != null
                 && ENABLED.get(getClass());
 
         String hookName = this.getClass().getSimpleName();
