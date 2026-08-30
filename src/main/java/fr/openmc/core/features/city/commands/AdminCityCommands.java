@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -79,7 +80,7 @@ public class AdminCityCommands {
 
             Component line = Component.text("- ")
                     .append(Component.text(cityUUID.toString()).color(NamedTextColor.GRAY))
-                    .append(Component.text(" • "))
+                    .append(Component.text(" " + CharRemplacementUtils.getPointChar(player) + " "))
                     .append(Component.text(name).color(NamedTextColor.WHITE))
                     .append(TranslationManager.translation("feature.city.admin.commands.list.copy_label")
                             .color(NamedTextColor.GREEN)

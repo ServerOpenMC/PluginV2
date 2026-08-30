@@ -220,6 +220,13 @@ public class OMCPlugin extends JavaPlugin {
     public void loadAfterItemsAdder() {
         ItemsAddersListener.setLoaded(true);
 
+        // todo: a rewrite lors registre hook et features
+//        try {
+//            new BedrockHook().startInit();
+//        } catch (NoClassDefFoundError e) {
+//            OMCLogger.error("Hook BedrockHook désactivé (package non trouvé) " + e.getMessage());
+//        }
+
         /* LOAD ITEMS ADDER CONTENTS */
         ItemsAdderHook.loadContents();
 

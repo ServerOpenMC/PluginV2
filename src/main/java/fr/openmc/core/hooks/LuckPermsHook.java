@@ -14,7 +14,9 @@ import net.luckperms.api.query.QueryOptions;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     @Getter
@@ -25,8 +27,8 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     }
 
     @Override
-    protected String getPluginName() {
-        return "LuckPerms";
+    protected Set<String> getPluginsName() {
+        return Collections.singleton("LuckPerms");
     }
 
     @Override

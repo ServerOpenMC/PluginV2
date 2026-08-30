@@ -14,6 +14,7 @@ import org.bukkit.Location;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 public class WorldGuardHook extends Hooks {
     public static boolean isEnable() {
@@ -21,8 +22,8 @@ public class WorldGuardHook extends Hooks {
     }
 
     @Override
-    protected String getPluginName() {
-        return "WorldGuard";
+    protected Set<String> getPluginsName() {
+        return Collections.singleton("WorldGuard");
     }
 
     public static boolean isRegionConflict(Location location) {

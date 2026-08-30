@@ -46,7 +46,7 @@ public class PlayerShopManager {
                 ItemStack.of(Material.BARREL),
                 "shops:shop_creator",
                 300,
-                TranslationManager.translation("feature.shop.player.creating_begin"),
+                "feature.shop.player.creating_begin",
                 TranslationManager.translation("feature.shop.player.creating_cancel"),
                 location -> {
                     if (location == null) return false;

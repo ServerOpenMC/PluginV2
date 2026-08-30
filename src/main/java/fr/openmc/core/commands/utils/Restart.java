@@ -34,8 +34,8 @@ public class Restart {
     @Description("Redémarre le serveur après 1min")
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
-        if (sender instanceof Player) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
+        if (sender instanceof Player player) {
+            MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -50,7 +50,7 @@ public class Restart {
             if (player == null || !player.isOnline()) continue;
 
 
-	        MessagesManager.sendMessage(sender, TranslationManager.translation("command.utils.restart.cannot_open_city_chest"), Prefix.OPENMC, MessageType.INFO, false);
+	        MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.restart.cannot_open_city_chest"), Prefix.OPENMC, MessageType.INFO, false);
             player.closeInventory();
         }
 

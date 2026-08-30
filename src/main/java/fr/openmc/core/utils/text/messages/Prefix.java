@@ -1,9 +1,11 @@
 package fr.openmc.core.utils.text.messages;
 
+import fr.openmc.core.hooks.BedrockHook;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.Player;
 
 /**
  * Enum representing various prefixes for messages.
@@ -27,7 +29,7 @@ public enum Prefix {
     BANK("<gradient:#084CFB:#ADB6FD>bank</gradient>"),
     SHOP("<gradient:#084CFB:#5AAFC4>shop</gradient>"),
     ADMINSHOP("<gradient:#EE2222:#F04949>adminshop</gradient>"),
-    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>", false),
+    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>", "<gradient:#FF0000:#FF7F7F>MORT</gradient>", false),
     SETTINGS("<gradient:#2C82E0:#67C8FF>settings</gradient>"),
     MILLESTONE("<gradient:#A2D182:#B8E89D>milestones</gradient>"),
     DREAM("<gradient:#4498DB:#412AEF>dream</gradient>"),
@@ -39,6 +41,8 @@ public enum Prefix {
 
     @Getter
     private final Component prefix;
+    @Getter
+    private Component bedrockPrefix = null;
     @Getter
     private final boolean toSmall;
 
@@ -52,8 +56,17 @@ public enum Prefix {
         this.toSmall = toSmall;
     }
 
-    public Component getPrefixComponent() {
+    Prefix(String prefix, String bedrockPrefix, boolean toSmall) {
+        this.prefix = MiniMessage.miniMessage().deserialize(prefix);
+        this.toSmall = toSmall;
+        this.bedrockPrefix = MiniMessage.miniMessage().deserialize(bedrockPrefix);
+    }
+
+    public Component getPrefixComponent(Player player) {
+        boolean isBedrockPlayer = BedrockHook.isBedrockPlayer(player);
+
+        if (bedrockPrefix != null && isBedrockPlayer) return bedrockPrefix;
         if (!toSmall) return prefix;
-        return prefix.font(SmallCapsUtils.SMALL_CAPS_FONT);
+        return isBedrockPlayer ? prefix : prefix.font(SmallCapsUtils.SMALL_CAPS_FONT);
     }
 }
