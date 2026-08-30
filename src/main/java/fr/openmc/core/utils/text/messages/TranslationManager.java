@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
+import fr.openmc.core.hooks.BedrockHook;
 import fr.openmc.core.utils.text.ComponentUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
@@ -17,7 +18,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationStore;
 import org.bukkit.entity.Player;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -60,13 +60,14 @@ public class TranslationManager {
         }
 
         // * Enregistre les clés coté serveur afin de pouvoir transformer le text pour bedrock
-        if (adventureStore != null) {
-            GlobalTranslator.translator().removeSource(adventureStore);
+        if (BedrockHook.isEnable()) {
+            if (adventureStore != null) {
+                GlobalTranslator.translator().removeSource(adventureStore);
+            }
+            adventureStore = TranslationStore.messageFormat(Key.key("omc", "translations"));
+            adventureStore.defaultLocale(defaultLang);
+            GlobalTranslator.translator().addSource(adventureStore);
         }
-        adventureStore = TranslationStore.messageFormat(Key.key("omc", "translations"));
-        adventureStore.defaultLocale(defaultLang);
-        GlobalTranslator.translator().addSource(adventureStore);
-
 
         // * Load default lang
         MultiResourceBundle defaultBundle = new MultiResourceBundle(
@@ -75,7 +76,8 @@ public class TranslationManager {
         );
 
         fallbackTranslations = toLegacyMap(defaultBundle.getAllTranslations());
-        registerAdventureTranslations(defaultLang, fallbackTranslations);
+        if (BedrockHook.isEnable())
+            registerAdventureTranslations(defaultLang, fallbackTranslations);
         try {
             injectLangs(resourcePackFolder, fallbackTranslations, defaultLang);
         } catch (Exception e) {
@@ -93,7 +95,8 @@ public class TranslationManager {
 
             translations.putAll(localeTranslations);
 
-            registerAdventureTranslations(locale, translations);
+            if (BedrockHook.isEnable())
+                registerAdventureTranslations(locale, translations);
 
             try {
                 injectLangs(resourcePackFolder, translations, locale);
@@ -170,7 +173,7 @@ public class TranslationManager {
      */
     public static Component translation(Player player, String key, boolean toSmall, ComponentLike... args) {
         // si joueur java
-        if (!FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+        if (!BedrockHook.isBedrockPlayer(player)) {
             return translation(key, toSmall, args);
         }
 

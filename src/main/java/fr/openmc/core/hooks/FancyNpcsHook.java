@@ -2,6 +2,9 @@ package fr.openmc.core.hooks;
 
 import fr.openmc.core.bootstrap.hooks.Hooks;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class FancyNpcsHook extends Hooks {
     public static long FANCY_INIT_DELAY = 20L * 30; // 30 seconds
 
@@ -10,7 +13,7 @@ public class FancyNpcsHook extends Hooks {
     }
 
     @Override
-    protected String getPluginName() {
-        return "FancyNpcs";
+    protected Set<String> getPluginsName() {
+        return Collections.singleton("FancyNpcs");
     }
 }

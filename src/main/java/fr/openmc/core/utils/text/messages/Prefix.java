@@ -1,11 +1,11 @@
 package fr.openmc.core.utils.text.messages;
 
+import fr.openmc.core.hooks.BedrockHook;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 /**
  * Enum representing various prefixes for messages.
@@ -63,7 +63,7 @@ public enum Prefix {
     }
 
     public Component getPrefixComponent(Player player) {
-        boolean isBedrockPlayer = FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
+        boolean isBedrockPlayer = BedrockHook.isBedrockPlayer(player);
 
         if (bedrockPrefix != null && isBedrockPlayer) return bedrockPrefix;
         if (!toSmall) return prefix;

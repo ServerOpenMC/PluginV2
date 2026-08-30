@@ -1,12 +1,10 @@
 package fr.openmc.core.utils.text.fonts;
 
-import fr.openmc.riftengine.core.RiftRegistry;
-import fr.openmc.riftengine.core.registry.glyphs.Glyph;
+import fr.openmc.core.hooks.BedrockHook;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +15,11 @@ public class SmallCapsUtils {
     public static Component toSmall(Player player, String text){
         Component component = Component.text(text.toLowerCase());
 
-        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? component : component.font(SMALL_CAPS_FONT);
+        return BedrockHook.isBedrockPlayer(player) ? component : component.font(SMALL_CAPS_FONT);
     }
 
     public static Component toSmallComponent(Player player, Component text) {
-        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? toSmallComponentBedrock(text) : toSmallComponent(text);
+        return BedrockHook.isBedrockPlayer(player) ? toSmallComponentBedrock(text) : toSmallComponent(text);
     }
 
     public static Component toSmallComponent(Component text){
@@ -51,11 +49,10 @@ public class SmallCapsUtils {
 
             String namespacedId = SMALL_CAPS_FONT.namespace() + ":"
                     + SMALL_CAPS_FONT.value() + ":" + charStr;
-            System.out.println(namespacedId);
-            Glyph glyph = RiftRegistry.GLYPHS.get(namespacedId).orElse(null);
 
-            if (glyph != null) {
-                sb.append(glyph.getBedrockChar());
+            Character bedrockChar = BedrockHook.getGlyph(namespacedId);
+            if (bedrockChar != null) {
+                sb.append(bedrockChar);
             } else {
                 sb.append(charStr);
             }

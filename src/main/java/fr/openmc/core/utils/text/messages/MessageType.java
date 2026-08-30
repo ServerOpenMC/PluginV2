@@ -1,9 +1,9 @@
 package fr.openmc.core.utils.text.messages;
 
+import fr.openmc.core.hooks.BedrockHook;
 import lombok.Getter;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.geysermc.floodgate.api.FloodgateApi;
 
 @Getter
 public enum MessageType {
@@ -25,6 +25,6 @@ public enum MessageType {
     }
 
     public String getPrefix(Player player) {
-        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? bedrockPrefix : prefix;
+        return BedrockHook.isBedrockPlayer(player) ? bedrockPrefix : prefix;
     }
 }

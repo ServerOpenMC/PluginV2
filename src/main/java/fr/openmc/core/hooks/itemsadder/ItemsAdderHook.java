@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -37,8 +38,8 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     }
 
     @Override
-    protected String getPluginName() {
-        return "ItemsAdder";
+    protected Set<String> getPluginsName() {
+        return Collections.singleton("ItemsAdder");
     }
 
     @Override
