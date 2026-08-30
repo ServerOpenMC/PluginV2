@@ -179,7 +179,7 @@ public class OwnerNpcMenu extends Menu {
                         itemToGive,
                         "mayor:owner-npc-move",
                         300,
-                        TranslationManager.translation("feature.city.mayor.npc.move.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                        "feature.city.mayor.npc.move.interaction.remaining",
                         TranslationManager.translation("feature.city.mayor.npc.move.interaction.timeout"),
                         locationClick -> {
                             if (locationClick == null) return true;

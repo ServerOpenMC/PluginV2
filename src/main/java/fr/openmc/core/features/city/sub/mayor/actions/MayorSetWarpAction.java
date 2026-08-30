@@ -46,7 +46,7 @@ public class MayorSetWarpAction {
                 getWarpWand(),
                 "mayor:wait-set-warp",
                 300,
-                TranslationManager.translation("feature.city.mayor.warp.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                "feature.city.mayor.warp.interaction.remaining",
                 TranslationManager.translation("feature.city.mayor.warp.interaction.timeout"),
                 locationClick -> {
                     if (locationClick == null) return true;

@@ -168,7 +168,7 @@ public class MascotMenu extends Menu {
                                 mascotsMoveItem,
                                 "mascots:moveInteraction",
                                 120,
-                                TranslationManager.translation("feature.city.mascots.menu.main.move.interaction.remaining"),
+                                "feature.city.mascots.menu.main.move.interaction.remaining",
                                 TranslationManager.translation("feature.city.mascots.menu.main.move.interaction.cancelled"),
                                 mascotMove -> {
                                     if (mascotMove == null) return true;

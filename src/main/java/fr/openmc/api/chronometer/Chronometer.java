@@ -8,7 +8,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -62,7 +61,7 @@ public class Chronometer{
      * @param group Chronometer group
      * @param time duration in second
      * @param messageType display type
-     * @param message to display the time
+     * @param key translation key
      * @param finishMessageType display type
      * @param finishMessage message display when the chronometer ends normally
      */
@@ -71,7 +70,7 @@ public class Chronometer{
             String group,
             int time,
             ChronometerType messageType,
-            Component message,
+            String key,
             ChronometerType finishMessageType,
             Component finishMessage
     ) {
@@ -92,11 +91,10 @@ public class Chronometer{
 
                 int remainingTime = chronometer.get(entityUUID).get(group);
 
-                if (message != null && entity instanceof Player player) {
-                    String timerMessage = PlainTextComponentSerializer.plainText().serialize(message)
-                            .replace("%sec%", String.valueOf(remainingTime));
+                if (key != null && entity instanceof Player player) {
+                    Component timerMessage = TranslationManager.translation(key, Component.text(remainingTime));
 
-                    sendMessage(player, messageType, Component.text(timerMessage));
+                    sendMessage(player, messageType, timerMessage);
                 }
 
                 if (timerEnd(entityUUID, group)) {
