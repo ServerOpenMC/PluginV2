@@ -92,7 +92,7 @@ public class Chronometer{
                 int remainingTime = chronometer.get(entityUUID).get(group);
 
                 if (key != null && entity instanceof Player player) {
-                    Component timerMessage = TranslationManager.translation(key, Component.text(remainingTime));
+                    Component timerMessage = TranslationManager.translation(key, Component.text(remainingTime + "s"));
 
                     sendMessage(player, messageType, timerMessage);
                 }
