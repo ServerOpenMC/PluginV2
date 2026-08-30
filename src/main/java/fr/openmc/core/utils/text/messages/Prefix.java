@@ -4,6 +4,8 @@ import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 /**
  * Enum representing various prefixes for messages.
@@ -52,8 +54,9 @@ public enum Prefix {
         this.toSmall = toSmall;
     }
 
-    public Component getPrefixComponent() {
+    public Component getPrefixComponent(Player player) {
+        if (player == null) return prefix;
         if (!toSmall) return prefix;
-        return prefix.font(SmallCapsUtils.SMALL_CAPS_FONT);
+        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? prefix : prefix.font(SmallCapsUtils.SMALL_CAPS_FONT);
     }
 }

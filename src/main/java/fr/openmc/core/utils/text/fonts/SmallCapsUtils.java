@@ -5,6 +5,8 @@ import fr.openmc.riftengine.core.registry.glyphs.Glyph;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,10 @@ import java.util.List;
 public class SmallCapsUtils {
     public final static Key SMALL_CAPS_FONT = Key.key("omc_fonts", "small_caps");
 
-    public static Component toSmall(String text){
-        return Component.text(text.toLowerCase()).font(SMALL_CAPS_FONT);
+    public static Component toSmall(Player player, String text){
+        Component component = Component.text(text.toLowerCase());
+
+        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? component : component.font(SMALL_CAPS_FONT);
     }
 
     public static Component toSmallComponent(Component text){

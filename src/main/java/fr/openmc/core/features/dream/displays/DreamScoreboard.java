@@ -8,6 +8,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamStructure;
+import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -55,14 +56,14 @@ public class DreamScoreboard extends BaseScoreboard {
             long time = dreamPlayer.getDreamTime();
             int cold = dreamPlayer.getCold();
 
-            lines.add(text(" • ", NamedTextColor.DARK_GRAY)
+            lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.dream.scoreboard.time", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(toSmall(DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
+                    .append(toSmall(player, DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
             );
 
             if (cold > 0)
-                lines.add(text(" • ", NamedTextColor.DARK_GRAY)
+                lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation("feature.dream.scoreboard.cold", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(dreamPlayer.getCold()).color(TextColor.color(0x44EBDA)))
@@ -72,7 +73,7 @@ public class DreamScoreboard extends BaseScoreboard {
         }
 
         if (dreamBiome != null) {
-            lines.add(text(" • ", NamedTextColor.DARK_GRAY)
+            lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.dream.scoreboard.biome", true).color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(dreamBiome.getSmallName())
@@ -82,10 +83,10 @@ public class DreamScoreboard extends BaseScoreboard {
         DreamStructure dreamStructure = DreamStructure.getDreamStructure(player);
         if (dreamStructure != null) {
             String nameLocation = PlainTextComponentSerializer.plainText().serialize(dreamStructure.getName());
-            lines.add(text(" • ", NamedTextColor.DARK_GRAY)
+            lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.dream.scoreboard.location", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(toSmall(nameLocation))
+                    .append(toSmall(player, nameLocation))
             );
         }
 

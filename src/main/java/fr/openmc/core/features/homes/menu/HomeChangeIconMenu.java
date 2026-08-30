@@ -11,6 +11,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -181,7 +182,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     private Component formatCategoryLine(NamedTextColor color, Component name, boolean selected) {
-        return Component.text(selected ? "• " : "  ", color)
+        return Component.text(selected ? CharRemplacementUtils.getPointChar(getOwner()) + " " : "  ", color)
                 .append(name.color(NamedTextColor.DARK_GRAY));
     }
 

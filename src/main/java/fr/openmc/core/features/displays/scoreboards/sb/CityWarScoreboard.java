@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.utils.MathUtils;
+import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.DirectionUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -55,25 +56,25 @@ public class CityWarScoreboard extends BaseScoreboard {
                 )
                 .decoration(TextDecoration.BOLD, true));
 
-        lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+        lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label", true).color(TextColor.color(0xAAAAAA)))
                 .appendSpace()
-                .append(toSmall(enemyCity.getName()).color(TextColor.color(0xFF0634)))
+                .append(toSmall(player, enemyCity.getName()).color(TextColor.color(0xFF0634)))
         );
 
         Component phaseComponent;
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
-                    .deserialize("<gradient:#FF7518:#FFD580>%s</gradient>".formatted(toSmall(WarManager.getFormattedPhase(war.getPhase()))));
-            case COMBAT -> phaseComponent = toSmall(WarManager.getFormattedPhase(war.getPhase()))
+                    .deserialize("<gradient:#FF7518:#FFD580>%s</gradient>".formatted(toSmall(player, WarManager.getFormattedPhase(war.getPhase()))));
+            case COMBAT -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(TextColor.color(0xFC1C1C));
-            case ENDED -> phaseComponent = toSmall(WarManager.getFormattedPhase(war.getPhase()))
+            case ENDED -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.GRAY);
-            default -> phaseComponent = toSmall(WarManager.getFormattedPhase(war.getPhase()))
+            default -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.WHITE);
         }
 
-        lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+        lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.citywar.phase.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(phaseComponent)
@@ -93,7 +94,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         double distance = mascotLocation.distance(player.getLocation());
         int rounded = (int) Math.round(distance);
 
-        lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+        lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation("feature.displays.scoreboard.citywar.distance.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(text(direction, TextColor.color(0xFFE206)))
@@ -103,7 +104,7 @@ public class CityWarScoreboard extends BaseScoreboard {
 
 
         switch (war.getPhase()) {
-            case PREPARATION -> lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+            case PREPARATION -> lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.displays.scoreboard.citywar.starts_in.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(text(DateUtils.convertSecondToTime(war.getPreparationTimeRemaining()), TextColor.color(0xF52727)))
@@ -111,27 +112,27 @@ public class CityWarScoreboard extends BaseScoreboard {
 
             case COMBAT -> {
                 if (mascot != null)
-                    lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                    lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                             .append(TranslationManager.translation("feature.displays.scoreboard.citywar.mascot.label", true).color(NamedTextColor.GRAY))
                             .appendSpace()
                             .append(getColoredHealth(mascot))
                     );
 
                 if (enemyMascot != null)
-                    lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                    lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                             .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label", true).color(NamedTextColor.GRAY))
                             .appendSpace()
                             .append(getColoredHealth(enemyMascot))
                     );
 
-                lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+                lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation("feature.displays.scoreboard.citywar.ends_in.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(DateUtils.convertSecondToTime(war.getCombatTimeRemaining()), TextColor.color(0xF52727)))
                 );
             }
 
-            case ENDED -> lines.add(text("  • ", NamedTextColor.DARK_GRAY)
+            case ENDED -> lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation("feature.displays.scoreboard.citywar.state.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(TranslationManager.translation("feature.displays.scoreboard.citywar.state.ended", true).color(NamedTextColor.GRAY))

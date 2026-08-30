@@ -27,8 +27,8 @@ public class MessagesManager {
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
         Component messageComponent =
-                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(prefix.getPrefixComponent())
+                Component.text(type == MessageType.NONE ? "" : "§7(" + (sender instanceof Player player ? type.getPrefix(player) : type.getBedrockPrefix()) + "§7) ")
+                        .append(sender instanceof Player player ? prefix.getPrefixComponent(player) : prefix.getPrefixComponent(null))
                         .append(Component.text(" §7» ")
                         .append(message)
                 );
@@ -58,11 +58,11 @@ public class MessagesManager {
      *
      * Sends a formatted message to the player with an accompanying sound.
      *
-     * @param sender  The player to send the message to (can be a console)
+     * @param sender  The player to send the message to
      * @param message The content of the message
      * @param prefix  The prefix for the message
      */
-    public static void sendMessage(CommandSender sender, Component message, Prefix prefix) {
+    public static void sendMessage(Player sender, Component message, Prefix prefix) {
         sendMessage(sender, message, prefix, MessageType.NONE, false);
     }
 
@@ -90,14 +90,13 @@ public class MessagesManager {
      * @param type    The type of message (information, error, success, warning)
      */
     public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
-        Component messageComponent =
-                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(prefix.getPrefixComponent())
-                        .append(Component.text(" §7» ")
-                        .append(message)
-                );
-
-        Bukkit.broadcast(messageComponent);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix(player) + "§7) ")
+                    .append(prefix.getPrefixComponent(player))
+                    .append(Component.text(" §7» ")
+                            .append(message)
+                    ));
+        }
     }
 
     /**
@@ -110,15 +109,12 @@ public class MessagesManager {
      * @param type    The type of message (information, error, success, warning)
      */
     public static void broadcastMessage(World world, Component message, Prefix prefix, MessageType type) {
-        Component messageComponent =
-                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(prefix.getPrefixComponent())
-                        .append(Component.text(" §7» ")
-                                .append(message)
-                        );
-
         for (Player player : world.getPlayers()) {
-            player.sendMessage(messageComponent);
+            player.sendMessage(Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix(player) + "§7) ")
+                    .append(prefix.getPrefixComponent(player))
+                    .append(Component.text(" §7» ")
+                            .append(message)
+                    ));
         }
     }
 }

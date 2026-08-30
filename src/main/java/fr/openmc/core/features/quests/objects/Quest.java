@@ -578,7 +578,7 @@ public class Quest {
                     if (onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
-                                .append(Prefix.QUEST.getPrefixComponent())
+                                .append(Prefix.QUEST.getPrefixComponent(onlinePlayer))
                                 .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
                                 .append(TranslationManager.translation("feature.quests.actionbar.progress_label")
                                         .color(NamedTextColor.GRAY))

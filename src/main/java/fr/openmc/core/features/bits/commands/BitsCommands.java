@@ -33,9 +33,9 @@ public class BitsCommands {
     @Subcommand("set")
     @Description("Permet de définir les bits d'un joueur")
     @CommandPermission("omc.admin.commands.bits.set")
-    public void setBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
+    public void setBits(CommandSender sender, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
         BitsManager.setBits(target.getUniqueId(), amount);
-        MessagesManager.sendMessage(player,
+        MessagesManager.sendMessage(sender,
                 TranslationManager.translation(
                         "feature.economy.bits.set.success",
                         Component.text(target.getName()).color(NamedTextColor.YELLOW),
