@@ -59,7 +59,7 @@ public abstract class Hooks {
                 this.init();
                     OMCLogger.successFormatted("Hook " + hookName + " activé.");
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             OMCLogger.errorFormatted("Hook " + hookName + " non activé.");
             OMCLogger.error(e.getMessage(), e);
         }
