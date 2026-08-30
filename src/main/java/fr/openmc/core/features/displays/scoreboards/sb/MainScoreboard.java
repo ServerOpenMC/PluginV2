@@ -49,7 +49,7 @@ public class MainScoreboard extends BaseScoreboard {
 
     @Override
     public void update(Player player, SternalBoard board) {
-        List<Component> lines = new ArrayList<>(getDefaultLines(player));
+        List<Component> lines = new ArrayList<>(getDefaultLines(player, false));
 
         // Corpse
         if (CorpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
@@ -78,11 +78,11 @@ public class MainScoreboard extends BaseScoreboard {
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(data.getCamp1ToSmall())
                         .appendSpace()
-                        .append(TranslationManager.translation("feature.displays.scoreboard.contest.vs", true).color(NamedTextColor.GRAY))
+                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.contest.vs", true).color(NamedTextColor.GRAY))
                         .append(data.getCamp2ToSmall())
                 );
                 lines.add(Component.text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                        .append(TranslationManager.translation("feature.displays.scoreboard.contest.ends", true).color(NamedTextColor.GRAY))
+                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.contest.ends", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF8F06)))
                 );
@@ -95,7 +95,7 @@ public class MainScoreboard extends BaseScoreboard {
         board.updateLines(lines);
     }
 
-    public static List<Component> getDefaultLines(Player player) {
+    public static List<Component> getDefaultLines(Player player, boolean inWar) {
         Component rank = LuckPermsHook.isEnable()
                 ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
                 : TranslationManager.translation("feature.displays.scoreboard.rank.none", true).color(TextColor.color(0xFF1FCC));
@@ -130,21 +130,23 @@ public class MainScoreboard extends BaseScoreboard {
                         ? toSmall(player, city.getName()).color(TextColor.color(0xFF06DC))
                         : TranslationManager.translation(player, "feature.displays.scoreboard.city.none", true).color(TextColor.color(0xFF06DC)))
         );
-        lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation(player, "feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
-                .appendSpace()
-                .append(toSmall(player, balance).color(TextColor.color(0xFF06DC)))
-                .appendSpace()
-                .append(text(EconomyManager.getEconomyIcon()))
-        );
-        if (bits > 0) {
+        if (!inWar) {
             lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
+                    .append(TranslationManager.translation(player, "feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(toSmall(player, EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                    .append(toSmall(player, balance).color(TextColor.color(0xFF06DC)))
                     .appendSpace()
-                    .append(text(BitsManager.getBitsIcon()))
+                    .append(text(EconomyManager.getEconomyIcon()))
             );
+            if (bits > 0) {
+                lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
+                        .appendSpace()
+                        .append(toSmall(player, EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                        .appendSpace()
+                        .append(text(BitsManager.getBitsIcon()))
+                );
+            }
         }
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation(player, "feature.displays.scoreboard.location.label", true).color(NamedTextColor.GRAY))

@@ -47,7 +47,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         War war = city.getWar();
         City enemyCity = war.getCityAttacker().equals(city) ? war.getCityDefender() : war.getCityAttacker();
 
-        List<Component> lines = new ArrayList<>(MainScoreboard.getDefaultLines(player));
+        List<Component> lines = new ArrayList<>(MainScoreboard.getDefaultLines(player, true));
 
         lines.add(MiniMessage.miniMessage()
                 .deserialize(
@@ -57,7 +57,7 @@ public class CityWarScoreboard extends BaseScoreboard {
                 .decoration(TextDecoration.BOLD, true));
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label", true).color(TextColor.color(0xAAAAAA)))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.enemy.label", true).color(TextColor.color(0xAAAAAA)))
                 .appendSpace()
                 .append(toSmall(player, enemyCity.getName()).color(TextColor.color(0xFF0634)))
         );
@@ -65,7 +65,8 @@ public class CityWarScoreboard extends BaseScoreboard {
         Component phaseComponent;
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
-                    .deserialize("<gradient:#FF7518:#FFD580>%s</gradient>".formatted(toSmall(player, WarManager.getFormattedPhase(war.getPhase()))));
+                    .deserialize("<gradient:#FF7518:#FFD580><title></gradient>",
+                            Placeholder.component("title", toSmall(player, WarManager.getFormattedPhase(war.getPhase()))));
             case COMBAT -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(TextColor.color(0xFC1C1C));
             case ENDED -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
@@ -75,7 +76,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         }
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.citywar.phase.label", true).color(NamedTextColor.GRAY))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.phase.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(phaseComponent)
         );
@@ -95,7 +96,7 @@ public class CityWarScoreboard extends BaseScoreboard {
         int rounded = (int) Math.round(distance);
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                .append(TranslationManager.translation("feature.displays.scoreboard.citywar.distance.label", true).color(NamedTextColor.GRAY))
+                .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.distance.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(text(direction, TextColor.color(0xFFE206)))
                 .appendSpace()
@@ -105,7 +106,7 @@ public class CityWarScoreboard extends BaseScoreboard {
 
         switch (war.getPhase()) {
             case PREPARATION -> lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.displays.scoreboard.citywar.starts_in.label", true).color(NamedTextColor.GRAY))
+                    .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.starts_in.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(text(DateUtils.convertSecondToTime(war.getPreparationTimeRemaining()), TextColor.color(0xF52727)))
             );
@@ -113,29 +114,29 @@ public class CityWarScoreboard extends BaseScoreboard {
             case COMBAT -> {
                 if (mascot != null)
                     lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                            .append(TranslationManager.translation("feature.displays.scoreboard.citywar.mascot.label", true).color(NamedTextColor.GRAY))
+                            .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.mascot.label", true).color(NamedTextColor.GRAY))
                             .appendSpace()
                             .append(getColoredHealth(mascot))
                     );
 
                 if (enemyMascot != null)
                     lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                            .append(TranslationManager.translation("feature.displays.scoreboard.citywar.enemy.label", true).color(NamedTextColor.GRAY))
+                            .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.enemy.label", true).color(NamedTextColor.GRAY))
                             .appendSpace()
                             .append(getColoredHealth(enemyMascot))
                     );
 
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                        .append(TranslationManager.translation("feature.displays.scoreboard.citywar.ends_in.label", true).color(NamedTextColor.GRAY))
+                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.ends_in.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(DateUtils.convertSecondToTime(war.getCombatTimeRemaining()), TextColor.color(0xF52727)))
                 );
             }
 
             case ENDED -> lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.displays.scoreboard.citywar.state.label", true).color(NamedTextColor.GRAY))
+                    .append(TranslationManager.translation(player, "feature.displays.scoreboard.citywar.state.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(TranslationManager.translation("feature.displays.scoreboard.citywar.state.ended", true).color(NamedTextColor.GRAY))
+                    .append(TranslationManager.translation(player,"feature.displays.scoreboard.citywar.state.ended", true).color(NamedTextColor.GRAY))
             );
         }
 

@@ -20,6 +20,10 @@ public class SmallCapsUtils {
         return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? component : component.font(SMALL_CAPS_FONT);
     }
 
+    public static Component toSmallComponent(Player player, Component text) {
+        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId()) ? toSmallComponentBedrock(text) : toSmallComponent(text);
+    }
+
     public static Component toSmallComponent(Component text){
         return text.font(SMALL_CAPS_FONT);
     }
