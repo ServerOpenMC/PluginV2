@@ -60,14 +60,12 @@ public class TranslationManager {
         }
 
         // * Enregistre les clés coté serveur afin de pouvoir transformer le text pour bedrock
-        if (BedrockHook.isEnable()) {
-            if (adventureStore != null) {
-                GlobalTranslator.translator().removeSource(adventureStore);
-            }
-            adventureStore = TranslationStore.messageFormat(Key.key("omc", "translations"));
-            adventureStore.defaultLocale(defaultLang);
-            GlobalTranslator.translator().addSource(adventureStore);
+        if (adventureStore != null) {
+            GlobalTranslator.translator().removeSource(adventureStore);
         }
+        adventureStore = TranslationStore.messageFormat(Key.key("omc", "translations"));
+        adventureStore.defaultLocale(defaultLang);
+        GlobalTranslator.translator().addSource(adventureStore);
 
         // * Load default lang
         MultiResourceBundle defaultBundle = new MultiResourceBundle(
@@ -76,8 +74,7 @@ public class TranslationManager {
         );
 
         fallbackTranslations = toLegacyMap(defaultBundle.getAllTranslations());
-        if (BedrockHook.isEnable())
-            registerAdventureTranslations(defaultLang, fallbackTranslations);
+        registerAdventureTranslations(defaultLang, fallbackTranslations);
         try {
             injectLangs(resourcePackFolder, fallbackTranslations, defaultLang);
         } catch (Exception e) {
@@ -95,8 +92,7 @@ public class TranslationManager {
 
             translations.putAll(localeTranslations);
 
-            if (BedrockHook.isEnable())
-                registerAdventureTranslations(locale, translations);
+            registerAdventureTranslations(locale, translations);
 
             try {
                 injectLangs(resourcePackFolder, translations, locale);
