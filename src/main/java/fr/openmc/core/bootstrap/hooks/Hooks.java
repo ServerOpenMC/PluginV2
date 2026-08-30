@@ -60,6 +60,7 @@ public abstract class Hooks {
                     OMCLogger.successFormatted("Hook " + hookName + " activé.");
             }
         } catch (Throwable e) {
+            ENABLED.remove(getClass());
             OMCLogger.errorFormatted("Hook " + hookName + " non activé.");
             OMCLogger.error(e.getMessage(), e);
         }
