@@ -92,6 +92,11 @@ public class AdminShopManager extends Feature implements HasCommands {
         ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
+        if (amount <= 0) {
+            sendError(player, TranslationManager.translation("feature.adminshop.amount_sup"));
+            return;
+        }
+
         if (!ItemUtils.hasEnoughSpace(player, item.getMaterial(), amount)) {
             sendError(player, TranslationManager.translation("feature.adminshop.inventory_full"));
             return;
@@ -127,6 +132,11 @@ public class AdminShopManager extends Feature implements HasCommands {
     public static void sellItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId); // Get the item from the current category
         if (item == null) return;
+
+        if (amount <= 0) {
+            sendError(player, TranslationManager.translation("feature.adminshop.amount_sup"));
+            return;
+        }
 
         // Check if the initial sell price is valid
         if (item.getInitialSellPrice() <= 0) {
