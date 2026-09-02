@@ -5,18 +5,24 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
+import fr.openmc.core.hooks.BedrockHook;
 import fr.openmc.core.utils.text.ComponentUtils;
+import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationStore;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -31,17 +37,17 @@ public class TranslationManager {
             .setPrettyPrinting()
             .create();
 
-    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.plainText();
+    private static TranslationStore.StringBased<MessageFormat> adventureStore;
 
     /**
      * Initialise le gestionnaire de traductions et génère les ressource packs.
      * Charge les traductions en MiniMessage et les convertit en format legacy pour Minecraft.
-     * 
+     *
      * @param context Le contexte de bootstrap du plugin Paper
      * @param defaultLang La langue par défaut du serveur (fallback)
      * @param langsSuppoorted Les langues additionnelles à supporter
      */
-    public static void init(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
+    public static void bootstrap(BootstrapContext context, Locale defaultLang, Locale... langsSuppoorted) {
         // * Generate resource pack
         Path resourcePackFolder;
         try {
@@ -53,6 +59,14 @@ public class TranslationManager {
             return;
         }
 
+        // * Enregistre les clés coté serveur afin de pouvoir transformer le text pour bedrock
+        if (adventureStore != null) {
+            GlobalTranslator.translator().removeSource(adventureStore);
+        }
+        adventureStore = TranslationStore.messageFormat(Key.key("omc", "translations"));
+        adventureStore.defaultLocale(defaultLang);
+        GlobalTranslator.translator().addSource(adventureStore);
+
         // * Load default lang
         MultiResourceBundle defaultBundle = new MultiResourceBundle(
                 "translations",
@@ -60,6 +74,7 @@ public class TranslationManager {
         );
 
         fallbackTranslations = toLegacyMap(defaultBundle.getAllTranslations());
+        registerAdventureTranslations(defaultLang, fallbackTranslations);
         try {
             injectLangs(resourcePackFolder, fallbackTranslations, defaultLang);
         } catch (Exception e) {
@@ -77,6 +92,8 @@ public class TranslationManager {
 
             translations.putAll(localeTranslations);
 
+            registerAdventureTranslations(locale, translations);
+
             try {
                 injectLangs(resourcePackFolder, translations, locale);
             } catch (Exception e) {
@@ -88,10 +105,18 @@ public class TranslationManager {
         }
     }
 
+    private static void registerAdventureTranslations(Locale locale, Map<String, String> translations) {
+        Map<String, MessageFormat> formats = new HashMap<>();
+        for (Map.Entry<String, String> entry : translations.entrySet()) {
+            formats.put(entry.getKey(), MessageConvertor.toMessageFormat(entry.getValue(), locale));
+        }
+        adventureStore.registerAll(locale, formats);
+    }
+
     /**
      * Crée un composant texte traduisible avec arguments.
      * Le client Minecraft cherchera la traduction dans son resource pack.
-     * 
+     *
      * @param key La clé de traduction (ex: "command.fun.playtime.success")
      * @param args Les arguments à interpoler dans la traduction
      * @return Un composant Paper Adventure traduisible (italique désactivé)
@@ -108,17 +133,57 @@ public class TranslationManager {
     }
 
     /**
-     * Retourne une traduction sous forme de String au format legacy.
-     * ATTENTION RETOURNE DIRECTEMENT LE FALLBACK
-     * 
-     * @param key La clé de traduction
-     * @param args Les arguments à interpoler
-     * @return Une chaîne au format legacy (codes §)
+     * Crée un composant texte traduisible avec arguments.
+     * Le client Minecraft cherchera la traduction dans son resource pack.
+     *
+     * @param key La clé de traduction (ex: "command.fun.playtime.success")
+     * @param toSmall si le texte doit etre en toSmall
+     * @param args Les arguments à interpoler dans la traduction
+     * @return Un composant Paper Adventure traduisible (italique désactivé)
      */
+    public static Component translation(String key, boolean toSmall, ComponentLike... args) {
+        String fallback = getFallbackTranslation(key);
+        ComponentLike[] normalizedArgs = ComponentUtils.normalizeComponent(args);
+
+        Component translated = Component.translatable(
+                key,
+                fallback,
+                normalizedArgs
+        ).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+
+        if (toSmall) {
+            translated = SmallCapsUtils.toSmallComponent(translated);
+        }
+
+        return translated;
+    }
+
+    /**
+     * Creer un component translatable, safe pour bedrock.
+     * (utiliser le uniquement lorsque vous voulez appliquer un font (comme toSmall)
+     * @param player le joueur
+     * @param key la clé
+     * @param toSmall si c'est avec le font to small
+     * @param args les arguments de la clé
+     * @return le component translatable
+     */
+    public static Component translation(Player player, String key, boolean toSmall, ComponentLike... args) {
+        // si joueur java
+        if (!BedrockHook.isBedrockPlayer(player)) {
+            return translation(key, toSmall, args);
+        }
+
+        // sinon joueur bedrock
+        Component translatable = translation(key, args);
+        Component rendered = GlobalTranslator.render(translatable, player.locale());
+
+        return toSmall ? SmallCapsUtils.toSmallComponentBedrock(rendered) : rendered;
+    }
+
     /**
      * Crée une liste de lignes traduisibles pour une lore d'objet.
      * Divise le texte en plusieurs lignes (séparées par \n).
-     * 
+     *
      * @param key La clé de traduction
      * @param componentsArgs Les arguments de composants à interpoler
      * @return Une liste de composants, un par ligne (italique désactivé)
@@ -155,7 +220,7 @@ public class TranslationManager {
 
     /**
      * Convertit une carte de traductions du format MiniMessage au format legacy.
-     * 
+     *
      * @param miniMessageMap La carte de traductions en format MiniMessage
      * @return Une nouvelle carte avec les valeurs converties en format legacy (§)
      */
@@ -163,22 +228,16 @@ public class TranslationManager {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, String> entry : miniMessageMap.entrySet()) {
             String key = entry.getKey();
-            if (key.endsWith(".to_small")) continue;
 
             String value = MessageConvertor.toLegacy(entry.getValue());
             result.put(key, value);
-
-            if (miniMessageMap.get(key + ".to_small") != null &&
-                    miniMessageMap.get(key + ".to_small").equalsIgnoreCase("true")) {
-                result.put(key + ".to_small", MessagesManager.textToSmall(value));
-            }
         }
         return result;
     }
 
     /**
      * Récupère la traduction de secours (fallback) pour une clé.
-     * 
+     *
      * @param key La clé de traduction
      * @return La traduction de fallback, ou la clé si elle n'existe pas
      */
@@ -189,7 +248,7 @@ public class TranslationManager {
     /**
      * Génère le fichier JSON de traductions pour une locale donnée.
      * Crée un fichier dans assets/minecraft/lang/{locale}.json du resource pack.
-     * 
+     *
      * @param resourcePackFolder Le chemin racine du resource pack
      * @param translations La carte des traductions à injecter
      * @param locale La locale cible (ex: fr_FR, en_US)

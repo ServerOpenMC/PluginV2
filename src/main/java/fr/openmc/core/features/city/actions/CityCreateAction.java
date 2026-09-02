@@ -52,7 +52,7 @@ public class CityCreateAction {
                 getMascotStick(),
                 "mascot:stick",
                 300,
-                TranslationManager.translation("feature.city.mascot.mascot_wand.claim_mascot_wand"),
+                "feature.city.mascot.mascot_wand.claim_mascot_wand",
                 TranslationManager.translation("feature.city.mascot.mascot_wand.create_cancelled"),
                 location -> {
                     if (!isValidLocation(player, location)) return false;

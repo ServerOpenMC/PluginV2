@@ -26,7 +26,7 @@ public class RestartScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(TranslationManager.translation("feature.displays.scoreboard.restart.in.to_small")
+        lines.add(TranslationManager.translation("feature.displays.scoreboard.restart.in", true)
                 .appendSpace()
                 .append(text(DateUtils.convertSecondToTime(Restart.remainingTime)))
                 .color(NamedTextColor.RED));

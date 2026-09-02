@@ -52,7 +52,7 @@ public enum DreamBiome {
     }
 
     public Component getSmallName() {
-        return TranslationManager.translation(nameKey + ".to_small");
+        return TranslationManager.translation(nameKey, true);
     }
 
     public static boolean isDreamBiome(Location loc, DreamBiome dreamBiome) {

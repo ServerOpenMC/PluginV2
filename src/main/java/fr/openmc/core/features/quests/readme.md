@@ -48,7 +48,7 @@ public class MinerQuest extends Quest {
 
     public MinerQuest() {
         // Nom de la quête: String, description: String, icône: ItemStack ou Material, Action bar: boolean *facultatif*
-        super("Mineur professionnel", "Miner {target} blocs", Material.DIAMOND_PICKAXE, false);
+        super("Mineur professionnel", "Miner [target] blocs", Material.DIAMOND_PICKAXE, false);
 
         this.addTiers(
             new QuestTier(10, new QuestMoneyReward(100)),

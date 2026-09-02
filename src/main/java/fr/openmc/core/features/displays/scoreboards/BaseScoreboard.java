@@ -73,7 +73,7 @@ public abstract class BaseScoreboard {
      * @return Un {@link Component} pour le footer
      */
     public static Component getFooter() {
-        Component footerText = TranslationManager.translation("feature.displays.scoreboard.footer.text.to_small");
+        Component footerText = TranslationManager.translation("feature.displays.scoreboard.footer.text");
         return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6><name></gradient>", Placeholder.component("name", footerText));
     }
 }

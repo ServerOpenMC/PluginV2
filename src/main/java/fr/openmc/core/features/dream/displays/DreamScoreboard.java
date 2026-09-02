@@ -8,6 +8,7 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamStructure;
+import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -16,14 +17,13 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmall;
-import static fr.openmc.core.utils.text.messages.MessagesManager.textToSmallComponent;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallComponent;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -49,22 +49,22 @@ public class DreamScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
-        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#0011ff:#2556b6>%s</gradient>"
-                .formatted(textToSmall(player.getName()))).decoration(TextDecoration.BOLD, true));
+        lines.add(MiniMessage.miniMessage().deserialize("<gradient:#0011ff:#2556b6><font:omc_fonts:small_caps>%s</font></gradient>"
+                .formatted(player.getName())).decoration(TextDecoration.BOLD, true));
 
         if (dreamPlayer != null) {
-            Long time = dreamPlayer.getDreamTime();
+            long time = dreamPlayer.getDreamTime();
             int cold = dreamPlayer.getCold();
 
-            lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.dream.scoreboard.time.to_small").color(NamedTextColor.GRAY))
+            lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation(player, "feature.dream.scoreboard.time", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(textToSmallComponent(DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
+                    .append(toSmall(player, DateUtils.convertSecondToTime(time)).color(TextColor.color(0x00CC34)))
             );
 
             if (cold > 0)
-                lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                        .append(TranslationManager.translation("feature.dream.scoreboard.cold.to_small").color(NamedTextColor.GRAY))
+                lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(player, "feature.dream.scoreboard.cold", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(text(dreamPlayer.getCold()).color(TextColor.color(0x44EBDA)))
                 );
@@ -73,8 +73,8 @@ public class DreamScoreboard extends BaseScoreboard {
         }
 
         if (dreamBiome != null) {
-            lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.dream.scoreboard.biome.to_small").color(NamedTextColor.GRAY))
+            lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation(player,"feature.dream.scoreboard.biome", true).color(NamedTextColor.GRAY))
                     .appendSpace()
                     .append(dreamBiome.getSmallName())
             );
@@ -82,18 +82,17 @@ public class DreamScoreboard extends BaseScoreboard {
 
         DreamStructure dreamStructure = DreamStructure.getDreamStructure(player);
         if (dreamStructure != null) {
-            String nameLocation = PlainTextComponentSerializer.plainText().serialize(dreamStructure.getName());
-            lines.add(text(" • ", NamedTextColor.DARK_GRAY)
-                    .append(TranslationManager.translation("feature.dream.scoreboard.location.to_small").color(NamedTextColor.GRAY))
+            lines.add(text(" " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation(player, "feature.dream.scoreboard.location", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(textToSmallComponent(nameLocation))
+                    .append(toSmallComponent(dreamStructure.getName()))
             );
         }
 
         lines.add(empty());
         lines.add(MiniMessage.miniMessage().deserialize(
                 "    <gradient:#001a66:#1358c9><footer></gradient>",
-                Placeholder.component("footer", TranslationManager.translation("feature.displays.scoreboard.footer.text.to_small"))
+                Placeholder.component("footer", TranslationManager.translation("feature.displays.scoreboard.footer.text", true))
         ));
         board.updateLines(lines);
     }
