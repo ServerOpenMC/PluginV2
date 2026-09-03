@@ -13,7 +13,6 @@ import org.bukkit.block.Biome;
 import java.io.File;
 import java.nio.file.Path;
 
-@SuppressWarnings("UnstableApiUsage")
 public abstract class WorldTemplate {
     private static Registry<Biome> BIOME_REGISTRY = null;
     private World world = null;

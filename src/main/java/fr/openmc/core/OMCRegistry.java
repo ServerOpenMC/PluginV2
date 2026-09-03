@@ -13,6 +13,7 @@ import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
+import fr.openmc.core.registry.poi.CustomPoiRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
@@ -30,12 +31,12 @@ public final class OMCRegistry {
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
     public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
+    public static CustomPoiRegistry CUSTOM_POI;
+    public static WorldTemplateRegistry WORLD_TEMPLATES;
 
     // * Registre des features
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
-
-    public static WorldTemplateRegistry WORLD_TEMPLATES;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
@@ -56,6 +57,8 @@ public final class OMCRegistry {
                     () -> CUSTOM_LOOTBOXES = new CustomLootboxRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> CUSTOM_POI = new CustomPoiRegistry(),
                     RegistryLoadingType.AFTER_IA),
 
             new RegistryContext(() -> WORLD_TEMPLATES = new WorldTemplateRegistry(),
