@@ -2,15 +2,19 @@ package fr.openmc.core.hooks;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,12 +30,36 @@ public class WorldGuardHook extends Hooks {
         return Collections.singleton("WorldGuard");
     }
 
+    public static void registerWorldGuardRegion(Key key, World world, BlockVector3 pos1, BlockVector3 pos2) {
+        if (world == null) return;
+
+        RegionContainer container = WorldGuard.getInstance()
+                .getPlatform()
+                .getRegionContainer();
+
+        RegionManager manager = container.get(BukkitAdapter.adapt(world));
+
+        if (manager == null) return;
+
+        ProtectedRegion region = new ProtectedCuboidRegion(
+                key.namespace() + ":" + key.value(),
+                pos1,
+                pos2
+        );
+
+        try {
+            manager.addRegion(region);
+            manager.save();
+        } catch (StorageException e) {
+            OMCLogger.errorFormatted("Un problème a été rencontrée durant le save de la region", e);
+        }
+    }
+
     public static boolean isRegionConflict(Location location) {
         if (!isEnable()) return false;
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        World world = WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(location.getWorld().getName());
-        RegionManager regions = container.get(world);
+        RegionManager regions = container.get(BukkitAdapter.adapt(location.getWorld()));
 
         if(regions == null) return false;
 

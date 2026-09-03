@@ -32,7 +32,7 @@ import net.minecraft.world.level.dimension.DimensionType;
  *   "timelines": "#minecraft:in_overworld"
  * }
  */
-public final class DimensionTypeBuilder {
+public final class DimensionTypeBuilder implements ContentBuilder {
     private JsonObject attributes;
     private Double ambientLight = 0.0;
     private Double coordinateScale = 1.0;
@@ -155,7 +155,7 @@ public final class DimensionTypeBuilder {
     }
 
     public DimensionTypeBuilder timelines(TimelinesInjector injector) {
-        this.timelines = injector.getNamespace() + ":" + injector.getId();
+        this.timelines = injector.getKey();
         return this;
     }
 
@@ -179,12 +179,5 @@ public final class DimensionTypeBuilder {
         if (monsterSpawnLightLevel != null) json.add("monster_spawn_light_level", monsterSpawnLightLevel);
         if (timelines != null) json.addProperty("timelines", timelines);
         return json;
-    }
-
-    private JsonObject toOverridenEnvironnementAttribute(JsonElement value) {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("modifier", "override");
-        obj.add("argument", value);
-        return obj;
     }
 }

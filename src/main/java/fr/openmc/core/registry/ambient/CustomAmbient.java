@@ -6,10 +6,10 @@ import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
 import fr.openmc.core.utils.MathUtils;
-import fr.openmc.core.utils.nms.PlayerBiomeNMS;
-import fr.openmc.core.utils.nms.PlayerRespawnNMS;
-import fr.openmc.core.utils.nms.PlayerSetTimeNMS;
-import fr.openmc.core.utils.nms.PlayerWeatherNMS;
+import fr.openmc.core.utils.nms.player.PlayerBiomeNMS;
+import fr.openmc.core.utils.nms.player.PlayerRespawnNMS;
+import fr.openmc.core.utils.nms.player.PlayerSetTimeNMS;
+import fr.openmc.core.utils.nms.player.PlayerWeatherNMS;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -178,7 +178,7 @@ public abstract class CustomAmbient {
         foliageColor.ifPresent(builder::foliageColor);
         dryFoliageColor.ifPresent(builder::dryFoliageColor);
 
-        return new BiomesInjector(ambientId.getNamespace()).add(ambientId.getPath(), builder);
+        return new BiomesInjector(ambientId.getNamespace(), ambientId.getPath(), builder);
     }
 
     private boolean hasEffects(JsonObject effects, String envKey) {

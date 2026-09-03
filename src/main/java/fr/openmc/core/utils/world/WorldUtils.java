@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.world;
 
 import fr.openmc.core.features.dream.DreamDimensionManager;
+import fr.openmc.core.features.singularity.sub.world.SingularityWorldManager;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,6 +26,9 @@ public class WorldUtils {
             }
             case DreamDimensionManager.DIMENSION_NAME -> {
                 return "utils.world.dream";
+            }
+            case SingularityWorldManager.SINGULARITY_WORLD_NAME -> {
+                return "utils.world.singu";
             }
             default -> {
                 return worldId;

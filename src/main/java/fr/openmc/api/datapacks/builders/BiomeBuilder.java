@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  *   "temperature": 2
  * }
  */
-public final class BiomeBuilder {
+public final class BiomeBuilder implements ContentBuilder {
     private JsonObject attributes = new JsonObject();
     private final JsonArray carvers = new JsonArray();
     @Getter
@@ -58,17 +58,17 @@ public final class BiomeBuilder {
     }
 
     public BiomeBuilder temperatureModifier(String id) {
-        this.temperatureModifier =id;
+        this.temperatureModifier = id;
         return this;
     }
 
     public BiomeBuilder creatureSpawnProbability(Double value) {
-        this.creatureSpawnProbability=value;
+        this.creatureSpawnProbability = value;
         return this;
     }
 
     public BiomeBuilder downfall(Float value) {
-        this.downfall=value;
+        this.downfall = value;
         return this;
     }
 
@@ -169,13 +169,16 @@ public final class BiomeBuilder {
         if (attributes != null) json.add("attributes", attributes);
         if (temperatureModifier != null) json.addProperty("temperature_modifier", temperatureModifier);
         if (creatureSpawnProbability != null) json.addProperty("creature_spawn_probability", creatureSpawnProbability);
-        if (carvers != null) json.add("carvers", carvers);
+        json.add("carvers", carvers);
         if (downfall != null) json.addProperty("downfall", downfall);
-        if (effects != null) json.add("effects", effects);
-        if (features != null) json.add("features", features);
+        JsonObject effect = effects;
+        if (effect.get("water_color") == null)
+            effect.addProperty("water_color", "#000000");
+        json.add("effects", effects);
+        json.add("features", features);
         if (hasPrecipitation != null) json.addProperty("has_precipitation", hasPrecipitation);
-        if (spawnCosts != null) json.add("spawn_costs", spawnCosts);
-        if (spawners != null) json.add("spawners", spawners);
+        json.add("spawn_costs", spawnCosts);
+        json.add("spawners", spawners);
         if (temperatures != null) json.addProperty("temperature", temperatures);
 
         return json;
