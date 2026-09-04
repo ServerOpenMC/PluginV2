@@ -5,8 +5,9 @@ public interface KeyedRegistry<K, V> {
 
     V register(K key, V value);
 
-    default V register(V value) {
-        return register(key(value), value);
+    default <T extends V> T register(T value) {
+        register(key(value), value);
+        return value;
     }
 
     default void register(V... values) {
@@ -19,10 +20,5 @@ public interface KeyedRegistry<K, V> {
         for (V value : values) {
             register(value);
         }
-    }
-
-    default <T extends V> T register(T value) {
-        register(key(value), value);
-        return value;
     }
 }
