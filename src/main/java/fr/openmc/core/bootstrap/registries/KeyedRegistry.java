@@ -20,4 +20,9 @@ public interface KeyedRegistry<K, V> {
             register(value);
         }
     }
+
+    default <T extends V> T register(T value) {
+        register(key(value), value);
+        return value;
+    }
 }
