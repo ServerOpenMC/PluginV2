@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.poi;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
@@ -8,7 +9,10 @@ import fr.openmc.core.features.singularity.contents.poi.SingularityPoi;
 import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.registry.poi.listeners.PoiDetectionListener;
+import org.bukkit.Location;
+import org.bukkit.World;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -40,5 +44,17 @@ public class CustomPoiRegistry extends Registry<String, CustomPoi>
         return Set.of(
                 PoiDetectionListener::new
         );
+    }
+
+    public Optional<CustomPoi> getByLocation(Location location) {
+        BlockVector3 locVec3 = BlockVector3.at(location.getX(), location.getY(), location.getZ());
+        World world = location.getWorld();
+        for (CustomPoi poi : values()) {
+            if (!poi.getWorld().getName().equals(world.getName())) continue;
+            if (!locVec3.containedWithin(poi.getPos1(), poi.getPos2())) continue;
+
+            return Optional.of(poi);
+        }
+        return Optional.empty();
     }
 }

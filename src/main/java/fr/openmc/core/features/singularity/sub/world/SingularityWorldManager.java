@@ -7,6 +7,7 @@ import fr.openmc.core.features.singularity.sub.world.gravity.GravityListener;
 import fr.openmc.core.features.singularity.sub.world.sfx.ImpulsionSingularitySFX;
 import fr.openmc.core.features.singularity.sub.world.sfx.InstabilitySingularitySFX;
 import fr.openmc.core.features.singularity.sub.world.sfx.PulseSingularitySFX;
+import fr.openmc.core.features.singularity.sub.world.singularity.SingularityInteractionListener;
 import fr.openmc.core.registry.worldtemplates.WorldTemplate;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -62,7 +63,8 @@ public class SingularityWorldManager extends Feature implements HasListeners {
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                GravityListener::new
+                GravityListener::new,
+                SingularityInteractionListener::new
         );
     }
 }
