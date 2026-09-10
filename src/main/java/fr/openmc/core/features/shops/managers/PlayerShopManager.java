@@ -47,7 +47,7 @@ public class PlayerShopManager {
                 ItemStack.of(Material.BARREL),
                 "shops:shop_creator",
                 300,
-                TranslationManager.translation("feature.shop.player.creating_begin"),
+                "feature.shop.player.creating_begin",
                 TranslationManager.translation("feature.shop.player.creating_cancel"),
                 location -> {
                     if (location == null) return false;
@@ -72,6 +72,7 @@ public class PlayerShopManager {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
+        if (!location.getWorld().equals(Bukkit.getWorld("world"))) return false;
         if (WorldGuardHook.isRegionConflict(location)) return false;
         if (!ProtectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
             CityManager city = cityManager.getPlayerCity(player.getUniqueId());

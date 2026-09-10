@@ -10,7 +10,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -69,7 +69,7 @@ public class VampireBossLootManager {
                 broadcastToWorld(world, TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.rank",
                         Component.text("#"+ (rankInt + 1), LeaderboardManager.getRankColor(rankInt + 1)),
-                        PlayerNameCache.name(entry.getKey()).color(NamedTextColor.GOLD),
+                        CachePlayerName.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
             }
@@ -82,7 +82,7 @@ public class VampireBossLootManager {
                 player.sendMessage(TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.midle",
                         Component.text((rankInt + 1), LeaderboardManager.getRankColor(rankInt + 1)),
-                        PlayerNameCache.name(entry.getKey()).color(NamedTextColor.GOLD),
+                        CachePlayerName.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
             }

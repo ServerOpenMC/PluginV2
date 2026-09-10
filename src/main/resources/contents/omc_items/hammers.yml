@@ -3,7 +3,7 @@ info:
 items:
   iron_hammer:
     permission: customitems.iron_hammer
-    display_name: <gradient:#ffffff:#ffd08a><lang:itemsadder.omc_items.iron_hammer.name>
+    display_name: <gradient:#ffffff:#ffd08a><lang:itemsadder.omc_items.iron_hammer.name></gradient>
     lore:
       - <lang:itemsadder.omc_items.iron_hammer.lore.0>
     resource:
@@ -18,7 +18,7 @@ items:
 
   diamond_hammer:
     permission: customitems.diamond_hammer
-    display_name: <gradient:#ffffff:#72f6ef><lang:itemsadder.omc_items.diamond_hammer.name>
+    display_name: <gradient:#ffffff:#72f6ef><lang:itemsadder.omc_items.diamond_hammer.name></gradient>
     lore:
       - <lang:itemsadder.omc_items.diamond_hammer.lore.0>
     resource:
@@ -33,7 +33,7 @@ items:
 
   netherite_hammer:
     permission: customitems.netherite_hammer
-    display_name: <gradient:#ffffff:#6b604f><lang:itemsadder.omc_items.netherite_hammer.name>
+    display_name: <gradient:#ffffff:#6b604f><lang:itemsadder.omc_items.netherite_hammer.name></gradient>
     lore:
       - <lang:itemsadder.omc_items.netherite_hammer.lore.0>
     resource:

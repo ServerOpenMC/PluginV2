@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -53,7 +53,7 @@ public class ChestButton {
                 if (city.getChestWatcher() != null) {
                     lore = TranslationManager.translationLore(
                             "feature.city.menus.main.chest.lore.opened",
-                            Component.text(PlayerNameCache.getName(city.getChestWatcher())).color(NamedTextColor.RED)
+                            Component.text(CachePlayerName.getName(city.getChestWatcher())).color(NamedTextColor.RED)
                     );
                 } else {
                     lore = TranslationManager.translationLore("feature.city.menus.main.chest.lore.click");

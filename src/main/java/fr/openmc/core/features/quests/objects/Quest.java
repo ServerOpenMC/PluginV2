@@ -228,8 +228,8 @@ public class Quest {
     /**
      * Get the name of the quest for a player.
      * <p>
-     * The name can contain the placeholder {target} which will be replaced by the current target number.
-     * And the placeholder {s} which will be replaced by "s" if the current target is greater than 1.
+     * The name can contain the placeholder [target] which will be replaced by the current target number.
+     * And the placeholder [s] which will be replaced by "s" if the current target is greater than 1.
      *
      * @param playerUUID The UUID of the player
      * @return the name of the quest for the player
@@ -244,8 +244,8 @@ public class Quest {
     /**
      * Get the description of the quest for a player.
      * <p>
-     * The description can contain the placeholder {target} which will be replaced by the current target number.
-     * And the placeholder {s} which will be replaced by "s" if the current target is greater than 1.
+     * The description can contain the placeholder [target] which will be replaced by the current target number.
+     * And the placeholder [s] which will be replaced by "s" if the current target is greater than 1.
      * @param playerUUID The UUID of the player
      * @return the description of the quest for the player
      */
@@ -261,8 +261,8 @@ public class Quest {
     /**
      * Get the next tier description of the quest for a player.
      * <p>
-     * The description can contain the placeholder {target} which will be replaced by the next tier target number.
-     * And the placeholder {s} which will be replaced by "s" if the next tier target is greater than 1.
+     * The description can contain the placeholder [target] which will be replaced by the next tier target number.
+     * And the placeholder [s] which will be replaced by "s" if the next tier target is greater than 1.
      * @param playerUUID The UUID of the player
      * @return the next tier description of the quest for the player
      */
@@ -578,7 +578,7 @@ public class Quest {
                     if (onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
-                                .append(Prefix.QUEST.getPrefix())
+                                .append(Prefix.QUEST.getPrefixComponent(onlinePlayer))
                                 .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
                                 .append(TranslationManager.translation("feature.quests.actionbar.progress_label")
                                         .color(NamedTextColor.GRAY))
@@ -653,10 +653,10 @@ public class Quest {
 
     private Component formattedQuestComponent(Component initial, String target, String s) {
         return initial.replaceText(b -> {
-            b.matchLiteral("{target}");
+            b.matchLiteral("[target]");
             b.replacement(String.valueOf(target));
         }).replaceText(b -> {
-            b.matchLiteral("{s}");
+            b.matchLiteral("[s]");
             b.replacement(s);
         });
     }

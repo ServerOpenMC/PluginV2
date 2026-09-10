@@ -30,3 +30,21 @@ items:
       mainhand:
         attackDamage: 1
         attackSpeed: 1
+
+recipes:
+  crafting_table:
+    builderwand:
+      permission: omc_items.builder_wand
+      enabled: true
+      pattern:
+        - EAE
+        - GSG
+        - XSX
+      ingredients:
+        A: omc_blocks:aywenite_block
+        E: EMERALD_BLOCK
+        G: GOLD_BLOCK
+        S: omc_items:renforced_stick
+      result:
+        item: omc_items:builder_wand
+        amount: 1

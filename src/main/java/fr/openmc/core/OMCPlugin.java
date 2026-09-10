@@ -6,9 +6,13 @@ import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.ErrorReporter;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.ItemsAddersListener;
+
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
+import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -71,6 +75,9 @@ public class OMCPlugin extends JavaPlugin {
 
         /* REGISTRIES */
         OMCRegistry.initAll();
+        // todo :
+        // mettre () -> new ElevatorManager(),
+        //            () -> new CorpseManager(),
 
         if (!OMCPlugin.isUnitTestVersion() && OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
             PacketMenuLib.init(this);
@@ -87,6 +94,13 @@ public class OMCPlugin extends JavaPlugin {
     public void loadAfterItemsAdder() {
         ItemsAddersListener.setLoaded(true);
 
+        // todo: a rewrite lors registre hook et features
+//        try {
+//            new BedrockHook().startInit();
+//        } catch (NoClassDefFoundError e) {
+//            OMCLogger.error("Hook BedrockHook désactivé (package non trouvé) " + e.getMessage());
+//        }
+
         /* LOAD ITEMS ADDER CONTENTS */
         OMCRegistry.HOOKS.ITEMS_ADDER.loadContents();
 
@@ -94,7 +108,7 @@ public class OMCPlugin extends JavaPlugin {
         OMCRegistry.postInitAll();
 
         if (OMCRegistry.HOOKS.WORLD_GUARD.isEnable()) {
-            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
+            ContestParticlesUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
         }
     }
 

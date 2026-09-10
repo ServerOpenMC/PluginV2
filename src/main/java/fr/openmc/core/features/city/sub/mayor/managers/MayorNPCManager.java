@@ -28,7 +28,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -86,9 +85,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
         if (city.getMayor().getMayorUUID() != null && city.getElectionType() == ElectionType.ELECTION) {
             String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getMayor().getMayorUUID()).getName();
             dataMayor.setSkin(mayorName);
-            String mayorDisplayName = "<gold>" + LegacyComponentSerializer.legacySection()
-                    .serialize(TranslationManager.translation("feature.city.mayor.npc.display.mayor", Component.text(mayorName))) + "</gold>";
-            dataMayor.setDisplayName(mayorDisplayName);
+            dataMayor.setDisplayName("<gold><lang:feature.city.mayor.npc.display.mayor:" + mayorName + "></gold>");
 
             dataMayor.addEquipment(NpcEquipmentSlot.HEAD, OMCRegistry.CUSTOM_ITEMS.SUIT_HELMET.getBest());
             dataMayor.addEquipment(NpcEquipmentSlot.CHEST, OMCRegistry.CUSTOM_ITEMS.SUIT_CHESTPLATE.getBest());
@@ -96,9 +93,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
             dataMayor.addEquipment(NpcEquipmentSlot.FEET, OMCRegistry.CUSTOM_ITEMS.SUIT_BOOTS.getBest());
         } else {
             dataMayor.setSkin("https://s.namemc.com/i/1971f3c39cb8e3ef.png");
-            String unknownDisplayName = "<dark_gray>" + LegacyComponentSerializer.legacySection()
-                    .serialize(TranslationManager.translation("feature.city.mayor.npc.display.unknown")) + "</dark_gray>";
-            dataMayor.setDisplayName(unknownDisplayName);
+            dataMayor.setDisplayName("<dark_gray><lang:feature.city.mayor.npc.display.unknown></dark_gray>");
         }
 
         Npc npcMayor = FancyNpcsPlugin.get().getNpcAdapter().apply(dataMayor);
@@ -106,9 +101,8 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
-        String ownerDisplayName = LegacyComponentSerializer.legacySection()
-                .serialize(TranslationManager.translation("feature.city.mayor.npc.display.owner", Component.text(ownerName)));
-        dataOwner.setDisplayName("<yellow>" + ownerDisplayName + "</yellow>");
+
+        dataOwner.setDisplayName("<yellow><lang:feature.city.mayor.npc.display.owner:" + ownerName + "></yellow>");
 
         Npc npcOwner = FancyNpcsPlugin.get().getNpcAdapter().apply(dataOwner);
 
@@ -254,7 +248,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                                     itemToGive,
                                     "mayor:mayor-npc-move",
                                     300,
-                                    TranslationManager.translation("feature.city.mayor.npc.move.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                                    "feature.city.mayor.npc.move.interaction.remaining",
                                     TranslationManager.translation("feature.city.mayor.npc.move.interaction.timeout"),
                                     locationClick -> {
                                         if (locationClick == null) return true;
@@ -343,7 +337,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                                     itemToGive,
                                     "mayor:owner-npc-move",
                                     300,
-                                    TranslationManager.translation("feature.city.mayor.npc.move.interaction.remaining", Component.text("300s").color(NamedTextColor.GRAY)),
+                                    "feature.city.mayor.npc.move.interaction.remaining",
                                     TranslationManager.translation("feature.city.mayor.npc.move.interaction.timeout"),
                                     locationClick -> {
                                         if (locationClick == null) return true;

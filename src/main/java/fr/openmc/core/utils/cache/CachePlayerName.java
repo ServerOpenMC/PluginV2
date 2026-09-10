@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public class PlayerNameCache {
+public class CachePlayerName {
     private static final Object2ObjectMap<UUID, String> nameCache = new Object2ObjectOpenHashMap<>();
 
     public static Component name(UUID uuid) {

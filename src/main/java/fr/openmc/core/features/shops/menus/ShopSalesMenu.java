@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopSale;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -64,7 +64,7 @@ public class ShopSalesMenu extends PaginatedMenu {
         sales.forEach(s -> {
             ItemStack item = s.getItem().getItemStack().clone();
             item.editMeta(itemMeta -> {
-                itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.item.name", PlayerNameCache.name(s.getBuyerUUID()).color(NamedTextColor.LIGHT_PURPLE)));
+                itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.item.name", CachePlayerName.name(s.getBuyerUUID()).color(NamedTextColor.LIGHT_PURPLE)));
                 itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.sales.item.lore",
                                 Component.text(s.getDate().toLocalDateTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))).color(NamedTextColor.GREEN),
                                 Component.text(s.getAmount()).color(NamedTextColor.GOLD),

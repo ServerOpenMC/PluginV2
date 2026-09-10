@@ -325,7 +325,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
                 "feature.city.mascots.name.alive",
                 Component.text(cityName).decorate(TextDecoration.BOLD),
                 Component.text(formattedHealth).color(NamedTextColor.RED),
-                Component.text("/" + formattedMaxHealth + "❤").color(NamedTextColor.RED)
+                Component.text("/" + formattedMaxHealth + "♥").color(NamedTextColor.RED)
         );
     }
 

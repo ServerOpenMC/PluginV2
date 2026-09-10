@@ -89,7 +89,8 @@ public class LetterMenu extends Menu {
         );
     }
 
-    public void accept() {
+    public void accept(Player player) {
+        if (!this.letter.getReceiver().equals(player.getUniqueId())) return;
         ItemStack[] items = getLetterItems();
 
         if (MailboxManager.deleteLetter(letterHead.getLetterId())) {
@@ -159,7 +160,7 @@ public class LetterMenu extends Menu {
 
         content.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
         content.put(48, ItemMenuTemplate.BTN_MAILBOX_ACCEPT.apply(this)
-                .setOnClick(_ -> accept()));
+                .setOnClick(_ -> accept(getOwner())));
         content.put(49, new ItemMenuBuilder(this, letterHead));
         content.put(50, ItemMenuTemplate.btn(
                 this,

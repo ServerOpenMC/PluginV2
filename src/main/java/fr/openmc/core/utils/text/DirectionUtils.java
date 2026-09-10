@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.text;
 
+import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -16,7 +17,7 @@ public class DirectionUtils {
         double dx = target.getX() - player.getLocation().getX();
         double dz = target.getZ() - player.getLocation().getZ();
         if (dx == 0 && dz == 0) {
-            return "•";
+            return CharRemplacementUtils.getPointChar(player);
         }
 
         double len = Math.sqrt(dx * dx + dz * dz);

@@ -39,7 +39,7 @@ public class OMCBootstrap implements PluginBootstrap {
 
         // ** LOAD TRANSLATION **
         // this creates resource pack who is needed for item adder
-        TranslationManager.init(
+        TranslationManager.bootstrap(
                 context,
                 Locale.FRANCE,
                 Locale.US,

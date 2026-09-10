@@ -52,7 +52,14 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet de donner un objet à une personne et de quand elle clique avec l'Item, la méthode renverra la positon ou il a cliqué
      */
-    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, Component startMessage, Component endMessage, Function<Location, Boolean> result, Runnable onFail) {
+    public static void runLocationInteraction(Player player,
+                                              ItemStack item,
+                                              String chronometerGroup,
+                                              int chronometerTime,
+                                              String startMessage,
+                                              Component endMessage,
+                                              Function<Location, Boolean> result,
+                                              Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("api.iteminteraction.not_egnough_space"), Prefix.OPENMC, MessageType.ERROR, false);

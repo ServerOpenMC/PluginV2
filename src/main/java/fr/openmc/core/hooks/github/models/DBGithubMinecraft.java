@@ -3,7 +3,7 @@ package fr.openmc.core.hooks.github.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
@@ -39,6 +39,6 @@ public class DBGithubMinecraft {
     }
 
     public String getPlayerName() {
-        return PlayerNameCache.getName(playerUUID);
+        return CachePlayerName.getName(playerUUID);
     }
 }

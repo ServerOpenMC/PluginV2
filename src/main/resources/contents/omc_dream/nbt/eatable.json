@@ -5,6 +5,8 @@
       "sound": "minecraft:entity.cat.eat"
     },
     "food": {
+      "nutrition": 1,
+      "saturation": 1,
       "can_always_eat": true
     }
   }

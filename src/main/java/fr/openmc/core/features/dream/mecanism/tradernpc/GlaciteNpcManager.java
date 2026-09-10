@@ -40,8 +40,7 @@ public class GlaciteNpcManager implements Listener {
         UUID npcUUID = UUID.randomUUID();
 
         NpcData data = new NpcData("glacite-" + npcUUID, null, locationNpc);
-        data.setDisplayName(LegacyComponentSerializer.legacySection()
-                .serialize(TranslationManager.translation("feature.dream.trader.npc.name")));
+        data.setDisplayName("<lang:feature.dream.trader.npc.name>");
         data.setType(EntityType.ILLUSIONER);
         data.setTurnToPlayerDistance(10);
         data.setTurnToPlayer(true);

@@ -36,8 +36,9 @@ public class PlayerDeathListener implements Listener {
          }
 
         Component deathMessage = event.deathMessage();
-        if (deathMessage == null) return;
-        MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
-        event.deathMessage(null);
+        if (deathMessage != null) {
+            MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
+            event.deathMessage(null);
+        }
     }
 }

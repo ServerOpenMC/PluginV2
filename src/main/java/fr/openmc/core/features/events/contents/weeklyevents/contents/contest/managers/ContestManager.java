@@ -9,6 +9,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.listeners.ContestIntractEvents;
@@ -104,7 +105,7 @@ public class ContestManager extends Feature implements HasDatabase {
 
         // ** PARTICLE REGION **
         if (WorldGuardHook.isEnable()) {
-            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+            ContestParticlesUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
     }
 
@@ -209,8 +210,8 @@ public class ContestManager extends Feature implements HasDatabase {
      * - Diffuse un message et joue un son aux joueurs connectés
      */
     public static void initPhase1() {
-        ParticleUtils.color1 = null;
-        ParticleUtils.color2 = null;
+        ContestParticlesUtils.color1 = null;
+        ContestParticlesUtils.color2 = null;
 
         Bukkit.broadcast(TranslationManager.translation("feature.events.contest.broadcast.phase1"));
 
@@ -252,8 +253,8 @@ public class ContestManager extends Feature implements HasDatabase {
      * - Réinitialise les données en DB pour le prochain contest
      */
     public static void initPhase3() {
-        ParticleUtils.color1 = null;
-        ParticleUtils.color2 = null;
+        ContestParticlesUtils.color1 = null;
+        ContestParticlesUtils.color2 = null;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             InventoryView openInv = player.getOpenInventory();

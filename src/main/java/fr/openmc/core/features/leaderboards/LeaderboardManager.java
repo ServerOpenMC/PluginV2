@@ -15,6 +15,8 @@ import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.PlayerNameCache;
+import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.utils.cache.CachePlaytime;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.entities.TextDisplay;
@@ -27,7 +29,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,15 +42,15 @@ import java.util.*;
 @Credit(developers = {"miseur"})
 public class LeaderboardManager extends Feature implements HasCommands {
     @Getter
-    private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = Collections.emptyMap();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> playerMoneyMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> playerMoneyMap = Collections.emptyMap();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> villeMoneyMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> villeMoneyMap = Collections.emptyMap();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> playTimeMap = Collections.emptyMap();
     @Getter
-    private static final Map<Integer, Map.Entry<String, String>> pumpkinCountMap = new TreeMap<>();
+    private static volatile Map<Integer, Map.Entry<String, String>> pumpkinCountMap = Collections.emptyMap();
     private static File leaderBoardFile;
     @Getter
     private static Location contributorsHologramLocation;
@@ -99,7 +100,7 @@ public class LeaderboardManager extends Feature implements HasCommands {
      * @return A Component representing the GitHub contributors leaderboard.
      */
     public static Component createContributorsTextLeaderboard() {
-        var contributorsMap = new TreeMap<>(LeaderboardManager.getGithubContributorsMap());
+        var contributorsMap = LeaderboardManager.getGithubContributorsMap();
         if (contributorsMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.contributors")
                     .color(NamedTextColor.RED);
@@ -143,7 +144,7 @@ public class LeaderboardManager extends Feature implements HasCommands {
      * @return A Component representing the player money leaderboard.
      */
     public static Component createMoneyTextLeaderboard() {
-        var moneyMap = new TreeMap<>(LeaderboardManager.getPlayerMoneyMap());
+        var moneyMap = LeaderboardManager.getPlayerMoneyMap();
         if (moneyMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
@@ -229,7 +230,7 @@ public class LeaderboardManager extends Feature implements HasCommands {
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createPlayTimeTextLeaderboard() {
-        var playtimeMap = new TreeMap<>(LeaderboardManager.getPlayTimeMap());
+        var playtimeMap = LeaderboardManager.getPlayTimeMap();
         if (playtimeMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
@@ -265,7 +266,7 @@ public class LeaderboardManager extends Feature implements HasCommands {
     }
 
     public static Component createPumpkinCountTextLeaderboard() {
-        var pumpkinCountMap = new TreeMap<>(LeaderboardManager.getPumpkinCountMap());
+        var pumpkinCountMap = LeaderboardManager.getPumpkinCountMap();
         if (pumpkinCountMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
@@ -462,18 +463,18 @@ public class LeaderboardManager extends Feature implements HasCommands {
                 Integer.compare(e2.getValue().getTotalLines(), e1.getValue().getTotalLines())
         );
 
-        githubContributorsMap.clear();
-
+        Map<Integer, Map.Entry<String, ContributorStats>> newMap = new TreeMap<>();
         for (int i = 0; i < Math.min(10, statsList.size()); i++) {
-            githubContributorsMap.put(i + 1, statsList.get(i));
+            newMap.put(i + 1, statsList.get(i));
         }
+        githubContributorsMap = newMap;
     }
 
     /**
      * Updates the player money leaderboard map by sorting and formatting player balances.
      */
     public static void updatePlayerMoneyMap() {
-        playerMoneyMap.clear();
+        Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
 
         Map<UUID, EconomyPlayer> balances = EconomyManager.getBalances();
@@ -486,17 +487,19 @@ public class LeaderboardManager extends Feature implements HasCommands {
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
                 .limit(10)
                 .toList()) {
-            String playerName = PlayerNameCache.getName(entry.getKey());
+            String playerName = CachePlayerName.getName(entry.getKey());
             String formattedBalance = EconomyManager.getFormattedSimplifiedNumber(entry.getValue());
-            playerMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
+            newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
         }
+
+        playerMoneyMap = newMap;
     }
 
     /**
      * Updates the city money leaderboard map by sorting and formatting city balances.
      */
     public static void updateCityMoneyMap() {
-        villeMoneyMap.clear();
+        Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
         for (City city : OMCRegistry.FEATURES.CITY.get().getCities().stream()
                 .sorted((city1, city2) -> Double.compare(city2.getBalance(), city1.getBalance()))
@@ -504,28 +507,36 @@ public class LeaderboardManager extends Feature implements HasCommands {
                 .toList()) {
             String cityName = city.getName();
             String cityBalance = EconomyManager.getFormattedSimplifiedNumber(city.getBalance());
-            villeMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
+            newMap.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
         }
+        villeMoneyMap = newMap;
     }
 
     /**
      * Updates the playtime leaderboard map by sorting and formatting player playtime.
      */
     public static void updatePlayTimeMap() {
-        playTimeMap.clear();
+        Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
-        for (OfflinePlayer player : Arrays.stream(Bukkit.getOfflinePlayers())
-                .sorted((entry1, entry2) -> Long.compare(entry2.getStatistic(Statistic.PLAY_ONE_MINUTE), entry1.getStatistic(Statistic.PLAY_ONE_MINUTE)))
+
+        List<Map.Entry<OfflinePlayer, Long>> sorted = Arrays.stream(Bukkit.getOfflinePlayers())
+                .filter(p -> p.getName() != null)
+                .map(p -> Map.entry(p, CachePlaytime.getPlaytime(p)))
+                .sorted(Map.Entry.<OfflinePlayer, Long>comparingByValue().reversed())
                 .limit(10)
-                .toList()) {
-            String playerName = player.getName();
-            String playTime = DateUtils.convertTime(player.getStatistic(Statistic.PLAY_ONE_MINUTE));
-            playTimeMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
+                .toList();
+
+        for (var entry : sorted) {
+            String playerName = entry.getKey().getName();
+            String playTime = DateUtils.convertTime(entry.getValue());
+            newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
         }
+
+        playTimeMap = newMap;
     }
 
     public static void updatePumpkinCountMap() {
-        pumpkinCountMap.clear();
+        Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
 
         Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
@@ -533,10 +544,11 @@ public class LeaderboardManager extends Feature implements HasCommands {
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
                 .limit(10)
                 .toList()) {
-            String playerName = PlayerNameCache.getName(entry.getKey());
+            String playerName = CachePlayerName.getName(entry.getKey());
             String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
-            pumpkinCountMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
+            newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }
+        pumpkinCountMap = newMap;
     }
 
     /**

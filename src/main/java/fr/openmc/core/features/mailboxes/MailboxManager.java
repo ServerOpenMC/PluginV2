@@ -188,6 +188,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
     public static Letter getById(Player player, int id) {
         Letter letter = letters.stream()
                 .filter(l -> l.getLetterId() == id)
+                .filter(l -> l.getReceiver().equals(player.getUniqueId()))
                 .findFirst()
                 .orElse(null);
 

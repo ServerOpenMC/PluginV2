@@ -48,7 +48,7 @@ items:
       generate: true
       textures:
         - golden_crops/golden_beetroot
-      material: BEETROOT
+      material: PAPER
     lore:
       - <lang:itemsadder.omc_daily_events.golden_beetroot.lore.0>
 
@@ -58,7 +58,7 @@ items:
       generate: true
       textures:
         - golden_crops/golden_potato
-      material: POTATO
+      material: PAPER
     lore:
       - <lang:itemsadder.omc_daily_events.golden_potato.lore.0>
 
@@ -68,7 +68,7 @@ items:
       generate: true
       textures:
         - golden_crops/golden_wheat
-      material: WHEAT
+      material: PAPER
     lore:
       - <lang:itemsadder.omc_daily_events.golden_wheat.lore.0>
 
@@ -78,6 +78,6 @@ items:
       generate: true
       textures:
         - golden_crops/really_golden_carrot
-      material: CARROT
+      material: PAPER
     lore:
       - <lang:itemsadder.omc_daily_events.really_golden_carrot.lore.0>
