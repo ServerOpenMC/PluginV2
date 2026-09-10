@@ -5,8 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.integration.ResourcePacksGenerator;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
 import fr.openmc.core.hooks.BedrockHook;
 import fr.openmc.core.utils.text.ComponentUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;

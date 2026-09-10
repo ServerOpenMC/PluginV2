@@ -75,9 +75,6 @@ public class OMCPlugin extends JavaPlugin {
 
         /* REGISTRIES */
         OMCRegistry.initAll();
-        // todo :
-        // mettre () -> new ElevatorManager(),
-        //            () -> new CorpseManager(),
 
         if (!OMCPlugin.isUnitTestVersion() && OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
             PacketMenuLib.init(this);
@@ -93,13 +90,6 @@ public class OMCPlugin extends JavaPlugin {
      */
     public void loadAfterItemsAdder() {
         ItemsAddersListener.setLoaded(true);
-
-        // todo: a rewrite lors registre hook et features
-//        try {
-//            new BedrockHook().startInit();
-//        } catch (NoClassDefFoundError e) {
-//            OMCLogger.error("Hook BedrockHook désactivé (package non trouvé) " + e.getMessage());
-//        }
 
         /* LOAD ITEMS ADDER CONTENTS */
         OMCRegistry.HOOKS.ITEMS_ADDER.loadContents();

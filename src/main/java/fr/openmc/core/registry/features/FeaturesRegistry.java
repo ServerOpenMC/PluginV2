@@ -13,6 +13,7 @@ import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.displays.TabList;
@@ -71,6 +72,7 @@ public class FeaturesRegistry extends Registry<String, Feature>
     public final FeatureFlag NEED_PAPI = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.PAPI::isEnable, "PlaceHolderAPI");
     public final FeatureFlag NEED_PROTOCOL_LIB = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.PROTOCOL_LIB::isEnable, "ProtocolLib");
     public final FeatureFlag NEED_WORLD_GUARD = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.WORLD_GUARD::isEnable, "WorldGuard");
+    // public final FeatureFlag NEED_BEDROCK = new FeatureFlag.NeedApi(OMCRegistry.HOOKS.BEDROCK::isEnable, "Bedrock");
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 
@@ -127,6 +129,8 @@ public class FeaturesRegistry extends Registry<String, Feature>
             MailboxManager::new);
     public final FeatureEntry<DiscordLinkManager> DISCORD_LINK = declare(FeatureLoadingType.RUNTIME,
             DiscordLinkManager::new);
+    public final FeatureEntry<CorpseManager> CORPSE = declare(FeatureLoadingType.RUNTIME,
+            () -> new CorpseManager(), NEED_FANCY_NPC);
     public final FeatureEntry<ElevatorManager> ELEVATOR = declare(FeatureLoadingType.RUNTIME,
             () -> new ElevatorManager(), NEED_ITEMS_ADDER);
     public final FeatureEntry<ProfileManager> PROFILE = declare(FeatureLoadingType.AFTER_IA,

@@ -14,7 +14,6 @@ import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
-import fr.openmc.core.utils.cache.PlayerNameCache;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.cache.CachePlaytime;
 import fr.openmc.core.utils.text.DateUtils;
