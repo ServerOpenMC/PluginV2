@@ -17,8 +17,11 @@ import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
+import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
+import fr.openmc.core.features.city.sub.statistics.models.CityStatistics;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
+import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.DateUtils;
@@ -33,18 +36,22 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.city.CityManager.citiesByName;
 import static fr.openmc.core.features.city.actions.CityCreateAction.FREE_CLAIMS;
 
+// todo: hum, un peu gros le fichier? et un peu bordélique, fin j'ai du mal a m'y retrouver ? interface ?
 public class City {
     @Getter
     private String name;
@@ -68,12 +75,20 @@ public class City {
     @Getter
     private int level;
 
+    @Getter
     private final CityManager cityManager;
+    @Getter
     private final MayorManager mayorManager;
+    @Getter
     private final CityRankManager cityRankManager;
+    @Getter
     private final NotationManager notationManager;
+    @Getter
     private final CityBankManager cityBankManager;
+    @Getter
     private final WarManager warManager;
+    @Getter
+    private final CityStatisticsManager statisticsManager;
 
     /**
      * Constructor used for City creation
@@ -85,6 +100,7 @@ public class City {
         this.notationManager = cityManager.NOTATION;
         this.cityBankManager = cityManager.CITY_BANK;
         this.warManager = cityManager.WAR;
+        this.statisticsManager = cityManager.STATS;
 
         this.uniqueId = uniqueId;
         this.name = name;
@@ -126,7 +142,7 @@ public class City {
         this.notationManager = cityManager.NOTATION;
         this.cityBankManager = cityManager.CITY_BANK;
         this.warManager = cityManager.WAR;
-
+        this.statisticsManager = cityManager.STATS;
 
         this.uniqueId = uniqueId;
         this.name = name;
@@ -137,6 +153,42 @@ public class City {
         this.level = level;
 
         cityManager.registerCity(this);
+    }
+
+    public static City of(String name) {
+        return OMCRegistry.FEATURES.CITY.get().getCityByName(name);
+    }
+
+    public static City of(ChunkPos chunkPos) {
+        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(chunkPos);
+    }
+
+    public static City of(Block block) {
+        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(block.getChunk());
+    }
+
+    public static City of(Location location) {
+        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(location.getChunk());
+    }
+
+    public static City of(Chunk chunk) {
+        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(chunk);
+    }
+
+    public static City of(int x, int z) {
+        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(x, z);
+    }
+
+    public static City of(UUID cityUUID) {
+        return OMCRegistry.FEATURES.CITY.get().getCity(cityUUID);
+    }
+
+    public static City ofPlayer(Player player) {
+        return OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+    }
+
+    public static City ofPlayer(UUID playerUUID) {
+        return OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
     }
 
     /**
@@ -627,6 +679,10 @@ public class City {
         return warManager.getWarByCity(this.getUniqueId());
     }
 
+    public WarHistory getWarHistory() {
+        return warManager.warHistory.get(this.uniqueId);
+    }
+
     /**
      * Checks if the city is immune.
      *
@@ -856,6 +912,10 @@ public class City {
 
     /* =================== NOTATION =================== */
 
+    public boolean isTop10Notation() {
+        return notationManager.top10Cities.contains(this.uniqueId);
+    }
+
     /**
      * Retrieves the notation of the city for a specific week.
      * * @param weekStr The week string in the format "YYYY-WW" (e.g., "2023-01").
@@ -898,5 +958,54 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
                 cityManager.saveCity(this)
         );
+    }
+
+    /* =================== CITY STATS =================== */
+
+    /**
+     * Retourne ou crée une statistique pour une ville et un scope donnés.
+     *
+     * @param scope    le scope de la statistique
+     * @return la statistique correspondante
+     */
+    public CityStatistics getOrCreateStat(String scope) {
+        return statisticsManager.getOrCreateStat(this.uniqueId, scope);
+    }
+
+    /**
+     * Met à jour la valeur d'une statistique pour une ville et la sauvegarde de manière asynchrone.
+     *
+     * @param scope    le scope de la statistique
+     * @param value    la nouvelle valeur
+     */
+    public void setStat(String scope, Serializable value) {
+        statisticsManager.setStat(this.uniqueId, scope, value);
+    }
+
+    /**
+     * Supprime toutes les statistiques d'une ville et les efface de la base de données.
+     */
+    public void removeStats() {
+        statisticsManager.removeStats(this.uniqueId);
+    }
+
+    /**
+     * Incrémente la valeur d'une statistique pour une ville d'un certain montant et sauvegarde la mise à jour de manière asynchrone.
+     *
+     * @param scope    le scope de la statistique
+     * @param amount   le montant à ajouter
+     */
+    public void incrementStats(String scope, long amount) {
+        statisticsManager.increment(this.uniqueId, scope, amount);
+    }
+
+    /**
+     * Retourne la valeur d'une statistique pour une ville et un scope donnés.
+     *
+     * @param scope    le scope de la statistique
+     * @return la valeur de la statistique
+     */
+    public Object getStatValue(String scope) {
+        return statisticsManager.getStatValue(this.uniqueId, scope);
     }
 }

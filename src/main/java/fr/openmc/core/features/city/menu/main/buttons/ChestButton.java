@@ -30,8 +30,8 @@ public class ChestButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.chest.title"));
                     itemMeta.lore(getDynamicLore(city, player));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
-                    City cityCheck = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+                }).setOnClick(_ -> {
+                    City cityCheck = City.ofPlayer(player);
 
                     if (!CityChestConditions.canCityChestOpen(cityCheck, player)) return;
 

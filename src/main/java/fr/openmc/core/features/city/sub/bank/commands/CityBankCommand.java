@@ -20,10 +20,10 @@ public class CityBankCommand {
     @Command({"city bank", "ville bank"})
     @Description("Ouvre le menu de la banque de ville")
     public void bank(Player player) {
-        if (cityManager.getPlayerCity(player.getUniqueId()) == null)
-            return;
+        City playerCity = City.ofPlayer(player);
+        if (playerCity == null) return;
 
-        if (!CityBankConditions.canOpenCityBank(cityManager.getPlayerCity(player.getUniqueId()), player)) return;
+        if (!CityBankConditions.canOpenCityBank(playerCity, player)) return;
 
         new CityBankMenu(player).open();
     }
@@ -32,7 +32,7 @@ public class CityBankCommand {
     @Description("Met de votre argent dans la banque de ville")
     public void deposit(Player player,
                  @Named("montant") @Range(min = 1) String input) {
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (!CityBankConditions.canCityDeposit(city, player)) return;
 
@@ -43,7 +43,7 @@ public class CityBankCommand {
     @Description("Prend de l'argent de la banque de ville")
     public void withdraw(Player player,
                   @Named("montant") @Range(min = 1) String input) {
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (!CityBankConditions.canCityWithdraw(city, player)) return;
 

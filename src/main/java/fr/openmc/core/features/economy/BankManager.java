@@ -120,7 +120,7 @@ public class BankManager extends Feature implements HasDatabase {
         }
 
         double amount = InputUtils.convertToMoneyValue(input);
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
+        City city = City.ofPlayer(playerUUID);
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(offlinePlayer,
@@ -212,9 +212,9 @@ public class BankManager extends Feature implements HasDatabase {
     public static double calculatePlayerInterest(UUID playerUUID) {
         double interest = .01; // base interest is 1%
 
-        if (MayorManager.phaseMayor == 2) {
-            City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
-            if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
+        City city = City.ofPlayer(playerUUID);
+        if (city != null && city.getMayorManager().phaseMayor == 2) {
+            if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }
         }
@@ -226,7 +226,7 @@ public class BankManager extends Feature implements HasDatabase {
         double interest = calculatePlayerInterest(playerUUID);
         double amount = getBankBalance(playerUUID) * interest;
 
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
+        City city = City.ofPlayer(playerUUID);
         if (city == null) return;
 
 
@@ -268,7 +268,7 @@ public class BankManager extends Feature implements HasDatabase {
                 () -> {
                     OMCLogger.info("Applying all player interests...");
                     applyAllPlayerInterests();
-                    CityBankManager.applyAllCityInterests();
+                    OMCRegistry.FEATURES.CITY.get().CITY_BANK.applyAllCityInterests();
                     OMCLogger.info("All player interests applied successfully.");
 
                     interestTask = null;

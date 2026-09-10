@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
@@ -86,7 +87,7 @@ public class MilitaryDissuasion implements Listener {
                                     return false;
                                 }
 
-                                City playerCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                                City playerCity = City.ofPlayer(nearbyPlayer);
                                 return playerCity == null || !playerCity.getUniqueId().equals(city.getUniqueId());
                             })
                             .collect(Collectors.toList());

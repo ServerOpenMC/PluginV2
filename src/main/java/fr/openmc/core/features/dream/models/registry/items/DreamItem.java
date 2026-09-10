@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -45,7 +46,7 @@ public abstract class DreamItem extends CustomItem {
     private List<Component> getGeneratedLore() {
         ItemStack baseItem;
 
-        if (!ItemsAdderHook.isEnable() || getItemsAdder() == null) {
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() || getItemsAdder() == null) {
             baseItem = getVanilla();
         } else {
             baseItem = getItemsAdder();
@@ -85,7 +86,7 @@ public abstract class DreamItem extends CustomItem {
     private List<Component> getGeneratedLoreTransferable() {
         ItemStack baseItem;
 
-        if (!ItemsAdderHook.isEnable() || getItemsAdder() == null) {
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() || getItemsAdder() == null) {
             baseItem = getVanilla();
         } else {
             baseItem = getItemsAdder();

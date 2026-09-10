@@ -68,7 +68,7 @@ public class CityModifyMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
@@ -92,13 +92,13 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.rename.title"));
             itemMeta.lore(loreRename);
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = cityManager.getPlayerCity(player.getUniqueId());
+            City cityCheck = City.ofPlayer(player);
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
             DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                 if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
-                    City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+                    City playerCity = City.ofPlayer(player);
 
                     playerCity.rename(input);
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, MessageType.SUCCESS, false);
@@ -125,7 +125,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.transfer.title"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = cityManager.getPlayerCity(player.getUniqueId());
+            City cityCheck = City.ofPlayer(player);
 
             if (!CityManageConditions.canCityTransfer(cityCheck, player)) return;
 

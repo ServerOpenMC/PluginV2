@@ -56,8 +56,8 @@ public class CityBankWithdrawMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
-        assert city != null;
+        City city = City.ofPlayer(player);
+        if (city == null) return new HashMap<>();
 
         boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW);
 

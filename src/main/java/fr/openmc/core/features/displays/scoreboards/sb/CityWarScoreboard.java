@@ -41,9 +41,10 @@ public class CityWarScoreboard extends BaseScoreboard {
     @Override
     public void update(Player player, SternalBoard board) {
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
         if (city == null || !city.isInWar()) return;
 
+        WarManager warManager = city.getWarManager();
         War war = city.getWar();
         City enemyCity = war.getCityAttacker().equals(city) ? war.getCityDefender() : war.getCityAttacker();
 
@@ -66,12 +67,12 @@ public class CityWarScoreboard extends BaseScoreboard {
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
                     .deserialize("<gradient:#FF7518:#FFD580><title></gradient>",
-                            Placeholder.component("title", toSmall(player, WarManager.getFormattedPhase(war.getPhase()))));
-            case COMBAT -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+                            Placeholder.component("title", toSmall(player, warManager.getFormattedPhase(war.getPhase()))));
+            case COMBAT -> phaseComponent = toSmall(player, warManager.getFormattedPhase(war.getPhase()))
                     .color(TextColor.color(0xFC1C1C));
-            case ENDED -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+            case ENDED -> phaseComponent = toSmall(player, warManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.GRAY);
-            default -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+            default -> phaseComponent = toSmall(player, warManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.WHITE);
         }
 
@@ -149,7 +150,7 @@ public class CityWarScoreboard extends BaseScoreboard {
     @Override
     public boolean shouldDisplay(Player player) {
         if (!player.getWorld().getName().equalsIgnoreCase("world")) return false;
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
         return city != null && city.isInWar();
     }
 

@@ -22,7 +22,7 @@ public class JoinListener implements Listener  {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null) return;
 

@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 public class CityKickAction {
     public static void startKick(Player sender, OfflinePlayer playerKick) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityKickCondition.canCityKickPlayer(city, sender, playerKick)) return;
 

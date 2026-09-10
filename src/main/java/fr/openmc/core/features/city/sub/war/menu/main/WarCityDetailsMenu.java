@@ -67,7 +67,7 @@ public class WarCityDetailsMenu extends Menu {
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
-        if (MayorManager.phaseMayor == 2 && mayor != null) {
+        if (city.getMayorManager().phaseMayor == 2 && mayor != null) {
             Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
             Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
             Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());

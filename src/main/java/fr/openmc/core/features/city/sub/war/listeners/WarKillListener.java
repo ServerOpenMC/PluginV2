@@ -27,8 +27,8 @@ public class WarKillListener implements Listener {
         UUID victimUUID = victim.getUniqueId();
         UUID killerUUID = killer.getUniqueId();
 
-        City victimCity = cityManager.getPlayerCity(victimUUID);
-        City killerCity = cityManager.getPlayerCity(killerUUID);
+        City victimCity = City.ofPlayer(victimUUID);
+        City killerCity = City.ofPlayer(killerUUID);
 
         if (victimCity == null || killerCity == null) return;
 

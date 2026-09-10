@@ -77,7 +77,7 @@ public class MayorColorMenu extends Menu {
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
         MayorManager mayorManager = cityManager.MAYOR;
 
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
         {
             colorSlot.put(NamedTextColor.RED, 12);

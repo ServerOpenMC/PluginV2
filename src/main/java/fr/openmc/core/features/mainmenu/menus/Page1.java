@@ -73,7 +73,7 @@ public class Page1 implements Menu {
     private final AdminShopManager adminShopManager;
 
     public Page1(Player player) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         ItemStack cityItem = new ItemStack(Material.PAPER);
         cityItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));

@@ -36,7 +36,7 @@ public class CityClaimAction {
 
     public static void startClaim(Player sender, int chunkX, int chunkZ) {
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
-        City city = cityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
         org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.cant_claim_here"),
@@ -62,7 +62,7 @@ public class CityClaimAction {
         }
 
         if (cityManager.isChunkClaimed(chunkX, chunkZ)) {
-            City chunkCity = cityManager.getCityFromChunk(chunkX, chunkZ);
+            City chunkCity = City.of(chunkX, chunkZ);
             if (chunkCity == null) return;
             String cityName = chunkCity.getName();
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.already_claim",

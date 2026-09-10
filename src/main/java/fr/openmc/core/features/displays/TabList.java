@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.features.Feature;
@@ -88,7 +89,7 @@ public class TabList extends Feature {
 
         boolean isInDream = DreamUtils.isInDream(player);
         String logo;
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             logo = FontImageWrapper.replaceFontImages(isInDream ? ":dream_openmc:" : ":openmc:");
         } else {
             logo = "OPEN MC";

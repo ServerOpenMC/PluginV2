@@ -36,7 +36,7 @@ public class CityRankDetailsMenu extends Menu {
 	private final City city;
 	
 	public CityRankDetailsMenu(Player owner, City city, DBCityRank rank) {
-		this(owner, city, rank, CityRankManager.copy(rank));
+		this(owner, city, rank, rank.copy());
 	}
 	
 	public CityRankDetailsMenu(Player owner, City city, DBCityRank oldRank, DBCityRank newRank) {

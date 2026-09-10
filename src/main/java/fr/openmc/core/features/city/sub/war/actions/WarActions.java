@@ -39,9 +39,8 @@ public class WarActions {
      */
     public static void beginLaunchWar(Player player, City cityAttack) {
         UUID launcherUUID = player.getUniqueId();
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
         WarManager warManager = OMCRegistry.FEATURES.CITY.get().WAR;
-        City launchCity = cityManager.getPlayerCity(launcherUUID);
+        City launchCity = City.ofPlayer(launcherUUID);
 
         if (launchCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

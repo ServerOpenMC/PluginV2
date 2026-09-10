@@ -380,7 +380,7 @@ public class DreamManager extends Feature implements HasDatabase, HasCommands, H
             }
         }
 
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.GREAT_SLEEPER.getId())) {
             base += 0.4;
         }

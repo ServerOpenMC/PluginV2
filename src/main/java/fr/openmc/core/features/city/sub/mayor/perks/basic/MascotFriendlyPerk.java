@@ -24,8 +24,8 @@ public class MascotFriendlyPerk implements Listener {
      * @param player The player to update.
      */
     public static void updatePlayerEffects(Player player) {
-        int phase = MayorManager.phaseMayor;
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
+        int phase = playerCity.getMayorManager().phaseMayor;
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 
@@ -60,7 +60,7 @@ public class MascotFriendlyPerk implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 
@@ -85,7 +85,7 @@ public class MascotFriendlyPerk implements Listener {
         if (!DreamUtils.isDreamWorld(event.getTo())) return;
         if (DreamUtils.isDreamWorld(event.getFrom())) return;
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 

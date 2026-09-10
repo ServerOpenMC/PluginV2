@@ -20,7 +20,7 @@ public class BlockProtection implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        City city = cityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
+        City city = City.of(event.getBlock());
         if (city == null) return;
       
         if (city.isMember(event.getPlayer())) {
@@ -32,7 +32,7 @@ public class BlockProtection implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     void onBlockBreak(BlockBreakEvent event) {
-        City city = cityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
+        City city = City.of(event.getBlock());
         if (city == null) return;
         
         if (city.isMember(event.getPlayer())) {

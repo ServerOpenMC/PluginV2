@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.InputUtils;
@@ -36,7 +37,7 @@ public class CityCreateConditions {
             return false;
         }
 
-        if (OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId()) != null) {
+        if (City.ofPlayer(player.getUniqueId()) != null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_already_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

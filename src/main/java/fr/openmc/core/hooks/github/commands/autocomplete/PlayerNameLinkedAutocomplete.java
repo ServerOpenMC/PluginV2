@@ -1,5 +1,6 @@
 package fr.openmc.core.hooks.github.commands.autocomplete;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.DBGithubMinecraft;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ public class PlayerNameLinkedAutocomplete implements SuggestionProvider<BukkitCo
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return GitHubHook.getKnownLinks().stream()
+        return OMCRegistry.HOOKS.GITHUB.getKnownLinks().stream()
                 .map(DBGithubMinecraft::getPlayerName)
                 .toList();
     }

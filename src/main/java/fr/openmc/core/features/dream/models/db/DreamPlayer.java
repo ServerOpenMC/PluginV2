@@ -52,7 +52,7 @@ public class DreamPlayer {
 
         this.dreamTime = cacheData == null ? DreamManager.BASE_DREAM_TIME : cacheData.getMaxDreamTime();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
         if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.GREAT_DREAM.getId())) {
             this.dreamTime = (long) (this.dreamTime * 1.6);
             MessagesManager.sendMessage(player,

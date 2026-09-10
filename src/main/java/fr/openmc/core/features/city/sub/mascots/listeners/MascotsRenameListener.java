@@ -52,7 +52,7 @@ public class MascotsRenameListener implements Listener {
 
         e.setCancelled(true);
 
-        City city = cityManager.getCity(UUID.fromString(cityUUID));
+        City city = City.of(UUID.fromString(cityUUID));
         if (city != null) {
             Mascot mascot = city.getMascot();
             if (mascot != null) {

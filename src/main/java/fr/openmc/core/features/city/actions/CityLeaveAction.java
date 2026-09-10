@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class CityLeaveAction {
 
     public static void startLeave(Player player) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (city == null) return;
 

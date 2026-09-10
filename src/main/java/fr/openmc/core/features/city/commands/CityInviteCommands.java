@@ -32,7 +32,7 @@ public class CityInviteCommands {
             OMCPlayer sender,
             @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
     ) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
 
@@ -96,7 +96,7 @@ public class CityInviteCommands {
             return;
         }
 
-        City newCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(inviter.getUniqueId());
+        City newCity = City.ofPlayer(inviter);
 
         if (!CityInviteConditions.canCityInviteAccept(newCity, inviter, player)) return;
 

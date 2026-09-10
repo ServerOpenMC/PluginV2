@@ -85,7 +85,7 @@ public class ContestManager extends Feature implements HasDatabase {
     @Override
     public void init() {
         // ** LISTENERS **
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             OMCPlugin.registerEvents(
                     ContestIntractEvents::new
             );
@@ -104,7 +104,7 @@ public class ContestManager extends Feature implements HasDatabase {
         loadContestPlayerData();
 
         // ** PARTICLE REGION **
-        if (WorldGuardHook.isEnable()) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.isEnable()) {
             ContestParticlesUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
     }

@@ -24,7 +24,7 @@ public class AdminWarCommand {
             Player player,
             @Named("name") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
-        City city = OMCRegistry.FEATURES.CITY.get().getCityByName(cityName);
+        City city = City.of(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);

@@ -55,7 +55,7 @@ public class CityViewManager {
             );
         }
 
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         ScheduledTask task = createViewTask(player, playerCity);
         activeViewers.put(player.getUniqueId(), new CityViewData(task, claimsToShow));
@@ -125,7 +125,7 @@ public class CityViewManager {
                 int chunkZ = playerChunk.z() + z;
 
                 ChunkPos claim = new ChunkPos(chunkX, chunkZ);
-                City city = cityManager.getCityFromChunk(claim);
+                City city = City.of(claim);
                 if (city == null)
                     continue;
 

@@ -34,7 +34,7 @@ public class CityPermsMenu extends PaginatedMenu {
 
     public CityPermsMenu(Player owner, UUID memberUUID, boolean edit) {
         super(owner);
-        this.city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(owner.getUniqueId());
+        this.city = City.ofPlayer(owner);
         this.memberUUID = memberUUID;
         this.edit = edit;
     }

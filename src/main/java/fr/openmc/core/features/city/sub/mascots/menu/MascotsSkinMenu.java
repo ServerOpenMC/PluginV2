@@ -68,7 +68,7 @@ public class MascotsSkinMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(getOwner().getUniqueId());
+        City playerCity = City.ofPlayer(getOwner());
 
         if (playerCity == null) return map;
 

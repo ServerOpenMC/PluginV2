@@ -39,6 +39,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
@@ -81,7 +82,7 @@ public class CityManager extends Feature
         this.STATS = OMCRegistry.FEATURES.register(new CityStatisticsManager());
         this.NOTATION = OMCRegistry.FEATURES.register(new NotationManager(this));
         this.RANKS = OMCRegistry.FEATURES.register(new CityRankManager(this));
-        this.CITY_MILESTONE = OMCRegistry.FEATURES.register(new CityMilestoneManager());
+        this.CITY_MILESTONE = OMCRegistry.FEATURES.register(new CityMilestoneManager(this));
     }
 
     @Override
@@ -380,20 +381,24 @@ public class CityManager extends Feature
 
     /**
      * Get a city by its UUID
+     * Utilisez plutot City.of
      *
      * @param cityUUID The {@link UUID} of the city
      * @return The {@link City}, or null if not found
      */
+    @ApiStatus.Internal
     public City getCity(UUID cityUUID) {
         return cities.get(cityUUID);
     }
 
     /**
      * Get a city by its name
+     * Utilisez plutot City.of
      *
      * @param name The name of the city
      * @return The city object, or null if not found
      */
+    @ApiStatus.Internal
     public City getCityByName(String name) {
         return citiesByName.get(name);
     }
@@ -435,21 +440,25 @@ public class CityManager extends Feature
 
     /**
      * Get a city by its member
+     * Utilisez plutot City.of
      *
      * @param playerUUID The UUID of the member
      * @return The city object, or null if not found
      */
+    @ApiStatus.Internal
     public City getPlayerCity(UUID playerUUID) {
         return playerCities.get(playerUUID);
     }
 
     /**
      * Get a city from a chunk
+     * Utilisez plutot City.of
      *
      * @param x The x coordinate of the chunk
      * @param z The z coordinate of the chunk
      * @return The city object, or null if not found
      */
+    @ApiStatus.Internal
     @Nullable
     public City getCityFromChunk(int x, int z) {
         return claimedChunks.get(new ChunkPos(x, z));
@@ -457,10 +466,12 @@ public class CityManager extends Feature
 
     /**
      * Get a city from a chunk
+     * Utilisez plutot City.of
      *
      * @param chunk The chunk
      * @return The city object, or null if not found
      */
+    @ApiStatus.Internal
     @Nullable
     public City getCityFromChunk(Chunk chunk) {
         return claimedChunks.get(new ChunkPos(chunk.getX(), chunk.getZ()));
@@ -468,6 +479,7 @@ public class CityManager extends Feature
 
     /**
      * Get a city from a chunk
+     * Utilisez plutot City.of
      *
      * @param chunkPos The chunk position
      * @return The city object, or null if not found

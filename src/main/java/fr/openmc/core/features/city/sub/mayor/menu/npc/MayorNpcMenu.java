@@ -141,13 +141,13 @@ public class MayorNpcMenu extends Menu {
                                 Chunk chunk = locationClick.getChunk();
 
                                 CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
-                                City cityByChunk = cityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                                City cityByChunk = City.of(chunk);
                                 if (cityByChunk == null) {
                                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                     return false;
                                 }
 
-                                City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+                                City playerCity = City.ofPlayer(player);
 
                                 if (playerCity == null) {
                                     return false;

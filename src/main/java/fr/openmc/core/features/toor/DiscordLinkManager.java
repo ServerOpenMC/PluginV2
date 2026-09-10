@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.toor.commands.LinkCommand;
 import fr.openmc.core.features.toor.commands.UnlinkCommand;
@@ -153,9 +154,9 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         notifyPlayer(playerUUID, "feature.discord.success", MessageType.SUCCESS, Component.text(discordUsername));
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(),
                 () -> Bukkit.getPluginManager().callEvent(new ConnectToDiscordEvent(playerUUID, discordUserId, discordUsername)));
-        Long githubId = GitHubHook.getContributorId(playerUUID);
+        Long githubId = OMCRegistry.HOOKS.GITHUB.getContributorId(playerUUID);
         if (githubId != null)
-            BitsManager.applyContributorBitsUpdate(githubId);
+            OMCRegistry.FEATURES.BITS.get().applyContributorBitsUpdate(githubId);
     }
 
     private static void confirmLink(UUID playerUUID, String discordUserId) {

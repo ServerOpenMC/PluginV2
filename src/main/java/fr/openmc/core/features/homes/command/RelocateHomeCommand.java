@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
@@ -73,7 +74,7 @@ public class RelocateHomeCommand {
 
         List<Home> homes = player.home().getHomes();
 
-        if (WorldGuardHook.isRegionConflict(location)) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(location)) {
             player.message().sendError(TranslationManager.translation("feature.homes.command.relocate.protected_region"), Prefix.HOME, true);
             return;
         }

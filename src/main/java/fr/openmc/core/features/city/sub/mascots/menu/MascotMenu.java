@@ -53,7 +53,7 @@ public class MascotMenu extends Menu {
     public MascotMenu(Player owner, Mascot mascot) {
         super(owner);
         this.mascot = mascot;
-        this.city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(owner.getUniqueId());
+        this.city = City.ofPlayer(owner.getUniqueId());
     }
 
     @Override
@@ -140,7 +140,7 @@ public class MascotMenu extends Menu {
                             return;
                         }
 
-                        city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(getOwner().getUniqueId());
+                        city = City.ofPlayer(getOwner());
                         if (city == null) {
                             MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                             getOwner().closeInventory();

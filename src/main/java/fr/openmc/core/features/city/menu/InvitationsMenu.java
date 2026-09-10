@@ -66,7 +66,7 @@ public class InvitationsMenu extends PaginatedMenu {
         List<Component> invitationLore = TranslationManager.translationLore("feature.city.menus.invitations.item.lore");
 
         for (Player inviter : invitations) {
-            City inviterCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(inviter.getUniqueId());
+            City inviterCity = City.ofPlayer(inviter);
 
             if (inviterCity == null) {
                 invitations.remove(inviter);

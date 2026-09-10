@@ -45,7 +45,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
 				() -> new InteractProtection(cityManager),
 				() -> new LeashProtection(cityManager),
 				() -> new MountProtection(cityManager),
-				() -> new PistonProtection(cityManager),
+				PistonProtection::new,
 				() -> new PotionProtection(cityManager),
 				() -> new TeleportProtection(cityManager),
 				() -> new TramplingProtection(cityManager),
@@ -65,7 +65,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
 		
         if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
 
-        City cityAtLoc = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        City cityAtLoc = City.of(loc.getChunk().getX(), loc.getChunk().getZ());
 
 		if (cityAtLoc == null) return true;
 
@@ -73,7 +73,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
 
         War war = cityAtLoc.getWar();
         if (cityAtLoc.isInWar() && war != null && war.getPhase() == War.WarPhase.COMBAT) {
-            City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+            City playerCity = City.ofPlayer(player);
             if (playerCity != null && war.equals(playerCity.getWar())) {
                 return war.getAttackers().contains(player.getUniqueId())
                         || war.getDefenders().contains(player.getUniqueId());
@@ -84,7 +84,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
     }
 
     public boolean canExplodeNaturally(Location loc) {
-        City city = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        City city = City.of(loc.getChunk().getX(), loc.getChunk().getZ());
         return city == null;
     }
     
@@ -112,7 +112,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
 			return;
 		}
 		
-		City city = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
+		City city = City.of(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
 		if (city == null || city.isInWar()) return;
 
 		if (entity instanceof Player player) {

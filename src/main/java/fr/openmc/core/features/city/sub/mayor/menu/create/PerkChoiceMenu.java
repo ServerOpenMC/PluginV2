@@ -61,8 +61,9 @@ public class PerkChoiceMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
         for (Perks newPerk : Perks.values()) {
             if (type == MenuType.OWNER_1) {

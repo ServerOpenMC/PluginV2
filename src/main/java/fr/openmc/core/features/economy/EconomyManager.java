@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
@@ -235,7 +236,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     }
 
     public static String getEconomyIcon() {
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             return FontImageWrapper.replaceFontImages("§f:aywenito:");
         } else {
             return "Ⓐ";

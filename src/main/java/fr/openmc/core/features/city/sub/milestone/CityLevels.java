@@ -4,15 +4,12 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorNPCManager;
 import fr.openmc.core.features.city.sub.milestone.requirements.CommandRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.EventTemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.ItemDepositRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.TemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.rewards.*;
-import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
-import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -223,8 +220,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.GLASS, 128),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 8),
                     new EventTemplateRequirement(
-                            (city, scope) -> Objects.requireNonNull(CityStatisticsManager
-                                            .getOrCreateStat(city.getUniqueId(), scope))
+                            (city, scope) -> Objects.requireNonNull(city.getOrCreateStat(scope))
                                     .asInt() >= 1,
 
                             city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
@@ -239,12 +235,12 @@ public enum CityLevels {
                                     return;
 
                                 Player player = (Player) eventCraft.getWhoClicked();
-                                City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                                City playerCity = City.ofPlayer(player);
 
-                                if (Objects.requireNonNull(CityStatisticsManager.getOrCreateStat(playerCity.getUniqueId(), scope)).asInt() >= 1)
+                                if (Objects.requireNonNull(playerCity.getOrCreateStat(scope)).asInt() >= 1)
                                     return;
 
-                                CityStatisticsManager.increment(playerCity.getUniqueId(), scope, 1);
+                                playerCity.incrementStats(scope, 1);
                             }
                     )
             ),
@@ -264,7 +260,7 @@ public enum CityLevels {
             "feature.city.levels.level_5.description",
             List.of(
                     new TemplateRequirement(
-                            city -> MayorNPCManager.hasNPCS(city.getUniqueId()),
+                            city -> city.getMayorManager().mayorNPCManager.hasNPCS(city.getUniqueId()),
                             city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.place_urne")
                     ),
@@ -338,7 +334,7 @@ public enum CityLevels {
             "feature.city.levels.level_6.description",
             List.of(
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 1,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWon() >= 1,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.war.win")
                     ),
@@ -416,7 +412,7 @@ public enum CityLevels {
             "feature.city.levels.level_7.description",
             List.of(
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 2,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWar() >= 2,
                             city -> ItemStack.of(Material.IRON_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
@@ -429,7 +425,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.war.count.progress",
                                         Component.text(2),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                        Component.text(city.getWarHistory() != null ? city.getWarHistory().getNumberWar() : 0)
                                 );
                             }
                     ),
@@ -581,7 +577,7 @@ public enum CityLevels {
             "feature.city.levels.level_9.description",
             List.of(
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 3,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWon() >= 3,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
@@ -594,7 +590,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.war.win.count.progress",
                                         Component.text(3),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWon() : 0)
+                                        Component.text(city.getWarHistory() != null ? city.getWarHistory().getNumberWon() : 0)
                                 );
                             }
                     ),
@@ -656,7 +652,7 @@ public enum CityLevels {
             "feature.city.levels.level_10.description",
             List.of(
                     new TemplateRequirement(
-                            city -> NotationManager.top10Cities.contains(city.getUniqueId()),
+                            city -> city.isTop10Notation(),
                             city -> ItemStack.of(Material.HONEYCOMB),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.notation.top10")
                     ),
@@ -669,7 +665,7 @@ public enum CityLevels {
                             )
                     ),
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 10,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWar() >= 10,
                             city -> ItemStack.of(Material.NETHERITE_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
@@ -682,7 +678,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.war.count.progress",
                                         Component.text(10),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                        Component.text(city.getWarHistory() != null ? city.getWarHistory().getNumberWar() : 0)
                                 );
                             }
                     ),

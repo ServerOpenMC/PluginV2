@@ -114,22 +114,12 @@ public class CityRankManager extends Feature implements HasDatabase {
 	}
 	
 	/**
-	 * Create a copy of a city rank.
-	 *
-	 * @param rank The rank to copy.
-	 * @return A new instance of DBCityRank with the same properties as the original.
-	 */
-	public DBCityRank copy(DBCityRank rank) {
-		return new DBCityRank(rank.getRankUUID(), rank.getCityUUID(), rank.getPriority(), rank.getName(), rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet());
-	}
-	
-	/**
 	 * Load all city ranks from the database and associate them with their respective cities.
 	 */
 	public void loadRanks() {
 		try {
 			for (DBCityRank rank : ranksDao.queryForAll()) {
-				City city = cityManager.getCity(rank.getCityUUID());
+				City city = City.of(rank.getCityUUID());
 				if (city != null) city.getRanks().add(rank);
 			}
 			

@@ -31,7 +31,7 @@ public class CityChangeAction {
     private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
 
     public static void beginChangeCity(Player player, CityType typeChange) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
 
@@ -73,7 +73,7 @@ public class CityChangeAction {
     }
 
     public static void finishChange(Player sender) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);

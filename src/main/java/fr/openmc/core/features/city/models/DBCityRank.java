@@ -240,4 +240,13 @@ public class DBCityRank {
 			}
 		}
 	}
+
+	/**
+	 * Create a copy of a city rank.
+	 *
+	 * @return A new instance of DBCityRank with the same properties as the original.
+	 */
+	public DBCityRank copy() {
+		return new DBCityRank(this.getRankUUID(), this.getCityUUID(), this.getPriority(), this.getName(), this.getIcon(), this.getPermissionsSet(), this.getMembersSet());
+	}
 }

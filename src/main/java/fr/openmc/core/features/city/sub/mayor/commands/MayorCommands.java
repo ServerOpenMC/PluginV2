@@ -27,7 +27,7 @@ public class MayorCommands {
     @Command({"city warp", "ville warp"})
     @Description("Teleporte au warp commun de la ville")
     void warp(Player player) {
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null) return;
 

@@ -13,11 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DamageProtection implements Listener {
-    private final CityManager cityManager;
     private final ProtectionsManager protectionsManager;
 
     public DamageProtection(CityManager cityManager) {
-        this.cityManager = cityManager;
         this.protectionsManager = cityManager.PROTECTIONS;
     }
 
@@ -35,7 +33,7 @@ public class DamageProtection implements Listener {
 
         if (victim instanceof Player victimPlayer && attacker != null) {
             Location loc = victimPlayer.getLocation();
-            City city = cityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            City city = City.of(loc);
 
             if (city != null
                     && city.isMember(victimPlayer)

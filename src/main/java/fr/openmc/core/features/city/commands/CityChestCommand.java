@@ -17,7 +17,7 @@ public class CityChestCommand {
             Player player,
             @Optional @Named("page") @Range(min = 0) Integer page
     ) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (!CityChestConditions.canCityChestOpen(city, player)) return;
 
@@ -32,7 +32,7 @@ public class CityChestCommand {
     @Description("Améliore la coffre de la ville")
     @CommandPermission("omc.commands.city.chest_upgrade")
     void upgrade(Player player) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (!CityChestConditions.canCityChestUpgrade(city, player)) return;
 
         CityChestAction.upgradeChest(player, city);

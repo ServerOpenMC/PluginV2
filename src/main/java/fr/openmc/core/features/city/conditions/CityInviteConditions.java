@@ -47,7 +47,7 @@ public class CityInviteConditions {
             return false;
         }
 
-        if (OMCRegistry.FEATURES.CITY.get().getPlayerCity(targetUUID) != null) {
+        if (City.ofPlayer(targetUUID) != null) {
             player.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.target_already_in_city"), Prefix.CITY
             );

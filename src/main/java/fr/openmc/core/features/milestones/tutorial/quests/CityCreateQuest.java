@@ -46,7 +46,7 @@ public class CityCreateQuest extends MilestoneQuest implements Listener {
                         ),
                         new QuestMethodsReward(
                                 player -> {
-                                    City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                                    City playerCity = City.ofPlayer(player.getUniqueId());
                                     if (playerCity.getLevel() >= 2) {
                                         TutorialSteps.CITY_LEVEL_2.getQuest().incrementProgress(player.getUniqueId());
                                     }

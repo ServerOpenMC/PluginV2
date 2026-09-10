@@ -15,10 +15,8 @@ import java.util.UUID;
 
 public class CityPermsConditions {
     public static boolean canSeePerms(Player sender, UUID playerUUID) {
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
-
-        City city = cityManager.getPlayerCity(playerUUID);
-        City senderCity = cityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(playerUUID);
+        City senderCity = City.ofPlayer(sender);
 
         if (senderCity == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_no_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -49,7 +47,7 @@ public class CityPermsConditions {
     }
 
     public static boolean canModifyPerms(Player sender, CityPermission permission) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender.getUniqueId());
 
         if (permission == CityPermission.OWNER) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.cant_do_this"), Prefix.CITY, MessageType.ERROR, false);

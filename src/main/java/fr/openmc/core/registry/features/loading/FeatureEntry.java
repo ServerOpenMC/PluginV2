@@ -38,12 +38,14 @@ public class FeatureEntry<F extends Feature> {
                 OMCLogger.errorFormatted("Un FeatureFlag est nul dans une feature");
                 return false;
             }
-            
-            return !(switch (flag) {
+
+            boolean blocked = switch (flag) {
                 case FeatureFlag.NotInUnitTest _ -> OMCPlugin.isUnitTestVersion();
                 case FeatureFlag.NeedApi needApi -> !needApi.isEnabled().get();
                 default -> throw new IllegalStateException("FeatureFlag non implémenter dans FeatureEntry#shouldLoad() : " + flag);
-            });
+            };
+
+            if (blocked) return false;
         }
         return true;
     }

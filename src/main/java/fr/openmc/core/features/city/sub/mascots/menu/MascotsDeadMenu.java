@@ -74,8 +74,8 @@ public class MascotsDeadMenu extends Menu {
                         Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
                 ));
-            }).setOnClick(inventoryClickEvent -> {
-                City city = OMCRegistry.FEATURES.CITY.get().getCity(cityUUID);
+            }).setOnClick(_ -> {
+                City city = City.of(cityUUID);
                 if (city == null) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                     player.closeInventory();

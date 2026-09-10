@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.milestone.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
@@ -13,7 +14,7 @@ public class CityMilestoneCommands {
     @CommandPermission("omc.commands.city.milestone")
     @Description("Ouvre le menu du milestone de ville")
     void milestone(Player sender) {
-        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+        City playerCity = City.ofPlayer(sender);
 
         if (playerCity == null) return;
 

@@ -69,7 +69,7 @@ public class PersonalBankMenu extends Menu {
             new PersonalBankDepositMenu(player).open();
         }));
 
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player,

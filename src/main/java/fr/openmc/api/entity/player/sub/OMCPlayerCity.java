@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.CityManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+
 public class OMCPlayerCity extends OMCPlayerFeat {
     private final CityManager cityManager;
 

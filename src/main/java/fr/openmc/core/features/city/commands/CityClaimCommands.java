@@ -22,7 +22,7 @@ public class CityClaimCommands {
     @Description("Claim un chunk pour votre ville")
     @CommandPlaceholder()
     void claim(Player sender) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityClaimCondition.canCityClaim(city, sender)) return;
 
@@ -35,7 +35,7 @@ public class CityClaimCommands {
     @CommandPermission("omc.commands.city.unclaim")
     @Description("Unclaim un chunk pour votre ville")
     void unclaim(Player sender) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityUnclaimCondition.canCityUnclaim(city, sender)) return;
 

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
@@ -30,13 +31,20 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class MineralRushPerk implements Listener {
+
+    private final MayorManager mayorManager;
+
+    public MineralRushPerk(MayorManager mayorManager) {
+        this.mayorManager = mayorManager;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MayorManager.phaseMayor !=2) return;
+        if (mayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
 
@@ -51,13 +59,13 @@ public class MineralRushPerk implements Listener {
     }
 
     @EventHandler
-    void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        if (MayorManager.phaseMayor !=2) return;
+    void onTimeEnd(CooldownEndEvent e) {
+        if (mayorManager.phaseMayor != 2) return;
 
-        String chronometerGroup = e.getGroup();
-        if (!chronometerGroup.equals("city:mineral_rush")) return;
+        String cooldownGroup = e.getGroup();
+        if (!cooldownGroup.equals("city:mineral_rush")) return;
 
-        City city = CityManager.getCity(e.getEntity().getUniqueId());
+        City city = City.ofPlayer(e.getCooldownUUID());
 
         if (city == null) return;
 
@@ -74,10 +82,10 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     public void onMineralBreak(BlockBreakEvent event) {
-        if (MayorManager.phaseMayor !=2) return;
+        if (mayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
 
@@ -105,10 +113,10 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     public void onAyweniteBreak(CustomBlockBreakEvent event) {
-        if (MayorManager.phaseMayor != 2) return;
+        if (mayorManager.phaseMayor != 2) return;
 
         Player player = event.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
         if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;

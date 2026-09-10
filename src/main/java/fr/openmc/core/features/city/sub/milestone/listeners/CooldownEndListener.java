@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
+import fr.openmc.core.features.city.sub.statistics.models.CityStatistics;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -22,13 +23,24 @@ import org.bukkit.event.Listener;
 import java.util.Objects;
 
 public class CooldownEndListener implements Listener {
+
+    public final CityManager cityManager;
+    public final CityStatisticsManager cityStatisticsManager;
+    public final MayorManager mayorManager;
+
+    public CooldownEndListener(CityManager cityManager) {
+        this.cityManager = cityManager;
+        this.cityStatisticsManager = cityManager.STATS;
+        this.mayorManager = cityManager.MAYOR;
+    }
+
     @EventHandler
     public void onUpgradeEnd(CooldownEndEvent event) {
         String group = event.getGroup();
 
         if (!Objects.equals(group, "city:upgrade-level")) return;
 
-        City city = CityManager.getCity(event.getCooldownUUID());
+        City city = City.of(event.getCooldownUUID());
 
         if (city == null) return;
 
@@ -53,15 +65,15 @@ public class CooldownEndListener implements Listener {
                 MessageType.INFO
         );
 
-        CityStatisticsManager.removeStats(city.getUniqueId());
+        city.removeStats();
 
         boolean hasMayorNow = FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR);
 
         if (!hadMayorBefore && hasMayorNow) {
-            if (MayorManager.phaseMayor == 1) {
-                MayorManager.initCityPhase1(city, null);
-            } else if (MayorManager.phaseMayor == 2) {
-                MayorManager.initCityPhase2(city);
+            if (mayorManager.phaseMayor == 1) {
+                mayorManager.initCityPhase1(city, null);
+            } else if (mayorManager.phaseMayor == 2) {
+                mayorManager.initCityPhase2(city);
             }
         }
     }

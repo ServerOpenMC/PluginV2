@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,37 +21,47 @@ public class DemonFruitPerk implements Listener {
     private static final NamespacedKey RANGE_MODIFIER_KEY = new NamespacedKey("mayor_perks","demon_fruit");
     private static final double BONUS_VALUE = 1.0;
 
+    private final CityManager cityManager;
+    private final MayorManager mayorManager;
+
+    public DemonFruitPerk(CityManager cityManager, MayorManager mayorManager) {
+        this.cityManager = cityManager;
+        this.mayorManager = mayorManager;
+    }
+
     /**
      * Applies the reach bonus to the player.
      *
      * @param player The player to apply the bonus to.
      */
     public static void applyReachBonus(Player player) {
-        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) {
-            return;
-        }
+        AttributeInstance entityInteraction = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE);
+        AttributeInstance blockInteraction = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE);
 
-        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE)
-                .getModifiers()
-                .forEach(modifierEntity -> {
-                    if (modifierEntity.getKey().equals(RANGE_MODIFIER_KEY)) {
-                        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).removeModifier(modifierEntity);
-                    }
-                });
+        if (entityInteraction == null) return;
+        if (blockInteraction == null) return;
+
+        if (!entityInteraction.getModifiers().isEmpty())
+            entityInteraction.getModifiers()
+                    .forEach(modifierEntity -> {
+                        if (modifierEntity.getKey().equals(RANGE_MODIFIER_KEY)) {
+                            entityInteraction.removeModifier(modifierEntity);
+                        }
+                    });
 
         AttributeModifier modifierEntity = new AttributeModifier(RANGE_MODIFIER_KEY, BONUS_VALUE, AttributeModifier.Operation.ADD_NUMBER);
-        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).addModifier(modifierEntity);
+        entityInteraction.addModifier(modifierEntity);
 
-        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE)
-                .getModifiers()
+        if (!blockInteraction.getModifiers().isEmpty())
+            blockInteraction.getModifiers()
                 .forEach(modifierBlock -> {
                     if (modifierBlock.getKey().equals(RANGE_MODIFIER_KEY)) {
-                        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).removeModifier(modifierBlock);
+                        blockInteraction.removeModifier(modifierBlock);
                     }
                 });
 
         AttributeModifier modifierBlock = new AttributeModifier(RANGE_MODIFIER_KEY, BONUS_VALUE, AttributeModifier.Operation.ADD_NUMBER);
-        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).addModifier(modifierBlock);
+        blockInteraction.addModifier(modifierBlock);
     }
 
     /**
@@ -59,23 +70,22 @@ public class DemonFruitPerk implements Listener {
      * @param player The player to remove the bonus from.
      */
     public static void removeReachBonus(Player player) {
-        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) return;
-        try {
-            player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE)
-                    .getModifiers()
-                    .stream()
-                    .filter(modifier -> modifier.getKey().equals(RANGE_MODIFIER_KEY))
-                    .forEach(modifier -> {
-                        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).removeModifier(modifier);
-                    });
+        AttributeInstance entityInteraction = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE);
+        AttributeInstance blockInteraction = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE);
 
-                player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE)
-                    .getModifiers()
+        if (entityInteraction == null) return;
+        if (blockInteraction == null) return;
+
+        try {
+            entityInteraction.getModifiers()
                     .stream()
                     .filter(modifier -> modifier.getKey().equals(RANGE_MODIFIER_KEY))
-                    .forEach(modifier -> {
-                        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).removeModifier(modifier);
-                    });
+                    .forEach(entityInteraction::removeModifier);
+
+            blockInteraction.getModifiers()
+                    .stream()
+                    .filter(modifier -> modifier.getKey().equals(RANGE_MODIFIER_KEY))
+                    .forEach(blockInteraction::removeModifier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -90,12 +100,18 @@ public class DemonFruitPerk implements Listener {
     public static boolean hasRangeAttribute(Player player) {
         if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) return false;
 
-        double baseValueEntity = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).getBaseValue();
-        double currentValueEntity = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).getValue();
+        AttributeInstance entityInteraction = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE);
+        AttributeInstance blockInteraction = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE);
+
+        if (entityInteraction == null) return false;
+        if (blockInteraction == null) return false;
+
+        double baseValueEntity = entityInteraction.getBaseValue();
+        double currentValueEntity = entityInteraction.getValue();
         double expectedValueEntity = baseValueEntity + BONUS_VALUE;
 
-        double baseValueBlock = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getBaseValue();
-        double currentValueBlock = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getValue();
+        double baseValueBlock = blockInteraction.getBaseValue();
+        double currentValueBlock = blockInteraction.getValue();
         double expectedValueBlock = baseValueBlock + BONUS_VALUE;
 
         return Math.abs(currentValueEntity - expectedValueEntity) < 0.01 && Math.abs(currentValueBlock - expectedValueBlock) < 0.01;
@@ -104,10 +120,10 @@ public class DemonFruitPerk implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        int phase = MayorManager.phaseMayor;
+        int phase = mayorManager.phaseMayor;
 
         if (phase == 2) {
-            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            City playerCity = City.ofPlayer(player);
             if (playerCity == null) return;
 
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;
@@ -136,10 +152,10 @@ public class DemonFruitPerk implements Listener {
         if (DreamUtils.isDreamWorld(event.getTo())) return;
 
         Player player = event.getPlayer();
-        int phase = MayorManager.phaseMayor;
+        int phase = mayorManager.phaseMayor;
 
         if (phase == 2) {
-            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            City playerCity = City.ofPlayer(player);
             if (playerCity == null) return;
 
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FRUIT_DEMON.getId())) return;

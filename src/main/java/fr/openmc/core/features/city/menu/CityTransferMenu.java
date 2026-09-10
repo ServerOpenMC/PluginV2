@@ -50,8 +50,8 @@ public class CityTransferMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
-        assert city != null;
+        City city = City.ofPlayer(player.getUniqueId());
+        if (city == null) return new ArrayList<>();
 
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 

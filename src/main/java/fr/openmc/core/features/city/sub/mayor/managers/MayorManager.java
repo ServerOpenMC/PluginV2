@@ -91,7 +91,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     @Override
     public void init() {
         // LISTENERS
-        new PhaseListener(OMCPlugin.getInstance());
+        new PhaseListener(this, OMCPlugin.getInstance());
 
         this.loadMayorConstant();
         this.loadCityMayors();
@@ -148,16 +148,16 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         return Set.of(
                 () -> new JoinListener(cityManager, this),
                 RagePerk::new,
-                MinerPerk::new,
+                () -> new MinerPerk(cityManager),
                 MascotFriendlyPerk::new,
-                DemonFruitPerk::new,
+                () -> new DemonFruitPerk(cityManager, this),
                 CityHunterPerk::new,
                 AyweniterPerk::new,
                 GPSTrackerPerk::new,
-                SymbiosisPerk::new,
+                () -> new SymbiosisPerk(cityManager),
                 ImpotCollection::new,
-                AgriculturalEssorPerk::new,
-                MineralRushPerk::new,
+                () -> new AgriculturalEssorPerk(this),
+                () -> new MineralRushPerk(this),
                 MilitaryDissuasion::new,
                 IdyllicRain::new,
                 () -> new UrneListener(fancyNpcsHook, cityManager, this),
@@ -380,7 +380,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
                     // Mineur Dévoué
                     if (PerkUtils.hasPerk(oldMayor, Perks.MINER.getId())) {
-                        MinerPerk.updatePlayerEffects(player);
+                        MinerPerk.updatePlayerEffects(player, cityManager);
                     }
 
                     // Mascotte de Compagnie
@@ -413,7 +413,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                 if (player == null) continue;
                 // Mineur Dévoué
                 if (PerkUtils.hasPerk(city.getMayor(), Perks.MINER.getId())) {
-                    MinerPerk.updatePlayerEffects(player);
+                    MinerPerk.updatePlayerEffects(player, cityManager);
                 }
 
                 // Mascotte de Compagnie
@@ -428,7 +428,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
                 // Fou de Rage
                 if (PerkUtils.hasPerk(city.getMayor(), Perks.FOU_DE_RAGE.getId())) {
-                    City locCity = cityManager.getCityFromChunk(player.getLocation().getChunk());
+                    City locCity = City.of(player.getLocation());
                     RagePerk.updateEffect(locCity, player);
                 }
             }
@@ -457,7 +457,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                     );
                     return;
                 }
-                createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color,
+                createMayor(ownerName, ownerUUID, city, perks.get(0), perks.get(1), perks.get(2), color,
                         ElectionType.OWNER_CHOOSE);
             }
         } else {
@@ -503,7 +503,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                     return;
                 }
 
-                createMayor(ownerName, ownerUUID, city, perk1, perks.getFirst(),
+                createMayor(ownerName, ownerUUID, city, perk1, perks.get(0),
                           perks.get(1), color, ElectionType.ELECTION);
 
             }
@@ -564,7 +564,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * @param player The player to check
      */
     public boolean hasCandidated(Player player) {
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (cityElections.get(playerCity.getUniqueId()) == null)
             return false;
@@ -603,7 +603,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * @param player The player to check
      */
     public boolean hasVoted(Player player) {
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerVote.get(playerCity.getUniqueId()) == null)
             return false;
@@ -636,7 +636,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * @param player The player to check
      */
     public boolean hasChoicePerkOwner(Player player) {
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         Mayor mayor = cityMayor.get(playerCity.getUniqueId());
         if (mayor == null)

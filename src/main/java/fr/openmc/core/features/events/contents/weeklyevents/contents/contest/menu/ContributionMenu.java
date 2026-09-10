@@ -98,7 +98,7 @@ public class ContributionMenu extends Menu {
             ));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
-            if (!ItemsAdderHook.isEnable()) {
+            if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.contribution.unavailable"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }

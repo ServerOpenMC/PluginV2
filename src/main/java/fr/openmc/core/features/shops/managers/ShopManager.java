@@ -2,6 +2,7 @@ package fr.openmc.core.features.shops.managers;
 
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.shops.ShopCommand;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.ShopListener;
@@ -195,7 +196,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 		shopsByLocation.put(shop.getLocation(), shop);
 		shops.put(shop.getShopUUID(), shop);
         
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
 	        if (!ShopFurniture.placeShopFurniture(cashBlock, WorldUtils.getYaw(player))) cashBlock.setType(Material.OAK_SIGN);
         } else {
 			cashBlock.setType(Material.OAK_SIGN);
@@ -227,7 +228,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
         Block cashBlock = world.getBlockAt(multiblock.cashBlockLoc());
         Block stockBlock = world.getBlockAt(multiblock.stockBlockLoc());
 
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             if (ShopFurniture.hasFurniture(cashBlock)) {
 				if (!ShopFurniture.removeShopFurniture(cashBlock)) {
 					OMCLogger.warn("Cannot remove furniture for " + shop.getName());

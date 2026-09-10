@@ -45,7 +45,7 @@ public class MascotsInteractionListener implements Listener {
         if (mascotsData == null) return;
         UUID mascotsUUID = UUID.fromString(mascotsData);
 
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

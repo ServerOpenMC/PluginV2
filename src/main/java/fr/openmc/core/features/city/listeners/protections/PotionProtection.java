@@ -30,7 +30,7 @@ public class PotionProtection implements Listener {
             return;
 
         Location witchLocation = witch.getLocation();
-        City city = cityManager.getCityFromChunk(witchLocation.getChunk().getX(), witchLocation.getChunk().getZ());
+        City city = City.of(witchLocation);
         if (city == null)
             return;
 

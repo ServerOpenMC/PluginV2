@@ -57,7 +57,7 @@ public class ExplodeProtection implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         event.blockList().removeIf(block -> {
-            City blockCity = cityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
+            City blockCity = City.of(block);
 
             return blockCity != null;
         });
@@ -68,7 +68,7 @@ public class ExplodeProtection implements Listener {
         Entity entity = event.getEntity();
 
         if (entity.getType() == EntityType.WITHER || entity.getType() == EntityType.WITHER_SKULL) {
-            City city = cityManager.getCityFromChunk(event.getBlock().getChunk().getX(), event.getBlock().getChunk().getZ());
+            City city = City.of(event.getBlock());
             if (city != null) {
                 event.setCancelled(true);
             }
@@ -76,10 +76,10 @@ public class ExplodeProtection implements Listener {
     }
 
     private void handlePlayerTntExplosion(EntityExplodeEvent event, Player player) {
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
 
         event.blockList().removeIf(block -> {
-            City blockCity = cityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
+            City blockCity = City.of(block);
             if (blockCity == null) return false;
 
             return !blockCity.equals(playerCity) && !blockCity.isMember(player);

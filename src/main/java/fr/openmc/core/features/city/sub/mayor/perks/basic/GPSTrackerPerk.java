@@ -43,10 +43,7 @@ public class GPSTrackerPerk implements Listener {
         Chunk newChunk = event.getTo().getChunk();
         if (event.getFrom().getChunk().equals(newChunk)) return;
 
-        City newCity = cityManager.getCityFromChunk(
-                newChunk.getX(),
-                newChunk.getZ()
-        );
+        City newCity = City.of(newChunk);
 
         City oldCity = lastCityMap.get(uuid);
 

@@ -24,7 +24,7 @@ public class MascotImmuneListener implements Listener {
     void onStartMascotImmune(CooldownStartEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = cityManager.getCity(event.getCooldownUUID());
+        City cityImmune = City.of(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 
@@ -41,7 +41,7 @@ public class MascotImmuneListener implements Listener {
     void onEndMascotImmune(CooldownEndEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = cityManager.getCity(event.getCooldownUUID());
+        City cityImmune = City.of(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 

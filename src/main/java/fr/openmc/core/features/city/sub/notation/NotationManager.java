@@ -116,7 +116,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                PlayerJoinListener::new
+                () -> new PlayerJoinListener(cityManager)
         );
     }
 
@@ -128,7 +128,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
             List<CityNotation> notations = notationDao.queryForAll();
             for (CityNotation notation : notations) {
                 UUID cityUUID = notation.getCityUUID();
-                City city = cityManager.getCity(cityUUID);
+                City city = City.of(cityUUID);
                 if (city == null) continue;
 
                 String weekStr = notation.getWeekStr();
@@ -301,7 +301,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
         );
 
         for (CityNotation notation : notationsCopy) {
-            City city = cityManager.getCity(notation.getCityUUID());
+            City city = City.of(notation.getCityUUID());
             notation.setNoteActivity(getActivityScore(city));
             notation.setNoteMilitary(getMilitaryScore(city));
             double economyScore = getEconomyScore(city);
@@ -335,7 +335,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
         List<CityNotation> notations = notationPerWeek.getOrDefault(weekStr, Collections.emptyList());
 
         for (CityNotation notation : notations) {
-            City city = cityManager.getCity(notation.getCityUUID());
+            City city = City.of(notation.getCityUUID());
             if (city != null) {
                 city.setBalance(city.getBalance() + calculateReward(notation));
             }

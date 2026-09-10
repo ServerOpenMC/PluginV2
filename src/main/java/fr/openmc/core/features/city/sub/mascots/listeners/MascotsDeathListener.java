@@ -40,7 +40,7 @@ public class MascotsDeathListener implements Listener {
         PersistentDataContainer data = entity.getPersistentDataContainer();
         UUID cityUUID = UUID.fromString(data.get(MascotsManager.mascotsKey, PersistentDataType.STRING));
 
-        City city = cityManager.getCity(cityUUID);
+        City city = City.of(cityUUID);
 
         if (city == null) return;
 
@@ -55,7 +55,7 @@ public class MascotsDeathListener implements Listener {
 
         if (killer == null) return;
 
-        City cityEnemy = cityManager.getPlayerCity(killer.getUniqueId());
+        City cityEnemy = City.ofPlayer(killer);
 
         if (cityEnemy == null) return;
 

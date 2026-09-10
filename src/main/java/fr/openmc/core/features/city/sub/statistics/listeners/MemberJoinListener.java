@@ -18,10 +18,10 @@ public class MemberJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         UUID playerUUID = e.getPlayer().getUniqueId();
 
-        City playerCity = CityManager.getPlayerCity(playerUUID);
+        City playerCity = City.ofPlayer(playerUUID);
 
         if (playerCity == null) return;
 
-        CityStatisticsManager.setStat(playerCity.getUniqueId(), "last_activity", LocalDate.now());
+        playerCity.setStat("last_activity", LocalDate.now());
     }
 }

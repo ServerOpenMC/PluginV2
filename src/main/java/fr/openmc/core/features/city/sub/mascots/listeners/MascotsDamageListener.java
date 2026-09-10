@@ -96,7 +96,7 @@ public class MascotsDamageListener implements Listener {
         }
 
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

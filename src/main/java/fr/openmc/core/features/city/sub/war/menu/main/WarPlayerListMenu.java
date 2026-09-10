@@ -63,7 +63,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
                 .sorted(Comparator.comparing((UUID uuid) -> !Bukkit.getPlayer(uuid).isOnline())
                         .thenComparing(uuid -> {
                             if (city.hasPermission(uuid, CityPermission.OWNER)) return 0;
-                            else if (MayorManager.cityMayor.get(city.getUniqueId()).getMayorUUID().equals(uuid))
+                            else if (city.getMayor().getMayorUUID().equals(uuid))
                                 return 1;
                             else return 2;
                         }))
@@ -78,7 +78,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
             Component title;
             if (hasPermissionOwner) {
                 title = TranslationManager.translation("feature.city.war.menu.players.role.owner");
-            } else if (MayorManager.cityMayor.get(city.getUniqueId()).getMayorUUID().equals(memberUUID)) {
+            } else if (city.getMayor().getMayorUUID().equals(memberUUID)) {
                 title = TranslationManager.translation("feature.city.war.menu.players.role.mayor");
             } else {
                 title = TranslationManager.translation("feature.city.war.menu.players.role.member");

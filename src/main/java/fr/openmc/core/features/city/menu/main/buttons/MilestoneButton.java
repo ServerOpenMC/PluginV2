@@ -30,8 +30,8 @@ public class MilestoneButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.milestone.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
-                    City cityCheck = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+                }).setOnClick(_ -> {
+                    City cityCheck = City.ofPlayer(player);
                     if (cityCheck == null) {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                         return;

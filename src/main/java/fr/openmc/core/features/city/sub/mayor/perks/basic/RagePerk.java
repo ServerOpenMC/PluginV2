@@ -34,15 +34,12 @@ public class RagePerk implements Listener {
         // ça sert à rien de lancer ça si on ne change pas de chunk
         if (event.getFrom().getChunk().equals(event.getTo().getChunk())) return;
 
-        City playerCity = cityManager.getPlayerCity(uuid);
+        City playerCity = City.ofPlayer(uuid);
         if (playerCity == null) return;
 
         if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
 
-        City currentCity = cityManager.getCityFromChunk(
-                event.getTo().getChunk().getX(),
-                event.getTo().getChunk().getZ()
-        );
+        City currentCity = City.of(event.getTo());
 
         updateEffect(currentCity, player);
     }
@@ -52,19 +49,15 @@ public class RagePerk implements Listener {
         if (cityManager.MAYOR.phaseMayor != 2) return;
 
         Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
 
-        City playerCity = cityManager.getPlayerCity(uuid);
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) return;
 
         if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
 
         Home home = event.getHome();
 
-        City currentCity = cityManager.getCityFromChunk(
-                home.getLocation().getChunk().getX(),
-                home.getLocation().getChunk().getZ()
-        );
+        City currentCity = City.of(home.getLocation());
 
         updateEffect(currentCity, player);
     }
@@ -78,7 +71,7 @@ public class RagePerk implements Listener {
     }
 
     public static void updateEffect(City currentCity, Player player) {
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) return;
 
         player.removePotionEffect(PotionEffectType.STRENGTH);

@@ -29,7 +29,7 @@ public class MayorVote {
     }
 
     public City getCity() {
-        return OMCRegistry.FEATURES.CITY.get().getCity(cityUUID);
+        return City.of(cityUUID);
     }
 
     public MayorCandidate getCandidate() {

@@ -25,7 +25,7 @@ public class AdminMascotsCommands {
             Player sender,
             @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
-        City city = OMCRegistry.FEATURES.CITY.get().getCityByName(cityName);
+        City city = City.of(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.CITY, MessageType.ERROR, false);

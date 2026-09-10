@@ -43,7 +43,7 @@ public class CityRankPermsMenu extends PaginatedMenu {
 		this.oldRank = oldRank;
 		this.newRank = newRank;
 		this.canEdit = canEdit;
-		this.city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(owner.getUniqueId());
+		this.city = City.ofPlayer(owner);
 		this.page = page;
 	}
 	

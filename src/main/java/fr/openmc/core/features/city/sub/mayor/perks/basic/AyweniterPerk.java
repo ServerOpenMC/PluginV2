@@ -38,11 +38,11 @@ public class AyweniterPerk implements Listener {
         Block block = event.getBlock();
         if (DreamUtils.isDreamWorld(block.getWorld())) return;
         Player player = event.getPlayer();
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
 
         if (playerCity == null) return;
         
-        City blockCity = cityManager.getCityFromChunk(block.getChunk());
+        City blockCity = City.of(block);
 	    if (blockCity != null)
             if (blockCity != playerCity) return;
 

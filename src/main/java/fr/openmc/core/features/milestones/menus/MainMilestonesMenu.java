@@ -71,7 +71,7 @@ public class MainMilestonesMenu extends Menu {
         loreMilestoneVille.add(Component.empty());
         loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.details"));
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) {
             loreMilestoneVille.add(Component.empty());
             loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.need_city"));

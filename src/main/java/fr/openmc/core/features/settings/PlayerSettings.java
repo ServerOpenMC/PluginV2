@@ -214,7 +214,7 @@ public class PlayerSettings {
      * @return true if both players are members of the same city, false otherwise
      */
     private boolean areSameCityMembers(UUID player1UUID, UUID player2UUID) {
-        City player2City = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player2UUID);
+        City player2City = City.ofPlayer(player2UUID);
         Player player1 = Bukkit.getPlayer(player1UUID);
         return player1 != null && player2City != null && player2City.isMember(player1);
     }

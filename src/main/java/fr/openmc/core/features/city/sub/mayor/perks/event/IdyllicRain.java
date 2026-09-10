@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -89,7 +90,7 @@ public class IdyllicRain implements Listener {
         if (!meta.getPersistentDataContainer().has(cityAyweniteKey, PersistentDataType.STRING)) return;
 
         UUID cityId = UUID.fromString(meta.getPersistentDataContainer().get(cityAyweniteKey, PersistentDataType.STRING));
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null || !playerCity.getUniqueId().equals(cityId)) {
             event.setCancelled(true);

@@ -21,7 +21,7 @@ public class AdminCityMilestoneCommands {
             Player sender,
             @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
-        City city = OMCRegistry.FEATURES.CITY.get().getCityByName(cityName);
+        City city = City.of(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
@@ -40,7 +40,7 @@ public class AdminCityMilestoneCommands {
             @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String name,
             @Named("level") @Range(min = 1, max = 10) int level
     ) {
-        City city = OMCRegistry.FEATURES.CITY.get().getCityByName(name);
+        City city = City.of(name);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);

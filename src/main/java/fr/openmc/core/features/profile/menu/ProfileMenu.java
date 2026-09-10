@@ -210,7 +210,7 @@ public class ProfileMenu extends Menu {
     }
 
     private void addCityItem(Map<Integer, ItemMenuBuilder> inventory) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(target.getUniqueId());
+        City city = City.ofPlayer(target.getUniqueId());
         if (city == null) {
             inventory.put(15, new ItemMenuBuilder(
                     this,

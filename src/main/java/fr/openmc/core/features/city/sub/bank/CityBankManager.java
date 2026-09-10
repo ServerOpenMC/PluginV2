@@ -159,7 +159,7 @@ public class CityBankManager extends Feature implements HasCommands {
     public void applyAllCityInterests() {
         List<UUID> cityUUIDs = cityManager.getAllCityUUIDs();
         for (UUID cityUUID : cityUUIDs) {
-            cityManager.getCity(cityUUID).applyCityInterest();
+            City.of(cityUUID).applyCityInterest();
         }
     }
 }

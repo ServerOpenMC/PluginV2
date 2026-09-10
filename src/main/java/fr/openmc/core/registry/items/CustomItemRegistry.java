@@ -3,6 +3,7 @@ package fr.openmc.core.registry.items;
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.contents.items.KitchenBox;
 import fr.openmc.core.features.bits.contents.items.MedievalBox;
 import fr.openmc.core.features.bits.contents.items.ModernBox;
@@ -316,7 +317,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
         PersistentDataContainerView view = stack.getPersistentDataContainer();
         String id = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
 
-        if (id == null && ItemsAdderHook.isEnable()) {
+        if (id == null && OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             CustomStack itemIa = CustomStack.byItemStack(stack);
 
             if (itemIa == null) return Optional.empty();
@@ -330,7 +331,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public Optional<CustomItem> get(Block block) {
         if (block == null) return Optional.empty();
 
-        if (!ItemsAdderHook.isEnable())
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable())
             throw new IllegalStateException("Impossible d'avoir un CustomItem via un Block, néccésite que ItemsAdder soit activé");
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
@@ -346,7 +347,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
         PersistentDataContainerView view = stack.getPersistentDataContainer();
         String id = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
 
-        if (id == null && ItemsAdderHook.isEnable()) {
+        if (id == null && OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             CustomStack itemIa = CustomStack.byItemStack(stack);
 
             return this.getOrThrow(itemIa.getNamespacedID());

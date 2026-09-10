@@ -36,7 +36,7 @@ public class LeaveButton {
                 }).setOnClick(inventoryClickEvent -> {
                     if (hasPermissionOwner) return;
 
-                    City cityCheck = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+                    City cityCheck = City.ofPlayer(player.getUniqueId());
                     if (!CityLeaveCondition.canCityLeave(cityCheck, player)) return;
 
                     new ConfirmMenu(player,

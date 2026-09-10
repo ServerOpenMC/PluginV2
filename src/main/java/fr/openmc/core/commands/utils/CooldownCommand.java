@@ -46,7 +46,7 @@ public class CooldownCommand {
                 ))
         );
 
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getCity(sender.getUniqueId());
+        City playerCity = City.ofPlayer(sender);
 
         if (playerCity != null) {
             DynamicCooldownManager.getCooldowns(playerCity.getUniqueId()).forEach(

@@ -47,10 +47,10 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
         if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
         Player player = event.getPlayer();
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         Chunk chunk = event.getFurniture().getEntity().getChunk();
-        City city = cityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+        City city = City.of(chunk);
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.mysterious"), Prefix.MAYOR, MessageType.INFO, false);
@@ -105,7 +105,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
         }
 
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.need_city"), Prefix.MAYOR, MessageType.WARNING, false);
@@ -113,7 +113,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
         }
 
         Chunk placedInChunk = event.getLocation().getChunk();
-        City chunkCity = cityManager.getCityFromChunk(placedInChunk.getX(), placedInChunk.getZ());
+        City chunkCity = City.of(placedInChunk);
         if (chunkCity == null) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.must_be_in_city"), Prefix.MAYOR, MessageType.WARNING, false);
@@ -151,14 +151,14 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
 
         Player player = event.getPlayer();
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
         Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
-        if (cityManager.getCityFromChunk(locationMayor.getChunk()) == null) {
+        if (City.of(locationMayor) == null) {
             locationMayor = urneLocation.clone().add(0, 1, 0);
         }
-        if (cityManager.getCityFromChunk(locationOwner.getChunk()) == null) {
+        if (City.of(locationOwner) == null) {
             locationOwner = urneLocation.clone().add(0, 1, 0);
         }
 
@@ -171,7 +171,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
 
         Player player = event.getPlayer();
 
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
             event.setCancelled(true);
             return;

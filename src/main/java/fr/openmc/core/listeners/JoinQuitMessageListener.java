@@ -83,7 +83,7 @@ public class JoinQuitMessageListener implements Listener {
                 });
             }
 
-            GitHubHook.refreshContributorId(player.getUniqueId());
+            OMCRegistry.HOOKS.GITHUB.refreshContributorId(player.getUniqueId());
         });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))

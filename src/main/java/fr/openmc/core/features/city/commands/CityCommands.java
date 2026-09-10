@@ -39,7 +39,7 @@ public class CityCommands {
     @CommandPlaceholder()
     public static void mainCommand(Player player) {
         if (!Chronometer.containsChronometer(player.getUniqueId(), "mascot:stick")) {
-            City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+            City playerCity = City.ofPlayer(player);
                 if (playerCity == null) {
                     NoCityMenu menu = new NoCityMenu(player);
                     menu.open();
@@ -56,7 +56,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.info")
     @Description("Avoir des informations sur votre ville")
     void info(Player player) {
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -104,7 +104,7 @@ public class CityCommands {
             Player player,
             @Named("nouveau nom") String name
     ) {
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
@@ -127,7 +127,7 @@ public class CityCommands {
             Player sender,
             @Named("nouveau propriétaire") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player
     ) {
-        City playerCity = cityManager.getPlayerCity(sender.getUniqueId());
+        City playerCity = City.ofPlayer(sender);
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
 
@@ -150,7 +150,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.leave")
     @Description("Quitter votre ville")
     void leave(Player player) {
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (!CityLeaveCondition.canCityLeave(city, player)) return;
 
         CityLeaveAction.startLeave(player);

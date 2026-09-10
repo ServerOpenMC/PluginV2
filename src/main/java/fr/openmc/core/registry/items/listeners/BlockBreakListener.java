@@ -14,13 +14,19 @@ import java.util.Optional;
 
 public class BlockBreakListener implements Listener {
 
+    private final ProtectionsManager protectionsManager;
+
+    public BlockBreakListener() {
+        this.protectionsManager = OMCRegistry.FEATURES.CITY.get().PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (event.isCancelled()) return;
         if (event.getBlock() == null) return;
 
-        ProtectionsManager.verify(player, event, event.getBlock().getLocation());
+        protectionsManager.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);

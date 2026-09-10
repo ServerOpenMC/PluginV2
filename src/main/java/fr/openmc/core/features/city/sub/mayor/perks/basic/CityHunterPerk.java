@@ -24,7 +24,7 @@ public class CityHunterPerk implements Listener {
         if (!(event.getDamager() instanceof Player attacker)) return;
 
 
-        City attackerCity = cityManager.getPlayerCity(attacker.getUniqueId());
+        City attackerCity = City.ofPlayer(attacker);
         if (attackerCity == null) return;
 
         if (attackerCity.getMayor() == null) return;
@@ -38,14 +38,8 @@ public class CityHunterPerk implements Listener {
 
         if (!(target instanceof Player) && !(target instanceof Monster)) return;
 
-        if (cityManager.getCityFromChunk(target.getChunk().getX(), target.getChunk().getZ()) != null
-                && (cityManager.getCityFromChunk(
-                        target.getChunk().getX(),
-                        target.getChunk().getZ())
-                != attackerCity)
-        )
-            return;
-
+        City chunkCity = City.of(target.getChunk());
+        if (chunkCity != null && !chunkCity.equals(attackerCity)) return;
 
         double baseDamage = event.getDamage();
         double newDamage = baseDamage * 1.20;

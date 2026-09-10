@@ -68,7 +68,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
@@ -151,7 +151,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         Player player = getOwner();
         OMCPlayer omcPlayer = OMCPlayer.of(player);
 
-        City playerCity = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));

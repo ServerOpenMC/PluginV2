@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -234,7 +235,7 @@ public class MayorCreateMenu extends Menu {
                 if (type == MenuType.OWNER_1) {
                     CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
                     MayorManager mayorManager = cityManager.MAYOR;
-                    mayorManager.put1Perk(cityManager.getPlayerCity(player.getUniqueId()), perk1);
+                    mayorManager.put1Perk(City.ofPlayer(player), perk1);
                     MessagesManager.sendMessage(player, TranslationManager.translation(
                             "feature.city.mayor.menu.create.confirm.owner.success",
                             TranslationManager.translation(perk1.getNameKey())

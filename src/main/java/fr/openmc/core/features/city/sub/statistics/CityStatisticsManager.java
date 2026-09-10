@@ -85,7 +85,7 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
      * @param cityUUID l'identifiant de la ville
      * @return l'ensemble des statistiques associées à la ville
      */
-    public Set<CityStatistics> getOrCreate(UUID cityUUID) {
+    private Set<CityStatistics> getOrCreate(UUID cityUUID) {
         return cityStatistics.computeIfAbsent(cityUUID, k -> new HashSet<>());
     }
 

@@ -10,6 +10,7 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
@@ -83,7 +84,7 @@ public class MayorLawMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         Mayor mayor = city.getMayor();
 
         CityLaw law = city.getLaw();
@@ -305,6 +306,7 @@ public class MayorLawMenu extends Menu {
                 })
                         .hide(perkEvent.getToHide())
                         .setOnClick(inventoryClickEvent -> {
+                            CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
                             if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.wait"), Prefix.MAYOR, MessageType.ERROR, false);
                                 return;

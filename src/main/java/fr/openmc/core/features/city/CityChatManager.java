@@ -57,7 +57,7 @@ public class CityChatManager {
 	 * @param message Le message à envoyer
 	 */
 	public static void sendCityChatMessage(Player sender, Component message) {
-		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(sender.getUniqueId());
+		City city = City.ofPlayer(sender.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"),
 					Prefix.CITY, MessageType.ERROR, false);

@@ -14,7 +14,7 @@ public class CityRanksAutoComplete implements SuggestionProvider<BukkitCommandAc
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(context.actor().requirePlayer().getUniqueId());
+        City city = City.ofPlayer(context.actor().requirePlayer());
         if (city == null) return List.of();
 
         return city.getRanks().stream()

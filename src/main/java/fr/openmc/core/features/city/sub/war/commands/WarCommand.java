@@ -41,7 +41,7 @@ public class WarCommand {
 
     @CommandPlaceholder()
     void mainCommand(Player player) {
-        City playerCity = cityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -101,7 +101,7 @@ public class WarCommand {
     @CommandPermission("omc.commands.city.war.acceptdefense")
     @Description("Accepter de participer a une guerre")
     public void acceptDefense(Player player) {
-        City city = cityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;

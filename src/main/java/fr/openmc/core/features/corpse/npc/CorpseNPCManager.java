@@ -5,6 +5,7 @@ import de.oliver.fancynpcs.api.data.property.NpcVisibility;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.hooks.FancyNpcsHook;
@@ -90,7 +91,7 @@ public class CorpseNPCManager {
     }
 
     public static boolean createNPCS(Player owner, Location deathLocation, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, Pose pose,  boolean all) {
-        if (!FancyNpcsHook.isEnable()) return false;
+        if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return false;
 
         UUID ownerUUID = owner.getUniqueId();
 
@@ -142,7 +143,7 @@ public class CorpseNPCManager {
     }
 
     public static void removeNPCS(UUID ownerUUID) {
-        if (!FancyNpcsHook.isEnable()) return;
+        if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         if (!corpseNpcMap.containsKey(ownerUUID)) return;
 
         Npc corpseNpc = corpseNpcMap.remove(ownerUUID).getNpc();
@@ -151,61 +152,13 @@ public class CorpseNPCManager {
         corpseNpc.removeForAll();
     }
 
-    public static void updateNPCS(Player owner) {
-        if (!FancyNpcsHook.isEnable()) return;
-
-        if (!CorpseManager.hasCorpseDB(owner.getUniqueId())) return;
-
-        CorpseNPC corpseNPC = corpseNpcMap.get(owner.getUniqueId());
-
-        if (corpseNPC == null) return;
-
-        if (!owner.isOnline()) return;
-
-        removeNPCS(owner.getUniqueId());
-        createNPCS(owner, corpseNPC);
-    }
-
-    public static void updateAllNPCS() {
-        if (!FancyNpcsHook.isEnable()) return;
-
-        Set<UUID> ownerUUIDs = new HashSet<>(corpseNpcMap.keySet()); // Copie
-
-        for (UUID ownerUUID : ownerUUIDs) {
-
-            if (!CorpseManager.hasCorpseDB(ownerUUID)) continue;
-
-            CorpseNPC corpseNPC = corpseNpcMap.get(ownerUUID);
-
-            if (corpseNPC == null) continue;
-
-            Player owner = Bukkit.getPlayer(ownerUUID);
-            if (owner == null || !owner.isOnline()) continue;
-
-            removeNPCS(ownerUUID);
-            createNPCS(owner, corpseNPC);
-        }
-    }
-
-    public static void moveNPC(Location location, UUID ownerUUID) {
-        if (!FancyNpcsHook.isEnable()) return;
-
-        if (!CorpseManager.hasCorpseDB(ownerUUID)) return;
-
-        CorpseNPC corpseNPC = corpseNpcMap.get(ownerUUID);
-        if (corpseNPC != null) {
-            corpseNPC.getNpc().getData().setLocation(location);
-            corpseNPC.setLocation(location);
-        }
-    }
-
     public static boolean hasNPC(UUID ownerUUID) {
-        if (!FancyNpcsHook.isEnable()) return false;
+        if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return false;
         return corpseNpcMap.containsKey(ownerUUID);
     }
 
     public static CorpseNPC getNPC(UUID ownerUUID) {
-        if (!FancyNpcsHook.isEnable()) return null;
+        if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return null;
         if (!corpseNpcMap.containsKey(ownerUUID)) return null;
         return corpseNpcMap.get(ownerUUID);
     }

@@ -3,6 +3,7 @@ package fr.openmc.core.features.shops.managers;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -73,12 +74,13 @@ public class PlayerShopManager {
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
         if (!location.getWorld().equals(Bukkit.getWorld("world"))) return false;
-        if (WorldGuardHook.isRegionConflict(location)) return false;
-        if (!ProtectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
-            CityManager city = cityManager.getPlayerCity(player.getUniqueId());
+        if (OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(location)) return false;
+        ProtectionsManager protectionsManager = OMCRegistry.FEATURES.CITY.get().PROTECTIONS;
+        if (!protectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
+            City city = City.ofPlayer(player.getUniqueId());
             if ((cityManager.isChunkClaimed(location.getChunk())
                     && city != null
-                    && !city.equals(cityManager.getCityFromChunk(location.getChunk())))
+                    && !city.equals(City.of(location.getChunk())))
             || (cityManager.isChunkClaimed(location.getChunk()) && city == null)) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
                 return false;

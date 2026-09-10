@@ -92,7 +92,7 @@ public class Mascot {
         if (this.city != null) {
             return this.city;
         }
-        this.city = OMCRegistry.FEATURES.CITY.get().getCity(this.cityUUID);
+        this.city = City.of(this.cityUUID);
         return this.city;
     }
 

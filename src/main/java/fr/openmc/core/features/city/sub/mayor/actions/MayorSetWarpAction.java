@@ -24,7 +24,7 @@ import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_
 
 public class MayorSetWarpAction {
     public static void setWarp(Player player) {
-        City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (city == null) return;
 

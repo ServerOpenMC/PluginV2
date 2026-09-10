@@ -12,6 +12,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class SymbiosisPerk implements Listener {
+    private final CityManager cityManager;
+
+    public SymbiosisPerk(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
 
     private static final double SQUARED_RADIUS = 10.0 * 10.0;
 
@@ -19,7 +24,7 @@ public class SymbiosisPerk implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) return;
 
         if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.SYMBIOSIS.getId())) return;

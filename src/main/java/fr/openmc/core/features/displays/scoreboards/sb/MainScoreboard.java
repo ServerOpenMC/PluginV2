@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallComponent;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -104,8 +105,8 @@ public class MainScoreboard extends BaseScoreboard {
                 ? Component.text(OMCRegistry.HOOKS.LUCK_PERMS.getFormattedPAPIPrefix(player))
                 : TranslationManager.translation("feature.displays.scoreboard.rank.none.to_small", true).color(TextColor.color(0xFF1FCC));
 
-        City city = cityManager.getPlayerCity(player.getUniqueId());
-        City chunkCity = cityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
+        City city = City.ofPlayer(player);
+        City chunkCity = City.of(player.getChunk());
         boolean isInRegion = OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(player.getLocation());
         Component location = isInRegion
                 ? TranslationManager.translation("feature.displays.scoreboard.location.protected", true)
@@ -137,7 +138,7 @@ public class MainScoreboard extends BaseScoreboard {
             lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation(player, "feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
                     .appendSpace()
-                    .append(textToSmallComponent(player, balance).color(TextColor.color(0xFF06DC)))
+                    .append(toSmall(player, balance).color(TextColor.color(0xFF06DC)))
                     .appendSpace()
                     .append(text(EconomyManager.getEconomyIcon()))
             );
@@ -145,7 +146,7 @@ public class MainScoreboard extends BaseScoreboard {
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(textToSmallComponent(player, EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                        .append(toSmall(player, EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
                         .appendSpace()
                         .append(text(bitsManager.getBitsIcon()))
                 );

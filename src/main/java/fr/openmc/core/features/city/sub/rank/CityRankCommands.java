@@ -32,7 +32,7 @@ public class CityRankCommands {
 	@CommandPlaceholder()
 	@CommandPermission("omc.commands.city.rank")
 	public void rank(Player player) {
-		City city = cityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -62,7 +62,7 @@ public class CityRankCommands {
 			Player player,
 			@Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName
 	) {
-		City city = cityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -83,7 +83,7 @@ public class CityRankCommands {
 	 * @param permission The permission to swap.
 	 */
 	public static void swapPermission(Player player, DBCityRank rank, CityPermission permission) {
-		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -110,7 +110,7 @@ public class CityRankCommands {
 	 * @param rank   The rank to add the permissions to.
 	 */
 	public static void addAllPermissions(Player player, DBCityRank rank) {
-		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -137,7 +137,7 @@ public class CityRankCommands {
 	 * @param rank   The rank to remove the permissions from.
 	 */
 	public static void removeAllPermissions(Player player, DBCityRank rank) {
-		City city = OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;

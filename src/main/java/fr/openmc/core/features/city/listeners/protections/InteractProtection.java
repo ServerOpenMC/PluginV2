@@ -66,7 +66,7 @@ public class InteractProtection implements Listener {
                 return;
             }
             
-            City city = cityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
+            City city = City.of(location);
             if (city == null) return;
             
             if (city.isMember(player)) {

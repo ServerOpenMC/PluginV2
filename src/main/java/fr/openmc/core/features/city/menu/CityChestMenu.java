@@ -210,7 +210,7 @@ public class CityChestMenu extends PaginatedMenu {
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) return;
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (city == null) return;
 
         Inventory inv = event.getInventory();
