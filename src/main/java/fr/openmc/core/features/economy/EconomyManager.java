@@ -20,10 +20,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
@@ -161,7 +159,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     public static String getMiniBalance(UUID playerUUID) {
         double balance = getBalance(playerUUID);
 
-        return getFormattedSimplifiedNumber(balance);
+        return getFormattedNumber(balance);
     }
 
     public static EconomyPlayer getPlayerBank(UUID playerUUID) {
@@ -197,25 +195,10 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     }
 
     public static String getFormattedBalance(UUID playerUUID) {
-        String balance = String.valueOf(getBalance(playerUUID));
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getEconomyIcon());
+        return getFormattedNumber(getBalance(playerUUID));
     }
 
-    public static String getFormattedNumber(double number) {
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(number);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getEconomyIcon());
-    }
-
-    public static String getFormattedSimplifiedNumber(double balance) {
+    public static String getFormattedNumber(double balance) {
         if (balance == 0) {
             return "0";
         }

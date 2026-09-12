@@ -124,7 +124,7 @@ public class WarCityDetailsMenu extends Menu {
         map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation(
                         "feature.city.war.menu.details.wealth",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
+                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 ).color(NamedTextColor.GRAY))));
 

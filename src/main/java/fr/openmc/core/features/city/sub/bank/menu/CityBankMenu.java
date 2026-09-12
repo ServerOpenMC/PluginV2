@@ -91,7 +91,7 @@ public class CityBankMenu extends Menu {
                 itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.balance.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.bank.menu.balance.lore",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getFormattedNumber(city.getBalance())).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(city.calculateCityInterest() * 100 + "%").color(NamedTextColor.AQUA),
                         Component.text(DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)

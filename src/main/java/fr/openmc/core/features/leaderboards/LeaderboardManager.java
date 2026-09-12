@@ -488,7 +488,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
                 .limit(10)
                 .toList()) {
             String playerName = CachePlayerName.getName(entry.getKey());
-            String formattedBalance = EconomyManager.getFormattedSimplifiedNumber(entry.getValue());
+            String formattedBalance = EconomyManager.getFormattedNumber(entry.getValue());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
         }
 
@@ -506,7 +506,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
                 .limit(10)
                 .toList()) {
             String cityName = city.getName();
-            String cityBalance = EconomyManager.getFormattedSimplifiedNumber(city.getBalance());
+            String cityBalance = EconomyManager.getFormattedNumber(city.getBalance());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
         }
         villeMoneyMap = newMap;
@@ -545,7 +545,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
                 .limit(10)
                 .toList()) {
             String playerName = CachePlayerName.getName(entry.getKey());
-            String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
+            String formattedPumpkinCount = EconomyManager.getFormattedNumber(entry.getValue().getPumpkinCount());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }
         pumpkinCountMap = newMap;
