@@ -24,7 +24,7 @@ public record QuestMoneyReward(double amount) implements QuestReward {
     @Override
     public void giveReward(Player player) {
         EconomyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
-        Component amountComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(amount) + " " + EconomyManager.getEconomyIcon())
+        Component amountComponent = Component.text(EconomyManager.getFormattedNumber(amount) + " " + EconomyManager.getEconomyIcon())
                 .color(NamedTextColor.YELLOW);
         Component message = TranslationManager.translation("feature.quests.message.money_reward", amountComponent)
                 .color(NamedTextColor.GREEN);

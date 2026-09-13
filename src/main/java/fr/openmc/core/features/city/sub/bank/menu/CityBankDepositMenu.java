@@ -69,7 +69,7 @@ public class CityBankDepositMenu extends Menu {
         if (hasPermissionMoneyGive) {
             loreBankDepositAll = TranslationManager.translationLore(
                     "feature.city.bank.menu.deposit.all.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getFormattedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
@@ -90,7 +90,7 @@ public class CityBankDepositMenu extends Menu {
         if (hasPermissionMoneyGive) {
             loreBankDepositHalf = TranslationManager.translationLore(
                     "feature.city.bank.menu.deposit.half.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getFormattedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {

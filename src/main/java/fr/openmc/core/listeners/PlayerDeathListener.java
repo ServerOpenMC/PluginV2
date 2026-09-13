@@ -30,8 +30,8 @@ public class PlayerDeathListener implements Listener {
              withdrawBalance(player.getUniqueId(), balance * LOSS_MONEY);
               MessagesManager.sendMessage(player, TranslationManager.translation(
                       "core.player.death.message",
-                      Component.text(getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
-                      Component.text(getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
+                      Component.text(getFormattedNumber(balance) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                      Component.text(getFormattedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
               ), Prefix.OPENMC, MessageType.INFO, false);
          }
 

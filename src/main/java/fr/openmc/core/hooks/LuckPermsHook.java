@@ -55,10 +55,10 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     }
 
     public static String getFormattedPAPIPrefix(Player player) {
-        if (!isEnable()) return "";
+        if (!isEnable()) return null;
 
         String prefix = getPrefix(player);
-        if (prefix == null || prefix.isEmpty()) return "";
+        if (prefix == null || prefix.isEmpty()) return null;
         String formattedPrefix = prefix.replace("&", "§");
 
         if (ItemsAdderHook.isEnable()) {

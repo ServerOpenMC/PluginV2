@@ -45,6 +45,7 @@ public class JoinQuitMessageListener implements Listener {
         MessagesManager.sendMessage(player, TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.updateTabList(player);
+        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
@@ -52,7 +53,7 @@ public class JoinQuitMessageListener implements Listener {
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, TranslationManager.translation(
                             "core.player.join.friend_online",
-                            Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN)
+                            Component.text((prefix != null ? prefix : "") + player.getName()).color(NamedTextColor.GREEN)
                     ), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -68,23 +69,22 @@ public class JoinQuitMessageListener implements Listener {
                     continue;
 
                 int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    MessagesManager.sendMessage(player,
-                            TranslationManager.translation("core.player.join.quest_reward", Component.text(pendingRewardsNumber))
-                                    .append(Component.text(" "))
-                                    .append(TranslationManager.translation("core.player.join.quest_reward_click"))
-                                    .clickEvent(ClickEvent.runCommand("/quest")),
-                            Prefix.QUEST,
-                            MessageType.INFO,
-                            true);
-                });
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        MessagesManager.sendMessage(player,
+                        TranslationManager.translation("core.player.join.quest_reward", Component.text(pendingRewardsNumber))
+                                .append(Component.text(" "))
+                                .append(TranslationManager.translation("core.player.join.quest_reward_click"))
+                                .clickEvent(ClickEvent.runCommand("/quest")),
+                        Prefix.QUEST,
+                        MessageType.INFO,
+                        true));
             }
 
             GitHubHook.refreshContributorId(player.getUniqueId());
         });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.joinMessage(Component.text(JOIN_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
+            event.joinMessage(Component.text(JOIN_MESSAGE.formatted(prefix != null ? prefix : "", player.getName())));
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
@@ -111,13 +111,14 @@ public class JoinQuitMessageListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
 
+        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, TranslationManager.translation(
                             "core.player.quit.friend_offline",
-                            Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.YELLOW)
+                            Component.text((prefix != null ? prefix : "") + player.getName()).color(NamedTextColor.YELLOW)
                     ), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -128,11 +129,13 @@ public class JoinQuitMessageListener implements Listener {
 
         if (TPAManager.requesterHasPendingRequest(player)) {
             Player targetTPA = TPAManager.getTargetByRequester(player);
-            TPAManager.removeRequest(player, targetTPA);
-            MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
-                    "core.player.tpa.expired_target",
-                    Component.text(player.getName()).color(NamedTextColor.GOLD)
-            ), Prefix.OPENMC, MessageType.INFO, true);
+            if (targetTPA != null) {
+                TPAManager.removeRequest(player, targetTPA);
+                MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
+                        "core.player.tpa.expired_target",
+                        Component.text(player.getName()).color(NamedTextColor.GOLD)
+                ), Prefix.OPENMC, MessageType.INFO, true);
+            }
         } else if (TPAManager.hasPendingRequest(player)) {
             for (Player requester : TPAManager.getRequesters(player)) {
                 TPAManager.removeRequest(requester, player);
@@ -144,7 +147,7 @@ public class JoinQuitMessageListener implements Listener {
         }
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.quitMessage(Component.text(QUIT_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
+            event.quitMessage(Component.text(QUIT_MESSAGE.formatted(prefix != null ? prefix : "", player.getName())));
     }
 
 }

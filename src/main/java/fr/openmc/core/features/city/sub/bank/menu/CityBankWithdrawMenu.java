@@ -69,7 +69,7 @@ public class CityBankWithdrawMenu extends Menu {
         if (hasPermissionMoneyTake) {
             loreBankWithdrawAll = TranslationManager.translationLore(
                     "feature.city.bank.menu.withdraw.all.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getFormattedNumber(moneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
@@ -89,7 +89,7 @@ public class CityBankWithdrawMenu extends Menu {
         if (hasPermissionMoneyTake) {
             loreBankWithdrawHalf = TranslationManager.translationLore(
                     "feature.city.bank.menu.withdraw.half.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getFormattedNumber(halfMoneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
