@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;

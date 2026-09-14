@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.MessageType;

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.bank;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.commands.CityBankCommand;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;

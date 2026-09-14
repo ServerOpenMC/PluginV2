@@ -1,9 +1,8 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityInviteConditions;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;

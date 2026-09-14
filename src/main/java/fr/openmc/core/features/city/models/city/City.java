@@ -1,11 +1,14 @@
-package fr.openmc.core.features.city;
+package fr.openmc.core.features.city.models.city;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.features.city.models.DBCity;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.db.DBCity;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;

@@ -1,11 +1,8 @@
 package fr.openmc.core.features.city.sub.milestone.requirements;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.EventCityRequirement;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;

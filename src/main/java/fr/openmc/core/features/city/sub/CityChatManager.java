@@ -1,6 +1,6 @@
-package fr.openmc.core.features.city;
+package fr.openmc.core.features.city.sub;
 
-import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

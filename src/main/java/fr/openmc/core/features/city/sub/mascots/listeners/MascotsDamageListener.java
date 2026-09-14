@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;

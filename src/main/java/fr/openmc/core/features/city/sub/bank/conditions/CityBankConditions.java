@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.bank.conditions;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

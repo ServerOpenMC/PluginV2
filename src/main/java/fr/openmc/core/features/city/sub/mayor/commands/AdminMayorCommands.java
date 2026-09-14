@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;

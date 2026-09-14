@@ -1,8 +1,8 @@
-package fr.openmc.core.features.city.models;
+package fr.openmc.core.features.city.models.db;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

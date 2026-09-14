@@ -2,8 +2,7 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.dialog.DialogInput;
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;

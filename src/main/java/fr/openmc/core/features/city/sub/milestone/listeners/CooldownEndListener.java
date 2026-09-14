@@ -2,14 +2,13 @@ package fr.openmc.core.features.city.sub.milestone.listeners;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
-import fr.openmc.core.features.city.sub.statistics.models.CityStatistics;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

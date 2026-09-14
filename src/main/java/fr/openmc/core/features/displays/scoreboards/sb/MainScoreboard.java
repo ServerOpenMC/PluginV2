@@ -6,7 +6,7 @@ import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
@@ -19,9 +19,6 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Con
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
-import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.hooks.LuckPermsHook;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;

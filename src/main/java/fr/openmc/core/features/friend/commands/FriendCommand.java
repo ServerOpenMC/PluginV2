@@ -2,8 +2,7 @@ package fr.openmc.core.features.friend.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;

@@ -2,14 +2,12 @@ package fr.openmc.core.features.city.sub.milestone;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.requirements.CommandRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.EventTemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.ItemDepositRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.TemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.rewards.*;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;

@@ -6,9 +6,9 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 

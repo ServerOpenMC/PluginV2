@@ -1,6 +1,6 @@
-package fr.openmc.core.features.city.view;
+package fr.openmc.core.features.city.sub.view;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;

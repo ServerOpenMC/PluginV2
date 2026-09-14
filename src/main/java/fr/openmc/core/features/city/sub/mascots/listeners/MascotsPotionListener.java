@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;

@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import lombok.Getter;
 
 import java.util.UUID;

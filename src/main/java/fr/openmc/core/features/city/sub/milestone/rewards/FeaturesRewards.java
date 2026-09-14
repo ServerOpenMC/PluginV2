@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.milestone.rewards;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;

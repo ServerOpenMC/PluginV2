@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.commands;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.utils.text.messages.MessageType;

@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.CooldownStartEvent;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;

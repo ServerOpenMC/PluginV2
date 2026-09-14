@@ -1,13 +1,12 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.city.conditions.CityUnclaimCondition;
-import fr.openmc.core.features.city.menu.CityChunkMenu;
-import fr.openmc.core.features.city.view.CityViewManager;
+import fr.openmc.core.features.city.menu.chunk.CityChunkMenu;
+import fr.openmc.core.features.city.sub.view.CityViewManager;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;

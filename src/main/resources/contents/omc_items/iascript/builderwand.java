@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import dev.lone.itemsadder.api.*;
 import dev.lone.itemsadder.api.scriptinginternal.*;
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 
 public class builderwand extends ItemScript {
 

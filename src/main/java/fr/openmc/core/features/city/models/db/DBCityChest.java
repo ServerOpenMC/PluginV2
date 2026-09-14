@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.models;
+package fr.openmc.core.features.city.models.db;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;

@@ -1,10 +1,9 @@
 package fr.openmc.core.features.city.sub.milestone.requirements;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.CityRequirement;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;

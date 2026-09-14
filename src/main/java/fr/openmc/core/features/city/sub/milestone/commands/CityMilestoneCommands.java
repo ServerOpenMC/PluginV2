@@ -1,8 +1,6 @@
 package fr.openmc.core.features.city.sub.milestone.commands;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;

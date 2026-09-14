@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 

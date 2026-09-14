@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city;
+package fr.openmc.core.features.city.models;
 
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;

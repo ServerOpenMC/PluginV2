@@ -1,8 +1,7 @@
 package fr.openmc.core.features.city.commands.autocomplete;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;

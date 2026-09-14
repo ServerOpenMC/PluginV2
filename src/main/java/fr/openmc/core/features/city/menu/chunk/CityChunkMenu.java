@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu;
+package fr.openmc.core.features.city.menu.chunk;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
@@ -6,10 +6,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.ChunkDataCache;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
@@ -18,7 +17,6 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.chunk.ChunkInfo;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -47,7 +45,7 @@ public class CityChunkMenu extends Menu {
     private final int freeClaims;
     private final double price;
     private final int aywenite;
-    private Map<ChunkPos, ChunkInfo> chunkInfoMap;
+    private Map<ChunkPos, CityChunkInfo> chunkInfoMap;
 
     private final CityManager cityManager;
 
@@ -100,7 +98,7 @@ public class CityChunkMenu extends Menu {
             return;
         }
 
-        Map<ChunkPos, ChunkInfo> newChunkInfoMap = new ConcurrentHashMap<>();
+        Map<ChunkPos, CityChunkInfo> newChunkInfoMap = new ConcurrentHashMap<>();
         this.chunkInfoMap = newChunkInfoMap;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -112,7 +110,7 @@ public class CityChunkMenu extends Menu {
 
                     City city = City.of(pos);
                     if (city != null) {
-                        newChunkInfoMap.put(pos, new ChunkInfo(city, false));
+                        newChunkInfoMap.put(pos, new CityChunkInfo(city, false));
                     }
                 }
             }
@@ -128,9 +126,9 @@ public class CityChunkMenu extends Menu {
                             Chunk chunk = player.getWorld().getChunkAt(chunkX, chunkZ);
                             boolean isProtected = OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk);
                             if (isProtected) {
-                                newChunkInfoMap.put(pos, new ChunkInfo(null, true));
+                                newChunkInfoMap.put(pos, new CityChunkInfo(null, true));
                             } else {
-                                newChunkInfoMap.put(pos, new ChunkInfo(null, false));
+                                newChunkInfoMap.put(pos, new CityChunkInfo(null, false));
                             }
                         }
                     }
@@ -185,7 +183,7 @@ public class CityChunkMenu extends Menu {
                 int chunkX = startX + col;
                 int chunkZ = startZ + row;
                 ChunkPos pos = new ChunkPos(chunkX, chunkZ);
-                ChunkInfo info = chunkInfoMap.getOrDefault(pos, new ChunkInfo(null, false));
+                CityChunkInfo info = chunkInfoMap.getOrDefault(pos, new CityChunkInfo(null, false));
 
                 int slotIndex = row * 9 + col;
                 inventory.put(slotIndex, createChunkItem(chunkX, chunkZ, info));
@@ -232,7 +230,7 @@ public class CityChunkMenu extends Menu {
         }));
     }
 
-    private ItemMenuBuilder createChunkItem(int chunkX, int chunkZ, ChunkInfo info) {
+    private ItemMenuBuilder createChunkItem(int chunkX, int chunkZ, CityChunkInfo info) {
         Material material = Material.GRAY_STAINED_GLASS_PANE;
         City city = info.city();
         boolean isProtected = info.isProtected();

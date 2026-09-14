@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.items.contents;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import lombok.Getter;
