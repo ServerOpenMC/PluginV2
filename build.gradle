@@ -29,6 +29,9 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
         url "https://maven.devs.beer/"
     }
     maven {
@@ -44,14 +47,14 @@ repositories {
         url "https://repo.dmulloy2.net/repository/public/"
     }
     // * GeyserMC
-    maven {url "https://repo.opencollab.dev/main/"}
+    //maven {url "https://repo.opencollab.dev/main/"}
     maven {
         url "https://jitpack.io" // Toujours à la fin
     }
 }
 
 dependencies {
-    paperweight.paperDevBundle "${minecraftVersion}.build.+"
+    paperweight.paperDevBundle "${minecraftVersion}.build.${paperVersion}"
 
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}") {
         exclude group: 'com.google.guava', module: 'guava'
@@ -85,7 +88,7 @@ dependencies {
     testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-    testImplementation paperweight.paperDevBundle("${minecraftVersion}.build.+")
+    testImplementation paperweight.paperDevBundle("${minecraftVersion}.build.${paperVersion}")
     testImplementation "org.mockbukkit.mockbukkit:mockbukkit-v26.2:${mockbukkitVersion}"
     testImplementation "com.h2database:h2:${h2DatabaseVersion}"
 }
