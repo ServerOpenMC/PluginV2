@@ -55,7 +55,7 @@ public class ShopDatabaseManager {
 			Location loc = new Location(Bukkit.getWorld("world"), shop.getX(), shop.getY(), shop.getZ());
 			if (shop.getMultiblock() == null) {
 				if (!shop.setMultiblock(new Shop.Multiblock(loc, loc.clone().add(0, 1, 0)))) {
-					OMCLogger.error("Cannot set multiblock for {}, but shop is registered", shop.getName());
+					OMCLogger.error("Cannot set multiblock for {} {}, but shop is registered", shop.getName(), shop.getShopUUID());
 				}
 			}
 			shopsByLocation.put(loc, shop);

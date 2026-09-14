@@ -68,9 +68,9 @@ dependencies {
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
     // Bedrock Dependencies
-    compileOnly files("libs/RiftEngine-${riftEngineVersion}.jar")
-    compileOnly "org.geysermc.geyser:api:${geyserApiVersion}"
-    compileOnly "org.geysermc.floodgate:api:${floodgateApiVersion}"
+    //compileOnly files("libs/RiftEngine-${riftEngineVersion}.jar")
+    //compileOnly "org.geysermc.geyser:api:${geyserApiVersion}"
+    //compileOnly "org.geysermc.floodgate:api:${floodgateApiVersion}"
 
     implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
     implementation "io.github.revxrsal:lamp.common:${revxrsalLampVersion}"
