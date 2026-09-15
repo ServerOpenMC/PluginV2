@@ -1,5 +1,6 @@
-package fr.openmc.core.utils.nms;
+package fr.openmc.core.utils.nms.player;
 
+import fr.openmc.core.utils.nms.WeatherType;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;

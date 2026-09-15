@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import fr.openmc.api.datapacks.builders.sounds.AmbientSoundBuilder;
 import org.bukkit.Particle;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class EnvironnementAttributeBuilder {
@@ -36,9 +37,25 @@ public class EnvironnementAttributeBuilder {
      * "minecraft:visual/ambient_particles": [ { "particle": { "type": "minecraft:crimson_spore" }, "probability": 0.025 } ]
      */
     public EnvironnementAttributeBuilder ambientParticles(String particleType, double probability) {
+        return ambientParticles(particleType, probability, null);
+    }
+
+    /**
+     * Ajoute un attribut "minecraft:visual/ambient_particles" simple.
+     * Exemple :
+     * "minecraft:visual/ambient_particles": [ { "particle": { "type": "minecraft:crimson_spore" }, "probability": 0.025 } ]
+     */
+    public EnvironnementAttributeBuilder ambientParticles(String particleType, double probability, Map<String, Integer> options) {
         JsonObject entry = new JsonObject();
         JsonObject particle = new JsonObject();
         particle.addProperty("type", particleType);
+
+        if (options != null) {
+            for (var entry1 : options.entrySet()) {
+                particle.addProperty(entry1.getKey(), entry1.getValue());
+            }
+        }
+
         entry.add("particle", particle);
         entry.addProperty("probability", probability);
 
@@ -92,6 +109,10 @@ public class EnvironnementAttributeBuilder {
      */
     public EnvironnementAttributeBuilder ambientParticles(Particle particle, double probability) {
         return ambientParticles(particle.getKey().toString(), probability);
+    }
+
+    public EnvironnementAttributeBuilder ambientParticles(Particle particle, double probability, Map<String, Integer> options) {
+        return ambientParticles(particle.getKey().toString(), probability, options);
     }
 
     public EnvironnementAttributeBuilder ambientSounds(AmbientSoundBuilder ambientBuilder) {
