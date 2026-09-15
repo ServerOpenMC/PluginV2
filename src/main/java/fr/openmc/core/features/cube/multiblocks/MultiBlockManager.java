@@ -57,7 +57,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
         );
     }
 
-    public static void load() {
+    public void load() {
         multiBlocks.clear();
 
         List<Map<?, ?>> list = config.getMapList("multiblocks");
@@ -105,7 +105,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
         saveConfig();
     }
 
-    public static void saveConfig() {
+    public void saveConfig() {
         if (config == null) return;
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -138,7 +138,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
         }
     }
 
-    public static void register(MultiBlock multiBlock) {
+    public void register(MultiBlock multiBlock) {
         multiBlocks.add(multiBlock);
 
         saveConfig();
