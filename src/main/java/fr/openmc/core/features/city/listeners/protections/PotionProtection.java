@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.models.CityType;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -15,6 +15,12 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class PotionProtection implements Listener {
+    private final CityManager cityManager;
+
+    public PotionProtection(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPotionSplash(PotionSplashEvent event) {
         ThrownPotion potion = event.getPotion();
@@ -24,7 +30,7 @@ public class PotionProtection implements Listener {
             return;
 
         Location witchLocation = witch.getLocation();
-        City city = CityManager.getCityFromChunk(witchLocation.getChunk().getX(), witchLocation.getChunk().getZ());
+        City city = City.of(witchLocation);
         if (city == null)
             return;
 

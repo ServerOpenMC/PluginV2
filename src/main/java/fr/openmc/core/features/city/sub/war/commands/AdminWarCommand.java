@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -24,7 +23,7 @@ public class AdminWarCommand {
             Player player,
             @Named("name") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
-        City city = CityManager.getCityByName(cityName);
+        City city = City.of(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);

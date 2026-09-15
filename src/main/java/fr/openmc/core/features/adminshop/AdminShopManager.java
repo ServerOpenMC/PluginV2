@@ -1,13 +1,13 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.*;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -26,25 +26,25 @@ import java.util.*;
  */
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
-    public static final Map<String, ShopCategory> categories = new HashMap<>();
-    public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
-    public static final Map<UUID, String> currentCategory = new HashMap<>();
-    public static final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
-    private static AdminShopYAML adminShopYAML;
+    public final Map<String, ShopCategory> categories = new HashMap<>();
+    public final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
+    public final Map<UUID, String> currentCategory = new HashMap<>();
+    public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
+    private AdminShopYAML adminShopYAML;
 
     /**
      * Initializes the AdminShopManager by loading the configuration.
      */
     @Override
     public void init() {
-        adminShopYAML = new AdminShopYAML();
+        adminShopYAML = new AdminShopYAML(this);
         adminShopYAML.loadConfig();
     }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new AdminShopCommand()
+                new AdminShopCommand(this)
         );
     }
 
@@ -55,11 +55,11 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The ID of the category.
      * @param itemId       The ID of the item.
      */
-    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
+    public void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmMenu(player, item, true).open();
+        new ConfirmMenu(player, this, item, true).open();
     }
 
     /**
@@ -69,7 +69,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The ID of the category.
      * @param itemId       The ID of the item.
      */
-    public static void openSellConfirmMenu(Player player, String categoryId, String itemId) {
+    public void openSellConfirmMenu(Player player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
@@ -78,7 +78,7 @@ public class AdminShopManager extends Feature implements HasCommands {
             return;
         }
 
-        new ConfirmMenu(player, item, false).open();
+        new ConfirmMenu(player, this, item, false).open();
     }
 
     /**
@@ -88,7 +88,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId  The ID of the item.
      * @param amount  The quantity to purchase.
      */
-    public static void buyItem(Player player, String itemId, int amount) {
+    public void buyItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
@@ -129,7 +129,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId  The ID of the item.
      * @param amount  The quantity to sell.
      */
-    public static void sellItem(Player player, String itemId, int amount) {
+    public void sellItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId); // Get the item from the current category
         if (item == null) return;
 
@@ -169,7 +169,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param amount     The quantity bought/sold.
      * @param isBuying   True if buying, false if selling.
      */
-    private static void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
+    private void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId); // Get the item from the category
         if (item == null) return;
 
@@ -185,10 +185,10 @@ public class AdminShopManager extends Feature implements HasCommands {
         adminShopYAML.saveConfig(); // Save the updated configuration
     }
 
-    private static double clamp(double actual, double initial) {
+    private double clamp(double actual, double initial) {
         double min = initial * 0.8;
         double max = initial * 2.0; // plafond au double du prix existant
-        return Math.max(min, Math.min(actual, max));
+        return Math.clamp(actual, min, max);
     }
 
     /**
@@ -199,7 +199,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId     The item ID.
      * @return The ShopItem or null if not found.
      */
-    private static ShopItem getItemSafe(Player player, String categoryId, String itemId) {
+    private ShopItem getItemSafe(Player player, String categoryId, String itemId) {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
         if (item == null) sendError(player, TranslationManager.translation("feature.adminshop.item_not_found"));
         return item;
@@ -212,7 +212,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId The item ID.
      * @return The ShopItem or null if not available.
      */
-    private static ShopItem getCurrentItem(Player player, String itemId) {
+    private ShopItem getCurrentItem(Player player, String itemId) {
         String categoryId = getPlayerCategory(player);
         if (categoryId == null) {
             sendError(player, TranslationManager.translation("feature.adminshop.isnt_in_category"));
@@ -227,7 +227,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player The player.
      * @return The category ID or null.
      */
-    private static String getPlayerCategory(Player player) {
+    private String getPlayerCategory(Player player) {
         return currentCategory.get(player.getUniqueId());
     }
 
@@ -237,7 +237,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player  The player.
      * @param message The error message.
      */
-    private static void sendError(Player player, Component message) {
+    private void sendError(Player player, Component message) {
         MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.ERROR, true);
     }
 
@@ -247,7 +247,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player  The player.
      * @param message The information message.
      */
-    private static void sendInfo(Player player, Component message) {
+    private void sendInfo(Player player, Component message) {
         MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.INFO, true);
     }
 
@@ -256,8 +256,8 @@ public class AdminShopManager extends Feature implements HasCommands {
      *
      * @param player The player.
      */
-    public static void openMainMenu(Player player) {
-        new AdminShopMenu(player).open();
+    public void openMainMenu(Player player) {
+        new AdminShopMenu(player, this).open();
     }
 
     /**
@@ -267,8 +267,8 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
      */
-    public static void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
-        new ColorVariantsMenu(player, categoryId, originalItem).open();
+    public void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+        new ColorVariantsMenu(player, this, categoryId, originalItem).open();
     }
 
     /**
@@ -278,8 +278,8 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
      */
-    public static void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
-        new LeavesVariantsMenu(player, categoryId, originalItem).open();
+    public void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+        new LeavesVariantsMenu(player, this, categoryId, originalItem).open();
     }
 
     /**
@@ -289,8 +289,8 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
      */
-    public static void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
-        new LogVariantsMenu(player, categoryId, originalItem).open();
+    public void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+        new LogVariantsMenu(player, this, categoryId, originalItem).open();
     }
 
     /**
@@ -300,7 +300,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId     The item ID.
      * @param item       The ShopItem instance.
      */
-    public static void registerNewItem(String categoryId, String itemId, ShopItem item) {
+    public void registerNewItem(String categoryId, String itemId, ShopItem item) {
         items.computeIfAbsent(categoryId, k -> new HashMap<>()).put(itemId, item);
     }
 
@@ -309,7 +309,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      *
      * @return A collection of ShopCategory.
      */
-    public static Collection<ShopCategory> getCategories() {
+    public Collection<ShopCategory> getCategories() {
         return categories.values();
     }
 
@@ -319,7 +319,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId The ID of the category.
      * @return The ShopCategory, or null if not found.
      */
-    public static ShopCategory getCategory(String categoryId) {
+    public ShopCategory getCategory(String categoryId) {
         return categories.get(categoryId);
     }
 
@@ -329,7 +329,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId The ID of the category.
      * @return A map of item ID to ShopItem.
      */
-    public static Map<String, ShopItem> getCategoryItems(String categoryId) {
+    public Map<String, ShopItem> getCategoryItems(String categoryId) {
         return items.getOrDefault(categoryId, Map.of());
     }
 }

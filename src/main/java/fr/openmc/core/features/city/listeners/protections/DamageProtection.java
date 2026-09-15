@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -13,6 +13,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DamageProtection implements Listener {
+    private final ProtectionsManager protectionsManager;
+
+    public DamageProtection(CityManager cityManager) {
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity victim = event.getEntity();
@@ -27,7 +33,7 @@ public class DamageProtection implements Listener {
 
         if (victim instanceof Player victimPlayer && attacker != null) {
             Location loc = victimPlayer.getLocation();
-            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            City city = City.of(loc);
 
             if (city != null
                     && city.isMember(victimPlayer)
@@ -42,13 +48,13 @@ public class DamageProtection implements Listener {
         }
 
         if (victim instanceof Player victimPlayer) {
-            ProtectionsManager.verify(victimPlayer, event, victimPlayer.getLocation());
+            protectionsManager.verify(victimPlayer, event, victimPlayer.getLocation());
         }
 
         if (MascotUtils.canBeAMascot(victim)) return;
 
         if (attacker != null) {
-            ProtectionsManager.verify(attacker, event, victim.getLocation());
+            protectionsManager.verify(attacker, event, victim.getLocation());
         }
     }
 }

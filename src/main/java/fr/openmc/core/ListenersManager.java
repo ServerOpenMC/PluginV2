@@ -2,8 +2,8 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.*;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 

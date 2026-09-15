@@ -8,12 +8,13 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
@@ -83,7 +84,7 @@ public class MayorLawMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         Mayor mayor = city.getMayor();
 
         CityLaw law = city.getLaw();
@@ -273,8 +274,8 @@ public class MayorLawMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 23, announceItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
-        Perks perkEvent = PerkManager.getPerkEvent(mayor);
-        if (PerkManager.getPerkEvent(mayor) != null) {
+        Perks perkEvent = PerkUtils.getPerkEvent(mayor);
+        if (PerkUtils.getPerkEvent(mayor) != null) {
             Supplier<ItemMenuBuilder> perkEventItemSupplier = () -> {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
                 Component namePerkEvent = TranslationManager.translation(perkEvent.getNameKey());
@@ -305,13 +306,14 @@ public class MayorLawMenu extends Menu {
                 })
                         .hide(perkEvent.getToHide())
                         .setOnClick(inventoryClickEvent -> {
+                            CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
                             if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.wait"), Prefix.MAYOR, MessageType.ERROR, false);
                                 return;
                             }
 
                             // Prélévement d'impot (id : 2) - Perk Event
-                            if (PerkManager.hasPerk(city.getMayor(), Perks.IMPOT.getId())) {
+                            if (PerkUtils.hasPerk(city.getMayor(), Perks.IMPOT.getId())) {
                                 for (UUID uuid : city.getMembers()) {
                                     if (uuid == city.getMayor().getMayorUUID()) continue;
 
@@ -325,8 +327,8 @@ public class MayorLawMenu extends Menu {
                                     MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.impot.trigger"), Prefix.MAYOR, MessageType.INFO, false);
 
                                 }
-                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                            } else if (PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
+                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());
+                            } else if (PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
                                 // Essor agricole (id : 11) - Perk Event
                                 for (UUID uuid : city.getMembers()) {
                                     Player member = Bukkit.getPlayer(uuid);
@@ -337,8 +339,8 @@ public class MayorLawMenu extends Menu {
                                 }
 
                                 DynamicCooldownManager.use(city.getUniqueId(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
-                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                            } else if (PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) {
+                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());
+                            } else if (PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) {
                                 // Ruée Miniere (id : 12) - Perk Event
                                 for (UUID uuid : city.getMembers()) {
                                     Player member = Bukkit.getPlayer(uuid);
@@ -349,8 +351,8 @@ public class MayorLawMenu extends Menu {
                                 }
 
                                 DynamicCooldownManager.use(city.getUniqueId(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
-                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                            } else if (PerkManager.hasPerk(city.getMayor(), Perks.MILITARY_DISSUASION.getId())) {
+                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());
+                            } else if (PerkUtils.hasPerk(city.getMayor(), Perks.MILITARY_DISSUASION.getId())) {
                                 // Dissuasion Militaire (id: 13) - Perk Event
                                 for (UUID uuid : city.getMembers()) {
                                     Player member = Bukkit.getPlayer(uuid);
@@ -362,7 +364,7 @@ public class MayorLawMenu extends Menu {
 
                                 MilitaryDissuasion.startEvent(city, 10);
                                 DynamicCooldownManager.use(city.getUniqueId(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
-                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());
 
                                 new BukkitRunnable() {
                                     @Override
@@ -373,7 +375,7 @@ public class MayorLawMenu extends Menu {
                                         }
                                     }
                                 }.runTaskTimer(OMCPlugin.getInstance(), 20L, 100L);
-                            } else if (PerkManager.hasPerk(city.getMayor(), Perks.IDYLLIC_RAIN.getId())) {
+                            } else if (PerkUtils.hasPerk(city.getMayor(), Perks.IDYLLIC_RAIN.getId())) {
                                 // Pluie idyllique (id : 14) - Perk Event
                                 for (UUID uuid : city.getMembers()) {
                                     Player member = Bukkit.getPlayer(uuid);
@@ -386,8 +388,8 @@ public class MayorLawMenu extends Menu {
                                 // spawn d'un total de 100 aywenite progressivement sur une minute
                                 IdyllicRain.spawnAywenite(city, 100);
 
-                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                            } else if (PerkManager.hasPerk(city.getMayor(), Perks.CHAOS_DREAM.getId())) {
+                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());
+                            } else if (PerkUtils.hasPerk(city.getMayor(), Perks.CHAOS_DREAM.getId())) {
                                 // Reve chaotique (id: 18) - Perk Event
                                 for (UUID uuid : city.getMembers()) {
                                     Player member = Bukkit.getPlayer(uuid);
@@ -405,7 +407,7 @@ public class MayorLawMenu extends Menu {
                                         DreamManager.tpPlayerToLastDreamLocation(player);
                                     }
                                 }
-                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                                DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());
                             }
                         });
             };

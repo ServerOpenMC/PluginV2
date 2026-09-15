@@ -6,13 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
 import fr.openmc.core.features.city.sub.mascots.listeners.*;
@@ -20,7 +15,12 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.hooks.ProtocolLibHook;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -54,8 +54,11 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
+    private CityManager cityManager;
+
     @Override
     public void init() {
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -70,7 +73,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
         loadMascots();
 
-        if (ProtocolLibHook.isEnable())
+        if (OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
             new MascotsSoundListener();
 
         for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
@@ -88,13 +91,13 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                MascotsInteractionListener::new,
+                () -> new MascotsInteractionListener(cityManager),
                 MascotsDamageListener::new,
-                MascotsDeathListener::new,
+                () -> new MascotsDeathListener(cityManager),
                 MascotsSleepingListener::new,
-                MascotImmuneListener::new,
+                () -> new MascotImmuneListener(cityManager),
                 MascotsTargetListener::new,
-                MascotsRenameListener::new,
+                () -> new MascotsRenameListener(cityManager),
                 MascotsPotionListener::new,
                 MascotsProtectionsListener::new
         );
@@ -175,7 +178,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     }
 
     public static void upgradeMascots(UUID cityUUID) {
-        City city = CityManager.getCity(cityUUID);
+        City city = City.of(cityUUID);
         if (city == null) return;
 
         Mascot mascot = city.getMascot();

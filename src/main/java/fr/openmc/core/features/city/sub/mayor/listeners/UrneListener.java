@@ -4,15 +4,16 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -30,17 +31,26 @@ import org.bukkit.event.Listener;
 
 import java.util.Objects;
 
-public class UrneListener implements Listener {
+public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
+    private final FancyNpcsHook fancyNpcHook;
+    private final CityManager cityManager;
+    private final MayorManager mayorManager;
+
+    public UrneListener(FancyNpcsHook fancyNpcsHook, CityManager cityManager, MayorManager mayorManager) {
+        this.fancyNpcHook = fancyNpcsHook;
+        this.cityManager = cityManager;
+        this.mayorManager = mayorManager;
+    }
 
     @EventHandler
     public void onUrneInteractEvent(FurnitureInteractEvent event) {
         if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         Chunk chunk = event.getFurniture().getEntity().getChunk();
-        City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+        City city = City.of(chunk);
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.mysterious"), Prefix.MAYOR, MessageType.INFO, false);
@@ -69,12 +79,12 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (MayorManager.phaseMayor != 1) {
+        if (mayorManager.phaseMayor != 1) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.election_already"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (MayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
+        if (mayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.no_candidate"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }
@@ -95,7 +105,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.need_city"), Prefix.MAYOR, MessageType.WARNING, false);
@@ -103,7 +113,7 @@ public class UrneListener implements Listener {
         }
 
         Chunk placedInChunk = event.getLocation().getChunk();
-        City chunkCity = CityManager.getCityFromChunk(placedInChunk.getX(), placedInChunk.getZ());
+        City chunkCity = City.of(placedInChunk);
         if (chunkCity == null) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.must_be_in_city"), Prefix.MAYOR, MessageType.WARNING, false);
@@ -125,7 +135,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (NPCManager.hasNPCS(playerCity.getUniqueId())) {
+        if (mayorManager.mayorNPCManager.hasNPCS(playerCity.getUniqueId())) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.place.already_has_npc"), Prefix.MAYOR, MessageType.ERROR, false);
         }
@@ -134,25 +144,25 @@ public class UrneListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
         Location urneLocation = event.getFurniture().getEntity().getLocation();
-        if (!FancyNpcsHook.isEnable())
+        if (!fancyNpcHook.isEnable())
             return;
 
         if (!"omc_blocks:urne".equals(event.getNamespacedID()))
             return;
 
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
         Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
-        if (CityManager.getCityFromChunk(locationMayor.getChunk()) == null) {
+        if (City.of(locationMayor) == null) {
             locationMayor = urneLocation.clone().add(0, 1, 0);
         }
-        if (CityManager.getCityFromChunk(locationOwner.getChunk()) == null) {
+        if (City.of(locationOwner) == null) {
             locationOwner = urneLocation.clone().add(0, 1, 0);
         }
 
-        NPCManager.createNPCS(playerCity.getUniqueId(), locationMayor, locationOwner, player.getUniqueId());
+        mayorManager.mayorNPCManager.createNPCS(playerCity.getUniqueId(), locationMayor, locationOwner, player.getUniqueId());
     }
 
     @EventHandler
@@ -161,7 +171,7 @@ public class UrneListener implements Listener {
 
         Player player = event.getPlayer();
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
             event.setCancelled(true);
             return;
@@ -173,8 +183,8 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!FancyNpcsHook.isEnable()) return;
+        if (!fancyNpcHook.isEnable()) return;
 
-        NPCManager.removeNPCS(playerCity.getUniqueId());
+        mayorManager.mayorNPCManager.removeNPCS(playerCity.getUniqueId());
     }
 }

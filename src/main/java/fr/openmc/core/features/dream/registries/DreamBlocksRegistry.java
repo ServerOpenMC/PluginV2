@@ -1,13 +1,13 @@
 package fr.openmc.core.features.dream.registries;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.listeners.registry.DreamBlocksListeners;
 import fr.openmc.core.features.dream.mecanism.altar.AltarManager;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.BossCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.CloudVault;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

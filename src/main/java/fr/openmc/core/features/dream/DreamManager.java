@@ -4,18 +4,9 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.commands.AdminDreamCommands;
 import fr.openmc.core.features.dream.commands.DreamCommands;
@@ -40,6 +31,13 @@ import fr.openmc.core.features.dream.models.db.DBPlayerSave;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.*;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.Bukkit;
@@ -57,7 +55,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"}, builders = {"Mcross_bow"})
-public class DreamManager extends Feature implements HasDatabase, LoadAfterItemsAdder, HasCommands, HasListeners {
+public class DreamManager extends Feature implements HasDatabase, HasCommands, HasListeners {
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
@@ -381,8 +379,8 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
             }
         }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.GREAT_SLEEPER.getId())) {
+        City city = City.ofPlayer(player);
+        if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.GREAT_SLEEPER.getId())) {
             base += 0.4;
         }
         return base;

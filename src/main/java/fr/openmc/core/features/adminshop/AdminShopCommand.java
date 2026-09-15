@@ -7,10 +7,16 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 
 public class AdminShopCommand {
+    private final AdminShopManager manager;
+
+    public AdminShopCommand(AdminShopManager manager) {
+        this.manager = manager;
+    }
+
     @Command("adminshop")
     @Description("Ouvrir le menu du shop admin")
     @CommandPermission("omc.commands.adminshop")
     public void openAdminShop(Player player) {
-        AdminShopManager.openMainMenu(player);
+        manager.openMainMenu(player);
     }
 }

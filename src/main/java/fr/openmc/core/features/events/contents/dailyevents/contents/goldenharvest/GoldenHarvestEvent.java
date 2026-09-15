@@ -2,12 +2,15 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.menu.GoldenHarvestMenu;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
+import fr.openmc.core.lifecycle.interfaces.HasFeature;
 import fr.openmc.core.registry.ambient.CustomAmbient;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.loading.FeatureEntry;
+import fr.openmc.core.registry.features.loading.FeatureLoadingType;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.bossbar.BossBar;
@@ -101,8 +104,8 @@ public class GoldenHarvestEvent extends DailyEvent
     }
 
     @Override
-    public Feature getFeature() {
-        return new GoldenHarvestManager();
+    public FeatureEntry<? extends Feature> feature() {
+        return FeatureEntry.of(FeatureLoadingType.RUNTIME, MiraculousFishingManager::new);
     }
 
     @Override

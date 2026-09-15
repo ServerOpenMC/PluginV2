@@ -1,0 +1,107 @@
+package fr.openmc.core.registry.features;
+
+import com.j256.ormlite.support.ConnectionSource;
+import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.lifecycle.integration.DatabaseManager;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+
+import java.sql.SQLException;
+
+/**
+ * Base des features OpenMC.
+ * Gere le cycle d'initialisation, l'initialisation DB optionnelle et la sauvegarde.
+ */
+public abstract class Feature {
+    protected boolean initialize = false;
+
+    /**
+     * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)
+     */
+    public final void startInit() {
+        try {
+            DatabaseManager.startFeatureDB(this);
+            init();
+
+            // Enregistre les listeners
+            if (this instanceof HasListeners hasListeners) {
+                for (ListenerFactory listener : hasListeners.getListeners()) {
+                    OMCPlugin.registerEvents(listener);
+                }
+            }
+            // Enregistre les commandes
+            if (this instanceof HasCommands hasCommands) {
+                    for (Object command : hasCommands.getCommands()) {
+                        CommandsManager.getHandler().register(command);
+                    }
+                }
+
+            initialize = true;
+            OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " initialisée correctement.");
+        } catch (DisableFeatureException e) {
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
+            OMCLogger.error(e.getMessage(), e);
+        } catch (Exception e) {
+            initialize = false;
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non initialisée.");
+            OMCLogger.error(e.getMessage(), e);
+        } catch (NoClassDefFoundError e) {
+            OMCLogger.errorFormatted("Plugin has failed to start feature because " + e.getMessage() + " does not exist.");
+        }
+    }
+
+    /**
+     * Delegue l'initialisation base de donnees si la feature la supporte.
+     *
+     * @param connectionSource Source de connexion ORMLite
+     * @throws SQLException Si l'initialisation DB échoue
+     */
+    public final void startDB(ConnectionSource connectionSource) throws SQLException {
+        if (this instanceof HasDatabase dbF) {
+            dbF.initDB(connectionSource);
+        }
+    }
+
+    /**
+     * Sauvegarde la feature si elle a ete initialisée.
+     */
+    public final void startSave() {
+        if (!initialize) return;
+
+        try {
+            save();
+            OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " sauvegardée correctement.");
+        } catch (Exception e) {
+            initialize = false;
+            OMCLogger.errorFormatted("Feature " + this.getClass().getSimpleName() + " non sauvegardée.");
+            OMCLogger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Indique si la feature a ete initialisée avec succès.
+     *
+     * @return True si l'initialisation a réussi
+     */
+    public final boolean isInitialized() {
+        return initialize;
+    }
+
+    /**
+     * Initialise la feature.
+     */
+    protected void init() {
+        // doit etre @Override dans les features qui ont une initialisation a faire
+    }
+
+    /**
+     * Sauvegarde l'état de la feature.
+     */
+    protected void save() {
+        // doit etre @Override dans les features qui ont une save a faire
+    }
+}

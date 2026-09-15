@@ -32,9 +32,11 @@ public class LogVariantsMenu extends Menu {
         Material.ACACIA_LOG, Material.DARK_OAK_LOG, Material.MANGROVE_LOG, Material.CHERRY_LOG,
         Material.PALE_OAK_LOG
     );
+    private final AdminShopManager manager;
 
-    public LogVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
+    public LogVariantsMenu(Player owner, AdminShopManager manager, String categoryId, ShopItem originalItem) {
         super(owner);
+        this.manager = manager;
         this.categoryId = categoryId;
         this.originalItem = originalItem;
     }
@@ -99,11 +101,11 @@ public class LogVariantsMenu extends Menu {
 
 
                         if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         }
                     }));
         }

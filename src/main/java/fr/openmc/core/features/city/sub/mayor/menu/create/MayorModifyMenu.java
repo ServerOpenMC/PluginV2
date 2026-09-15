@@ -4,9 +4,10 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -55,10 +56,11 @@ public class MayorModifyMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
+        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
 
-        MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
-        Perks perk2 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk2());
-        Perks perk3 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk3());
+        MayorCandidate mayorCandidate = mayorManager.getCandidate(player.getUniqueId());
+        Perks perk2 = PerkUtils.getPerkById(mayorCandidate.getIdChoicePerk2());
+        Perks perk3 = PerkUtils.getPerkById(mayorCandidate.getIdChoicePerk3());
 
         assert perk2 != null;
         inventory.put(20, new ItemMenuBuilder(this, perk2.getItemStack(), itemMeta -> {

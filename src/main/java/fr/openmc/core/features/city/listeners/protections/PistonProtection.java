@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -17,12 +16,12 @@ public class PistonProtection implements Listener {
     public void onPistonExtend(BlockPistonExtendEvent event) {
         Block piston = event.getBlock();
         Chunk fromChunk = piston.getChunk();
-        City fromCity = CityManager.getCityFromChunk(fromChunk.getX(), fromChunk.getZ());
+        City fromCity = City.of(fromChunk);
 
         for (Block moved : event.getBlocks()) {
             Block toBlock = moved.getRelative(event.getDirection());
             Chunk toChunk = toBlock.getChunk();
-            City toCity = CityManager.getCityFromChunk(toChunk.getX(), toChunk.getZ());
+            City toCity = City.of(toChunk);
 
             if (isIllegalMovement(fromCity, toCity)) {
                 event.setCancelled(true);
@@ -37,12 +36,12 @@ public class PistonProtection implements Listener {
 
         Block piston = event.getBlock();
         Chunk fromChunk = piston.getChunk();
-        City fromCity = CityManager.getCityFromChunk(fromChunk.getX(), fromChunk.getZ());
+        City fromCity = City.of(fromChunk);
 
         for (Block moved : event.getBlocks()) {
             Block toBlock = moved.getRelative(event.getDirection());
             Chunk toChunk = toBlock.getChunk();
-            City toCity = CityManager.getCityFromChunk(toChunk.getX(), toChunk.getZ());
+            City toCity = City.of(toChunk);
 
             if (isIllegalMovement(fromCity, toCity)) {
                 event.setCancelled(true);

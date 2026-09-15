@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -15,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class CityKickAction {
     public static void startKick(Player sender, OfflinePlayer playerKick) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityKickCondition.canCityKickPlayer(city, sender, playerKick)) return;
 

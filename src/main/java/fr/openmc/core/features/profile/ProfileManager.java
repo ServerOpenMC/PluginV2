@@ -1,18 +1,17 @@
 package fr.openmc.core.features.profile;
 
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.profile.command.ProfileCommand;
 import fr.openmc.core.features.profile.listeners.ProfileInteractionListener;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 
 import java.util.Set;
 
 @Credit(developers = {"ar1hurgit"})
-public class ProfileManager extends Feature implements LoadAfterItemsAdder, HasCommands, HasListeners {
+public class ProfileManager extends Feature implements HasCommands, HasListeners {
     @Override
     public Set<Object> getCommands() {
         return Set.of(

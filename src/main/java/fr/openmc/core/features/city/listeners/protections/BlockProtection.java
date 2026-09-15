@@ -1,36 +1,44 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockProtection implements Listener {
+    private final CityManager cityManager;
+    private final ProtectionsManager protectionsManager;
+
+    public BlockProtection(CityManager cityManager) {
+        this.cityManager = cityManager;
+        this.protectionsManager = cityManager.PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
+        City city = City.of(event.getBlock());
         if (city == null) return;
       
         if (city.isMember(event.getPlayer())) {
-            ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.PLACE);
+            protectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.PLACE);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city, true);
+            protectionsManager.checkCity(event.getPlayer(), event, city, true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     void onBlockBreak(BlockBreakEvent event) {
-        City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
+        City city = City.of(event.getBlock());
         if (city == null) return;
         
         if (city.isMember(event.getPlayer())) {
-            ProtectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.BREAK);
+            protectionsManager.checkPermissions(event.getPlayer(), event, city, CityPermission.BREAK);
         } else {
-            ProtectionsManager.checkCity(event.getPlayer(), event, city, false);
+            protectionsManager.checkCity(event.getPlayer(), event, city, false);
         }
     }
 }

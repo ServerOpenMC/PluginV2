@@ -6,11 +6,11 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -64,14 +64,15 @@ public class MayorVoteMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
+        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
 
         int totalVotes = city.getMembers().size();
-        for (MayorCandidate candidate : MayorManager.cityElections.get(city.getUniqueId())) {
-            Perks perk2 = PerkManager.getPerkById(candidate.getIdChoicePerk2());
-            Perks perk3 = PerkManager.getPerkById(candidate.getIdChoicePerk3());
+        for (MayorCandidate candidate : mayorManager.cityElections.get(city.getUniqueId())) {
+            Perks perk2 = PerkUtils.getPerkById(candidate.getIdChoicePerk2());
+            Perks perk3 = PerkUtils.getPerkById(candidate.getIdChoicePerk3());
             NamedTextColor color = candidate.getCandidateColor();
             int vote = candidate.getVote();
 
@@ -101,7 +102,7 @@ public class MayorVoteMenu extends PaginatedMenu {
             loreMayor.add(Component.empty());
             loreMayor.add(TranslationManager.translation("feature.city.mayor.menu.vote.lore.click"));
 
-            MayorCandidate playerVote = MayorManager.getPlayerVote(player);
+            MayorCandidate playerVote = mayorManager.getPlayerVote(player);
             boolean ench = playerVote != null && candidate == playerVote;
 
 
@@ -113,17 +114,17 @@ public class MayorVoteMenu extends PaginatedMenu {
                     itemMeta.lore(loreMayor);
                     itemMeta.setEnchantmentGlintOverride(ench);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (MayorManager.hasVoted(player) && playerVote != null) {
+                    if (mayorManager.hasVoted(player) && playerVote != null) {
                         if (candidate.getCandidateUUID().equals(playerVote.getCandidateUUID())) {
                             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.vote.message.already_voted"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
                         }
 
                     playerVote.setVote(playerVote.getVote() - 1);
-                    MayorManager.removeVotePlayer(player);
-                    MayorManager.voteCandidate(city, player, candidate);
+                    mayorManager.removeVotePlayer(player);
+                    mayorManager.voteCandidate(city, player, candidate);
                 } else {
-                    MayorManager.voteCandidate(city, player, candidate);
+                    mayorManager.voteCandidate(city, player, candidate);
                 }
                 MessagesManager.sendMessage(player, TranslationManager.translation(
                         "feature.city.mayor.menu.vote.message.voted",

@@ -2,12 +2,12 @@ package fr.openmc.core.hooks.itemsadder;
 
 import dev.lone.itemsadder.api.ItemsAdder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.hooks.ApiHook;
-import fr.openmc.core.bootstrap.hooks.Hooks;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.hooks.ApiHook;
+import fr.openmc.core.registry.hooks.Hooks;
 import fr.openmc.core.utils.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;
@@ -28,12 +28,12 @@ import java.util.Set;
 @SuppressWarnings("UnstableApiUsage")
 public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     @Getter
-    private static ItemsAdder api;
+    private ItemsAdder api;
 
     private static final String CONTENTS_FOLDER_NAME = "contents";
     private static final String MERGE_RESOURCEPACK_PATH = "resource-pack.zip.merge_other_plugins_resourcepacks_folders";
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(ItemsAdderHook.class);
     }
 
@@ -58,7 +58,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
      * Appelle {@code IAItemLoadEvent} et donne en meme temps le Yaml de l'item.
      * DOIT ETRE LANCE APRES QUE ITEMS ADDER SOIT COMPLETEMENT CHARGE
      */
-    public static void loadContents() {
+    public void loadContents() {
         File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/pluigns
         File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/pluigns/ItemsAdder
         File contentDir = new File(itemsAdderDir, CONTENTS_FOLDER_NAME); // * root/pluigns/ItemsAdder/contents

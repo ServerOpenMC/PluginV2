@@ -1,10 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -23,6 +22,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Random;
 
 public class AyweniterPerk implements Listener {
+    private final CityManager cityManager;
+
+    public AyweniterPerk() {
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+    }
 
     private static final double DROP_CHANCE = 0.01; //1%
     private final Random random = new Random();
@@ -34,16 +38,16 @@ public class AyweniterPerk implements Listener {
         Block block = event.getBlock();
         if (DreamUtils.isDreamWorld(block.getWorld())) return;
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
 
         if (playerCity == null) return;
         
-        City blockCity = CityManager.getCityFromChunk(block.getChunk());
+        City blockCity = City.of(block);
 	    if (blockCity != null)
             if (blockCity != playerCity) return;
 
-        if (MayorManager.phaseMayor == 2) {
-            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
+        if (cityManager.MAYOR.phaseMayor == 2) {
+            if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
                 ItemStack ayweniteItem = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();

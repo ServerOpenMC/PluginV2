@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -35,7 +35,8 @@ public class CityClaimAction {
     }
 
     public static void startClaim(Player sender, int chunkX, int chunkZ) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+        City city = City.ofPlayer(sender);
         org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.cant_claim_here"),
@@ -54,14 +55,14 @@ public class CityClaimAction {
         }
 
         Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
-        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.is_in_region"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
 
-        if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
-            City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
+        if (cityManager.isChunkClaimed(chunkX, chunkZ)) {
+            City chunkCity = City.of(chunkX, chunkZ);
             if (chunkCity == null) return;
             String cityName = chunkCity.getName();
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.already_claim",

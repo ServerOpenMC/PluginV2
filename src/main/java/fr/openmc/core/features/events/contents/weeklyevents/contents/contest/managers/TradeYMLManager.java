@@ -1,8 +1,8 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.YmlUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;

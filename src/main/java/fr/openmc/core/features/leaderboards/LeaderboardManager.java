@@ -1,13 +1,8 @@
 package fr.openmc.core.features.leaderboards;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
@@ -16,6 +11,9 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.cache.CachePlaytime;
 import fr.openmc.core.utils.text.DateUtils;
@@ -41,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Credit(developers = {"miseur"})
-public class LeaderboardManager extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
+public class LeaderboardManager extends Feature implements HasCommands {
     @Getter
     private static volatile Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = Collections.emptyMap();
     @Getter
@@ -448,12 +446,13 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      * <a href="https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity">Documentation GitHub API (REST)</a>
      */
     public static void updateGithubContributorsMap() {
-        GitHubHook.fetchContributorStats();
+        GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
+        gitHubHook.fetchContributorStats();
 
         List<Map.Entry<String, ContributorStats>> statsList = new ArrayList<>();
 
-        for (String login : GitHubHook.getContributors().values()) {
-            ContributorStats stats = GitHubHook.getStats(login);
+        for (String login : gitHubHook.getContributors().values()) {
+            ContributorStats stats = gitHubHook.getStats(login);
             if (stats == null) continue;
 
             statsList.add(new AbstractMap.SimpleEntry<>(login, stats));
@@ -501,7 +500,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
     public static void updateCityMoneyMap() {
         Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
-        for (City city : CityManager.getCities().stream()
+        for (City city : OMCRegistry.FEATURES.CITY.get().getCities().stream()
                 .sorted((city1, city2) -> Double.compare(city2.getBalance(), city1.getBalance()))
                 .limit(10)
                 .toList()) {

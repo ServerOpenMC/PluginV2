@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.CityChatManager;
+import fr.openmc.core.features.city.sub.CityChatManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;

@@ -38,8 +38,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
         if (tool.containsEnchantment(Enchantment.SILK_TOUCH))
             return; // Ne pas compter si le joueur utilise Silk Touch
 
-        if (!ItemsAdderHook.isEnable())
-            return;
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
         if (customBlock != null && customBlock.getNamespacedID() != null &&

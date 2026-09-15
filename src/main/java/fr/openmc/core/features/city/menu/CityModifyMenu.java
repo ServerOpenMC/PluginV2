@@ -7,9 +7,10 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.text.DateUtils;
@@ -35,8 +36,11 @@ import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 public class CityModifyMenu extends Menu {
 
+    private final CityManager cityManager;
+
     public CityModifyMenu(Player owner) {
         super(owner);
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
     }
 
     @Override
@@ -64,7 +68,7 @@ public class CityModifyMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
@@ -88,13 +92,13 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.rename.title"));
             itemMeta.lore(loreRename);
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            City cityCheck = City.ofPlayer(player);
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
             DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                 if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
-                    City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                    City playerCity = City.ofPlayer(player);
 
                     playerCity.rename(input);
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, MessageType.SUCCESS, false);
@@ -121,7 +125,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.transfer.title"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            City cityCheck = City.ofPlayer(player);
 
             if (!CityManageConditions.canCityTransfer(cityCheck, player)) return;
 

@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.items.contents;
 
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import lombok.Getter;
@@ -78,7 +79,8 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
         if (block.getType() != targetType) return false;
         if (!isBreakable(block.getType())) return false;
-        if (!ProtectionsManager.canInteract(player, block.getLocation())) return false;
+        ProtectionsManager protectionsManager = OMCRegistry.FEATURES.CITY.get().PROTECTIONS;
+        if (!protectionsManager.canInteract(player, block.getLocation())) return false;
 
         return block.breakNaturally(tool);
     }

@@ -9,12 +9,10 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.hooks.ProtocolLibHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
@@ -29,7 +27,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<ProtocolLibHook> {
+public class TabList extends Feature {
     private static ProtocolManager protocolManager = null;
 
     @Override
@@ -91,7 +89,7 @@ public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<
 
         boolean isInDream = DreamUtils.isInDream(player);
         String logo;
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             logo = FontImageWrapper.replaceFontImages(isInDream ? ":dream_openmc:" : ":openmc:");
         } else {
             logo = "OPEN MC";

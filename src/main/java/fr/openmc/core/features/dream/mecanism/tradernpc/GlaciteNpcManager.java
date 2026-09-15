@@ -4,9 +4,12 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -34,7 +37,7 @@ public class GlaciteNpcManager implements Listener {
     }
 
     public static void createNPC(Location locationNpc) {
-        if (!FancyNpcsHook.isEnable()) return;
+        if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         UUID npcUUID = UUID.randomUUID();
 
         NpcData data = new NpcData("glacite-" + npcUUID, null, locationNpc);

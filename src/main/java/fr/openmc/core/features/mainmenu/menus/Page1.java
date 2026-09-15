@@ -10,9 +10,9 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
@@ -69,8 +69,10 @@ public class Page1 implements Menu {
     private static final Set<Integer> MAILBOX_SLOTS = Set.of(85, 86, 87);
     private static final int ADVANCEMENTS_SLOT = 88;
 
+    private final AdminShopManager adminShopManager;
+
     public Page1(Player player) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         ItemStack cityItem = new ItemStack(Material.PAPER);
         cityItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -226,6 +228,8 @@ public class Page1 implements Menu {
                     .color(NamedTextColor.DARK_GRAY)));
         });
         MAILBOX_SLOTS.forEach(slot -> content.put(slot, mailboxItem));
+
+        this.adminShopManager = OMCRegistry.FEATURES.ADMIN_SHOP.get();
     }
 
     @Override
@@ -275,7 +279,7 @@ public class Page1 implements Menu {
         } else if (CONTEST_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.mainCommand(player));
         } else if (SHOP_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> adminShopManager.openMainMenu(player));
         } else if (HOME_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(omcPlayer, null));
         } else if (PROFILE_SLOTS.contains(slot)) {

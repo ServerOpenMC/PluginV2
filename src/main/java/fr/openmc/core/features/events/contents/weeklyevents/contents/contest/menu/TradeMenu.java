@@ -98,7 +98,7 @@ public class TradeMenu extends Menu {
 
             inventory.put(tradeSlots.get(i), new ItemMenuBuilder(this, material, meta -> meta.lore(lore))
                     .setOnClick(event -> {
-                        if (!ItemsAdderHook.isEnable()) {
+                        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
                             MessagesManager.sendMessage(player,
                                     TranslationManager.translation("feature.events.contest.trade.unavailable"),
                                     Prefix.CONTEST, MessageType.ERROR, true);

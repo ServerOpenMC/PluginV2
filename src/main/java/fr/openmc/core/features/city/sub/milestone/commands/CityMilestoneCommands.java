@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.milestone.commands;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -13,7 +12,7 @@ public class CityMilestoneCommands {
     @CommandPermission("omc.commands.city.milestone")
     @Description("Ouvre le menu du milestone de ville")
     void milestone(Player sender) {
-        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+        City playerCity = City.ofPlayer(sender);
 
         if (playerCity == null) return;
 

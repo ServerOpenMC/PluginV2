@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -12,6 +12,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class SymbiosisPerk implements Listener {
+    private final CityManager cityManager;
+
+    public SymbiosisPerk(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
 
     private static final double SQUARED_RADIUS = 10.0 * 10.0;
 
@@ -19,10 +24,10 @@ public class SymbiosisPerk implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) return;
 
-        if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.SYMBIOSIS.getId())) return;
+        if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.SYMBIOSIS.getId())) return;
 
         LivingEntity mascot = (LivingEntity) Bukkit.getEntity(playerCity.getMascot().getMascotUUID());
 

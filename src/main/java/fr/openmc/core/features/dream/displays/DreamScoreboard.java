@@ -36,7 +36,7 @@ public class DreamScoreboard extends BaseScoreboard {
 
     @Override
     protected void updateTitle(Player player, SternalBoard board) {
-        board.updateTitle(canShowLogo
+        board.updateTitle(canShowLogo()
                 ? Component.text(FontImageWrapper.replaceFontImages(":dream_openmc:"))
                 : Component.text("OPENMC", NamedTextColor.DARK_BLUE));
     }

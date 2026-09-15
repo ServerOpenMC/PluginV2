@@ -1,14 +1,13 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -22,7 +21,7 @@ import java.util.*;
  * and saving quest progress for players.
  */
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
-public class QuestsManager extends Feature implements LoadAfterItemsAdder, HasCommands {
+public class QuestsManager extends Feature implements HasCommands {
     static final Map<String, Quest> quests = new HashMap<>();
 
     /**

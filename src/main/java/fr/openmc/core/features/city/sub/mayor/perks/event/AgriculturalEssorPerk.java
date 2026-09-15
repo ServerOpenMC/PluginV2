@@ -1,11 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
-import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.DateUtils;
@@ -28,17 +27,24 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class AgriculturalEssorPerk implements Listener {
+
+    private final MayorManager mayorManager;
+
+    public AgriculturalEssorPerk(MayorManager mayorManager) {
+        this.mayorManager = mayorManager;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MayorManager.phaseMayor !=2) return;
+        if (mayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
@@ -49,17 +55,17 @@ public class AgriculturalEssorPerk implements Listener {
     }
 
     @EventHandler
-    void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        if (MayorManager.phaseMayor !=2) return;
+    void onTimeEnd(CooldownEndEvent e) {
+        if (mayorManager.phaseMayor != 2) return;
 
-        String chronometerGroup = e.getGroup();
-        if (!chronometerGroup.equals("city:agricultural_essor")) return;
+        String cooldownGroup = e.getGroup();
+        if (!cooldownGroup.equals("city:agricultural_essor")) return;
 
-        City city = CityManager.getCity(e.getEntity().getUniqueId());
+        City city = City.of(e.getCooldownUUID());
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         for (UUID memberUUID : city.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID);
@@ -72,14 +78,14 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     public void onCropBreak(BlockBreakEvent event) {
-        if (MayorManager.phaseMayor !=2) return;
+        if (mayorManager.phaseMayor != 2) return;
 
         Player player = event.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) return;
 

@@ -4,7 +4,6 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.LootboxRewardEvent;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
@@ -27,7 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TicketListener implements Listener, NotLoadInUnitTest {
+public class TicketListener implements Listener {
 
     private final Map<Location, String> machineHolograms = new ConcurrentHashMap<>();
 
