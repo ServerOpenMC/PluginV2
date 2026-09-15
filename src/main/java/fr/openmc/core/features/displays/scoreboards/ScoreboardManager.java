@@ -32,7 +32,7 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
         luckPermsHook = OMCRegistry.HOOKS.LUCK_PERMS;
 
         registerScoreboard(
-                new MainScoreboard(),
+                new MainScoreboard(OMCRegistry.FEATURES.CORPSE.get()),
                 new RestartScoreboard(),
                 new CityWarScoreboard(),
                 new DreamScoreboard()

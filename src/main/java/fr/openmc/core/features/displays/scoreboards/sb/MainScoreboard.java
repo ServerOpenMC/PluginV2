@@ -7,10 +7,8 @@ import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
-import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
@@ -36,11 +34,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
-import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallComponent;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class MainScoreboard extends BaseScoreboard {
+
+    private final CorpseManager corpseManager;
+
+    public MainScoreboard(CorpseManager corpseManager) {
+        this.corpseManager = corpseManager;
+    }
+
     @Override
     protected void updateTitle(Player player, SternalBoard board) {
         board.updateTitle(getTitle());
@@ -51,7 +55,7 @@ public class MainScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>(getDefaultLines(player, false));
 
         // Corpse
-        if (CorpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
+        if (corpseManager.CORPSE_NPC_MANAGER.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
 
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
@@ -59,9 +63,9 @@ public class MainScoreboard extends BaseScoreboard {
                     .font(SmallCapsUtils.SMALL_CAPS_FONT)
                     .decoration(TextDecoration.BOLD, true)
                     .appendSpace()
-                    .append(CorpseManager.getCorpseDirection(player, corpse))
+                    .append(corpseManager.getCorpseDirection(player, corpse))
                     .appendSpace()
-                    .append(CorpseManager.getRemainingTime(player.getUniqueId()))
+                    .append(corpseManager.getRemainingTime(player.getUniqueId()))
             );
         }
 
@@ -96,7 +100,6 @@ public class MainScoreboard extends BaseScoreboard {
 
     public static List<Component> getDefaultLines(Player player, boolean inWar) {
         BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
         Component rank = OMCRegistry.HOOKS.LUCK_PERMS.isEnable()
                 ? Component.text(OMCRegistry.HOOKS.LUCK_PERMS.getFormattedPAPIPrefix(player))
