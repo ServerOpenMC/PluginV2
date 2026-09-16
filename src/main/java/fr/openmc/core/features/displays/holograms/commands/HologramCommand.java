@@ -14,10 +14,14 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
 
-import static fr.openmc.core.features.displays.holograms.HologramLoader.hologramFolder;
-
 @Command({"holograms", "holo", "hologram"})
 public class HologramCommand {
+
+    private final HologramLoader hologramLoader;
+
+    public HologramCommand(HologramLoader loader) {
+        this.hologramLoader = loader;
+    }
 
     @Subcommand("setPos")
     @CommandPermission("op")
@@ -26,10 +30,10 @@ public class HologramCommand {
             Player player,
             @Named("hologramName") @SuggestWith(HologramAutoComplete.class) String hologramName
     ) {
-        if (HologramLoader.displays.containsKey(hologramName)) {
+        if (hologramLoader.displays.containsKey(hologramName)) {
 
             try {
-                HologramLoader.setHologramLocation(hologramName, player.getLocation());
+                hologramLoader.setHologramLocation(hologramName, player.getLocation());
                 MessagesManager.sendMessage(
                         player,
                         TranslationManager.translation("feature.displays.holograms.command.setpos.success", Component.text(hologramName)),
@@ -52,7 +56,7 @@ public class HologramCommand {
             }
 
         } else {
-            String list = String.join(", ", HologramLoader.displays.keySet());
+            String list = String.join(", ", hologramLoader.displays.keySet());
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("feature.displays.holograms.command.setpos.invalid", Component.text(list)),
@@ -67,7 +71,7 @@ public class HologramCommand {
     @CommandPermission("op")
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
-        HologramLoader.unloadAll();
+        hologramLoader.unloadAll();
         MessagesManager.sendMessage(
                 sender,
                 TranslationManager.translation("feature.displays.holograms.command.disable"),
@@ -81,8 +85,8 @@ public class HologramCommand {
     @CommandPermission("op")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        HologramLoader.updateHologramsViewers();
-        HologramLoader.loadAllFromFolder(hologramFolder);
+        hologramLoader.updateHologramsViewers();
+        hologramLoader.loadAllFromFolder(hologramLoader.getHologramFolder());
         MessagesManager.sendMessage(
                 sender,
                 TranslationManager.translation("feature.displays.holograms.command.enable"),

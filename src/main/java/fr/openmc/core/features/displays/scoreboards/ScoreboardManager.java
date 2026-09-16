@@ -25,7 +25,7 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
     private final List<BaseScoreboard> scoreboards = new ArrayList<>();
     private GlobalTeamManager globalTeamManager;
 
-    private static final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
+    private final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
 
     @Override
     public void init() {

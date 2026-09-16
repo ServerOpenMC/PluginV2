@@ -43,20 +43,20 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new UpdateCommand()
+                new UpdateCommand(this)
         );
     }
 
     @Override
     public Set<ListenerFactory> getListeners() {
-        return Set.of(UpdateListener::new);
+        return Set.of(() -> new UpdateListener(this));
     }
 
-    public static void sendUpdateMessage(Player player) {
+    public void sendUpdateMessage(Player player) {
         player.sendMessage(message);
     }
 
-    public static void sendUpdateBroadcast() {
+    public void sendUpdateBroadcast() {
         Bukkit.broadcast(message);
     }
 

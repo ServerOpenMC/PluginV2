@@ -10,7 +10,6 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.hooks.LuckPermsHook;
-import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -44,10 +43,11 @@ public class JoinQuitMessageListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
+        TabList tabList = OMCRegistry.FEATURES.TAB.get();
 
         MessagesManager.sendMessage(player, TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
 
-        TabList.updateTabList(player);
+        tabList.updateTabList(player);
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
@@ -103,7 +103,7 @@ public class JoinQuitMessageListener implements Listener {
                     return;
                 }
 
-                TabList.updateTabList(player);
+                tabList.updateTabList(player);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
     }

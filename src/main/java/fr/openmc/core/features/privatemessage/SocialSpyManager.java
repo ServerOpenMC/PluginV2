@@ -19,12 +19,12 @@ import java.util.UUID;
 
 @Credit(developers = {"Axeno"})
 public class SocialSpyManager extends Feature implements HasCommands  {
-    private static final Set<UUID> socialSpyEnabled = new HashSet<>();
+    private final Set<UUID> socialSpyEnabled = new HashSet<>();
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new SocialSpyCommand()
+                new SocialSpyCommand(this)
         );
     }
 
@@ -33,7 +33,7 @@ public class SocialSpyManager extends Feature implements HasCommands  {
      *
      * @param player The player whose social spy status is being toggled.
      */
-    public static void toggleSocialSpy(Player player) {
+    public void toggleSocialSpy(Player player) {
          UUID playerUUID = player.getUniqueId();
 
          if (socialSpyEnabled.contains(playerUUID)) {
@@ -55,7 +55,7 @@ public class SocialSpyManager extends Feature implements HasCommands  {
      * @param player The player to check.
      * @return true if social spy is enabled, false otherwise.
      */
-    public static boolean hasSocialSpyEnabled(Player player) {
+    public boolean hasSocialSpyEnabled(Player player) {
         return socialSpyEnabled.contains(player.getUniqueId());
     }
 
@@ -66,7 +66,7 @@ public class SocialSpyManager extends Feature implements HasCommands  {
      * @param receiver The player receiving the message.
      * @param message The message being sent.
      */
-    public static void broadcastToSocialSpy(Player sender, Player receiver, String message) {
+    public void broadcastToSocialSpy(Player sender, Player receiver, String message) {
         Component socialSpyMessage = TranslationManager.translation(
                 "feature.privatemessage.socialspy.format",
                 Component.text(sender.getName()).color(NamedTextColor.GRAY),

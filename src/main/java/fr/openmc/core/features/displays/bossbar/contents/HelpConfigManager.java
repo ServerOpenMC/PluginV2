@@ -16,9 +16,9 @@ import java.util.List;
 public class HelpConfigManager extends Feature {
 
     @Getter
-    private static final List<String> helpMessages = new ArrayList<>();
+    private final List<String> helpMessages = new ArrayList<>();
     @Getter
-    private static File configFile;
+    private File configFile;
 
     /**
      * Initialise le gestionnaire en chargeant la configuration et les messages par défaut.
@@ -38,7 +38,7 @@ public class HelpConfigManager extends Feature {
     /**
      * Charge la configuration depuis bossbars.yml et crée le fichier si nécessaire.
      */
-    private static void loadConfig() {
+    private void loadConfig() {
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/bossbars.yml", false);
@@ -49,7 +49,7 @@ public class HelpConfigManager extends Feature {
     /**
      * Charge les messages depuis le fichier de configuration.
      */
-    private static void loadDefaultMessages() {
+    private void loadDefaultMessages() {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         helpMessages.clear();
 
@@ -65,7 +65,7 @@ public class HelpConfigManager extends Feature {
     /**
      * Recharge les messages depuis le fichier de configuration.
      */
-    public static void reloadMessages() {
+    public void reloadMessages() {
         helpMessages.clear();
         loadDefaultMessages();
     }

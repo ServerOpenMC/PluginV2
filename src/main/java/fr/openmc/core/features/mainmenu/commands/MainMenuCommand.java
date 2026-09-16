@@ -7,10 +7,16 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class MainMenuCommand {
+    private final MainMenu manager;
+
+    public MainMenuCommand(MainMenu manager) {
+        this.manager = manager;
+    }
+
     @Command({"menu", "mainmenu"})
     @Description("Permet d'ouvrir le menu principal d'OpenMC")
     @CommandPermission("omc.commands.menu")
     public void menuCommand(Player player) {
-        MainMenu.openMainMenu(player);
+        manager.openMainMenu(player);
     }
 }

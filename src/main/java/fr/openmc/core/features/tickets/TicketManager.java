@@ -4,42 +4,55 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.displays.holograms.Hologram;
+import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Axeno"}, graphist = {"Tfloa"})
 @Getter
 public class TicketManager extends Feature implements HasListeners {
 
-    public static int hoursPerTicket = 8;
-    public static final List<PlayerStats> timePlayed = new ArrayList<>();
+    private final HologramLoader hologramLoader;
 
-    private static final Gson gson = new Gson();
-    @Setter private static File statsDirectory;
+    public int hoursPerTicket = 8;
+    public final List<PlayerStats> timePlayed = new ArrayList<>();
+
+    private final Gson gson = new Gson();
+    @Setter
+    private File statsDirectory;
+
+    private final Map<Location, String> machineHolograms = new ConcurrentHashMap<>();
+    private int hologramCounter = 0;
 
     public TicketManager(File statsDirectory) {
-        TicketManager.setStatsDirectory(statsDirectory);
+        this.setStatsDirectory(statsDirectory);
+        this.hologramLoader = OMCRegistry.FEATURES.HOLOGRAM_LOADER.get();
     }
 
     @Override
     public void init() {
-        TicketManager.loadPlayerStats(statsDirectory);
+        this.loadPlayerStats(statsDirectory);
     }
 
     @Override
     public Set<ListenerFactory> getListeners() {
-        return Set.of(TicketListener::new);
+        return Set.of(() -> new TicketListener(this));
     }
 
     /**
@@ -47,7 +60,7 @@ public class TicketManager extends Feature implements HasListeners {
      *
      * @param statsDirectory The {@link File} directory containing player stats JSON files.
      */
-    public static void loadPlayerStats(File statsDirectory) {
+    public void loadPlayerStats(File statsDirectory) {
         if (!statsDirectory.exists() || !statsDirectory.isDirectory()) {
             OMCLogger.info("Stats directory does not exist or is not a directory.");
             return;
@@ -70,7 +83,7 @@ public class TicketManager extends Feature implements HasListeners {
      *
      * @param statFile The {@link File} containing the player's stats.
      */
-    private static void loadPlayerStat(File statFile) {
+    private void loadPlayerStat(File statFile) {
         try {
             String fileName = statFile.getName();
             String uuidString = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -129,7 +142,7 @@ public class TicketManager extends Feature implements HasListeners {
      * @param uuid The {@link UUID} of the player.
      * @return The {@link PlayerStats} if found, otherwise null.
      */
-    public static PlayerStats getPlayerStats(UUID uuid) {
+    public PlayerStats getPlayerStats(UUID uuid) {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
                 .findFirst()
@@ -142,7 +155,7 @@ public class TicketManager extends Feature implements HasListeners {
      * @param uuid The {@link UUID} of the player.
      * @return The playtime in seconds, or 0 if not found.
      */
-    public static int getPlayTimeFromUUID(UUID uuid) {
+    public int getPlayTimeFromUUID(UUID uuid) {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
                 .mapToInt(PlayerStats::getTimePlayed)
@@ -157,7 +170,7 @@ public class TicketManager extends Feature implements HasListeners {
      * @param ticketToGive The number of tickets to set.
      * @param given        Whether the ticket has been given.
      */
-    public static void setTicketGiven(UUID uuid, int ticketToGive, boolean given) {
+    public void setTicketGiven(UUID uuid, int ticketToGive, boolean given) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
                 stats.setTicketRemaining(ticketToGive);
@@ -176,7 +189,7 @@ public class TicketManager extends Feature implements HasListeners {
      * @param ticketToGive The number of tickets to set.
      * @param given        Whether the ticket has been given.
      */
-    private static void updatePlayerJsonFile(UUID uuid, int ticketToGive, boolean given) {
+    private void updatePlayerJsonFile(UUID uuid, int ticketToGive, boolean given) {
         File playerFile = new File(statsDirectory, uuid.toString() + ".json");
         if (!playerFile.exists()) {
             OMCLogger.warn("Player stats file not found for UUID: {}", uuid);
@@ -231,7 +244,7 @@ public class TicketManager extends Feature implements HasListeners {
      * @param uuid The UUID of the player.
      * @return true if a ticket was used, false if no tickets are remaining or player not found.
      */
-    public static boolean useTicket(UUID uuid) {
+    public boolean useTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
             if (!stats.getUniqueID().equals(uuid)) continue;
             if (stats.getTicketRemaining() <= 0) return false;
@@ -250,7 +263,7 @@ public class TicketManager extends Feature implements HasListeners {
      * @param uuid The UUID of the player.
      * @return The number of tickets given, or 0 if already given or player not found.
      */
-    public static int giveTicket(UUID uuid) {
+    public int giveTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
             if (!stats.getUniqueID().equals(uuid)) continue;
             if (stats.isTicketGiven()) return 0;
@@ -267,5 +280,39 @@ public class TicketManager extends Feature implements HasListeners {
         }
 
         return 0;
+    }
+
+    public void createMachineHologram(Location machineLocation) {
+        if (machineHolograms.containsKey(machineLocation)) return;
+
+        String hologramName = "ball_machine_" + (++hologramCounter);
+
+        Location hologramLocation = machineLocation.clone().add(0, 2.3, 0);
+
+        Hologram hologram = new Hologram(hologramName);
+        hologram.setLocation(hologramLocation.getX(), hologramLocation.getY(), hologramLocation.getZ());
+        hologram.setScale(0.7f);
+        hologram.setLines(
+                TranslationManager.translation("feature.tickets.machine.hologram_line1"),
+                TranslationManager.translation("feature.tickets.machine.hologram_line2"),
+                TranslationManager.translation("feature.tickets.machine.hologram_line3")
+        );
+
+        hologramLoader.registerHolograms(hologram);
+
+        machineHolograms.put(machineLocation, hologramName);
+    }
+
+    public void removeMachineHologram(Location machineLocation) {
+        String hologramName = machineHolograms.remove(machineLocation);
+        var hologramInfo = hologramName != null ? hologramLoader.displays.get(hologramName) : null;
+        if (hologramInfo == null) return;
+
+        hologramInfo.display().remove();
+        hologramLoader.displays.remove(hologramName);
+
+        if (hologramInfo.file().exists()) {
+            hologramInfo.file().delete();
+        }
     }
 }

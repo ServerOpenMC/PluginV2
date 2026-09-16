@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.bossbar.contents;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -10,6 +11,12 @@ import org.bukkit.entity.Player;
  * Boss bar principale affichant les messages d'aide.
  */
 public class MainBossbar extends BaseBossbar {
+
+    private final HelpConfigManager helpConfigManager;
+
+    public MainBossbar() {
+        this.helpConfigManager = OMCRegistry.FEATURES.HELP_CONFIG.get();
+    }
 
     private static int indexMessage = 0;
 
@@ -29,9 +36,9 @@ public class MainBossbar extends BaseBossbar {
      */
     @Override
     protected void update(Player player, BossBar bar) {
-        indexMessage = (indexMessage + 1) % HelpConfigManager.getHelpMessages().size();
+        indexMessage = (indexMessage + 1) % helpConfigManager.getHelpMessages().size();
 
-        bar.name(TranslationManager.translation(HelpConfigManager.getHelpMessages().get(indexMessage)));
+        bar.name(TranslationManager.translation(helpConfigManager.getHelpMessages().get(indexMessage)));
     }
 
     @Override

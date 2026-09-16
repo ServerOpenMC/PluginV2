@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
  * Base pour les boss bars personnalisées.
  */
 public abstract class BaseBossbar {
+
     /**
      * Initialise la boss bar pour un joueur.
      *

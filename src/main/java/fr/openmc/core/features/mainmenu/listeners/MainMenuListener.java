@@ -33,13 +33,16 @@ import java.util.*;
 
 public class MainMenuListener implements Listener {
 
+    private final MainMenu mainMenuManager;
+
     private final ClientboundUpdateAdvancementsPacket advancementPacket;
     @Getter
     private static final Map<UUID, ClientboundUpdateAdvancementsPacket> advancementPackets = new HashMap<>();
     @Getter
     private static final List<UUID> enabledAdvancements = new ArrayList<>();
 
-    public MainMenuListener(OMCPlugin plugin) {
+    public MainMenuListener(OMCPlugin plugin, MainMenu manager) {
+        this.mainMenuManager = manager;
         Bukkit.getPluginManager().registerEvents(this, plugin);
         advancementPacket = createEmptyAdvancementPacket();
     }
@@ -104,7 +107,7 @@ public class MainMenuListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                MainMenu.openMainMenu(player);
+                                mainMenuManager.openMainMenu(player);
                             }
                         }.runTask(OMCPlugin.getInstance());
                     } else if (packet.getAction() == ServerboundSeenAdvancementsPacket.Action.CLOSED_SCREEN && enabledAdvancements.contains(playerUUID)) {

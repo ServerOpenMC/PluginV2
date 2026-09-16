@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
-import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -23,7 +23,7 @@ public class PlayerEatSomnifere implements Listener {
         if (dreamItem == null || !dreamItem.getId().equals("omc_dream:somnifere")) return;
 
         Player player = event.getPlayer();
-        if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
+        if (!OMCRegistry.FEATURES.DIMENSION_OPENER.get().checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
 
         // somnifere se stack par 1, aucun check est nécessaire
         event.setItem(null);

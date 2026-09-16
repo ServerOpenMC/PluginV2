@@ -11,7 +11,6 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.adventure.PaperAdventure;
@@ -28,11 +27,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class TabList extends Feature {
-    private static ProtocolManager protocolManager = null;
 
     @Override
     public void init() {
-        protocolManager = ProtocolLibrary.getProtocolManager();
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
         protocolManager.addPacketListener(new PacketAdapter(OMCPlugin.getInstance(),
                 ListenerPriority.NORMAL, PacketType.Play.Server.PLAYER_INFO) {
@@ -73,13 +71,13 @@ public class TabList extends Feature {
         });
     }
 
-    public static void updateHeaderFooter(Player player, Component header, Component footer) {
+    public void updateHeaderFooter(Player player, Component header, Component footer) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         nmsPlayer.connection.send(new ClientboundTabListPacket(
                 PaperAdventure.asVanilla(header), PaperAdventure.asVanilla(footer)));
     }
 
-    public static void updateTabList(Player player) {
+    public void updateTabList(Player player) {
         int visibleOnlinePlayers = 0;
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (player.canSee(p)) {

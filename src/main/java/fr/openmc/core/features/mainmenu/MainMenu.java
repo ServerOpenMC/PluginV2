@@ -16,17 +16,17 @@ import java.util.Set;
 public class MainMenu extends Feature implements HasCommands {
     @Override
     public void init() {
-        new MainMenuListener(OMCPlugin.getInstance());
+        new MainMenuListener(OMCPlugin.getInstance(), this);
     }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new MainMenuCommand()
+                new MainMenuCommand(this)
         );
     }
 
-    public static void openMainMenu(Player player) {
+    public void openMainMenu(Player player) {
         PacketMenuLib.openMenu(new Page1(player), player);
     }
 }

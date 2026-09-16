@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
@@ -74,11 +75,12 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      */
     public static void loadMilestonesData() {
         try {
+            BossbarManager bossbarManager = OMCRegistry.FEATURES.BOSSBAR.get();
             List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
             for (MilestoneModel data : milestoneData) {
 	            MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone<?> milestone = type.getMilestone();
-                BossbarManager.registerBossbars(new MilestoneBossBar(milestone));
+                bossbarManager.registerBossbars(new MilestoneBossBar(milestone));
 	            milestone.getPlayerData().put(data.getUUID(), data);
             }
 			OMCLogger.infoFormatted("Milestones loaded successfully from the database!");

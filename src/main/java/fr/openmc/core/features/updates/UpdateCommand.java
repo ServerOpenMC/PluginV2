@@ -8,10 +8,16 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class UpdateCommand {
 
+    private final UpdateManager manager;
+
+    public UpdateCommand(UpdateManager manager) {
+        this.manager = manager;
+    }
+
     @Command("omc version")
     @CommandPermission("omc.commands.version")
     @Description("Vous donne de l'information sur le version du plugin")
     private void version(Player player) {
-        UpdateManager.sendUpdateMessage(player);
+        manager.sendUpdateMessage(player);
     }
 }
