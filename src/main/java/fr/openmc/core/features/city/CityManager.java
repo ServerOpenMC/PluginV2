@@ -26,8 +26,8 @@ import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.rank.CityRankCommands;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
-import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.view.CityViewManager;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
@@ -57,6 +57,7 @@ public class CityManager extends Feature
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
     // * SUB-FEATURE
+    // todo: faire un sous registre pour les CITY_FEATURES
     public MayorManager MAYOR;
     public ProtectionsManager PROTECTIONS;
     public WarManager WAR;
@@ -77,7 +78,6 @@ public class CityManager extends Feature
         loadCities();
 
         // SUB-FEATURE
-        // todo utiliser OMCRegistry.FEATURES.register
         this.MAYOR = OMCRegistry.FEATURES.register(new MayorManager(this, fancyNpcsHook, itemsAdderHook));
         this.PROTECTIONS = OMCRegistry.FEATURES.register(new ProtectionsManager(this));
         this.WAR = OMCRegistry.FEATURES.register(new WarManager());

@@ -6,23 +6,29 @@ import de.oliver.fancynpcs.api.NpcData;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
+import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.Listener;
 
+import java.util.Set;
 import java.util.UUID;
 
-public class GlaciteNpcManager implements Listener {
-    public static void init() {
-        OMCPlugin.registerEvents(
-                GlaciteTraderInteractListener::new
-        );
-        if (DreamDimensionManager.hasSeedChanged()) {
+public class GlaciteNpcManager extends Feature implements HasListeners {
+    private final DreamDimensionManager dreamDimensionManager;
+
+    public GlaciteNpcManager(DreamManager manager) {
+        this.dreamDimensionManager = manager.DREAM_DIMENSION;
+    }
+
+    @Override
+    public void init() {
+        if (dreamDimensionManager.hasSeedChanged()) {
             OMCLogger.info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");
             // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
@@ -36,7 +42,14 @@ public class GlaciteNpcManager implements Listener {
         }
     }
 
-    public static void createNPC(Location locationNpc) {
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                GlaciteTraderInteractListener::new
+        );
+    }
+
+    public void createNPC(Location locationNpc) {
         if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         UUID npcUUID = UUID.randomUUID();
 

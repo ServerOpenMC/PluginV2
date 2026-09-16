@@ -4,7 +4,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
-import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import org.bukkit.Bukkit;

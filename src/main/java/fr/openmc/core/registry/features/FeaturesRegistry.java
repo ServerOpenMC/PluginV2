@@ -195,11 +195,17 @@ public class FeaturesRegistry extends Registry<String, Feature>
         }
     }
 
+    @Override
+    public Feature register(String id, Feature feature) {
+        feature.startInit();
+        super.register(id, feature);
+        return feature;
+    }
+
     public Optional<Feature> register(FeatureEntry<?> entry) {
         if (!entry.shouldLoad()) return Optional.empty();
 
         Feature feature = entry.create();
-        feature.startInit();
         register(key(feature), feature);
         return Optional.of(feature);
     }

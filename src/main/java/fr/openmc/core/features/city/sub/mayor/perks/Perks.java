@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -167,7 +166,7 @@ public enum Perks {
             0,
             "feature.city.mayor.perk.great_dream.name",
             "feature.city.mayor.perk.great_dream.lore",
-            DreamItemRegistry.SOMNIFERE
+            OMCRegistry.DREAM_ITEM.SOMNIFERE
     ),
     CHAOS_DREAM(
             18,
@@ -176,7 +175,7 @@ public enum Perks {
             24 * 60 * 60 * 1000L, // 1 jour
             "feature.city.mayor.perk.chaos_dream.name",
             "feature.city.mayor.perk.chaos_dream.lore",
-            DreamItemRegistry.SINGULARITY
+            OMCRegistry.DREAM_ITEM.SINGULARITY
     )
     ;
 

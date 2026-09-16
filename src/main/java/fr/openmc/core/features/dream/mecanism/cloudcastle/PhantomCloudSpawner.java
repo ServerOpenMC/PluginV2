@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

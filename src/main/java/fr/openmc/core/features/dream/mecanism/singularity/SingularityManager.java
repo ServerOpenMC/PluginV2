@@ -4,6 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,25 +13,28 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SingularityManager {
-    public static final HashMap<UUID, SingularityContents> singularityContents = new HashMap<>();
+public class SingularityManager extends Feature implements HasDatabase {
+    public final HashMap<UUID, SingularityContents> singularityContents = new HashMap<>();
 
-    private static Dao<SingularityContents, String> singularityContentsDao;
+    private Dao<SingularityContents, String> singularityContentsDao;
 
-    public static void init() {
-        loadAllSingularityContentsData();
+    @Override
+    public void init() {
+        this.loadAllSingularityContentsData();
     }
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, SingularityContents.class);
         singularityContentsDao = DaoManager.createDao(connectionSource, SingularityContents.class);
     }
 
-    public static void disable() {
-        SingularityManager.saveAllSingularityContentsData();
+    @Override
+    public void save() {
+        this.saveAllSingularityContentsData();
     }
 
-    private static void loadAllSingularityContentsData() {
+    private void loadAllSingularityContentsData() {
         try {
             singularityContents.clear();
             singularityContentsDao.queryForAll().forEach(singularityContent ->
@@ -40,7 +45,7 @@ public class SingularityManager {
         }
     }
 
-    public static void saveAllSingularityContentsData() {
+    public void saveAllSingularityContentsData() {
         try {
             for (SingularityContents contents : singularityContents.values()) {
                 singularityContentsDao.createOrUpdate(contents);
@@ -50,13 +55,13 @@ public class SingularityManager {
         }
     }
 
-    public static void addSingularityContents(Player player, ItemStack[] items) {
+    public void addSingularityContents(Player player, ItemStack[] items) {
         if (singularityContents.containsKey(player.getUniqueId())) return;
 
         singularityContents.put(player.getUniqueId(), new SingularityContents(player.getUniqueId(), items));
     }
 
-    public static SingularityContents getSingularityContents(Player player) {
+    public SingularityContents getSingularityContents(Player player) {
         if (!singularityContents.containsKey(player.getUniqueId())) return null;
 
         return singularityContents.get(player.getUniqueId());

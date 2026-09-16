@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.altar.tasks;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,7 +35,7 @@ public class AltarParticlesTask extends BukkitRunnable {
             Location playerLoc = player.getLocation();
             World world = playerLoc.getWorld();
 
-            List<DreamBlock> altars = DreamBlocksRegistry.getDreamBlocksByType("altar");
+        List<DreamBlock> altars = OMCRegistry.FEATURES.DREAM.get().DREAM_BLOCKS.getDreamBlocksByType("altar");
 
             for (DreamBlock altar : altars) {
                 if (altar.location().getWorld() != world) continue;

@@ -7,6 +7,9 @@ import fr.openmc.core.features.dream.mecanism.altar.tasks.AltarCheckTask;
 import fr.openmc.core.features.dream.mecanism.altar.tasks.AltarParticlesTask;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -23,24 +26,32 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-public class AltarManager {
+public class AltarManager extends Feature implements HasListeners {
 
-    public static final Map<Location, UUID> boundPlayers = new HashMap<>();
-    public static final Map<Location, ItemDisplay> floatingItems = new HashMap<>();
+    public final Map<Location, UUID> boundPlayers = new HashMap<>();
+    public final Map<Location, ItemDisplay> floatingItems = new HashMap<>();
 
-    public static void init() {
+    @Override
+    public void init() {
         new AltarCheckTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
         new AltarParticlesTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
-        OMCPlugin.registerEvents(AltarListener::new);
     }
 
-    public static boolean hasItem(Location loc) {
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                AltarListener::new
+        );
+    }
+
+    public boolean hasItem(Location loc) {
         return boundPlayers.containsKey(loc);
     }
 
-    public static void bindItem(Player player, Location altarLoc, ItemStack item) {
+    public void bindItem(Player player, Location altarLoc, ItemStack item) {
         DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
         if (dreamItem == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.unusable_item"), Prefix.DREAM, MessageType.ERROR, false);
@@ -67,13 +78,13 @@ public class AltarManager {
         MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.bound"), Prefix.DREAM, MessageType.ERROR, false);
     }
 
-    public static void unbind(Location altarLoc) {
+    public void unbind(Location altarLoc) {
         boundPlayers.remove(altarLoc);
         ItemDisplay display = floatingItems.remove(altarLoc);
         if (display != null) display.remove();
     }
 
-    public static void tryRitual(Player player, Location altarLoc) {
+    public void tryRitual(Player player, Location altarLoc) {
         if (!boundPlayers.containsKey(altarLoc)) return;
         if (!boundPlayers.get(altarLoc).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.already_bound"), Prefix.DREAM, MessageType.ERROR, false);

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.listeners.registry.DreamBlocksListeners;
 import fr.openmc.core.features.dream.mecanism.altar.AltarManager;
@@ -8,6 +9,9 @@ import fr.openmc.core.features.dream.mecanism.cloudcastle.BossCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.CloudVault;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,36 +19,38 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class DreamBlocksRegistry {
+public class DreamBlocksManager extends Feature implements HasListeners {
 
-    private static File file;
-    private static FileConfiguration config;
+    private File file;
+    private FileConfiguration config;
 
-    private static final List<DreamBlock> dreamBlocks = new ArrayList<>();
+    private final List<DreamBlock> dreamBlocks = new ArrayList<>();
+    private final Map<String, List<DreamBlock>> cacheByType = new HashMap<>();
 
-    private static final Map<String, List<DreamBlock>> cacheByType = new HashMap<>();
+    private AltarManager ALTAR;
 
-    public static void init() {
-        OMCPlugin.registerEvents(
-                DreamBlocksListeners::new,
-                CloudVault::new,
-                BossCloudSpawner::new
-        );
-
+    @Override
+    public void init() {
         ConfigurationSerialization.registerClass(DreamBlock.class);
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "registered_blocks.yml");
         load();
 
         // # Register DreamBlocks
-        AltarManager.init();
+        ALTAR = OMCRegistry.FEATURES.register(new AltarManager());
     }
 
-    public static void load() {
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                DreamBlocksListeners::new,
+                CloudVault::new,
+                BossCloudSpawner::new
+        );
+    }
+
+    public void load() {
         if (!file.exists()) {
             OMCLogger.info("[DreamBlocks] Fichier manquant, il sera créé au save().");
         }
@@ -72,7 +78,7 @@ public class DreamBlocksRegistry {
         }
     }
 
-    public static void save() {
+    public void save() {
         config.set("blocks", dreamBlocks);
 
         try {
@@ -82,7 +88,7 @@ public class DreamBlocksRegistry {
         }
     }
 
-    public static void addDreamBlock(String type, Location loc) {
+    public void addDreamBlock(String type, Location loc) {
         DreamBlock entry = new DreamBlock(type, loc);
         if (!dreamBlocks.contains(entry)) {
             dreamBlocks.add(entry);
@@ -92,19 +98,19 @@ public class DreamBlocksRegistry {
         }
     }
 
-    public static boolean isDreamBlock(Location loc) {
+    public boolean isDreamBlock(Location loc) {
         return dreamBlocks.stream().anyMatch(e -> e.location().equals(loc));
     }
 
-    public static boolean isDreamBlock(Location loc, String type) {
+    public boolean isDreamBlock(Location loc, String type) {
         return dreamBlocks.stream().anyMatch(e -> e.location().equals(loc) && e.type().equalsIgnoreCase(type));
     }
 
-    public static List<DreamBlock> getDreamBlocks() {
+    public List<DreamBlock> getDreamBlocks() {
         return new ArrayList<>(dreamBlocks);
     }
 
-    public static List<DreamBlock> getDreamBlocksByType(String type) {
+    public List<DreamBlock> getDreamBlocksByType(String type) {
         return cacheByType.getOrDefault(type.toLowerCase(), new ArrayList<>());
     }
 }

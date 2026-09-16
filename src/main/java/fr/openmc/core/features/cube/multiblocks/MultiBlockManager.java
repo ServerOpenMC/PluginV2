@@ -1,11 +1,11 @@
 package fr.openmc.core.features.cube.multiblocks;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.commands.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
-import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
@@ -76,7 +76,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
             int z = (int) origin.get("z");
 
             int y;
-            if (DreamUtils.isDreamWorld(world) && DreamDimensionManager.hasSeedChanged()) {
+            if (DreamUtils.isDreamWorld(world) && OMCRegistry.FEATURES.DREAM.get().DREAM_DIMENSION.hasSeedChanged()) {
                 OMCLogger.warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
                 y = world.getHighestBlockYAt(x, z) + 1;
             } else {

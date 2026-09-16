@@ -10,6 +10,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -26,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerCloneNpc {
-    private static final String prefixNpc = "npcp-";
-    private static final NpcManager NPC_MANAGER = FancyNpcsPlugin.get().getNpcManager();
-    private static final HashMap<UUID, BukkitTask> particlesTasks = new HashMap<>();
+public class PlayerCloneNpc extends Feature {
+    private final String prefixNpc = "npcp-";
+    private final NpcManager NPC_MANAGER = FancyNpcsPlugin.get().getNpcManager();
+    private final HashMap<UUID, BukkitTask> particlesTasks = new HashMap<>();
 
     /**
      * Intitialize the PlayerCloneNpc system.
@@ -37,7 +38,8 @@ public class PlayerCloneNpc {
      * It fetches all existing NPCs after a delay to ensure that the FancyNpcs plugin has fully initialized,
      * and removes any NPCs that match the player clone prefix.
      */
-    public static void init() {
+    @Override
+    public void init() {
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
@@ -53,7 +55,7 @@ public class PlayerCloneNpc {
      * @param player The player for whom to retrieve the clone NPC.
      * @return The clone NPC associated with the player, or null if no such NPC exists.
      */
-    public static Npc getCloneNpc(Player player) {
+    public Npc getCloneNpc(Player player) {
         return NPC_MANAGER.getNpc(prefixNpc + player.getUniqueId());
     }
 
@@ -62,7 +64,7 @@ public class PlayerCloneNpc {
      * @param player The player for whom to create the clone NPC.
      * @param sleepingLocation The location where the player is sleeping, which will be used to position the clone NPC.
      */
-    public static void createCloneNpc(Player player, Location sleepingLocation, Pose pose) {
+    public void createCloneNpc(Player player, Location sleepingLocation, Pose pose) {
         if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         Npc existingNpc = getCloneNpc(player);
         if (existingNpc != null) {
@@ -114,7 +116,7 @@ public class PlayerCloneNpc {
      * Deletes the specified clone NPC, removing it from the world and unregistering it from the NPC manager.
      * @param player The player whose clone NPC should be deleted. If the player does not have a clone NPC, this method will do nothing.
      */
-    public static void deleteCloneNpc(Player player) {
+    public void deleteCloneNpc(Player player) {
         if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         Npc npc = getCloneNpc(player);
         if (npc == null) return;
@@ -126,7 +128,7 @@ public class PlayerCloneNpc {
      * Deletes the specified clone NPC, removing it from the world and unregistering it from the NPC manager.
      * @param npc The clone NPC to be deleted. If the NPC does not exist or is not a clone NPC, this method will do nothing.
      */
-    public static void deleteCloneNpc(Npc npc) {
+    public void deleteCloneNpc(Npc npc) {
         if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         if (npc == null) return;
         if (NPC_MANAGER.getNpc(npc.getData().getName()) == null) return;
@@ -148,7 +150,7 @@ public class PlayerCloneNpc {
      * @param sleepingLocation The location where the player is sleeping
      * @return The adjusted location where the clone NPC should be spawned, with the correct position and orientation to match the player's sleeping position on the bed.
      */
-    public static Location getExactSleepingLocation(Location sleepingLocation) {
+    public Location getExactSleepingLocation(Location sleepingLocation) {
         Block bed = sleepingLocation.getBlock();
 
         // * fallback

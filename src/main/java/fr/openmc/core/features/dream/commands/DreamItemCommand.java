@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.commands.autocomplete.DreamItemAutoComplete;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -25,7 +25,7 @@ public class DreamItemCommand {
             @SuggestWith(DreamItemAutoComplete.class) String name,
             @Optional Integer amount
     ) {
-        DreamItem item = DreamItemRegistry.getByName(name);
+        DreamItem item = OMCRegistry.DREAM_ITEM.getByName(name);
 
         if (item == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.commands.item.not_found"), Prefix.STAFF, MessageType.ERROR, false);

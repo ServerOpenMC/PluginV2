@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
+import fr.openmc.core.features.dream.registries.DreamBlocksManager;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,21 +16,21 @@ public class DreamBlocksListeners implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (!DreamUtils.isDreamWorld(event.getBlock().getLocation())) return;
 
-        if (DreamBlocksRegistry.isDreamBlock(event.getBlock().getLocation()))
+        if (DreamBlocksManager.isDreamBlock(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
         if (!DreamUtils.isDreamWorld(event.getBlock().getLocation())) return;
-        event.blockList().removeIf(block -> DreamBlocksRegistry.isDreamBlock(block.getLocation()));
+        event.blockList().removeIf(block -> DreamBlocksManager.isDreamBlock(block.getLocation()));
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
         if (!DreamUtils.isDreamWorld(event.getEntity().getLocation())) return;
 
-        event.blockList().removeIf(block -> DreamBlocksRegistry.isDreamBlock(block.getLocation()));
+        event.blockList().removeIf(block -> DreamBlocksManager.isDreamBlock(block.getLocation()));
     }
 
     @EventHandler
@@ -41,7 +41,7 @@ public class DreamBlocksListeners implements Listener {
             return;
 
         for (Block block : event.getBlocks()) {
-            if (DreamBlocksRegistry.isDreamBlock(block.getLocation())) {
+            if (DreamBlocksManager.isDreamBlock(block.getLocation())) {
                 event.setCancelled(true);
                 return;
             }
@@ -56,7 +56,7 @@ public class DreamBlocksListeners implements Listener {
             return;
 
         for (Block block : event.getBlocks()) {
-            if (DreamBlocksRegistry.isDreamBlock(block.getLocation())) {
+            if (DreamBlocksManager.isDreamBlock(block.getLocation())) {
                 event.setCancelled(true);
                 return;
             }

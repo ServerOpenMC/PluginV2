@@ -1,12 +1,12 @@
 package fr.openmc.core.features.dream.models.db;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
-import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdTask;
 import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
@@ -26,6 +26,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 @Getter
 public class DreamPlayer {
+    private final DreamManager dreamManager;
+
     private final Player player;
     @Setter
     private ItemStack[] oldInventory;
@@ -42,12 +44,13 @@ public class DreamPlayer {
     private BukkitTask timeTask;
 
     public DreamPlayer(Player player, ItemStack[] oldInv, Location oldLocation, PlayerInventory dreamInv) {
+        this.dreamManager = OMCRegistry.FEATURES.DREAM.get();
         this.player = player;
         this.oldInventory = oldInv;
         this.oldLocation = oldLocation;
         this.dreamInventory = dreamInv;
 
-        DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
+        DBDreamPlayer cacheData = dreamManager.getCacheDreamPlayer(player);
 
         this.dreamTime = cacheData == null ? DreamManager.BASE_DREAM_TIME : cacheData.getMaxDreamTime();
 
@@ -76,7 +79,7 @@ public class DreamPlayer {
     }
 
     public long getMaxDreamTime() {
-        DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
+        DBDreamPlayer cacheData = dreamManager.getCacheDreamPlayer(player);
 
         if (cacheData == null) return DreamManager.BASE_DREAM_TIME;
 
@@ -107,7 +110,7 @@ public class DreamPlayer {
         if (coldTask != null) {
             coldTask.cancel();
             cold = 0;
-            ColdManager.applyColdEffects(player, cold);
+            dreamManager.COLD.applyColdEffects(player, cold);
             coldTask = null;
         }
     }

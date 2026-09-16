@@ -1,7 +1,6 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;

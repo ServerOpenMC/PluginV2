@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.altar;
 
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
+import fr.openmc.core.features.dream.registries.DreamBlocksManager;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -28,7 +28,7 @@ public class AltarListener implements Listener {
         Block block = event.getClickedBlock();
         Location loc = block.getLocation();
 
-        if (!DreamBlocksRegistry.isDreamBlock(loc, "altar")) return;
+        if (!DreamBlocksManager.isDreamBlock(loc, "altar")) return;
 
         event.setCancelled(true);
 

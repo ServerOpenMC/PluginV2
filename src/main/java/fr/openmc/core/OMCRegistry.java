@@ -1,5 +1,9 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.dream.registries.DreamFeaturesRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
@@ -39,6 +43,12 @@ public final class OMCRegistry {
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
 
+    // ** Registre concernant la feature de la Dimension des reves
+    public static DreamFeaturesRegistry DREAM_FEATURES;
+    public static DreamItemRegistry DREAM_ITEM;
+    public static DreamMobsRegistry DREAM_MOB;
+    public static DreamLootTableRegistry DREAM_LOOT_TABLE;
+
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
     private static final List<RegistryContext> ALL = new ArrayList<>(List.of(
@@ -49,10 +59,16 @@ public final class OMCRegistry {
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
+                    () -> DREAM_ITEM = new DreamItemRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_LOOT_TABLES = new CustomLootTableRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> DREAM_LOOT_TABLE = new DreamLootTableRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
@@ -62,13 +78,18 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> DREAM_MOB = new DreamMobsRegistry(),
+                    RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> FEATURES = new FeaturesRegistry(),
-                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA)
+                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> DREAM_FEATURES = new DreamFeaturesRegistry(),
+                    RegistryLoadingType.AFTER_IA) // todo: faire que les registres pour chaque feature se lance en meme temps que la feature.
     ));
 
     private OMCRegistry() {}

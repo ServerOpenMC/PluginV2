@@ -6,6 +6,6 @@ import org.bukkit.event.Listener;
 public class DreamLootListener implements Listener {
     @EventHandler
     public void onLootItem(DreamRngLootEvent event) {
-        DreamRngLootManager.sendMessageLoot(event);
+        DreamRngLootUtils.sendMessageLoot(event);
     }
 }

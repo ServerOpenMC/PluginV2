@@ -5,13 +5,11 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
-public class DreamRngLootManager {
+public class DreamRngLootUtils {
     public static void sendMessageLoot(DreamRngLootEvent event) {
         double chance = event.getChance() != null ? event.getChance() : 0.0;
         Component prefix;

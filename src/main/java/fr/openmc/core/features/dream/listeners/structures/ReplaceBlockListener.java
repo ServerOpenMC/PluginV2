@@ -7,7 +7,7 @@ import fr.openmc.core.features.dream.mecanism.cloudcastle.CloudVault;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.PhantomCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.StrayCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
+import fr.openmc.core.features.dream.registries.DreamBlocksManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -72,7 +72,7 @@ public class ReplaceBlockListener implements Listener {
                     switch (toReplace.material) {
                         case GRAY_GLAZED_TERRACOTTA -> {
                             block.setType(Material.ENCHANTING_TABLE);
-                            DreamBlocksRegistry.addDreamBlock("altar", block.getLocation());
+                            DreamBlocksManager.addDreamBlock("altar", block.getLocation());
                         }
                         case REDSTONE_ORE -> {
                             block.setType(Material.AIR);

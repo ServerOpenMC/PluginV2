@@ -1,6 +1,5 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.mobs.CustomMob;
 import org.bukkit.Bukkit;

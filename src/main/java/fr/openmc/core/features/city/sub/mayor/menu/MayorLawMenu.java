@@ -397,13 +397,13 @@ public class MayorLawMenu extends Menu {
                                     if (!OMCRegistry.FEATURES.DIMENSION_OPENER.get().checkAccess(member, DreamDimensionManager.DIMENSION_NAME, null)) continue;
 
                                     MessagesManager.sendMessage(member, TranslationManager.translation("feature.city.mayor.menu.law.perk_event.dream.trigger"), Prefix.MAYOR, MessageType.INFO, false);
-
-                                    DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+                                    DreamManager dreamManager = OMCRegistry.FEATURES.DREAM.get();
+                                    DBDreamPlayer dbDreamPlayer = dreamManager.getCacheDreamPlayer(player);
 
                                     if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                                        DreamManager.tpPlayerDream(player);
+                                        dreamManager.tpPlayerDream(player);
                                     } else {
-                                        DreamManager.tpPlayerToLastDreamLocation(player);
+                                        dreamManager.tpPlayerToLastDreamLocation(player);
                                     }
                                 }
                                 DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkUtils.getPerkEvent(mayor).getCooldown());

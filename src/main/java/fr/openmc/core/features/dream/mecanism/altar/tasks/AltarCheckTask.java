@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class AltarCheckTask extends BukkitRunnable {
 
-    private static final double MAX_DISTANCE = 30.0;
+    private final double MAX_DISTANCE = 30.0;
 
     @Override
     public void run() {
