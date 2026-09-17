@@ -1,9 +1,9 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.loots.Soul;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -28,7 +28,7 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 				TranslationManager.translationLore("feature.dream.milestone.quest.souls.description",
 						Component.text(SOULS).color(NamedTextColor.LIGHT_PURPLE)
 				),
-				DreamItemRegistry.SOUL,
+				OMCRegistry.DREAM_ITEM.SOUL,
 				MilestoneType.DREAM,
 				DreamSteps.SOULS,
 				new QuestTier(SOULS),
@@ -44,7 +44,7 @@ public class SoulsQuest extends MilestoneQuest implements Listener {
 			if (!DreamUtils.isInDreamWorld(player)) return;
 			ItemStack baseItem = e.getItem().getItemStack();
 			
-			DreamItem item = DreamItemRegistry.getByItemStack(baseItem);
+			DreamItem item = OMCRegistry.DREAM_ITEM.getByItemStack(baseItem);
 			if (item == null) return;
 			if (item instanceof Soul) {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;

@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.AltarCraftingEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.SoulOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -20,7 +20,7 @@ public class SoulOrbQuest extends MilestoneQuest implements Listener {
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.soul_orb.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.soul_orb.description"),
-				DreamItemRegistry.SOUL_ORB,
+				OMCRegistry.DREAM_ITEM.SOUL_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.SOUL_ORB,
 				new QuestTier(1),

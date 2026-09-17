@@ -6,7 +6,6 @@ import de.oliver.fancynpcs.api.NpcData;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
-import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
@@ -22,8 +21,8 @@ import java.util.UUID;
 public class GlaciteNpcManager extends Feature implements HasListeners {
     private final DreamDimensionManager dreamDimensionManager;
 
-    public GlaciteNpcManager(DreamManager manager) {
-        this.dreamDimensionManager = manager.DREAM_DIMENSION;
+    public GlaciteNpcManager() {
+        this.dreamDimensionManager = OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.rng.DreamRngLootEvent;
 import fr.openmc.core.registry.loottable.CustomLootTable;
@@ -21,6 +22,11 @@ import org.bukkit.util.Vector;
 import java.util.List;
 
 public class PlayerFishListener implements Listener {
+    private final CloudFishingManager cloudFishingManager;
+    
+    public PlayerFishListener() {
+        this.cloudFishingManager = OMCRegistry.DREAM_FEATURES.CLOUD_FISHING;
+    }
 
     @EventHandler
     public void onStartFishing(PlayerFishEvent event) {
@@ -49,7 +55,7 @@ public class PlayerFishListener implements Listener {
                             cancel();
 
                             stopHookAtY(hook, hookY);
-                            CloudFishingManager.simulateDreamFishing(player, hook);
+                            cloudFishingManager.simulateDreamFishing(player, hook);
                         }
 
                         if (hook.isOnGround() || hook.isDead()) {
@@ -60,10 +66,10 @@ public class PlayerFishListener implements Listener {
             }
 
             case REEL_IN -> {
-                if (CloudFishingManager.getHookedPlayers().containsKey(player.getUniqueId())) {
-                    CloudFishingManager.getHookedPlayers().get(player.getUniqueId()).endBite();
+                if (cloudFishingManager.getHookedPlayers().containsKey(player.getUniqueId())) {
+                    cloudFishingManager.getHookedPlayers().get(player.getUniqueId()).endBite();
 
-                    CustomLootTable lootTable = CloudFishingManager.FISHING_LOOT_TABLE;
+                    CustomLootTable lootTable = OMCRegistry.DREAM_LOOT_TABLE.CLOUD_FISHING;
                     if (lootTable == null) return;
 
                     List<CustomLoot> rewards = lootTable.rollLoots(player).loots();

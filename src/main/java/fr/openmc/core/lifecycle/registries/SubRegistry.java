@@ -12,7 +12,7 @@ public abstract class SubRegistry<K, V> implements LifecycleRegistry {
 
     public abstract KeyedRegistry<K, ? super V> getParentRegistry();
 
-    public V register(V value) {
+    public <T extends V> T register(T value) {
         registry.add(value);
         getParentRegistry().register(value);
         return value;

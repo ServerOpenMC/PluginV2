@@ -16,7 +16,7 @@ import java.io.IOException;
 public class DreamDimensionManager extends Feature {
 
     public static final String DIMENSION_NAME = "world_omc_dream_dream";
-    public static World DREAM_WORLD;
+    public static World DREAM_WORLD = null;
 
     private File seedFile;
     private FileConfiguration seedConfig;

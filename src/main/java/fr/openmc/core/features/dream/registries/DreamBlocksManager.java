@@ -29,7 +29,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
     private final List<DreamBlock> dreamBlocks = new ArrayList<>();
     private final Map<String, List<DreamBlock>> cacheByType = new HashMap<>();
 
-    private AltarManager ALTAR;
+    public AltarManager ALTAR;
 
     @Override
     public void init() {
@@ -63,7 +63,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
         }
 
         dreamBlocks.clear();
-        if (DreamDimensionManager.DREAM_WORLD.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && DreamDimensionManager.hasSeedChanged()) {
+        if (DreamDimensionManager.DREAM_WORLD.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION.hasSeedChanged()) {
             config.set("blocks", new ArrayList<>());
             save();
             return;

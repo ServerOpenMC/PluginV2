@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.Singularity;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -25,12 +25,12 @@ public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.craft_singularity.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.craft_singularity.description"),
-				DreamItemRegistry.SINGULARITY,
+				OMCRegistry.DREAM_ITEM.SINGULARITY,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_SINGULARITY,
 				new QuestTier(1),
 				TranslationManager.translationLore("feature.dream.milestone.quest.craft_singularity.dialog",
-						Component.text(((DreamEquipableItem) DreamItemRegistry.DREAM_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
+						Component.text(((DreamEquipableItem) OMCRegistry.DREAM_ITEM.DREAM_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
 				)
 		);
 	}
@@ -43,7 +43,7 @@ public class CraftSingularityQuest extends MilestoneQuest implements Listener {
 			ItemStack item = e.getCurrentItem();
 			if (item == null) return;
 			
-			DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+			DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 			if (dreamItem == null) return;
 			if (dreamItem instanceof Singularity) {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;

@@ -1,7 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -27,7 +26,7 @@ public class LegendaryFishingTreasureLootTable extends CustomLootTable {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_HELMET, 0.10, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_BOOTS, 0.10, 1),
-                new ItemLoot(DreamItemRegistry.EWENITE_BLOCK, 0.006, 1)
+                new ItemLoot(OMCRegistry.DREAM_ITEM.EWENITE_BLOCK, 0.006, 1)
         ));
     }
 }

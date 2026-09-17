@@ -7,7 +7,6 @@ import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -16,11 +15,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 public class PlayerEatSomnifere implements Listener {
+    private final DreamManager dreamManager;
+
+    public PlayerEatSomnifere(DreamManager manager) {
+        this.dreamManager = manager;
+    }
+
     @EventHandler
     public void onFoodEated(PlayerItemConsumeEvent event) {
-        DreamItem dreamItem = DreamItemRegistry.getByItemStack(event.getItem());
+        DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(event.getItem());
 
-        if (dreamItem == null || !dreamItem.getId().equals("omc_dream:somnifere")) return;
+        if (dreamItem == null || !dreamItem.getId().equals(OMCRegistry.DREAM_ITEM.SOMNIFERE.getId())) return;
 
         Player player = event.getPlayer();
         if (!OMCRegistry.FEATURES.DIMENSION_OPENER.get().checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
@@ -35,18 +40,18 @@ public class PlayerEatSomnifere implements Listener {
 
             player.setHealth(attribute.getValue());
 
-            DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+            DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
 
             if (dreamPlayer == null) return;
 
             dreamPlayer.addTime(60L);
         } else {
-            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+            DBDreamPlayer dbDreamPlayer = dreamManager.getCacheDreamPlayer(player);
 
             if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                DreamManager.tpPlayerDream(player);
+                dreamManager.tpPlayerDream(player);
             } else {
-                DreamManager.tpPlayerToLastDreamLocation(player);
+                dreamManager.tpPlayerToLastDreamLocation(player);
             }
         }
     }

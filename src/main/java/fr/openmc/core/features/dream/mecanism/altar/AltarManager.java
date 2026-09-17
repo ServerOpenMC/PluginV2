@@ -1,12 +1,12 @@
 package fr.openmc.core.features.dream.mecanism.altar;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.events.AltarBindEvent;
 import fr.openmc.core.features.dream.events.AltarCraftingEvent;
 import fr.openmc.core.features.dream.mecanism.altar.tasks.AltarCheckTask;
 import fr.openmc.core.features.dream.mecanism.altar.tasks.AltarParticlesTask;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
@@ -52,7 +52,7 @@ public class AltarManager extends Feature implements HasListeners {
     }
 
     public void bindItem(Player player, Location altarLoc, ItemStack item) {
-        DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+        DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
         if (dreamItem == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.unusable_item"), Prefix.DREAM, MessageType.ERROR, false);
             return;
@@ -97,12 +97,12 @@ public class AltarManager extends Feature implements HasListeners {
             return;
         }
 
-        DreamItem input = DreamItemRegistry.getByItemStack(hand);
+        DreamItem input = OMCRegistry.DREAM_ITEM.getByItemStack(hand);
         AltarRecipes recipe = AltarRecipes.match(input);
 
         if (recipe == null) return;
 
-        DreamItem soulOrb = DreamItemRegistry.SOUL;
+        DreamItem soulOrb = OMCRegistry.DREAM_ITEM.SOUL;
 
         if (soulOrb == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.altar.message.soul_not_found"), Prefix.DREAM, MessageType.ERROR, false);

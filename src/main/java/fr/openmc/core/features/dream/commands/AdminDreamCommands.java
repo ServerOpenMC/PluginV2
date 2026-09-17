@@ -3,7 +3,7 @@ package fr.openmc.core.features.dream.commands;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.commands.autocomplete.DreamMilestoneStepsAutoComplete;
-import fr.openmc.core.features.dream.listeners.dream.PlayerObtainOrb;
+import fr.openmc.core.features.dream.commands.autocomplete.DreamOrbAutoComplete;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
@@ -15,7 +15,10 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -34,9 +37,9 @@ public class AdminDreamCommands {
     void setProgressionOrb(
             Player player,
             @Named("joueur") @SuggestWith(OnlinePlayerAutoComplete.class) Player toPlayer,
-            @Named("nb_progression_orb") @Suggest({"1", "2", "3", "4", "5"}) int orbProgression
+            @Named("nb_progression_orb") @SuggestWith(DreamOrbAutoComplete.class) int orbProgression
     ) {
-        PlayerObtainOrb.setProgressionOrb(toPlayer, orbProgression, null);
+        dreamManager.setProgressionOrb(toPlayer, orbProgression, null);
         DBDreamPlayer cache = dreamManager.getCacheDreamPlayer(player);
 
         if (cache != null) {

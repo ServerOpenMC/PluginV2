@@ -3,14 +3,18 @@ package fr.openmc.core.registry.features;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 /**
  * Base des features OpenMC.
@@ -24,6 +28,13 @@ public abstract class Feature {
      */
     public final void startInit() {
         try {
+            // * Enregistre et charge les registres
+            if (this instanceof HasRegistries hasRegistries) {
+                for (Supplier<LifecycleRegistry> registry : hasRegistries.getRegistries()) {
+                    OMCRegistry.load(registry.get());
+                }
+            }
+
             DatabaseManager.startFeatureDB(this);
             init();
 

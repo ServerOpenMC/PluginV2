@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -66,7 +67,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
             if (LocationUtils.isSameLocation(clicked.getLocation(), chestLoc)) {
                 event.setCancelled(true);
                 clicked.setType(Material.MUD);
-                CustomLootTable lootTable = manager.METAL_DETECTOR_LOOT_TABLE;
+                CustomLootTable lootTable = OMCRegistry.DREAM_LOOT_TABLE.METAL_DETECTOR;
                 if (lootTable == null) return;
 
                 List<CustomLoot> rewards = lootTable.rollLoots(player).loots();

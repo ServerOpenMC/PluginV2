@@ -110,7 +110,7 @@ public class DreamPlayer {
         if (coldTask != null) {
             coldTask.cancel();
             cold = 0;
-            dreamManager.COLD.applyColdEffects(player, cold);
+            OMCRegistry.DREAM_FEATURES.COLD.applyColdEffects(player, cold);
             coldTask = null;
         }
     }

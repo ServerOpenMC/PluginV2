@@ -4,10 +4,10 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class GlaciteTradeMenu extends Menu {
+    private final DreamManager dreamManager = OMCRegistry.FEATURES.DREAM.get();
+
     public GlaciteTradeMenu(Player owner) {
         super(owner);
     }
@@ -82,8 +84,8 @@ public class GlaciteTradeMenu extends Menu {
                 new ItemMenuBuilder(this, Material.EXPERIENCE_BOTTLE, meta -> {
                     meta.itemName(TranslationManager.translation("feature.dream.trader.menu.time.name"));
                     meta.lore(loreTime);
-                }).setOnClick(event -> {
-                    ItemStack eweniteItem = DreamItemRegistry.EWENITE.getBest();
+                }).setOnClick(_ -> {
+                    ItemStack eweniteItem = OMCRegistry.DREAM_ITEM.EWENITE.getBest();
                     int ewenite = ItemUtils.countItems(player, eweniteItem);
 
                     if (ewenite < 1) {
@@ -93,7 +95,7 @@ public class GlaciteTradeMenu extends Menu {
 
                     ItemUtils.removeItemsFromPlayerInventory(player, eweniteItem, 1);
 
-                    DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+                    DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
                     if (dreamPlayer == null) return;
                     dreamPlayer.addTime(60L);
 
@@ -118,8 +120,8 @@ public class GlaciteTradeMenu extends Menu {
     }
 
     private void handleTrade(Player player, GlaciteTrade trade) {
-        ItemStack glaciteItem = DreamItemRegistry.GLACITE.getBest();
-        ItemStack eweniteItem = DreamItemRegistry.EWENITE.getBest();
+        ItemStack glaciteItem = OMCRegistry.DREAM_ITEM.GLACITE.getBest();
+        ItemStack eweniteItem = OMCRegistry.DREAM_ITEM.EWENITE.getBest();
         int glacite = ItemUtils.countItems(player, glaciteItem);
         int ewenite = ItemUtils.countItems(player, eweniteItem);
 

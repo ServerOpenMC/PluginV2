@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.mobs.CustomMob;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ public class StrayCloudSpawner {
         if (block.getState() instanceof TrialSpawner spawner) {
             TrialSpawnerConfiguration normal = spawner.getNormalConfiguration();
 
-            CustomMob<?> mob = DreamMobsRegistry.DREAM_STRAY.getMob();
+            CustomMob<?> mob = OMCRegistry.DREAM_MOB.DREAM_STRAY.getMob();
             EntitySnapshot snapshot = mob.getMobSnapshot();
 
             if (snapshot == null) {

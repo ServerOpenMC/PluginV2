@@ -1,9 +1,9 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.OldCreakingAxe;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -24,12 +24,12 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.old_axe.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.old_axe.description"),
-				DreamItemRegistry.OLD_CREAKING_AXE,
+				OMCRegistry.DREAM_ITEM.OLD_CREAKING_AXE,
 				MilestoneType.DREAM,
 				DreamSteps.OLD_AXE,
 				new QuestTier(1),
 				TranslationManager.translationLore("feature.dream.milestone.quest.old_axe.dialog",
-						Component.text(((DreamEquipableItem) DreamItemRegistry.OLD_CREAKING_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
+						Component.text(((DreamEquipableItem) OMCRegistry.DREAM_ITEM.OLD_CREAKING_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
 				)
 		);
 	}
@@ -39,7 +39,7 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 		ItemStack item = e.getCurrentItem();
 		if (item == null) return;
 		
-		DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+		DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 		if (dreamItem == null) return;
 		if (dreamItem instanceof OldCreakingAxe) {
 			if (e.getWhoClicked() instanceof Player player) {

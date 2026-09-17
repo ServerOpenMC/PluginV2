@@ -59,16 +59,10 @@ public final class OMCRegistry {
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
-                    () -> DREAM_ITEM = new DreamItemRegistry(),
-                    RegistryLoadingType.AFTER_IA),
-            new RegistryContext(
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_LOOT_TABLES = new CustomLootTableRegistry(),
-                    RegistryLoadingType.AFTER_IA),
-            new RegistryContext(
-                    () -> DREAM_LOOT_TABLE = new DreamLootTableRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_AMBIENTS = new CustomAmbientRegistry(),
@@ -78,18 +72,13 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
-            new RegistryContext(() -> DREAM_MOB = new DreamMobsRegistry(),
-                    RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> FEATURES = new FeaturesRegistry(),
-                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA),
-            new RegistryContext(
-                    () -> DREAM_FEATURES = new DreamFeaturesRegistry(),
-                    RegistryLoadingType.AFTER_IA) // todo: faire que les registres pour chaque feature se lance en meme temps que la feature.
+                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA)
     ));
 
     private OMCRegistry() {}
@@ -148,7 +137,10 @@ public final class OMCRegistry {
     }
 
     private static LifecycleRegistry load(RegistryContext ctx) {
-        LifecycleRegistry registry = ctx.registry().get();
+        return load(ctx.registry().get());
+    }
+
+    public static LifecycleRegistry load(LifecycleRegistry registry) {
         LOADED.add(registry);
         return registry;
     }

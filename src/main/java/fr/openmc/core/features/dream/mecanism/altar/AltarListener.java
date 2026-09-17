@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.altar;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamBlocksManager;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -19,6 +19,14 @@ import org.bukkit.inventory.ItemStack;
 
 public class AltarListener implements Listener {
 
+    private final DreamBlocksManager dreamBlocksManager;
+    private final AltarManager altarManager;
+
+    public AltarListener() {
+        this.dreamBlocksManager = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS;
+        this.altarManager = dreamBlocksManager.ALTAR;
+    }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
@@ -28,12 +36,12 @@ public class AltarListener implements Listener {
         Block block = event.getClickedBlock();
         Location loc = block.getLocation();
 
-        if (!DreamBlocksManager.isDreamBlock(loc, "altar")) return;
+        if (!dreamBlocksManager.isDreamBlock(loc, "altar")) return;
 
         event.setCancelled(true);
 
-        if (AltarManager.hasItem(loc)) {
-            AltarManager.tryRitual(player, loc);
+        if (altarManager.hasItem(loc)) {
+            altarManager.tryRitual(player, loc);
             return;
         }
 
@@ -45,7 +53,7 @@ public class AltarListener implements Listener {
             return;
         }
 
-        DreamItem dreamItem = DreamItemRegistry.getByItemStack(handItem);
+        DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(handItem);
 
         if (dreamItem == null) {
             MessagesManager.sendMessage(player,
@@ -54,16 +62,16 @@ public class AltarListener implements Listener {
             return;
         }
 
-        AltarManager.bindItem(player, loc, handItem);
+        altarManager.bindItem(player, loc, handItem);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        AltarManager.boundPlayers.entrySet().removeIf(entry -> {
+        altarManager.boundPlayers.entrySet().removeIf(entry -> {
             if (entry.getValue().equals(player.getUniqueId())) {
-                AltarManager.unbind(entry.getKey());
+                altarManager.unbind(entry.getKey());
                 return true;
             }
             return false;
@@ -74,9 +82,9 @@ public class AltarListener implements Listener {
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
-        AltarManager.boundPlayers.entrySet().removeIf(entry -> {
+        altarManager.boundPlayers.entrySet().removeIf(entry -> {
             if (entry.getValue().equals(player.getUniqueId())) {
-                AltarManager.unbind(entry.getKey());
+                altarManager.unbind(entry.getKey());
                 return true;
             }
             return false;

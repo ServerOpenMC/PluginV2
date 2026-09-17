@@ -15,16 +15,16 @@ import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 
 public class DreamFeaturesRegistry extends SubRegistry<String, Feature> {
-    public final Feature DREAM_DIMENSION = register(new DreamDimensionManager());
-    public final Feature GLACITE_NPC = register(new GlaciteNpcManager(OMCRegistry.FEATURES.DREAM.get()));
-    public final Feature PLAYER_CLONE_NPC = register(new PlayerCloneNpc());
-    public final Feature DREAM_BLOCKS = register(new DreamBlocksManager());
-    public final Feature BLOCK_DROPS = register(new DreamBlocksDropsManager());
-    public final Feature CLOUD_FISHING = register(new CloudFishingManager());
-    public final Feature METAL_DETECTOR = register(new MetalDetectorManager());
-    public final Feature COLD = register(new ColdManager());
-    public final Feature SINGULARITY = register(new SingularityManager());
-    public final Feature DREAM_GHOST = register(new DreamGhostManager());
+    public final DreamDimensionManager DREAM_DIMENSION = register(new DreamDimensionManager());
+    public final GlaciteNpcManager GLACITE_NPC = register(new GlaciteNpcManager());
+    public final PlayerCloneNpc PLAYER_CLONE_NPC = register(new PlayerCloneNpc());
+    public final DreamBlocksManager DREAM_BLOCKS = register(new DreamBlocksManager());
+    public final DreamBlocksDropsManager BLOCK_DROPS = register(new DreamBlocksDropsManager());
+    public final CloudFishingManager CLOUD_FISHING = register(new CloudFishingManager());
+    public final MetalDetectorManager METAL_DETECTOR = register(new MetalDetectorManager());
+    public final ColdManager COLD = register(new ColdManager());
+    public final SingularityManager SINGULARITY = register(new SingularityManager());
+    public final DreamGhostManager DREAM_GHOST = register(new DreamGhostManager());
 
     @Override
     public KeyedRegistry<String, ? super Feature> getParentRegistry() {

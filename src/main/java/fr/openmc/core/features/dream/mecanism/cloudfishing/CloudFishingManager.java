@@ -1,11 +1,9 @@
 package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
-import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -26,8 +24,7 @@ public class CloudFishingManager extends Feature implements HasListeners {
     @Getter
     private final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
 
-    public final double Y_CLOUD_FISHING = 120 - 5; // CloudChunk.MIN_HEIGHT_CLOUD - 5
-    public final CustomLootTable FISHING_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.CLOUD_FISHING;
+    public static final double Y_CLOUD_FISHING = 120 - 5; // CloudChunk.MIN_HEIGHT_CLOUD - 5
 
     @Override
     public Set<ListenerFactory> getListeners() {

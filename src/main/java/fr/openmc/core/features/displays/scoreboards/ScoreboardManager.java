@@ -35,7 +35,7 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
                 new MainScoreboard(OMCRegistry.FEATURES.CORPSE.get()),
                 new RestartScoreboard(),
                 new CityWarScoreboard(),
-                new DreamScoreboard()
+                new DreamScoreboard(OMCRegistry.FEATURES.DREAM.get())
         );
 
         Bukkit.getScheduler().runTaskTimer(

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.cold;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
@@ -39,7 +39,7 @@ public class ColdManager extends Feature implements HasListeners {
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                ColdListener::new
+                () -> new ColdListener(OMCRegistry.FEATURES.DREAM.get())
         );
     }
 
@@ -51,7 +51,7 @@ public class ColdManager extends Feature implements HasListeners {
 
         for (ItemStack item : armorContents) {
             if (item == null || item.getType() == Material.AIR) continue;
-            if (DreamItemRegistry.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
+            if (OMCRegistry.DREAM_ITEM.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
                 Integer coldResistance = dreamEquipableItem.getColdResistance();
 
                 if (coldResistance != null) {

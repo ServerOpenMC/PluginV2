@@ -118,7 +118,7 @@ public class DreamItemRegistry extends SubRegistry<String, DreamItem> {
     public final DreamItem SOUL_AXE = register(new SoulAxe());
     public final DreamItem CLOUD_FISHING_ROD = register(new CloudFishingRod());
     public final DreamItem METEO_WAND = register(new MeteoWand());
-    public final DreamItem METAL_DETECTOR = register(new MetalDetector(OMCRegistry.FEATURES.DREAM.get().METAL_DETECTOR));
+    public final DreamItem METAL_DETECTOR = register(new MetalDetector(OMCRegistry.DREAM_FEATURES.METAL_DETECTOR));
     public final DreamItem CRYSTALIZED_PICKAXE = register(new CrystalizedPickaxe());
     public final DreamItem MECHANIC_PICKAXE = register(new MecanicPickaxe());
 

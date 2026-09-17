@@ -76,7 +76,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
             int z = (int) origin.get("z");
 
             int y;
-            if (DreamUtils.isDreamWorld(world) && OMCRegistry.FEATURES.DREAM.get().DREAM_DIMENSION.hasSeedChanged()) {
+            if (DreamUtils.isDreamWorld(world) && OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION.hasSeedChanged()) {
                 OMCLogger.warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
                 y = world.getHighestBlockYAt(x, z) + 1;
             } else {

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
@@ -42,7 +43,7 @@ public class MudBeachMobSpawningListener implements Listener {
 
         double choice = Math.random();
         if (choice < CORRUPTED_TADPOLE_PROBABILITY) {
-            DreamMobsRegistry.CORRUPTED_TADPOLE.spawn(spawningLoc);
+            OMCRegistry.DREAM_MOB.CORRUPTED_TADPOLE.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

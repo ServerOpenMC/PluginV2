@@ -1,9 +1,9 @@
 package fr.openmc.core.features.dream.placeholders;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholder;
 
 public class DreamItemTooltipPlaceholder implements IAPlaceholder {
@@ -18,7 +18,7 @@ public class DreamItemTooltipPlaceholder implements IAPlaceholder {
             return null;
         }
 
-        DreamItem item = DreamItemRegistry.getBootstrapRegistry().get("omc_dream:" + idItem);
+        DreamItem item = OMCRegistry.DREAM_ITEM.getBootstrapRegistry().get("omc_dream:" + idItem);
 
         if (item == null || !(item.getMeta() instanceof DreamItemMeta d)) return null;
 

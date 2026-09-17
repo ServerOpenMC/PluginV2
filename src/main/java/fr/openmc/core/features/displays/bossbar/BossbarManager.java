@@ -1,6 +1,7 @@
 package fr.openmc.core.features.displays.bossbar;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
 import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
@@ -29,7 +30,7 @@ public class BossbarManager extends Feature implements HasCommands {
     public void init() {
         registerBossbars(
                 new MainBossbar(),
-                new DreamBossBar(),
+                new DreamBossBar(OMCRegistry.FEATURES.DREAM.get()),
                 new DailyEventBossbar()
         );
 

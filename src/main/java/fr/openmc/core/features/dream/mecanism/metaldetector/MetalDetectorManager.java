@@ -1,11 +1,9 @@
 package fr.openmc.core.features.dream.mecanism.metaldetector;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
-import fr.openmc.core.registry.loottable.CustomLootTable;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -13,8 +11,6 @@ import java.util.*;
 
 public class MetalDetectorManager extends Feature implements HasListeners {
     public final Map<UUID, MetalDetectorTask> hiddenChests = new HashMap<>();
-
-    public final CustomLootTable METAL_DETECTOR_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.METAL_DETECTOR;
 
     @Override
     public Set<ListenerFactory> getListeners() {
