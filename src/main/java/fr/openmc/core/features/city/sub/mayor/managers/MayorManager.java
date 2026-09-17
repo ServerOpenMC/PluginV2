@@ -148,7 +148,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         return Set.of(
                 () -> new JoinListener(cityManager, this),
                 RagePerk::new,
-                () -> new MinerPerk(cityManager),
+                MinerPerk::new,
                 MascotFriendlyPerk::new,
                 () -> new DemonFruitPerk(cityManager, this),
                 CityHunterPerk::new,

@@ -1,8 +1,8 @@
-package fr.openmc.core.features.city.listeners.protections;
+package fr.openmc.core.features.city.sub.protections.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

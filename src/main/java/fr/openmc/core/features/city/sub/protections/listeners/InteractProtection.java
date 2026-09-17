@@ -1,10 +1,10 @@
-package fr.openmc.core.features.city.listeners.protections;
+package fr.openmc.core.features.city.sub.protections.listeners;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;

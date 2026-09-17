@@ -8,7 +8,7 @@ import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.messages.MessageType;

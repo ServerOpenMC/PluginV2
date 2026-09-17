@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
@@ -17,12 +16,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class MinerPerk implements Listener {
-
-    private final CityManager cityManager;
-
-    public MinerPerk(CityManager cityManager) {
-        this.cityManager = cityManager;
-    }
 
     /**
      * Update the player's effects based on the current phase and their city perks.

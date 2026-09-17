@@ -1,7 +1,7 @@
-package fr.openmc.core.features.city.listeners.protections;
+package fr.openmc.core.features.city.sub.protections.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;

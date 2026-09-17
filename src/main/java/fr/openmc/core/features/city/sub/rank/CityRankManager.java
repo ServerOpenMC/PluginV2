@@ -6,27 +6,31 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.db.DBCityRank;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
-public class CityRankManager extends Feature implements HasDatabase {
+public class CityRankManager extends Feature implements HasDatabase, HasCommands {
 
-	private final CityManager cityManager;
 	private Dao<DBCityRank, String> ranksDao;
-
-	public CityRankManager(CityManager cityManager) {
-		this.cityManager = cityManager;
-	}
 
 	@Override
 	public void init() {
 		loadRanks();
+	}
+
+	@Override
+	public Set<Object> getCommands() {
+		return Set.of(
+				new CityRankCommands(OMCRegistry.FEATURES.CITY.get())
+		);
 	}
 	
 	/**

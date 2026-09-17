@@ -12,19 +12,15 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
-import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.db.*;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.features.city.sub.rank.CityRankCommands;
 import fr.openmc.core.features.city.sub.view.CityViewManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
-import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
-import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -43,7 +39,7 @@ import java.util.function.Supplier;
 
 @Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
 public class CityManager extends Feature
-        implements HasDatabase, HasListeners, HasCommands, HasRegistries {
+        implements HasDatabase, HasCommands, HasRegistries {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
@@ -66,20 +62,11 @@ public class CityManager extends Feature
         return Set.of(
                 new AdminCityCommands(this),
                 new CityCommands(this),
-                new CityChatCommand(),
                 new CityPermsCommands(),
                 new CityChestCommand(),
-                new CityRankCommands(this),
                 new CityTopCommands(this),
                 new CityInviteCommands(),
                 new CityClaimCommands()
-        );
-    }
-
-    @Override
-    public Set<ListenerFactory> getListeners() {
-        return Set.of(
-                CityChatListener::new
         );
     }
 

@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.listeners.protections;
+package fr.openmc.core.features.city.sub.protections.listeners;
 
 import fr.openmc.core.features.city.models.city.City;
 import org.bukkit.Chunk;

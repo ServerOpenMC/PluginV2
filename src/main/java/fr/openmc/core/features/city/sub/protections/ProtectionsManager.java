@@ -1,9 +1,9 @@
-package fr.openmc.core.features.city.sub;
+package fr.openmc.core.features.city.sub.protections;
 
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.listeners.protections.*;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.protections.listeners.*;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;

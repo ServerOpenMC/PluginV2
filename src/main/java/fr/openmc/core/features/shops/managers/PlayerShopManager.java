@@ -5,7 +5,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.events.PlaceShopEvent;
 import fr.openmc.core.features.shops.models.Shop;

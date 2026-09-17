@@ -1,8 +1,8 @@
-package fr.openmc.core.features.city.listeners.protections;
+package fr.openmc.core.features.city.sub.protections.listeners;
 
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import io.papermc.paper.event.entity.EntityCollideWithEntityEvent;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
