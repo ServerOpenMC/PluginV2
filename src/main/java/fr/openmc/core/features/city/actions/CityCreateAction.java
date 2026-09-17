@@ -3,10 +3,10 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -117,7 +117,7 @@ public class CityCreateAction {
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
         // Lois
-        cityManager.MAYOR.createCityLaws(city, false, null);
+        OMCRegistry.CITY_FEATURES.MAYOR.createCityLaws(city, false, null);
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);

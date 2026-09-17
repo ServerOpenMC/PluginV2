@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.notation.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.utils.text.DateUtils;
@@ -17,12 +17,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinListener implements Listener {
-    private final CityManager cityManager;
     private final NotationManager notationManager;
 
-    public PlayerJoinListener(CityManager cityManager) {
-        this.cityManager = cityManager;
-        this.notationManager = cityManager.NOTATION;
+    public PlayerJoinListener() {
+        this.notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
     }
 
     @EventHandler

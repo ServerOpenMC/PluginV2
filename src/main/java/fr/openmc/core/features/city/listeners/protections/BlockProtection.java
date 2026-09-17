@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,12 +10,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockProtection implements Listener {
-    private final CityManager cityManager;
     private final ProtectionsManager protectionsManager;
 
-    public BlockProtection(CityManager cityManager) {
-        this.cityManager = cityManager;
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public BlockProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

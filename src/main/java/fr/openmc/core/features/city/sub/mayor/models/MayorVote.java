@@ -33,6 +33,6 @@ public class MayorVote {
     }
 
     public MayorCandidate getCandidate() {
-        return OMCRegistry.FEATURES.CITY.get().MAYOR.getCandidate(candidate);
+        return OMCRegistry.CITY_FEATURES.MAYOR.getCandidate(candidate);
     }
 }

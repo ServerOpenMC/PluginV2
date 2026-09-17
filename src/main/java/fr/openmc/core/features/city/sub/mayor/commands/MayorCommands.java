@@ -35,7 +35,7 @@ public class MayorCommands {
         Location warp = law.getWarp();
 
         if (warp == null) {
-            if (OMCRegistry.FEATURES.CITY.get().MAYOR.phaseMayor == 2) {
+            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }

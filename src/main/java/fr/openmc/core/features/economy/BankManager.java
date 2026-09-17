@@ -266,7 +266,7 @@ public class BankManager extends Feature implements HasDatabase {
                 () -> {
                     OMCLogger.info("Applying all player interests...");
                     applyAllPlayerInterests();
-                    OMCRegistry.FEATURES.CITY.get().CITY_BANK.applyAllCityInterests();
+                    OMCRegistry.CITY_FEATURES.CITY_BANK.applyAllCityInterests();
                     OMCLogger.info("All player interests applied successfully.");
 
                     interestTask = null;

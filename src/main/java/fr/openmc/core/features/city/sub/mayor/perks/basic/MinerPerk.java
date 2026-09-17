@@ -1,8 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -28,8 +29,8 @@ public class MinerPerk implements Listener {
      *
      * @param player The player to update.
      */
-    public static void updatePlayerEffects(Player player, CityManager cityManager) {
-        int phase = cityManager.MAYOR.phaseMayor;
+    public static void updatePlayerEffects(Player player) {
+        int phase = OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor;
 
         if (phase == 2) {
             City playerCity = City.ofPlayer(player);
@@ -46,14 +47,14 @@ public class MinerPerk implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        updatePlayerEffects(player, cityManager);
+        updatePlayerEffects(player);
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            updatePlayerEffects(player, cityManager);
+            updatePlayerEffects(player);
         }, 1L);
     }
 
@@ -68,7 +69,7 @@ public class MinerPerk implements Listener {
         Player player = event.getPlayer();
         if (event.getItem().getType() == Material.MILK_BUCKET)  {
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
-                    updatePlayerEffects(player, cityManager), 1L);
+                    updatePlayerEffects(player), 1L);
         }
     }
 
@@ -87,6 +88,6 @@ public class MinerPerk implements Listener {
         if (!DreamUtils.isDreamWorld(event.getFrom())) return;
         if (DreamUtils.isDreamWorld(event.getTo())) return;
 
-        updatePlayerEffects(event.getPlayer(), cityManager);
+        updatePlayerEffects(event.getPlayer());
     }
 }

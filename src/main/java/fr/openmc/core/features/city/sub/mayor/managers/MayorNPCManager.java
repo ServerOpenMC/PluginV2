@@ -8,9 +8,8 @@ import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.MayorNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.OwnerNpcMenu;
@@ -44,12 +43,10 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
     private static final HashMap<UUID, OwnerNPC> ownerNpcMap = new HashMap<>();
     private static final HashMap<UUID, MayorNPC> mayorNpcMap = new HashMap<>();
 
-    private final CityManager cityManager;
     private final FancyNpcsHook fancyNpcsHook;
 
-    public MayorNPCManager(CityManager cityManager, FancyNpcsHook fancyNpcsHook) {
+    public MayorNPCManager(FancyNpcsHook fancyNpcsHook) {
         this.fancyNpcsHook = fancyNpcsHook;
-        this.cityManager = cityManager;
 
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
@@ -226,7 +223,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                 return;
             }
 
-            if (cityManager.MAYOR.phaseMayor == 1) {
+            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_mayor_yet"), Prefix.MAYOR, MessageType.INFO, true);
                     return;
@@ -318,7 +315,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                 return;
             }
 
-            if (cityManager.MAYOR.phaseMayor == 1) {
+            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) return;
 
                 Component message = TranslationManager.translation("feature.city.mayor.npc.move.prompt")

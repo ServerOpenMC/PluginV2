@@ -1,7 +1,8 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
-import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
@@ -78,7 +79,7 @@ public class MascotsDeathListener implements Listener {
                 player.setVelocity(direction);
             }
 
-            cityManager.WAR.endWar(war);
+            OMCRegistry.CITY_FEATURES.WAR.endWar(war);
         } else {
             // TODO: système de vulnerabilité d'une ville, check si la ville attaquée est vulnérable, si oui la ville attaquée est supprimée
         }

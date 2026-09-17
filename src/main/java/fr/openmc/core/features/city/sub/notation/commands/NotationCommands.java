@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.notation.commands;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.menu.NotationDialog;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -19,7 +18,7 @@ public class NotationCommands {
     @Description("Ouvre le menu des notations")
     void notationTest(Player sender) {
         String weekStr = DateUtils.getWeekFormat();
-        if (OMCRegistry.FEATURES.CITY.get().NOTATION.getSortedNotationForWeek(weekStr) == null) {
+        if (OMCRegistry.CITY_FEATURES.NOTATION.getSortedNotationForWeek(weekStr) == null) {
 	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.command.none"), Prefix.CITY, MessageType.INFO, false);
             return;
         }

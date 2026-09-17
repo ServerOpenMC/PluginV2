@@ -4,9 +4,9 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
-import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.models.db.DBCity;
 import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
@@ -98,12 +98,12 @@ public class City {
      */
     public City(UUID uniqueId, String name, Player owner, CityType type, Chunk chunk) {
         this.cityManager = OMCRegistry.FEATURES.CITY.get();
-        this.mayorManager = cityManager.MAYOR;
-        this.cityRankManager = cityManager.RANKS;
-        this.notationManager = cityManager.NOTATION;
-        this.cityBankManager = cityManager.CITY_BANK;
-        this.warManager = cityManager.WAR;
-        this.statisticsManager = cityManager.STATS;
+        this.mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
+        this.cityRankManager = OMCRegistry.CITY_FEATURES.RANKS;
+        this.notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
+        this.cityBankManager = OMCRegistry.CITY_FEATURES.CITY_BANK;
+        this.warManager = OMCRegistry.CITY_FEATURES.WAR;
+        this.statisticsManager = OMCRegistry.CITY_FEATURES.STATS;
 
         this.uniqueId = uniqueId;
         this.name = name;
@@ -140,12 +140,12 @@ public class City {
      */
     public City(UUID uniqueId, String name, double balance, String type, int power, int freeClaims, int level) {
         this.cityManager = OMCRegistry.FEATURES.CITY.get();
-        this.mayorManager = cityManager.MAYOR;
-        this.cityRankManager = cityManager.RANKS;
-        this.notationManager = cityManager.NOTATION;
-        this.cityBankManager = cityManager.CITY_BANK;
-        this.warManager = cityManager.WAR;
-        this.statisticsManager = cityManager.STATS;
+        this.mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
+        this.cityRankManager = OMCRegistry.CITY_FEATURES.RANKS;
+        this.notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
+        this.cityBankManager = OMCRegistry.CITY_FEATURES.CITY_BANK;
+        this.warManager = OMCRegistry.CITY_FEATURES.WAR;
+        this.statisticsManager = OMCRegistry.CITY_FEATURES.STATS;
 
         this.uniqueId = uniqueId;
         this.name = name;

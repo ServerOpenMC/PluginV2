@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub;
 
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.listeners.protections.*;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.shops.managers.ShopManager;
@@ -37,22 +37,22 @@ public class ProtectionsManager extends Feature implements HasListeners {
 	@Override
 	public Set<ListenerFactory> getListeners() {
 		return Set.of(
-				() -> new BlockProtection(cityManager),
-				() -> new BowProtection(cityManager),
-				() -> new DamageProtection(cityManager),
-				() -> new EntityProtection(cityManager),
+                BlockProtection::new,
+                BowProtection::new,
+                DamageProtection::new,
+                EntityProtection::new,
 				() -> new ExplodeProtection(cityManager),
-				() -> new FireProtection(cityManager),
-				() -> new FishProtection(cityManager)	,
-				() -> new HangingProtection(cityManager),
-				() -> new InteractProtection(cityManager),
-				() -> new LeashProtection(cityManager),
-				() -> new MountProtection(cityManager),
+                FireProtection::new,
+                FishProtection::new,
+                HangingProtection::new,
+                InteractProtection::new,
+                LeashProtection::new,
+                MountProtection::new,
 				PistonProtection::new,
 				() -> new PotionProtection(cityManager),
-				() -> new TeleportProtection(cityManager),
-				() -> new TramplingProtection(cityManager),
-				() -> new VehicleProtection(cityManager)
+                TeleportProtection::new,
+                TramplingProtection::new,
+                VehicleProtection::new
 		);
 	}
 

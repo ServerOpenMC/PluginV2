@@ -1,13 +1,14 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.models.CityPermission;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -268,7 +269,7 @@ public class AdminCityCommands {
     @Subcommand("claim bypass")
     @CommandPermission("omc.admins.commands.admincity.claim.bypass")
     public void bypass(Player player) {
-        ProtectionsManager protectionsManager = cityManager.PROTECTIONS;
+        ProtectionsManager protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
         UUID uuid = player.getUniqueId();
         boolean canBypass = protectionsManager.canBypassPlayer.contains(uuid);
 

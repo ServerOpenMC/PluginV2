@@ -79,7 +79,7 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
         if (block.getType() != targetType) return false;
         if (!isBreakable(block.getType())) return false;
-        ProtectionsManager protectionsManager = OMCRegistry.FEATURES.CITY.get().PROTECTIONS;
+        ProtectionsManager protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
         if (!protectionsManager.canInteract(player, block.getLocation())) return false;
 
         return block.breakNaturally(tool);

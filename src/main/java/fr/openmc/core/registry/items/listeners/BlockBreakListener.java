@@ -17,7 +17,7 @@ public class BlockBreakListener implements Listener {
     private final ProtectionsManager protectionsManager;
 
     public BlockBreakListener() {
-        this.protectionsManager = OMCRegistry.FEATURES.CITY.get().PROTECTIONS;
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

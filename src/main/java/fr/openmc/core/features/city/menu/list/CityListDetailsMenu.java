@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
@@ -77,7 +77,7 @@ public class CityListDetailsMenu extends Menu {
 
 		List<Component> loreOwner = new ArrayList<>();
 
-		if (OMCRegistry.FEATURES.CITY.get().MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+		if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 			Mayor mayor = this.city.getMayor();
 			ElectionType electionType = mayor.getElectionType();
 			Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());

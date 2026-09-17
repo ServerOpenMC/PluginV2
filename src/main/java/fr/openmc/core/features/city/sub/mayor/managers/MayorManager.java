@@ -7,9 +7,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.commands.MayorCommands;
@@ -85,7 +85,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         this.cityManager = cityManager;
         this.fancyNpcsHook = fancyNpcsHook;
         this.itemsAdderHook = itemsAdderHook;
-        this.mayorNPCManager = new MayorNPCManager(cityManager, fancyNpcsHook);
+        this.mayorNPCManager = new MayorNPCManager(fancyNpcsHook);
     }
 
     @Override
@@ -380,7 +380,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
                     // Mineur Dévoué
                     if (PerkUtils.hasPerk(oldMayor, Perks.MINER.getId())) {
-                        MinerPerk.updatePlayerEffects(player, cityManager);
+                        MinerPerk.updatePlayerEffects(player);
                     }
 
                     // Mascotte de Compagnie
@@ -413,7 +413,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                 if (player == null) continue;
                 // Mineur Dévoué
                 if (PerkUtils.hasPerk(city.getMayor(), Perks.MINER.getId())) {
-                    MinerPerk.updatePlayerEffects(player, cityManager);
+                    MinerPerk.updatePlayerEffects(player);
                 }
 
                 // Mascotte de Compagnie

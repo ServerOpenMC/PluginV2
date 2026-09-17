@@ -5,7 +5,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -62,7 +61,7 @@ public class MoreInfoMenu extends Menu {
 
         List<Component> lore1 = TranslationManager.translationLore("feature.city.mayor.menu.more_info.reforms.lore");
 
-        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
         int phase = mayorManager.phaseMayor;
 
         inventory.put(11, new ItemMenuBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {

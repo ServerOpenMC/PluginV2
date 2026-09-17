@@ -1,8 +1,9 @@
 package fr.openmc.core.features.city.sub.notation.commands;
 
 import fr.openmc.api.input.dialog.DialogInput;
-import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.menu.NotationEditionDialog;
@@ -25,7 +26,7 @@ public class AdminNotationCommands {
 
     public AdminNotationCommands(CityManager cityManager) {
         this.cityManager = cityManager;
-        this.notationManager = cityManager.NOTATION;
+        this.notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
     }
 
     @Command({"admcity notation edit"})

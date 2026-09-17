@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import io.papermc.paper.event.entity.EntityCollideWithEntityEvent;
 import org.bukkit.entity.Enderman;
@@ -19,8 +19,8 @@ import org.bukkit.inventory.Merchant;
 public class EntityProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public EntityProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public EntityProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

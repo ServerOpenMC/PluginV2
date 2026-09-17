@@ -7,10 +7,10 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
@@ -49,8 +49,8 @@ public class MainWarMenu extends PaginatedMenu {
     public MainWarMenu(Player owner) {
         super(owner);
         this.cityManager = OMCRegistry.FEATURES.CITY.get();
-        this.warManager = cityManager.WAR;
-        this.mayorManager = cityManager.MAYOR;
+        this.warManager = OMCRegistry.CITY_FEATURES.WAR;
+        this.mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
     }
 
     @Override

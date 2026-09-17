@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,8 +12,8 @@ import org.bukkit.event.block.BlockIgniteEvent;
 public class FireProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public FireProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public FireProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
     @EventHandler(ignoreCancelled = true)
     public void onFireIgnite(BlockIgniteEvent event) {

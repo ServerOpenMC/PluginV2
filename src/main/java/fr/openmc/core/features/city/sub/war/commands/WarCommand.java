@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
@@ -31,12 +31,10 @@ import java.util.UUID;
 @Command({"guerre", "war"})
 @CommandPermission("omc.commands.city.war")
 public class WarCommand {
-    private final CityManager cityManager;
     private final WarManager warManager;
 
-    public WarCommand(CityManager cityManager) {
-        this.cityManager = cityManager;
-        this.warManager = cityManager.WAR;
+    public WarCommand() {
+        this.warManager = OMCRegistry.CITY_FEATURES.WAR;
     }
 
     @CommandPlaceholder()

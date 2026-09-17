@@ -16,24 +16,16 @@ import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.db.*;
-import fr.openmc.core.features.city.sub.ProtectionsManager;
-import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.milestone.CityMilestoneManager;
-import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.rank.CityRankCommands;
-import fr.openmc.core.features.city.sub.rank.CityRankManager;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.view.CityViewManager;
-import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -47,45 +39,26 @@ import org.jetbrains.annotations.ApiStatus;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Supplier;
 
 @Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
 public class CityManager extends Feature
-        implements HasDatabase, HasListeners, HasCommands {
+        implements HasDatabase, HasListeners, HasCommands, HasRegistries {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
-    // * SUB-FEATURE
-    // todo: faire un sous registre pour les CITY_FEATURES
-    public MayorManager MAYOR;
-    public ProtectionsManager PROTECTIONS;
-    public WarManager WAR;
-    public CityBankManager CITY_BANK;
-    public CityStatisticsManager STATS;
-    public NotationManager NOTATION;
-    public CityRankManager RANKS;
-    public CityMilestoneManager CITY_MILESTONE;
-
-    private ItemsAdderHook itemsAdderHook;
-    private FancyNpcsHook fancyNpcsHook;
-
     @Override
     public void init() {
-        this.itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
-        this.fancyNpcsHook = OMCRegistry.HOOKS.FANCY_NPCS;
-
         loadCities();
+    }
 
-        // SUB-FEATURE
-        this.MAYOR = OMCRegistry.FEATURES.register(new MayorManager(this, fancyNpcsHook, itemsAdderHook));
-        this.PROTECTIONS = OMCRegistry.FEATURES.register(new ProtectionsManager(this));
-        this.WAR = OMCRegistry.FEATURES.register(new WarManager());
-        this.CITY_BANK = OMCRegistry.FEATURES.register(new CityBankManager(this, MAYOR));
-        this.STATS = OMCRegistry.FEATURES.register(new CityStatisticsManager());
-        this.NOTATION = OMCRegistry.FEATURES.register(new NotationManager(this));
-        this.RANKS = OMCRegistry.FEATURES.register(new CityRankManager(this));
-        this.CITY_MILESTONE = OMCRegistry.FEATURES.register(new CityMilestoneManager(this));
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> OMCRegistry.CITY_FEATURES = new CityFeaturesRegistry()
+        );
     }
 
     @Override
@@ -510,9 +483,9 @@ public class CityManager extends Feature
     public void deleteCity(City city) {
         if (city == null) return;
 
-        MAYOR.cityMayor.remove(city.getUniqueId());
-        MAYOR.cityElections.remove(city.getUniqueId());
-        MAYOR.playerVote.remove(city.getUniqueId());
+        OMCRegistry.CITY_FEATURES.MAYOR.cityMayor.remove(city.getUniqueId());
+        OMCRegistry.CITY_FEATURES.MAYOR.cityElections.remove(city.getUniqueId());
+        OMCRegistry.CITY_FEATURES.MAYOR.playerVote.remove(city.getUniqueId());
 
         List<UUID> membersCopy = new ArrayList<>(city.getMembers());
         for (UUID memberId : membersCopy) {
@@ -562,7 +535,7 @@ public class CityManager extends Feature
         }
 
         MascotsManager.removeMascotsFromCity(city);
-        MAYOR.mayorNPCManager.removeNPCS(city.getUniqueId());
+        OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.removeNPCS(city.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -576,7 +549,7 @@ public class CityManager extends Feature
                 permissionsDelete.where().eq("city_uuid", city.getUniqueId());
                 permissionsDao.delete(permissionsDelete.prepare());
 
-                RANKS.removeRanks(city);
+                OMCRegistry.CITY_FEATURES.RANKS.removeRanks(city);
 
                 DeleteBuilder<DBCityClaim, String> claimsDelete = claimsDao.deleteBuilder();
                 claimsDelete.where().eq("city_uuid", city.getUniqueId());
@@ -586,7 +559,7 @@ public class CityManager extends Feature
                 chestsDelete.where().eq("city_uuid", city.getUniqueId());
                 chestsDao.delete(chestsDelete.prepare());
 
-                MAYOR.removeCity(city);
+                OMCRegistry.CITY_FEATURES.MAYOR.removeCity(city);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

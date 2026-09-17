@@ -177,7 +177,7 @@ public class War {
     public void end() {
         this.phase = WarPhase.ENDED;
 
-        OMCRegistry.FEATURES.CITY.get().WAR.endWar(this);
+        OMCRegistry.CITY_FEATURES.WAR.endWar(this);
     }
 
     /**

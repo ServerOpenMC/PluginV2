@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -25,7 +25,7 @@ public class AdminMayorCommands {
             Player sender,
             @Named("phase") @Suggest({"1", "2"}) int phase
     ) {
-        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
         if (phase == 1) {
             mayorManager.initPhase1();
         } else if (phase == 2){

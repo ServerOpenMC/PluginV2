@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,8 +10,8 @@ import org.bukkit.event.player.PlayerUnleashEntityEvent;
 public class LeashProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public LeashProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public LeashProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

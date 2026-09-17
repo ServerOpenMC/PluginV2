@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.shops.managers.ShopManager;
@@ -28,12 +28,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class InteractProtection implements Listener {
-    private final CityManager cityManager;
     private final ProtectionsManager protectionsManager;
 
-    public InteractProtection(CityManager cityManager) {
-        this.cityManager = cityManager;
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public InteractProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

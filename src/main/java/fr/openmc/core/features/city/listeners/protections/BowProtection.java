@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -12,8 +12,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class BowProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public BowProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public BowProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

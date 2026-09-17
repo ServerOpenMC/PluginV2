@@ -180,7 +180,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
                 () -> {
                     OMCLogger.info("Applying all bits update for contributors");
                     applyAllContributorBitsUpdate();
-                    OMCRegistry.FEATURES.CITY.get().CITY_BANK.applyAllCityInterests();
+                    OMCRegistry.CITY_FEATURES.CITY_BANK.applyAllCityInterests();
                     OMCLogger.info("All bits update for contributors applied successfully.");
 
                     bitsUpdateTask = null;

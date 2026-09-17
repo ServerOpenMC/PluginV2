@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.city.CityFeaturesRegistry;
 import fr.openmc.core.features.dream.registries.DreamFeaturesRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
@@ -48,6 +49,9 @@ public final class OMCRegistry {
     public static DreamItemRegistry DREAM_ITEM;
     public static DreamMobsRegistry DREAM_MOB;
     public static DreamLootTableRegistry DREAM_LOOT_TABLE;
+
+    // * Registre concernant la feature des villes
+    public static CityFeaturesRegistry CITY_FEATURES;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 

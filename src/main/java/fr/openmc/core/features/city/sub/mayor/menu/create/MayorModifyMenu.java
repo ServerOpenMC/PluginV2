@@ -56,7 +56,7 @@ public class MayorModifyMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
-        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
 
         MayorCandidate mayorCandidate = mayorManager.getCandidate(player.getUniqueId());
         Perks perk2 = PerkUtils.getPerkById(mayorCandidate.getIdChoicePerk2());

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
@@ -15,8 +15,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class DamageProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public DamageProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public DamageProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

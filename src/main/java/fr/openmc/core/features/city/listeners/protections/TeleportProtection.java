@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -15,8 +15,8 @@ import java.util.Set;
 public class TeleportProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public TeleportProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public TeleportProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     private final Set<PlayerTeleportEvent.TeleportCause> illegalCauses = Set.of(

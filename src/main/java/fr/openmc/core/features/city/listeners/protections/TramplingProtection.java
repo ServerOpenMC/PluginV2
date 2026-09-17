@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,8 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class TramplingProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public TramplingProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public TramplingProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

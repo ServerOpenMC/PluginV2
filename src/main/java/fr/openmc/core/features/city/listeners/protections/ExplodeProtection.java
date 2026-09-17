@@ -1,7 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -21,7 +22,7 @@ public class ExplodeProtection implements Listener {
 
     public ExplodeProtection(CityManager cityManager) {
         this.cityManager = cityManager;
-        this.protectionsManager = cityManager.PROTECTIONS;
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     private static final List<EntityType> NATURAL_EXPLOSIVE_ENTITIES = List.of(

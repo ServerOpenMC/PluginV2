@@ -3,8 +3,8 @@ package fr.openmc.core.features.shops.managers;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.events.PlaceShopEvent;
@@ -74,7 +74,7 @@ public class PlayerShopManager {
 
         if (!location.getWorld().equals(Bukkit.getWorld("world"))) return false;
         if (OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(location)) return false;
-        ProtectionsManager protectionsManager = OMCRegistry.FEATURES.CITY.get().PROTECTIONS;
+        ProtectionsManager protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
         if (!protectionsManager.canBypassPlayer.contains(player.getUniqueId())) {
             City city = City.ofPlayer(player.getUniqueId());
             if ((cityManager.isChunkClaimed(location.getChunk())

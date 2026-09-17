@@ -2,8 +2,9 @@ package fr.openmc.core.features.city.sub.milestone.listeners;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
@@ -29,8 +30,8 @@ public class CooldownEndListener implements Listener {
 
     public CooldownEndListener(CityManager cityManager) {
         this.cityManager = cityManager;
-        this.cityStatisticsManager = cityManager.STATS;
-        this.mayorManager = cityManager.MAYOR;
+        this.cityStatisticsManager = OMCRegistry.CITY_FEATURES.STATS;
+        this.mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
     }
 
     @EventHandler

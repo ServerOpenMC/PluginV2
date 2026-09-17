@@ -7,7 +7,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
@@ -74,8 +73,7 @@ public class MayorColorMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
-        MayorManager mayorManager = cityManager.MAYOR;
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
 
         City city = City.ofPlayer(player);
         Map<NamedTextColor, Integer> colorSlot = new HashMap<>();

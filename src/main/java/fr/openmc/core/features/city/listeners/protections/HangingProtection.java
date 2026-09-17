@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
@@ -14,8 +14,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 public class HangingProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public HangingProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public HangingProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

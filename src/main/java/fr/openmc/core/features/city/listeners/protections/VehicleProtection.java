@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.entity.Entity;
@@ -15,8 +15,8 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 public class VehicleProtection implements Listener {
     private final ProtectionsManager protectionsManager;
 
-    public VehicleProtection(CityManager cityManager) {
-        this.protectionsManager = cityManager.PROTECTIONS;
+    public VehicleProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
     }
 
     @EventHandler(ignoreCancelled = true)

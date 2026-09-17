@@ -52,7 +52,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new WarCommand(OMCRegistry.FEATURES.CITY.get()),
+                new WarCommand(),
                 new AdminWarCommand()
         );
     }

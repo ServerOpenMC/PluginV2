@@ -64,7 +64,7 @@ public class MayorVoteMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
-        MayorManager mayorManager = OMCRegistry.FEATURES.CITY.get().MAYOR;
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
 
         City city = City.ofPlayer(player);
         assert city != null;

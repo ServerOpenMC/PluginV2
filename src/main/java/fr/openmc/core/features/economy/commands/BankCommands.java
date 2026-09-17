@@ -2,7 +2,6 @@ package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -101,7 +100,7 @@ public class BankCommands {
     void applyInterest(OMCPlayer player) {
         player.message().sendInfo(TranslationManager.translation("feature.economy.bank.interest.apply.start"), Prefix.BANK);
         BankManager.applyAllPlayerInterests();
-        OMCRegistry.FEATURES.CITY.get().CITY_BANK.applyAllCityInterests();
+        OMCRegistry.CITY_FEATURES.CITY_BANK.applyAllCityInterests();
         player.message().sendInfo(TranslationManager.translation("feature.economy.bank.interest.apply.success"), Prefix.BANK);
     }
 }
