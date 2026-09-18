@@ -40,6 +40,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jour en millisecondes
     public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     public final Map<UUID, War> warsByAttacker = new HashMap<>();
     public final Map<UUID, War> warsByDefender = new HashMap<>();
 
@@ -350,14 +351,14 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
         Component rewardMoney = bonusMoney > 0
                 ? TranslationManager.translation(
                         "feature.city.war.result.reward.money_bonus",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                        Component.text(economyManager.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD),
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(bonusMoney) + EconomyManager.getEconomyIcon())
+                        Component.text(economyManager.getFormattedSimplifiedNumber(bonusMoney) + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 )
                 : TranslationManager.translation(
                         "feature.city.war.result.reward.money",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                        Component.text(economyManager.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 );
         Component rewardClaims = TranslationManager.translation(
@@ -396,7 +397,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
         );
         Component lossMoney = TranslationManager.translation(
                 "feature.city.war.result.loss.money",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                Component.text(economyManager.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
                         .color(NamedTextColor.RED)
         );
         Component lossClaims = TranslationManager.translation(

@@ -34,6 +34,8 @@ import java.util.*;
 public class CityListDetailsMenu extends Menu {
 	
 	private final City city;
+
+	private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 	
 	/**
 	 * Constructor for CityListDetailsMenu.
@@ -157,8 +159,8 @@ public class CityListDetailsMenu extends Menu {
 		map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation(
 						"feature.city.menus.list.details.wealth",
-						Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
-						Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
+						Component.text(economyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
+						Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
 				))));
 
 		map.put(4, new ItemMenuBuilder(this, new ItemStack(Material.PLAYER_HEAD),

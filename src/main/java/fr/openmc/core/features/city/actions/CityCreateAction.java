@@ -43,7 +43,8 @@ public class CityCreateAction {
         pendingCities.put(player.getUniqueId(), cityName);
 
         if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
+        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+        if (!economyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
 
         ItemInteraction.runLocationInteraction(
                 player,
@@ -60,7 +61,7 @@ public class CityCreateAction {
                 () -> {
                     pendingCities.remove(player.getUniqueId());
                     ItemUtils.giveItem(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), CityCreateConditions.AYWENITE_CREATE);
-                    EconomyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
+                    economyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
                 }
         );
     }

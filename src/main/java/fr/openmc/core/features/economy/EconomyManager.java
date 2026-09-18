@@ -11,7 +11,6 @@ import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -30,18 +29,20 @@ import java.util.*;
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class EconomyManager extends Feature implements HasDatabase, HasCommands {
     @Getter
-    private static Map<UUID, EconomyPlayer> balances;
+    private Map<UUID, EconomyPlayer> balances;
 
-    private static Dao<EconomyPlayer, String> playersDao;
+    private Dao<EconomyPlayer, String> playersDao;
 
-    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    public static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>(Map.of(
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    public final NavigableMap<Long, String> SUFFIXES = new TreeMap<>(Map.of(
             1_000L, "k",
             1_000_000L, "M",
             1_000_000_000L, "B",
             1_000_000_000_000L, "T",
             1_000_000_000_000_000L, "Qa",
             1_000_000_000_000_000_000L, "Qi"));
+
+    private final TransactionsManager transactionsManager = OMCRegistry.FEATURES.TRANSACTIONS.get();
 
     @Override
     public void init() {
@@ -69,21 +70,21 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         saveAllBalances();
     }
 
-    public static double getBalance(UUID playerUUID) {
+    public double getBalance(UUID playerUUID) {
         EconomyPlayer bank = balances.get(playerUUID);
         return bank == null ? 0 : bank.getBalance();
     }
 
-    public static void addBalance(UUID playerUUID, double amount) {
+    public void addBalance(UUID playerUUID, double amount) {
         addBalance(playerUUID, amount, null);
     }
 
-    public static void addBalance(UUID playerUUID, double amount, @Nullable String reason) {
+    public void addBalance(UUID playerUUID, double amount, @Nullable String reason) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
         bank.deposit(amount);
 
         if (reason != null) {
-            TransactionsManager.registerTransaction(new Transaction(
+            transactionsManager.registerTransaction(new Transaction(
                 playerUUID.toString(),
                 "CONSOLE",
                 amount,
@@ -93,17 +94,17 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
 
     }
 
-    public static boolean withdrawBalance(UUID playerUUID, double amount) {
+    public boolean withdrawBalance(UUID playerUUID, double amount) {
         return withdrawBalance(playerUUID, amount, null);
     }
 
-    public static boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
+    public boolean withdrawBalance(UUID playerUUID, double amount, @Nullable String reason) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
 
         if (!bank.withdraw(amount)) return false;
 
         if (reason != null) {
-            TransactionsManager.registerTransaction(new Transaction(
+            transactionsManager.registerTransaction(new Transaction(
                 "CONSOLE",
                 playerUUID.toString(),
                 amount,
@@ -122,7 +123,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
      * @param amount     Amount to transfer
      * @return true if the transfer was successful, false otherwise
      */
-    public static boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount) {
+    public boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount) {
         return transferBalance(fromPlayer, toPlayer, amount, null);
     }
 
@@ -135,12 +136,12 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
      * @param reason     Reason for the transaction
      * @return true if the transfer was successful, false otherwise
      */
-    public static boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount, @Nullable String reason) {
+    public boolean transferBalance(UUID fromPlayer, UUID toPlayer, double amount, @Nullable String reason) {
         if (withdrawBalance(fromPlayer, amount)) {
             addBalance(toPlayer, amount);
 
             if (reason != null) {
-                TransactionsManager.registerTransaction(new Transaction(
+                transactionsManager.registerTransaction(new Transaction(
                     toPlayer.toString(),
                     fromPlayer.toString(),
                     amount,
@@ -154,22 +155,22 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         return false;
     }
 
-    public static void setBalance(UUID playerUUID, double amount) {
+    public void setBalance(UUID playerUUID, double amount) {
         EconomyPlayer bank = getPlayerBank(playerUUID);
         bank.setBalance(amount);
     }
 
-    public static String getMiniBalance(UUID playerUUID) {
+    public String getMiniBalance(UUID playerUUID) {
         double balance = getBalance(playerUUID);
 
         return getFormattedSimplifiedNumber(balance);
     }
 
-    public static EconomyPlayer getPlayerBank(UUID playerUUID) {
+    public EconomyPlayer getPlayerBank(UUID playerUUID) {
         return balances.computeIfAbsent(playerUUID, EconomyPlayer::new);
     }
 
-    private static void saveAllBalances() {
+    private void saveAllBalances() {
         try {
             playersDao.callBatchTasks(() -> {
                 for (EconomyPlayer player : balances.values()) {
@@ -183,7 +184,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         }
     }
 
-    public static Map<UUID, EconomyPlayer> loadAllBalances() {
+    public Map<UUID, EconomyPlayer> loadAllBalances() {
         Map<UUID, EconomyPlayer> balances = new HashMap<>();
         try {
             List<EconomyPlayer> dbBalances = playersDao.queryForAll();
@@ -197,7 +198,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         return balances;
     }
 
-    public static String getFormattedBalance(UUID playerUUID) {
+    public String getFormattedBalance(UUID playerUUID) {
         String balance = String.valueOf(getBalance(playerUUID));
         Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
@@ -207,7 +208,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
                 getEconomyIcon());
     }
 
-    public static String getFormattedNumber(double number) {
+    public String getFormattedNumber(double number) {
         Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
@@ -216,7 +217,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
                 getEconomyIcon());
     }
 
-    public static String getFormattedSimplifiedNumber(double balance) {
+    public String getFormattedSimplifiedNumber(double balance) {
         if (balance == 0) {
             return "0";
         }
@@ -235,7 +236,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         return formatted + suffix;
     }
 
-    public static String getEconomyIcon() {
+    public String getEconomyIcon() {
         if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             return FontImageWrapper.replaceFontImages("§f:aywenito:");
         } else {
@@ -243,8 +244,8 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         }
     }
 
-    public static boolean hasEnoughMoney(@NotNull UUID uniqueId, int requiredAmount) {
-        double balance = EconomyManager.getBalance(uniqueId);
+    public boolean hasEnoughMoney(@NotNull UUID uniqueId, int requiredAmount) {
+        double balance = this.getBalance(uniqueId);
         return balance >= requiredAmount;
     }
 }

@@ -34,7 +34,7 @@ public class CityFeaturesRegistry extends SubRegistry<String, Feature> {
     public final NotationManager NOTATION = register(
             new NotationManager(cityManager));
     public final CityRankManager RANKS = register(
-            new CityRankManager(cityManager));
+            new CityRankManager());
     public final CityMilestoneManager CITY_MILESTONE = register(
             new CityMilestoneManager(cityManager));
     public final CityChatManager CITY_CHAT = register(

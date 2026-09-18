@@ -33,6 +33,7 @@ import java.util.UUID;
 @CommandPermission("omc.admins.commands.admincity")
 public class AdminCityCommands {
     private final CityManager cityManager;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public AdminCityCommands(CityManager cityManager) {
         this.cityManager = cityManager;
@@ -200,7 +201,7 @@ public class AdminCityCommands {
 
         MessagesManager.sendMessage(player, TranslationManager.translation(
                 "feature.city.admin.commands.balance.get_success",
-                Component.text(city.getBalance() + EconomyManager.getEconomyIcon())
+                Component.text(city.getBalance() + economyManager.getEconomyIcon())
         ), Prefix.STAFF, MessageType.INFO, false);
     }
 

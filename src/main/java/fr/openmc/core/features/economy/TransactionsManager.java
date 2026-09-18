@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class TransactionsManager extends Feature implements HasDatabase {
-    private static Dao<Transaction, String> transactionsDao;
+    private Dao<Transaction, String> transactionsDao;
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -28,7 +28,7 @@ public class TransactionsManager extends Feature implements HasDatabase {
         transactionsDao = DaoManager.createDao(connectionSource, Transaction.class);
     }
 
-    public static List<Transaction> getTransactionsByPlayers(UUID playerUUID) {
+    public List<Transaction> getTransactionsByPlayers(UUID playerUUID) {
         if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
             return List.of(new Transaction("CONSOLE", "CONSOLE", 0, "Désactivé"));
         }
@@ -43,7 +43,7 @@ public class TransactionsManager extends Feature implements HasDatabase {
         }
     }
 
-    public static void registerTransaction(Transaction transaction) {
+    public void registerTransaction(Transaction transaction) {
         if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
             return;
         }

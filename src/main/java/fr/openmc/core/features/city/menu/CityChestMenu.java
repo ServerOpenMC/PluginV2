@@ -9,9 +9,9 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.Restart;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.actions.CityChestAction;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -40,6 +40,8 @@ public class CityChestMenu extends PaginatedMenu {
     private final City city;
     @Getter
     private final int page;
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public CityChestMenu(Player owner, City city, int page) {
         super(owner);
@@ -146,7 +148,7 @@ public class CityChestMenu extends PaginatedMenu {
 
         List<Component> loreUpgrade;
         Component moneyValue = Component.text(city.getChestPages() * UPGRADE_PER_MONEY).color(NamedTextColor.GOLD);
-        Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+        Component moneyIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
         Component ayweniteValue = Component.text(city.getChestPages() * UPGRADE_PER_AYWENITE).color(NamedTextColor.LIGHT_PURPLE);
         if (city.getChestPages() >= ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
             loreUpgrade = TranslationManager.translationLore(

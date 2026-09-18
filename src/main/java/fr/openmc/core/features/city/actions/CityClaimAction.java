@@ -1,10 +1,9 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -76,7 +75,7 @@ public class CityClaimAction {
         if (city.getFreeClaims() <= 0) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.city_not_enough_money",
-                                Component.text(price + EconomyManager.getEconomyIcon())),
+                                Component.text(price + OMCRegistry.FEATURES.ECONOMY.get().getEconomyIcon())),
                         Prefix.CITY, MessageType.ERROR, false);
                 return;
             }

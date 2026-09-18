@@ -4,7 +4,6 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
@@ -39,7 +38,7 @@ public class CityTopMenu extends PaginatedMenu {
     private final List<City> cities;
     private SortType sortType;
 
-    private final CityManager cityManager;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     /**
      * Constructor for CityListMenu.
@@ -58,8 +57,7 @@ public class CityTopMenu extends PaginatedMenu {
      */
     public CityTopMenu(Player owner, SortType sortType) {
         super(owner);
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
-        this.cities = new ArrayList<>(cityManager.getCities());
+        this.cities = new ArrayList<>(OMCRegistry.FEATURES.CITY.get().getCities());
         setSortType(sortType);
     }
 
@@ -93,8 +91,8 @@ public class CityTopMenu extends PaginatedMenu {
                 Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
                 Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
                 Component areaComponent = Component.text(city.getChunks().size()).color(NamedTextColor.GOLD);
-                Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
-                Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+                Component wealthComponent = Component.text(economyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
+                Component wealthIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
                 Component powerComponent = Component.text(city.getPowerPoints()).color(NamedTextColor.RED);
 
                 if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {

@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.notation.commands.AdminNotationCommands;
@@ -43,6 +44,8 @@ import static fr.openmc.core.features.city.sub.notation.NotationNote.getMaxTotal
 public class NotationManager extends Feature implements HasCommands, HasListeners, HasDatabase {
 
     private final CityManager cityManager;
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     /**
      * Jour d'application de la notation.
      */
@@ -277,8 +280,8 @@ public class NotationManager extends Feature implements HasCommands, HasListener
         totalMoney += city.getBalance();
 
         for (UUID playerUUID : city.getMembers()) {
-            totalMoney += BankManager.getBalance(playerUUID);
-            totalMoney += EconomyManager.getBalance(playerUUID);
+            totalMoney += bankManager.getBalance(playerUUID);
+            totalMoney += economyManager.getBalance(playerUUID);
         }
 
         double plafond = 400000;

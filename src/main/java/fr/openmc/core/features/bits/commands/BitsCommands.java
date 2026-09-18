@@ -1,5 +1,6 @@
 package fr.openmc.core.features.bits.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.bits.menu.BitsMenu;
@@ -25,6 +26,7 @@ public class BitsCommands {
 
     private final BitsManager bitsManager;
     private final GitHubHook gitHubHook;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public BitsCommands(BitsManager bitsManager, GitHubHook gitHubHook) {
         this.bitsManager = bitsManager;
@@ -98,7 +100,7 @@ public class BitsCommands {
                 MessagesManager.sendMessage(target.getPlayer(),
                         TranslationManager.translation(
                                 "feature.economy.bits.remove.target",
-                                Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                                Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
                         ),
                         Prefix.OPENMC, MessageType.INFO, true);
             }
@@ -116,14 +118,14 @@ public class BitsCommands {
                 TranslationManager.translation(
                         "feature.economy.bits.reset.success",
                         Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                        Component.text(EconomyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
+                        Component.text(economyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.reset.target",
-                            Component.text(EconomyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
+                            Component.text(economyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }

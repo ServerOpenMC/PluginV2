@@ -1,6 +1,7 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.*;
@@ -30,6 +31,9 @@ public class AdminShopManager extends Feature implements HasCommands {
     public final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
     public final Map<UUID, String> currentCategory = new HashMap<>();
     public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+
     private AdminShopYAML adminShopYAML;
 
     /**
@@ -108,7 +112,7 @@ public class AdminShopManager extends Feature implements HasCommands {
         }
 
         double totalPrice = item.getActualBuyPrice() * amount;
-        if (EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice, "Achat AdminShop - " + amount + "x " + itemId)) {
+        if (economyManager.withdrawBalance(player.getUniqueId(), totalPrice, "Achat AdminShop - " + amount + "x " + itemId)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
@@ -152,7 +156,7 @@ public class AdminShopManager extends Feature implements HasCommands {
 
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
         ItemUtils.removeItemsFromPlayerInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
-        EconomyManager.addBalance(player.getUniqueId(), totalPrice, "Vente AdminShop"); // Add money to the player's balance
+        economyManager.addBalance(player.getUniqueId(), totalPrice, "Vente AdminShop"); // Add money to the player's balance
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
         });

@@ -42,10 +42,11 @@ public class CityCreateConditions {
             return false;
         }
 
-        if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
+        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+        if (economyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
 	        MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.create.not_enough_player_money",
-                    Component.text(MONEY_CREATE + EconomyManager.getEconomyIcon())
+                    Component.text(MONEY_CREATE + economyManager.getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

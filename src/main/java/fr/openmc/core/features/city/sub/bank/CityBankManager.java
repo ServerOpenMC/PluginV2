@@ -1,7 +1,8 @@
 package fr.openmc.core.features.city.sub.bank;
 
-import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.bank.commands.CityBankCommand;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -30,6 +31,7 @@ import java.util.UUID;
 public class CityBankManager extends Feature implements HasCommands {
     private final CityManager cityManager;
     private final MayorManager mayorManager;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public CityBankManager(CityManager cityManager, MayorManager mayorManager) {
         this.cityManager = cityManager;
@@ -67,7 +69,7 @@ public class CityBankManager extends Feature implements HasCommands {
             return;
         }
 
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
+        if (!economyManager.withdrawBalance(player.getUniqueId(), amount)) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("messages.global.player_missing_money"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -79,7 +81,7 @@ public class CityBankManager extends Feature implements HasCommands {
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.city.bank.deposit.success",
-                        Component.text(EconomyManager.getFormattedNumber(amount))
+                        Component.text(economyManager.getFormattedNumber(amount))
                 ),
                 Prefix.CITY, MessageType.SUCCESS, false);
     }
@@ -109,13 +111,13 @@ public class CityBankManager extends Feature implements HasCommands {
         }
 
         city.updateBalance(-amount);
-        EconomyManager.addBalance(player.getUniqueId(), amount, "Retrait banque de ville");
+        economyManager.addBalance(player.getUniqueId(), amount, "Retrait banque de ville");
 
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.city.bank.withdraw.success",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
-                        Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
+                        Component.text(economyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
                 ),
                 Prefix.CITY, MessageType.SUCCESS, false);
     }

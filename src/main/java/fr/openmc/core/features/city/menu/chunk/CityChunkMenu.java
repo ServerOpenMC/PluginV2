@@ -6,12 +6,11 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -47,12 +46,11 @@ public class CityChunkMenu extends Menu {
     private final int aywenite;
     private Map<ChunkPos, CityChunkInfo> chunkInfoMap;
 
-    private final CityManager cityManager;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public CityChunkMenu(Player owner) {
         super(owner);
         this.player = owner;
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
 
         this.playerChunkX = player.getLocation().getChunk().getX();
         this.playerChunkZ = player.getLocation().getChunk().getZ();
@@ -272,7 +270,7 @@ public class CityChunkMenu extends Menu {
         Component position = Component.text(chunkX + ", " + chunkZ).color(NamedTextColor.WHITE);
         if (city.getChunks().size() > CityCreateAction.FREE_CLAIMS+1) {
             Component moneyValue = Component.text(CityUnclaimAction.calculatePrice(playerCity.getChunks().size())).color(NamedTextColor.GOLD);
-            Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+            Component moneyIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
             Component ayweniteValue = Component.text(CityUnclaimAction.calculateAywenite(playerCity.getChunks().size())).color(NamedTextColor.LIGHT_PURPLE);
             lore = TranslationManager.translationLore(
                     "feature.city.menus.chunks.player_claim.lore.reward",
@@ -317,7 +315,7 @@ public class CityChunkMenu extends Menu {
             );
         } else {
             Component moneyValue = Component.text(price).color(NamedTextColor.GOLD);
-            Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+            Component moneyIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
             Component ayweniteValue = Component.text(aywenite).color(NamedTextColor.LIGHT_PURPLE);
             lore = TranslationManager.translationLore(
                     "feature.city.menus.chunks.unclaimed.lore.cost",

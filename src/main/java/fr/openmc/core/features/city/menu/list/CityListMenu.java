@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.models.city.City;
@@ -39,7 +38,7 @@ public class CityListMenu extends PaginatedMenu {
 	private final List<City> cities;
 	private SortType sortType;
 
-	private final CityManager cityManager;
+	private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 	
 	/**
 	 * Constructor for CityListMenu.
@@ -58,8 +57,7 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	public CityListMenu(Player owner, SortType sortType) {
 		super(owner);
-		this.cityManager = OMCRegistry.FEATURES.CITY.get();
-		this.cities = new ArrayList<>(cityManager.getCities());
+		this.cities = new ArrayList<>(OMCRegistry.FEATURES.CITY.get().getCities());
 		setSortType(sortType);
 	}
 	
@@ -89,8 +87,8 @@ public class CityListMenu extends PaginatedMenu {
 			Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
 			Component membersSuffix = Component.text(city.getMembers().size() > 1 ? "s" : "");
 			Component typeComponent = city.getType().getDisplayName();
-			Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
-			Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+			Component wealthComponent = Component.text(economyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
+			Component wealthIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
 			if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 				Component mayorCity = city.getMayor() == null
 						? TranslationManager.translation("messages.menus.none")

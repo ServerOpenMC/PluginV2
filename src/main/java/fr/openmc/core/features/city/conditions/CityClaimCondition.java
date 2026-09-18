@@ -1,10 +1,9 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -59,7 +58,7 @@ public class CityClaimCondition {
         if (city.getBalance() < money) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.claim.not_enough_city_money",
-                    Component.text(money + EconomyManager.getEconomyIcon())
+                    Component.text(money + OMCRegistry.FEATURES.ECONOMY.get().getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

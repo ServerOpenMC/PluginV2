@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 
 public class ConfirmMenu extends Menu {
     private final AdminShopManager manager;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     private final ShopItem shopItem;
     private final boolean isBuying;
@@ -78,9 +79,9 @@ public class ConfirmMenu extends Menu {
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
                 Component.text(manager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
+                Component.text(economyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 Component.text(manager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
+                Component.text(economyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 shiftRightSellAll
 
         );
@@ -225,7 +226,7 @@ public class ConfirmMenu extends Menu {
         double buyPrice = shopItem.getActualBuyPrice();
         if (buyPrice <= 0) return freePlaces;
 
-        double balance = EconomyManager.getBalance(player.getUniqueId());
+        double balance = economyManager.getBalance(player.getUniqueId());
         int affordable = (int) Math.floor(balance / buyPrice);
 
         return Math.min(freePlaces, affordable);
