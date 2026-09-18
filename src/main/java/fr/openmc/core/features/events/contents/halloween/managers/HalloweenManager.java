@@ -19,7 +19,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager_old;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -118,10 +118,10 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
     }
 
     public static void endEvent() {
-        LeaderboardManager.updatePumpkinCountMap();
+        LeaderboardManager_old.updatePumpkinCountMap();
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
 
-        for (Map.Entry<Integer, Map.Entry<String, String>> entries : LeaderboardManager.getPumpkinCountMap().entrySet()) {
+        for (Map.Entry<Integer, Map.Entry<String, String>> entries : LeaderboardManager_old.getPumpkinCountMap().entrySet()) {
             int rank = entries.getKey();
             String playerName = entries.getValue().getKey();
             String pumpkinCount = entries.getValue().getValue();

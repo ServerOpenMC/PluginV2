@@ -41,7 +41,8 @@ import java.io.IOException;
 import java.util.*;
 
 @Credit(developers = {"miseur"})
-public class LeaderboardManager extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
+@Deprecated // Rewrite coming soon...
+public class LeaderboardManager_old extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
     @Getter
     private static volatile Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = Collections.emptyMap();
     @Getter
@@ -101,7 +102,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      * @return A Component representing the GitHub contributors leaderboard.
      */
     public static Component createContributorsTextLeaderboard() {
-        var contributorsMap = LeaderboardManager.getGithubContributorsMap();
+        var contributorsMap = LeaderboardManager_old.getGithubContributorsMap();
         if (contributorsMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.contributors")
                     .color(NamedTextColor.RED);
@@ -145,7 +146,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      * @return A Component representing the player money leaderboard.
      */
     public static Component createMoneyTextLeaderboard() {
-        var moneyMap = LeaderboardManager.getPlayerMoneyMap();
+        var moneyMap = LeaderboardManager_old.getPlayerMoneyMap();
         if (moneyMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
@@ -188,7 +189,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createCityMoneyTextLeaderboard() {
-        var moneyMap = LeaderboardManager.getVilleMoneyMap();
+        var moneyMap = LeaderboardManager_old.getVilleMoneyMap();
         if (moneyMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.cities")
                     .color(NamedTextColor.RED);
@@ -231,7 +232,7 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createPlayTimeTextLeaderboard() {
-        var playtimeMap = LeaderboardManager.getPlayTimeMap();
+        var playtimeMap = LeaderboardManager_old.getPlayTimeMap();
         if (playtimeMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
@@ -265,9 +266,8 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
                         .decorate(TextDecoration.BOLD)));
         return text;
     }
-
     public static Component createPumpkinCountTextLeaderboard() {
-        var pumpkinCountMap = LeaderboardManager.getPumpkinCountMap();
+        var pumpkinCountMap = LeaderboardManager_old.getPumpkinCountMap();
         if (pumpkinCountMap.isEmpty()) {
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
@@ -430,10 +430,8 @@ public class LeaderboardManager extends Feature implements NotLoadInUnitTest, Lo
      */
     private static void loadLeaderBoardConfig() {
         File leaderBoardFile = getLeaderBoardFile();
-        if (!leaderBoardFile.exists()) {
-            leaderBoardFile.getParentFile().mkdirs();
-            OMCPlugin.getInstance().saveResource("data/leaderboards.yml", false);
-        }
+
+
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         contributorsHologramLocation = leaderBoardConfig.getLocation("contributors-location");
         moneyHologramLocation = leaderBoardConfig.getLocation("money-location");

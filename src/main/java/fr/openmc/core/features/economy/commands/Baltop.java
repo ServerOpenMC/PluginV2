@@ -5,7 +5,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import static fr.openmc.core.features.leaderboards.LeaderboardManager.createMoneyTextLeaderboard;
+import static fr.openmc.core.features.leaderboards.LeaderboardManager_old.createMoneyTextLeaderboard;
 
 public class Baltop {
 

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.leaderboards.commands;
 
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager_old;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -14,7 +14,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
 
-import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
+import static fr.openmc.core.features.leaderboards.LeaderboardManager_old.*;
 
 @SuppressWarnings("unused")
 @Command({"leaderboard", "lb"})
@@ -72,7 +72,7 @@ public class LeaderboardCommands {
     ) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime") || leaderboard.equals("pumpkin-count")) {
             try {
-                LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
+                LeaderboardManager_old.setHologramLocation(leaderboard, player.getLocation());
                 MessagesManager.sendMessage(
                         player,
                         TranslationManager.translation(
@@ -113,7 +113,7 @@ public class LeaderboardCommands {
     @CommandPermission("op")
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
-        LeaderboardManager.disable();
+        LeaderboardManager_old.disable();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_disabled")
                 .color(NamedTextColor.RED));
     }
@@ -122,7 +122,7 @@ public class LeaderboardCommands {
     @CommandPermission("op")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        LeaderboardManager.enable();
+        LeaderboardManager_old.enable();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_enabled")
                 .color(NamedTextColor.GREEN));
     }
@@ -131,13 +131,13 @@ public class LeaderboardCommands {
     @CommandPermission("op")
     @Description("Met à jour les Holograms.")
     void updateCommand(CommandSender sender) {
-        LeaderboardManager.updateGithubContributorsMap();
-        LeaderboardManager.updatePlayerMoneyMap();
-        LeaderboardManager.updateCityMoneyMap();
-        LeaderboardManager.updatePlayTimeMap();
-        LeaderboardManager.updatePumpkinCountMap();
-        LeaderboardManager.updateHolograms();
-        LeaderboardManager.updateHologramsViewers();
+        LeaderboardManager_old.updateGithubContributorsMap();
+        LeaderboardManager_old.updatePlayerMoneyMap();
+        LeaderboardManager_old.updateCityMoneyMap();
+        LeaderboardManager_old.updatePlayTimeMap();
+        LeaderboardManager_old.updatePumpkinCountMap();
+        LeaderboardManager_old.updateHolograms();
+        LeaderboardManager_old.updateHologramsViewers();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_updated")
                 .color(NamedTextColor.GREEN));
     }
@@ -155,7 +155,7 @@ public class LeaderboardCommands {
                 scaleComponent
         ).color(NamedTextColor.GREEN));
         try {
-            LeaderboardManager.setScale(scale);
+            LeaderboardManager_old.setScale(scale);
             player.sendMessage(TranslationManager.translation(
                     "feature.leaderboards.command.scale_changed",
                     scaleComponent
