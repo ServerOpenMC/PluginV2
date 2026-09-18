@@ -322,7 +322,7 @@ public class LeaderboardManager_old extends Feature implements NotLoadInUnitTest
         moneyHologram = new TextDisplay(createMoneyTextLeaderboard(), moneyHologramLocation, new Vector3f(scale));
         villeMoneyHologram = new TextDisplay(createCityMoneyTextLeaderboard(), villeMoneyHologramLocation, new Vector3f(scale));
         playTimeHologram = new TextDisplay(createPlayTimeTextLeaderboard(), playTimeHologramLocation, new Vector3f(scale));
-        pumpkinCountHologram = new TextDisplay(createPumpkinCountTextLeaderboard(), pumpkinCountHologramLocation, new Vector3f(scale));
+        //TODO pumpkinCountHologram = new TextDisplay(createPumpkinCountTextLeaderboard(), pumpkinCountHologramLocation, new Vector3f(scale));
         taskTimer = new BukkitRunnable() {
             private int i = 0;
 
@@ -357,7 +357,7 @@ public class LeaderboardManager_old extends Feature implements NotLoadInUnitTest
             playTimeHologram.updateViewersList();
         }
         if (pumpkinCountHologramLocation != null) {
-            pumpkinCountHologram.updateViewersList();
+            // TODO pumpkinCountHologram.updateViewersList();
         }
     }
 
@@ -367,7 +367,7 @@ public class LeaderboardManager_old extends Feature implements NotLoadInUnitTest
         moneyHologram.remove();
         villeMoneyHologram.remove();
         playTimeHologram.remove();
-        pumpkinCountHologram.remove();
+        //TODO pumpkinCountHologram.remove();
     }
 
     /**

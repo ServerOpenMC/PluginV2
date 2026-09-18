@@ -14,9 +14,9 @@ public abstract class LeaderBoard {
     public String id;
 
     @Getter
-    private Location location;
+    protected Location location;
 
-    private TextDisplay display;
+    protected TextDisplay display;
 
     public LeaderBoard(String id, Location location, TextDisplay display) {
         this.id = id;
@@ -25,5 +25,11 @@ public abstract class LeaderBoard {
     }
 
     public abstract void update();
+
+    public void updateViewers(){
+        System.out.println("Test");
+        if (this.display != null)
+            this.display.updateViewersList();
+    }
 
 }
