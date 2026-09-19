@@ -15,6 +15,7 @@ public abstract class CustomRegion {
 
     public final boolean contains(Location loc) {
         if (loc == null || loc.getWorld() == null) return false;
+        if (getWorld() == null) return false;
         if (!loc.getWorld().getName().equals(getWorld().getName())) return false;
 
         return contains(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()));
