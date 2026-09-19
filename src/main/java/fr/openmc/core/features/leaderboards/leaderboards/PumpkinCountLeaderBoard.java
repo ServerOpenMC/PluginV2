@@ -7,6 +7,7 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
@@ -55,7 +56,7 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
             HalloweenData data = datas.get(i);
             String name = CachePlayerName.getName(data.getPlayerUUID());
             String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(data.getPumpkinCount());
-            Component rank = Component.text("#" + (i+1)).color(LeaderBoardManager.getRankColor(i+1));
+            Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
             text = text.append(Component.text("\n").append(TranslationManager.translation(
                     "feature.leaderboards.line.pumpkin",
                     rank,

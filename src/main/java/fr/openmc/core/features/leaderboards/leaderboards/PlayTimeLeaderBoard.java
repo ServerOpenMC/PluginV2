@@ -4,6 +4,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.cache.CachePlaytime;
+import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.entities.TextDisplay;
@@ -50,7 +51,7 @@ public class PlayTimeLeaderBoard extends LeaderBoard {
                 .decorate(TextDecoration.BOLD);
         for (int i = 0; i < stats.size(); i++) {
             Map.Entry<OfflinePlayer, Long> stat = stats.get(i);
-            Component rank = Component.text("#" + (i + 1)).color(LeaderBoardManager.getRankColor(i + 1));
+            Component rank = Component.text("#" + (i + 1)).color(ColorUtils.getRankColor(i + 1));
 
             String playerName = stat.getKey().getName();
             String time = DateUtils.convertTime(stat.getValue());

@@ -9,7 +9,6 @@ import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.leaderboards.commands.LeaderBoardCommands;
 import fr.openmc.core.features.leaderboards.leaderboards.*;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -55,9 +54,10 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     public static synchronized void stop() {
         leaderboards.forEach(LeaderBoard::remove);
         leaderboards.clear();
-
-        viewerTimer.cancel();
-        viewerTimer = null;
+        if (viewerTimer != null){
+            viewerTimer.cancel();
+            viewerTimer = null;
+        }
     }
 
     public static synchronized void reload() {
@@ -105,16 +105,6 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
             OMCPlugin.getInstance().saveResource(leaderBoardConfig.getPath(), false);
         }
         return leaderBoardConfig;
-    }
-
-    //TODO : Trouver si elle est pas mieux autre part
-    public static TextColor getRankColor(int rank) {
-        return switch (rank) {
-            case 1 -> TextColor.color(0xFFD700);
-            case 2 -> TextColor.color(0xC0C0C0);
-            case 3 -> TextColor.color(0x614E1A);
-            default -> TextColor.color(0x4B4B4B);
-        };
     }
 
     public static void registerLeaderBoard(LeaderBoard leaderBoard){
