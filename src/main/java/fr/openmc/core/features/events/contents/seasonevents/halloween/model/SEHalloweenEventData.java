@@ -30,11 +30,11 @@ public class SEHalloweenEventData {
     public SEHalloweenEventData() {}
 
     public SEHalloweenEventData(WeeklyEvent currentEvent, WeeklyEventPhase currentPhase) {
-        this.currentEvent = currentEvent.getId();
-        if (currentPhase == null)
-            this.currentPhase = null;
-        else
-            this.currentPhase = currentPhase.getId();
+//        this.currentEvent = currentEvent.getId();
+//        if (currentPhase == null)
+//            this.currentPhase = null;
+//        else
+//            this.currentPhase = currentPhase.getId();
     }
 
     private static final Gson GSON = new Gson();

@@ -61,6 +61,12 @@ font_images:
         suggestion_in_command: false
         path: "city_template6x9.png"
         y_position: 30
+    halloween_event_main_menu:
+        permission: halloween.event_main_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween.event_main_menu.png"
+        y_position: 30
     home_mailbox:
         permission: mailbox.home
         show_in_gui: true

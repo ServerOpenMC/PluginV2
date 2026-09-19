@@ -17,7 +17,7 @@ import lombok.Getter;
 import java.sql.SQLException;
 import java.util.*;
 
-public class SEHalloweenManager extends Feature implements HasDatabase, HasListeners, HasCommands {
+public class HalloweenManager extends Feature implements HasDatabase, HasListeners, HasCommands {
 
     @Getter
     private static HalloweenDB halloweenDB;

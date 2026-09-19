@@ -1,14 +1,10 @@
 package fr.openmc.core.features.events.contents.halloween.halloween.dimension;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.dream.DreamDimensionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.entity.SpawnCategory;
-
-import java.io.File;
 
 public class DimensionManager {
 
@@ -16,11 +12,10 @@ public class DimensionManager {
     public static World HALLOWEEN_WORLD;
 
     public static void init() {
-//        seedFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "seed.yml");
-//        loadSeed();
         HALLOWEEN_WORLD = Bukkit.getWorld(DIMENSION_NAME);
 
         setupDimension();
+//        loadRegions();
     }
 
     //TODO setup la dimension :
@@ -28,7 +23,7 @@ public class DimensionManager {
     // - ambiant custom
 
     private static void setupDimension() {
-        if (!HALLOWEEN_WORLD.getName().equals(DreamDimensionManager.DIMENSION_NAME)) return;
+        if (!HALLOWEEN_WORLD.getName().equals(DIMENSION_NAME)) return;
 
         // ** SPAWNING RULES **
         HALLOWEEN_WORLD.setSpawnLimit(SpawnCategory.MONSTER, 10);
@@ -51,10 +46,21 @@ public class DimensionManager {
         HALLOWEEN_WORLD.setGameRule(GameRules.ALLOW_ENTERING_NETHER_USING_PORTALS, false);
 
         // ** SET WORLD BORDER AND TIME **
-        HALLOWEEN_WORLD.getWorldBorder().setSize(10000);
-        HALLOWEEN_WORLD.setTime(18000);
+        HALLOWEEN_WORLD.getWorldBorder().setSize(500);
+        HALLOWEEN_WORLD.setTime(14000);
 
-        OMCLogger.infoFormatted("Dimension des rêves setup (gamerules, worldborder, time)");
+        OMCLogger.infoFormatted("Dimension de la Maison de la Sorcière setup (gamerules, worldborder, time)");
     }
+
+    //TODO modifier avec les region de bibi
+//    private static void loadRegions() {
+//        MultiRegion multiRegion = new MultiRegion(
+//                HALLOWEEN_WORLD,
+//                new SquareRegion(0.0, 60.0, 0.0, 6.0, 70.0, 3.0, HALLOWEEN_WORLD),
+//                new SquareRegion(0.0, 60.0, 6.0, 3.0, 70.0, 3.0, HALLOWEEN_WORLD)
+//        );
+//
+//        multiRegion.addDetection();
+//    }
 
 }
