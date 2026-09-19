@@ -14,7 +14,7 @@ money-location:
   z: 0.0
   pitch: 0.0
   yaw: 0.0
-ville-money-location:
+city-money-location:
   ==: org.bukkit.Location
   world: world
   x: 0.0

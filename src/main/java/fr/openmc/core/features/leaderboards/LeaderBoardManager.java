@@ -7,18 +7,21 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
-import fr.openmc.core.features.leaderboards.leaderboards.PumpkinCountLeaderBoard;
-import fr.openmc.core.features.leaderboards.leaderboards.TestLeaderBoard;
+import fr.openmc.core.features.leaderboards.commands.LeaderBoardCommands;
+import fr.openmc.core.features.leaderboards.leaderboards.*;
 import net.kyori.adventure.text.format.TextColor;
-import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @Credit(developers = {"ElitGaimix"})
 public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
@@ -27,32 +30,65 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
 
     private static File leaderBoardConfig = null;
 
-    private static BukkitTask taskTimer = null;
+    private static BukkitTask viewerTimer;
 
-    //TODO : Temp, juste pour test, répartir les initialisation au bon endroits
     @Override
-    public void init(){
-        PumpkinCountLeaderBoard leaderBoard = new PumpkinCountLeaderBoard();
-        leaderboards.add(leaderBoard);
-        leaderboards.add(new TestLeaderBoard());
-        taskTimer = new BukkitRunnable() {
+    public void init() {
+        reload();
+    }
 
+    public static Stream<String> getLeaderBoards(){
+        return leaderboards.stream().map(LeaderBoard::getId);
+    }
+
+    public static void setScale(float scale) throws IOException {
+        FileConfiguration config = YamlConfiguration.loadConfiguration(getLeaderBoardFile());
+        config.set("scale", scale);
+        config.save(getLeaderBoardFile());
+        reload();
+    }
+
+    public static Optional<LeaderBoard> getLeaderBoard(String id){
+        return leaderboards.stream().filter(lb -> lb.getId().equalsIgnoreCase(id)).findAny();
+    }
+
+    public static synchronized void stop() {
+        leaderboards.forEach(LeaderBoard::remove);
+        leaderboards.clear();
+
+        viewerTimer.cancel();
+        viewerTimer = null;
+    }
+
+    public static synchronized void reload() {
+        stop();
+
+        registerLeaderBoard(new CityMoneyLeaderBoard());
+        registerLeaderBoard(new ContributorsLeaderBoard());
+        registerLeaderBoard(new MoneyLeaderBoard());
+        registerLeaderBoard(new PlayTimeLeaderBoard());
+        registerLeaderBoard(new PumpkinCountLeaderBoard());
+        viewerTimer = new BukkitRunnable() {
             @Override
             public void run() {
-                leaderboards.forEach(LeaderBoard::update);
+                updateViewers();
             }
-        }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L);
+        }.runTaskTimer(OMCPlugin.getInstance(),0L,20L);
+    }
+
+    public static void update() {
+        leaderboards.forEach(LeaderBoard::update);
+    }
+
+    public static void updateViewers() {
+        leaderboards.forEach(LeaderBoard::updateViewers);
     }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new LeaderboardCommands()
+                new LeaderBoardCommands()
         );
-    }
-
-    public static void updateViewers(){
-        leaderboards.forEach(LeaderBoard::updateViewers);
     }
 
     public static File getLeaderBoardFile() {
@@ -82,12 +118,16 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     }
 
     public static void registerLeaderBoard(LeaderBoard leaderBoard){
-        if (!leaderboards.contains(leaderBoard))
+        if (leaderboards.stream().noneMatch(existing -> existing.getId().equals(leaderBoard.getId()))) {
             leaderboards.add(leaderBoard);
+            leaderBoard.start();
+        }
     }
 
     public static void unregisterLeaderBoard(LeaderBoard leaderBoard){
-        leaderboards.remove(leaderBoard);
+        if (leaderboards.remove(leaderBoard)) {
+            leaderBoard.remove();
+        }
     }
 
 }

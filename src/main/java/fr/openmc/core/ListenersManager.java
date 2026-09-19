@@ -4,7 +4,6 @@ import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.itemsadder.SpawnerExtractorListener;
-import fr.openmc.core.features.leaderboards.LeaderBoardListener;
 import fr.openmc.core.listeners.*;
 import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
 
@@ -31,7 +30,6 @@ public class ListenersManager {
                 () -> new AsyncChatListener(OMCPlugin.getInstance()),
                 NoMoreRabbit::new,
                 ArmorListener::new,
-                LeaderBoardListener::new,
                 () -> new EntityGlowNMS(),
                 () -> new RegionTrackingListener(),
                 () -> new SpawnerExtractorListener(),

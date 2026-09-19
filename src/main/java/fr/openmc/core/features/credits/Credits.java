@@ -19,7 +19,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager_old;
+import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -63,7 +63,7 @@ public enum Credits {
     ELEVATOR(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_BLUE, "feature.credits.feature.elevator", ElevatorManager.class),
     FRIENDS(Material.EMERALD_BLOCK, "feature.credits.feature.friends", FriendManager.class),
     HOMES(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_MAISON, "feature.credits.feature.homes", HomesManager.class),
-    LEADERBOARD(Material.ANCIENT_DEBRIS, "feature.credits.feature.leaderboard", LeaderboardManager_old.class),
+    LEADERBOARD(Material.ANCIENT_DEBRIS, "feature.credits.feature.leaderboard", LeaderBoardManager.class),
     MAILBOX(Material.PAPER, "feature.credits.feature.mailbox", MailboxManager.class),
     MAINMENU(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFORMATION, "feature.credits.feature.mainmenu", MainMenu.class),
     MILESTONES(Material.SEA_LANTERN, "feature.credits.feature.milestones", MilestonesManager.class),

@@ -25,7 +25,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.men
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.menu.VoteMenu;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
-import fr.openmc.core.features.leaderboards.LeaderboardManager_old;
+import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -386,7 +386,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
         orderedMap.forEach((uuid, dataOrdered) -> {
             NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
-            Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderboardManager_old.getRankColor(rankInt[0] + 1))
+            Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderBoardManager.getRankColor(rankInt[0] + 1))
                     .append(Component.text(dataOrdered.getName()).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
                     .append(Component.text(" - ", NamedTextColor.DARK_GRAY))
                     .append(Component.text(dataOrdered.getPoints()).color(NamedTextColor.AQUA));
