@@ -173,7 +173,7 @@ items:
     resource:
       material: {dream_item_material:coal_burn}
       generate: false
-      model_path: "minecraft:item/charcoal"
+      texture: "minecraft:item/charcoal"
     tooltip_style: "{dream_rarity:coal_burn}"
 
   hard_stone:
