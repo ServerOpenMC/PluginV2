@@ -12,6 +12,6 @@ public class Baltop {
     @Description("Permet de voir le top des joueurs les plus riches")
     @CommandPermission("omc.commands.baltop")
     public void baltop(Player player) {
-         player.sendMessage(LeaderBoardManager.cityMoneyLeaderBoard.createComponent());
+         player.sendMessage(LeaderBoardManager.CITY_MONEY_LEADERBOARD.createComponent());
     }
 }

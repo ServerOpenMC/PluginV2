@@ -24,11 +24,11 @@ import java.util.stream.Stream;
 @Credit(developers = {"ElitGaimix"})
 public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
 
-    public static CityMoneyLeaderBoard cityMoneyLeaderBoard;
-    public static ContributorsLeaderBoard contributorsLeaderBoard;
-    public static MoneyLeaderBoard moneyLeaderBoard;
-    public static PlayTimeLeaderBoard playTimeLeaderBoard;
-    public static PumpkinCountLeaderBoard pumpkinCountLeaderBoard;
+    public static CityMoneyLeaderBoard CITY_MONEY_LEADERBOARD;
+    public static ContributorsLeaderBoard CONTRIBUTORS_LEADERBOARD;
+    public static MoneyLeaderBoard MONEY_LEADERBOARD;
+    public static PlayTimeLeaderBoard PLAYTIME_LEADERBOARD;
+    public static PumpkinCountLeaderBoard PUMPKIN_COUNT_LEADERBOARD;
 
     private final static List<LeaderBoard> enabledLeaderBoards = new ArrayList<>();
 
@@ -38,11 +38,11 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
 
     @Override
     public void init() {
-        cityMoneyLeaderBoard = new CityMoneyLeaderBoard();
-        contributorsLeaderBoard = new ContributorsLeaderBoard();
-        moneyLeaderBoard = new MoneyLeaderBoard();
-        playTimeLeaderBoard = new PlayTimeLeaderBoard();
-        pumpkinCountLeaderBoard = new PumpkinCountLeaderBoard();
+        CITY_MONEY_LEADERBOARD = new CityMoneyLeaderBoard();
+        CONTRIBUTORS_LEADERBOARD = new ContributorsLeaderBoard();
+        MONEY_LEADERBOARD = new MoneyLeaderBoard();
+        PLAYTIME_LEADERBOARD = new PlayTimeLeaderBoard();
+        PUMPKIN_COUNT_LEADERBOARD = new PumpkinCountLeaderBoard();
         start();
     }
 
@@ -64,11 +64,11 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     }
 
     public static void start(){
-        registerLeaderBoard(cityMoneyLeaderBoard);
-        registerLeaderBoard(contributorsLeaderBoard);
-        registerLeaderBoard(moneyLeaderBoard);
-        registerLeaderBoard(playTimeLeaderBoard);
-        registerLeaderBoard(pumpkinCountLeaderBoard);
+        registerLeaderBoard(CITY_MONEY_LEADERBOARD);
+        registerLeaderBoard(CONTRIBUTORS_LEADERBOARD);
+        registerLeaderBoard(MONEY_LEADERBOARD);
+        registerLeaderBoard(PLAYTIME_LEADERBOARD);
+        registerLeaderBoard(PUMPKIN_COUNT_LEADERBOARD);
 
         viewerTimer = new BukkitRunnable() {
             @Override
