@@ -47,7 +47,7 @@ public class NotationsButton {
                     "feature.city.menus.main.notation.lore",
                     Component.text(Math.floor(notation.getTotalNote())).color(NamedTextColor.BLUE),
                     Component.text(NotationNote.getMaxTotalNote()).color(NamedTextColor.BLUE),
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
+                    Component.text(EconomyManager.getFormattedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
                     Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
             );
         } else {

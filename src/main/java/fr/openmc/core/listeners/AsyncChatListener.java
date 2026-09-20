@@ -34,9 +34,10 @@ public class AsyncChatListener implements Listener {
         final Player player = event.getPlayer();
         final CachedMetaData metaData = this.luckperms.getPlayerAdapter(Player.class).getMetaData(player);
 
+        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());
         String rawMessage = plugin.getConfig().getString("chat.message", "{prefix}{name}§7: {message}")
-                .replace("{prefix}", LuckPermsHook.getFormattedPAPIPrefix(player))
+                .replace("{prefix}", prefix != null ? prefix : "")
                 .replace("{suffix}", metaData.getSuffix() != null ? metaData.getSuffix() : "")
                 .replace("{name}", player.getName())
                 .replace("{message}", message);

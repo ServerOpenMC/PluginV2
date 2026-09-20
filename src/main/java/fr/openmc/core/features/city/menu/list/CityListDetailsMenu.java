@@ -158,7 +158,7 @@ public class CityListDetailsMenu extends Menu {
 		map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation(
 						"feature.city.menus.list.details.wealth",
-						Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
+						Component.text(EconomyManager.getFormattedNumber(city.getBalance())).color(NamedTextColor.GOLD),
 						Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
 				))));
 

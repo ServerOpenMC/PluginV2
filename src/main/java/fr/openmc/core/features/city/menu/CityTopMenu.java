@@ -90,7 +90,7 @@ public class CityTopMenu extends PaginatedMenu {
                 Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
                 Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
                 Component areaComponent = Component.text(city.getChunks().size()).color(NamedTextColor.GOLD);
-                Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
+                Component wealthComponent = Component.text(EconomyManager.getFormattedNumber(city.getBalance())).color(NamedTextColor.GOLD);
                 Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
                 Component powerComponent = Component.text(city.getPowerPoints()).color(NamedTextColor.RED);
 

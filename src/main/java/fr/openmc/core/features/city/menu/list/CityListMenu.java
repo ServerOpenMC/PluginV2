@@ -87,7 +87,7 @@ public class CityListMenu extends PaginatedMenu {
 			Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
 			Component membersSuffix = Component.text(city.getMembers().size() > 1 ? "s" : "");
 			Component typeComponent = city.getType().getDisplayName();
-			Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
+			Component wealthComponent = Component.text(EconomyManager.getFormattedNumber(city.getBalance())).color(NamedTextColor.GOLD);
 			Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
 			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 				Component mayorCity = city.getMayor() == null

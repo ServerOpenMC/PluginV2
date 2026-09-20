@@ -246,7 +246,7 @@ public class QuestsMenu extends Menu {
                                     .decoration(TextDecoration.ITALIC, false));
                         } else if (reward instanceof QuestMoneyReward(double amount)) {
                             lore.add(Component.text("    - ", NamedTextColor.DARK_GRAY)
-                                    .append(Component.text(EconomyManager.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                                    .append(Component.text(EconomyManager.getFormattedNumber(amount), NamedTextColor.GOLD))
                                     .append(Component.space())
                                     .append(Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.WHITE))
                                     .decoration(TextDecoration.ITALIC, false));
@@ -272,7 +272,7 @@ public class QuestsMenu extends Menu {
                             .decoration(TextDecoration.ITALIC, false));
                 } else if (reward instanceof QuestMoneyReward(double amount)) {
                     lore.add(Component.text("  - ", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(EconomyManager.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                            .append(Component.text(EconomyManager.getFormattedNumber(amount), NamedTextColor.GOLD))
                             .append(Component.space())
                             .append(Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.WHITE))
                             .decoration(TextDecoration.ITALIC, false));
