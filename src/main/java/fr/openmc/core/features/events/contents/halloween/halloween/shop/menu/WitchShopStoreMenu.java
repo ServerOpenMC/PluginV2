@@ -8,6 +8,7 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -68,12 +69,33 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.getBottomSlots(getInventorySize());
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
     public List<ItemStack> getItems() {
-        return List.of();
+
+        List<ItemStack> items = new ArrayList<>();
+
+        Iterator<WitchShopItem> contents = WitchShopManager.getStoreContent(this.page).iterator();
+
+        for (int c = 0; c < column; c++) {
+            for (int l = line.floor(); l <= line.ceiling(); l++) {
+
+                if (!contents.hasNext()) break;
+
+                WitchShopItem item = contents.next();
+
+                items.add(new ItemMenuBuilder(this, item.getItem(), itemMeta -> {
+                    itemMeta.displayName(item.getName());
+                    itemMeta.lore(WitchShopManager.extractLoreForItem(item));
+                }).setOnClick(event -> {
+                    //TODO open confirm menu if has enough moneyItem
+                }));
+            }
+        }
+
+        return items;
     }
 
     @Override
@@ -91,31 +113,19 @@ public class WitchShopStoreMenu extends PaginatedMenu {
         map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
         }).setOnClick(event -> {
-            //TODO open the WitchShopMainMenu
+            new WitchShopMainMenu(getOwner()).open();
         }));
+
+        //TODO filter :
+        // - room
+        // - unlocked
+        // - lower cost
+        // - highest cost
 
         if (hasNextPage()) {
             map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
             }).setNextPageButton());
-        }
-
-        Iterator<WitchShopItem> contents = WitchShopManager.getStoreContent(this.page).iterator();
-
-        for (int c = 0; c < column; c++) {
-            for (int l = line.floor(); l <= line.ceiling(); l++) {
-
-                if (!contents.hasNext()) break;
-
-                WitchShopItem item = contents.next();
-
-                map.put(l + (9 * c), new ItemMenuBuilder(this, item.getItem(), itemMeta -> {
-                    itemMeta.displayName(item.getName());
-                    itemMeta.lore(WitchShopManager.extractLoreForItem(item));
-                }).setOnClick(event -> {
-                    //TODO open confirm menu if has enough moneyItem
-                }));
-            }
         }
 
         return map;

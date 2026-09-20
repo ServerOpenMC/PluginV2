@@ -65,7 +65,7 @@ font_images:
         permission: halloween.event_main_menu
         show_in_gui: true
         suggestion_in_command: false
-        path: "halloween.event_main_menu.png"
+        path: "halloween_event_main_menu.png"
         y_position: 30
     home_mailbox:
         permission: mailbox.home

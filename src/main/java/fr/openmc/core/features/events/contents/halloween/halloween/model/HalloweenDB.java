@@ -1,46 +1,51 @@
 package fr.openmc.core.features.events.contents.halloween.halloween.model;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @DatabaseTable(tableName = "halloween_season_event_data")
 public class HalloweenDB {
 
-    @Setter
     @DatabaseField(columnName = "advancement")
-    private String currentAdvancement;
+    private int currentAdvancement;
 
-    @Setter
     @DatabaseField(columnName = "unlocked_room")
     private String unlockedRooms;
 
-    @Setter
     @DatabaseField(columnName = "is_active")
     private boolean active;
 
     private static final Gson GSON = new Gson();
 
     public HalloweenDB() {
-
     }
 
-    public HalloweenDB(String currentAdvancement, String currentUnlocked, boolean active) {
+    public HalloweenDB(int currentAdvancement, List<String> unlockedRooms, boolean active) {
         this.currentAdvancement = currentAdvancement;
-        this.unlockedRooms = currentUnlocked;
+        this.unlockedRooms = GSON.toJson(unlockedRooms);
         this.active = active;
     }
 
-    public void setContent(String[] array) {
-        unlockedRooms = GSON.toJson(array);
+    public void setUnlockedRooms(List<String> unlockedRooms) {
+        this.unlockedRooms = GSON.toJson(unlockedRooms);
     }
 
-    public String[] getContent() {
-        if (unlockedRooms == null) return new String[0];
-        return GSON.fromJson(unlockedRooms, String[].class);
-    }
+    public List<String> getUnlockedRooms() {
+        if (unlockedRooms == null || unlockedRooms.isBlank()) {
+            return new ArrayList<>();
+        }
 
+        return GSON.fromJson(
+                unlockedRooms,
+                new TypeToken<List<String>>() {}.getType()
+        );
+    }
 }

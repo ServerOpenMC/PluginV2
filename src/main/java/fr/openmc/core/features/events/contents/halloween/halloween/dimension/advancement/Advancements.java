@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum Advancements {
-    ROOM_1(1000)
+    ROOM_1(0),
+    ROOM_2(1000)
     ;
 
     private final int require;

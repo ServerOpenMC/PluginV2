@@ -35,7 +35,7 @@ public class WitchShopMainMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return "§r§f:offset_-48::halloween.event_main_menu:";
+        return "§r§f:offset_-48::halloween_event_main_menu:";
     }
 
     @Override
@@ -46,10 +46,6 @@ public class WitchShopMainMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
-
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
 
         // ** Witch House Button
         WitchHouseButton.init(this, inventory, WITCH_HOUSE_SLOTS);

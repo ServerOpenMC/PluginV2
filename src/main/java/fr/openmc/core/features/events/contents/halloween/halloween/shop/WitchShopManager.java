@@ -1,7 +1,10 @@
 package fr.openmc.core.features.events.contents.halloween.halloween.shop;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
+import fr.openmc.core.features.events.contents.halloween.halloween.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.halloween.dimension.advancement.Advancements;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -29,16 +32,10 @@ public class WitchShopManager {
     public static int SLOT_FACTOR = 28;
     private static final Sound BUY_SOUND = Sound.ENTITY_WITCH_CELEBRATE;
 
-    public void init() {
+    public static void init() {
         witchStoreItems = getWitchStoreItems();
         paginateWitchStoreItems = getPaginateWitchStoreItems();
         maxPage = getWitchStorePages();
-    }
-
-    private static Set<WitchShopItem> getWitchStoreItems() {
-        return Set.of(
-                new WitchShopItem()
-        );
     }
 
     private static Map<Integer, Set<WitchShopItem>> getPaginateWitchStoreItems() {
@@ -69,24 +66,24 @@ public class WitchShopManager {
     }
 
     private static int getWitchStorePages() {
-        return witchStoreItems.size() / SLOT_FACTOR;
+        return (int) Math.ceil((double) witchStoreItems.size() / SLOT_FACTOR);
     }
 
     public static void buyItem(Player player, WitchShopItem item, int amount) {
         if (item == null) return;
 
         if (amount <= 0) {
-            sendError(player, TranslationManager.translation("feature.adminshop.amount_sup"));
+            sendError(player, TranslationManager.translation("feature.adminshop.amount_sup")); //TODO
             return;
         }
 
         if (!ItemUtils.hasEnoughSpace(player, item.getItem().getBest(), amount)) {
-            sendError(player, TranslationManager.translation("feature.adminshop.inventory_full"));
+            sendError(player, TranslationManager.translation("feature.adminshop.inventory_full")); //TODO
             return;
         }
 
         if (item.getPrice() <= 0) {
-            sendError(player, TranslationManager.translation("feature.adminshop.item_not_sellable"));
+            sendError(player, TranslationManager.translation("feature.adminshop.item_not_sellable")); //TODO
             return;
         }
 
@@ -95,50 +92,74 @@ public class WitchShopManager {
 
             ItemUtils.giveItem(player, item.getItem().getBest(), amount);
 
-            sendInfo(player, TranslationManager.translation("feature.adminshop.player_buy_item",
+            sendInfo(player, TranslationManager.translation("feature.adminshop.player_buy_item", //TODO
                     Component.text(amount), item.getName(), Component.text(AdminShopUtils.formatPrice(totalPrice))
             ));
 
-            player.playSound(player, BUY_SOUND, 1f, 1f); //TODO random pitch
+            player.playSound(player, BUY_SOUND, 1f, new Random().nextFloat(0.6f, 1.4f));
         } else {
             sendError(player, TranslationManager.translation("feature.adminshop.have_enough_money")); //TODO
         }
     }
 
     private static void sendError(Player player, Component message) {
-        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.ERROR, true); //TODO prefix
+        MessagesManager.sendMessage(player, message, Prefix.HALLOWEEN, MessageType.ERROR, true);
     }
 
     private static void sendInfo(Player player, Component message) {
-        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.INFO, true); //TODO prefix
+        MessagesManager.sendMessage(player, message, Prefix.HALLOWEEN, MessageType.INFO, true);
     }
 
     public static List<Component> extractLoreForItem(WitchShopItem item) {
         List<Component> lore = new ArrayList<>();
 
-        if (true) {
-            lore.add(TranslationManager.translation("feature.adminshop.lore_item.buy", //TODO dire a qu'elle room on le débloque
-                    Component.text(item.getAdvancements().name())
-            ).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
-        } // TODO check the item advancement and compare with the currents
-        else {
+        if (HalloweenManager.hasUnlock(item.getAdvancements())) {
             lore.add(TranslationManager.translation("feature.adminshop.lore_item.buy", //TODO
-                    Component.text(getPrice(item))
+                    getPrice(item)
             ).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+
+        }
+        else {
+            lore.add(TranslationManager.translation("feature.adminshop.lore_item.buy." + item.getAdvancements().name().toLowerCase()) //TODO change key
+            .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
         }
 
         return lore;
     }
 
-    public static String getPrice(WitchShopItem item) {
-        return item.getPrice() + " " + item.getShopMoney();
+    public static Component getPrice(WitchShopItem item) {
+        return Component.text(item.getPrice() + " " + item.getShopMoney().getIcon());
     }
 
     public static String getMoneyItemIcon(String icon) {
         if (ItemsAdderHook.isEnable()) {
-            return FontImageWrapper.replaceFontImages("§f:"+icon+":"); //TODO omc_icons
+            return FontImageWrapper.replaceFontImages("§f:"+icon+":");
         } else {
-            return "Ⓐ";
+            return "Ⓐ"; //TODO Translationmanager.translate("<...>." + icon)
         }
+    }
+
+    //TODO mettre les vrais items
+    private static LinkedHashSet<WitchShopItem> getWitchStoreItems() {
+        return new LinkedHashSet<>(List.of(
+                new WitchShopItem(
+                        Advancements.ROOM_1,
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE,
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest().displayName(),
+                        10
+                ),
+                new WitchShopItem(
+                        Advancements.ROOM_2,
+                        OMCRegistry.CUSTOM_ITEMS.KEBAB,
+                        OMCRegistry.CUSTOM_ITEMS.KEBAB.getBest().displayName(),
+                        10
+                ),
+                new WitchShopItem(
+                        Advancements.ROOM_2,
+                        OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER,
+                        OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER.getBest().displayName(),
+                        1000
+                )
+        ));
     }
 }
