@@ -29,22 +29,25 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
-        url "https://maven.devs.beer/"
-    }
-    maven {
-        url "https://repo.fancyinnovations.com/releases"
+        url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
     }
     maven {
         url "https://maven.enginehub.org/repo/"
     }
     maven {
-        url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+        url "https://repo.fancyinnovations.com/releases"
+    }
+    maven {
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        url "https://maven.devs.beer/"
     }
     maven {
         url "https://repo.dmulloy2.net/repository/public/"
     }
     // * GeyserMC
-    maven {url "https://repo.opencollab.dev/main/"}
+    //maven {url "https://repo.opencollab.dev/main/"}
     maven {
         url "https://jitpack.io" // Toujours à la fin
     }
@@ -68,9 +71,9 @@ dependencies {
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
     // Bedrock Dependencies
-    compileOnly files("libs/RiftEngine-${riftEngineVersion}.jar")
-    compileOnly "org.geysermc.geyser:api:${geyserApiVersion}"
-    compileOnly "org.geysermc.floodgate:api:${floodgateApiVersion}"
+    //compileOnly files("libs/RiftEngine-${riftEngineVersion}.jar")
+    //compileOnly "org.geysermc.geyser:api:${geyserApiVersion}"
+    //compileOnly "org.geysermc.floodgate:api:${floodgateApiVersion}"
 
     implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
     implementation "io.github.revxrsal:lamp.common:${revxrsalLampVersion}"
