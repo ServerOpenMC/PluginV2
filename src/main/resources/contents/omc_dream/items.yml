@@ -6,7 +6,7 @@ items:
     resource:
       material: {dream_item_material:corrupted_sculk}
       generate: false
-      model_path: "minecraft:item/sculk"
+      model_path: "minecraft:block/sculk"
     lore:
       - <lang:itemsadder.omc_dream.corrupted_sculk.lore.0>
     tooltip_style: "{dream_rarity:corrupted_sculk}"
@@ -173,7 +173,7 @@ items:
     resource:
       material: {dream_item_material:coal_burn}
       generate: false
-      texture: "minecraft:item/charcoal"
+      model_path: "minecraft:item/charcoal"
     tooltip_style: "{dream_rarity:coal_burn}"
 
   hard_stone:
