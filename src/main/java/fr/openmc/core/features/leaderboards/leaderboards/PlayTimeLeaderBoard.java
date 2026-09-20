@@ -1,36 +1,30 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.cache.CachePlaytime;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.joml.Vector3f;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class PlayTimeLeaderBoard extends LeaderBoard {
 
-    public PlayTimeLeaderBoard() {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
-        float scale = (float) config.getDouble("scale");
-        super("playtime", config.getLocation("playtime-location"), null, 15);
-        if (this.location != null)
-            this.display = new TextDisplay(createComponent(), this.location, new Vector3f(scale));
-        else
-            OMCLogger.warn("playtime-location is null");
+    @Override
+    public double getUpdateDelay() {
+        return 15;
+    }
+
+    @Override
+    public String getId() {
+        return "playtime";
     }
 
     @Override
@@ -70,14 +64,6 @@ public class PlayTimeLeaderBoard extends LeaderBoard {
                 .append(TranslationManager.translation("feature.leaderboards.footer")
                         .color(NamedTextColor.DARK_PURPLE)
                         .decorate(TextDecoration.BOLD)));
-    }
-
-    @Override
-    public void setLocation(Location location) throws IOException {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
-        config.set("playtime-location", location);
-        config.save(LeaderBoardManager.getLeaderBoardFile());
-        this.display.setLocation(location);
     }
 
 }

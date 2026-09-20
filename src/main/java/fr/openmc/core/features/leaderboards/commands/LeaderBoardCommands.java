@@ -14,6 +14,7 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 @Command({"leaderboard", "lb"})
@@ -24,7 +25,7 @@ public class LeaderBoardCommands {
                      @Named("leaderboardName")
                      @SuggestWith(LeaderBoardAutoComplete.class)
                      String leaderboard) {
-            java.util.Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
+            Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
             if (lb.isPresent()){
                 MessagesManager.sendMessage(sender,lb.get().createComponent(), Prefix.OPENMC,MessageType.INFO,false);
                 return;
@@ -34,7 +35,7 @@ public class LeaderBoardCommands {
     }
 
     @Subcommand("setPos <leaderboardName>")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.setpos")
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(
             Player player,
@@ -42,7 +43,7 @@ public class LeaderBoardCommands {
             @SuggestWith(LeaderBoardAutoComplete.class)
             String leaderboard
     ) {
-        java.util.Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
+        Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
         if (lb.isPresent()) {
             try {
                 lb.get().setLocation(player.getLocation());
@@ -83,7 +84,7 @@ public class LeaderBoardCommands {
     }
 
     @Subcommand("disable")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.disable")
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
         LeaderBoardManager.stop();
@@ -92,16 +93,16 @@ public class LeaderBoardCommands {
     }
 
     @Subcommand("enable")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.enable")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        LeaderBoardManager.reload();
+        LeaderBoardManager.start();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_enabled")
                 .color(NamedTextColor.GREEN));
     }
 
     @Subcommand("update")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.update")
     @Description("Met à jour les Holograms.")
     void updateCommand(CommandSender sender) {
         LeaderBoardManager.update();
@@ -110,7 +111,7 @@ public class LeaderBoardCommands {
     }
 
     @Subcommand("reload")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.reload")
     @Description("Recharge la configuration et les hologrammes.")
     void reloadCommand(CommandSender sender) {
         LeaderBoardManager.reload();
@@ -119,7 +120,7 @@ public class LeaderBoardCommands {
     }
 
     @Subcommand("setScale")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.setscale")
     @Description("Défini la taille des Holograms.")
     void setScaleCommand(
             Player player,
@@ -131,7 +132,7 @@ public class LeaderBoardCommands {
                 scaleComponent
         ).color(NamedTextColor.GREEN));
         try {
-            LeaderBoardManager.setScale(scale);
+            LeaderBoard.setScale(scale);
             player.sendMessage(TranslationManager.translation(
                     "feature.leaderboards.command.scale_changed",
                     scaleComponent

@@ -9,8 +9,7 @@ import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.leaderboards.commands.LeaderBoardCommands;
 import fr.openmc.core.features.leaderboards.leaderboards.*;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -25,7 +24,13 @@ import java.util.stream.Stream;
 @Credit(developers = {"ElitGaimix"})
 public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
 
-    private final static List<LeaderBoard> leaderboards = new ArrayList<>();
+    public static CityMoneyLeaderBoard cityMoneyLeaderBoard;
+    public static ContributorsLeaderBoard contributorsLeaderBoard;
+    public static MoneyLeaderBoard moneyLeaderBoard;
+    public static PlayTimeLeaderBoard playTimeLeaderBoard;
+    public static PumpkinCountLeaderBoard pumpkinCountLeaderBoard;
+
+    private final static List<LeaderBoard> enabledLeaderBoards = new ArrayList<>();
 
     private static File leaderBoardConfig = null;
 
@@ -33,41 +38,38 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
 
     @Override
     public void init() {
-        reload();
+        cityMoneyLeaderBoard = new CityMoneyLeaderBoard();
+        contributorsLeaderBoard = new ContributorsLeaderBoard();
+        moneyLeaderBoard = new MoneyLeaderBoard();
+        playTimeLeaderBoard = new PlayTimeLeaderBoard();
+        pumpkinCountLeaderBoard = new PumpkinCountLeaderBoard();
+        start();
     }
 
     public static Stream<String> getLeaderBoards(){
-        return leaderboards.stream().map(LeaderBoard::getId);
-    }
-
-    public static void setScale(float scale) throws IOException {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(getLeaderBoardFile());
-        config.set("scale", scale);
-        config.save(getLeaderBoardFile());
-        reload();
+        return enabledLeaderBoards.stream().map(LeaderBoard::getId);
     }
 
     public static Optional<LeaderBoard> getLeaderBoard(String id){
-        return leaderboards.stream().filter(lb -> lb.getId().equalsIgnoreCase(id)).findAny();
+        return enabledLeaderBoards.stream().filter(lb -> lb.getId().equalsIgnoreCase(id)).findAny();
     }
 
-    public static synchronized void stop() {
-        leaderboards.forEach(LeaderBoard::remove);
-        leaderboards.clear();
+    public static void stop() {
+        enabledLeaderBoards.forEach(LeaderBoard::remove);
+        enabledLeaderBoards.clear();
         if (viewerTimer != null){
             viewerTimer.cancel();
             viewerTimer = null;
         }
     }
 
-    public static synchronized void reload() {
-        stop();
+    public static void start(){
+        registerLeaderBoard(cityMoneyLeaderBoard);
+        registerLeaderBoard(contributorsLeaderBoard);
+        registerLeaderBoard(moneyLeaderBoard);
+        registerLeaderBoard(playTimeLeaderBoard);
+        registerLeaderBoard(pumpkinCountLeaderBoard);
 
-        registerLeaderBoard(new CityMoneyLeaderBoard());
-        registerLeaderBoard(new ContributorsLeaderBoard());
-        registerLeaderBoard(new MoneyLeaderBoard());
-        registerLeaderBoard(new PlayTimeLeaderBoard());
-        registerLeaderBoard(new PumpkinCountLeaderBoard());
         viewerTimer = new BukkitRunnable() {
             @Override
             public void run() {
@@ -76,12 +78,21 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         }.runTaskTimer(OMCPlugin.getInstance(),0L,20L);
     }
 
+    public static void reload() {
+        stop();
+        start();
+    }
+
     public static void update() {
-        leaderboards.forEach(LeaderBoard::update);
+        enabledLeaderBoards.forEach(LeaderBoard::update);
     }
 
     public static void updateViewers() {
-        leaderboards.forEach(LeaderBoard::updateViewers);
+        enabledLeaderBoards.forEach(LeaderBoard::updateViewers);
+    }
+
+    public static void refreshViewer(Player player) {
+        enabledLeaderBoards.forEach(leaderBoard -> leaderBoard.refreshViewer(player));
     }
 
     @Override
@@ -94,30 +105,32 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     public static File getLeaderBoardFile() {
         if (leaderBoardConfig == null) {
             OMCPlugin plugin = OMCPlugin.getInstance();
-            if (plugin == null) {
-                throw new IllegalStateException("OMCPlugin instance not initialized");
-            }
+            if (plugin == null) throw new IllegalStateException("OMCPlugin instance not initialized");
             leaderBoardConfig = new File(plugin.getDataFolder(), "data/leaderboards.yml");
         }
         if (!leaderBoardConfig.exists()) {
-            if (!leaderBoardConfig.getParentFile().mkdirs())
+            if (!leaderBoardConfig.getParentFile().exists() && !leaderBoardConfig.getParentFile().mkdirs())
                 OMCLogger.error("Can't create folder : " + leaderBoardConfig.getParentFile());
-            OMCPlugin.getInstance().saveResource(leaderBoardConfig.getPath(), false);
+            try {
+                if (!leaderBoardConfig.createNewFile())
+                    OMCLogger.error("Can't create leaderboard config : " + leaderBoardConfig);
+            } catch (IOException e) {
+                throw new IllegalStateException("Can't create leaderboard config : " + leaderBoardConfig, e);
+            }
         }
         return leaderBoardConfig;
     }
 
     public static void registerLeaderBoard(LeaderBoard leaderBoard){
-        if (leaderboards.stream().noneMatch(existing -> existing.getId().equals(leaderBoard.getId()))) {
-            leaderboards.add(leaderBoard);
+        if (enabledLeaderBoards.stream().noneMatch(existing -> existing.getId().equals(leaderBoard.getId()))) {
+            enabledLeaderBoards.add(leaderBoard);
             leaderBoard.start();
         }
     }
 
     public static void unregisterLeaderBoard(LeaderBoard leaderBoard){
-        if (leaderboards.remove(leaderBoard)) {
+        if (enabledLeaderBoards.remove(leaderBoard))
             leaderBoard.remove();
-        }
     }
 
 }

@@ -1,48 +1,43 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.joml.Vector3f;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class MoneyLeaderBoard extends LeaderBoard {
 
-    public MoneyLeaderBoard(){
-        FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
-        float scale = (float) config.getDouble("scale");
-        super("money", config.getLocation("money-location"), null, 15);
-        if (this.location != null)
-            this.display = new TextDisplay(createComponent(), this.location, new Vector3f(scale));
-        else
-            OMCLogger.warn("money-location is null");
+    @Override
+    public double getUpdateDelay() {
+        return 15;
+    }
+
+    @Override
+    public String getId() {
+        return "money";
     }
 
     @Override
     public Component createComponent() {
-        Map<UUID, Double> tmp_balances = new HashMap<>();
-        EconomyManager.getBalances().forEach((player, balance) -> tmp_balances.put(player, balance.getBalance()));
-        BankManager.getBanks().forEach((uuid, bank) -> tmp_balances.merge(uuid, bank.getBalance(), Double::sum));
+        Map<UUID, Double> tempBalances = new HashMap<>();
+        EconomyManager.getBalances().forEach((player, balance) -> tempBalances.put(player, balance.getBalance()));
+        BankManager.getBanks().forEach((uuid, bank) -> tempBalances.merge(uuid, bank.getBalance(), Double::sum));
 
-        if (tmp_balances.isEmpty())
+        if (tempBalances.isEmpty())
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
 
-        List<Map.Entry<UUID, Double>> balances = tmp_balances.entrySet().stream()
+        List<Map.Entry<UUID, Double>> balances = tempBalances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
                 .limit(10)
                 .toList();
@@ -58,7 +53,7 @@ public class MoneyLeaderBoard extends LeaderBoard {
                     .append(TranslationManager.translation(
                             "feature.leaderboards.line.money",
                             rank,
-                            Component.text(CachePlayerName.getName(balance.getKey())).color(NamedTextColor.LIGHT_PURPLE),
+                            CachePlayerName.name(balance.getKey()).color(NamedTextColor.LIGHT_PURPLE),
                             Component.text(EconomyManager.getFormattedSimplifiedNumber(balance.getValue()) + " " + EconomyManager.getEconomyIcon())
                                     .color(NamedTextColor.WHITE)
                     )));
@@ -68,13 +63,5 @@ public class MoneyLeaderBoard extends LeaderBoard {
                 .append(TranslationManager.translation("feature.leaderboards.footer")
                         .color(NamedTextColor.DARK_PURPLE)
                         .decorate(TextDecoration.BOLD)));
-    }
-
-    @Override
-    public void setLocation(Location location) throws IOException {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
-        config.set("money-location", location);
-        config.save(LeaderBoardManager.getLeaderBoardFile());
-        this.display.setLocation(location);
     }
 }

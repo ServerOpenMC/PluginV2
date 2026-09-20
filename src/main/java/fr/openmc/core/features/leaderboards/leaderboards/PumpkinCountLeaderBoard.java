@@ -1,40 +1,32 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.joml.Vector3f;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 
 public class PumpkinCountLeaderBoard extends LeaderBoard {
 
-    private static final TextColor pumpkinColor = TextColor.color(156, 69, 26);
+    private final TextColor pumpkinColor = TextColor.color(156, 69, 26);
 
-    public PumpkinCountLeaderBoard(){
-        FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
-        float scale = (float) config.getDouble("scale");
-        super("pumpkin-count", config.getLocation("pumpkin-count-location"), null, 15);
-        if (this.location != null)
-            this.display = new TextDisplay(createComponent(), this.location, new Vector3f(scale));
-        else
-            OMCLogger.warn("pumpkin-count-location is null");
+    @Override
+    public double getUpdateDelay() {
+        return 15;
+    }
+
+    @Override
+    public String getId() {
+        return "pumpkin-count";
     }
 
     @Override
@@ -54,13 +46,13 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
 
         for (int i = 0; i < datas.size(); i++){
             HalloweenData data = datas.get(i);
-            String name = CachePlayerName.getName(data.getPlayerUUID());
+            Component name = CachePlayerName.name(data.getPlayerUUID());
             String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(data.getPumpkinCount());
             Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
             text = text.append(Component.text("\n").append(TranslationManager.translation(
                     "feature.leaderboards.line.pumpkin",
                     rank,
-                    Component.text(name).color(pumpkinColor),
+                    name.color(pumpkinColor),
                     Component.text(formattedPumpkinCount).color(NamedTextColor.WHITE))));
 
         }
@@ -69,13 +61,5 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
                 .append(TranslationManager.translation("feature.leaderboards.footer")
                         .color(pumpkinColor)
                         .decorate(TextDecoration.BOLD)));
-    }
-
-    @Override
-    public void setLocation(Location location) throws IOException {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
-        config.set("pumpkin-count-location", location);
-        config.save(LeaderBoardManager.getLeaderBoardFile());
-        this.display.setLocation(location);
     }
 }

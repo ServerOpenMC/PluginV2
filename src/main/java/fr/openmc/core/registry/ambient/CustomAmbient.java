@@ -3,6 +3,7 @@ package fr.openmc.core.registry.ambient;
 import com.google.gson.JsonObject;
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
+import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
 import fr.openmc.core.utils.MathUtils;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.dimension.DimensionType;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -77,6 +79,7 @@ public abstract class CustomAmbient {
             PlayerWeatherNMS.setWeather(player, this.getAmbientBuilder().getWeatherFixed());
         }
 
+        refreshLeaderBoards(player);
         ACTIVE_AMBIENTS.put(player.getUniqueId(), this.getId());
     }
 
@@ -106,6 +109,7 @@ public abstract class CustomAmbient {
                 false
         );
 
+        refreshLeaderBoards(player);
     }
 
     /**
@@ -116,6 +120,14 @@ public abstract class CustomAmbient {
         for (Player receiver : receivers) {
             reset(receiver);
         }
+    }
+
+    private void refreshLeaderBoards(Player player) {
+        Bukkit.getScheduler().runTaskLater(
+                fr.openmc.core.OMCPlugin.getInstance(),
+                () -> LeaderBoardManager.refreshViewer(player),
+                1L
+        );
     }
 
     /**
