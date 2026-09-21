@@ -1,15 +1,10 @@
 package fr.openmc.api.datapacks.injectors;
 
 import fr.openmc.api.datapacks.DatapackInjector;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 import fr.openmc.api.datapacks.builders.TimelineBuilder;
 import lombok.Getter;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
@@ -21,41 +16,44 @@ import java.util.function.Consumer;
 public class TimelinesInjector implements DatapackInjector {
 
     private final String namespace;
-    private String id;
-    private final Map<String, TimelineBuilder> entries = new LinkedHashMap<>();
+    private final String id;
+    private final TimelineBuilder builder;
 
-    public TimelinesInjector(String namespace) {
+    public TimelinesInjector(String namespace, String id, TimelineBuilder builder) {
         this.namespace = namespace;
+        this.id = id;
+        this.builder = builder;
     }
 
-    public TimelinesInjector add(String id, Consumer<TimelineBuilder> builder) {
-        TimelineBuilder instance = new TimelineBuilder();
-        builder.accept(instance);
-        entries.put(id, instance);
+    public TimelinesInjector(String namespace, String id, Consumer<TimelineBuilder> builder) {
+        this.namespace = namespace;
         this.id = id;
-        return this;
-    }
-
-    public TimelinesInjector add(String id, TimelineBuilder builder) {
-        entries.put(id, builder);
-        this.id = id;
-        return this;
+        this.builder = new TimelineBuilder();
+        builder.accept(this.builder);
     }
 
     @Override
-    public void inject(File rootFile) {
-        if (entries.isEmpty()) return;
+    public String[] getPath() {
+        return new String[]{"timeline"};
+    }
 
-        Path root = rootFile.toPath().resolve("data").resolve(namespace).resolve("timeline");
-        try {
-            Files.createDirectories(root);
-            for (var entry : entries.entrySet()) {
-                Path file = root.resolve(entry.getKey() + ".json");
-                Files.createDirectories(file.getParent());
-                Files.writeString(file, GSON.toJson(entry.getValue().toJson()));
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot write timeline files", e);
-        }
+    @Override
+    public ContentBuilder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getExtension() {
+        return "json";
     }
 }

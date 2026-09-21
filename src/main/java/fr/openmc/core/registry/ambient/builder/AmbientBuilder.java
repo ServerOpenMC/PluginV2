@@ -101,7 +101,7 @@ public class AmbientBuilder {
     }
 
     public AmbientBuilder timelines(TimelineBuilder builder) {
-        this.dimTypeBuilder.timelines(new TimelinesInjector(namespace).add(id, builder));
+        this.dimTypeBuilder.timelines(new TimelinesInjector(namespace, id, builder));
         this.timelineBuilder = builder;
         return this;
     }
@@ -209,12 +209,12 @@ public class AmbientBuilder {
 
     public void runInjectors(CustomAmbient ambient, OMCDatapack datapack) {
         // ** DimensionType Injector
-        DimensionTypesInjector dimensionTypesInjector = new DimensionTypesInjector(namespace).add(id, dimTypeBuilder);
+        DimensionTypesInjector dimensionTypesInjector = new DimensionTypesInjector(namespace, id, dimTypeBuilder);
         datapack.addInjector(dimensionTypesInjector);
 
         // ** Timeline Injector
         if (timelineBuilder != null) {
-            TimelinesInjector timelinesInjector = new TimelinesInjector(namespace).add(id, timelineBuilder);
+            TimelinesInjector timelinesInjector = new TimelinesInjector(namespace, id, timelineBuilder);
             datapack.addInjector(timelinesInjector);
         }
 
