@@ -1,28 +1,29 @@
-package fr.openmc.core.registry.regions.content;
+package fr.openmc.core.features.singularity.contents.regions;
 
 import com.sk89q.worldedit.math.BlockVector3;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.regions.types.Region;
 import net.kyori.adventure.key.Key;
 import org.bukkit.World;
 
-public class ExampleRegion extends Region {
+public class SingularityRegion extends Region {
     @Override
     public Key getKey() {
-        return null;
+        return Key.key("omc_singularity", "singularity");
     }
 
     @Override
     public World getWorld() {
-        return null;
+        return OMCRegistry.WORLD_TEMPLATES.SINGULARITY_WORLD.getWorld();
     }
 
     @Override
     public BlockVector3 getMin() {
-        return null;
+        return BlockVector3.at(-100, 200, -100);
     }
 
     @Override
     public BlockVector3 getMax() {
-        return null;
+        return BlockVector3.at(100, 35, 100);
     }
 }

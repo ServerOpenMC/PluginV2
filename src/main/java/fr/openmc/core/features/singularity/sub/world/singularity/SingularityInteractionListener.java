@@ -4,8 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.singularity.sub.world.SingularityWorldManager;
-import fr.openmc.core.registry.poi.CustomPoi;
-import org.bukkit.Bukkit;
+import fr.openmc.core.registry.regions.CustomRegion;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -16,15 +15,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class SingularityInteractionListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
-        Optional<CustomPoi> poi = OMCRegistry.CUSTOM_POI.getByLocation(clickedBlock.getLocation());
-        if (poi.isEmpty()) return;
-        if (!poi.get().equals(OMCRegistry.CUSTOM_POI.SINGULARITY)) return;
+        Set<CustomRegion> regions = OMCRegistry.CUSTOM_REGIONS.getByLocation(clickedBlock.getLocation());
+        if (regions.isEmpty()) return;
+        if (!regions.contains(OMCRegistry.CUSTOM_REGIONS.SINGULARITY_REGION)) return;
 
         repulseBySingularity(event.getPlayer());
     }
