@@ -6,12 +6,13 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.RegionEnterEvent;
 import fr.openmc.core.events.RegionLeaveEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
-import net.kyori.adventure.title.TitlePart;
+import fr.openmc.core.registry.regions.CustomRegion;
+import fr.openmc.core.registry.regions.events.EntityCustomRegionEnterEvent;
+import fr.openmc.core.registry.regions.events.EntityCustomRegionLeaveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import java.util.*;
 
 public class RegionTrackingListener implements Listener, NotLoadInUnitTest {
     private final Map<UUID, Set<ProtectedRegion>> playerRegions = new HashMap<>();
+    private final Map<UUID, Set<CustomRegion>> playerCustomRegions = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
@@ -47,11 +49,17 @@ public class RegionTrackingListener implements Listener, NotLoadInUnitTest {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         playerRegions.remove(event.getPlayer().getUniqueId());
+        playerCustomRegions.remove(event.getPlayer().getUniqueId());
     }
 
     private void handleTransition(Player player, Location to) {
         if (to == null || to.getWorld() == null) return;
 
+        handleTransitionWGRegion(player, to);
+        handleTransitionCustomRegion(player, to);
+    }
+
+    private void handleTransitionWGRegion(Player player, Location to) {
         Set<ProtectedRegion> newRegions = getRegionsAt(to);
         Set<ProtectedRegion> oldRegions = playerRegions.getOrDefault(player.getUniqueId(), Collections.emptySet());
 
@@ -70,6 +78,27 @@ public class RegionTrackingListener implements Listener, NotLoadInUnitTest {
         }
 
         playerRegions.put(player.getUniqueId(), newRegions);
+    }
+
+    private void handleTransitionCustomRegion(Player player, Location to) {
+        Set<CustomRegion> newRegions = OMCRegistry.CUSTOM_REGIONS.getByLocation(to);
+        Set<CustomRegion> oldRegions = playerCustomRegions.getOrDefault(player.getUniqueId(), Set.of());
+
+        if (oldRegions.equals(newRegions)) return;
+
+        for (CustomRegion region : oldRegions) {
+            if (!newRegions.contains(region)) {
+                Bukkit.getPluginManager().callEvent(new EntityCustomRegionLeaveEvent(player, region));
+            }
+        }
+
+        for (CustomRegion region : newRegions) {
+            if (!oldRegions.contains(region)) {
+                Bukkit.getPluginManager().callEvent(new EntityCustomRegionEnterEvent(player, region));
+            }
+        }
+
+        playerCustomRegions.put(player.getUniqueId(), newRegions);
     }
 
     private Set<ProtectedRegion> getRegionsAt(Location location) {

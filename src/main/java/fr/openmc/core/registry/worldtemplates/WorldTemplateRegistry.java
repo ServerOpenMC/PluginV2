@@ -50,7 +50,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
                             .biome(biomeInjector)
                             .type(dimTypeInjector)));
 
-            worldTemplateDatapack.buildBootstrap(context, true); // todo: remettre sur false qd fini de debug
+            worldTemplateDatapack.buildBootstrap(context, false);
         }
     }
 
