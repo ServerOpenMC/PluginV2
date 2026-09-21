@@ -1,6 +1,7 @@
 package fr.openmc.api.datapacks.injectors;
 
 import fr.openmc.api.datapacks.DatapackInjector;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,5 +33,30 @@ public class PackMetadataInjector implements DatapackInjector {
                   }
                 }
                 """, PACK_FORMAT[0], PACK_FORMAT[0], PACK_FORMAT[1], PACK_FORMAT[0], PACK_FORMAT[1]);
+    }
+
+    @Override
+    public String[] getPath() {
+        return null;
+    }
+
+    @Override
+    public ContentBuilder getBuilder() {
+        return null;
+    }
+
+    @Override
+    public String getNamespace() {
+        return null;
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getExtension() {
+        return null;
     }
 }
