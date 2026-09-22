@@ -18,12 +18,12 @@ public class SingularityRegion extends Region {
     }
 
     @Override
-    public BlockVector3 getMin() {
-        return BlockVector3.at(-100, 200, -100);
+    public BlockVector3 getPos1() {
+        return BlockVector3.at(100, 35, 100);
     }
 
     @Override
-    public BlockVector3 getMax() {
-        return BlockVector3.at(100, 35, 100);
+    public BlockVector3 getPos2() {
+        return BlockVector3.at(-100, 200, -100);
     }
 }
