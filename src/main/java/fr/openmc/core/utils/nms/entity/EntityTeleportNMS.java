@@ -3,6 +3,7 @@ package fr.openmc.core.utils.nms.entity;
 import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.PositionPath;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -15,11 +16,9 @@ public class EntityTeleportNMS {
 
         ClientboundEntityPositionSyncPacket packet = new ClientboundEntityPositionSyncPacket(
                 entityId,
-                new PositionMoveRotation(new Vec3(loc.getX(), loc.getY(), loc.getZ()),
-                        Vec3.ZERO,
-                        loc.getYaw(),
-                        loc.getPitch()
-                ),
+                PositionPath.of(new Vec3(loc.getX(), loc.getY(), loc.getZ())),
+                loc.getYaw(),
+                loc.getPitch(),
                 false
         );
 
