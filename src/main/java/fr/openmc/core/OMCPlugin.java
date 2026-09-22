@@ -43,7 +43,7 @@ import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -132,7 +132,7 @@ public class OMCPlugin extends JavaPlugin {
             DreamManager::new,
             MultiBlockManager::new,
             MilestonesManager::new,
-            () -> new LeaderboardManager(),
+            () -> new LeaderBoardManager(),
             () -> new MainMenu(),
             () -> new HologramLoader(),
             BossbarManager::new,

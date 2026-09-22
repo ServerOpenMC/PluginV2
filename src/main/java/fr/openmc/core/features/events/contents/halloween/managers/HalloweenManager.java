@@ -19,8 +19,8 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DamageResistant;
@@ -93,13 +93,11 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
         halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
     }
 
-    private static boolean saveHalloweenData(HalloweenData data) {
+    private static void saveHalloweenData(HalloweenData data) {
         try {
             halloweenDataDao.createOrUpdate(data);
-            return true;
         } catch (SQLException e) {
             OMCLogger.error("Failed to save halloween data {}", data.getPlayerUUID(), e);
-            return false;
         }
     }
 
@@ -118,11 +116,23 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
     }
 
     public static void endEvent() {
-        LeaderboardManager.updatePumpkinCountMap();
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
 
-        for (Map.Entry<Integer, Map.Entry<String, String>> entries : LeaderboardManager.getPumpkinCountMap().entrySet()) {
-            int rank = entries.getKey();
+        Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
+        int rank = 1;
+
+        Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
+        for (var entry : balances.entrySet().stream()
+                .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
+                .limit(10)
+                .toList()) {
+            String playerName = CachePlayerName.getName(entry.getKey());
+            String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
+            newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
+        }
+
+        for (Map.Entry<Integer, Map.Entry<String, String>> entries : newMap.entrySet()) {
+            rank = entries.getKey();
             String playerName = entries.getValue().getKey();
             String pumpkinCount = entries.getValue().getValue();
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
