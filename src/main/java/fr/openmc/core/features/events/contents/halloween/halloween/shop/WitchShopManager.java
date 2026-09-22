@@ -21,16 +21,14 @@ import java.util.*;
 
 public class WitchShopManager {
 
-    //TODO idée :
-    // bruit de sorcière quand on buy un item
-
-    public static Set<WitchShopItem> witchStoreItems;
+    public static LinkedHashSet<WitchShopItem> witchStoreItems;
     public static Map<Integer, Set<WitchShopItem>> paginateWitchStoreItems;
 
     public static int maxPage;
 
     public static int SLOT_FACTOR = 28;
     private static final Sound BUY_SOUND = Sound.ENTITY_WITCH_CELEBRATE;
+    private static final Sound ERROR_SOUND = Sound.ENTITY_WITCH_AMBIENT;
 
     public static void init() {
         witchStoreItems = getWitchStoreItems();
@@ -104,6 +102,7 @@ public class WitchShopManager {
 
     private static void sendError(Player player, Component message) {
         MessagesManager.sendMessage(player, message, Prefix.HALLOWEEN, MessageType.ERROR, true);
+        player.playSound(player, ERROR_SOUND, 1f,1f);
     }
 
     private static void sendInfo(Player player, Component message) {
@@ -141,25 +140,17 @@ public class WitchShopManager {
 
     //TODO mettre les vrais items
     private static LinkedHashSet<WitchShopItem> getWitchStoreItems() {
-        return new LinkedHashSet<>(List.of(
-                new WitchShopItem(
-                        Advancements.ROOM_1,
-                        OMCRegistry.CUSTOM_ITEMS.AYWENITE,
-                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest().displayName(),
-                        10
-                ),
-                new WitchShopItem(
-                        Advancements.ROOM_2,
-                        OMCRegistry.CUSTOM_ITEMS.KEBAB,
-                        OMCRegistry.CUSTOM_ITEMS.KEBAB.getBest().displayName(),
-                        10
-                ),
-                new WitchShopItem(
-                        Advancements.ROOM_2,
-                        OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER,
-                        OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER.getBest().displayName(),
-                        1000
-                )
-        ));
+        LinkedHashSet<WitchShopItem> items = new LinkedHashSet<>();
+
+        items.add(new WitchShopItem(
+                Advancements.ROOM_1, OMCRegistry.CUSTOM_ITEMS.AYWENITE, 10));
+
+        items.add(new WitchShopItem(
+                Advancements.ROOM_2, OMCRegistry.CUSTOM_ITEMS.KEBAB, 10));
+
+        items.add(new WitchShopItem(
+                Advancements.ROOM_2, OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER, 1000));
+
+        return items;
     }
 }

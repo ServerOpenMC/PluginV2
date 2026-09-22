@@ -26,9 +26,9 @@ public class WitchHouseButton {
                             Component.text("").color(NamedTextColor.LIGHT_PURPLE)
                     ));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> { //TODO tp dans la dimension
-
-                })
+                }).setCloseButton()//.setOnClick(inventoryClickEvent -> { //TODO tp dans la dimension
+//                    inventoryClickEvent.getClickedInventory().close();
+//                })
         );
     }
 }

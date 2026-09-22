@@ -31,33 +31,3 @@ font_images:
     path: "font/bits.png"
     scale_ratio: 12
     y_position: 9
-  candy_red:
-    permission: candy_red
-    show_in_gui: true
-    path: "font/candy/candy_red.png"
-    scale_ratio: 12
-    y_position: 9
-  candy_yellow:
-    permission: candy_yellow
-    show_in_gui: true
-    path: "font/candy/candy_yellow.png"
-    scale_ratio: 12
-    y_position: 9
-  candy_green:
-    permission: candy_green
-    show_in_gui: true
-    path: "font/candy/candy_green.png"
-    scale_ratio: 12
-    y_position: 9
-  candy_blue:
-    permission: candy_blue
-    show_in_gui: true
-    path: "font/candy/candy_blue.png"
-    scale_ratio: 12
-    y_position: 9
-  candy_brown:
-    permission: candy_brown
-    show_in_gui: true
-    path: "font/candy/candy_brown.png"
-    scale_ratio: 12
-    y_position: 9

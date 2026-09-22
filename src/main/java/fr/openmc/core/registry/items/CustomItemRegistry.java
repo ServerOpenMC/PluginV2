@@ -15,6 +15,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
+import fr.openmc.core.features.events.contents.halloween.halloween.CandyItem;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -194,6 +195,13 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem ABONDANCE_LEGGINGS = register("omc_daily_events:abondance_leggings", Material.IRON_LEGGINGS);
     public final CustomItem ABONDANCE_BOOTS = register("omc_daily_events:abondance_boots", Material.IRON_BOOTS);
 
+    public final CustomItem CANDY_RED = register(new CandyItem("omc_halloween:candy_red", 4, Material.APPLE));
+    public final CustomItem CANDY_YELLOW = register(new CandyItem("omc_halloween:candy_yellow", 2, Material.APPLE));
+    public final CustomItem CANDY_GREEN = register(new CandyItem("omc_halloween:candy_green", 3, Material.APPLE));
+    public final CustomItem CANDY_BLUE = register(new CandyItem("omc_halloween:candy_blue", 5, Material.APPLE));
+    public final CustomItem CANDY_BROWN = register(new CandyItem("omc_halloween:candy_brown", 20, Material.APPLE));
+
+    /* Lootbox */
     public final CustomItem KITCHEN_BARSTOOL = register("kitchen:kitchen_barstool", Material.PAPER);
     public final CustomItem KITCHEN_BIN = register("kitchen:kitchen_bin", Material.PAPER);
     public final CustomItem KITCHEN_CHAIR = register("kitchen:kitchen_chair", Material.PAPER);
