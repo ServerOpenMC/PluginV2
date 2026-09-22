@@ -1,26 +1,18 @@
 {
   "sea_level": -64,
   "disable_mob_generation": false,
-  "aquifers_enabled": false,
-  "ore_veins_enabled": false,
   "legacy_random_source": false,
   "default_block": {
-    "Name": "minecraft:deepslate"
+    "id": "minecraft:deepslate"
   },
   "default_fluid": {
-    "Name": "minecraft:air"
+    "id": "minecraft:air"
   },
   "noise": {
     "min_y": -64,
-    "height": 320,
-    "size_horizontal": 2,
-    "size_vertical": 1
+    "height": 320
   },
   "noise_router": {
-    "barrier": 0,
-    "fluid_level_floodedness": 0,
-    "fluid_level_spread": 0,
-    "lava": 0,
     "temperature": {
       "type": "noise",
       "noise": "omc_dream:biome_noise",
@@ -32,22 +24,19 @@
     "erosion": 0,
     "depth": "omc_dream:dream_depth",
     "ridges": 0,
+    "chunk_surface_level": 1,
     "final_density": {
       "type": "add",
-      "argument1": {
+      "left": {
         "type": "min",
-        "argument1": "omc_dream:terrains/dream_terrain",
-        "argument2": "omc_dream:terrains/dream_cave"
+        "left": "omc_dream:terrains/dream_terrain",
+        "right": "omc_dream:terrains/dream_cave"
       },
-      "argument2": "omc_dream:terrains/bedrock_floor"
-    },
-    "vein_toggle": 0,
-    "vein_ridged": 0,
-    "vein_gap": 0,
-    "preliminary_surface_level": 0
+      "right": "omc_dream:terrains/bedrock_floor"
+    }
   },
   "spawn_target": [],
-  "surface_rule": {
+  "material_rule": {
     "type": "minecraft:sequence",
     "sequence": [
       {
@@ -65,7 +54,7 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:bedrock"
+            "id": "minecraft:bedrock"
           }
         }
       },
@@ -85,7 +74,7 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:packed_ice"
+            "id": "minecraft:packed_ice"
           }
         }
       },
@@ -109,7 +98,7 @@
           "then_run": {
             "type": "minecraft:block",
             "result_state": {
-              "Name": "minecraft:snow_block"
+              "id": "minecraft:snow_block"
             }
           }
         }
@@ -125,7 +114,7 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:mud"
+            "id": "minecraft:mud"
           }
         }
       },
@@ -142,7 +131,7 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:powder_snow"
+            "id": "minecraft:powder_snow"
           }
         }
       },
@@ -167,7 +156,7 @@
           "then_run": {
             "type": "minecraft:block",
             "result_state": {
-              "Name": "minecraft:sculk"
+              "id": "minecraft:sculk"
             }
           }
         }
@@ -183,16 +172,17 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:smooth_basalt"
+            "id": "minecraft:smooth_basalt"
           }
         }
       },
       {
         "type": "minecraft:block",
         "result_state": {
-          "Name": "minecraft:deepslate"
+          "id": "minecraft:deepslate"
         }
       }
     ]
-  }
+  },
+  "debug_functions": []
 }
