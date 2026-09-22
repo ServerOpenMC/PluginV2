@@ -9,6 +9,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.singularity.contents.worldtemplates.SingularityWorldTemplate;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasGamerules;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasWorldBorder;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -25,6 +26,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
         implements KeyedRegistry<String, WorldTemplate> {
 
     // ** REGISTER WORLD TEMPLATES **
+    public final WorldTemplate SINGULARITY_WORLD = register(new SingularityWorldTemplate());
 
     @Override
     public void bootstrap(BootstrapContext context) throws IOException {

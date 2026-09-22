@@ -3,7 +3,7 @@ package fr.openmc.core.registry.ambient.listeners;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.registry.ambient.CustomAmbient;
-import fr.openmc.core.utils.nms.PlayerBiomeNMS;
+import fr.openmc.core.utils.nms.player.PlayerBiomeNMS;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.ChunkAccess;

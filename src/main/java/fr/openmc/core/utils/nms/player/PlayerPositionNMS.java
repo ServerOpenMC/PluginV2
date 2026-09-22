@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.nms;
+package fr.openmc.core.utils.nms.player;
 
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.server.level.ServerPlayer;

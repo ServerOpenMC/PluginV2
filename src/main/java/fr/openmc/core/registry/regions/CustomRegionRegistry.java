@@ -2,7 +2,7 @@ package fr.openmc.core.registry.regions;
 
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
-import fr.openmc.core.registry.regions.content.ExampleRegion;
+import fr.openmc.core.features.singularity.contents.regions.SingularityRegion;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 public class CustomRegionRegistry extends Registry<Key, CustomRegion>
         implements KeyedRegistry<Key, CustomRegion> {
 
-    public final ExampleRegion EXAMPLE_REGION = register(new ExampleRegion());
+    public final SingularityRegion SINGULARITY_REGION = register(new SingularityRegion());
 
     @Override
     public Key key(CustomRegion registryObject) {

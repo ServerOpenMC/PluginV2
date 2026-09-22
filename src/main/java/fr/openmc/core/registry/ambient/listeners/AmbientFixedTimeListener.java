@@ -6,7 +6,7 @@ import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.RegionEnterEvent;
 import fr.openmc.core.events.RegionLeaveEvent;
 import fr.openmc.core.registry.ambient.CustomAmbient;
-import fr.openmc.core.utils.nms.PlayerSetTimeNMS;
+import fr.openmc.core.utils.nms.player.PlayerSetTimeNMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
