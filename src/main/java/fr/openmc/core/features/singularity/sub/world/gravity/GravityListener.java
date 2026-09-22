@@ -2,12 +2,14 @@ package fr.openmc.core.features.singularity.sub.world.gravity;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.singularity.sub.world.utils.SingularityWorldUtils;
+import fr.openmc.core.utils.bukkit.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInputEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,9 +28,9 @@ public class GravityListener implements Listener {
         Player player = event.getPlayer();
 
         if (SingularityWorldUtils.isInSingularityWorld(player))
-            setGravity(player, BASE_SINGULARITY_WORLD);
+            EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_SINGULARITY_WORLD);
         if (!SingularityWorldUtils.isInSingularityWorld(player))
-            setGravity(player, BASE_OVERWORLD);
+            EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_OVERWORLD);
     }
 
     @EventHandler
@@ -36,7 +38,7 @@ public class GravityListener implements Listener {
         Player player = event.getPlayer();
 
         if (SingularityWorldUtils.isInSingularityWorld(player))
-            setGravity(player, BASE_OVERWORLD);
+            EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_OVERWORLD);
     }
 
     @EventHandler
@@ -44,7 +46,7 @@ public class GravityListener implements Listener {
         Player player = event.getPlayer();
 
         if (SingularityWorldUtils.isInSingularityWorld(player))
-            setGravity(player, BASE_OVERWORLD);
+            EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_OVERWORLD);
 
     }
 
@@ -55,7 +57,7 @@ public class GravityListener implements Listener {
         if (!SingularityWorldUtils.isSingularityWorld(event.getTo())) return;
         if (SingularityWorldUtils.isSingularityWorld(event.getFrom())) return;
 
-        setGravity(player, BASE_OVERWORLD);
+        EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_OVERWORLD);
     }
 
     @EventHandler
@@ -65,7 +67,7 @@ public class GravityListener implements Listener {
         if (!SingularityWorldUtils.isSingularityWorld(event.getFrom())) return;
         if (SingularityWorldUtils.isSingularityWorld(event.getTo())) return;
 
-        setGravity(player, BASE_OVERWORLD);
+        EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_OVERWORLD);
     }
 
     @EventHandler
@@ -82,16 +84,10 @@ public class GravityListener implements Listener {
             baseToApply = BASE_ON_SNEAK;
         } else return;
 
-        setGravity(player, baseToApply);
+        EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, baseToApply);
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            setGravity(player, BASE_SINGULARITY_WORLD);
+            EntityUtils.setAttributeIfPresent(player, Attribute.GRAVITY, BASE_SINGULARITY_WORLD);
         }, 20L);
-    }
-
-    private void setGravity(Player player, float gravity) {
-        AttributeInstance inst = player.getAttribute(Attribute.GRAVITY);
-        if (inst == null) return;
-        inst.setBaseValue(gravity);
     }
 }
