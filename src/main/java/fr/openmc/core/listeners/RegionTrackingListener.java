@@ -7,7 +7,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.RegionEnterEvent;
 import fr.openmc.core.events.RegionLeaveEvent;
 import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;

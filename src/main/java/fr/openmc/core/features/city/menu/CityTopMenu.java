@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -91,7 +92,7 @@ public class CityTopMenu extends PaginatedMenu {
                 Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
                 Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
                 Component areaComponent = Component.text(city.getChunks().size()).color(NamedTextColor.GOLD);
-                Component wealthComponent = Component.text(economyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
+                Component wealthComponent = Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
                 Component wealthIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
                 Component powerComponent = Component.text(city.getPowerPoints()).color(NamedTextColor.RED);
 

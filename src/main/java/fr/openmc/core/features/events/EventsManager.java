@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 public class EventsManager extends Feature implements HasCommands {
+    private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+
     @Override
     public Set<Object> getCommands() {
         return Set.of(
@@ -34,11 +36,11 @@ public class EventsManager extends Feature implements HasCommands {
         );
     }
 
-    public static List<Event> getUpcomingEvents(int slots) {
+    public List<Event> getUpcomingEvents(int slots) {
         List<Event> events = new ArrayList<>();
 
         events.addAll(DailyEventsManager.incomingEvents);
-        events.add(WeeklyEventsManager.getCurrentEvent());
+        events.add(weeklyEventsManager.getCurrentEvent());
 
         events.sort((e1, e2) -> {
             LocalDateTime d1 = getEventStartDate(e1);
@@ -126,7 +128,7 @@ public class EventsManager extends Feature implements HasCommands {
         return events;
     }
 
-    private static LocalDateTime getEventStartDate(Event event) {
+    private LocalDateTime getEventStartDate(Event event) {
         if (event instanceof ScheduleDailyEvent sde) {
             return sde.getScheduledStartDate();
         } else if (event instanceof WeeklyEvent we) {
@@ -140,13 +142,13 @@ public class EventsManager extends Feature implements HasCommands {
         return null;
     }
 
-    public static List<Event> getAllEventsRegistred() {
+    public List<Event> getAllEventsRegistred() {
         List<Event> events = new ArrayList<>(OMCRegistry.DAILY_EVENTS.values());
         events.addAll(OMCRegistry.WEEKLY_EVENTS.values());
         return events;
     }
 
-    public static Component getEventTypeName(Event event) {
+    public Component getEventTypeName(Event event) {
         if (event instanceof ScheduleDailyEvent || event instanceof DailyEvent) {
             return TranslationManager.translation("feature.events.calendar.daily_event_name");
         } else if (event instanceof WeeklyEvent) {

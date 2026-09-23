@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.protections;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
@@ -29,6 +30,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
     private final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
 
 	private final CityManager cityManager;
+	private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
 
 	public ProtectionsManager(CityManager cityManager) {
 		this.cityManager = cityManager;
@@ -109,7 +111,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
 	public void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
-		if (ShopManager.getShopAt(loc) != null) {
+		if (shopManager.getShopAt(loc) != null) {
 			if (loc.getBlock().getState() instanceof Barrel) return;
 			event.setCancelled(true);
 			return;

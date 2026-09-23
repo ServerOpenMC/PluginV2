@@ -5,10 +5,12 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -29,6 +31,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PersonalBankMenu extends Menu {
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public PersonalBankMenu(Player owner) {
         super(owner);
@@ -82,12 +86,12 @@ public class PersonalBankMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.balance.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.economy.bank.menu.balance.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(BankManager.getBankBalance(player.getUniqueId()))).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel()))).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                    Component.text(BankManager.calculatePlayerInterest(player.getUniqueId()) * 100 + "%").color(NamedTextColor.AQUA),
-                    Component.text(DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(bankManager.getBankBalance(player.getUniqueId()))).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel()))).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                    Component.text(bankManager.calculatePlayerInterest(player.getUniqueId()) * 100 + "%").color(NamedTextColor.AQUA),
+                    Component.text(DateUtils.convertSecondToTime(bankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
             ));
             });
         };

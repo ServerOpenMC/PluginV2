@@ -1,8 +1,10 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.YmlUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,24 +19,20 @@ import java.util.stream.Collectors;
  * Gestionnaire du fichier YML de contest.
  * Permet le chargement, la sauvegarde et la modification de la configuration des trades et contests.
  */
-public class TradeYMLManager {
-    /**
-     * Fichier de configuration contest.yml.
-     */
-    @Getter
-    private static File contestFile;
+public class TradeYMLManager extends Feature {
+    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
 
-    /**
-     * Objet de configuration Yaml associé au fichier contest.yml.
-     */
     @Getter
-    private static YamlConfiguration contestConfig;
+    private File contestFile;
+    @Getter
+    private YamlConfiguration contestConfig;
 
     /**
      * Constructeur de TradeYMLManager.
      * Initialise le fichier contest.yml et charge sa configuration.
      */
-    public static void init() {
+    @Override
+    public void init() {
         contestFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "contest.yml");
         loadContestConfig();
     }
@@ -43,7 +41,7 @@ public class TradeYMLManager {
      * Charge la configuration du fichier contest.yml.
      * Si le fichier n'existe pas, il est créé à partir de la ressource par défaut.
      */
-    private static void loadContestConfig() {
+    private void loadContestConfig() {
         if (!contestFile.exists()) {
             contestFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/contest.yml", false);
@@ -55,7 +53,7 @@ public class TradeYMLManager {
      * Sauvegarde la configuration actuelle dans contest.yml.
      * En cas d'erreur lors de la sauvegarde, un avertissement est loggé.
      */
-    public static void saveContestConfig() {
+    public void saveContestConfig() {
         try {
             contestConfig.save(contestFile);
         } catch (IOException e) {
@@ -69,7 +67,7 @@ public class TradeYMLManager {
      * @param bool vrai pour récupérer les trades sélectionnés, faux sinon.
      * @return une liste de trades sous forme de Map avec les clés et valeurs correspondantes.
      */
-    public static List<Map<String, Object>> getTradeSelected(boolean bool) {
+    public List<Map<String, Object>> getTradeSelected(boolean bool) {
         List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
 
         List<Map<String, Object>> filteredTrades = contestTrades.stream()
@@ -87,7 +85,7 @@ public class TradeYMLManager {
      * @param bool la nouvelle valeur du booléen.
      * @param ress la ressource associée au trade à mettre à jour.
      */
-    public static void updateColumnBooleanFromRandomTrades(Boolean bool, String ress) {
+    public void updateColumnBooleanFromRandomTrades(Boolean bool, String ress) {
         List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
         List<Map<String, Object>> updatedTrades = new ArrayList<>();
 
@@ -108,7 +106,7 @@ public class TradeYMLManager {
      *
      * @return une liste de chaînes contenant les ressources (ex : NETHERITE_BLOCK).
      */
-    public static List<String> getRessListFromConfig() {
+    public List<String> getRessListFromConfig() {
         FileConfiguration config = OMCPlugin.getInstance().getConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
         List<String> ressList = new ArrayList<>();
@@ -128,7 +126,7 @@ public class TradeYMLManager {
      *
      * @param camp le nom du camp à mettre à jour.
      */
-    private static void updateSelected(String camp) {
+    private void updateSelected(String camp) {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
         List<Map<String, Object>> updatedContestList = new ArrayList<>();
 
@@ -163,7 +161,7 @@ public class TradeYMLManager {
      *
      * @param camps le nom du camp pour lequel la mise à jour est effectuée.
      */
-    public static void addOneToLastContest(String camps) {
+    public void addOneToLastContest(String camps) {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
 
         for (Map<?, ?> contest : contestList) {
@@ -178,7 +176,7 @@ public class TradeYMLManager {
      * Sélectionne aléatoirement un contest basé sur le nombre de sélections le plus faible.
      * Le contest sélectionné est assigné à {@code ContestManager.data}.
      */
-    public static void selectRandomlyContest() {
+    public void selectRandomlyContest() {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
         List<Map<String, Object>> orderedContestList = new ArrayList<>();
 
@@ -198,13 +196,13 @@ public class TradeYMLManager {
         Random random = new Random();
         Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
 
-        ContestManager.data = new ContestData(
+        contestManager.setData(new ContestData(
                 (String) selectedContest.get("camp1"),
                 (String) selectedContest.get("camp2"),
                 (String) selectedContest.get("color1"),
                 (String) selectedContest.get("color2"),
                 0,
                 0
-        );
+        ));
     }
 }

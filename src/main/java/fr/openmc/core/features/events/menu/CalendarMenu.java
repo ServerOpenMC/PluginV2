@@ -9,6 +9,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
@@ -41,6 +42,7 @@ import java.util.Map;
 
 public class CalendarMenu extends PaginatedMenu implements OpenMenu {
     private static final HashMap<String, ScheduleDailyEvent> scheduledEventById = new HashMap<>();
+    private final EventsManager eventsManager = OMCRegistry.FEATURES.EVENTS.get();
 
     public CalendarMenu(Player owner) {
         super(owner);
@@ -59,7 +61,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        for (Event event : EventsManager.getUpcomingEvents(14)) {
+        for (Event event : eventsManager.getUpcomingEvents(14)) {
             ItemMenuBuilder itemBuilder = new ItemMenuBuilder(this, event.getIcon(), meta -> {
                 meta.customName(event.getName().decoration(TextDecoration.ITALIC, false));
                 meta.lore(getEventLore(event));
@@ -118,7 +120,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
 
     @Override
     public int getSizeOfItems() {
-        return EventsManager.getUpcomingEvents(14).size();
+        return eventsManager.getUpcomingEvents(14).size();
     }
 
     @Override

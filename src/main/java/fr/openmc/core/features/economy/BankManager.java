@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
@@ -187,7 +188,7 @@ public class BankManager extends Feature implements HasDatabase {
         MessagesManager.sendMessage(offlinePlayer,
                 TranslationManager.translation(
                         "feature.economy.bank.withdraw.transferred",
-                        Component.text(economyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(economyManager.getEconomyIcon())
                 ),
                 Prefix.BANK, MessageType.SUCCESS, false);
@@ -240,7 +241,7 @@ public class BankManager extends Feature implements HasDatabase {
                     TranslationManager.translation(
                             "feature.economy.bank.interest.received",
                             Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(economyManager.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(EconomyUtils.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
                             Component.text(economyManager.getEconomyIcon())
                     ),
                     Prefix.CITY, MessageType.SUCCESS, false);

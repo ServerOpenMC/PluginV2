@@ -3,7 +3,9 @@ package fr.openmc.core.features.shops.managers;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.homes.HomeFeaturesRegistry;
 import fr.openmc.core.features.shops.ShopCommand;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.ShopListener;
 import fr.openmc.core.features.shops.models.Shop;
@@ -13,7 +15,9 @@ import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.world.WorldUtils;
@@ -27,14 +31,17 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Supplier;
 
 @Credit(developers = {"gab400", "Nocolm", "Xernas78"}, graphist = {"Gexary"})
-public class ShopManager extends Feature implements HasDatabase, HasListeners, HasCommands {
+public class ShopManager extends Feature implements HasListeners, HasCommands, HasRegistries {
 	
 	@Getter
-	private static final Map<UUID, Shop> shops = new HashMap<>();
-    private static Map<Location, Shop> shopsByLocation;
-	public static final Set<UUID> shopBypass = new HashSet<>();
+	private final Map<UUID, Shop> shops = new HashMap<>();
+    private Map<Location, Shop> shopsByLocation;
+	public final Set<UUID> shopBypass = new HashSet<>();
+
+	private final ShopDatabaseManager shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
 	
 	@Override
 	protected void init() {
@@ -49,10 +56,12 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 		saveShopItems();
 		saveShopSales();
 	}
-	
+
 	@Override
-	public void initDB(ConnectionSource connectionSource) throws SQLException {
-		ShopDatabaseManager.initDB(connectionSource);
+	public List<Supplier<LifecycleRegistry>> getRegistries() {
+		return List.of(
+				() -> OMCRegistry.SHOP_FEATURES = new ShopFeaturesRegistry()
+		);
 	}
 	
 	@Override
@@ -70,10 +79,10 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	/**
 	 * Loads all shops from the database and initializes them into memory.
 	 */
-	public static void loadShops() {
+	public void loadShops() {
 		if (shopsByLocation != null) shopsByLocation.clear();
 		try {
-			shopsByLocation = ShopDatabaseManager.loadDBShops();
+			shopsByLocation = shopDatabaseManager.loadDBShops();
 		} catch (SQLException e) {
 			OMCLogger.error("Cannot load shops from the database:\n" + e.getMessage());
 			return;
@@ -85,9 +94,9 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	/**
 	 * Load shops items from DB
 	 */
-	public static void loadShopItems() {
+	public void loadShopItems() {
 		try {
-			ShopDatabaseManager.loadDBShopItems();
+			shopDatabaseManager.loadDBShopItems();
 		} catch (SQLException e) {
 			OMCLogger.error("Cannot load shop items from the database:\n" + e.getMessage());
 		}
@@ -96,9 +105,9 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	/**
 	 * Load shops sales from DB
 	 */
-	public static void loadShopSales() {
+	public void loadShopSales() {
 		try {
-			ShopDatabaseManager.loadDBShopSales();
+			shopDatabaseManager.loadDBShopSales();
 		} catch (SQLException e) {
 			OMCLogger.error("Cannot load shop sales from the database:\n" + e.getMessage());
 		}
@@ -109,9 +118,9 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	/**
 	 * Saves all registered shops to the database.
 	 */
-	public static void saveShops() {
+	public void saveShops() {
 		for (Shop shop : shops.values()) {
-			if (ShopDatabaseManager.saveDBShop(shop)) continue;
+			if (shopDatabaseManager.saveDBShop(shop)) continue;
 			OMCLogger.error("Failed to save " + shop.getName() + " to database.");
 		}
 	}
@@ -119,10 +128,10 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	/**
 	 * Saves all shop items to the database.finite
 	 */
-	public static void saveShopItems() {
+	public void saveShopItems() {
 		for (Shop shop : shops.values()) {
 			if (!shop.hasItem()) continue;
-			if (ShopDatabaseManager.saveDBShopItem(shop.getItem())) continue;
+			if (shopDatabaseManager.saveDBShopItem(shop.getItem())) continue;
 			OMCLogger.error("Failed to save " + shop.getName() + " item to a database.");
 		}
 	}
@@ -130,19 +139,17 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	/**
 	 * Saves the sales data of all shops to the database.
 	 */
-	public static void saveShopSales() {
+	public void saveShopSales() {
 		for (Shop shop : shops.values()) {
 			if (shop.getSales().isEmpty()) continue;
 			boolean error = false;
 			for (ShopSale s : shop.getSales()) {
-				if (ShopDatabaseManager.saveDBShopSale(s)) continue;
+				if (shopDatabaseManager.saveDBShopSale(s)) continue;
 				error = true;
 			}
 			if (error) OMCLogger.error("Failed to save " + shop.getName() + " sales to a database.");
 		}
 	}
-	
-	// UTILITY
 
     /**
      * Retrieves a shop located at a given location.
@@ -150,7 +157,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
      * @param location The location to check.
      * @return The shop found at that location, or null if none exists.
      */
-    public static Shop getShopAt(Location location) {
+    public Shop getShopAt(Location location) {
 		if (location == null) return null;
 		location.setRotation(0, 0);
 	    Shop shop1 = shopsByLocation.get(location);
@@ -158,7 +165,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	    if (shop1 != null) return shop1;
 		else return shop2;
     }
-	
+
 	/**
 	 * Retrieves a shop located at a given location.
 	 *
@@ -167,11 +174,11 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	 * @param z The z-coordinate of the location.
 	 * @return The shop found at that location, or null if none exists.
 	 */
-	public static Shop getShopAt(int x, int y, int z) {
+	public Shop getShopAt(int x, int y, int z) {
 		return getShopAt(new Location(Bukkit.getWorld("world"), x, y, z));
 	}
 
-	public static int getShopCountOf(Player player) {
+	public int getShopCountOf(Player player) {
 		return shops.values()
 				.stream()
 				.filter(shop -> shop.getOwnerUUID().equals(player.getUniqueId()))
@@ -187,7 +194,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
      * @param shop The shop to place.
      * @return true if successfully placed, false otherwise.
      */
-    public static boolean placeShop(Player player, Shop shop) {
+    public boolean placeShop(Player player, Shop shop) {
         Shop.Multiblock multiblock = shop.getMultiblock();
         if (multiblock == null) return false;
         
@@ -212,7 +219,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
      * @param shop The shop to remove.
      * @return true if successfully removed, false otherwise.
      */
-    public static boolean removeShop(Shop shop) {
+    public boolean removeShop(Shop shop) {
         Shop.Multiblock multiblock = shop.getMultiblock();
         if (multiblock == null) {
 	        OMCLogger.error("Multiblock for {} is null!", shop.getName());
@@ -260,7 +267,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	 * @param shopUUID The unique identifier (UUID) of the shop to retrieve.
 	 * @return The shop associated with the specified UUID, or null if no shop is found.
 	 */
-	public static Shop getShopByUUID(UUID shopUUID) {
+	public Shop getShopByUUID(UUID shopUUID) {
 		return shops.get(shopUUID);
 	}
 	
@@ -270,7 +277,7 @@ public class ShopManager extends Feature implements HasDatabase, HasListeners, H
 	 * @param shopUUID the UUID of the player
 	 * @param shop the shop
 	 */
-	public static void setUUIDShop(UUID shopUUID, Shop shop) {
+	public void setUUIDShop(UUID shopUUID, Shop shop) {
 		shops.put(shopUUID, shop);
 	}
 }

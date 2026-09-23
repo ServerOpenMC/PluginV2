@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.models.Event;
 import fr.openmc.core.features.events.models.HasMenu;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainEventMenu extends PaginatedMenu {
+    private final EventsManager eventsManager = OMCRegistry.FEATURES.EVENTS.get();
 
     public MainEventMenu(Player owner) {
         super(owner);
@@ -43,13 +45,13 @@ public class MainEventMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        for (Event event : EventsManager.getAllEventsRegistred()) {
+        for (Event event : eventsManager.getAllEventsRegistred()) {
             items.add(new ItemMenuBuilder(this, event.getIcon(), meta -> {
                 meta.displayName(event.getName());
 
                 List<Component> lore = new ArrayList<>();
 
-                lore.add(EventsManager.getEventTypeName(event));
+                lore.add(eventsManager.getEventTypeName(event));
 
                 lore.addAll(event.getDescription());
                 if (event instanceof HasMenu) {
@@ -79,7 +81,7 @@ public class MainEventMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return EventsManager.getAllEventsRegistred().size();
+        return eventsManager.getAllEventsRegistred().size();
     }
 
     @Override

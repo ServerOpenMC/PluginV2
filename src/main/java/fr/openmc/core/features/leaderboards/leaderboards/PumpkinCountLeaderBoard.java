@@ -1,6 +1,8 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
@@ -16,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PumpkinCountLeaderBoard extends LeaderBoard {
-
+    private final HalloweenManager halloweenManager = OMCRegistry.FEATURES.HALLOWEEN.get();
     private final TextColor pumpkinColor = TextColor.color(156, 69, 26);
 
     @Override
@@ -31,11 +33,11 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
 
     @Override
     public Component createComponent() {
-        if (HalloweenManager.getAllHalloweenData().isEmpty())
+        if (halloweenManager.getAllHalloweenData().isEmpty())
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
 
-        List<HalloweenData> datas = HalloweenManager.getAllHalloweenData().values().stream()
+        List<HalloweenData> datas = halloweenManager.getAllHalloweenData().values().stream()
                 .sorted(Comparator.comparingDouble(HalloweenData::getPumpkinCount))
                 .limit(10)
                 .toList();
@@ -47,7 +49,7 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
         for (int i = 0; i < datas.size(); i++){
             HalloweenData data = datas.get(i);
             Component name = CachePlayerName.name(data.getPlayerUUID());
-            String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(data.getPumpkinCount());
+            String formattedPumpkinCount = EconomyUtils.getFormattedSimplifiedNumber(data.getPumpkinCount());
             Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
             text = text.append(Component.text("\n").append(TranslationManager.translation(
                     "feature.leaderboards.line.pumpkin",

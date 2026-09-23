@@ -69,6 +69,8 @@ public class ImpotCollection implements Listener {
         }
     }
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
     private final HashMap<UUID, Double> playerWithdrawnAmount = new HashMap<>();
 
     @EventHandler
@@ -85,23 +87,23 @@ public class ImpotCollection implements Listener {
 
         double amount = 1000;
 
-        if (EconomyManager.getBalance(victim.getUniqueId()) < amount) {
-            if (BankManager.getBankBalance(victim.getUniqueId()) < amount) {
+        if (economyManager.getBalance(victim.getUniqueId()) < amount) {
+            if (bankManager.getBankBalance(victim.getUniqueId()) < amount) {
                 MessagesManager.sendMessage(victim, TranslationManager.translation("feature.city.mayor.perk.event.impot.victim.lucky"), Prefix.MAYOR, MessageType.INFO, false);
                 return;
             }
 
-            BankManager.withdraw(victim.getUniqueId(), amount);
+            bankManager.withdraw(victim.getUniqueId(), amount);
         } else {
-            EconomyManager.withdrawBalance(victim.getUniqueId(), amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
+            economyManager.withdrawBalance(victim.getUniqueId(), amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
         }
 
-        EconomyManager.addBalance(mayorPlayer.getUniqueId(), amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
+        economyManager.addBalance(mayorPlayer.getUniqueId(), amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
 
         double newTotal = playerWithdrawnAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
         playerWithdrawnAmount.put(victim.getUniqueId(), newTotal);
 	    
-	    Component amountComponent = Component.text(amount + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+	    Component amountComponent = Component.text(amount + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
         MessagesManager.sendMessage(victim, TranslationManager.translation(
                 "feature.city.mayor.perk.event.impot.victim.lost",
                 amountComponent,

@@ -4,6 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
@@ -11,8 +13,12 @@ import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
+import fr.openmc.core.registry.features.loading.FeatureEntry;
+import fr.openmc.core.registry.features.loading.FeatureLoadingType;
 import lombok.Getter;
 
 import java.sql.SQLException;
@@ -20,11 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
-public class HomesManager extends Feature implements HasDatabase, HasCommands {
-
+public class HomesManager extends Feature implements HasDatabase, HasCommands, HasRegistries {
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
 
@@ -53,6 +59,13 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands {
     public void save() {
         saveHomes();
         saveHomeLimit();
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> OMCRegistry.HOME_FEATURES = new HomeFeaturesRegistry()
+        );
     }
 
     // DB methods

@@ -70,8 +70,14 @@ public class Page1 implements Menu {
     private static final int ADVANCEMENTS_SLOT = 88;
 
     private final AdminShopManager adminShopManager;
+    private final WeeklyEventsManager weeklyEventsManager;
+    private final ContestManager contestManager;
 
     public Page1(Player player) {
+        this.adminShopManager = OMCRegistry.FEATURES.ADMIN_SHOP.get();
+        this.contestManager = OMCRegistry.FEATURES.CONTEST.get();
+        this.weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+
         City playerCity = City.ofPlayer(player.getUniqueId());
         ItemStack cityItem = new ItemStack(Material.PAPER);
         cityItem.editMeta(meta -> {
@@ -128,9 +134,9 @@ public class Page1 implements Menu {
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));
 
         ItemStack contestItem = new ItemStack(Material.PAPER);
-        ContestData data = ContestManager.data;
+        ContestData data = contestManager.getData();
 
-        if (WeeklyEventsManager.getCurrentEvent() instanceof Contest && WeeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase()) {
+        if (weeklyEventsManager.getCurrentEvent() instanceof Contest && weeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase()) {
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
                 meta.itemName(data.getCampVSComponent());
@@ -228,8 +234,6 @@ public class Page1 implements Menu {
                     .color(NamedTextColor.DARK_GRAY)));
         });
         MAILBOX_SLOTS.forEach(slot -> content.put(slot, mailboxItem));
-
-        this.adminShopManager = OMCRegistry.FEATURES.ADMIN_SHOP.get();
     }
 
     @Override

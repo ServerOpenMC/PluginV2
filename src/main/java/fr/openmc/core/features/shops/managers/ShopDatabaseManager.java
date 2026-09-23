@@ -8,6 +8,8 @@ import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
 import fr.openmc.core.features.shops.models.ShopSale;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jspecify.annotations.NonNull;
@@ -18,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShopDatabaseManager {
+public class ShopDatabaseManager extends Feature implements HasDatabase {
 
-	private static Dao<Shop, UUID> shopDao;
-	private static Dao<ShopItem, UUID> shopItemDao;
-	private static Dao<ShopSale, UUID> shopSaleDao;
+	private Dao<Shop, UUID> shopDao;
+	private Dao<ShopItem, UUID> shopItemDao;
+	private Dao<ShopSale, UUID> shopSaleDao;
 	
 	/**
 	 * Init the Database of the shops
@@ -30,7 +32,8 @@ public class ShopDatabaseManager {
 	 * @param connectionSource the connection to the DB
 	 * @throws SQLException if init failed
 	 */
-	public static void initDB(ConnectionSource connectionSource) throws SQLException {
+	@Override
+	public void initDB(ConnectionSource connectionSource) throws SQLException {
 		TableUtils.createTableIfNotExists(connectionSource, Shop.class);
 		shopDao = DaoManager.createDao(connectionSource, Shop.class);
 		
@@ -47,7 +50,7 @@ public class ShopDatabaseManager {
 	 * @return A map where each location is associated with its corresponding shop.
 	 * @throws SQLException if there is an error during the database query.
 	 */
-	public static @NonNull Map<Location, Shop> loadDBShops() throws SQLException {
+	public @NonNull Map<Location, Shop> loadDBShops() throws SQLException {
 		Map<Location, Shop> shopsByLocation = new HashMap<>();
 		
 		List<Shop> shops = shopDao.queryForAll();
@@ -68,7 +71,7 @@ public class ShopDatabaseManager {
 	 *
 	 * @throws SQLException if a database access error occurs during querying or processing.
 	 */
-	public static void loadDBShopItems() throws SQLException {
+	public void loadDBShopItems() throws SQLException {
 		List<ShopItem> shopItems = shopItemDao.queryForAll();
 		for (ShopItem item : shopItems) {
 			Shop shop = item.getShop();
@@ -85,7 +88,7 @@ public class ShopDatabaseManager {
 	 *
 	 * @throws SQLException if a database access error occurs while querying sales.
 	 */
-	public static void loadDBShopSales() throws SQLException {
+	public void loadDBShopSales() throws SQLException {
 		List<ShopSale> shopSales = shopSaleDao.queryForAll();
 		for (ShopSale sale : shopSales) {
 			Shop shop = sale.getShop();
@@ -104,7 +107,7 @@ public class ShopDatabaseManager {
 	 * @param shop shop to save
 	 * @return true if the shop was saved, false if a database exception occurred
 	 */
-	public static boolean saveDBShop(Shop shop) {
+	public boolean saveDBShop(Shop shop) {
 		try {
 			shopDao.createOrUpdate(shop);
 			return true;
@@ -122,7 +125,7 @@ public class ShopDatabaseManager {
 	 * @return true if the shop item was successfully saved, false if a database
 	 *         exception occurred
 	 */
-	public static boolean saveDBShopItem(ShopItem item) {
+	public boolean saveDBShopItem(ShopItem item) {
 		try {
 			shopItemDao.createOrUpdate(item.serialize());
 			return true;
@@ -138,7 +141,7 @@ public class ShopDatabaseManager {
 	 * @param sale the sale to save
 	 * @return true if the sale was saved, false if a database exception occurred
 	 */
-	public static boolean saveDBShopSale(ShopSale sale) {
+	public boolean saveDBShopSale(ShopSale sale) {
 		try {
 			shopSaleDao.createOrUpdate(sale);
 			return true;
@@ -154,7 +157,7 @@ public class ShopDatabaseManager {
 	 * @param shop the shop instance to be deleted, including its related items and sales
 	 * @return true if the shop and its associated data were successfully deleted, false if a database exception occurred
 	 */
-	public static boolean deleteDBShop(Shop shop) {
+	public boolean deleteDBShop(Shop shop) {
 		try {
 			shopDao.delete(shop);
 			shopItemDao.delete(shop.getItem());

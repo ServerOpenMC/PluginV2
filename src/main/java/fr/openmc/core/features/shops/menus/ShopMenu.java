@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ShopMenu extends Menu {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final PlayerShopManager playerShopManager = OMCRegistry.SHOP_FEATURES.PLAYER_SHOP;
 
     private int amountToBuy;
     private final Shop shop;
@@ -91,7 +93,7 @@ public class ShopMenu extends Menu {
                     () -> {
                         getOwner().closeInventory();
                         this.shop.setMenuOpened(false);
-                        PlayerShopManager.deleteShop(getOwner(), shop);
+                        playerShopManager.deleteShop(getOwner(), shop);
                     },
                     () -> new ShopMenu(getOwner(), shop).open(),
                     TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.accept"),
@@ -125,7 +127,8 @@ public class ShopMenu extends Menu {
             map.put(4, new ItemMenuBuilder(this, Material.GOLD_INGOT, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.stats.title"));
                 if (this.item == null) itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.sells.lore.error"));
-                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.stats.lore.success", Component.text(this.shop.getTurnover() + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)));
+                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.stats.lore.success",
+                        Component.text(this.shop.getTurnover() + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopStatsMenu(getOwner(), this.shop).open();
             }));
@@ -133,7 +136,8 @@ public class ShopMenu extends Menu {
             map.put(5, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.stocks.title"));
                 if (this.item == null) itemMeta.lore(List.of(TranslationManager.translation("feature.shop.menu.main.stocks.lore.error")));
-                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.stocks.lore.success", Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.BLUE)));
+                else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.stocks.lore.success",
+                        Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.BLUE)));
             }).setOnClick(_ -> {
                 if (this.item != null) new ShopStocksMenu(getOwner(), shop).open();
             }));
@@ -196,7 +200,7 @@ public class ShopMenu extends Menu {
         map.put(isShopOwner ? 32 : 23, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN.getBest(), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.accept.title"));
             itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.accept.lore",
-                    Component.text(this.item.getPrice(this.amountToBuy) + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                    Component.text(this.item.getPrice(this.amountToBuy) + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
                     Component.text(this.amountToBuy).color(NamedTextColor.GOLD)));
         }).setOnClick(_ -> {
             this.shop.buy(getOwner(), this.amountToBuy);

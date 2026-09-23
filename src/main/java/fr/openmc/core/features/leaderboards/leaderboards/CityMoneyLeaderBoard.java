@@ -1,8 +1,10 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -13,6 +15,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.util.List;
 
 public class CityMoneyLeaderBoard extends LeaderBoard {
+
+    private final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     @Override
     public double getUpdateDelay() {
@@ -26,7 +31,7 @@ public class CityMoneyLeaderBoard extends LeaderBoard {
 
     @Override
     public Component createComponent(){
-        List<City> cities = CityManager.getCities().stream()
+        List<City> cities = cityManager.getCities().stream()
                 .sorted((city1, city2) -> Double.compare(city2.getBalance(), city1.getBalance()))
                 .limit(10)
                 .toList();
@@ -39,7 +44,9 @@ public class CityMoneyLeaderBoard extends LeaderBoard {
         for (int i = 0; i < cities.size(); i++){
             City city = cities.get(i);
             Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
-            Component cityBalance = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
+            Component cityBalance = Component.text(
+                    EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()) +
+                            " " + economyManager.getEconomyIcon())
                     .color(NamedTextColor.WHITE);
             text = text.append(Component.text("\n").append(TranslationManager.translation(
                             "feature.leaderboards.line.city_money",

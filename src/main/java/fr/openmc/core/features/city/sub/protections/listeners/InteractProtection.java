@@ -29,6 +29,7 @@ import java.util.Set;
 
 public class InteractProtection implements Listener {
     private final ProtectionsManager protectionsManager;
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
 
     public InteractProtection() {
         this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
@@ -58,7 +59,7 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            if (ShopManager.getShopAt(location) != null) {
+            if (shopManager.getShopAt(location) != null) {
                 if (clickedBlock.getState() instanceof Barrel) return;
                 event.setCancelled(true);
                 return;

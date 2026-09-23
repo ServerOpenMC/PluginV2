@@ -34,7 +34,7 @@ import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -157,8 +157,8 @@ public class FeaturesRegistry extends Registry<String, Feature>
             () -> new MultiBlockManager(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<MilestonesManager> MILESTONES = declare(FeatureLoadingType.AFTER_IA,
             MilestonesManager::new);
-    public final FeatureEntry<LeaderboardManager> LEADERBOARD = declare(FeatureLoadingType.AFTER_IA,
-            () -> new LeaderboardManager(), NOT_IN_UNIT_TEST);
+    public final FeatureEntry<LeaderBoardManager> LEADERBOARD = declare(FeatureLoadingType.AFTER_IA,
+            () -> new LeaderBoardManager(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<MainMenu> MAIN_MENU = declare(FeatureLoadingType.AFTER_IA,
             () -> new MainMenu(), NOT_IN_UNIT_TEST, NEED_PROTOCOL_LIB);
     public final FeatureEntry<HologramLoader> HOLOGRAM_LOADER = declare(FeatureLoadingType.AFTER_IA,

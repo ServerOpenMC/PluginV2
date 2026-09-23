@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
@@ -351,14 +352,14 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
         Component rewardMoney = bonusMoney > 0
                 ? TranslationManager.translation(
                         "feature.city.war.result.reward.money_bonus",
-                        Component.text(economyManager.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD),
-                        Component.text(economyManager.getFormattedSimplifiedNumber(bonusMoney) + economyManager.getEconomyIcon())
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(bonusMoney) + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 )
                 : TranslationManager.translation(
                         "feature.city.war.result.reward.money",
-                        Component.text(economyManager.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 );
         Component rewardClaims = TranslationManager.translation(
@@ -397,7 +398,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
         );
         Component lossMoney = TranslationManager.translation(
                 "feature.city.war.result.loss.money",
-                Component.text(economyManager.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
+                Component.text(EconomyUtils.getFormattedSimplifiedNumber(amountStolen) + economyManager.getEconomyIcon())
                         .color(NamedTextColor.RED)
         );
         Component lossClaims = TranslationManager.translation(

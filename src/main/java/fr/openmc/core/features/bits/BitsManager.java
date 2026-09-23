@@ -9,6 +9,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.bits.models.BitsPlayer;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -123,13 +124,9 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     }
 
     public String getFormattedBits(UUID playerUUID) {
-        String balance = String.valueOf(getBits(playerUUID));
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getBitsIcon());
+        double balance = getBits(playerUUID);
+
+        return EconomyUtils.getFormattedNumber(balance, getBitsIcon());
     }
 
     public String getBitsIcon() {

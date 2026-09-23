@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 
 public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands {
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final String DIMENSIONS_FOLDER = "data/dimensions";
 
@@ -158,7 +159,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         if (data == null) return ContributeResult.INVALID_STEP;
         if (!isPrerequisiteMet(data)) return ContributeResult.REQUIRED_DIMENSION_NOT_OPENED;
 
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), amount, "Dimension Opener : " + dimensionId)) {
+        if (!economyManager.withdrawBalance(player.getUniqueId(), amount, "Dimension Opener : " + dimensionId)) {
             return ContributeResult.WRONG_STEP_STATE;
         }
         return contribute(player, dimensionId, amount, StepDimensionData.Type.MONEY);

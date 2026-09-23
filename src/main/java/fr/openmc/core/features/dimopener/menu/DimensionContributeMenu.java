@@ -43,6 +43,8 @@ import java.util.Map;
 
 public class DimensionContributeMenu extends Menu {
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+
     private static final int INFO_SLOT = 4;
     private static final int PREVIEW_SLOT = 20;
     private static final int INPUT_SLOT = 22;
@@ -229,11 +231,11 @@ public class DimensionContributeMenu extends Menu {
             meta.lore(List.of(
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.balance",
-                            Component.text(EconomyManager.getMiniBalance(getOwner().getUniqueId()), NamedTextColor.GOLD)
+                            Component.text(economyManager.getMiniBalance(getOwner().getUniqueId()), NamedTextColor.GOLD)
                     ),
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.remaining",
-                            Component.text(EconomyManager.getFormattedNumber(remaining), NamedTextColor.GOLD)
+                            Component.text(economyManager.getFormattedNumber(remaining), NamedTextColor.GOLD)
                     ),
                     Component.empty(),
                     TranslationManager.translation("feature.dimopener.menu.money.click")
@@ -243,7 +245,7 @@ public class DimensionContributeMenu extends Menu {
 
     @SuppressWarnings("UnstableApiUsage")
     private void openMoneyDialog(double remaining) {
-        double balance = EconomyManager.getBalance(getOwner().getUniqueId());
+        double balance = economyManager.getBalance(getOwner().getUniqueId());
         float max = (float) Math.max(1, Math.min(balance, remaining));
         float initial = Math.min(max, 1f);
 
@@ -280,7 +282,7 @@ public class DimensionContributeMenu extends Menu {
                                                         getOwner(),
                                                         TranslationManager.translation(
                                                                 "feature.dimopener.contribute.money_success",
-                                                                Component.text(EconomyManager.getFormattedNumber(amount), NamedTextColor.GREEN)
+                                                                Component.text(economyManager.getFormattedNumber(amount), NamedTextColor.GREEN)
                                                         ),
                                                         Prefix.DIMOPENER, MessageType.SUCCESS, false
                                                 );

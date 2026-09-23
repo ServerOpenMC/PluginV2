@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeUpgradeMenu extends Menu {
+    private final HomeUpgradeManager homeUpgradeManager =OMCRegistry.HOME_FEATURES.HOME_UPGRADE;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public HomeUpgradeMenu(Player owner) {
         super(owner);
@@ -43,7 +45,7 @@ public class HomeUpgradeMenu extends Menu {
 
         int currentHome = getOwner().home().getHomeLimit().getLimit();
 
-        HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()));
+        HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner()));
 
         items.put(4, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_UPGRADE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.upgrade.item.name"));
@@ -57,13 +59,13 @@ public class HomeUpgradeMenu extends Menu {
                         "feature.homes.upgrade.lore.available",
                         Component.text(currentHome).color(NamedTextColor.YELLOW),
                         Component.text(nextUpgrade.getPrice()).color(NamedTextColor.GREEN),
-                        Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                        Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
                         Component.text(nextUpgrade.getAyweniteCost()).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(nextUpgrade.getLimit()).color(NamedTextColor.YELLOW)
                 ));
             }
         }).setOnClick(event -> {
-            HomeUpgradeManager.upgradeHome(getOwner());
+            homeUpgradeManager.upgradeHome(getOwner());
             getOwner().closeInventory();
         }));
 

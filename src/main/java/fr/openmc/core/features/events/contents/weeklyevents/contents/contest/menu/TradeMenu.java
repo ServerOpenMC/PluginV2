@@ -28,8 +28,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class TradeMenu extends Menu {
-
-    private static final String SHELL_NAMESPACE = "omc_contest:contest_shell";
+    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final TradeYMLManager tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
+    private final ContestPlayerManager contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
 
     public TradeMenu(Player owner) {
         super(owner);
@@ -60,8 +61,8 @@ public class TradeMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        Component campName = ContestPlayerManager.getPlayerCampComponent(player);
-        NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
+        Component campName = contestPlayerManager.getPlayerCampComponent(player);
+        NamedTextColor campColor = contestManager.getDataPlayer().get(player.getUniqueId()).getColor();
 
         ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
 
@@ -77,7 +78,7 @@ public class TradeMenu extends Menu {
             itemMeta.lore(loreTrade);
         }));
 
-        List<Map<String, Object>> trades = TradeYMLManager.getTradeSelected(true)
+        List<Map<String, Object>> trades = tradeYMLManager.getTradeSelected(true)
                 .stream()
                 .sorted(Comparator.comparing(trade -> (String) trade.get("ress")))
                 .toList();

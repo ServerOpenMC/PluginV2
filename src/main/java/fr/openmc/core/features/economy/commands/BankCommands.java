@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.menu.PersonalBankMenu;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -15,6 +16,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"bank", "banque"})
 public class BankCommands {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
 
     @CommandPlaceholder()
     @Description("Ouvre le menu de votre banque personelle")
@@ -50,7 +53,7 @@ public class BankCommands {
             return;
         }
 
-        BankManager.deposit(player.getUniqueId(), input);
+        bankManager.deposit(player.getUniqueId(), input);
     }
 
     @Subcommand("withdraw")
@@ -70,7 +73,7 @@ public class BankCommands {
             return;
         }
 
-        BankManager.withdraw(player.getUniqueId(), input);
+        bankManager.withdraw(player.getUniqueId(), input);
     }
 
     @Subcommand({"balance", "bal"})
@@ -83,12 +86,12 @@ public class BankCommands {
                     ), Prefix.CITY);
         }
 
-        double balance = BankManager.getBankBalance(player.getUniqueId());
+        double balance = bankManager.getBankBalance(player.getUniqueId());
         player.message().sendInfo(
                 TranslationManager.translation(
                         "feature.economy.bank.command.balance",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(balance)).color(NamedTextColor.LIGHT_PURPLE),
-                        Component.text(EconomyManager.getEconomyIcon())
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(balance)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(economyManager.getEconomyIcon())
                 ),
                 Prefix.BANK
         );
@@ -99,7 +102,7 @@ public class BankCommands {
     @CommandPermission("omc.admins.commands.bank.interest.apply")
     void applyInterest(OMCPlayer player) {
         player.message().sendInfo(TranslationManager.translation("feature.economy.bank.interest.apply.start"), Prefix.BANK);
-        BankManager.applyAllPlayerInterests();
+        bankManager.applyAllPlayerInterests();
         OMCRegistry.CITY_FEATURES.CITY_BANK.applyAllCityInterests();
         player.message().sendInfo(TranslationManager.translation("feature.economy.bank.interest.apply.success"), Prefix.BANK);
     }

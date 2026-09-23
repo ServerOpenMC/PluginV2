@@ -5,6 +5,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -30,7 +31,9 @@ import java.util.UUID;
 
 public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
-        private final LuckPermsHook luckPermsHook;
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final LuckPermsHook luckPermsHook;
 
     public static final String JOIN_MESSAGE = "§8[§a§l+§8] §r%s%s";
     public static final String QUIT_MESSAGE = "§8[§c§l-§8] §r%s%s";
@@ -92,7 +95,7 @@ public class JoinQuitMessageListener implements Listener {
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
             player.teleport(SpawnManager.getSpawnLocation());
-            EconomyManager.setBalance(player.getUniqueId(), this.balanceOnJoin);
+            economyManager.setBalance(player.getUniqueId(), this.balanceOnJoin);
         }
 
         new BukkitRunnable() {

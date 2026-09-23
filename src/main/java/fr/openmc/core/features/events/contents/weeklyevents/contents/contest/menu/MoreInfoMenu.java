@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MoreInfoMenu extends Menu {
+    private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
 
     public MoreInfoMenu(Player owner) {
         super(owner);
@@ -56,7 +58,7 @@ public class MoreInfoMenu extends Menu {
         List<Component> lore2 = TranslationManager.translationLore("feature.events.contest.phase.end.lore");
 
 
-        WeeklyEventPhase phase = WeeklyEventsManager.getCurrentPhase();
+        WeeklyEventPhase phase = weeklyEventsManager.getCurrentPhase();
 
         boolean ench0 = phase == ContestPhase.VOTE_CAMP.getPhase();
         boolean ench1 = phase == ContestPhase.TRADE_PHASE.getPhase();

@@ -11,6 +11,7 @@ import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -32,15 +33,6 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     private Map<UUID, EconomyPlayer> balances;
 
     private Dao<EconomyPlayer, String> playersDao;
-
-    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    public final NavigableMap<Long, String> SUFFIXES = new TreeMap<>(Map.of(
-            1_000L, "k",
-            1_000_000L, "M",
-            1_000_000_000L, "B",
-            1_000_000_000_000L, "T",
-            1_000_000_000_000_000L, "Qa",
-            1_000_000_000_000_000_000L, "Qi"));
 
     private final TransactionsManager transactionsManager = OMCRegistry.FEATURES.TRANSACTIONS.get();
 
@@ -160,10 +152,19 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         bank.setBalance(amount);
     }
 
+    public String getFormattedNumber(double number) {
+        return EconomyUtils.getFormattedNumber(number, getEconomyIcon());
+    }
+
+    public String getFormattedBalance(UUID playerUUID) {
+        double balance = getBalance(playerUUID);
+        return EconomyUtils.getFormattedNumber(balance, getEconomyIcon());
+    }
+
     public String getMiniBalance(UUID playerUUID) {
         double balance = getBalance(playerUUID);
 
-        return getFormattedSimplifiedNumber(balance);
+        return EconomyUtils.getFormattedSimplifiedNumber(balance);
     }
 
     public EconomyPlayer getPlayerBank(UUID playerUUID) {
@@ -196,44 +197,6 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         }
 
         return balances;
-    }
-
-    public String getFormattedBalance(UUID playerUUID) {
-        String balance = String.valueOf(getBalance(playerUUID));
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getEconomyIcon());
-    }
-
-    public String getFormattedNumber(double number) {
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(number);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getEconomyIcon());
-    }
-
-    public String getFormattedSimplifiedNumber(double balance) {
-        if (balance == 0) {
-            return "0";
-        }
-
-        Map.Entry<Long, String> entry = SUFFIXES.floorEntry((long) balance);
-        if (entry == null) {
-            return decimalFormat.format(balance);
-        }
-
-        long divideBy = entry.getKey();
-        String suffix = entry.getValue();
-
-        double truncated = balance / divideBy;
-        String formatted = decimalFormat.format(truncated);
-
-        return formatted + suffix;
     }
 
     public String getEconomyIcon() {

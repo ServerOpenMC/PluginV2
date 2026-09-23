@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.InterestRewards;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.InputUtils;
@@ -116,7 +117,7 @@ public class CityBankManager extends Feature implements HasCommands {
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.city.bank.withdraw.success",
-                        Component.text(economyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
                 ),
                 Prefix.CITY, MessageType.SUCCESS, false);

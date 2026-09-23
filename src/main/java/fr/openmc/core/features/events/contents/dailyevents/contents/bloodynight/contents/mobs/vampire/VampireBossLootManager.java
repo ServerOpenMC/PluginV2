@@ -138,7 +138,7 @@ public class VampireBossLootManager {
                 amount = itemReward.getAmount();
                 rewards.add(itemReward);
             } else if (loot instanceof MoneyLoot moneyLoot) {
-                EconomyManager.addBalance(playerUUID, moneyLoot.getMoney());
+                OMCRegistry.FEATURES.ECONOMY.get().addBalance(playerUUID, moneyLoot.getMoney());
             }
 
             if (player != null && offlinePlayer.isOnline()) {

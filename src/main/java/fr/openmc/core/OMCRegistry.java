@@ -7,6 +7,9 @@ import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
 import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
+import fr.openmc.core.features.homes.HomeFeaturesRegistry;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
@@ -56,6 +59,15 @@ public final class OMCRegistry {
 
     // * Registre concernant la feature des villes
     public static CityFeaturesRegistry CITY_FEATURES;
+
+    // * Registre concernant la feature des contests
+    public static ContestFeaturesRegistry CONTEST_FEATURES;
+
+    // * Registre concernant la feature des homes
+    public static HomeFeaturesRegistry HOME_FEATURES;
+
+    // * Registre concernant la feature des shops
+    public static ShopFeaturesRegistry SHOP_FEATURES;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 

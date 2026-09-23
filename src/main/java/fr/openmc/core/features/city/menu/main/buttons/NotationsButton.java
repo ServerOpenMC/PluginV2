@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.menu.NotationDialog;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -49,7 +50,7 @@ public class NotationsButton {
                     "feature.city.menus.main.notation.lore",
                     Component.text(Math.floor(notation.getTotalNote())).color(NamedTextColor.BLUE),
                     Component.text(NotationNote.getMaxTotalNote()).color(NamedTextColor.BLUE),
-                    Component.text(economyManager.getFormattedSimplifiedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
                     Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
             );
         } else {

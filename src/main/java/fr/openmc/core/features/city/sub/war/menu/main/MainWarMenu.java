@@ -20,6 +20,7 @@ import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MainWarMenu extends PaginatedMenu {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final CityManager cityManager;
     private final WarManager warManager;
     private final MayorManager mayorManager;
@@ -138,7 +140,7 @@ public class MainWarMenu extends PaginatedMenu {
 
             loreCity.add(TranslationManager.translation(
                     "feature.city.war.menu.main.wealth",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()) + economyManager.getEconomyIcon())
                             .color(NamedTextColor.GOLD)
             ).color(NamedTextColor.GRAY));
 

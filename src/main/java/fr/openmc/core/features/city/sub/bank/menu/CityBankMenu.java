@@ -5,10 +5,12 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -28,6 +30,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class CityBankMenu extends Menu {
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
 
     public CityBankMenu(Player owner) {
         super(owner);
@@ -90,10 +95,10 @@ public class CityBankMenu extends Menu {
                 itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.balance.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.bank.menu.balance.lore",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.LIGHT_PURPLE),
-                        Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(city.calculateCityInterest() * 100 + "%").color(NamedTextColor.AQUA),
-                        Component.text(DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
+                        Component.text(DateUtils.convertSecondToTime(bankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
                 ));
             });
 

@@ -11,6 +11,7 @@ import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
@@ -40,6 +41,8 @@ import static net.kyori.adventure.text.Component.text;
 public class MainScoreboard extends BaseScoreboard {
 
     private final CorpseManager corpseManager;
+    private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
 
     public MainScoreboard(CorpseManager corpseManager) {
         this.corpseManager = corpseManager;
@@ -70,10 +73,10 @@ public class MainScoreboard extends BaseScoreboard {
         }
 
         // Contest
-        if (WeeklyEventsManager.isEventActive() &&
-                WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
-            ContestData data = ContestManager.data;
-            if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
+        if (weeklyEventsManager.isEventActive() &&
+                weeklyEventsManager.getCurrentEvent() instanceof Contest) {
+            ContestData data = contestManager.getData();
+            if (weeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
                 lines.add(MiniMessage.miniMessage().deserialize(
                         "<gradient:#FFB800:#F0DF49><title></gradient>",
                         Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.contest.title", true))
@@ -100,6 +103,7 @@ public class MainScoreboard extends BaseScoreboard {
 
     public static List<Component> getDefaultLines(Player player, boolean inWar) {
         BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
+        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
         Component rank = OMCRegistry.HOOKS.LUCK_PERMS.isEnable()
                 ? Component.text(OMCRegistry.HOOKS.LUCK_PERMS.getFormattedPAPIPrefix(player))
@@ -113,7 +117,7 @@ public class MainScoreboard extends BaseScoreboard {
                 : TranslationManager.translation("feature.displays.scoreboard.location.wilderness", true);
         location = (chunkCity != null) ? toSmall(player, chunkCity.getName()) : location;
 
-        String balance = EconomyManager.getMiniBalance(player.getUniqueId());
+        String balance = economyManager.getMiniBalance(player.getUniqueId());
         double bits = bitsManager.getBits(player.getUniqueId());
 
         List<Component> lines = new ArrayList<>();
@@ -140,13 +144,13 @@ public class MainScoreboard extends BaseScoreboard {
                     .appendSpace()
                     .append(toSmall(player, balance).color(TextColor.color(0xFF06DC)))
                     .appendSpace()
-                    .append(text(EconomyManager.getEconomyIcon()))
+                    .append(text(economyManager.getEconomyIcon()))
             );
             if (bits > 0) {
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(toSmall(player, EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                        .append(toSmall(player, EconomyUtils.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
                         .appendSpace()
                         .append(text(bitsManager.getBitsIcon()))
                 );
@@ -159,12 +163,13 @@ public class MainScoreboard extends BaseScoreboard {
         );
 
         if (OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) {
+            HalloweenManager halloweenManager = OMCRegistry.FEATURES.HALLOWEEN.get();
             NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
             Npc halloweenNPC = null;
             if (npcManager != null)
                 halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
             if (halloweenNPC != null) {
-                String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
+                String pumpkinCount = EconomyUtils.getFormattedSimplifiedNumber(halloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()

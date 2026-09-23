@@ -15,6 +15,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -159,7 +160,7 @@ public class CityListDetailsMenu extends Menu {
 		map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation(
 						"feature.city.menus.list.details.wealth",
-						Component.text(economyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
+						Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
 						Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
 				))));
 
