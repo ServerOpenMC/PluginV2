@@ -35,6 +35,71 @@ public class OMCPlugin extends JavaPlugin {
 
     public static final String VANISH_META_KEY = "omcstaff.vanished";
 
+    // ** Registry of OMC Features
+    // () -> : nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
+    public final List<FeatureFactory> REGISTRY_FEATURE = new ArrayList<>(List.of(
+            () -> new TicketManager(new File(this.getDataFolder(), "data/stats")),
+            PrivateMessageManager::new,
+            SocialSpyManager::new,
+            SpawnManager::new,
+            UpdateManager::new,
+            EconomyManager::new,
+            BankManager::new,
+            BitsManager::new,
+            ScoreboardManager::new,
+            HomesManager::new,
+            TPAManager::new,
+            FreezeManager::new,
+            TransactionsManager::new,
+            AnalyticsManager::new,
+            FriendManager::new,
+            () -> new TabList(),
+            AdminShopManager::new,
+            HelpConfigManager::new,
+            () -> new AnimationsManager(),
+            () -> new HalloweenManager(),
+            QuestProgressSaveManager::new,
+            MotdUtils::new,
+            MascotsManager::new,
+            PlayerSettingsManager::new,
+            MailboxManager::new,
+            DiscordLinkManager::new,
+            ProfileManager::new,
+            () -> new ElevatorManager(),
+            () -> new CorpseManager(),
+            QuestsManager::new,
+            CityManager::new,
+            DynamicCooldownManager::new,
+            ContestManager::new,
+            WeeklyEventsManager::new,
+            DailyEventsManager::new,
+            ChatAnimationManager::new,
+            EventsManager::new,
+            DreamManager::new,
+            MultiBlockManager::new,
+            MilestonesManager::new,
+            () -> new LeaderboardManager(),
+            () -> new MainMenu(),
+            () -> new HologramLoader(),
+            BossbarManager::new,
+            ShopManager::new,
+            HomeIconCacheManager::new,
+            DimensionOpenerManager::new
+    ));
+
+    public static final List<Feature> loadedFeature = new ArrayList<>();
+
+    // ** Registry of OMC Plugin Hooks
+    public final List<Hooks> REGISTRY_HOOKS = new ArrayList<>(List.of(
+            new ProtocolLibHook(),
+            new LuckPermsHook(),
+            new PapiHook(),
+            new WorldGuardHook(),
+            new ItemsAdderHook(),
+            new FancyNpcsHook(),
+            new GitHubHook()
+    ));
+
     @Override
     public void onLoad() {
         LoggerFactory.setLogBackendFactory(DatabaseManager.ShutUpOrmLite::new);

@@ -9,9 +9,9 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -134,9 +134,9 @@ public class CityTopMenu extends PaginatedMenu {
                 items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.menus.top.item.title",
-                            Component.text(currentRank).color(LeaderboardManager.getRankColor(currentRank)),
+                            Component.text(currentRank).color(ColorUtils.getRankColor(currentRank)),
                             Component.text(city.getName())
-                    ).color(LeaderboardManager.getRankColor(currentRank)).decoration(TextDecoration.ITALIC, false));
+                    ).color(ColorUtils.getRankColor(currentRank)).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(cityLore);
                 }));
             }
