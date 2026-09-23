@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "com.gradleup.shadow" version "9.5.1"
+    id "com.gradleup.shadow" version "9.6.1"
     id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
-    id("xyz.jpenilla.run-paper") version "3.0.2" // Will use ${minecraftVersion} for the paper version
+    id("xyz.jpenilla.run-paper") version "3.1.0" // Will use ${minecraftVersion} for the paper version
 }
 
 def getLatestGitTag() {
@@ -146,4 +146,24 @@ tasks.shadowJar {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// * Propriété locale
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream {
+        localProperties.load(it)
+    }
+}
+
+tasks.register('copyJarToServer', Copy) {
+    dependsOn tasks.shadowJar
+
+    from tasks.shadowJar
+
+    if (localProperties.getProperty('minecraftServerDir')) {
+        into file("${localProperties.getProperty('minecraftServerDir')}/plugins")
+    }
 }

@@ -10,6 +10,7 @@ import io.netty.channel.ChannelPromise;
 import io.papermc.paper.adventure.PaperAdventure;
 import lombok.Getter;
 import net.minecraft.advancements.*;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
@@ -21,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,7 +54,7 @@ public class MainMenuListener implements Listener {
     private static ClientboundUpdateAdvancementsPacket createEmptyAdvancementPacket() {
         // Rien de très important ici, on crée justes les instances nécessaires pour le packet avec le minimum requis.
         DisplayInfo displayInfo = new DisplayInfo(
-                ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(getInvisibleItem())),
+                ItemStackTemplate.fromNonEmptyStack(CraftItemStack.asNMSCopy(getInvisibleItem())),
                 PaperAdventure.asVanilla(TranslationManager.translation("feature.mainmenu.advancements.loading")),
                 Component.empty(),
                 Optional.empty(),
@@ -64,15 +66,16 @@ public class MainMenuListener implements Listener {
         Advancement advancement = new Advancement(
                 Optional.empty(),
                 Optional.of(displayInfo),
-                new AdvancementRewards(0, new ArrayList<>(), new ArrayList<>(), Optional.empty()),
+                new AdvancementRewards(0, HolderSet.empty(), new ArrayList<>(), Optional.empty()),
                 new HashMap<>(),
                 new AdvancementRequirements(new ArrayList<>()),
                 false
         );
         AdvancementHolder advancementHolder = new AdvancementHolder(Identifier.fromNamespaceAndPath("openmc", "advancement"), advancement);
+        ClientboundUpdateAdvancementsPacket.PositionedAdvancement positionedAdvancement = new ClientboundUpdateAdvancementsPacket.PositionedAdvancement(advancementHolder, 0, 0);
         return new ClientboundUpdateAdvancementsPacket(
                 true,
-                Collections.singletonList(advancementHolder),
+                Collections.singletonList(positionedAdvancement),
                 Set.of(),
                 new HashMap<>(),
                 false
@@ -117,7 +120,13 @@ public class MainMenuListener implements Listener {
             @Override
             public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
                 if (msg instanceof ClientboundUpdateAdvancementsPacket packet && !enabledAdvancements.contains(playerUUID)) {
-                    packet = new ClientboundUpdateAdvancementsPacket(true, packet.getAdded(), packet.getRemoved(), packet.getProgress(), true);
+                    packet = new ClientboundUpdateAdvancementsPacket(
+                            true,
+                            packet.added(),
+                            packet.removed(),
+                            packet.progress(),
+                            true
+                    );
                     advancementPackets.put(playerUUID, packet);
                     super.write(ctx, advancementPacket, promise);
                     return;

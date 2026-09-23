@@ -74,11 +74,12 @@ public final class OMCRegistry {
         for (RegistryContext ctx : OMCRegistry.ALL) {
             if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
 
-            LifecycleRegistry r = load(ctx);
+            LifecycleRegistry r = null;
             try {
+                r = load(ctx);
                 r.bootstrap(context);
             } catch (IOException e) {
-                OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du bootstrap", r.getClass().getSimpleName());
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre lors du bootstrap");
                 OMCLogger.error(e.getMessage());
             }
             OMCLogger.successFormatted("Registre {} chargé pendant le bootstrap", r.getClass().getSimpleName());
@@ -90,12 +91,18 @@ public final class OMCRegistry {
             if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
             if (isNotTyped(ctx, RegistryLoadingType.RUNTIME)) continue;
 
-            LifecycleRegistry r = load(ctx);
+            LifecycleRegistry r = null;
+            try {
+                r = load(ctx);
 
-            if (r instanceof HasListeners hasListeners)
-                OMCPlugin.registerEvents(hasListeners.getListeners());
+                if (r instanceof HasListeners hasListeners)
+                    OMCPlugin.registerEvents(hasListeners.getListeners());
 
-            r.init();
+                r.init();
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre lors du runtime");
+                OMCLogger.error(e.getMessage());
+            }
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
     }
@@ -105,12 +112,20 @@ public final class OMCRegistry {
             if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
             if (isNotTyped(ctx, RegistryLoadingType.AFTER_IA)) continue;
 
-            LifecycleRegistry r = load(ctx);
+            LifecycleRegistry r = null;
 
-            if (r instanceof HasListeners hasListeners)
-                OMCPlugin.registerEvents(hasListeners.getListeners());
+            try {
+                r = load(ctx);
 
-            r.postInit();
+                if (r instanceof HasListeners hasListeners)
+                    OMCPlugin.registerEvents(hasListeners.getListeners());
+
+                r.postInit();
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre apres ItemsAdder");
+                OMCLogger.error(e.getMessage());
+            }
+
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
         }
     }

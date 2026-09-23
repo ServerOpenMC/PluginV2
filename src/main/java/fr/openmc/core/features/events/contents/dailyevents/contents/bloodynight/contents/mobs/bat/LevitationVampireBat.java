@@ -68,7 +68,7 @@ public class LevitationVampireBat extends AbstractVampireBat {
                 .location(impactLocation)
                 .count(40)
                 .offset(1.0, 1.5, 1.0)
-                .extra(0.1)
+                .speed(0.1)
                 .receivers(40, true)
                 .spawn();
     }
