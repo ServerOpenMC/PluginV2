@@ -1,6 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -19,6 +20,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Description("Permet de gérer votre argent")
 @CommandPermission("omc.commands.money")
 public class Money {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     @CommandPlaceholder()
     public void getMoney(
@@ -40,7 +42,7 @@ public class Money {
                         TranslationManager.translation(
                                 "feature.economy.money.others",
                                 Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                                Component.text(EconomyManager.getFormattedBalance(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                                Component.text(economyManager.getFormattedBalance(target.getUniqueId())).color(NamedTextColor.YELLOW)
                         ),
                         Prefix.OPENMC, MessageType.INFO, true);
             } else {
@@ -53,19 +55,19 @@ public class Money {
     @Description("Permet de définir l'argent d'un joueur")
     @CommandPermission("omc.admin.commands.money.set")
     public void setMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        EconomyManager.setBalance(target.getUniqueId(), amount);
+        economyManager.setBalance(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.money.set.success",
                         Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                        Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                        Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.money.set.target",
-                            Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                            Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -75,11 +77,11 @@ public class Money {
     @Description("Permet d'ajouter de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.add")
     public void addMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        EconomyManager.addBalance(target.getUniqueId(), amount, "Admin - Ajout par " + player == null ? "Console" : player.getName());
+        economyManager.addBalance(target.getUniqueId(), amount, "Admin - Ajout par " + player == null ? "Console" : player.getName());
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.money.add.success",
-                        Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
+                        Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
                         Component.text(target.getName()).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -87,7 +89,7 @@ public class Money {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.money.add.target",
-                            Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                            Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -97,11 +99,11 @@ public class Money {
     @Description("Permet de retirer de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.remove")
     public void removeMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
-        if (EconomyManager.withdrawBalance(target.getUniqueId(), amount, "Admin  - Retirer par " + player == null ? "Console" : player.getName())) {
+        if (economyManager.withdrawBalance(target.getUniqueId(), amount, "Admin  - Retirer par " + player == null ? "Console" : player.getName())) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.economy.money.remove.success",
-                            Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
+                            Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
                             Component.text(target.getName()).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -109,7 +111,7 @@ public class Money {
                 MessagesManager.sendMessage(target.getPlayer(),
                         TranslationManager.translation(
                                 "feature.economy.money.remove.target",
-                                Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                                Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
                         ),
                         Prefix.OPENMC, MessageType.INFO, true);
             }
@@ -122,19 +124,19 @@ public class Money {
     @Description("Permet de réinitialiser l'argent d'un joueur")
     @CommandPermission("omc.admin.commands.money.reset")
     public void resetMoney(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target) {
-        EconomyManager.setBalance(target.getUniqueId(), 0);
+        economyManager.setBalance(target.getUniqueId(), 0);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.money.reset.success",
                         Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                        Component.text(EconomyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
+                        Component.text(economyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.money.reset.target",
-                            Component.text(EconomyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
+                            Component.text(economyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }

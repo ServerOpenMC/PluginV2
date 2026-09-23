@@ -5,6 +5,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -12,9 +13,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 
-public class HomeUpgradeManager {
+public class HomeUpgradeManager extends Feature {
 
-    public static HomeLimits getCurrentUpgrade(OMCPlayer player) {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+
+    public HomeLimits getCurrentUpgrade(OMCPlayer player) {
         int currentLimit = player.home().getHomeLimit().getLimit();
         for (HomeLimits upgrade : HomeLimits.values()) {
             if (upgrade.getLimit() == currentLimit) {
@@ -24,7 +27,7 @@ public class HomeUpgradeManager {
         return HomeLimits.LIMIT_0;
     }
 
-    public static HomeLimits getNextUpgrade(HomeLimits current) {
+    public HomeLimits getNextUpgrade(HomeLimits current) {
         if (current == null)
             return null;
 
@@ -36,7 +39,7 @@ public class HomeUpgradeManager {
         return values[nextIndex];
     }
 
-    public static void upgradeHome(OMCPlayer player) {
+    public void upgradeHome(OMCPlayer player) {
         int currentHomes = player.home().getHomes().size();
         int currentUpgrade = player.home().getHomeLimit().getLimit();
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
@@ -65,12 +68,12 @@ public class HomeUpgradeManager {
                 return;
             }
 
-            if (EconomyManager.getBalance(player.getUniqueId()) < price) {
+            if (economyManager.getBalance(player.getUniqueId()) < price) {
                 player.message().sendError(
                         TranslationManager.translation(
                                 "feature.homes.upgrade.not_enough_money",
                                 Component.text(price).color(NamedTextColor.YELLOW),
-                                Component.text(EconomyManager.getEconomyIcon())
+                                Component.text(economyManager.getEconomyIcon())
                         ),
                         Prefix.HOME,
                         true
@@ -79,7 +82,7 @@ public class HomeUpgradeManager {
             }
 
             ItemUtils.takeAywenite(player, ayweniteAmount);
-            EconomyManager.withdrawBalance(player.getUniqueId(), price);
+            economyManager.withdrawBalance(player.getUniqueId(), price);
 
             player.home().updateHomeLimit();
 

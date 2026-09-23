@@ -4,11 +4,12 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +27,8 @@ import java.util.Map;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class CityBankDepositMenu extends Menu {
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public CityBankDepositMenu(Player owner) {
         super(owner);
@@ -56,12 +59,12 @@ public class CityBankDepositMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
 
         boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT);
 
-        double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
+        double moneyPlayer = economyManager.getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer / 2;
 
         List<Component> loreBankDepositAll;
@@ -69,8 +72,8 @@ public class CityBankDepositMenu extends Menu {
         if (hasPermissionMoneyGive) {
             loreBankDepositAll = TranslationManager.translationLore(
                     "feature.city.bank.menu.deposit.all.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
             loreBankDepositAll = TranslationManager.translationLore("messages.global.cannot_do_this");
@@ -90,8 +93,8 @@ public class CityBankDepositMenu extends Menu {
         if (hasPermissionMoneyGive) {
             loreBankDepositHalf = TranslationManager.translationLore(
                     "feature.city.bank.menu.deposit.half.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
             loreBankDepositHalf = TranslationManager.translationLore("messages.global.cannot_do_this");

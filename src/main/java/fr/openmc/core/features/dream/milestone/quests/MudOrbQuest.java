@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.orb.MudOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -23,13 +23,13 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.mud_orb.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.mud_orb.description"),
-				DreamItemRegistry.MUD_ORB,
+				OMCRegistry.DREAM_ITEM.MUD_ORB,
 				MilestoneType.DREAM,
 				DreamSteps.MUD_ORB,
 				new QuestTier(1),
 				TranslationManager.translationLore("feature.dream.milestone.quest.mud_orb.dialog"),
 				player -> {
-					if (player.getInventory().contains(DreamItemRegistry.CRYSTALIZED_PICKAXE.getBest()))
+					if (player.getInventory().contains(OMCRegistry.DREAM_ITEM.CRYSTALIZED_PICKAXE.getBest()))
 						DreamSteps.CRYSTALLIZED_PICKAXE.getQuest().incrementProgressInDream(player.getUniqueId());
 				}
 		);
@@ -43,7 +43,7 @@ public class MudOrbQuest extends MilestoneQuest implements Listener {
 		for (CustomLoot loot : e.getLoot()) {
 			if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-			DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getItemLootWithAmount());
+			DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(itemLoot.getItemLootWithAmount());
 			if (dreamItem == null) return;
 			if (dreamItem instanceof MudOrb) {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;

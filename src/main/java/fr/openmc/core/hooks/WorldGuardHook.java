@@ -8,7 +8,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.registry.hooks.Hooks;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Set;
 
 public class WorldGuardHook extends Hooks {
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(WorldGuardHook.class);
     }
 
@@ -26,7 +26,7 @@ public class WorldGuardHook extends Hooks {
         return Collections.singleton("WorldGuard");
     }
 
-    public static boolean isRegionConflict(Location location) {
+    public boolean isRegionConflict(Location location) {
         if (!isEnable()) return false;
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -45,11 +45,11 @@ public class WorldGuardHook extends Hooks {
     /**
      * Retourne si la positon mise est dans une région
      */
-    public static boolean isInside(ProtectedRegion region, Location location) {
+    public boolean isInside(ProtectedRegion region, Location location) {
         return region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
-    public static boolean doesChunkContainWGRegion(Chunk chunk) {
+    public boolean doesChunkContainWGRegion(Chunk chunk) {
         if (!isEnable()) return false;
 
         org.bukkit.World world = chunk.getWorld();

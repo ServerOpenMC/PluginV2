@@ -16,6 +16,7 @@ import java.util.Collections;
 
 @Getter
 public class MoneyLoot implements CustomLoot, RepresentedItem {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     @Setter
     private double chance;
     private final int money;
@@ -33,13 +34,13 @@ public class MoneyLoot implements CustomLoot, RepresentedItem {
     public Component getDisplayText() {
         return Component.text(money, NamedTextColor.GOLD)
                 .appendSpace()
-                .append(Component.text(EconomyManager.getEconomyIcon()))
+                .append(Component.text(economyManager.getEconomyIcon()))
                 .decoration(TextDecoration.ITALIC, false);
     }
 
     @Override
     public LootReward run(Player receiver) {
-        EconomyManager.addBalance(receiver.getUniqueId(), money);
+        economyManager.addBalance(receiver.getUniqueId(), money);
         return LootReward.loots(Collections.singleton(this));
     }
 

@@ -1,13 +1,12 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.city.conditions.CityUnclaimCondition;
-import fr.openmc.core.features.city.menu.CityChunkMenu;
-import fr.openmc.core.features.city.view.CityViewManager;
+import fr.openmc.core.features.city.menu.chunk.CityChunkMenu;
+import fr.openmc.core.features.city.sub.view.CityViewManager;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -22,7 +21,7 @@ public class CityClaimCommands {
     @Description("Claim un chunk pour votre ville")
     @CommandPlaceholder()
     void claim(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityClaimCondition.canCityClaim(city, sender)) return;
 
@@ -35,7 +34,7 @@ public class CityClaimCommands {
     @CommandPermission("omc.commands.city.unclaim")
     @Description("Unclaim un chunk pour votre ville")
     void unclaim(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityUnclaimCondition.canCityUnclaim(city, sender)) return;
 

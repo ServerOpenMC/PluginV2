@@ -1,9 +1,10 @@
 package fr.openmc.core.hooks;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.core.bootstrap.hooks.ApiHook;
-import fr.openmc.core.bootstrap.hooks.Hooks;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.registry.hooks.ApiHook;
+import fr.openmc.core.registry.hooks.Hooks;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -20,9 +21,9 @@ import java.util.Set;
 
 public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     @Getter
-    private static LuckPerms api;
+    private LuckPerms api;
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return Hooks.isEnabled(LuckPermsHook.class);
     }
 
@@ -44,7 +45,7 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
     /**
      * Retourne le garde d'une personne
      */
-    public static String getPrefix(Player player) {
+    public String getPrefix(Player player) {
         if (!isEnable()) return "";
 
         User user = getApi().getUserManager().getUser(player.getUniqueId());
@@ -54,20 +55,33 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
         return Objects.requireNonNullElse(prefix, "");
     }
 
-    public static String getFormattedPAPIPrefix(Player player) {
+    /**
+     * Retourne le suffix d'une personne
+     */
+    public String getSuffix(Player player) {
+        if (!isEnable()) return "";
+
+        User user = getApi().getUserManager().getUser(player.getUniqueId());
+        if (user == null) return "";
+
+        String prefix = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getSuffix();
+        return Objects.requireNonNullElse(prefix, "");
+    }
+
+    public String getFormattedPAPIPrefix(Player player) {
         if (!isEnable()) return "";
 
         String prefix = getPrefix(player);
         if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
 
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             return FontImageWrapper.replaceFontImages(formattedPrefix);
         }
         return formattedPrefix;
     }
 
-    public static @NotNull Component getFormattedPAPIPrefix(Group group) {
+    public @NotNull Component getFormattedPAPIPrefix(Group group) {
         if (!isEnable()) return Component.empty();
 
         String prefix = group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
@@ -75,7 +89,7 @@ public class LuckPermsHook extends Hooks implements ApiHook<LuckPerms> {
 
         String formattedPrefix = prefix.replace("&", "§");
 
-        String finalPrefix = ItemsAdderHook.isEnable() ? FontImageWrapper.replaceFontImages(formattedPrefix) : formattedPrefix;
+        String finalPrefix = OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() ? FontImageWrapper.replaceFontImages(formattedPrefix) : formattedPrefix;
 
         return LegacyComponentSerializer.legacySection().deserialize(finalPrefix);
     }

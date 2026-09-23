@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.notation.listeners;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.utils.text.DateUtils;
@@ -17,17 +17,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinListener implements Listener {
+    private final NotationManager notationManager;
+
+    public PlayerJoinListener() {
+        this.notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) return;
 
         CityNotation notation = playerCity.getNotationOfWeek(DateUtils.getWeekFormat());
         if (notation == null) return;
 
-        int rankCity = NotationManager.getSortedNotationForWeek(DateUtils.getWeekFormat()).indexOf(notation) + 1;
+        int rankCity = notationManager.getSortedNotationForWeek(DateUtils.getWeekFormat()).indexOf(notation) + 1;
         MessagesManager.sendMessage(player,
                 TranslationManager.translation("feature.city.notation.join.message", Component.text(rankCity))
                         .clickEvent(ClickEvent.runCommand("city notation"))

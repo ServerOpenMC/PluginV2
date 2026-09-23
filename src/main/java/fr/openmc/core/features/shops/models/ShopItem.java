@@ -3,6 +3,7 @@ package fr.openmc.core.features.shops.models;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "shop_items")
 public class ShopItem implements Cloneable {
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
     
     @DatabaseField(id = true, columnName = "shop_uuid", canBeNull = false)
     private UUID shopUUID;
@@ -113,7 +115,7 @@ public class ShopItem implements Cloneable {
      * @return the Shop object corresponding to the shopUUID of this ShopItem
      */
     public Shop getShop() {
-        return ShopManager.getShopByUUID(this.shopUUID);
+        return shopManager.getShopByUUID(this.shopUUID);
     }
     
     /**

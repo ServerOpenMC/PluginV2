@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.dimopener.commands.DimensionCommands;
 import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.FilesUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -28,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -42,17 +42,18 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands, LoadAfterItemsAdder {
+public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final String DIMENSIONS_FOLDER = "data/dimensions";
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private final String DIMENSIONS_FOLDER = "data/dimensions";
 
-    private static final Map<String, DimensionData> dimensions = new ConcurrentHashMap<>();
-    private static final Map<String, DimensionProgress> progressMap = new ConcurrentHashMap<>();
-    private static final Set<UUID> canBypass = new HashSet<>();
+    private final Map<String, DimensionData> dimensions = new ConcurrentHashMap<>();
+    private final Map<String, DimensionProgress> progressMap = new ConcurrentHashMap<>();
+    private final Set<UUID> canBypass = new HashSet<>();
 
-    private static File dimensionsFolder;
-    private static File progressFile;
+    private File dimensionsFolder;
+    private File progressFile;
 
     private BukkitTask tickTask;
 
@@ -69,7 +70,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         startTicking();
     }
 
-    private static void saveDefaultDimensions() {
+    private void saveDefaultDimensions() {
         for (String fileName : FilesUtils.listFileNamesInResource(DIMENSIONS_FOLDER)) {
             if (!fileName.endsWith(".json")) continue;
 
@@ -86,7 +87,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         if (tickTask != null) tickTask.cancel();
     }
 
-    public static void loadDimensions() {
+    public void loadDimensions() {
         dimensions.clear();
 
         for (File file : FilesUtils.getAllFiles(dimensionsFolder, "json")) {
@@ -109,25 +110,25 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         OMCLogger.infoFormatted("{} ouvertures de dimension(s) chargée", dimensions.size());
     }
 
-    public static Collection<DimensionData> getDimensions() {
+    public Collection<DimensionData> getDimensions() {
         return dimensions.values();
     }
 
-    public static List<DimensionData> getEnabledDimensions() {
+    public List<DimensionData> getEnabledDimensions() {
         return dimensions.values().stream()
                 .filter(DimensionData::isEnabled)
                 .collect(Collectors.toList());
     }
 
-    public static DimensionData getDimension(String id) {
+    public DimensionData getDimension(String id) {
         return dimensions.get(id.toLowerCase());
     }
 
-    public static DimensionProgress getProgress(String id) {
+    public DimensionProgress getProgress(String id) {
         return progressMap.get(id.toLowerCase());
     }
 
-    public static StepDimensionData getCurrentStep(String id) {
+    public StepDimensionData getCurrentStep(String id) {
         DimensionData dim = dimensions.get(id.toLowerCase());
         DimensionProgress progress = progressMap.get(id.toLowerCase());
         if (dim == null || progress == null) return null;
@@ -147,24 +148,24 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         REQUIRED_DIMENSION_NOT_OPENED
     }
 
-    public static ContributeResult contributeItems(Player player, String dimensionId, int amount) {
+    public ContributeResult contributeItems(Player player, String dimensionId, int amount) {
         return contribute(player, dimensionId, amount, StepDimensionData.Type.ITEMS);
     }
 
-    public static ContributeResult contributeMoney(Player player, String dimensionId, double amount) {
+    public ContributeResult contributeMoney(Player player, String dimensionId, double amount) {
         if (amount <= 0) return ContributeResult.WRONG_STEP_STATE;
 
         DimensionData data = dimensions.get(dimensionId.toLowerCase());
         if (data == null) return ContributeResult.INVALID_STEP;
         if (!isPrerequisiteMet(data)) return ContributeResult.REQUIRED_DIMENSION_NOT_OPENED;
 
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), amount, "Dimension Opener : " + dimensionId)) {
+        if (!economyManager.withdrawBalance(player.getUniqueId(), amount, "Dimension Opener : " + dimensionId)) {
             return ContributeResult.WRONG_STEP_STATE;
         }
         return contribute(player, dimensionId, amount, StepDimensionData.Type.MONEY);
     }
 
-    private static ContributeResult contribute(Player player, String dimensionId, double amount, StepDimensionData.Type expectedType) {
+    private ContributeResult contribute(Player player, String dimensionId, double amount, StepDimensionData.Type expectedType) {
         String id = dimensionId.toLowerCase();
         DimensionData data = dimensions.get(id);
         DimensionProgress progress = progressMap.get(id);
@@ -189,13 +190,13 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         return ContributeResult.SUCCESS;
     }
 
-    public static boolean isPrerequisiteMet(DimensionData dimensionData) {
+    public boolean isPrerequisiteMet(DimensionData dimensionData) {
         String req = dimensionData.getRequireDimension();
         if (req == null || req.isBlank()) return true;
         return isOpened(req);
     }
 
-    private static void onStepCompleted(String dimensionId, DimensionProgress progress) {
+    private void onStepCompleted(String dimensionId, DimensionProgress progress) {
         DimensionData dim = dimensions.get(dimensionId);
         List<StepDimensionData> steps = dim.getDimensionsStep();
 
@@ -220,10 +221,10 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     }
 
     private void startTicking() {
-        tickTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), DimensionOpenerManager::tick, 20L, 20L);
+        tickTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), this::tick, 20L, 20L);
     }
 
-    private static void tick() {
+    private void tick() {
         boolean changed = false;
         for (DimensionProgress progress : progressMap.values()) {
             if (!progress.isCooldownOver()) continue;
@@ -244,7 +245,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         if (changed) saveProgress();
     }
 
-    private static void advanceToNextStep(DimensionProgress progress) {
+    private void advanceToNextStep(DimensionProgress progress) {
         progress.setCurrentStepIndex(progress.getCurrentStepIndex() + 1);
         progress.setState(DimensionState.STEP_IN_PROGRESS);
         progress.clearCooldown();
@@ -262,7 +263,30 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         }
     }
 
-    private static void openDimension(DimensionProgress progress) {
+    public boolean checkAccess(Player player, String worldName, @Nullable Cancellable event) {
+        if (this.hasBypass(player)) return true;
+        DimensionData dim = this.getDimensionByWorldName(worldName);
+        if (dim == null) return true;
+
+        DimensionProgress progress = this.getProgress(dim.getId());
+        DimensionState state = progress != null ? progress.getState() : null;
+
+        if (state != DimensionState.OPENED) {
+            if (event != null)
+                event.setCancelled(true);
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation("feature.dimopener.access.denied"),
+                    Prefix.DIMOPENER,
+                    MessageType.ERROR,
+                    true
+            );
+            return false;
+        }
+        return true;
+    }
+
+    private void openDimension(DimensionProgress progress) {
         progress.setState(DimensionState.OPENED);
         progress.clearCooldown();
 
@@ -278,7 +302,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         }
     }
 
-    private static void loadWorldIfNeeded(String worldName) {
+    private void loadWorldIfNeeded(String worldName) {
         if (worldName == null || worldName.isBlank()) return;
         if (Bukkit.getWorld(worldName) != null) return;
 
@@ -286,7 +310,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         new WorldCreator(worldName).createWorld();
     }
 
-    private static void loadProgress() {
+    private void loadProgress() {
         if (!progressFile.exists()) return;
 
         try (FileReader reader = new FileReader(progressFile)) {
@@ -301,7 +325,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         }
     }
 
-    private static void saveProgress() {
+    private void saveProgress() {
         try {
             FilesUtils.createDirectoryIfNotExists(progressFile.getParentFile());
             
@@ -314,19 +338,19 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     }
 
     @Nullable
-    public static DimensionData getDimensionByWorldName(@NotNull String worldName) {
+    public DimensionData getDimensionByWorldName(@NotNull String worldName) {
         return dimensions.values().stream()
                 .filter(d -> worldName.equalsIgnoreCase(d.getDimensionName()))
                 .findFirst()
                 .orElse(null);
     }
 
-    public static boolean isOpened(String id) {
+    public boolean isOpened(String id) {
         DimensionProgress progress = progressMap.get(id.toLowerCase());
         return progress != null && progress.getState() == DimensionState.OPENED;
     }
 
-    public static boolean isInInputPhase(String dimensionId) {
+    public boolean isInInputPhase(String dimensionId) {
         DimensionProgress progress = getProgress(dimensionId);
         if (progress == null) return false;
         DimensionState state = progress.getState();
@@ -335,7 +359,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
                 && state != DimensionState.OPENED;
     }
 
-    public static ItemStack resolveIcon(DimensionData dim) {
+    public ItemStack resolveIcon(DimensionData dim) {
         String icon = dim.getIcon();
 
         if (icon == null || icon.isBlank()) return new ItemStack(Material.GRASS_BLOCK);
@@ -357,27 +381,27 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         return new ItemStack(material);
     }
 
-    public static void addBypass(Player player) {
+    public void addBypass(Player player) {
         canBypass.add(player.getUniqueId());
     }
 
-    public static void removeBypass(Player player) {
+    public void removeBypass(Player player) {
         canBypass.remove(player.getUniqueId());
     }
 
-    public static boolean hasBypass(Player player) {
+    public boolean hasBypass(Player player) {
         return canBypass.contains(player.getUniqueId());
     }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new DimensionCommands()
+                new DimensionCommands(this)
         );
     }
 
     @Override
     public Set<ListenerFactory> getListeners() {
-        return Set.of(DimensionAccessListener::new);
+        return Set.of(() -> new DimensionAccessListener(this));
     }
 }

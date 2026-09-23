@@ -5,17 +5,17 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -35,6 +35,8 @@ import java.util.*;
 public class CityListDetailsMenu extends Menu {
 	
 	private final City city;
+
+	private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 	
 	/**
 	 * Constructor for CityListDetailsMenu.
@@ -78,12 +80,12 @@ public class CityListDetailsMenu extends Menu {
 
 		List<Component> loreOwner = new ArrayList<>();
 
-		if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+		if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 			Mayor mayor = this.city.getMayor();
 			ElectionType electionType = mayor.getElectionType();
-			Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-			Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+			Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+			Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+			Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
 			loreOwner.add(Component.empty());
 			loreOwner.add(perk1 == null ? TranslationManager.translation("feature.city.menus.common.error") :
@@ -158,8 +160,8 @@ public class CityListDetailsMenu extends Menu {
 		map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation(
 						"feature.city.menus.list.details.wealth",
-						Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
-						Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
+						Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD),
+						Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
 				))));
 
 		map.put(4, new ItemMenuBuilder(this, new ItemStack(Material.PLAYER_HEAD),

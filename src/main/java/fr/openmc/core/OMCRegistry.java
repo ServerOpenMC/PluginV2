@@ -1,14 +1,24 @@
 package fr.openmc.core;
 
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
-import fr.openmc.core.bootstrap.registries.RegistryContext;
-import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
+import fr.openmc.core.features.city.CityFeaturesRegistry;
+import fr.openmc.core.features.dream.registries.DreamFeaturesRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
+import fr.openmc.core.features.homes.HomeFeaturesRegistry;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.RegistryContext;
+import fr.openmc.core.lifecycle.registries.RegistryLoadingType;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.registry.features.FeaturesRegistry;
+import fr.openmc.core.registry.hooks.HooksRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
@@ -25,6 +35,9 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public final class OMCRegistry {
     // * Registre globaux
+    public static FeaturesRegistry FEATURES;
+    public static HooksRegistry HOOKS;
+
     public static CustomItemRegistry CUSTOM_ITEMS;
     public static CustomMobRegistry CUSTOM_MOBS;
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
@@ -38,9 +51,30 @@ public final class OMCRegistry {
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
 
+    // ** Registre concernant la feature de la Dimension des reves
+    public static DreamFeaturesRegistry DREAM_FEATURES;
+    public static DreamItemRegistry DREAM_ITEM;
+    public static DreamMobsRegistry DREAM_MOB;
+    public static DreamLootTableRegistry DREAM_LOOT_TABLE;
+
+    // * Registre concernant la feature des villes
+    public static CityFeaturesRegistry CITY_FEATURES;
+
+    // * Registre concernant la feature des contests
+    public static ContestFeaturesRegistry CONTEST_FEATURES;
+
+    // * Registre concernant la feature des homes
+    public static HomeFeaturesRegistry HOME_FEATURES;
+
+    // * Registre concernant la feature des shops
+    public static ShopFeaturesRegistry SHOP_FEATURES;
+
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
-    private static final List<RegistryContext> ALL = List.of(
+    private static final List<RegistryContext> ALL = new ArrayList<>(List.of(
+            new RegistryContext(
+                    () -> HOOKS = new HooksRegistry(),
+                    RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),
@@ -65,8 +99,11 @@ public final class OMCRegistry {
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_REGIONS = new CustomRegionRegistry(),
-                    RegistryLoadingType.AFTER_IA)
-    );
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> FEATURES = new FeaturesRegistry(),
+                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA)
+    ));
 
     private OMCRegistry() {}
 
@@ -124,7 +161,10 @@ public final class OMCRegistry {
     }
 
     private static LifecycleRegistry load(RegistryContext ctx) {
-        LifecycleRegistry registry = ctx.registry().get();
+        return load(ctx.registry().get());
+    }
+
+    public static LifecycleRegistry load(LifecycleRegistry registry) {
         LOADED.add(registry);
         return registry;
     }

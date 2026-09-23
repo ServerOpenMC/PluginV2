@@ -2,8 +2,8 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.template.ConfirmMenu;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -20,9 +20,9 @@ import java.util.UUID;
 
 public class CityDeleteAction {
     public static void startDeleteCity(Player player) {
-        UUID uuid = player.getUniqueId();
+        UUID playerUUID = player.getUniqueId();
 
-        City city = CityManager.getPlayerCity(uuid);
+        City city = City.ofPlayer(player);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, true);
@@ -40,10 +40,10 @@ public class CityDeleteAction {
                         }
                     }
 
-                    CityManager.deleteCity(city);
+                    OMCRegistry.FEATURES.CITY.get().deleteCity(city);
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, MessageType.SUCCESS, false);
 
-                    DynamicCooldownManager.use(uuid, "city:big", 60000); // 1 minute
+                    DynamicCooldownManager.use(playerUUID, "city:big", 60000); // 1 minute
                     player.closeInventory();
                 },
                 player::closeInventory,

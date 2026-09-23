@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -43,7 +44,7 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
                         ),
                         new QuestMethodsReward(
                                 player -> {
-                                    if (ShopManager.getShopCountOf(player) > 0) {
+                                    if (OMCRegistry.FEATURES.SHOP.get().getShopCountOf(player) > 0) {
                                         TutorialSteps.PLACE_SHOP.getQuest().incrementProgress(player.getUniqueId());
                                     }
                                 }

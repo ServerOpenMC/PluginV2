@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VoteMenu extends Menu {
+    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
 
     public VoteMenu(Player owner) {
         super(owner);
@@ -58,11 +60,11 @@ public class VoteMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        Component camp1Name = ContestManager.data.getCamp1();
-        Component camp2Name = ContestManager.data.getCamp2();
+        Component camp1Name = contestManager.getData().getCamp1();
+        Component camp2Name = contestManager.getData().getCamp2();
 
-        String camp1Color = ContestManager.data.getColor1();
-        String camp2Color = ContestManager.data.getColor2();
+        String camp1Color = contestManager.getData().getColor1();
+        String camp2Color = contestManager.getData().getColor2();
 
         NamedTextColor color1 = ColorUtils.getNamedTextColor(camp1Color);
         NamedTextColor color2 = ColorUtils.getNamedTextColor(camp2Color);
@@ -77,7 +79,7 @@ public class VoteMenu extends Menu {
         boolean ench1;
         boolean ench2;
 
-        ContestPlayer playerData = ContestManager.dataPlayer.get(player.getUniqueId());
+        ContestPlayer playerData = contestManager.getDataPlayer().get(player.getUniqueId());
         
         if (playerData == null) {
             ench1 = false;
@@ -156,12 +158,12 @@ public class VoteMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(ench1);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
-                String campColor = ContestManager.data.getColor1();
+                String campColor = contestManager.getData().getColor1();
 
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
                 Component teamComponent = TranslationManager.translation(
                         "feature.events.contest.team.label",
-                        ContestManager.data.getCamp1()
+                        contestManager.getData().getCamp1()
                 ).color(colorFinal);
                 List<Component> loreAccept = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.join.lore",
@@ -176,7 +178,7 @@ public class VoteMenu extends Menu {
                 ConfirmMenu menu = new ConfirmMenu(
                         player,
                         () -> {
-                            ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
+                            contestManager.addContestPlayer(player, 1, colorFinal);
                             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
                             MessagesManager.sendMessage(
                                     player,
@@ -207,14 +209,14 @@ public class VoteMenu extends Menu {
             itemMeta.displayName(camp2Name);
             itemMeta.lore(lore2);
             itemMeta.setEnchantmentGlintOverride(ench2);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (playerData == null || playerData.getCamp() <= 0) {
-                String campColor = ContestManager.data.getColor2();
+                String campColor = contestManager.getData().getColor2();
 
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
                 Component teamComponent = TranslationManager.translation(
                         "feature.events.contest.team.label",
-                        ContestManager.data.getCamp2()
+                        contestManager.getData().getCamp2()
                 ).color(colorFinal);
                 List<Component> loreAccept = TranslationManager.translationLore(
                         "feature.events.contest.vote.confirm.join.lore",
@@ -229,7 +231,7 @@ public class VoteMenu extends Menu {
                 ConfirmMenu menu = new ConfirmMenu(
                         player,
                         () -> {
-                            ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 2, colorFinal));
+                            contestManager.addContestPlayer(player, 2, colorFinal);
                             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
                             MessagesManager.sendMessage(
                                     player,

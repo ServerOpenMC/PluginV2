@@ -1,13 +1,14 @@
 package fr.openmc.core.features.dream.listeners.structures;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.BossCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.CloudVault;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.PhantomCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.cloudcastle.StrayCloudSpawner;
 import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
+import fr.openmc.core.features.dream.registries.DreamBlocksManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -21,6 +22,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ReplaceBlockListener implements Listener {
+
+    private final DreamBlocksManager dreamBlocksManager;
+    private final GlaciteNpcManager glaciteNpcManager;
+
+    public ReplaceBlockListener() {
+        this.dreamBlocksManager = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS;
+        this.glaciteNpcManager = OMCRegistry.DREAM_FEATURES.GLACITE_NPC;
+    }
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
@@ -72,11 +81,11 @@ public class ReplaceBlockListener implements Listener {
                     switch (toReplace.material) {
                         case GRAY_GLAZED_TERRACOTTA -> {
                             block.setType(Material.ENCHANTING_TABLE);
-                            DreamBlocksRegistry.addDreamBlock("altar", block.getLocation());
+                            dreamBlocksManager.addDreamBlock("altar", block.getLocation());
                         }
                         case REDSTONE_ORE -> {
                             block.setType(Material.AIR);
-                            GlaciteNpcManager.createNPC(blockLocation);
+                            glaciteNpcManager.createNPC(blockLocation);
                         }
                         case NETHERITE_BLOCK -> BossCloudSpawner.replaceBlockWithBossCloudSpawner(block);
                         case COAL_BLOCK -> StrayCloudSpawner.replaceBlockWithMobCloudSpawner(block);

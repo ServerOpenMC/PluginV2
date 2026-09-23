@@ -2,6 +2,7 @@ package fr.openmc.core.features.shops.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.managers.ShopManager;
@@ -30,6 +31,8 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "shops")
 public class Shop {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
     
     @DatabaseField(id = true, columnName = "shop_uuid", canBeNull = false)
     private UUID shopUUID;
@@ -96,7 +99,7 @@ public class Shop {
      * @param uuid the UUID to check
      */
     public boolean isOwner(UUID uuid) {
-        return ownerUUID.equals(uuid) || ShopManager.shopBypass.contains(uuid);
+        return ownerUUID.equals(uuid) || shopManager.shopBypass.contains(uuid);
     }
     
     /**
@@ -146,8 +149,9 @@ public class Shop {
         if (!isOwner(player)) return;
         if (getTurnover() <= 0) return;
         double tempTurnover = getTurnover();
-        EconomyManager.addBalance(player.getUniqueId(), tempTurnover * 0.8, "turnover");
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.get_turnover", Component.text(tempTurnover * 0.8 + " " + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
+        economyManager.addBalance(player.getUniqueId(), tempTurnover * 0.8, "turnover");
+        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.get_turnover",
+                Component.text(tempTurnover * 0.8 + " " + economyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
         setTurnover(0);
     }
     
@@ -172,7 +176,7 @@ public class Shop {
             return;
         }
         double totalPrice = this.item.getPrice(amount);
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice, getName() + " buying")) {
+        if (!economyManager.withdrawBalance(player.getUniqueId(), totalPrice, getName() + " buying")) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_money"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }

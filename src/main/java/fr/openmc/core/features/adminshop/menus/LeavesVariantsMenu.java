@@ -27,6 +27,7 @@ import java.util.Map;
 public class LeavesVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
+    private final AdminShopManager manager;
 
     private static final List<Material> LEAVES_VARIANTS = List.of(
         Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
@@ -34,8 +35,9 @@ public class LeavesVariantsMenu extends Menu {
         Material.PALE_OAK_LEAVES, Material.AZALEA_LEAVES, Material.FLOWERING_AZALEA_LEAVES
     );
 
-    public LeavesVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
+    public LeavesVariantsMenu(Player owner, AdminShopManager manager, String categoryId, ShopItem originalItem) {
         super(owner);
+        this.manager = manager;
         this.categoryId = categoryId;
         this.originalItem = originalItem;
     }
@@ -100,11 +102,11 @@ public class LeavesVariantsMenu extends Menu {
 
 
                         if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         }
                     }));
         }

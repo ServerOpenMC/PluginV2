@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.sub.notation.menu;
 
 import fr.openmc.api.input.dialog.ButtonType;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
@@ -35,6 +35,7 @@ public class NotationDialog {
     private final static int LENGTH_CASE = 9;
 
     public static void send(Player player, String weekStr) {
+        NotationManager notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
         List<DialogBody> body = new ArrayList<>();
 
         String[] parts = weekStr.split("-");
@@ -42,10 +43,10 @@ public class NotationDialog {
         int yearNumber = Integer.parseInt(parts[0]);
         int weekNumber = Integer.parseInt(parts[1]);
 
-        body.add(lineCityNotationHeader(CityManager.getPlayerCity(player.getUniqueId()), weekStr));
+        body.add(lineCityNotationHeader(City.ofPlayer(player), weekStr));
 
-        for (CityNotation notation : NotationManager.getSortedNotationForWeek(weekStr)) {
-            City city = CityManager.getCity(notation.getCityUUID());
+        for (CityNotation notation : notationManager.getSortedNotationForWeek(weekStr)) {
+            City city = City.of(notation.getCityUUID());
 
             if (city == null) continue;
 

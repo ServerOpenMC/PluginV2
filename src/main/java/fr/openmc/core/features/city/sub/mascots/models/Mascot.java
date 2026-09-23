@@ -2,8 +2,7 @@ package fr.openmc.core.features.city.sub.mascots.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -92,7 +91,7 @@ public class Mascot {
         if (this.city != null) {
             return this.city;
         }
-        this.city = CityManager.getCity(this.cityUUID);
+        this.city = City.of(this.cityUUID);
         return this.city;
     }
 

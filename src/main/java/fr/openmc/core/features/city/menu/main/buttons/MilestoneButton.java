@@ -3,8 +3,7 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -30,8 +29,8 @@ public class MilestoneButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.milestone.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
-                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                }).setOnClick(_ -> {
+                    City cityCheck = City.ofPlayer(player);
                     if (cityCheck == null) {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                         return;

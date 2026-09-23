@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
@@ -17,7 +16,7 @@ public class CityChestCommand {
             Player player,
             @Optional @Named("page") @Range(min = 0) Integer page
     ) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (!CityChestConditions.canCityChestOpen(city, player)) return;
 
@@ -32,7 +31,7 @@ public class CityChestCommand {
     @Description("Améliore la coffre de la ville")
     @CommandPermission("omc.commands.city.chest_upgrade")
     void upgrade(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (!CityChestConditions.canCityChestUpgrade(city, player)) return;
 
         CityChestAction.upgradeChest(player, city);

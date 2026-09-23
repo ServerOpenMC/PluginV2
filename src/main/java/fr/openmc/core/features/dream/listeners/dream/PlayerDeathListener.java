@@ -10,6 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerDeathListener implements Listener {
+    private final DreamManager dreamManager;
+
+    public PlayerDeathListener(DreamManager manager) {
+        this.dreamManager = manager;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDead(PlayerDeathEvent event) {
@@ -17,7 +22,7 @@ public class PlayerDeathListener implements Listener {
 
         if (!DreamUtils.isInDream(player)) return;
 
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
 
         if (dreamPlayer == null) return;
 

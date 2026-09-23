@@ -4,10 +4,7 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.events.LootboxRewardEvent;
-import fr.openmc.core.features.displays.holograms.Hologram;
-import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -23,15 +20,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class TicketListener implements Listener, NotLoadInUnitTest {
+public class TicketListener implements Listener {
 
-    private final Map<Location, String> machineHolograms = new ConcurrentHashMap<>();
+    private final TicketManager manager;
 
-    private int hologramCounter = 0;
+    public TicketListener(TicketManager manager) {
+        this.manager = manager;
+    }
 
     @EventHandler
     public void onGetRewardLootBox(LootboxRewardEvent event) {
@@ -48,7 +45,7 @@ public class TicketListener implements Listener, NotLoadInUnitTest {
         }
 
         Player player = event.getPlayer();
-        PlayerStats ps = TicketManager.getPlayerStats(player.getUniqueId());
+        PlayerStats ps = manager.getPlayerStats(player.getUniqueId());
         if (ps == null) return;
         int alreadyWon = ps.getMaxItemsGiven().getOrDefault(pelushKey, 0);
 
@@ -63,7 +60,7 @@ public class TicketListener implements Listener, NotLoadInUnitTest {
             ps.getMaxItemsGiven().put(pelushKey, alreadyWon + 1);
         }
 
-        TicketManager.setTicketGiven(player.getUniqueId(), ps.getTicketRemaining(), ps.isTicketGiven());
+        manager.setTicketGiven(player.getUniqueId(), ps.getTicketRemaining(), ps.isTicketGiven());
     }
 
     @EventHandler
@@ -79,7 +76,7 @@ public class TicketListener implements Listener, NotLoadInUnitTest {
         if (Objects.equals(event.getNamespacedID(), "omc_blocks:ball_machine")) {
             Bukkit.getScheduler().runTaskLater(fr.openmc.core.OMCPlugin.getInstance(), () -> {
                 Location machineLocation = event.getBukkitEntity().getLocation();
-                createMachineHologram(machineLocation);
+                manager.createMachineHologram(machineLocation);
             }, 1L);
         }
     }
@@ -88,41 +85,7 @@ public class TicketListener implements Listener, NotLoadInUnitTest {
     public void onMachineBreak(FurnitureBreakEvent event) {
         if (Objects.equals(event.getNamespacedID(), "omc_blocks:ball_machine")) {
             Location machineLocation = event.getBukkitEntity().getLocation();
-            removeMachineHologram(machineLocation);
-        }
-    }
-
-    private void createMachineHologram(Location machineLocation) {
-        if (machineHolograms.containsKey(machineLocation)) return;
-
-        String hologramName = "ball_machine_" + (++hologramCounter);
-
-        Location hologramLocation = machineLocation.clone().add(0, 2.3, 0);
-
-        Hologram hologram = new Hologram(hologramName);
-        hologram.setLocation(hologramLocation.getX(), hologramLocation.getY(), hologramLocation.getZ());
-        hologram.setScale(0.7f);
-        hologram.setLines(
-                TranslationManager.translation("feature.tickets.machine.hologram_line1"),
-                TranslationManager.translation("feature.tickets.machine.hologram_line2"),
-                TranslationManager.translation("feature.tickets.machine.hologram_line3")
-        );
-
-        HologramLoader.registerHolograms(hologram);
-
-        machineHolograms.put(machineLocation, hologramName);
-    }
-
-    private void removeMachineHologram(Location machineLocation) {
-        String hologramName = machineHolograms.remove(machineLocation);
-        var hologramInfo = hologramName != null ? HologramLoader.displays.get(hologramName) : null;
-        if (hologramInfo == null) return;
-
-        hologramInfo.display().remove();
-        HologramLoader.displays.remove(hologramName);
-
-        if (hologramInfo.file().exists()) {
-            hologramInfo.file().delete();
+            manager.removeMachineHologram(machineLocation);
         }
     }
 }

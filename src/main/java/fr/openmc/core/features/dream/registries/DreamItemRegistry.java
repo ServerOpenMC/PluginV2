@@ -37,106 +37,100 @@ import fr.openmc.core.features.dream.registries.items.fishes.*;
 import fr.openmc.core.features.dream.registries.items.loots.*;
 import fr.openmc.core.features.dream.registries.items.orb.*;
 import fr.openmc.core.features.dream.registries.items.tools.*;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.CustomItemRegistry;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-public class DreamItemRegistry {
-    public static final DreamItem DOMINATION_ORB = create(new DominationOrb());
-    public static final DreamItem SOUL_ORB = create(new SoulOrb());
-    public static final DreamItem MUD_ORB = create(new MudOrb());
-    public static final DreamItem CLOUD_ORB = create(new CloudOrb());
-    public static final DreamItem GLACITE_ORB = create(new GlaciteOrb());
-    public static final DreamItem SINGULARITY = create(new Singularity());
+public class DreamItemRegistry extends SubRegistry<String, DreamItem> {
+    public final DreamItem DOMINATION_ORB = register(new DominationOrb());
+    public final DreamItem SOUL_ORB = register(new SoulOrb());
+    public final DreamItem MUD_ORB = register(new MudOrb());
+    public final DreamItem CLOUD_ORB = register(new CloudOrb());
+    public final DreamItem GLACITE_ORB = register(new GlaciteOrb());
+    public final DreamItem SINGULARITY = register(new Singularity());
 
-    public static final DreamItem CORRUPTED_STRING = create(new CorruptedString());
-    public static final DreamItem CREAKING_HEART = create(new CreakingHeart());
-    public static final DreamItem SOUL = create(new Soul());
-    public static final DreamItem CLOUD_KEY = create(new CloudKey());
+    public final DreamItem CORRUPTED_STRING = register(new CorruptedString());
+    public final DreamItem CREAKING_HEART = register(new CreakingHeart());
+    public final DreamItem SOUL = register(new Soul());
+    public final DreamItem CLOUD_KEY = register(new CloudKey());
 
-    public static final DreamItem CORRUPTED_SCULK = create(new CorruptedSculk());
-    public static final DreamItem OLD_PALE_OAK_WOOD = create(new OldPaleOakWood());
-    public static final DreamItem GLACITE = create(new Glacite());
-    public static final DreamItem BURN_COAL = create(new BurnCoal());
-    public static final DreamItem HARD_STONE = create(new HardStone());
-    public static final DreamItem CRAFTING_TABLE = create(new CraftingTable());
-    public static final DreamItem ETERNAL_CAMPFIRE = create(new EternalCampFire());
-    public static final DreamItem EWENITE = create(new Ewenite());
-    public static final DreamItem EWENITE_BLOCK = create(new EweniteBlock());
+    public final DreamItem CORRUPTED_SCULK = register(new CorruptedSculk());
+    public final DreamItem OLD_PALE_OAK_WOOD = register(new OldPaleOakWood());
+    public final DreamItem GLACITE = register(new Glacite());
+    public final DreamItem BURN_COAL = register(new BurnCoal());
+    public final DreamItem HARD_STONE = register(new HardStone());
+    public final DreamItem CRAFTING_TABLE = register(new CraftingTable());
+    public final DreamItem ETERNAL_CAMPFIRE = register(new EternalCampFire());
+    public final DreamItem EWENITE = register(new Ewenite());
+    public final DreamItem EWENITE_BLOCK = register(new EweniteBlock());
 
-    public static final DreamItem SOMNIFERE = create(new Somnifere());
-    public static final DreamItem CHIPS_AYWEN = create(new ChipsAywen());
-    public static final DreamItem CHIPS_DIHYDROGENE = create(new ChipsDihydrogene());
-    public static final DreamItem CHIPS_JIMMY = create(new ChipsJimmy());
-    public static final DreamItem CHIPS_LAIT_2_MARGOUTA = create(new ChipsLait2Margouta());
-    public static final DreamItem CHIPS_NATURE = create(new ChipsNature());
-    public static final DreamItem CHIPS_SANS_PLOMB = create(new ChipsSansPlomb());
-    public static final DreamItem CHIPS_TERRE = create(new ChipsTerre());
-    public static final DreamItem COCKED_POISSONION = create(new CokkedPoissonion());
-    public static final DreamItem POISSONION = create(new Poissonion());
-    public static final DreamItem MOON_FISH = create(new MoonFish());
-    public static final DreamItem SUN_FISH = create(new SunFish());
-    public static final DreamItem DOCKER_FISH = create(new DockerFish());
+    public final DreamItem SOMNIFERE = register(new Somnifere());
+    public final DreamItem CHIPS_AYWEN = register(new ChipsAywen());
+    public final DreamItem CHIPS_DIHYDROGENE = register(new ChipsDihydrogene());
+    public final DreamItem CHIPS_JIMMY = register(new ChipsJimmy());
+    public final DreamItem CHIPS_LAIT_2_MARGOUTA = register(new ChipsLait2Margouta());
+    public final DreamItem CHIPS_NATURE = register(new ChipsNature());
+    public final DreamItem CHIPS_SANS_PLOMB = register(new ChipsSansPlomb());
+    public final DreamItem CHIPS_TERRE = register(new ChipsTerre());
+    public final DreamItem COCKED_POISSONION = register(new CokkedPoissonion());
+    public final DreamItem POISSONION = register(new Poissonion());
+    public final DreamItem MOON_FISH = register(new MoonFish());
+    public final DreamItem SUN_FISH = register(new SunFish());
+    public final DreamItem DOCKER_FISH = register(new DockerFish());
 
-    public static final DreamItem OLD_CREAKING_HELMET = create(new OldCreakingHelmet());
-    public static final DreamItem OLD_CREAKING_CHESTPLATE = create(new OldCreakingChestplate());
-    public static final DreamItem OLD_CREAKING_LEGGINGS = create(new OldCreakingLeggings());
-    public static final DreamItem OLD_CREAKING_BOOTS = create(new OldCreakingBoots());
+    public final DreamItem OLD_CREAKING_HELMET = register(new OldCreakingHelmet());
+    public final DreamItem OLD_CREAKING_CHESTPLATE = register(new OldCreakingChestplate());
+    public final DreamItem OLD_CREAKING_LEGGINGS = register(new OldCreakingLeggings());
+    public final DreamItem OLD_CREAKING_BOOTS = register(new OldCreakingBoots());
 
-    public static final DreamItem SOUL_HELMET = create(new SoulHelmet());
-    public static final DreamItem SOUL_CHESTPLATE = create(new SoulChestplate());
-    public static final DreamItem SOUL_LEGGINGS = create(new SoulLeggings());
-    public static final DreamItem SOUL_BOOTS = create(new SoulBoots());
+    public final DreamItem SOUL_HELMET = register(new SoulHelmet());
+    public final DreamItem SOUL_CHESTPLATE = register(new SoulChestplate());
+    public final DreamItem SOUL_LEGGINGS = register(new SoulLeggings());
+    public final DreamItem SOUL_BOOTS = register(new SoulBoots());
 
-    public static final DreamItem CLOUD_HELMET = create(new CloudHelmet());
-    public static final DreamItem CLOUD_CHESTPLATE = create(new CloudChestplate());
-    public static final DreamItem CLOUD_LEGGINGS = create(new CloudLeggings());
-    public static final DreamItem CLOUD_BOOTS = create(new CloudBoots());
+    public final DreamItem CLOUD_HELMET = register(new CloudHelmet());
+    public final DreamItem CLOUD_CHESTPLATE = register(new CloudChestplate());
+    public final DreamItem CLOUD_LEGGINGS = register(new CloudLeggings());
+    public final DreamItem CLOUD_BOOTS = register(new CloudBoots());
 
-    public static final DreamItem COLD_HELMET = create(new ColdHelmet());
-    public static final DreamItem COLD_CHESTPLATE = create(new ColdChestplate());
-    public static final DreamItem COLD_LEGGINGS = create(new ColdLeggings());
-    public static final DreamItem COLD_BOOTS = create(new ColdBoots());
+    public final DreamItem COLD_HELMET = register(new ColdHelmet());
+    public final DreamItem COLD_CHESTPLATE = register(new ColdChestplate());
+    public final DreamItem COLD_LEGGINGS = register(new ColdLeggings());
+    public final DreamItem COLD_BOOTS = register(new ColdBoots());
 
-    public static final DreamItem DREAM_HELMET = create(new DreamHelmet());
-    public static final DreamItem DREAM_CHESTPLATE = create(new DreamChestplate());
-    public static final DreamItem DREAM_LEGGINGS = create(new DreamLeggings());
-    public static final DreamItem DREAM_BOOTS = create(new DreamBoots());
+    public final DreamItem DREAM_HELMET = register(new DreamHelmet());
+    public final DreamItem DREAM_CHESTPLATE = register(new DreamChestplate());
+    public final DreamItem DREAM_LEGGINGS = register(new DreamLeggings());
+    public final DreamItem DREAM_BOOTS = register(new DreamBoots());
 
-    public static final DreamItem PYJAMA_HELMET = create(new PyjamaHelmet());
-    public static final DreamItem PYJAMA_CHESTPLATE = create(new PyjamaChestplate());
-    public static final DreamItem PYJAMA_LEGGINGS = create(new PyjamaLeggings());
-    public static final DreamItem PYJAMA_BOOTS = create(new PyjamaBoots());
+    public final DreamItem PYJAMA_HELMET = register(new PyjamaHelmet());
+    public final DreamItem PYJAMA_CHESTPLATE = register(new PyjamaChestplate());
+    public final DreamItem PYJAMA_LEGGINGS = register(new PyjamaLeggings());
+    public final DreamItem PYJAMA_BOOTS = register(new PyjamaBoots());
 
-    public static final DreamItem OLD_CREAKING_AXE = create(new OldCreakingAxe());
-    public static final DreamItem SOUL_AXE = create(new SoulAxe());
-    public static final DreamItem CLOUD_FISHING_ROD = create(new CloudFishingRod());
-    public static final DreamItem METEO_WAND = create(new MeteoWand());
-    public static final DreamItem METAL_DETECTOR = create(new MetalDetector());
-    public static final DreamItem CRYSTALIZED_PICKAXE = create(new CrystalizedPickaxe());
-    public static final DreamItem MECHANIC_PICKAXE = create(new MecanicPickaxe());
+    public final DreamItem OLD_CREAKING_AXE = register(new OldCreakingAxe());
+    public final DreamItem SOUL_AXE = register(new SoulAxe());
+    public final DreamItem CLOUD_FISHING_ROD = register(new CloudFishingRod());
+    public final DreamItem METEO_WAND = register(new MeteoWand());
+    public final DreamItem METAL_DETECTOR = register(new MetalDetector(OMCRegistry.DREAM_FEATURES.METAL_DETECTOR));
+    public final DreamItem CRYSTALIZED_PICKAXE = register(new CrystalizedPickaxe());
+    public final DreamItem MECHANIC_PICKAXE = register(new MecanicPickaxe());
 
-    // * Registre des DreamItems accessible durant le bootstrap
-    public static Set<CustomItem> DREAM_ITEM_REGISTRY;
-
-    // * Registre des DreamItems accesible via leur id, tres utilisé durant le bootstrap
-    private static Map<String, DreamItem> DREAM_ITEM_BY_NAME_REGISTRY;
-
-    private static DreamItem create(DreamItem item) {
-        if (DREAM_ITEM_REGISTRY == null)
-            DREAM_ITEM_REGISTRY = new HashSet<>();
-
-        DREAM_ITEM_REGISTRY.add(item);
-        return item;
+    @Override
+    public CustomItemRegistry getParentRegistry() {
+        return OMCRegistry.CUSTOM_ITEMS;
     }
-    /**
-     * Charge la classe durant le runtime
-     */
-    public static void init() {
-        OMCRegistry.CUSTOM_ITEMS.register(DREAM_ITEM_REGISTRY);
 
+    private HashMap<String, DreamItem> DREAM_ITEM_BY_NAME_REGISTRY = null;
+
+    @Override
+    public void postInit() {
         CommandsManager.getHandler().register(
                 new DreamItemCommand()
         );
@@ -147,21 +141,20 @@ public class DreamItemRegistry {
         );
     }
 
-    public static Map<String, DreamItem> getBootstrapRegistry() {
+    public Map<String, DreamItem> getBootstrapRegistry() {
         if (DREAM_ITEM_BY_NAME_REGISTRY == null) {
-            Map<String, DreamItem> dreamItemByName = new HashMap<>();
-            for (CustomItem item : DREAM_ITEM_REGISTRY) {
-                if (!(item instanceof DreamItem d)) continue;
+            DREAM_ITEM_BY_NAME_REGISTRY = new HashMap<>();
 
-                dreamItemByName.put(item.getId(), d);
+            for (DreamItem item : getRegistry()) {
+                DREAM_ITEM_BY_NAME_REGISTRY.put(item.getId(), item);
             }
-            DREAM_ITEM_BY_NAME_REGISTRY = dreamItemByName;
         }
+
         return DREAM_ITEM_BY_NAME_REGISTRY;
     }
 
     @Nullable
-    public static DreamItem getByName(String name) {
+    public DreamItem getByName(String name) {
         if (!name.startsWith("omc_dream:")) name = "omc_dream:" + name;
 
         Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(name);
@@ -172,7 +165,7 @@ public class DreamItemRegistry {
     }
 
     @Nullable
-    public static DreamItem getByItemStack(ItemStack stack) {
+    public DreamItem getByItemStack(ItemStack stack) {
         if (stack == null) return null;
         Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(stack);
 

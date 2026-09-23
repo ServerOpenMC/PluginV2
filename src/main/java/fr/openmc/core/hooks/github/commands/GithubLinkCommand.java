@@ -1,5 +1,6 @@
 package fr.openmc.core.hooks.github.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -21,7 +22,7 @@ public class GithubLinkCommand {
     @Description("Force le rafraichissement du lien GitHub d'un joueur")
     private void refreshPlayerToGithubLink(Player executor,
                                            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
-        Long githubId = GitHubHook.refreshContributorId(target.getUniqueId());
+        Long githubId = OMCRegistry.HOOKS.GITHUB.refreshContributorId(target.getUniqueId());
 
         if (githubId == null) {
             MessagesManager.sendMessage(executor, TranslationManager.translation("hook.github.command.refresh.error",

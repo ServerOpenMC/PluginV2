@@ -4,8 +4,10 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -24,6 +26,8 @@ import java.util.Map;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class PersonalBankDepositMenu extends Menu {
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public PersonalBankDepositMenu(Player owner) {
         super(owner);
@@ -54,35 +58,35 @@ public class PersonalBankDepositMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
+        double moneyPlayer = economyManager.getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer/2;
 
         List<Component> loreBankDepositAll = TranslationManager.translationLore(
                 "feature.economy.bank.deposit.all.lore",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
-                Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
+                Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
         inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.all.name"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
-            BankManager.deposit(player.getUniqueId(), String.valueOf(moneyPlayer));
+            bankManager.deposit(player.getUniqueId(), String.valueOf(moneyPlayer));
             player.closeInventory();
         }));
 
 
         List<Component> loreBankDepositHalf = TranslationManager.translationLore(
                 "feature.economy.bank.deposit.half.lore",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
-                Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
+                Component.text(EconomyUtils.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
         inventory.put(13, new ItemMenuBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.half.name"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
-            BankManager.deposit(player.getUniqueId(), String.valueOf(halfMoneyPlayer));
+            bankManager.deposit(player.getUniqueId(), String.valueOf(halfMoneyPlayer));
             player.closeInventory();
         }));
             
@@ -95,7 +99,7 @@ public class PersonalBankDepositMenu extends Menu {
             DialogInput.send(player, TranslationManager.translation("feature.economy.bank.deposit.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
 
-                        BankManager.deposit(player.getUniqueId(), input);
+                        bankManager.deposit(player.getUniqueId(), input);
                     }
             );
         }));

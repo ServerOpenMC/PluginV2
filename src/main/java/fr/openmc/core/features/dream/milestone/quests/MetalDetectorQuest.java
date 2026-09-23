@@ -1,9 +1,9 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.MetalDetector;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
@@ -22,7 +22,7 @@ public class MetalDetectorQuest extends MilestoneQuest implements Listener {
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.metal_detector.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.metal_detector.description"),
-				DreamItemRegistry.METAL_DETECTOR,
+				OMCRegistry.DREAM_ITEM.METAL_DETECTOR,
 				MilestoneType.DREAM,
 				DreamSteps.METAL_DETECTOR,
 				new QuestTier(1),
@@ -33,11 +33,11 @@ public class MetalDetectorQuest extends MilestoneQuest implements Listener {
 	@EventHandler
 	public void onCollectDetector(EntityPickupItemEvent e) {
 		if (e.getEntity() instanceof Player player) {
-			if (! DreamUtils.isInDreamWorld(player)) return;
+			if (!DreamUtils.isInDreamWorld(player)) return;
 			
 			ItemStack baseItem = e.getItem().getItemStack();
 			
-			DreamItem item = DreamItemRegistry.getByItemStack(baseItem);
+			DreamItem item = OMCRegistry.DREAM_ITEM.getByItemStack(baseItem);
 			if (item == null) return;
 			if (item instanceof MetalDetector) {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;

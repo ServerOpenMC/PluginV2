@@ -1,37 +1,45 @@
 package fr.openmc.core.features.dream.mecanism.blocksdrops;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Set;
 
-public class DreamBlocksDropsManager {
+public class DreamBlocksDropsManager extends Feature implements HasListeners {
 
-    private final static HashMap<Material, ItemStack> customDrops = new HashMap<>();
+    private final HashMap<Material, ItemStack> customDrops = new HashMap<>();
 
-    public static void init() {
-        OMCPlugin.registerEvents(ChangeBlockDropsListener::new);
-
-        registerCustomDrop(Material.SCULK, DreamItemRegistry.CORRUPTED_SCULK);
-        registerCustomDrop(Material.PALE_OAK_WOOD, DreamItemRegistry.OLD_PALE_OAK_WOOD);
-        registerCustomDrop(Material.ACACIA_WOOD, DreamItemRegistry.OLD_PALE_OAK_WOOD);
-        registerCustomDrop(Material.CREAKING_HEART, DreamItemRegistry.CREAKING_HEART);
-        registerCustomDrop(Material.BLUE_ICE, DreamItemRegistry.GLACITE);
-        registerCustomDrop(Material.DEEPSLATE_COAL_ORE, DreamItemRegistry.BURN_COAL);
-        registerCustomDrop(Material.DEEPSLATE, DreamItemRegistry.HARD_STONE);
-        registerCustomDrop(Material.SMOOTH_BASALT, DreamItemRegistry.HARD_STONE);
-        registerCustomDrop(Material.CRAFTING_TABLE, DreamItemRegistry.CRAFTING_TABLE);
-        registerCustomDrop(Material.CAMPFIRE, DreamItemRegistry.ETERNAL_CAMPFIRE);
+    @Override
+    public void init() {
+        registerCustomDrop(Material.SCULK, OMCRegistry.DREAM_ITEM.CORRUPTED_SCULK);
+        registerCustomDrop(Material.PALE_OAK_WOOD, OMCRegistry.DREAM_ITEM.OLD_PALE_OAK_WOOD);
+        registerCustomDrop(Material.ACACIA_WOOD, OMCRegistry.DREAM_ITEM.OLD_PALE_OAK_WOOD);
+        registerCustomDrop(Material.CREAKING_HEART, OMCRegistry.DREAM_ITEM.CREAKING_HEART);
+        registerCustomDrop(Material.BLUE_ICE, OMCRegistry.DREAM_ITEM.GLACITE);
+        registerCustomDrop(Material.DEEPSLATE_COAL_ORE, OMCRegistry.DREAM_ITEM.BURN_COAL);
+        registerCustomDrop(Material.DEEPSLATE, OMCRegistry.DREAM_ITEM.HARD_STONE);
+        registerCustomDrop(Material.SMOOTH_BASALT, OMCRegistry.DREAM_ITEM.HARD_STONE);
+        registerCustomDrop(Material.CRAFTING_TABLE, OMCRegistry.DREAM_ITEM.CRAFTING_TABLE);
+        registerCustomDrop(Material.CAMPFIRE, OMCRegistry.DREAM_ITEM.ETERNAL_CAMPFIRE);
+    }
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                ChangeBlockDropsListener::new
+        );
     }
 
-    public static void registerCustomDrop(Material mat, CustomItem item) {
+    public void registerCustomDrop(Material mat, CustomItem item) {
         customDrops.put(mat, item.getBest());
     }
 
-    public static ItemStack getCustomDrop(Material mat) {
+    public ItemStack getCustomDrop(Material mat) {
         return customDrops.get(mat);
     }
 }

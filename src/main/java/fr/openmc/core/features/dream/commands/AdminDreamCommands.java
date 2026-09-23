@@ -3,7 +3,7 @@ package fr.openmc.core.features.dream.commands;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.commands.autocomplete.DreamMilestoneStepsAutoComplete;
-import fr.openmc.core.features.dream.listeners.dream.PlayerObtainOrb;
+import fr.openmc.core.features.dream.commands.autocomplete.DreamOrbAutoComplete;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
@@ -15,7 +15,10 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -23,30 +26,36 @@ import java.util.List;
 @Command("admdream")
 @CommandPermission("omc.admins.commands.admindream")
 public class AdminDreamCommands {
+    private final DreamManager dreamManager;
+
+    public AdminDreamCommands(DreamManager manager) {
+        this.dreamManager = manager;
+    }
+
     @Subcommand("setprogressionorb")
     @CommandPermission("omc.admins.commands.admindream.setprogressionorb")
     void setProgressionOrb(
             Player player,
             @Named("joueur") @SuggestWith(OnlinePlayerAutoComplete.class) Player toPlayer,
-            @Named("nb_progression_orb") @Suggest({"1", "2", "3", "4", "5"}) int orbProgression
+            @Named("nb_progression_orb") @SuggestWith(DreamOrbAutoComplete.class) int orbProgression
     ) {
-        PlayerObtainOrb.setProgressionOrb(toPlayer, orbProgression, null);
-        DBDreamPlayer cache = DreamManager.getCacheDreamPlayer(player);
+        dreamManager.setProgressionOrb(toPlayer, orbProgression, null);
+        DBDreamPlayer cache = dreamManager.getCacheDreamPlayer(player);
 
         if (cache != null) {
             cache.setProgressionOrb(orbProgression);
-            DreamManager.saveDreamPlayerData(cache);
+            dreamManager.saveDreamPlayerData(cache);
             return;
         }
 
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
         if (dreamPlayer == null) return;
-        DreamManager.saveDreamPlayerData(dreamPlayer);
+        dreamManager.saveDreamPlayerData(dreamPlayer);
 
-        DBDreamPlayer cache1 = DreamManager.getCacheDreamPlayer(player);
+        DBDreamPlayer cache1 = dreamManager.getCacheDreamPlayer(player);
         if (cache1 == null) return;
         cache1.setProgressionOrb(orbProgression);
-        DreamManager.saveDreamPlayerData(cache1);
+        dreamManager.saveDreamPlayerData(cache1);
     }
 
     @Subcommand("showdialog")

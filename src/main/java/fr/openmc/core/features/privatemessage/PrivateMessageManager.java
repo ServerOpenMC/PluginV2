@@ -1,10 +1,11 @@
 package fr.openmc.core.features.privatemessage;
 
 import fr.openmc.api.entity.player.OMCPlayer;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -21,12 +22,18 @@ import java.util.UUID;
 @Credit(developers = {"Axeno"})
 public class PrivateMessageManager extends Feature implements HasCommands {
 
-    private static final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
+    private SocialSpyManager socialSpyManager;
+    private final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
+
+    @Override
+    public void init() {
+        this.socialSpyManager = OMCRegistry.FEATURES.SOCIAL_SPY.get();
+    }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new PrivateMessageCommand()
+                new PrivateMessageCommand(this)
         );
     }
 
@@ -37,7 +44,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
      * @param receiver The player receiving the message.
      * @param message  The message to send.
      */
-    public static void sendPrivateMessage(OMCPlayer sender, OMCPlayer receiver, String message) {
+    public void sendPrivateMessage(OMCPlayer sender, OMCPlayer receiver, String message) {
         if (sender.equals(receiver)) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.privatemessage.msg.cannot_message_yourself"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
@@ -59,7 +66,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
         receiver.sendMessage(TranslationManager.translation("feature.privatemessage.msg.format.receiver",
                 Component.text(sender.getName()).color(NamedTextColor.YELLOW),
                 Component.text(message).color(NamedTextColor.WHITE)));
-        SocialSpyManager.broadcastToSocialSpy(sender, receiver, message);
+        socialSpyManager.broadcastToSocialSpy(sender, receiver, message);
 
         lastMessageFrom.put(receiver.getUniqueId(), sender.getUniqueId());
         lastMessageFrom.put(sender.getUniqueId(), receiver.getUniqueId());
@@ -71,7 +78,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
      * @param sender  The player sending the message.
      * @param message The message to send.
      */
-    public static void replyToLastMessage(OMCPlayer sender, String message) {
+    public void replyToLastMessage(OMCPlayer sender, String message) {
         UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
         if (lastReceiverId == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.missing_arg"), Prefix.OPENMC, MessageType.ERROR, true);

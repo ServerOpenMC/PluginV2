@@ -4,23 +4,20 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.scoreboard.SternalBoard;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
-import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
-import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.hooks.LuckPermsHook;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
@@ -42,6 +39,15 @@ import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class MainScoreboard extends BaseScoreboard {
+
+    private final CorpseManager corpseManager;
+    private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+
+    public MainScoreboard(CorpseManager corpseManager) {
+        this.corpseManager = corpseManager;
+    }
+
     @Override
     protected void updateTitle(Player player, SternalBoard board) {
         board.updateTitle(getTitle());
@@ -52,7 +58,7 @@ public class MainScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>(getDefaultLines(player, false));
 
         // Corpse
-        if (CorpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
+        if (corpseManager.CORPSE_NPC_MANAGER.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
 
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
@@ -60,17 +66,17 @@ public class MainScoreboard extends BaseScoreboard {
                     .font(SmallCapsUtils.SMALL_CAPS_FONT)
                     .decoration(TextDecoration.BOLD, true)
                     .appendSpace()
-                    .append(CorpseManager.getCorpseDirection(player, corpse))
+                    .append(corpseManager.getCorpseDirection(player, corpse))
                     .appendSpace()
-                    .append(CorpseManager.getRemainingTime(player.getUniqueId()))
+                    .append(corpseManager.getRemainingTime(player.getUniqueId()))
             );
         }
 
         // Contest
-        if (WeeklyEventsManager.isEventActive() &&
-                WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
-            ContestData data = ContestManager.data;
-            if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
+        if (weeklyEventsManager.isEventActive() &&
+                weeklyEventsManager.getCurrentEvent() instanceof Contest) {
+            ContestData data = contestManager.getData();
+            if (weeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
                 lines.add(MiniMessage.miniMessage().deserialize(
                         "<gradient:#FFB800:#F0DF49><title></gradient>",
                         Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.contest.title", true))
@@ -96,21 +102,23 @@ public class MainScoreboard extends BaseScoreboard {
     }
 
     public static List<Component> getDefaultLines(Player player, boolean inWar) {
-        Component rank = LuckPermsHook.isEnable()
-                ? Component.text(LuckPermsHook.getFormattedPAPIPrefix(player))
-                : TranslationManager.translation("feature.displays.scoreboard.rank.none", true).color(TextColor.color(0xFF1FCC));
+        BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
+        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
+        Component rank = OMCRegistry.HOOKS.LUCK_PERMS.isEnable()
+                ? Component.text(OMCRegistry.HOOKS.LUCK_PERMS.getFormattedPAPIPrefix(player))
+                : TranslationManager.translation("feature.displays.scoreboard.rank.none.to_small", true).color(TextColor.color(0xFF1FCC));
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
-        boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());
+        City city = City.ofPlayer(player);
+        City chunkCity = City.of(player.getChunk());
+        boolean isInRegion = OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(player.getLocation());
         Component location = isInRegion
                 ? TranslationManager.translation("feature.displays.scoreboard.location.protected", true)
                 : TranslationManager.translation("feature.displays.scoreboard.location.wilderness", true);
         location = (chunkCity != null) ? toSmall(player, chunkCity.getName()) : location;
 
-        String balance = EconomyManager.getMiniBalance(player.getUniqueId());
-        double bits = BitsManager.getBits(player.getUniqueId());
+        String balance = economyManager.getMiniBalance(player.getUniqueId());
+        double bits = bitsManager.getBits(player.getUniqueId());
 
         List<Component> lines = new ArrayList<>();
 
@@ -136,15 +144,15 @@ public class MainScoreboard extends BaseScoreboard {
                     .appendSpace()
                     .append(toSmall(player, balance).color(TextColor.color(0xFF06DC)))
                     .appendSpace()
-                    .append(text(EconomyManager.getEconomyIcon()))
+                    .append(text(economyManager.getEconomyIcon()))
             );
             if (bits > 0) {
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
-                        .append(toSmall(player, EconomyManager.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
+                        .append(toSmall(player, EconomyUtils.getFormattedSimplifiedNumber(bits)).color(TextColor.color(0x07A0F5)))
                         .appendSpace()
-                        .append(text(BitsManager.getBitsIcon()))
+                        .append(text(bitsManager.getBitsIcon()))
                 );
             }
         }
@@ -154,13 +162,14 @@ public class MainScoreboard extends BaseScoreboard {
                 .append(location.color(TextColor.color(0xFF06DC)))
         );
 
-        if (FancyNpcsHook.isEnable()) {
+        if (OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) {
+            HalloweenManager halloweenManager = OMCRegistry.FEATURES.HALLOWEEN.get();
             NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
             Npc halloweenNPC = null;
             if (npcManager != null)
                 halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
             if (halloweenNPC != null) {
-                String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
+                String pumpkinCount = EconomyUtils.getFormattedSimplifiedNumber(halloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()

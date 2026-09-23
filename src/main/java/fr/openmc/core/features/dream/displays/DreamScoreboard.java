@@ -33,10 +33,15 @@ import static net.kyori.adventure.text.Component.text;
  * <p>Cette classe met à jour le Scoreboard d'un joueur en fonction du biome associé à la Dimension des Rêves.</p>
  */
 public class DreamScoreboard extends BaseScoreboard {
+    private final DreamManager dreamManager;
+
+    public DreamScoreboard(DreamManager manager) {
+        this.dreamManager = manager;
+    }
 
     @Override
     protected void updateTitle(Player player, SternalBoard board) {
-        board.updateTitle(canShowLogo
+        board.updateTitle(canShowLogo()
                 ? Component.text(FontImageWrapper.replaceFontImages(":dream_openmc:"))
                 : Component.text("OPENMC", NamedTextColor.DARK_BLUE));
     }
@@ -44,7 +49,7 @@ public class DreamScoreboard extends BaseScoreboard {
     @Override
     public void update(Player player, SternalBoard board) {
         DreamBiome dreamBiome = DreamBiome.getDreamBiome(player);
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
 
         List<Component> lines = new ArrayList<>();
 

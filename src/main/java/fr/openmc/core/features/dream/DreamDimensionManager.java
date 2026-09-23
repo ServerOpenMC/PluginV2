@@ -1,7 +1,8 @@
 package fr.openmc.core.features.dream;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
@@ -12,16 +13,17 @@ import org.bukkit.entity.SpawnCategory;
 import java.io.File;
 import java.io.IOException;
 
-public class DreamDimensionManager {
+public class DreamDimensionManager extends Feature {
 
     public static final String DIMENSION_NAME = "world_omc_dream_dream";
-    public static World DREAM_WORLD;
+    public static World DREAM_WORLD = null;
 
-    private static File seedFile;
-    private static FileConfiguration seedConfig;
-    private static boolean seedChanged = false;
+    private File seedFile;
+    private FileConfiguration seedConfig;
+    private boolean seedChanged = false;
 
-    public static void init() {
+    @Override
+    public void init() {
         seedFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "seed.yml");
         loadSeed();
         DREAM_WORLD = Bukkit.getWorld(DIMENSION_NAME);
@@ -29,17 +31,18 @@ public class DreamDimensionManager {
         setupDimension();
     }
 
-    public static void save() {
+    @Override
+    public void save() {
         OMCLogger.info("[DreamDimensionManager] Saving seed: {}", DREAM_WORLD.getSeed());
         saveSeed(DREAM_WORLD.getSeed());
     }
 
-    private static void setupDimension() {
-        if (!DREAM_WORLD.getName().equals(DreamDimensionManager.DIMENSION_NAME)) return;
+    private void setupDimension() {
+        if (!DREAM_WORLD.getName().equals(this.DIMENSION_NAME)) return;
 
-        DreamDimensionManager.checkSeed();
+        this.checkSeed();
 
-        if (DreamDimensionManager.hasSeedChanged()) {
+        if (this.hasSeedChanged()) {
             // ** SPAWNING RULES **
             DREAM_WORLD.setSpawnLimit(SpawnCategory.MONSTER, 10);
             DREAM_WORLD.setSpawnLimit(SpawnCategory.AMBIENT, 10);
@@ -68,14 +71,14 @@ public class DreamDimensionManager {
         }
     }
 
-    private static void loadSeed() {
+    private void loadSeed() {
         if (!seedFile.exists()) {
             OMCLogger.info("Fichier seed.yml manquant, il sera créé au saveSeed().");
         }
         seedConfig = YamlConfiguration.loadConfiguration(seedFile);
     }
 
-    private static void saveSeed(long seed) {
+    private void saveSeed(long seed) {
         seedConfig.set("world_seed", seed);
         try {
             seedConfig.save(seedFile);
@@ -84,7 +87,7 @@ public class DreamDimensionManager {
         }
     }
 
-    public static void checkSeed() {
+    public void checkSeed() {
         long saved = seedConfig.getLong("world_seed", -1);
         if (DREAM_WORLD == null) return;
 
@@ -104,7 +107,7 @@ public class DreamDimensionManager {
         }
     }
 
-    public static boolean hasSeedChanged() {
+    public boolean hasSeedChanged() {
         return seedChanged;
     }
 }

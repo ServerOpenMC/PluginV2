@@ -1,6 +1,6 @@
 package fr.openmc.core.features.toor.utils;
 
-import fr.openmc.core.bootstrap.features.DisableFeatureException;
+import fr.openmc.core.registry.features.DisableFeatureException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

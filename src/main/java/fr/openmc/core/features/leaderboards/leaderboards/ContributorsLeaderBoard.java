@@ -1,5 +1,6 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ContributorsLeaderBoard extends LeaderBoard {
+    private final GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
 
     @Override
     public double getUpdateDelay() {
@@ -28,9 +30,10 @@ public class ContributorsLeaderBoard extends LeaderBoard {
 
     @Override
     public Component createComponent() {
-        GitHubHook.fetchContributorStats();
+        gitHubHook.fetchContributorStats();
         List<Map.Entry<String, ContributorStats>> stats = new ArrayList<>();
-        GitHubHook.getContributors().values().forEach(login -> stats.add(new AbstractMap.SimpleEntry<>(login, GitHubHook.getStats(login))));
+        gitHubHook.getContributors().values().forEach(
+                login -> stats.add(new AbstractMap.SimpleEntry<>(login, gitHubHook.getStats(login))));
         stats.sort((stat1, stat2) -> Integer.compare(stat2.getValue().getBrutLines(), stat1.getValue().getBrutLines()));
         if (stats.isEmpty())
             return TranslationManager.translation("feature.leaderboards.empty.contributors")
@@ -39,6 +42,7 @@ public class ContributorsLeaderBoard extends LeaderBoard {
         Component text = TranslationManager.translation("feature.leaderboards.header.contributors")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
+
         for (int i = 0; i < Math.min(10, stats.size()); i++) {
             Map.Entry<String, ContributorStats> stat = stats.get(i);
             Component rank = Component.text("#" + (i + 1)).color(ColorUtils.getRankColor(i + 1));

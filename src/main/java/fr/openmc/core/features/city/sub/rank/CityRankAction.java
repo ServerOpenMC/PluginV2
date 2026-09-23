@@ -2,10 +2,9 @@ package fr.openmc.core.features.city.sub.rank;
 
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.template.ConfirmMenu;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.rank.menus.CityRankDetailsMenu;
 import fr.openmc.core.features.city.sub.rank.menus.CityRankMemberMenu;
@@ -29,7 +28,7 @@ public class CityRankAction {
 	 * @param player The player who wants to create a rank.
 	 */
 	public static void beginCreateRank(Player player) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player.getUniqueId());
 		if (!CityRankCondition.canCreateRank(city, player)) return;
 		
 		DialogInput.send(player, TranslationManager.translation("feature.city.rank.prompt.create"), MAX_LENGTH_RANK_NAME, input -> {
@@ -47,7 +46,7 @@ public class CityRankAction {
 	 * @param rankName The name of the rank to create.
 	 */
 	public static void afterCreateRank(Player player, String rankName) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player.getUniqueId());
 		if (!CityRankCondition.canCreateRank(city, player)) return;
 		
 		if (city.isRankExists(rankName)) {
@@ -66,7 +65,7 @@ public class CityRankAction {
 	 * @param newRank The new rank to rename.
 	 */
 	public static void renameRankFromMenu(Player player, DBCityRank oldRank, DBCityRank newRank) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -92,7 +91,7 @@ public class CityRankAction {
 	 * @param oldName The old name of the rank to rename.
 	 */
 	public static void renameRank(Player player, String oldName) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player.getUniqueId());
 		if (!CityRankCondition.canRenameRank(city, player, oldName)) {
 			return;
 		}
@@ -126,7 +125,7 @@ public class CityRankAction {
 	 * @param rankName The name of the rank to delete.
 	 */
 	public static void deleteRank(Player player, String rankName) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -175,7 +174,7 @@ public class CityRankAction {
 	 * @param member   The member to assign the rank to.
 	 */
 	public static void assignRank(Player player, String rankName, OfflinePlayer member) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;

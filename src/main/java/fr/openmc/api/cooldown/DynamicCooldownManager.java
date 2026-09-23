@@ -7,13 +7,12 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.debug.DebugCooldownCommand;
 import fr.openmc.core.commands.utils.CooldownCommand;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -24,7 +23,7 @@ import java.util.*;
 /**
  * Main class for managing cooldowns
  */
-public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasCommands {
+public class DynamicCooldownManager extends Feature implements HasDatabase, HasCommands {
 
     /**
      * Represents a single cooldown with duration and last use time

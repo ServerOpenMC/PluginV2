@@ -1,8 +1,11 @@
 package fr.openmc.core.features.dream.mecanism.cold;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -26,19 +29,21 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-public class ColdManager {
+public class ColdManager extends Feature implements HasListeners {
 
-    private static final NamespacedKey COLD_SPEED_KEY = new NamespacedKey(OMCPlugin.getInstance(), "cold_speed_modifier");
-    private static final NamespacedKey COLD_MINING_SPEED_KEY = new NamespacedKey(OMCPlugin.getInstance(), "cold_mining_speed_modifier");
+    private final NamespacedKey COLD_SPEED_KEY = new NamespacedKey(OMCPlugin.getInstance(), "cold_speed_modifier");
+    private final NamespacedKey COLD_MINING_SPEED_KEY = new NamespacedKey(OMCPlugin.getInstance(), "cold_mining_speed_modifier");
 
-    public static void init() {
-        OMCPlugin.registerEvents(
-                ColdListener::new
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                () -> new ColdListener(OMCRegistry.FEATURES.DREAM.get())
         );
     }
 
-    public static int calculateColdResistance(Player player) {
+    public int calculateColdResistance(Player player) {
         int sommeColdResistance = 0;
 
         List<ItemStack> armorContents = Arrays.stream(player.getEquipment().getArmorContents()).toList();
@@ -46,7 +51,7 @@ public class ColdManager {
 
         for (ItemStack item : armorContents) {
             if (item == null || item.getType() == Material.AIR) continue;
-            if (DreamItemRegistry.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
+            if (OMCRegistry.DREAM_ITEM.getByItemStack(item) instanceof DreamEquipableItem dreamEquipableItem) {
                 Integer coldResistance = dreamEquipableItem.getColdResistance();
 
                 if (coldResistance != null) {
@@ -58,7 +63,7 @@ public class ColdManager {
         return sommeColdResistance;
     }
 
-    public static int getColdLevel(int cold) {
+    public int getColdLevel(int cold) {
         if (cold >= 100) return 5;
         if (cold >= 85)  return 4;
         if (cold >= 75)  return 3;
@@ -67,7 +72,7 @@ public class ColdManager {
         return 0;
     }
 
-    public static void sendColdLevelMessage(Player player, int level) {
+    public void sendColdLevelMessage(Player player, int level) {
         Component message = switch (level) {
             case 1 -> TranslationManager.translation("feature.dream.cold.message.level_1");
             case 2 -> TranslationManager.translation("feature.dream.cold.message.level_2");
@@ -81,7 +86,7 @@ public class ColdManager {
         }
     }
 
-    public static void applyColdEffects(Player player, int cold) {
+    public void applyColdEffects(Player player, int cold) {
         int freezeTicks = (int) Math.min(140, (cold / 85.0) * 140);
         PlayerUtils.showFreezeEffect(player, freezeTicks);
 
@@ -115,7 +120,7 @@ public class ColdManager {
         }
     }
 
-    private static void applySpeedModifier(Player player, double reductionPercent) {
+    private void applySpeedModifier(Player player, double reductionPercent) {
         AttributeInstance speed = player.getAttribute(Attribute.MOVEMENT_SPEED);
         if (speed == null) return;
 
@@ -124,7 +129,7 @@ public class ColdManager {
         speed.addModifier(modifier);
     }
 
-    private static void applyMiningSpeedModifier(Player player, double reductionPercent) {
+    private void applyMiningSpeedModifier(Player player, double reductionPercent) {
         AttributeInstance miningSpeed = player.getAttribute(Attribute.BLOCK_BREAK_SPEED);
         if (miningSpeed == null) return;
 
@@ -133,7 +138,7 @@ public class ColdManager {
         miningSpeed.addModifier(modifier);
     }
 
-    private static void removeColdModifier(Player player) {
+    private void removeColdModifier(Player player) {
         AttributeInstance speed = player.getAttribute(Attribute.MOVEMENT_SPEED);
         AttributeInstance miningSpeed = player.getAttribute(Attribute.BLOCK_BREAK_SPEED);
         if (speed == null || miningSpeed == null) return;
@@ -148,7 +153,7 @@ public class ColdManager {
                 .ifPresent(miningSpeed::removeModifier);
     }
 
-    public static boolean isNearHeatSource(Player player) {
+    public boolean isNearHeatSource(Player player) {
         Location loc = player.getLocation();
         for (int x = -5; x <= 5; x++) {
             for (int y = -2; y <= 2; y++) {

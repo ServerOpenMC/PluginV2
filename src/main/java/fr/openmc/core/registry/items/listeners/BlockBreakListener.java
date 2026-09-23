@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.items.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.ProtectionsManager;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import org.bukkit.entity.Player;
@@ -14,13 +14,19 @@ import java.util.Optional;
 
 public class BlockBreakListener implements Listener {
 
+    private final ProtectionsManager protectionsManager;
+
+    public BlockBreakListener() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (event.isCancelled()) return;
         if (event.getBlock() == null) return;
 
-        ProtectionsManager.verify(player, event, event.getBlock().getLocation());
+        protectionsManager.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);

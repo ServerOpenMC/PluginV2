@@ -1,7 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

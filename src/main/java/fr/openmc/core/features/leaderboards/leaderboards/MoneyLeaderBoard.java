@@ -1,7 +1,9 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -16,6 +18,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MoneyLeaderBoard extends LeaderBoard {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
 
     @Override
     public double getUpdateDelay() {
@@ -30,8 +34,8 @@ public class MoneyLeaderBoard extends LeaderBoard {
     @Override
     public Component createComponent() {
         Map<UUID, Double> tempBalances = new HashMap<>();
-        EconomyManager.getBalances().forEach((player, balance) -> tempBalances.put(player, balance.getBalance()));
-        BankManager.getBanks().forEach((uuid, bank) -> tempBalances.merge(uuid, bank.getBalance(), Double::sum));
+        economyManager.getBalances().forEach((player, balance) -> tempBalances.put(player, balance.getBalance()));
+        bankManager.getBanks().forEach((uuid, bank) -> tempBalances.merge(uuid, bank.getBalance(), Double::sum));
 
         if (tempBalances.isEmpty())
             return TranslationManager.translation("feature.leaderboards.empty.players")
@@ -54,7 +58,8 @@ public class MoneyLeaderBoard extends LeaderBoard {
                             "feature.leaderboards.line.money",
                             rank,
                             CachePlayerName.name(balance.getKey()).color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(EconomyManager.getFormattedSimplifiedNumber(balance.getValue()) + " " + EconomyManager.getEconomyIcon())
+                            Component.text(EconomyUtils.getFormattedSimplifiedNumber(balance.getValue())
+                                            + " " + economyManager.getEconomyIcon())
                                     .color(NamedTextColor.WHITE)
                     )));
         }

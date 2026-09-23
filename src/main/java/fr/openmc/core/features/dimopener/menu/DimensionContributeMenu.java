@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.dimopener.DimensionProgress;
 import fr.openmc.core.features.dimopener.DimensionState;
@@ -42,6 +43,8 @@ import java.util.Map;
 
 public class DimensionContributeMenu extends Menu {
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+
     private static final int INFO_SLOT = 4;
     private static final int PREVIEW_SLOT = 20;
     private static final int INPUT_SLOT = 22;
@@ -52,16 +55,18 @@ public class DimensionContributeMenu extends Menu {
     private BukkitTask inputWatcherTask;
 
     private final DimensionData data;
+    private final DimensionOpenerManager manager;
 
     public DimensionContributeMenu(Player owner, String dimensionId) {
         super(owner);
+        this.manager = OMCRegistry.FEATURES.DIMENSION_OPENER.get();
         this.dimensionId = dimensionId;
-        data = DimensionOpenerManager.getDimension(dimensionId);
+        data = manager.getDimension(dimensionId);
     }
 
     @Override
     public @NotNull Component getName() {
-        DimensionData dim = DimensionOpenerManager.getDimension(dimensionId);
+        DimensionData dim = manager.getDimension(dimensionId);
         return dim != null
                 ? Component.text(dim.getName()).color(NamedTextColor.GREEN)
                 : TranslationManager.translation("feature.dimopener.menu.info.title");
@@ -79,8 +84,8 @@ public class DimensionContributeMenu extends Menu {
 
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
-        DimensionData dim = DimensionOpenerManager.getDimension(dimensionId);
-        DimensionProgress progress = DimensionOpenerManager.getProgress(dimensionId);
+        DimensionData dim = manager.getDimension(dimensionId);
+        DimensionProgress progress = manager.getProgress(dimensionId);
 
         if (dim == null || progress == null) return fill(Material.GRAY_STAINED_GLASS_PANE);
 
@@ -88,7 +93,7 @@ public class DimensionContributeMenu extends Menu {
 
         content.put(INFO_SLOT, infoItem(dim, progress));
 
-        if (!DimensionOpenerManager.isPrerequisiteMet(dim)) {
+        if (!manager.isPrerequisiteMet(dim)) {
             content.put(INPUT_SLOT, lockedItem(dim));
             stopInputWatcher();
             return content;
@@ -96,13 +101,13 @@ public class DimensionContributeMenu extends Menu {
 
         DimensionState state = progress.getState();
 
-        if (!DimensionOpenerManager.isInInputPhase(dimensionId)) {
+        if (!manager.isInInputPhase(dimensionId)) {
             content.put(INPUT_SLOT, waitingItem(progress, state));
             stopInputWatcher();
             return content;
         }
 
-        StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
+        StepDimensionData step = manager.getCurrentStep(dimensionId);
         if (step == null) return content;
 
         double remaining = step.getRequired() - progress.getCurrentAmount();
@@ -120,7 +125,7 @@ public class DimensionContributeMenu extends Menu {
     }
 
     private Material borderMaterial(DimensionData dim, DimensionProgress progress) {
-        if (!DimensionOpenerManager.isPrerequisiteMet(dim)) return Material.BLACK_STAINED_GLASS_PANE;
+        if (!manager.isPrerequisiteMet(dim)) return Material.BLACK_STAINED_GLASS_PANE;
 
         return switch (progress.getState()) {
             case OPENED -> Material.LIME_STAINED_GLASS_PANE;
@@ -144,13 +149,14 @@ public class DimensionContributeMenu extends Menu {
     }
 
     private ItemMenuBuilder lockedItem(DimensionData data) {
-        DimensionData required = DimensionOpenerManager.getDimension(data.getRequireDimension());
+        DimensionData required = manager.getDimension(data.getRequireDimension());
         String requiredName = required != null ? required.getName() : data.getRequireDimension();
 
         return new ItemMenuBuilder(this, Material.BARRIER, meta -> {
             meta.itemName(TranslationManager.translation("feature.dimopener.menu.locked.title"));
             meta.lore(List.of(
-                    TranslationManager.translation("feature.dimopener.menu.locked.lore")
+                    TranslationManager.translation("feature.dimopener.menu.locked.lore",
+                            Component.text(requiredName).color(NamedTextColor.LIGHT_PURPLE))
             ));
         });
     }
@@ -184,7 +190,7 @@ public class DimensionContributeMenu extends Menu {
             int amount = current.getAmount();
             getOwner().getOpenInventory().getTopInventory().setItem(INPUT_SLOT, null);
 
-            var result = DimensionOpenerManager.contributeItems(getOwner(), dimensionId, amount);
+            var result = manager.contributeItems(getOwner(), dimensionId, amount);
 
             switch (result) {
                 case SUCCESS -> MessagesManager.sendMessage(
@@ -225,11 +231,11 @@ public class DimensionContributeMenu extends Menu {
             meta.lore(List.of(
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.balance",
-                            Component.text(EconomyManager.getMiniBalance(getOwner().getUniqueId()), NamedTextColor.GOLD)
+                            Component.text(economyManager.getMiniBalance(getOwner().getUniqueId()), NamedTextColor.GOLD)
                     ),
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.remaining",
-                            Component.text(EconomyManager.getFormattedNumber(remaining), NamedTextColor.GOLD)
+                            Component.text(economyManager.getFormattedNumber(remaining), NamedTextColor.GOLD)
                     ),
                     Component.empty(),
                     TranslationManager.translation("feature.dimopener.menu.money.click")
@@ -239,7 +245,7 @@ public class DimensionContributeMenu extends Menu {
 
     @SuppressWarnings("UnstableApiUsage")
     private void openMoneyDialog(double remaining) {
-        double balance = EconomyManager.getBalance(getOwner().getUniqueId());
+        double balance = economyManager.getBalance(getOwner().getUniqueId());
         float max = (float) Math.max(1, Math.min(balance, remaining));
         float initial = Math.min(max, 1f);
 
@@ -269,14 +275,14 @@ public class DimensionContributeMenu extends Menu {
                                             Float amount = view.getFloat("amount");
                                             if (amount == null || amount <= 0) return;
 
-                                            var result = DimensionOpenerManager.contributeMoney(getOwner(), dimensionId, amount);
+                                            var result = manager.contributeMoney(getOwner(), dimensionId, amount);
 
                                             switch (result) {
                                                 case SUCCESS -> MessagesManager.sendMessage(
                                                         getOwner(),
                                                         TranslationManager.translation(
                                                                 "feature.dimopener.contribute.money_success",
-                                                                Component.text(EconomyManager.getFormattedNumber(amount), NamedTextColor.GREEN)
+                                                                Component.text(economyManager.getFormattedNumber(amount), NamedTextColor.GREEN)
                                                         ),
                                                         Prefix.DIMOPENER, MessageType.SUCCESS, false
                                                 );
@@ -315,8 +321,8 @@ public class DimensionContributeMenu extends Menu {
     }
 
     private ItemMenuBuilder infoItem(DimensionData dim, DimensionProgress progress) {
-        StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
-        return new ItemMenuBuilder(this, DimensionOpenerManager.resolveIcon(dim), meta -> {
+        StepDimensionData step = manager.getCurrentStep(dimensionId);
+        return new ItemMenuBuilder(this, manager.resolveIcon(dim), meta -> {
             meta.itemName(TranslationManager.translation("feature.dimopener.menu.info.name", Component.text(dim.getName(), NamedTextColor.GOLD)));
             meta.lore(List.of(
                     TranslationManager.translation("feature.dimopener.menu.info.description", Component.text(dim.getDescription(), NamedTextColor.GRAY)),
@@ -358,11 +364,11 @@ public class DimensionContributeMenu extends Menu {
 
         boolean canDeposit = data != null
                 && data.isEnabled()
-                && DimensionOpenerManager.isPrerequisiteMet(data)
-                && DimensionOpenerManager.isInInputPhase(dimensionId);
+                && manager.isPrerequisiteMet(data)
+                && manager.isInInputPhase(dimensionId);
 
         if (canDeposit) {
-            StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
+            StepDimensionData step = manager.getCurrentStep(dimensionId);
             if (step != null && step.getType().equals(StepDimensionData.Type.ITEMS)) {
                 slots.add(INPUT_SLOT);
                 slots.addAll(MenuUtils.getInventoryItemSlots(this.getInventorySize().getSize()));
@@ -379,9 +385,9 @@ public class DimensionContributeMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {
         stopInputWatcher();
 
-        if (!DimensionOpenerManager.isInInputPhase(dimensionId)) return;
+        if (!manager.isInInputPhase(dimensionId)) return;
 
-        StepDimensionData step = DimensionOpenerManager.getCurrentStep(dimensionId);
+        StepDimensionData step = manager.getCurrentStep(dimensionId);
         if (step != null && step.getType().equals(StepDimensionData.Type.ITEMS)) {
             ItemStack leftover = event.getInventory().getItem(INPUT_SLOT);
             if (leftover != null && leftover.getType() != Material.AIR) {

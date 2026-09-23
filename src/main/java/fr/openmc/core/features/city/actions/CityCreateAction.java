@@ -3,15 +3,13 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.view.CityViewManager;
+import fr.openmc.core.features.city.sub.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -45,7 +43,8 @@ public class CityCreateAction {
         pendingCities.put(player.getUniqueId(), cityName);
 
         if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
+        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+        if (!economyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
 
         ItemInteraction.runLocationInteraction(
                 player,
@@ -62,7 +61,7 @@ public class CityCreateAction {
                 () -> {
                     pendingCities.remove(player.getUniqueId());
                     ItemUtils.giveItem(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), CityCreateConditions.AYWENITE_CREATE);
-                    EconomyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
+                    economyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
                 }
         );
     }
@@ -97,12 +96,14 @@ public class CityCreateAction {
     public static boolean finalizeCreation(Player player, Location mascotLocation) {
         Chunk chunk = mascotLocation.getChunk();
 
-        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.is_in_region"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (CityManager.isChunkClaimedInRadius(chunk, 1)) {
+        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+
+        if (cityManager.isChunkClaimedInRadius(chunk, 1)) {
 	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
                     Prefix.CITY, MessageType.ERROR, false);
             return false;
@@ -117,7 +118,7 @@ public class CityCreateAction {
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
         // Lois
-        MayorManager.createCityLaws(city, false, null);
+        OMCRegistry.CITY_FEATURES.MAYOR.createCityLaws(city, false, null);
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);

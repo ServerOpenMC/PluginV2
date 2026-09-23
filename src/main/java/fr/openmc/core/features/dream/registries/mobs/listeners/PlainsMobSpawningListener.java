@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamBiome;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -43,13 +43,13 @@ public class PlainsMobSpawningListener implements Listener {
 
         if (e.getEntity().getType().equals(EntityType.CREAKING)) {
             e.setCancelled(false);
-            DreamMobsRegistry.DREAM_CREAKING.apply(e.getEntity());
+            OMCRegistry.DREAM_MOB.DREAM_CREAKING.apply(e.getEntity());
             return;
         }
 
         double choice = Math.random();
         if (choice < DREAM_SPIDER_PROBABILITY) {
-            DreamMobsRegistry.DREAM_SPIDER.spawn(spawningLoc);
+            OMCRegistry.DREAM_MOB.DREAM_SPIDER.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

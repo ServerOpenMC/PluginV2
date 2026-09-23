@@ -1,18 +1,15 @@
 package fr.openmc.core.features.credits;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.animations.AnimationsManager;
-import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.bits.BitsManager;
+import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.dream.DreamManager;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -30,6 +27,8 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -49,7 +48,7 @@ public enum Credits {
     CITY(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_AXENQ, "feature.credits.feature.city", CityManager.class),
     CORPSE(Material.PLAYER_HEAD, "feature.credits.feature.corpse", CorpseManager.class),
     DREAM(Material.SCULK, "feature.credits.feature.dream", DreamManager.class),
-    DREAM_MILESTONE(DreamItemRegistry.SINGULARITY, "feature.credits.feature.dream_milestone", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
+    DREAM_MILESTONE(OMCRegistry.DREAM_ITEM.SINGULARITY, "feature.credits.feature.dream_milestone", Set.of("gab400", "Rylo42 (histoire et dialogues)")),
     MASCOTS(Material.ZOMBIE_SPAWN_EGG, "feature.credits.feature.mascots", MascotsManager.class),
     MAYOR(OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BANK, "feature.credits.feature.mayor", Set.of("iambibi_"), Set.of("Gexary")),
     CITY_MILESTONE(Material.NETHER_STAR, "feature.credits.feature.city_milestone", Set.of("iambibi_")),

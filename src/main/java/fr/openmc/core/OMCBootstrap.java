@@ -1,8 +1,8 @@
 package fr.openmc.core;
 
-import fr.openmc.core.bootstrap.integration.DatapackLoader;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.integration.DatapackLoader;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;

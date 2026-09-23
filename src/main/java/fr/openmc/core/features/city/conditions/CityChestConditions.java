@@ -1,11 +1,10 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -90,7 +89,7 @@ public class CityChestConditions {
         if (city.getBalance() < price) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "messages.city.city_not_enough_money",
-                    Component.text(price + EconomyManager.getEconomyIcon())
+                    Component.text(price + OMCRegistry.FEATURES.ECONOMY.get().getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, true);
             return false;
         }

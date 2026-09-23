@@ -11,7 +11,7 @@ import revxrsal.commands.annotation.Description;
 public class CreditsCommand {
     @Cooldown(4)
     @CommandPlaceholder()
-    public static void mainCommand(Player player) {
+    public void mainCommand(Player player) {
         new CreditsMenu(player).open();
     }
 }

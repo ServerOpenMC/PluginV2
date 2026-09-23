@@ -16,20 +16,20 @@ public class PhaseListener {
      *
      * @param plugin The OMCPlugin instance.
      */
-    public PhaseListener(OMCPlugin plugin) {
+    public PhaseListener(MayorManager mayorManager, OMCPlugin plugin) {
         BukkitRunnable eventRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                int phase = MayorManager.phaseMayor;
+                int phase = mayorManager.phaseMayor;
 
                 // PHASE 1 - Elections - Mardi à Mercredi
                 if (phase == 2 && PHASE_1_DAY == DateUtils.getCurrentDayOfWeek()) {
-                    MayorManager.initPhase1();
+                    mayorManager.initPhase1();
                 }
 
                 // PHASE 2 - Maire Elu - Jeudi à Jeudi Prochain
                 if (phase == 1 && PHASE_2_DAY == DateUtils.getCurrentDayOfWeek()) {
-                    MayorManager.initPhase2();
+                    mayorManager.initPhase2();
                 }
             }
         };

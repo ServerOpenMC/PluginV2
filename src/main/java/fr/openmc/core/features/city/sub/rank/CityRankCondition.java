@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.rank;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.utils.text.messages.MessageType;

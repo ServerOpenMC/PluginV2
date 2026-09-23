@@ -2,9 +2,6 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.AncientMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
@@ -12,6 +9,9 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.listeners.MonsterSpawnListener;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.world.LocationUtils;
 import org.bukkit.*;

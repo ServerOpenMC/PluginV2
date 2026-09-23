@@ -1,11 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.Bukkit;
@@ -24,14 +22,14 @@ public class MascotFriendlyPerk implements Listener {
      * @param player The player to update.
      */
     public static void updatePlayerEffects(Player player) {
-        int phase = MayorManager.phaseMayor;
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
+        int phase = playerCity.getMayorManager().phaseMayor;
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 
         int level = playerCity.getMascot().getLevel();
         if (phase == 2) {
-            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
+            if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
 
             for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
                 player.addPotionEffect(potionEffect);
@@ -60,7 +58,7 @@ public class MascotFriendlyPerk implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 
@@ -85,7 +83,7 @@ public class MascotFriendlyPerk implements Listener {
         if (!DreamUtils.isDreamWorld(event.getTo())) return;
         if (DreamUtils.isDreamWorld(event.getFrom())) return;
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 

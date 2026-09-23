@@ -1,8 +1,6 @@
 package fr.openmc.core.features.city.sub.statistics.listeners;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
+import fr.openmc.core.features.city.models.city.City;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -18,10 +16,10 @@ public class MemberJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         UUID playerUUID = e.getPlayer().getUniqueId();
 
-        City playerCity = CityManager.getPlayerCity(playerUUID);
+        City playerCity = City.ofPlayer(playerUUID);
 
         if (playerCity == null) return;
 
-        CityStatisticsManager.setStat(playerCity.getUniqueId(), "last_activity", LocalDate.now());
+        playerCity.setStat("last_activity", LocalDate.now());
     }
 }

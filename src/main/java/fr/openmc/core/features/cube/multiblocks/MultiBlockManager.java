@@ -1,19 +1,17 @@
 package fr.openmc.core.features.cube.multiblocks;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.commands.CubeCommands;
 import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
-import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, NotLoadInUnitTest, HasListeners, HasCommands {
+public class MultiBlockManager extends Feature implements HasListeners, HasCommands {
     @Getter
     public static final List<MultiBlock> multiBlocks = new ArrayList<>();
     private static FileConfiguration config = null;
@@ -59,7 +57,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
         );
     }
 
-    public static void load() {
+    public void load() {
         multiBlocks.clear();
 
         List<Map<?, ?>> list = config.getMapList("multiblocks");
@@ -78,7 +76,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
             int z = (int) origin.get("z");
 
             int y;
-            if (DreamUtils.isDreamWorld(world) && DreamDimensionManager.hasSeedChanged()) {
+            if (DreamUtils.isDreamWorld(world) && OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION.hasSeedChanged()) {
                 OMCLogger.warn("Changing y pos for '{}' because Dream Dimension seed changed", type);
                 y = world.getHighestBlockYAt(x, z) + 1;
             } else {
@@ -107,7 +105,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
         saveConfig();
     }
 
-    public static void saveConfig() {
+    public void saveConfig() {
         if (config == null) return;
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -140,7 +138,7 @@ public class MultiBlockManager extends Feature implements LoadAfterItemsAdder, N
         }
     }
 
-    public static void register(MultiBlock multiBlock) {
+    public void register(MultiBlock multiBlock) {
         multiBlocks.add(multiBlock);
 
         saveConfig();

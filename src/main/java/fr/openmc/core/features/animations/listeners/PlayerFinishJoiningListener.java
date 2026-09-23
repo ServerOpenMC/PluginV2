@@ -2,11 +2,11 @@ package fr.openmc.core.features.animations.listeners;
 
 import dev.lone.itemsadder.api.CustomPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

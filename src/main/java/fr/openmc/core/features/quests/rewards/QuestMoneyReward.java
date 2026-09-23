@@ -1,6 +1,8 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
  * This class implements the QuestReward interface and provides functionality to give a specified amount of money to a player.
  */
 public record QuestMoneyReward(double amount) implements QuestReward {
+    private static final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     /**
      * Gives the specified amount of money to the player.
@@ -23,8 +26,9 @@ public record QuestMoneyReward(double amount) implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        EconomyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
-        Component amountComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(amount) + " " + EconomyManager.getEconomyIcon())
+        economyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
+        Component amountComponent = Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount) +
+                        " " + economyManager.getEconomyIcon())
                 .color(NamedTextColor.YELLOW);
         Component message = TranslationManager.translation("feature.quests.message.money_reward", amountComponent)
                 .color(NamedTextColor.GREEN);

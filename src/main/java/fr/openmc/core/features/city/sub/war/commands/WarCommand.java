@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
@@ -31,9 +31,15 @@ import java.util.UUID;
 @Command({"guerre", "war"})
 @CommandPermission("omc.commands.city.war")
 public class WarCommand {
+    private final WarManager warManager;
+
+    public WarCommand() {
+        this.warManager = OMCRegistry.CITY_FEATURES.WAR;
+    }
+
     @CommandPlaceholder()
     void mainCommand(Player player) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -72,7 +78,7 @@ public class WarCommand {
             return;
         }
 
-        if (WarManager.getPendingDefenseFor(playerCity) != null) {
+        if (warManager.getPendingDefenseFor(playerCity) != null) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.war.command.already_declared"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -93,7 +99,7 @@ public class WarCommand {
     @CommandPermission("omc.commands.city.war.acceptdefense")
     @Description("Accepter de participer a une guerre")
     public void acceptDefense(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -107,7 +113,7 @@ public class WarCommand {
             return;
         }
 
-        WarPendingDefense pending = WarManager.getPendingDefenseFor(city);
+        WarPendingDefense pending = warManager.getPendingDefenseFor(city);
         if (pending == null) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.war.command.defense.none"),

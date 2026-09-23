@@ -1,6 +1,6 @@
 package fr.openmc.core.features.corpse.commnads;
 
-import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ public class CorpseOwnersAutoComplete implements SuggestionProvider<BukkitComman
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
 
-        return CorpseNPCManager.corpseNpcMap.keySet()
+        return OMCRegistry.FEATURES.CORPSE.get().CORPSE_NPC_MANAGER.corpseNpcMap.keySet()
                 .stream()
                 .map(CacheOfflinePlayer::getOfflinePlayer)
                 .filter(Objects::nonNull)

@@ -2,9 +2,8 @@ package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.menu.CityModifyMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.utils.cache.CachePlayerName;
@@ -36,7 +35,7 @@ public class ManageButton {
             itemMeta.lore(getDynamicLore(city, player));
             itemMeta.setItemModel(NamespacedKey.minecraft("air"));
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            City cityCheck = City.ofPlayer(player);
             if (cityCheck == null) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                 return;

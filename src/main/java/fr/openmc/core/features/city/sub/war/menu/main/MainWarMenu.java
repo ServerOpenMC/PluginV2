@@ -6,19 +6,21 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -41,9 +43,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class MainWarMenu extends PaginatedMenu {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final CityManager cityManager;
+    private final WarManager warManager;
+    private final MayorManager mayorManager;
 
     public MainWarMenu(Player owner) {
         super(owner);
+        this.cityManager = OMCRegistry.FEATURES.CITY.get();
+        this.warManager = OMCRegistry.CITY_FEATURES.WAR;
+        this.mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
     }
 
     @Override
@@ -70,16 +79,15 @@ public class MainWarMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
-
-        List<City> warCities = CityManager.getCities().stream()
+        List<City> warCities = cityManager.getCities().stream()
                 .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
                 .toList();
 
         for (City city : warCities) {
-            if (city.getUniqueId().equals(CityManager.getPlayerCity(player.getUniqueId()).getUniqueId())) continue;
+            if (city.getUniqueId().equals(City.ofPlayer(player).getUniqueId())) continue;
             if (city.getType() != CityType.WAR) continue;
             if (city.isImmune()) continue;
-            if (WarManager.getPendingDefenseFor(city) != null) continue;
+            if (warManager.getPendingDefenseFor(city) != null) continue;
             if (city.isInWar()) continue;
 
             long onlineCount = city.getOnlineMembers().size();
@@ -113,10 +121,10 @@ public class MainWarMenu extends PaginatedMenu {
             ));
 
             Mayor mayor = city.getMayor();
-            if (MayorManager.phaseMayor == 2 && mayor != null) {
-                Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-                Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-                Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+            if (mayorManager.phaseMayor == 2 && mayor != null) {
+                Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+                Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+                Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
                 loreCity.add(TranslationManager.translation("feature.city.war.menu.main.reforms").color(NamedTextColor.GRAY));
                 if (perk1 != null) loreCity.add(Component.text(" - ")
@@ -132,7 +140,7 @@ public class MainWarMenu extends PaginatedMenu {
 
             loreCity.add(TranslationManager.translation(
                     "feature.city.war.menu.main.wealth",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()) + economyManager.getEconomyIcon())
                             .color(NamedTextColor.GOLD)
             ).color(NamedTextColor.GRAY));
 

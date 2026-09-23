@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -54,7 +54,7 @@ public class CityTypeConditions {
         if (city.getBalance() < REQUIRED_MONEY_TYPE) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.type.not_enough_city_money",
-                    Component.text(REQUIRED_MONEY_TYPE + EconomyManager.getEconomyIcon())
+                    Component.text(REQUIRED_MONEY_TYPE + OMCRegistry.FEATURES.ECONOMY.get().getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

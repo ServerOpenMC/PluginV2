@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopSale;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ShopSalesMenu extends PaginatedMenu {
-
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final Shop shop;
     
     public ShopSalesMenu(Player owner, Shop shop) {
@@ -68,7 +69,7 @@ public class ShopSalesMenu extends PaginatedMenu {
                 itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.sales.item.lore",
                                 Component.text(s.getDate().toLocalDateTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))).color(NamedTextColor.GREEN),
                                 Component.text(s.getAmount()).color(NamedTextColor.GOLD),
-                                Component.text(s.getPrice() + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)));
+                                Component.text(s.getPrice() + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)));
             });
             items.add(item);
         });
@@ -83,7 +84,8 @@ public class ShopSalesMenu extends PaginatedMenu {
         map.put(49, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             Component lastRemoval = this.shop.getLastWithdrawal() == null ? TranslationManager.translation("global.never") : Component.text(this.shop.getLastWithdrawal().toLocalDateTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)));
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.get_turnover.name"));
-            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.sales.get_turnover.lore", Component.text(this.shop.getTurnover() * 0.8 + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD), lastRemoval.color(NamedTextColor.LIGHT_PURPLE)));
+            itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.sales.get_turnover.lore",
+                    Component.text(this.shop.getTurnover() * 0.8 + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD), lastRemoval.color(NamedTextColor.LIGHT_PURPLE)));
         }).setOnClick(_ -> {
             this.shop.withdrawTurnover();
             this.shop.setLastWithdrawalToNow();

@@ -1,13 +1,13 @@
 package fr.openmc.core.features.displays.bossbar;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
 import fr.openmc.core.features.displays.bossbar.contents.MainBossbar;
 import fr.openmc.core.features.dream.displays.DreamBossBar;
 import fr.openmc.core.features.events.contents.dailyevents.display.DailyEventBossbar;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -19,18 +19,18 @@ import java.util.*;
 /**
  * Gère l'enregistrement, l'affichage et la mise à jour des boss bars.
  */
-public class BossbarManager extends Feature implements HasCommands, LoadAfterItemsAdder {
-    private static final List<BaseBossbar> registeredBossbar = new ArrayList<>();
+public class BossbarManager extends Feature implements HasCommands {
+    private final List<BaseBossbar> registeredBossbar = new ArrayList<>();
 
-    private static final Map<UUID, Map<String, BossBar>> activeBossbars = new HashMap<>();
-    private static final Map<UUID, Map<String, Long>> lastUpdate = new HashMap<>();
-    private static final Map<UUID, Set<String>> offBossbars = new HashMap<>();
+    private final Map<UUID, Map<String, BossBar>> activeBossbars = new HashMap<>();
+    private final Map<UUID, Map<String, Long>> lastUpdate = new HashMap<>();
+    private final Map<UUID, Set<String>> offBossbars = new HashMap<>();
 
     @Override
     public void init() {
         registerBossbars(
                 new MainBossbar(),
-                new DreamBossBar(),
+                new DreamBossBar(OMCRegistry.FEATURES.DREAM.get()),
                 new DailyEventBossbar()
         );
 
@@ -40,7 +40,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new BossBarCommand()
+                new BossBarCommand(this)
         );
     }
 
@@ -49,12 +49,12 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      *
      * @param bossbar Les boss bars à enregistrer
      */
-    public static void registerBossbars(BaseBossbar... bossbar) {
+    public void registerBossbars(BaseBossbar... bossbar) {
         registeredBossbar.addAll(Arrays.asList(bossbar));
         registeredBossbar.sort(Comparator.comparingInt(BaseBossbar::weight).reversed());
     }
 
-    private static void start() {
+    private void start() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -66,7 +66,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
     }
 
 
-    private static void updatePlayer(Player player) {
+    private void updatePlayer(Player player) {
         UUID uuid = player.getUniqueId();
 
         activeBossbars.putIfAbsent(uuid, new HashMap<>());
@@ -152,7 +152,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      * @param player Le joueur
      * @param id L'identifiant de la boss bar
      */
-    public static void removeBossBar(Player player, String id) {
+    public void removeBossBar(Player player, String id) {
         Map<String, BossBar> bars = activeBossbars.get(player.getUniqueId());
         if (bars == null) return;
 
@@ -170,7 +170,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      * @param id L'identifiant de la boss bar
      * @return La boss bar active, ou null si absente
      */
-    public static BossBar getBossBar(Player player, String id) {
+    public BossBar getBossBar(Player player, String id) {
         Map<String, BossBar> bars = activeBossbars.get(player.getUniqueId());
         if (bars == null) return null;
         return bars.get(id);
@@ -182,7 +182,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      * @param player Le joueur
      * @param id L'identifiant de la boss bar
      */
-    public static void toggleBossBar(Player player, String id) {
+    public void toggleBossBar(Player player, String id) {
         offBossbars.putIfAbsent(player.getUniqueId(), new HashSet<>());
 
         Set<String> toggled = offBossbars.get(player.getUniqueId());
@@ -200,7 +200,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      *
      * @param player Le joueur
      */
-    public static void toggleAllBossBar(Player player) {
+    public void toggleAllBossBar(Player player) {
         for (BaseBossbar baseBossbar : registeredBossbar) {
             toggleBossBar(player, baseBossbar.id());
         }
@@ -213,7 +213,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      * @param id L'identifiant de la boss bar
      * @return true si la boss bar est désactivée, false sinon
      */
-    public static boolean isToggled(Player player, String id) {
+    public boolean isToggled(Player player, String id) {
         return offBossbars.getOrDefault(player.getUniqueId(), Set.of()).contains(id);
     }
 
@@ -222,7 +222,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
      *
      * @param player Le joueur
      */
-    public static void removePlayer(Player player) {
+    public void removePlayer(Player player) {
         Map<String, BossBar> bars = activeBossbars.remove(player.getUniqueId());
         if (bars != null) {
             for (BossBar bar : bars.values()) {
@@ -233,7 +233,7 @@ public class BossbarManager extends Feature implements HasCommands, LoadAfterIte
         offBossbars.remove(player.getUniqueId());
     }
 
-    private static BaseBossbar getRegistered(String id) {
+    private BaseBossbar getRegistered(String id) {
         return registeredBossbar.stream()
                 .filter(b -> b.id().equalsIgnoreCase(id))
                 .findFirst()

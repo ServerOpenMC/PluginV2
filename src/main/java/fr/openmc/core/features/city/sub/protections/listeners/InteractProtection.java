@@ -1,0 +1,128 @@
+package fr.openmc.core.features.city.sub.protections.listeners;
+
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
+import fr.openmc.core.features.shops.managers.ShopManager;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Barrel;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class InteractProtection implements Listener {
+    private final ProtectionsManager protectionsManager;
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
+
+    public InteractProtection() {
+        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.getAction() == Action.PHYSICAL) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock == null) return;
+        Location location = clickedBlock.getLocation();
+
+        ItemStack inHand = event.getItem();
+        Material itemType = inHand != null ? inHand.getType() : Material.AIR;
+
+        boolean isMinecart = isMinecart(itemType);
+        boolean isTnt = itemType == Material.TNT;
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (inHand != null && inHand.getType().isEdible()) {
+                Material type = clickedBlock.getType();
+
+                if (!type.isInteractable()) return;
+            }
+            
+            if (shopManager.getShopAt(location) != null) {
+                if (clickedBlock.getState() instanceof Barrel) return;
+                event.setCancelled(true);
+                return;
+            }
+            
+            City city = City.of(location);
+            if (city == null) return;
+            
+            if (city.isMember(player)) {
+                if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
+                if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
+                    protectionsManager.checkPermissions(player, event, city, CityPermission.OPEN_CHEST);
+                } else {
+                    protectionsManager.checkPermissions(player, event, city, CityPermission.INTERACT);
+                }
+
+            } else {
+                protectionsManager.checkCity(player, event, city, true);
+            }
+
+        }
+
+        if (!isMinecart) return;
+        if (isTnt) return;
+
+        protectionsManager.verify(player, event, location);
+    }
+
+    private final Set<EntityType> INTERACTION_REFUSED = new HashSet<>(Set.of(
+            EntityType.ITEM_FRAME,
+            EntityType.GLOW_ITEM_FRAME,
+            EntityType.SULFUR_CUBE
+    ));
+
+    @EventHandler
+    public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        
+        Entity rightClicked = event.getRightClicked();
+        if (rightClicked instanceof Player) return;
+        
+        if (!INTERACTION_REFUSED.contains(rightClicked.getType())) return;
+
+        if (MascotUtils.canBeAMascot(rightClicked)) return;
+
+        protectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
+    }
+
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        protectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        protectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+    }
+
+    private boolean isMinecart(Material type) {
+        return switch (type) {
+            case MINECART, CHEST_MINECART, FURNACE_MINECART, HOPPER_MINECART, TNT_MINECART, COMMAND_BLOCK_MINECART ->
+                    true;
+            default -> false;
+        };
+    }
+}

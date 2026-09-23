@@ -6,9 +6,10 @@ import fr.openmc.api.datapacks.injectors.BiomesInjector;
 import fr.openmc.api.datapacks.injectors.DimensionInjector;
 import fr.openmc.api.datapacks.injectors.DimensionTypesInjector;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.HasFeature;
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.lifecycle.interfaces.HasFeature;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasGamerules;
 import fr.openmc.core.registry.worldtemplates.interfaces.HasWorldBorder;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -56,7 +57,7 @@ public class WorldTemplateRegistry extends Registry<String, WorldTemplate>
     public void init() {
         for (WorldTemplate template : values()) {
             if (template instanceof HasFeature hasFeature)
-                OMCPlugin.registerFeature(hasFeature.getFeature());
+                OMCRegistry.FEATURES.register(hasFeature.feature());
 
             World world = template.getWorld();
 

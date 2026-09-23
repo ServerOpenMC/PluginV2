@@ -3,8 +3,7 @@ package fr.openmc.core.features.milestones.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -71,7 +70,7 @@ public class MainMilestonesMenu extends Menu {
         loreMilestoneVille.add(Component.empty());
         loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.details"));
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) {
             loreMilestoneVille.add(Component.empty());
             loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.need_city"));

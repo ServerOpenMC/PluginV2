@@ -1,10 +1,10 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.features.dream.registries.items.orb.CloudOrb;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -31,7 +31,7 @@ public class KillBreezyQuest extends MilestoneQuest implements Listener {
 				DreamSteps.KILL_BREEZY,
 				new QuestTier(1),
 				TranslationManager.translationLore("feature.dream.milestone.quest.kill_breezy.dialog",
-						Component.text(((DreamEquipableItem) DreamItemRegistry.CLOUD_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
+						Component.text(((DreamEquipableItem) OMCRegistry.DREAM_ITEM.CLOUD_CHESTPLATE).getAdditionalMaxTime()).color(NamedTextColor.LIGHT_PURPLE)
 				)
 		);
 	}
@@ -44,7 +44,7 @@ public class KillBreezyQuest extends MilestoneQuest implements Listener {
 			
 			ItemStack baseItem = e.getItem().getItemStack();
 			
-			DreamItem item = DreamItemRegistry.getByItemStack(baseItem);
+			DreamItem item = OMCRegistry.DREAM_ITEM.getByItemStack(baseItem);
 			if (item == null) return;
 			if (item instanceof CloudOrb) {
 				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;

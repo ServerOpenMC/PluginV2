@@ -4,18 +4,10 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.commands.AdminDreamCommands;
 import fr.openmc.core.features.dream.commands.DreamCommands;
@@ -25,23 +17,29 @@ import fr.openmc.core.features.dream.listeners.registry.DreamItemEquipListener;
 import fr.openmc.core.features.dream.listeners.structures.CloudStructureDispenserListener;
 import fr.openmc.core.features.dream.listeners.structures.PlayerDreamStructureListener;
 import fr.openmc.core.features.dream.listeners.structures.ReplaceBlockListener;
-import fr.openmc.core.features.dream.mecanism.blocksdrops.DreamBlocksDropsManager;
-import fr.openmc.core.features.dream.mecanism.cloudfishing.CloudFishingManager;
-import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
-import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
 import fr.openmc.core.features.dream.mecanism.rng.DreamLootListener;
-import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
-import fr.openmc.core.features.dream.mecanism.sfx.ghost.DreamGhostManager;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityCraftListener;
-import fr.openmc.core.features.dream.mecanism.singularity.SingularityManager;
-import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DBPlayerSave;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.*;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -52,49 +50,44 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Supplier;
 
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"}, builders = {"Mcross_bow"})
-public class DreamManager extends Feature implements HasDatabase, LoadAfterItemsAdder, HasCommands, HasListeners {
+public class DreamManager extends Feature
+        implements HasDatabase, HasCommands, HasListeners, HasRegistries {
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
-    private static final HashMap<UUID, DBPlayerSave> playerSaveData = new HashMap<>();
-    private static final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
-    public static final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
+    private final HashMap<UUID, DBPlayerSave> playerSaveData = new HashMap<>();
+    private final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
+    public final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
 
-    private static Dao<DBDreamPlayer, String> dreamPlayerDao;
-    private static Dao<DBPlayerSave, String> savePlayerDao;
+    private Dao<DBDreamPlayer, String> dreamPlayerDao;
+    private Dao<DBPlayerSave, String> savePlayerDao;
 
     @Override
     public void init() {
-        // ** MANAGERS **
-        DreamDimensionManager.init();
-        GlaciteNpcManager.init();
-        PlayerCloneNpc.init();
-        DreamItemRegistry.init();
-        DreamLootTableRegistry.init();
-        DreamBlocksRegistry.init();
-        DreamMobsRegistry.init();
-        DreamBlocksDropsManager.init();
-        CloudFishingManager.init();
-        MetalDetectorManager.init();
-        ColdManager.init();
-        SingularityManager.init();
-        DreamGhostManager.init();
-
         // ** LOAD DATAS **
         loadAllDreamPlayerData();
         loadAllPlayerSaveData();
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return new ArrayList<>(List.of(
+                () -> OMCRegistry.DREAM_FEATURES = new DreamFeaturesRegistry(),
+                () -> OMCRegistry.DREAM_ITEM = new DreamItemRegistry(),
+                () -> OMCRegistry.DREAM_LOOT_TABLE = new DreamLootTableRegistry(),
+                () -> OMCRegistry.DREAM_MOB = new DreamMobsRegistry()
+        ));
     }
 
     // ** COMMANDS **
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new AdminDreamCommands(),
+                new AdminDreamCommands(this),
                 new DreamCommands()
         );
     }
@@ -103,24 +96,24 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                PlayerChangeWorldListener::new,
-                PlayerJoinListener::new,
-                PlayerQuitListener::new,
-                PlayerDeathListener::new,
+                () -> new PlayerChangeWorldListener(this),
+                () -> new PlayerJoinListener(this),
+                () -> new PlayerQuitListener(this),
+                () -> new PlayerDeathListener(this),
                 PlayerCommandListener::new,
-                PlayerDreamTimeEndListener::new,
-                PlayerSleepListener::new,
-                PlayerEnteredBiome::new,
-                PlayerObtainOrb::new,
+                () -> new PlayerDreamTimeEndListener(this),
+                () -> new PlayerSleepListener(this),
+                () -> new PlayerEnteredBiome(this),
+                () -> new PlayerObtainOrb(this),
                 PlayerDamageListener::new,
                 ReplaceBlockListener::new,
-                PlayerEatSomnifere::new,
+                () -> new PlayerEatSomnifere(this),
                 CloudStructureDispenserListener::new,
                 CraftingConvertorListener::new,
-                DreamItemEquipListener::new,
+                () -> new DreamItemEquipListener(this),
                 SingularityCraftListener::new,
                 PlayerDreamStructureListener::new,
-                PlayerFoodChangeListener::new,
+                () -> new PlayerFoodChangeListener(this),
                 DreamLootListener::new,
                 PlayerPickupListener::new
         );
@@ -133,21 +126,15 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
 
         TableUtils.createTableIfNotExists(connectionSource, DBPlayerSave.class);
         savePlayerDao = DaoManager.createDao(connectionSource, DBPlayerSave.class);
-
-        SingularityManager.initDB(connectionSource);
     }
 
     @Override
     public void save() {
-        DreamManager.saveAllPlayerSaveData();
-        DreamManager.saveAllDreamPlayerData();
-
-        SingularityManager.disable();
-
-        DreamDimensionManager.save();
+        this.saveAllPlayerSaveData();
+        this.saveAllDreamPlayerData();
     }
 
-    private static void loadAllPlayerSaveData() {
+    private void loadAllPlayerSaveData() {
         try {
             playerSaveData.clear();
             savePlayerDao.queryForAll().forEach(playerData -> {
@@ -163,7 +150,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         }
     }
 
-    public static void saveAllPlayerSaveData() {
+    public void saveAllPlayerSaveData() {
         playerSaveData.forEach((uuid, playerSave) -> {
             try {
                 savePlayerDao.createOrUpdate(playerSave);
@@ -174,7 +161,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
     }
 
 
-    private static void loadAllDreamPlayerData() {
+    private void loadAllDreamPlayerData() {
         try {
             dreamPlayerData.clear();
             dreamPlayerDao.queryForAll().forEach(playerData ->
@@ -185,7 +172,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         }
     }
 
-    public static void saveAllDreamPlayerData() {
+    public void saveAllDreamPlayerData() {
         cacheDreamPlayer.forEach((uuid, dbDreamPlayer) -> {
             try {
                 dreamPlayerDao.createOrUpdate(dbDreamPlayer);
@@ -195,11 +182,11 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         });
     }
 
-    public static void saveDreamPlayerData(DreamPlayer dreamPlayer) {
+    public void saveDreamPlayerData(DreamPlayer dreamPlayer) {
         saveDreamPlayerData(dreamPlayer.save());
     }
 
-    public static void saveDreamPlayerData(DBDreamPlayer dbDreamPlayer) {
+    public void saveDreamPlayerData(DBDreamPlayer dbDreamPlayer) {
         try {
             dreamPlayerDao.createOrUpdate(dbDreamPlayer);
             if (cacheDreamPlayer.containsKey(dbDreamPlayer.getPlayerUUID())) {
@@ -213,25 +200,25 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         }
     }
 
-    public static DBDreamPlayer getCacheDreamPlayer(Player player) {
+    public DBDreamPlayer getCacheDreamPlayer(Player player) {
         if (!cacheDreamPlayer.containsKey(player.getUniqueId())) return null;
 
         return cacheDreamPlayer.get(player.getUniqueId());
     }
 
-    public static void addCacheDreamPlayer(Player player, DBDreamPlayer dbDreamPlayer) {
+    public void addCacheDreamPlayer(Player player, DBDreamPlayer dbDreamPlayer) {
         if (cacheDreamPlayer.containsKey(player.getUniqueId())) return;
 
         cacheDreamPlayer.put(player.getUniqueId(), dbDreamPlayer);
     }
 
-    public static DreamPlayer getDreamPlayer(Player player) {
+    public DreamPlayer getDreamPlayer(Player player) {
         if (!dreamPlayerData.containsKey(player.getUniqueId())) return null;
 
         return dreamPlayerData.get(player.getUniqueId());
     }
 
-    public static void addDreamPlayer(Player player, Location oldLocation) throws IOException {
+    public void addDreamPlayer(Player player, Location oldLocation) throws IOException {
         player.clearActivePotionEffects(); // supprime tout les effets (ex effets des armures dans l'overworld)
 
         PlayerInventory playerInv = player.getInventory();
@@ -252,7 +239,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         playerSaveData.put(player.getUniqueId(), newDreamPlayer.savePlayer());
     }
 
-    public static void removeDreamPlayer(Player player, Location dreamLocation) {
+    public void removeDreamPlayer(Player player, Location dreamLocation) {
         player.closeInventory();
         player.clearActivePotionEffects(); // supprime les effets des armures des reves
 
@@ -294,7 +281,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         saveDreamPlayerData(cacheDreamPlayer);
     }
 
-    public static void preloadSavePlayer(Player player, Location dreamLocation) throws IOException {
+    public void preloadSavePlayer(Player player, Location dreamLocation) throws IOException {
         DBPlayerSave playerSave = playerSaveData.remove(player.getUniqueId());
 
         if (playerSave == null) {
@@ -317,7 +304,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         } else {
             addCacheDreamPlayer(player, new DBDreamPlayer(
                     player.getUniqueId(),
-                    DreamManager.BASE_DREAM_TIME,
+                    this.BASE_DREAM_TIME,
                     serializedDreamInventory,
                     dreamLocation.getX(),
                     dreamLocation.getY(),
@@ -343,15 +330,15 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         );
     }
 
-    public static void setMaxTime(Player player, long maxTime) {
-        DBDreamPlayer cache = DreamManager.getCacheDreamPlayer(player);
+    public void setMaxTime(Player player, long maxTime) {
+        DBDreamPlayer cache = this.getCacheDreamPlayer(player);
 
         if (cache == null) {
-            DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+            DreamPlayer dreamPlayer = this.getDreamPlayer(player);
             if (dreamPlayer == null) return;
 
-            DreamManager.saveDreamPlayerData(dreamPlayer);
-            cache = DreamManager.getCacheDreamPlayer(player);
+            this.saveDreamPlayerData(dreamPlayer);
+            cache = this.getCacheDreamPlayer(player);
             if (cache == null) {
                 OMCLogger.warn("player ({}) had no cache even after saving it. [DreamManager#setMaxTime]", player.getUniqueId());
                 return;
@@ -359,10 +346,10 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         }
 
         cache.setMaxDreamTime(maxTime);
-        DreamManager.saveDreamPlayerData(cache);
+        this.saveDreamPlayerData(cache);
     }
 
-    public static double calculateDreamProbability(Player player) {
+    public double calculateDreamProbability(Player player) {
         double base = 0.15;
         PlayerInventory inv = player.getInventory();
 
@@ -374,21 +361,21 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         };
 
         for (ItemStack item : armor) {
-            DreamItem dream = DreamItemRegistry.getByItemStack(item);
+            DreamItem dream = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 
             if (dream != null && dream.getId().contains("omc_dream:pyjama")) {
                 base += 0.05;
             }
         }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.GREAT_SLEEPER.getId())) {
+        City city = City.ofPlayer(player);
+        if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.GREAT_SLEEPER.getId())) {
             base += 0.4;
         }
         return base;
     }
 
-    public static void tpPlayerDream(Player player) {
+    public void tpPlayerDream(Player player) {
         Biome biome = DreamBiome.SCULK_PLAINS.getBiome();
 
         if (DreamDimensionManager.DREAM_WORLD == null) return;
@@ -400,7 +387,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         player.teleportAsync(spawningLocation);
     }
 
-    public static void tpPlayerToLastDreamLocation(Player player) {
+    public void tpPlayerToLastDreamLocation(Player player) {
         DBDreamPlayer dbDreamPlayer = getCacheDreamPlayer(player);
         if (dbDreamPlayer == null) return;
 
@@ -410,5 +397,63 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
                 dbDreamPlayer.getDreamY(),
                 dbDreamPlayer.getDreamZ()
         ));
+    }
+
+    public void setProgressionOrb(Player player, int progressionOrb, DreamBiome unlocked) {
+        DBDreamPlayer cache = this.getCacheDreamPlayer(player);
+
+        if (cache == null) {
+            DreamPlayer dreamPlayer = this.getDreamPlayer(player);
+            if (dreamPlayer == null) return;
+
+            this.saveDreamPlayerData(dreamPlayer);
+            cache = this.getCacheDreamPlayer(player);
+            if (cache == null) {
+                OMCLogger.warn("player ({}) had no cache even after saving it. [PlayerObtainOrb#setProgressionOrb]", player.getUniqueId());
+                return;
+            }
+        }
+
+        int current = cache.getProgressionOrb();
+
+        if (current >= progressionOrb) return;
+
+        cache.setProgressionOrb(progressionOrb);
+        this.saveDreamPlayerData(cache);
+        if (unlocked != null)
+            sendMessageProgression(player, unlocked);
+        sendBroadcastMessageOrb(player, progressionOrb);
+    }
+
+    private void sendBroadcastMessageOrb(Player player, int progressionOrb) {
+        Component orb = switch (progressionOrb) {
+            case 1 -> TranslationManager.translation("feature.dream.item.domination_orb.name");
+            case 2 -> TranslationManager.translation("feature.dream.item.ame_orb.name");
+            case 3 -> TranslationManager.translation("feature.dream.item.cloud_orb.name");
+            case 4 -> TranslationManager.translation("feature.dream.item.mud_orb.name");
+            case 5 -> TranslationManager.translation("feature.dream.item.glacite_orb.name");
+            default -> TranslationManager.translation("feature.dream.item.unknown_orb.name");
+        };
+
+        MessagesManager.broadcastMessage(player.getWorld(), TranslationManager.translation(
+                "feature.dream.orb.message.obtained",
+                Component.text(player.getName()),
+                orb
+        ), Prefix.DREAM, MessageType.INFO);
+    }
+
+    private void sendMessageProgression(Player player, DreamBiome biome) {
+        Component biomeName = switch (biome) {
+            case SOUL_FOREST -> TranslationManager.translation("feature.dream.biome.progression.soul_forest");
+            case CLOUD_LAND -> TranslationManager.translation("feature.dream.biome.progression.cloud_land");
+            case MUD_BEACH -> TranslationManager.translation("feature.dream.biome.progression.mud_beach");
+            case GLACITE_GROTTO -> TranslationManager.translation("feature.dream.biome.progression.glacite_grotto");
+            default -> TranslationManager.translation("feature.dream.biome.progression.unknown");
+        };
+
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.dream.biome.message.unlocked",
+                biomeName
+        ), Prefix.DREAM, MessageType.SUCCESS, false);
     }
 }

@@ -6,10 +6,9 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankCommands;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -44,7 +43,7 @@ public class CityRankPermsMenu extends PaginatedMenu {
 		this.oldRank = oldRank;
 		this.newRank = newRank;
 		this.canEdit = canEdit;
-		this.city = CityManager.getPlayerCity(owner.getUniqueId());
+		this.city = City.ofPlayer(owner);
 		this.page = page;
 	}
 	

@@ -1,11 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.actions;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorColorMenu;
@@ -24,7 +23,7 @@ import org.bukkit.entity.Player;
 public class MayorCommandAction {
 
     public static void launchInteractionMenu(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -40,7 +39,7 @@ public class MayorCommandAction {
         }
 
         if (city.getElectionType() == ElectionType.ELECTION) {
-            if (MayorManager.phaseMayor == 1) {
+            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
                 MayorElectionMenu menu = new MayorElectionMenu(player);
                 menu.open();
             } else {
@@ -48,10 +47,10 @@ public class MayorCommandAction {
                 menu.open();
             }
         } else {
-            if (MayorManager.phaseMayor == 2) {
+            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2) {
                 MayorMandateMenu menu = new MayorMandateMenu(player);
                 menu.open();
-            } else if (MayorManager.phaseMayor == 1) {
+            } else if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
                 if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
                     if (!city.hasMayor()) {
                         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {

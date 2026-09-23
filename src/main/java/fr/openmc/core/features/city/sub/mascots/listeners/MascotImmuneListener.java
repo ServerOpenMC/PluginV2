@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.CooldownStartEvent;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
@@ -14,12 +14,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class MascotImmuneListener implements Listener {
+    private final CityManager cityManager;
+
+    public MascotImmuneListener(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
 
     @EventHandler
     void onStartMascotImmune(CooldownStartEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = CityManager.getCity(event.getCooldownUUID());
+        City cityImmune = City.of(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 
@@ -36,7 +41,7 @@ public class MascotImmuneListener implements Listener {
     void onEndMascotImmune(CooldownEndEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = CityManager.getCity(event.getCooldownUUID());
+        City cityImmune = City.of(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 

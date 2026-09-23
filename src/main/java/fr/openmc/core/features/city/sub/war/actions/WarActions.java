@@ -2,16 +2,16 @@ package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseParticipantsMenu;
 import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseSizeMenu;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -38,7 +38,8 @@ public class WarActions {
      */
     public static void beginLaunchWar(Player player, City cityAttack) {
         UUID launcherUUID = player.getUniqueId();
-        City launchCity = CityManager.getPlayerCity(launcherUUID);
+        WarManager warManager = OMCRegistry.CITY_FEATURES.WAR;
+        City launchCity = City.ofPlayer(launcherUUID);
 
         if (launchCity == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -75,7 +76,7 @@ public class WarActions {
             return;
         }
 
-        if (WarManager.getPendingDefenseFor(launchCity) != null) {
+        if (warManager.getPendingDefenseFor(launchCity) != null) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.war.begin.already_declared"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -89,7 +90,7 @@ public class WarActions {
             return;
         }
 
-        if (WarManager.getPendingDefenseFor(cityAttack) != null) {
+        if (warManager.getPendingDefenseFor(cityAttack) != null) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.war.begin.target_preparing"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -278,7 +279,7 @@ public class WarActions {
         ), Prefix.CITY, MessageType.INFO, false);
 
         WarPendingDefense pending = new WarPendingDefense(cityLaunch, cityAttack, attackers, requiredParticipants);
-        WarManager.addPendingDefense(pending);
+        OMCRegistry.CITY_FEATURES.WAR.addPendingDefense(pending);
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (pending.isAlreadyExecuted()) return;
@@ -344,6 +345,6 @@ public class WarActions {
             }
         }
 
-        WarManager.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
+        OMCRegistry.CITY_FEATURES.WAR.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
     }
 }

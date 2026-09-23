@@ -6,19 +6,31 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.db.DBCityRank;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
-public class CityRankManager {
-	
-	private static Dao<DBCityRank, String> ranksDao;
+public class CityRankManager extends Feature implements HasDatabase, HasCommands {
 
-	public static void init() {
+	private Dao<DBCityRank, String> ranksDao;
+
+	@Override
+	public void init() {
 		loadRanks();
+	}
+
+	@Override
+	public Set<Object> getCommands() {
+		return Set.of(
+				new CityRankCommands(OMCRegistry.FEATURES.CITY.get())
+		);
 	}
 	
 	/**
@@ -27,7 +39,8 @@ public class CityRankManager {
 	 * @param connectionSource The connection source to the database.
 	 * @throws SQLException If there is an error creating the table or DAO.
 	 */
-	public static void initDB(ConnectionSource connectionSource) throws SQLException {
+	@Override
+	public void initDB(ConnectionSource connectionSource) throws SQLException {
 		TableUtils.createTableIfNotExists(connectionSource, DBCityRank.class);
 		ranksDao = DaoManager.createDao(connectionSource, DBCityRank.class);
 	}
@@ -38,7 +51,7 @@ public class CityRankManager {
 	 * @param city The city whose ranks should be removed.
 	 * @throws SQLException If there is an error during the deletion process.
 	 */
-	public static void removeRanks(City city) throws SQLException {
+	public void removeRanks(City city) throws SQLException {
 		DeleteBuilder<DBCityRank, String> ranksDelete = ranksDao.deleteBuilder();
 		ranksDelete.where().eq("city_uuid", city.getUniqueId());
 		ranksDao.delete(ranksDelete.prepare());
@@ -49,7 +62,7 @@ public class CityRankManager {
 	 *
 	 * @param rank The rank to add
 	 */
-	public static void addCityRank(DBCityRank rank) {
+	public void addCityRank(DBCityRank rank) {
 		try {
 			ranksDao.create(rank);
 		} catch (SQLException e) {
@@ -62,7 +75,7 @@ public class CityRankManager {
 	 *
 	 * @param rank The rank to remove
 	 */
-	public static void removeCityRank(DBCityRank rank) {
+	public void removeCityRank(DBCityRank rank) {
 		try {
 			DeleteBuilder<DBCityRank, String> delete = ranksDao.deleteBuilder();
 			delete.where().eq("city_uuid", rank.getCityUUID()).and().eq("name", rank.getName());
@@ -77,7 +90,7 @@ public class CityRankManager {
 	 *
 	 * @param rank The rank to update
 	 */
-	public static void updateCityRank(DBCityRank rank) {
+	public void updateCityRank(DBCityRank rank) {
 		try {
 			ranksDao.update(rank);
 		} catch (SQLException e) {
@@ -90,7 +103,7 @@ public class CityRankManager {
 	 *
 	 * @param city The city to load ranks for
 	 */
-	public static void loadCityRanks(City city) {
+	public void loadCityRanks(City city) {
 		try {
 			QueryBuilder<DBCityRank, String> query = ranksDao.queryBuilder();
 			query.where().eq("city_uuid", city.getUniqueId());
@@ -105,22 +118,12 @@ public class CityRankManager {
 	}
 	
 	/**
-	 * Create a copy of a city rank.
-	 *
-	 * @param rank The rank to copy.
-	 * @return A new instance of DBCityRank with the same properties as the original.
-	 */
-	public static DBCityRank copy(DBCityRank rank) {
-		return new DBCityRank(rank.getRankUUID(), rank.getCityUUID(), rank.getPriority(), rank.getName(), rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet());
-	}
-	
-	/**
 	 * Load all city ranks from the database and associate them with their respective cities.
 	 */
-	public static void loadRanks() {
+	public void loadRanks() {
 		try {
 			for (DBCityRank rank : ranksDao.queryForAll()) {
-				City city = CityManager.getCity(rank.getCityUUID());
+				City city = City.of(rank.getCityUUID());
 				if (city != null) city.getRanks().add(rank);
 			}
 			

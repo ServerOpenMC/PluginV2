@@ -4,11 +4,10 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -64,12 +63,12 @@ public class MayorMandateMenu extends Menu {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         Mayor mayor = city.getMayor();
 
-        Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-        Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-        Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+        Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+        Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+        Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
         List<Component> loreMayor = new ArrayList<>(List.of(
                 TranslationManager.translation(

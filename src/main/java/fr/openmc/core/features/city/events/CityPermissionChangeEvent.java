@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.events;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
 import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;

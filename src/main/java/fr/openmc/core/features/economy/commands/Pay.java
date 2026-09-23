@@ -1,6 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -10,6 +11,7 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Pay {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     @Command("pay")
     @Description("Permet de payer un joueur")
@@ -27,11 +29,11 @@ public class Pay {
             player.message().sendSuccess(TranslationManager.translation(
                     "feature.economy.pay.success",
                     Component.text(target.getName()).color(NamedTextColor.YELLOW),
-                    Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                    Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
             ));
             target.message().sendInfo(TranslationManager.translation(
                     "feature.economy.pay.received",
-                    Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
+                    Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
                     Component.text(player.getName()).color(NamedTextColor.YELLOW)
             ));
         } else {

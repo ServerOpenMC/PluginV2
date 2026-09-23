@@ -1,9 +1,9 @@
 package fr.openmc.core.features.friend.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
@@ -34,6 +34,7 @@ import java.util.UUID;
 
 @Command({"friends", "friend", "ami", "f"})
 public class FriendCommand {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     @Subcommand("add")
     @Description("Envoyer une demande d'ami")
@@ -235,8 +236,8 @@ public class FriendCommand {
 
                     boolean isOnline = friend.isOnline();
 
-                    City city = CityManager.getPlayerCity(friend.getUniqueId());
-                    String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
+                    City city = City.ofPlayer(friend.getUniqueId());
+                    String formattedMoney = economyManager.getFormattedBalance(friend.getUniqueId());
                     Component cityComponent = city != null ? Component.text(city.getName()).color(NamedTextColor.YELLOW) :
                             TranslationManager.translation("feature.friend.list.city.none").color(NamedTextColor.YELLOW);
                     Component moneyComponent = Component.text(formattedMoney).color(NamedTextColor.YELLOW);

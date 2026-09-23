@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -15,7 +14,7 @@ import org.bukkit.entity.Player;
 public class CityLeaveAction {
 
     public static void startLeave(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (city == null) return;
 

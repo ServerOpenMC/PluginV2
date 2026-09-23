@@ -35,6 +35,11 @@ import java.util.Map;
 @Command("contest")
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
+    private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestPlayerManager contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
+    private final TradeYMLManager tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
+
     @Cooldown(4)
     @CommandPlaceholder()
     public static void mainCommand(Player player) {
@@ -57,7 +62,7 @@ public class ContestCommand {
         if (activePhase.equals(ContestPhase.VOTE_CAMP.getPhase())) {
             new VoteMenu(player).open();
         } else if (activePhase.equals(ContestPhase.TRADE_PHASE.getPhase())) {
-            if (ContestManager.dataPlayer.get(player.getUniqueId()) != null) {
+            if (OMCRegistry.FEATURES.CONTEST.get().getDataPlayer().get(player.getUniqueId()) != null) {
                 new ContributionMenu(player).open();
             } else {
                 new VoteMenu(player).open();
@@ -71,7 +76,7 @@ public class ContestCommand {
     @Description("Permet de lancer une procédure de phase")
     @CommandPermission("omc.admin.commands.contest.setphase")
     public void setPhase(@Named("phase") @SuggestWith(ContestPhaseAutoComplete.class) String phase) {
-        WeeklyEventsManager.forceEventAtPhase(
+        weeklyEventsManager.forceEventAtPhase(
                 OMCRegistry.WEEKLY_EVENTS.getEvent(Contest.class),
                 ContestPhase.valueOf(phase).getPhase());
     }
@@ -98,10 +103,10 @@ public class ContestCommand {
             return;
         }
 
-        // It is unique, but it is for performance reasons
-        if (new HashSet<>(ContestManager.getColorContestList()).containsAll(Arrays.asList(color1, color2))) {
-            ContestManager.clearDB();
-            ContestManager.insertCustomContest(camp1, color1, camp2, color2);
+        // It is unique, but it is for performance reasons - tout ce qui est bizzare marche bien
+        if (new HashSet<>(contestManager.getColorContestList()).containsAll(Arrays.asList(color1, color2))) {
+            contestManager.clearDB();
+            contestManager.insertCustomContest(camp1, color1, camp2, color2);
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.events.contest.command.setcontest.saved",
@@ -123,7 +128,7 @@ public class ContestCommand {
             @Named("tradeAmount") int amount,
             @Named("shellAmount") int amountShell
     ) {
-        YamlConfiguration config = TradeYMLManager.getContestConfig();
+        YamlConfiguration config = OMCRegistry.CONTEST_FEATURES.TRADE_YML.getContestConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
         boolean tradeFound = false;
@@ -138,7 +143,7 @@ public class ContestCommand {
         }
 
         if (tradeFound) {
-            TradeYMLManager.saveContestConfig();
+            tradeYMLManager.saveContestConfig();
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.events.contest.command.settrade.updated",
                     Component.text(trade).color(NamedTextColor.YELLOW),
@@ -165,7 +170,7 @@ public class ContestCommand {
             return;
         }
 
-        if (ContestManager.dataPlayer.get(target.getUniqueId()) == null) {
+        if (contestManager.getDataPlayer().get(target.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.events.contest.command.addpoints.not_registered"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
@@ -175,7 +180,7 @@ public class ContestCommand {
             return;
         }
 
-        ContestPlayerManager.setPointsPlayer(target.getUniqueId() ,points + ContestManager.dataPlayer.get(target.getUniqueId()).getPoints());
+        contestPlayerManager.setPointsPlayer(target.getUniqueId(), points + contestManager.getDataPlayer().get(target.getUniqueId()).getPoints());
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.events.contest.command.addpoints.success",

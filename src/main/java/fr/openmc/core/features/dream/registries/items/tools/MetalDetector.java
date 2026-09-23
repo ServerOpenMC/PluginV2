@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager;
@@ -29,11 +30,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.UUID;
 
-import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorListener.findRandomChestLocation;
-import static fr.openmc.core.features.dream.mecanism.metaldetector.MetalDetectorManager.hiddenChests;
-
 public class MetalDetector extends DreamItem implements UsableItem {
-    public MetalDetector() {
+    private final MetalDetectorManager manager;
+
+    public MetalDetector(MetalDetectorManager manager) {
         super(new DreamItemMeta(
                 "omc_dream:metal_detector",
                 TranslationManager.translation("feature.dream.item.metal_detector.name"),
@@ -41,6 +41,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
                 Material.PAPER,
                 false
         ));
+        this.manager = manager;
     }
 
     @Override
@@ -55,18 +56,18 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         if (!DreamUtils.isDreamWorld(event.getClickedBlock().getLocation())) return;
         UUID uuid = player.getUniqueId();
-        if (!hiddenChests.containsKey(uuid)) return;
+        if (!manager.hiddenChests.containsKey(uuid)) return;
 
         if (clicked.getType() == Material.CHEST) {
             event.setCancelled(true);
-            MetalDetectorTask task = hiddenChests.remove(uuid);
+            MetalDetectorTask task = manager.hiddenChests.remove(uuid);
             task.cancel();
             Location chestLoc = task.getChestLocation();
 
             if (LocationUtils.isSameLocation(clicked.getLocation(), chestLoc)) {
                 event.setCancelled(true);
                 clicked.setType(Material.MUD);
-                CustomLootTable lootTable = MetalDetectorManager.METAL_DETECTOR_LOOT_TABLE;
+                CustomLootTable lootTable = OMCRegistry.DREAM_LOOT_TABLE.METAL_DETECTOR;
                 if (lootTable == null) return;
 
                 List<CustomLoot> rewards = lootTable.rollLoots(player).loots();
@@ -98,7 +99,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         UUID playerUUID = player.getUniqueId();
 
-        if (!hiddenChests.containsKey(playerUUID)) return;
+        if (!manager.hiddenChests.containsKey(playerUUID)) return;
 
         ItemStack item = event.getItem();
         if (item == null) return;
@@ -110,12 +111,12 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         player.setCooldown(item, 15 * 20);
 
-        MetalDetectorTask oldTask = hiddenChests.get(playerUUID);
+        MetalDetectorTask oldTask = manager.hiddenChests.get(playerUUID);
         oldTask.getChestLocation().getBlock().setType(Material.MUD);
-        Location newLoc = findRandomChestLocation(player.getLocation());
+        Location newLoc = manager.findRandomChestLocation(player.getLocation());
         MetalDetectorTask newTask = new MetalDetectorTask(player, newLoc);
         newTask.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L);
-        hiddenChests.put(playerUUID, newTask);
+        manager.hiddenChests.put(playerUUID, newTask);
         oldTask.cancel();
     }
 }

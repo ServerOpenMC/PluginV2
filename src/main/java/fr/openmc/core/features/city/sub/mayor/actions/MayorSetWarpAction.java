@@ -3,9 +3,8 @@ package fr.openmc.core.features.city.sub.mayor.actions;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -25,7 +24,7 @@ import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_
 
 public class MayorSetWarpAction {
     public static void setWarp(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
 
         if (city == null) return;
 

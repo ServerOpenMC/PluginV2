@@ -2,6 +2,7 @@ package fr.openmc.core.features.displays.scoreboards;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.scoreboard.SternalBoard;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -11,8 +12,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
 public abstract class BaseScoreboard {
-    protected static final boolean canShowLogo = ItemsAdderHook.isEnable();
-
     /**
      * Initialise le scoreboard pour un joueur
      *
@@ -64,7 +63,7 @@ public abstract class BaseScoreboard {
      * @return Un {@link Component} pour le titre
      */
     public Component getTitle() {
-        return canShowLogo
+        return canShowLogo()
                 ? Component.text(FontImageWrapper.replaceFontImages(":openmc:"))
                 : TranslationManager.translation("feature.displays.scoreboard.title.text").color(NamedTextColor.LIGHT_PURPLE);
     }
@@ -75,5 +74,9 @@ public abstract class BaseScoreboard {
     public static Component getFooter() {
         Component footerText = TranslationManager.translation("feature.displays.scoreboard.footer.text");
         return MiniMessage.miniMessage().deserialize("     <gradient:#FF18DD:#FF80F6><name></gradient>", Placeholder.component("name", footerText));
+    }
+
+    protected boolean canShowLogo() {
+        return OMCRegistry.HOOKS.ITEMS_ADDER.isEnable();
     }
 }

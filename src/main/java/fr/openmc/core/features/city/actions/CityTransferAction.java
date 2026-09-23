@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;

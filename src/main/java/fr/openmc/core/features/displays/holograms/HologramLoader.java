@@ -1,14 +1,12 @@
 package fr.openmc.core.features.displays.holograms;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.displays.holograms.commands.HologramCommand;
 import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -25,13 +23,13 @@ import java.util.Objects;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "miseur"})
-public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, HasCommands {
+public class HologramLoader extends Feature implements HasCommands {
 
-    public static final HashMap<String, HologramInfo> displays = new HashMap<>();
-    private static BukkitTask taskTimer;
-    public static File hologramFolder;
+    public final HashMap<String, HologramInfo> displays = new HashMap<>();
+    private BukkitTask taskTimer;
+    private File hologramFolder;
 
-    public static File getHologramFolder() {
+    public File getHologramFolder() {
         if (hologramFolder == null) {
             OMCPlugin plugin = OMCPlugin.getInstance();
             if (plugin == null) {
@@ -47,27 +45,27 @@ public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAf
         File hologramFolder = getHologramFolder();
         hologramFolder.mkdirs();
 
-        HologramLoader.registerHolograms(
+        this.registerHolograms(
                 new TutorialHologram()
         );
 
         updateHologramsViewers();
-        HologramLoader.loadAllFromFolder(hologramFolder);
+        this.loadAllFromFolder(hologramFolder);
     }
 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new HologramCommand()
+                new HologramCommand(this)
         );
     }
 
     @Override
     public void save() {
-        HologramLoader.unloadAll();
+        this.unloadAll();
     }
 
-    public static void updateHologramsViewers() {
+    public void updateHologramsViewers() {
         taskTimer = new BukkitRunnable() {
             @Override
             public void run() {
@@ -79,7 +77,7 @@ public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAf
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
     }
 
-    public static void registerHolograms(Hologram... holograms) {
+    public void registerHolograms(Hologram... holograms) {
         File hologramFolder = getHologramFolder();
         for (Hologram hologram : holograms) {
             if (hologram == null) continue;
@@ -115,14 +113,14 @@ public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAf
 
     }
 
-    public static void loadAllFromFolder(File folder) {
+    public void loadAllFromFolder(File folder) {
         if (!folder.exists() || !folder.isDirectory()) return;
         for (File file : Objects.requireNonNull(folder.listFiles((f) -> f.getName().endsWith(".yml")))) {
             loadHologramFromFile(file);
         }
     }
 
-    private static void loadHologramFromFile(File file) {
+    private void loadHologramFromFile(File file) {
         FileConfiguration hologramConfig = YamlConfiguration.loadConfiguration(file);
         String hologramName = file.getName().replace(".yml", "");
         Location hologramLocation = hologramConfig.getLocation("location");
@@ -145,7 +143,7 @@ public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAf
         displays.put(hologramName, new HologramInfo(file, hologram, display));
     }
 
-    public static void unloadAll() {
+    public void unloadAll() {
         for (HologramInfo info : displays.values()) {
             info.display().remove();
         }
@@ -153,7 +151,7 @@ public class HologramLoader extends Feature implements NotLoadInUnitTest, LoadAf
         displays.clear();
     }
 
-    public static void setHologramLocation(String hologramName, Location location) throws IOException {
+    public void setHologramLocation(String hologramName, Location location) throws IOException {
         File hologramFolder = getHologramFolder();
         HologramInfo hologramInfo = displays.get(hologramName);
         FileConfiguration hologramConfig = YamlConfiguration.loadConfiguration(hologramInfo.file());

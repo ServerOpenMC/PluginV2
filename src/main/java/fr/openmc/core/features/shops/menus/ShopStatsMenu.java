@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ShopStatsMenu extends Menu {
+	private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 	
 	private final Shop shop;
 	private int totalSoldItems = 0;
@@ -66,15 +68,20 @@ public class ShopStatsMenu extends Menu {
 		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 		
 		map.put(11, new ItemMenuBuilder(this, Material.PAPER, itemMeta ->
-				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.sells.title", Component.text(this.shop.getSales().size()).color(NamedTextColor.GREEN)))));
+				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.sells.title",
+						Component.text(this.shop.getSales().size()).color(NamedTextColor.GREEN)))));
 		map.put(12, new ItemMenuBuilder(this, Material.GOLD_INGOT, itemMeta ->
-				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.sales.title", Component.text(this.totalSoldItems).color(NamedTextColor.DARK_GREEN)))));
+				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.sales.title",
+						Component.text(this.totalSoldItems).color(NamedTextColor.DARK_GREEN)))));
 		map.put(13, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta ->
-				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.turnover.title", Component.text(this.shop.getTurnover() + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)))));
+				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.turnover.title",
+						Component.text(this.shop.getTurnover() + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)))));
 		map.put(14, new ItemMenuBuilder(this, Material.PLAYER_HEAD, itemMeta ->
-				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.buyers.title", Component.text(this.totalUniquePlayers.size()).color(NamedTextColor.LIGHT_PURPLE)))));
+				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.buyers.title",
+						Component.text(this.totalUniquePlayers.size()).color(NamedTextColor.LIGHT_PURPLE)))));
 		map.put(15, new ItemMenuBuilder(this, Material.BARREL, itemMeta ->
-				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.stocks.title", Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.AQUA)))));
+				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.stocks.title",
+						Component.text(this.shop.getItem().getAmount()).color(NamedTextColor.AQUA)))));
 		
 		map.put(18, ItemMenuTemplate.BTN_CANCEL.apply(this).setBackButton());
 		
