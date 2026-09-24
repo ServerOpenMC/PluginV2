@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
@@ -27,6 +28,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ObeseCropsInfoMenu extends PaginatedMenu {
+    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     private final List<ObeseCropInfo> obeseCropInfos;
 
@@ -66,8 +68,8 @@ public class ObeseCropsInfoMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        boolean isActive = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
+        boolean isActive = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
 
         for (ObeseCropInfo obeseCropInfo : obeseCropInfos) {
             items.add(new ItemMenuBuilder(

@@ -20,11 +20,11 @@ public class CraftItemChallenge extends ChallengeAnimation {
     private final Map<UUID, Integer> progress = new HashMap<>();
 
     public CraftItemChallenge(CustomItem item, int target, long time) {
-        this(item.getBest(), target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(item.getBest(), target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public CraftItemChallenge(ItemStack item, int target, long time) {
-        this(item, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(item, target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public CraftItemChallenge(ItemStack item, int target, CustomLootTable reward, long time) {

@@ -22,7 +22,7 @@ public class Quizz extends ChatAnimation {
     public Quizz(Component question, String... answers) {
         this(question,
                 Arrays.asList(answers),
-                OMCRegistry.CUSTOM_LOOT_TABLES.QUIZZ,
+                OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.QUIZZ,
                 30L);
     }
 

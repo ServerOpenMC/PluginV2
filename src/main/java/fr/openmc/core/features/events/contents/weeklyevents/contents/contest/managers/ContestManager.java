@@ -22,6 +22,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.men
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
@@ -29,6 +30,7 @@ import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
@@ -115,7 +117,13 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
 
         // ** PARTICLE REGION **
         if (OMCRegistry.HOOKS.WORLD_GUARD.isEnable()) {
-            ContestParticlesUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+            ContestParticlesUtils.spawnContestParticlesInRegion(
+                    this,
+                    "spawn",
+                    Bukkit.getWorld("world"),
+                    10,
+                    70,
+                    135);
         }
     }
 
@@ -128,7 +136,8 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
     @Override
     public List<Supplier<LifecycleRegistry>> getRegistries() {
         return List.of(
-                () -> OMCRegistry.CONTEST_FEATURES = new ContestFeaturesRegistry()
+                () -> SubRegistry.boot(new ContestFeaturesRegistry(),
+                        r -> OMCRegistry.CONTEST_FEATURES = r)
         );
     }
 

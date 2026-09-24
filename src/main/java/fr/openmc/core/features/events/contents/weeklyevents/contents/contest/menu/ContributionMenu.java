@@ -29,7 +29,7 @@ import static fr.openmc.core.utils.bukkit.ItemUtils.isSimilar;
 
 public class ContributionMenu extends Menu {
 
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
     private final ContestPlayerManager contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
 
     public ContributionMenu(Player owner) {

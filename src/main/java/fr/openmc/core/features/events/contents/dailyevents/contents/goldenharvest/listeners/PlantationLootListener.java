@@ -4,6 +4,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -24,10 +25,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import java.util.List;
 
 public class PlantationLootListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+
     @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);

@@ -6,8 +6,12 @@ import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListen
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.registry.items.keys.KeyBlock;
@@ -28,9 +32,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 @Credit(developers = {"iambibi_"})
-public class ChatAnimationManager extends Feature implements HasListeners {
+public class ChatAnimationManager extends Feature implements HasListeners, HasRegistries {
 
     private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 20 min
     private static final long MAX_DELAY_TICKS = 20 * 60 * 30L; // 30 min
@@ -38,11 +43,11 @@ public class ChatAnimationManager extends Feature implements HasListeners {
     private Set<ChatAnimation> ANIMATIONS;
 
     @Getter
-    private static ChatAnimation currentAnimation;
+    private ChatAnimation currentAnimation;
     @Getter
-    private static ChatAnimation lastAnimation;
+    private ChatAnimation lastAnimation;
     private BukkitTask scheduleTask;
-    private static BukkitTask endAnimationTask;
+    private BukkitTask endAnimationTask;
 
     @Override
     public Set<ListenerFactory> getListeners() {
@@ -178,7 +183,7 @@ public class ChatAnimationManager extends Feature implements HasListeners {
         }, timeBeforeEndTicks);
     }
 
-    public static void onAnimationCompleted(ChatAnimation animation, Player winner, LootReward loot) {
+    public void onAnimationCompleted(ChatAnimation animation, Player winner, LootReward loot) {
         if (currentAnimation != animation) return;
 
         if (endAnimationTask != null) {
@@ -210,7 +215,15 @@ public class ChatAnimationManager extends Feature implements HasListeners {
         }
     }
 
-    public static ChatAnimation getActive() {
+    public ChatAnimation getActive() {
         return currentAnimation;
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> SubRegistry.boot(new ChatAnimationLootTableRegistry(),
+                        r -> OMCRegistry.CHAT_ANIMATION_LOOT_TABLE = r)
+        );
     }
 }

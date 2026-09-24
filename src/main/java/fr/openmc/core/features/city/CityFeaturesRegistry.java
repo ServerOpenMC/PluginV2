@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.chat.CityChatManager;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.CityMilestoneManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
@@ -15,6 +16,8 @@ import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.loading.FeatureEntry;
+import fr.openmc.core.registry.features.loading.FeatureLoadingType;
 
 public class CityFeaturesRegistry extends SubRegistry<String, Feature> {
     private final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
@@ -39,6 +42,7 @@ public class CityFeaturesRegistry extends SubRegistry<String, Feature> {
             new CityMilestoneManager(cityManager));
     public final CityChatManager CITY_CHAT = register(
             new CityChatManager());
+    public final MascotsManager MASCOTS = register(new MascotsManager());
 
     @Override
     public KeyedRegistry<String, ? super Feature> getParentRegistry() {

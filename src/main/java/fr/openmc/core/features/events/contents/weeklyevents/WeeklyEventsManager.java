@@ -6,11 +6,14 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.DateUtils;
@@ -21,9 +24,10 @@ import java.sql.SQLException;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 @Credit(developers = {"iambibi_"})
-public class WeeklyEventsManager extends Feature implements HasDatabase {
+public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegistries {
 
     private Dao<WeeklyEventsData, Integer> dao;
     private WeeklyEventsData data;
@@ -46,6 +50,13 @@ public class WeeklyEventsManager extends Feature implements HasDatabase {
     public void initDB(ConnectionSource connectionSource) throws SQLException {
         dao = DaoManager.createDao(connectionSource, WeeklyEventsData.class);
         TableUtils.createTableIfNotExists(connectionSource, WeeklyEventsData.class);
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> OMCRegistry.WEEKLY_EVENTS = new WeeklyEventsRegistry()
+        );
     }
 
     /**

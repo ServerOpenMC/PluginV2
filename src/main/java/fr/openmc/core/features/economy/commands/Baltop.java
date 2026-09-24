@@ -8,11 +8,10 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Baltop {
-    private final LeaderBoardManager leaderBoardManager = OMCRegistry.FEATURES.LEADERBOARD.get();
     @Command("baltop")
     @Description("Permet de voir le top des joueurs les plus riches")
     @CommandPermission("omc.commands.baltop")
     public void baltop(Player player) {
-         player.sendMessage(leaderBoardManager.CITY_MONEY_LEADERBOARD.createComponent());
+         player.sendMessage(OMCRegistry.FEATURES.LEADERBOARD.get().CITY_MONEY_LEADERBOARD.createComponent());
     }
 }

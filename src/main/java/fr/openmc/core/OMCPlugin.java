@@ -69,12 +69,13 @@ public class OMCPlugin extends JavaPlugin {
         }
         new ErrorReporter();
 
-        /* MANAGERS */
+        // * Commandes
         CommandsManager.init();
-        ListenersManager.init();
-
         /* REGISTRIES */
         OMCRegistry.initAll();
+
+        // * Listeners
+        ListenersManager.init();
 
         if (!OMCPlugin.isUnitTestVersion() && OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
             PacketMenuLib.init(this);

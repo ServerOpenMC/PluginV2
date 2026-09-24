@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * Permet le chargement, la sauvegarde et la modification de la configuration des trades et contests.
  */
 public class TradeYMLManager extends Feature {
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
 
     @Getter
     private File contestFile;

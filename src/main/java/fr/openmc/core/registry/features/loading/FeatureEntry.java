@@ -25,10 +25,14 @@ public class FeatureEntry<F extends Feature> {
         return new FeatureEntry<>(supplier, loadingType, flags);
     }
 
+    public static <V extends Feature> FeatureEntry<V> of(Supplier<V> supplier, FeatureFlag... flags) {
+        return FeatureEntry.of(FeatureLoadingType.NONE, supplier, flags);
+    }
+
     public F create() {
-        if (instance == null) {
+        if (instance == null)
             instance = supplier.get();
-        }
+
         return instance;
     }
 
@@ -42,7 +46,7 @@ public class FeatureEntry<F extends Feature> {
             boolean blocked = switch (flag) {
                 case FeatureFlag.NotInUnitTest _ -> OMCPlugin.isUnitTestVersion();
                 case FeatureFlag.NeedApi needApi -> !needApi.isEnabled().get();
-                default -> throw new IllegalStateException("FeatureFlag non implémenter dans FeatureEntry#shouldLoad() : " + flag);
+                default -> throw new IllegalStateException("FeatureFlag non implémenté dans FeatureEntry#shouldLoad() : " + flag);
             };
 
             if (blocked) return false;

@@ -40,6 +40,7 @@ import fr.openmc.core.features.dream.registries.items.tools.*;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
@@ -118,7 +119,7 @@ public class DreamItemRegistry extends SubRegistry<String, DreamItem> {
     public final DreamItem SOUL_AXE = register(new SoulAxe());
     public final DreamItem CLOUD_FISHING_ROD = register(new CloudFishingRod());
     public final DreamItem METEO_WAND = register(new MeteoWand());
-    public final DreamItem METAL_DETECTOR = register(new MetalDetector(OMCRegistry.DREAM_FEATURES.METAL_DETECTOR));
+    public final DreamItem METAL_DETECTOR = register(new MetalDetector());
     public final DreamItem CRYSTALIZED_PICKAXE = register(new CrystalizedPickaxe());
     public final DreamItem MECHANIC_PICKAXE = register(new MecanicPickaxe());
 

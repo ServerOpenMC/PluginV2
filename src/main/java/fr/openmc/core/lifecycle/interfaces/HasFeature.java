@@ -10,5 +10,5 @@ public interface HasFeature {
     /**
      * Feature à initialiser
      */
-    FeatureEntry<? extends Feature> feature();
+    Feature feature();
 }

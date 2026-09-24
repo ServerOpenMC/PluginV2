@@ -10,7 +10,7 @@ import revxrsal.commands.node.ExecutionContext;
 import java.util.List;
 
 public class ColorContestAutoComplete implements SuggestionProvider<BukkitCommandActor> {
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         return contestManager.getColorContestList();

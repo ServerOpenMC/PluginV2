@@ -16,8 +16,8 @@ public class AltarCheckTask extends BukkitRunnable {
     private final double MAX_DISTANCE = 30.0;
     private final AltarManager altarManager;
 
-    public AltarCheckTask() {
-        this.altarManager = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS.ALTAR;
+    public AltarCheckTask(AltarManager altarManager) {
+        this.altarManager = altarManager;
     }
 
     @Override

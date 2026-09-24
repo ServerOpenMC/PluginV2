@@ -36,7 +36,7 @@ import java.util.Map;
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
     private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
     private final ContestPlayerManager contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
     private final TradeYMLManager tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
 
@@ -62,7 +62,7 @@ public class ContestCommand {
         if (activePhase.equals(ContestPhase.VOTE_CAMP.getPhase())) {
             new VoteMenu(player).open();
         } else if (activePhase.equals(ContestPhase.TRADE_PHASE.getPhase())) {
-            if (OMCRegistry.FEATURES.CONTEST.get().getDataPlayer().get(player.getUniqueId()) != null) {
+            if (OMCRegistry.WEEKLY_EVENTS.CONTEST.feature().getDataPlayer().get(player.getUniqueId()) != null) {
                 new ContributionMenu(player).open();
             } else {
                 new VoteMenu(player).open();

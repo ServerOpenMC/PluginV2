@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GoldenHarvestMenu extends Menu {
+    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     public GoldenHarvestMenu(Player owner) {
         super(owner);
@@ -51,8 +52,8 @@ public class GoldenHarvestMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        boolean isActived = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
+        boolean isActived = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
 
         inventory.put(11, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.GOLDEN_BEETROOT, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.golden_harvest.menu.info.golden_crops.name"));

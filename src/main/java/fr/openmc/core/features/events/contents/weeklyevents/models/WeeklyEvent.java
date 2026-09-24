@@ -1,8 +1,13 @@
 package fr.openmc.core.features.events.contents.weeklyevents.models;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.models.Event;
+import fr.openmc.core.lifecycle.interfaces.HasFeature;
+import fr.openmc.core.registry.features.loading.FeatureEntry;
+import fr.openmc.core.registry.features.loading.FeatureLoadingType;
 
 import java.util.List;
 import java.util.Optional;

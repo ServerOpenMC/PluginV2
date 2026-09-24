@@ -36,7 +36,7 @@ public class AltarManager extends Feature implements HasListeners {
 
     @Override
     public void init() {
-        new AltarCheckTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
+        new AltarCheckTask(this).runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
         new AltarParticlesTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
     }
 

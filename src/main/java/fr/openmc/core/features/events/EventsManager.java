@@ -27,6 +27,7 @@ import java.util.Set;
 
 public class EventsManager extends Feature implements HasCommands {
     private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     @Override
     public Set<Object> getCommands() {
@@ -37,9 +38,7 @@ public class EventsManager extends Feature implements HasCommands {
     }
 
     public List<Event> getUpcomingEvents(int slots) {
-        List<Event> events = new ArrayList<>();
-
-        events.addAll(DailyEventsManager.incomingEvents);
+        List<Event> events = new ArrayList<>(dailyEventsManager.getIncomingEvents());
         events.add(weeklyEventsManager.getCurrentEvent());
 
         events.sort((e1, e2) -> {

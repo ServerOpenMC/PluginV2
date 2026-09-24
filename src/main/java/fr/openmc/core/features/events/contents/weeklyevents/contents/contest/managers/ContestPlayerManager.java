@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Setter
 public class ContestPlayerManager extends Feature {
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
 
     /**
      * Map reliant un nombre de points à un titre correspondant.

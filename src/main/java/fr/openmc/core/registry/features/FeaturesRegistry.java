@@ -76,33 +76,33 @@ public class FeaturesRegistry extends Registry<String, Feature>
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 
+
+    public final FeatureEntry<HologramLoader> HOLOGRAM_LOADER = declare(FeatureLoadingType.RUNTIME,
+            () -> new HologramLoader(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<TicketManager> TICKETS = declare(FeatureLoadingType.RUNTIME,
             () -> new TicketManager(new File(OMCPlugin.getInstance().getDataFolder(), "data/stats")));
-
-    public final FeatureEntry<PrivateMessageManager> PRIVATE_SPY = declare(FeatureLoadingType.RUNTIME,
-            PrivateMessageManager::new);
     public final FeatureEntry<SocialSpyManager> SOCIAL_SPY = declare(FeatureLoadingType.RUNTIME,
             SocialSpyManager::new);
+    public final FeatureEntry<PrivateMessageManager> PRIVATE_SPY = declare(FeatureLoadingType.RUNTIME,
+            PrivateMessageManager::new);
     public final FeatureEntry<SpawnManager> SPAWN = declare(FeatureLoadingType.RUNTIME,
             SpawnManager::new);
     public final FeatureEntry<UpdateManager> UPDATE = declare(FeatureLoadingType.RUNTIME,
             UpdateManager::new);
+    public final FeatureEntry<TransactionsManager> TRANSACTIONS = declare(FeatureLoadingType.RUNTIME,
+            TransactionsManager::new);
     public final FeatureEntry<EconomyManager> ECONOMY = declare(FeatureLoadingType.RUNTIME,
             EconomyManager::new);
     public final FeatureEntry<BankManager> BANK = declare(FeatureLoadingType.RUNTIME,
             BankManager::new);
     public final FeatureEntry<BitsManager> BITS = declare(FeatureLoadingType.RUNTIME,
             BitsManager::new);
-    public final FeatureEntry<ScoreboardManager> SCOREBOARD = declare(FeatureLoadingType.RUNTIME,
-            () -> new ScoreboardManager(), NOT_IN_UNIT_TEST, NEED_LUCK_PERMS);
     public final FeatureEntry<HomesManager> HOMES = declare(FeatureLoadingType.RUNTIME,
             HomesManager::new);
     public final FeatureEntry<TPAManager> TPA = declare(FeatureLoadingType.RUNTIME,
             TPAManager::new);
     public final FeatureEntry<FreezeManager> FREEZE = declare(FeatureLoadingType.RUNTIME,
             FreezeManager::new);
-    public final FeatureEntry<TransactionsManager> TRANSACTIONS = declare(FeatureLoadingType.RUNTIME,
-            TransactionsManager::new);
     public final FeatureEntry<AnalyticsManager> ANALYTICS = declare(FeatureLoadingType.RUNTIME,
             AnalyticsManager::new);
     public final FeatureEntry<FriendManager> FRIENDS = declare(FeatureLoadingType.RUNTIME,
@@ -121,8 +121,6 @@ public class FeaturesRegistry extends Registry<String, Feature>
             QuestProgressSaveManager::new);
     public final FeatureEntry<MotdUtils> MOTD = declare(FeatureLoadingType.RUNTIME,
             MotdUtils::new);
-    public final FeatureEntry<MascotsManager> MASCOTS = declare(FeatureLoadingType.RUNTIME,
-            MascotsManager::new);
     public final FeatureEntry<PlayerSettingsManager> PLAYER_SETTINGS = declare(FeatureLoadingType.RUNTIME,
             PlayerSettingsManager::new);
     public final FeatureEntry<MailboxManager> MAILBOX = declare(FeatureLoadingType.RUNTIME,
@@ -137,12 +135,12 @@ public class FeaturesRegistry extends Registry<String, Feature>
             ProfileManager::new);
     public final FeatureEntry<QuestsManager> QUESTS = declare(FeatureLoadingType.AFTER_IA,
             QuestsManager::new);
+    public final FeatureEntry<ShopManager> SHOP = declare(FeatureLoadingType.AFTER_IA,
+            ShopManager::new);
     public final FeatureEntry<CityManager> CITY = declare(FeatureLoadingType.AFTER_IA,
             CityManager::new);
     public final FeatureEntry<DynamicCooldownManager> DYNAMIC_COOLDOWN = declare(FeatureLoadingType.AFTER_IA,
             DynamicCooldownManager::new);
-    public final FeatureEntry<ContestManager> CONTEST = declare(FeatureLoadingType.AFTER_IA,
-            ContestManager::new);
     public final FeatureEntry<WeeklyEventsManager> WEEKLY_EVENTS = declare(FeatureLoadingType.AFTER_IA,
             WeeklyEventsManager::new);
     public final FeatureEntry<DailyEventsManager> DAILY_EVENTS = declare(FeatureLoadingType.AFTER_IA,
@@ -151,26 +149,24 @@ public class FeaturesRegistry extends Registry<String, Feature>
             ChatAnimationManager::new);
     public final FeatureEntry<EventsManager> EVENTS = declare(FeatureLoadingType.AFTER_IA,
             EventsManager::new);
+    public final FeatureEntry<DimensionOpenerManager> DIMENSION_OPENER = declare(FeatureLoadingType.AFTER_IA,
+            DimensionOpenerManager::new);
     public final FeatureEntry<DreamManager> DREAM = declare(FeatureLoadingType.AFTER_IA,
             DreamManager::new);
+    public final FeatureEntry<ScoreboardManager> SCOREBOARD = declare(FeatureLoadingType.AFTER_IA,
+            () -> new ScoreboardManager(), NOT_IN_UNIT_TEST, NEED_LUCK_PERMS);
     public final FeatureEntry<MultiBlockManager> MULTIBLOCKS = declare(FeatureLoadingType.AFTER_IA,
             () -> new MultiBlockManager(), NOT_IN_UNIT_TEST);
+    public final FeatureEntry<BossbarManager> BOSSBAR = declare(FeatureLoadingType.AFTER_IA,
+            BossbarManager::new);
     public final FeatureEntry<MilestonesManager> MILESTONES = declare(FeatureLoadingType.AFTER_IA,
             MilestonesManager::new);
     public final FeatureEntry<LeaderBoardManager> LEADERBOARD = declare(FeatureLoadingType.AFTER_IA,
             () -> new LeaderBoardManager(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<MainMenu> MAIN_MENU = declare(FeatureLoadingType.AFTER_IA,
             () -> new MainMenu(), NOT_IN_UNIT_TEST, NEED_PROTOCOL_LIB);
-    public final FeatureEntry<HologramLoader> HOLOGRAM_LOADER = declare(FeatureLoadingType.AFTER_IA,
-            () -> new HologramLoader(), NOT_IN_UNIT_TEST);
-    public final FeatureEntry<BossbarManager> BOSSBAR = declare(FeatureLoadingType.AFTER_IA,
-            BossbarManager::new);
-    public final FeatureEntry<ShopManager> SHOP = declare(FeatureLoadingType.AFTER_IA,
-            ShopManager::new);
     public final FeatureEntry<HomeIconCacheManager> HOME_ICON_CACHE = declare(FeatureLoadingType.AFTER_IA,
             HomeIconCacheManager::new);
-    public final FeatureEntry<DimensionOpenerManager> DIMENSION_OPENER = declare(FeatureLoadingType.AFTER_IA,
-            DimensionOpenerManager::new);
 
     private <V extends Feature> FeatureEntry<V> declare(FeatureLoadingType type, Supplier<V> supplier, FeatureFlag... flags) {
         FeatureEntry<V> entry = new FeatureEntry<>(supplier, type, flags);

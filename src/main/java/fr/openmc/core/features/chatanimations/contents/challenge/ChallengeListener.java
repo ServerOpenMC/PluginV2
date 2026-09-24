@@ -1,6 +1,7 @@
 package fr.openmc.core.features.chatanimations.contents.challenge;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.ChatAnimation;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
@@ -16,9 +17,11 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class ChallengeListener implements Listener {
+    private final ChatAnimationManager chatAnimationManager = OMCRegistry.FEATURES.CHAT_ANIMATIONS.get();
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof MineBlocksChallenge challenge)) return;
         if (animation.isFinished()) return;
@@ -35,7 +38,7 @@ public class ChallengeListener implements Listener {
 
     @EventHandler
     public void onJump(PlayerJumpEvent event) {
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof JumpChallenge challenge)) return;
         if (animation.isFinished()) return;
@@ -50,7 +53,7 @@ public class ChallengeListener implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof KillEntityChallenge challenge)) return;
         if (animation.isFinished()) return;
@@ -68,7 +71,7 @@ public class ChallengeListener implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof CraftItemChallenge challenge)) return;
         if (animation.isFinished()) return;
@@ -96,7 +99,7 @@ public class ChallengeListener implements Listener {
     public void onPlayerFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
 
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof FishingChallenge challenge)) return;
         if (animation.isFinished()) return;
@@ -111,7 +114,7 @@ public class ChallengeListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof PlaceBlocksChallenge challenge)) return;
         if (animation.isFinished()) return;
@@ -129,7 +132,7 @@ public class ChallengeListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.getFrom().distanceSquared(event.getTo()) == 0) return;
 
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof WalkDistanceChallenge challenge)) return;
         if (animation.isFinished()) return;

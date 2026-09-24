@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BloodyNightMenu extends Menu {
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     public BloodyNightMenu(Player owner) {
         super(owner);
@@ -50,8 +51,8 @@ public class BloodyNightMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        boolean isActived = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent;
+        boolean isActived = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent;
 
         inventory.put(11, new ItemMenuBuilder(this, Material.STRIDER_SPAWN_EGG, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.bloody_night.menu.info.bloody_monster.name"));

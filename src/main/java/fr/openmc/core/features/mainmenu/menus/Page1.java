@@ -75,7 +75,7 @@ public class Page1 implements Menu {
 
     public Page1(Player player) {
         this.adminShopManager = OMCRegistry.FEATURES.ADMIN_SHOP.get();
-        this.contestManager = OMCRegistry.FEATURES.CONTEST.get();
+        this.contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
         this.weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
 
         City playerCity = City.ofPlayer(player.getUniqueId());
@@ -274,6 +274,8 @@ public class Page1 implements Menu {
         }
 
         int slot = event.slot();
+
+        // todo: arreter ce carnage
         if (CITY_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.mainCommand(player));
         } else if (QUEST_SLOTS.contains(slot)) {

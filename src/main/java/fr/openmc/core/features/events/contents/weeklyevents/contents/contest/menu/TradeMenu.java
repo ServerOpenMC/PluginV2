@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class TradeMenu extends Menu {
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
     private final TradeYMLManager tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
     private final ContestPlayerManager contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
 

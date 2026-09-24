@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.menu.GoldenHarvestMenu;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
@@ -104,8 +105,8 @@ public class GoldenHarvestEvent extends DailyEvent
     }
 
     @Override
-    public FeatureEntry<? extends Feature> feature() {
-        return FeatureEntry.of(FeatureLoadingType.RUNTIME, MiraculousFishingManager::new);
+    public GoldenHarvestManager feature() {
+        return new GoldenHarvestManager();
     }
 
     @Override

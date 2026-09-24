@@ -24,6 +24,7 @@ import fr.openmc.core.features.dream.models.db.DBPlayerSave;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.*;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -31,6 +32,7 @@ import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
@@ -76,10 +78,14 @@ public class DreamManager extends Feature
     @Override
     public List<Supplier<LifecycleRegistry>> getRegistries() {
         return new ArrayList<>(List.of(
-                () -> OMCRegistry.DREAM_FEATURES = new DreamFeaturesRegistry(),
-                () -> OMCRegistry.DREAM_ITEM = new DreamItemRegistry(),
-                () -> OMCRegistry.DREAM_LOOT_TABLE = new DreamLootTableRegistry(),
-                () -> OMCRegistry.DREAM_MOB = new DreamMobsRegistry()
+                () -> SubRegistry.boot(new DreamItemRegistry(),
+                        r -> OMCRegistry.DREAM_ITEM = r),
+                () -> SubRegistry.boot(new DreamLootTableRegistry(),
+                        r -> OMCRegistry.DREAM_LOOT_TABLE = r),
+                () -> SubRegistry.boot(new DreamMobsRegistry(),
+                        r -> OMCRegistry.DREAM_MOB = r),
+                () -> SubRegistry.boot(new DreamFeaturesRegistry(),
+                        r -> OMCRegistry.DREAM_FEATURES = r)
         ));
     }
 

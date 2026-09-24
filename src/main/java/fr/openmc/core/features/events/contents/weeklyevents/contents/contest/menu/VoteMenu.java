@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VoteMenu extends Menu {
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
 
     public VoteMenu(Player owner) {
         super(owner);

@@ -60,9 +60,8 @@ public class ContestParticlesUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
     }
 
-    public static void spawnContestParticlesInRegion(String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
+    public static void spawnContestParticlesInRegion(ContestManager contestManager, String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
         WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
-        ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
 
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;

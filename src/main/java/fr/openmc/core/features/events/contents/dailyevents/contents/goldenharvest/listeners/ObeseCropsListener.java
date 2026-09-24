@@ -1,10 +1,12 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
@@ -21,10 +23,11 @@ import org.bukkit.event.block.BlockGrowEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ObeseCropsListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
     @EventHandler(ignoreCancelled = true)
     public void onCropFullyGrowed(BlockGrowEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
         if (GoldenHarvestManager.getObeseCropsMapping().get(keyBlock) == null) return;

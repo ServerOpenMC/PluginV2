@@ -247,9 +247,9 @@ public class QuestsMenu extends Menu {
                                     .append(Component.space())
                                     .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
                                     .decoration(TextDecoration.ITALIC, false));
-                        } else if (reward instanceof QuestMoneyReward(double amount)) {
+                        } else if (reward instanceof QuestMoneyReward moneyReward) {
                             lore.add(Component.text("    - ", NamedTextColor.DARK_GRAY)
-                                    .append(Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                                    .append(Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyReward.getAmount()), NamedTextColor.GOLD))
                                     .append(Component.space())
                                     .append(Component.text(economyManager.getEconomyIcon(), NamedTextColor.WHITE))
                                     .decoration(TextDecoration.ITALIC, false));
@@ -273,9 +273,9 @@ public class QuestsMenu extends Menu {
                             .append(Component.space())
                             .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
                             .decoration(TextDecoration.ITALIC, false));
-                } else if (reward instanceof QuestMoneyReward(double amount)) {
+                } else if (reward instanceof QuestMoneyReward moneyReward) {
                     lore.add(Component.text("  - ", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                            .append(Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyReward.getAmount()), NamedTextColor.GOLD))
                             .append(Component.space())
                             .append(Component.text(economyManager.getEconomyIcon(), NamedTextColor.WHITE))
                             .decoration(TextDecoration.ITALIC, false));

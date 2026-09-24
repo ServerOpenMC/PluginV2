@@ -42,7 +42,7 @@ public class MainScoreboard extends BaseScoreboard {
 
     private final CorpseManager corpseManager;
     private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
-    private final ContestManager contestManager = OMCRegistry.FEATURES.CONTEST.get();
+    private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
 
     public MainScoreboard(CorpseManager corpseManager) {
         this.corpseManager = corpseManager;

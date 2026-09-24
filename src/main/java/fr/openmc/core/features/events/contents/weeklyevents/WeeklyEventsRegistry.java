@@ -1,9 +1,12 @@
 package fr.openmc.core.features.events.contents.weeklyevents;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
+import fr.openmc.core.lifecycle.interfaces.HasFeature;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.Registry;
+import fr.openmc.core.registry.features.loading.FeatureEntry;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +14,15 @@ import java.util.Optional;
 public class WeeklyEventsRegistry extends Registry<String, WeeklyEvent>
         implements KeyedRegistry<String, WeeklyEvent>  {
 
-    public final WeeklyEvent CONTEST = register(new Contest());
+    public final Contest CONTEST = register(new Contest());
+
+    @Override
+    public void init() {
+        for (WeeklyEvent event : OMCRegistry.WEEKLY_EVENTS.values()) {
+            if (!(event instanceof HasFeature hasFeature)) continue;
+            OMCRegistry.FEATURES.register(FeatureEntry.of(hasFeature::feature));
+        }
+    }
 
     @Override
     public String key(WeeklyEvent registryObject) {

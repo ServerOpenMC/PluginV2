@@ -19,14 +19,11 @@ import java.util.Set;
 import java.util.UUID;
 
 public class GlaciteNpcManager extends Feature implements HasListeners {
-    private final DreamDimensionManager dreamDimensionManager;
-
-    public GlaciteNpcManager() {
-        this.dreamDimensionManager = OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION;
-    }
 
     @Override
     public void init() {
+        DreamDimensionManager dreamDimensionManager = OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION;
+
         if (dreamDimensionManager.hasSeedChanged()) {
             OMCLogger.info("[GlaciteNpcManager] Seed changée, reset des trader glacite NPC !");
             // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
@@ -13,11 +14,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
  * Classe gérant l'application des ambiences dans les événements journalier
  */
 public class DailyEventAmbientListeners implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()) return;
-        DailyEvent dailyEvent = DailyEventsManager.outgoingEvent.getDailyEvent();
+        if (!dailyEventsManager.isActiveDailyEvent()) return;
+        DailyEvent dailyEvent = dailyEventsManager.getOutgoingEvent().getDailyEvent();
 
         if (!event.getPlayer().getWorld().getName().equals(dailyEvent.getWorldEvent())) return;
         if (!(dailyEvent instanceof HasAmbient hasAmbient)) return;
@@ -27,9 +29,9 @@ public class DailyEventAmbientListeners implements Listener {
 
     @EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()) return;
+        if (!dailyEventsManager.isActiveDailyEvent()) return;
 
-        ScheduleDailyEvent scheduleDailyEvent = DailyEventsManager.outgoingEvent;
+        ScheduleDailyEvent scheduleDailyEvent = dailyEventsManager.getOutgoingEvent();
 
         if (scheduleDailyEvent == null) return;
         DailyEvent dailyEvent = scheduleDailyEvent.getDailyEvent();

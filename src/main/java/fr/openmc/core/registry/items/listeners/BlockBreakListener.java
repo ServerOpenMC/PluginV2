@@ -14,19 +14,13 @@ import java.util.Optional;
 
 public class BlockBreakListener implements Listener {
 
-    private final ProtectionsManager protectionsManager;
-
-    public BlockBreakListener() {
-        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
-    }
-
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (event.isCancelled()) return;
         if (event.getBlock() == null) return;
 
-        protectionsManager.verify(player, event, event.getBlock().getLocation());
+        OMCRegistry.CITY_FEATURES.PROTECTIONS.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
@@ -34,5 +28,4 @@ public class BlockBreakListener implements Listener {
 
         if (item.get() instanceof BlockBreakableItem breakableItem) breakableItem.onBlockBreak(player, event);
     }
-
 }

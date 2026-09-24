@@ -17,7 +17,7 @@ public class JumpChallenge extends ChallengeAnimation {
     private final Map<UUID, Integer> progress = new HashMap<>();
 
     public JumpChallenge(int target, long time) {
-        this(target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public JumpChallenge(int target, CustomLootTable reward, long time) {

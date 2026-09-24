@@ -31,7 +31,10 @@ public abstract class Feature {
             // * Enregistre et charge les registres
             if (this instanceof HasRegistries hasRegistries) {
                 for (Supplier<LifecycleRegistry> registry : hasRegistries.getRegistries()) {
-                    OMCRegistry.load(registry.get());
+                    LifecycleRegistry lifecycleRegistry = OMCRegistry.load(registry.get());
+
+                    lifecycleRegistry.init();
+                    lifecycleRegistry.postInit();
                 }
             }
 

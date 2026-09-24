@@ -32,7 +32,12 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerShopManager extends Feature {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
-    private final ShopDatabaseManager shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
+    private ShopDatabaseManager shopDatabaseManager;
+
+    @Override
+    public void init() {
+        shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
+    }
     
     /**
      * Initiates the shop creation process for the specified player.

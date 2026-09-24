@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.chatanimations.ChatAnimationLootTableRegistry;
 import fr.openmc.core.features.city.CityFeaturesRegistry;
 import fr.openmc.core.features.dream.registries.DreamFeaturesRegistry;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
@@ -51,6 +52,9 @@ public final class OMCRegistry {
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
 
+    // ** Registre concernant la feature des animations dans le chat
+    public static ChatAnimationLootTableRegistry CHAT_ANIMATION_LOOT_TABLE;
+
     // ** Registre concernant la feature de la Dimension des reves
     public static DreamFeaturesRegistry DREAM_FEATURES;
     public static DreamItemRegistry DREAM_ITEM;
@@ -82,6 +86,9 @@ public final class OMCRegistry {
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
             new RegistryContext(
+                    () -> OMCRegistry.DREAM_ITEM = new DreamItemRegistry(),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
                     () -> CUSTOM_LOOT_TABLES = new CustomLootTableRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
@@ -94,10 +101,6 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> WORLD_TEMPLATES = new WorldTemplateRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
-            new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
-                    RegistryLoadingType.AFTER_IA),
-            new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
-                    RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_REGIONS = new CustomRegionRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
@@ -109,7 +112,7 @@ public final class OMCRegistry {
 
     public static void bootstrapAll(BootstrapContext context) {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
+            if (!ctx.has(RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = load(ctx);
             try {
@@ -124,8 +127,8 @@ public final class OMCRegistry {
 
     public static void initAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
-            if (isNotTyped(ctx, RegistryLoadingType.RUNTIME)) continue;
+            if (!ctx.has(RegistryLoadingType.RUNTIME)) continue;
+            if (ctx.has(RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
 
             LifecycleRegistry r = load(ctx);
 
@@ -139,8 +142,8 @@ public final class OMCRegistry {
 
     public static void postInitAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
-            if (isNotTyped(ctx, RegistryLoadingType.AFTER_IA)) continue;
+            if (!ctx.has(RegistryLoadingType.AFTER_IA)) continue;
+            if (ctx.has(RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
 
             LifecycleRegistry r = load(ctx);
 
@@ -161,19 +164,11 @@ public final class OMCRegistry {
     }
 
     private static LifecycleRegistry load(RegistryContext ctx) {
-        return load(ctx.registry().get());
+        return load(ctx.get());
     }
 
     public static LifecycleRegistry load(LifecycleRegistry registry) {
-        LOADED.add(registry);
+        if (!LOADED.contains(registry)) LOADED.add(registry);
         return registry;
-    }
-
-    private static boolean isNotTyped(RegistryContext ctx, RegistryLoadingType type) {
-        return Arrays.stream(ctx.loadingTypes()).noneMatch(t -> t == type);
-    }
-
-    private static boolean isTyped(RegistryContext ctx, RegistryLoadingType type) {
-        return Arrays.stream(ctx.loadingTypes()).anyMatch(t -> t == type);
     }
 }

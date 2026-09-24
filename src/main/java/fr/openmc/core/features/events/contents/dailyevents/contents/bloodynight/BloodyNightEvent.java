@@ -117,7 +117,7 @@ public class BloodyNightEvent extends DailyEvent
     }
 
     @Override
-    public FeatureEntry<BloodyNightManager> feature() {
-        return FeatureEntry.of(FeatureLoadingType.RUNTIME, BloodyNightManager::new);
+    public BloodyNightManager feature() {
+        return new BloodyNightManager();
     }
 }

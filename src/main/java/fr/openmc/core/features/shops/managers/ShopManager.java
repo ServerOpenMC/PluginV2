@@ -18,6 +18,7 @@ import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.world.WorldUtils;
@@ -41,10 +42,11 @@ public class ShopManager extends Feature implements HasListeners, HasCommands, H
     private Map<Location, Shop> shopsByLocation;
 	public final Set<UUID> shopBypass = new HashSet<>();
 
-	private final ShopDatabaseManager shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
+	private ShopDatabaseManager shopDatabaseManager;
 	
 	@Override
 	protected void init() {
+		shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
 		loadShops();
 		loadShopItems();
 		loadShopSales();
@@ -60,7 +62,8 @@ public class ShopManager extends Feature implements HasListeners, HasCommands, H
 	@Override
 	public List<Supplier<LifecycleRegistry>> getRegistries() {
 		return List.of(
-				() -> OMCRegistry.SHOP_FEATURES = new ShopFeaturesRegistry()
+				() -> SubRegistry.boot(new ShopFeaturesRegistry(),
+						r -> OMCRegistry.SHOP_FEATURES = r)
 		);
 	}
 	

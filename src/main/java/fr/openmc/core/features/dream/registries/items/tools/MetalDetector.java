@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class MetalDetector extends DreamItem implements UsableItem {
-    private final MetalDetectorManager manager;
+    private MetalDetectorManager manager;
 
-    public MetalDetector(MetalDetectorManager manager) {
+    public MetalDetector() {
         super(new DreamItemMeta(
                 "omc_dream:metal_detector",
                 TranslationManager.translation("feature.dream.item.metal_detector.name"),
@@ -41,7 +41,6 @@ public class MetalDetector extends DreamItem implements UsableItem {
                 Material.PAPER,
                 false
         ));
-        this.manager = manager;
     }
 
     @Override
@@ -56,11 +55,11 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         if (!DreamUtils.isDreamWorld(event.getClickedBlock().getLocation())) return;
         UUID uuid = player.getUniqueId();
-        if (!manager.hiddenChests.containsKey(uuid)) return;
+        if (!getCachedManager().hiddenChests.containsKey(uuid)) return;
 
         if (clicked.getType() == Material.CHEST) {
             event.setCancelled(true);
-            MetalDetectorTask task = manager.hiddenChests.remove(uuid);
+            MetalDetectorTask task = getCachedManager().hiddenChests.remove(uuid);
             task.cancel();
             Location chestLoc = task.getChestLocation();
 
@@ -99,7 +98,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         UUID playerUUID = player.getUniqueId();
 
-        if (!manager.hiddenChests.containsKey(playerUUID)) return;
+        if (!getCachedManager().hiddenChests.containsKey(playerUUID)) return;
 
         ItemStack item = event.getItem();
         if (item == null) return;
@@ -111,12 +110,18 @@ public class MetalDetector extends DreamItem implements UsableItem {
 
         player.setCooldown(item, 15 * 20);
 
-        MetalDetectorTask oldTask = manager.hiddenChests.get(playerUUID);
+        MetalDetectorTask oldTask = getCachedManager().hiddenChests.get(playerUUID);
         oldTask.getChestLocation().getBlock().setType(Material.MUD);
-        Location newLoc = manager.findRandomChestLocation(player.getLocation());
+        Location newLoc = getCachedManager().findRandomChestLocation(player.getLocation());
         MetalDetectorTask newTask = new MetalDetectorTask(player, newLoc);
         newTask.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L);
-        manager.hiddenChests.put(playerUUID, newTask);
+        getCachedManager().hiddenChests.put(playerUUID, newTask);
         oldTask.cancel();
+    }
+
+    private MetalDetectorManager getCachedManager() {
+        if (manager == null)
+            manager = OMCRegistry.DREAM_FEATURES.METAL_DETECTOR;
+        return manager;
     }
 }

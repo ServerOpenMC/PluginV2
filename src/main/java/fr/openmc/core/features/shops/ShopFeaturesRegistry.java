@@ -10,8 +10,8 @@ import fr.openmc.core.registry.features.Feature;
 
 public class ShopFeaturesRegistry extends SubRegistry<String, Feature> {
 
-    public final PlayerShopManager PLAYER_SHOP = register(new PlayerShopManager());
     public final ShopDatabaseManager SHOP_DB = register(new ShopDatabaseManager());
+    public final PlayerShopManager PLAYER_SHOP = register(new PlayerShopManager());
 
     @Override
     public KeyedRegistry<String, ? super Feature> getParentRegistry() {

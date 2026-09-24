@@ -31,11 +31,11 @@ public class OMCBootstrap implements PluginBootstrap {
         // ** LOAD DATAPACKS **
         DatapackLoader.loadAllInResource(context);
 
-        // ** LOAD ITEMS ADDER NAMESPACES **
-        ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
-
         // ** REGISTRY MANAGER **
         OMCRegistry.bootstrapAll(context);
+
+        // ** LOAD ITEMS ADDER NAMESPACES **
+        ItemsAdderHook.copyContentsToItemsAdder(context, "contents");
 
         // ** LOAD TRANSLATION **
         // this creates resource pack who is needed for item adder

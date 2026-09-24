@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.display;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
  * Boss bar affichant le temps restant de l'événement
  */
 public class DailyEventBossbar extends BaseBossbar {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     /**
      * @return L'identifiant unique de cette boss bar
@@ -31,20 +33,20 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected void update(Player player, BossBar bar) {
-        DailyEvent event = DailyEventsManager.getActiveDailyEvent();
+        DailyEvent event = dailyEventsManager.getActiveDailyEvent();
         if (!(event instanceof HasBossBar hasBossBar)) return;
 
         bar.name(TranslationManager.translation("feature.dailyevents.bossbar.name",
                 Component.text(
                         DateUtils.convertSecondToTime(
-                                (long) DailyEventsManager.getRemainingTime(event)), event.getMainColor())
+                                (long) dailyEventsManager.getRemainingTime(event)), event.getMainColor())
                 ));
     }
 
     @Override
     protected Float progress(Player player) {
-        DailyEvent event = DailyEventsManager.getActiveDailyEvent();
-        float remainingSeconds = DailyEventsManager.getRemainingTime(event);
+        DailyEvent event = dailyEventsManager.getActiveDailyEvent();
+        float remainingSeconds = dailyEventsManager.getRemainingTime(event);
         float totalSeconds = event.getDuration() * 60f;
         return remainingSeconds / totalSeconds;
     }
@@ -55,8 +57,8 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected BossBar.Color color(Player player) {
-        if (DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar hasBossBar) {
+        if (dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof HasBossBar hasBossBar) {
             return hasBossBar.getBossBarColor();
         }
 
@@ -69,8 +71,8 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected BossBar.Overlay style(Player player) {
-        if (DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar hasBossBar) {
+        if (dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof HasBossBar hasBossBar) {
             return hasBossBar.getBossBarOverlay();
         }
 
@@ -83,9 +85,9 @@ public class DailyEventBossbar extends BaseBossbar {
      */
     @Override
     protected boolean shouldDisplay(Player player) {
-        return DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof HasBossBar
-                && player.getWorld().getName().equals(DailyEventsManager.getActiveDailyEvent().getWorldEvent());
+        return dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof HasBossBar
+                && player.getWorld().getName().equals(dailyEventsManager.getActiveDailyEvent().getWorldEvent());
     }
 
     /**

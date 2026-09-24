@@ -30,7 +30,6 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public abstract class CustomAmbient {
-    private static final LeaderBoardManager leaderBoardManager = OMCRegistry.FEATURES.LEADERBOARD.get();
     // ** UUID playerUUID -> String idAmbient
     public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
 
@@ -127,7 +126,7 @@ public abstract class CustomAmbient {
     private void refreshLeaderBoards(Player player) {
         Bukkit.getScheduler().runTaskLater(
                 fr.openmc.core.OMCPlugin.getInstance(),
-                () -> leaderBoardManager.refreshViewer(player),
+                () -> OMCRegistry.FEATURES.LEADERBOARD.get().refreshViewer(player),
                 1L
         );
     }

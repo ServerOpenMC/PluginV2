@@ -8,6 +8,11 @@ public abstract class Region extends CustomRegion {
     private final BlockVector3 max;
 
     public Region() {
+        if (getPos1() == null || getPos2() == null) {
+            this.min = BlockVector3.ZERO;
+            this.max = BlockVector3.ZERO;
+            return;
+        }
         this.max = getPos1().getMaximum(getPos2());
         this.min = getPos1().getMinimum(getPos2());
     }

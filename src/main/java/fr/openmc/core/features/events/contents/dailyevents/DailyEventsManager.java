@@ -14,48 +14,50 @@ import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.Dai
 import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
-import fr.openmc.core.lifecycle.interfaces.HasFeature;
-import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.*;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.DateUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Supplier;
 
 
 @Credit(developers = {"iambibi_"})
-public class DailyEventsManager extends Feature implements HasDatabase, HasListeners, HasCommands {
-    private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
+public class DailyEventsManager extends Feature implements HasDatabase, HasListeners, HasCommands, HasRegistries {
+    private final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
             9, 13, 16, 21
     ));
 
     public static final int SHOW_BEGINNING_DELAY = 60; // en secondes
 
     // * Données à propos de la gestion des daily event
-    public static ScheduleDailyEvent outgoingEvent = null;
-    public static BukkitTask endEventTask = null;
-    public static BukkitTask nextEventTask;
-    public static List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
+    @Getter
+    @Setter
+    private ScheduleDailyEvent outgoingEvent = null;
+    @Getter
+    @Setter
+    private BukkitTask endEventTask = null;
+    @Getter
+    @Setter
+    private BukkitTask nextEventTask;
+    @Getter
+    @Setter
+    private List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
 
-    private static Dao<IncomingEventsDB, Integer> dao;
+    private Dao<IncomingEventsDB, Integer> incomingEventsDao;
 
     @Override
     public void init() {
-        // * Register les sous features
-        for (DailyEvent event : OMCRegistry.DAILY_EVENTS.values()) {
-            if (!(event instanceof HasFeature hasFeature)) continue;
-
-            OMCRegistry.FEATURES.register(hasFeature.feature());
-        }
-
         incomingEvents = loadIncomingEvents();
         nextEventTask = scheduleNextEventTask();
     }
@@ -71,8 +73,15 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
-        dao = DaoManager.createDao(connectionSource, IncomingEventsDB.class);
+        incomingEventsDao = DaoManager.createDao(connectionSource, IncomingEventsDB.class);
         TableUtils.createTableIfNotExists(connectionSource, IncomingEventsDB.class);
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> OMCRegistry.DAILY_EVENTS = new DailyEventsRegistry()
+        );
     }
 
     @Override
@@ -101,12 +110,12 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      *
      * @return les données des daily event (ordre actuel)
      */
-    public static IncomingEventsDB loadIncomingEventsDB() {
+    public IncomingEventsDB loadIncomingEventsDB() {
         try {
-            IncomingEventsDB data = dao.queryForId(1);
+            IncomingEventsDB data = incomingEventsDao.queryForId(1);
             if (data == null) {
                 data = new IncomingEventsDB(List.of());
-                dao.create(data);
+                incomingEventsDao.create(data);
             }
             return data;
         } catch (SQLException e) {
@@ -119,9 +128,9 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      *
      * @param data les données des daily events
      */
-    public static void saveIncomingEventsDB(IncomingEventsDB data) {
+    public void saveIncomingEventsDB(IncomingEventsDB data) {
         try {
-            dao.createOrUpdate(data);
+            incomingEventsDao.createOrUpdate(data);
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la sauvegarde de IncomingEventsDB", e);
         }
@@ -133,7 +142,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      *
      * @return la liste prévue des x prochains évenements
      */
-    public static List<ScheduleDailyEvent> loadIncomingEvents() {
+    public List<ScheduleDailyEvent> loadIncomingEvents() {
         List<ScheduleDailyEvent> scheduledEvents = new ArrayList<>();
         LocalDateTime now = DateUtils.getLocalDateTime();
         IncomingEventsDB data = loadIncomingEventsDB();
@@ -162,6 +171,10 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
         return scheduledEvents;
     }
 
+    public ScheduleDailyEvent removeFirstIncomingEvent() {
+        return incomingEvents.removeFirst();
+    }
+
     /**
      * On schedule le prochain événement à venir.
      * - On cherche la prochaine heure, en faisant gaffe si l'heure est passée, dans ce cas on schedule pour demain
@@ -170,7 +183,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      *
      * @return la tache de lancement de l'événement, qui sera executé à l'heure exacte du début de l'événement
      */
-    public static BukkitTask scheduleNextEventTask() {
+    public BukkitTask scheduleNextEventTask() {
         LocalDateTime now = DateUtils.getLocalDateTime();
         // * On cherche la prochaine heure
         Integer nextHour = SLOT_HOURS_EVENTS.stream()
@@ -206,7 +219,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      *
      * @return un boolean
      */
-    public static boolean isActiveDailyEvent() {
+    public boolean isActiveDailyEvent() {
         return outgoingEvent != null;
     }
 
@@ -215,7 +228,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      *
      * @return un daily event
      */
-    public static DailyEvent getActiveDailyEvent() {
+    public DailyEvent getActiveDailyEvent() {
         return outgoingEvent.getDailyEvent();
     }
 
@@ -224,7 +237,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      * @param event l'event
      * @return le temps restant en secondes
      */
-    public static float getRemainingTime(DailyEvent event) {
+    public float getRemainingTime(DailyEvent event) {
         if (!isActiveDailyEvent()) return -1;
         if (getActiveDailyEvent() != event) return -1;
 

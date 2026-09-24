@@ -7,6 +7,7 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -16,8 +17,15 @@ import org.bukkit.entity.Player;
  * <p>
  * This class implements the QuestReward interface and provides functionality to give a specified amount of money to a player.
  */
-public record QuestMoneyReward(double amount) implements QuestReward {
-    private static final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+public class QuestMoneyReward implements QuestReward {
+    private final EconomyManager economyManager;
+    @Getter
+    private final double amount;
+
+    public QuestMoneyReward(double amount) {
+        this.economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+        this.amount = amount;
+    }
 
     /**
      * Gives the specified amount of money to the player.

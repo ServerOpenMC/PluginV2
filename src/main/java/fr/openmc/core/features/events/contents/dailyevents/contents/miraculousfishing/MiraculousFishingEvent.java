@@ -116,8 +116,8 @@ public class MiraculousFishingEvent extends DailyEvent
     }
 
     @Override
-    public FeatureEntry<MiraculousFishingManager> feature() {
-        return FeatureEntry.of(FeatureLoadingType.RUNTIME, MiraculousFishingManager::new);
+    public MiraculousFishingManager feature() {
+        return new MiraculousFishingManager();
     }
 
     @Override

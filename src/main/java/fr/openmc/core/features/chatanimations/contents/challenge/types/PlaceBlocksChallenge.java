@@ -19,7 +19,7 @@ public class PlaceBlocksChallenge extends ChallengeAnimation {
     private final Map<UUID, Integer> progress = new HashMap<>();
 
     public PlaceBlocksChallenge(KeyBlock keyBlock, int target, long time) {
-        this(keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(keyBlock, target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public PlaceBlocksChallenge(KeyBlock keyBlock, int target, CustomLootTable reward, long time) {

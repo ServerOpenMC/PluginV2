@@ -49,9 +49,6 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable OFFICE_BOX = register(new OfficeLootTable());
     public final CustomLootTable MODERN_BOX = register(new ModernLootTable());
 
-    public final CustomLootTable QUIZZ = register(new QuizzLootTable());
-    public final CustomLootTable CHALLENGE = register(new ChallengeLootTable());
-
     @Override
     public String key(CustomLootTable registryObject) {
         return registryObject.getNamespace();

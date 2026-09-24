@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class GoldenCropsInfoMenu extends PaginatedMenu {
+    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     public GoldenCropsInfoMenu(Player owner) {
         super(owner);
@@ -64,8 +65,8 @@ public class GoldenCropsInfoMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        boolean isActive = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
+        boolean isActive = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
 
         for (GoldenCropInfo goldenCropInfo : generateGoldenCropInfos()) {
             items.add(new ItemMenuBuilder(

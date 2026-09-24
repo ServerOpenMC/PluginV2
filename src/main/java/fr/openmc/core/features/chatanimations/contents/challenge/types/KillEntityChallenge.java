@@ -19,7 +19,7 @@ public class KillEntityChallenge extends ChallengeAnimation {
     private final Map<UUID, Integer> progress = new HashMap<>();
 
     public KillEntityChallenge(EntityType entityType, int target, long time) {
-        this(entityType, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(entityType, target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public KillEntityChallenge(EntityType entityType, int target, CustomLootTable reward, long time) {

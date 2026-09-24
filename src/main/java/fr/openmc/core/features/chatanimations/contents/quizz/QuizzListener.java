@@ -1,5 +1,6 @@
 package fr.openmc.core.features.chatanimations.contents.quizz;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.ChatAnimation;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -9,9 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class QuizzListener implements Listener {
+    private final ChatAnimationManager chatAnimationManager = OMCRegistry.FEATURES.CHAT_ANIMATIONS.get();
     @EventHandler
     public void onChat(AsyncChatEvent event) {
-        ChatAnimation animation = ChatAnimationManager.getActive();
+        ChatAnimation animation = chatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof Quizz quizz)) return;
         if (animation.isFinished()) return;

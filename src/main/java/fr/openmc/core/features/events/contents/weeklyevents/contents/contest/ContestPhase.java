@@ -45,7 +45,7 @@ public enum ContestPhase {
 
         @Override
         public Runnable runAction() {
-            return OMCRegistry.FEATURES.CONTEST.get()::initPhase1;
+            return OMCRegistry.WEEKLY_EVENTS.CONTEST.feature()::initPhase1;
         }
     }),
     TRADE_PHASE(new WeeklyEventPhase() {
@@ -81,7 +81,7 @@ public enum ContestPhase {
 
         @Override
         public Runnable runAction() {
-            return OMCRegistry.FEATURES.CONTEST.get()::initPhase2;
+            return OMCRegistry.WEEKLY_EVENTS.CONTEST.feature()::initPhase2;
         }
     }),
     END_PHASE(new WeeklyEventPhase() {
@@ -117,7 +117,7 @@ public enum ContestPhase {
 
         @Override
         public Runnable runAction() {
-            return OMCRegistry.FEATURES.CONTEST.get()::initPhase3;
+            return OMCRegistry.WEEKLY_EVENTS.CONTEST.feature()::initPhase3;
         }
     })
     ;

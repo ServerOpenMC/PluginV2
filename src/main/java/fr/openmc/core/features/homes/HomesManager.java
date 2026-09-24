@@ -10,11 +10,13 @@ import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.registry.features.loading.FeatureEntry;
@@ -64,7 +66,8 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
     @Override
     public List<Supplier<LifecycleRegistry>> getRegistries() {
         return List.of(
-                () -> OMCRegistry.HOME_FEATURES = new HomeFeaturesRegistry()
+                () -> SubRegistry.boot(new HomeFeaturesRegistry(),
+                        r -> OMCRegistry.HOME_FEATURES = r)
         );
     }
 

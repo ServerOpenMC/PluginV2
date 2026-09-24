@@ -34,11 +34,12 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.golde
  * Listener qui prends en charge les loots donnée par les crops et par les obese crops
  */
 public class GoldenCropsListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         if (ThreadLocalRandom.current().nextDouble() > AbondanceArmorManager.getLuckGoldenCropsModifier(event.getPlayer())) return;
 
         BlockType blockType = event.getBlock().getType().asBlockType();
@@ -54,8 +55,8 @@ public class GoldenCropsListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onObeseCropBreak(CustomBlockBreakEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_OBESE_CHANCE) return;
         if (!ObeseCropsRegistry.isObeseCrop(event.getBlock().getLocation())) return;
 
@@ -70,8 +71,8 @@ public class GoldenCropsListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCropFullyGrowed(BlockGrowEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         BlockType blockType = event.getNewState().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
         KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);

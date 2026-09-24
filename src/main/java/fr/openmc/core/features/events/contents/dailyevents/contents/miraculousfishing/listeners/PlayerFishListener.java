@@ -34,11 +34,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class PlayerFishListener implements Listener {
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     @EventHandler
     public void onStartFishing(PlayerFishEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
 
         Player player = event.getPlayer();
         FishHook hook = event.getHook();
@@ -78,8 +79,8 @@ public class PlayerFishListener implements Listener {
 
     @EventHandler
     public void onHookOnWater(FishHookStateChangeEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
 
         Entity hook = event.getEntity();
         World world = hook.getWorld();
