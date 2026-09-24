@@ -23,7 +23,7 @@ public class MascotFriendlyPerk implements Listener {
      */
     public static void updatePlayerEffects(Player player) {
         City playerCity = City.ofPlayer(player.getUniqueId());
-        int phase = playerCity.getMayorManager().phaseMayor;
+        int phase = playerCity.getMayorPhase();
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 

@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -26,21 +27,21 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class CityViewManager {
-    private static final int VIEW_RADIUS_CHUNKS = 8;
-    private static final long VIEW_DURATION_SECONDS = 30L;
-    private static final long VIEW_INTERVAL_SECONDS = 1L;
-    private static final int CHUNK_SIZE = 16;
-    private static final int[][] ADJACENT_OFFSETS = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+public class CityClaimViewManager extends Feature {
+    private final int VIEW_RADIUS_CHUNKS = 8;
+    private final long VIEW_DURATION_SECONDS = 30L;
+    private final long VIEW_INTERVAL_SECONDS = 1L;
+    private final int CHUNK_SIZE = 16;
+    private final int[][] ADJACENT_OFFSETS = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 
-    private static final Map<UUID, CityViewData> activeViewers = new ConcurrentHashMap<>();
+    private final Map<UUID, CityClaimViewData> activeViewers = new ConcurrentHashMap<>();
 
     /**
      * Démarre la visualisation des claims pour un joueur.
      *
      * @param player joueur qui active la visualisation
      */
-    public static void startView(@NotNull Player player) {
+    public void startView(@NotNull Player player) {
         stopView(player);
 
         Object2ObjectMap<ChunkPos, City> claimsToShow = collectClaimsInRadius(player);
@@ -58,7 +59,7 @@ public class CityViewManager {
         City playerCity = City.ofPlayer(player);
 
         ScheduledTask task = createViewTask(player, playerCity);
-        activeViewers.put(player.getUniqueId(), new CityViewData(task, claimsToShow));
+        activeViewers.put(player.getUniqueId(), new CityClaimViewData(task, claimsToShow));
         scheduleViewExpiration(player);
 
         MessagesManager.sendMessage(
@@ -73,8 +74,8 @@ public class CityViewManager {
      *
      * @param player joueur concerné
      */
-    public static void stopView(@NotNull Player player) {
-        CityViewData currentView = activeViewers.get(player.getUniqueId());
+    public void stopView(@NotNull Player player) {
+        CityClaimViewData currentView = activeViewers.get(player.getUniqueId());
         if (currentView == null)
             return;
 
@@ -85,8 +86,8 @@ public class CityViewManager {
     /**
      * Met à jour la visualisation de tous les joueurs actifs.
      */
-    public static void updateAllViews() {
-        activeViewers.keySet().forEach(CityViewManager::updateView);
+    public void updateAllViews() {
+        activeViewers.keySet().forEach(this::updateView);
     }
 
     /**
@@ -94,8 +95,8 @@ public class CityViewManager {
      *
      * @param playerUUID UUID du joueur
      */
-    public static void updateView(@NotNull UUID playerUUID) {
-        CityViewData viewData = activeViewers.get(playerUUID);
+    public void updateView(@NotNull UUID playerUUID) {
+        CityClaimViewData viewData = activeViewers.get(playerUUID);
         if (viewData == null)
             return;
 
@@ -104,7 +105,7 @@ public class CityViewManager {
             return;
 
         Object2ObjectMap<ChunkPos, City> claimsToShow = collectClaimsInRadius(player);
-        activeViewers.put(playerUUID, new CityViewData(viewData.task(), claimsToShow));
+        activeViewers.put(playerUUID, new CityClaimViewData(viewData.task(), claimsToShow));
     }
 
     /**
@@ -114,7 +115,7 @@ public class CityViewManager {
      * @return map des positions de chunks et des villes correspondantes
      */
     @NotNull
-    private static Object2ObjectMap<ChunkPos, City> collectClaimsInRadius(@NotNull Player player) {
+    private Object2ObjectMap<ChunkPos, City> collectClaimsInRadius(@NotNull Player player) {
         Object2ObjectMap<ChunkPos, City> claims = new Object2ObjectOpenHashMap<>();
         ChunkPos playerChunk = ChunkPos.fromChunk(player.getChunk());
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
@@ -143,9 +144,9 @@ public class CityViewManager {
      * @param playerCity ville du joueur (peut être null)
      * @return tâche planifiée
      */
-    private static ScheduledTask createViewTask(@NotNull Player player, @Nullable City playerCity) {
+    private ScheduledTask createViewTask(@NotNull Player player, @Nullable City playerCity) {
         return Bukkit.getAsyncScheduler().runAtFixedRate(OMCPlugin.getInstance(), task -> {
-            CityViewData viewData = activeViewers.get(player.getUniqueId());
+            CityClaimViewData viewData = activeViewers.get(player.getUniqueId());
             if (viewData == null)
                 return;
 
@@ -160,9 +161,9 @@ public class CityViewManager {
      *
      * @param player joueur concerné
      */
-    private static void scheduleViewExpiration(@NotNull Player player) {
+    private void scheduleViewExpiration(@NotNull Player player) {
         Bukkit.getAsyncScheduler().runDelayed(OMCPlugin.getInstance(), task -> {
-            CityViewData viewData = activeViewers.get(player.getUniqueId());
+            CityClaimViewData viewData = activeViewers.get(player.getUniqueId());
             if (viewData == null)
                 return;
 
@@ -179,7 +180,7 @@ public class CityViewManager {
      * @param isPlayerCity true si c’est la ville du joueur
      * @param playerY      hauteur du joueur (pour placer les particules)
      */
-    private static void showChunkBorders(@NotNull Player player, @NotNull ChunkPos chunkPos, @NotNull City city, boolean isPlayerCity, boolean isRegion, int playerY) {
+    private void showChunkBorders(@NotNull Player player, @NotNull ChunkPos chunkPos, @NotNull City city, boolean isPlayerCity, boolean isRegion, int playerY) {
         List<Location> particleLocations = calculateParticleLocations(chunkPos, city, playerY);
 
         Particle particle = isPlayerCity ? Particle.CHERRY_LEAVES : Particle.TINTED_LEAVES;
@@ -206,7 +207,7 @@ public class CityViewManager {
      * @return liste des positions de particules
      */
     @NotNull
-    private static List<Location> calculateParticleLocations(@NotNull ChunkPos chunkPos,
+    private List<Location> calculateParticleLocations(@NotNull ChunkPos chunkPos,
                                                              @NotNull City city, int y) {
         List<Location> locations = new ArrayList<>();
         World world = chunkPos.getChunkInWorld().getWorld();
@@ -249,7 +250,7 @@ public class CityViewManager {
      * @param city     ville propriétaire
      * @return tableau de 4 booléens (N, E, S, O)
      */
-    private static boolean @NotNull [] checkBorders(@NotNull ChunkPos chunkPos, @NotNull City city) {
+    private boolean @NotNull [] checkBorders(@NotNull ChunkPos chunkPos, @NotNull City city) {
         boolean[] borders = new boolean[4];
         for (int i = 0; i < 4; i++) {
             ChunkPos adjacentClaim = new ChunkPos(

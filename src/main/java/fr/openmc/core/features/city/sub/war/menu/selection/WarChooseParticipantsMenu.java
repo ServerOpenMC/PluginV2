@@ -87,7 +87,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
             boolean isSelected = selected.contains(memberUUID);
             boolean isOwner = cityLaunch.hasPermission(memberUUID, CityPermission.OWNER);
-            boolean isMayor = cityLaunch.getMayorManager().phaseMayor == 2
+            boolean isMayor = cityLaunch.getMayorPhase() == 2
                     && cityLaunch.getMayor() != null
                     && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 

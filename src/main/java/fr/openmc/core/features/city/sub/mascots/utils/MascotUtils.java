@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.utils;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
@@ -23,30 +24,6 @@ public class MascotUtils {
 			.collect(Collectors.toUnmodifiableSet());
 
 	/**
-	 * Adds a mascot for a given city.
-	 *
-	 * @param city       The city for which the mascot is being added.
-	 * @param mascotUUID The UUID of the mascot entity.
-	 * @param chunk      The chunk where the mascot is located.
-	 *                   This method creates a new Mascot object and adds it to the mascotsByCityUUID and mascotsByEntityUUID maps.
-	 */
-	public static void addMascotForCity(City city, UUID mascotUUID, Chunk chunk) {
-        Mascot newMascot = new Mascot(city.getUniqueId(), mascotUUID, 1, true, true, chunk.getX(), chunk.getZ());
-		MascotsManager.mascotsByCityUUID.put(city.getUniqueId(), newMascot);
-		MascotsManager.mascotsByEntityUUID.put(mascotUUID, newMascot);
-	}
-
-	/**
-	 * Removes the mascot associated with a given city.
-	 * @param mascot The mascot is to be removed.
-	 * This method will also remove the mascot from the mascotsByCityUUID and mascotsByEntityUUID maps.
-	 */
-	public static void removeMascotOfCity(Mascot mascot) {
-		MascotsManager.mascotsByCityUUID.remove(mascot.getCityUUID());
-		MascotsManager.mascotsByEntityUUID.remove(mascot.getMascotUUID());
-	}
-
-	/**
 	 * Checks if an entity can be a mascot based on their type.
 	 * @param entity The entity to check.
 	 * @return true if the entity can be a mascot, false otherwise.
@@ -57,39 +34,7 @@ public class MascotUtils {
 		if (!POSSIBLE_MASCOT_TYPES.contains(entity.getType()))
 			return false;
 
-		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
-	}
-
-	public static void updateDisplayName(LivingEntity entityMascot, Mascot mascot, double damage) {
-		double newHealth = Math.floor(entityMascot.getHealth());
-		entityMascot.setHealth(newHealth);
-		AttributeInstance maxHealthInst = entityMascot.getAttribute(Attribute.MAX_HEALTH);
-		if (maxHealthInst == null) return;
-		double maxHealth = maxHealthInst.getValue();
-
-		double healthAfterDamage = entityMascot.getHealth() - damage;
-		if (healthAfterDamage < 0) healthAfterDamage = 0;
-
-		if (!mascot.isAlive()) {
-            entityMascot.customName(MascotsManager.getDeadMascotName());
-        } else {
-            entityMascot.customName(MascotsManager.getAliveMascotName(
-                    mascot.getCity().getName(),
-                    healthAfterDamage,
-                    maxHealth
-            ));
-		}
-	}
-
-	public static City getCityFromEntity(UUID entityUUID) {
-		City city = null;
-
-		if (MascotsManager.mascotsByEntityUUID.containsKey(entityUUID)) {
-			Mascot mascot = MascotsManager.mascotsByEntityUUID.get(entityUUID);
-			city = mascot.getCity();
-		}
-
-		return city;
+		return entity.getPersistentDataContainer().has(OMCRegistry.CITY_FEATURES.MASCOTS.getMascotsKey(), PersistentDataType.STRING);
 	}
 }
 

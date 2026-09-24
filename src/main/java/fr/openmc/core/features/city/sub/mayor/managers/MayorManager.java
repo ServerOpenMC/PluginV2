@@ -51,7 +51,6 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     private final CityManager cityManager;
     public final MayorNPCManager mayorNPCManager;
     private final FancyNpcsHook fancyNpcsHook;
-    private final ItemsAdderHook itemsAdderHook;
 
     public static final int MEMBER_REQUEST_ELECTION = 3;
 
@@ -73,6 +72,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     public static final DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
     public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
 
+    // todo: rewrite
     public int phaseMayor;
     public Map<UUID, Mayor> cityMayor = new HashMap<>();
     public final Map<UUID, CityLaw> cityLaws = new HashMap<>();
@@ -81,10 +81,9 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
     private final Random RANDOM = new Random();
 
-    public MayorManager(CityManager cityManager, FancyNpcsHook fancyNpcsHook, ItemsAdderHook itemsAdderHook) {
+    public MayorManager(CityManager cityManager, FancyNpcsHook fancyNpcsHook) {
         this.cityManager = cityManager;
         this.fancyNpcsHook = fancyNpcsHook;
-        this.itemsAdderHook = itemsAdderHook;
         this.mayorNPCManager = new MayorNPCManager(fancyNpcsHook);
     }
 
@@ -674,7 +673,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * @param type       The type of the election
      */
     public void createMayor(String playerName, UUID playerUUID, City city, Perks perk1, Perks perk2, Perks perk3,
-            NamedTextColor color, ElectionType type) {
+                            NamedTextColor color, ElectionType type) {
         Mayor mayor = cityMayor.get(city.getUniqueId());
         int idPerk1 = perk1 != null ? perk1.getId() : 0;
         int idPerk2 = perk2 != null ? perk2.getId() : 0;

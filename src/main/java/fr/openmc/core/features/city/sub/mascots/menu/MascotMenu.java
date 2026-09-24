@@ -10,6 +10,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.milestone.rewards.MascotsLevelsRewards;
@@ -38,9 +39,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static fr.openmc.core.features.city.sub.mascots.MascotsManager.movingMascots;
-import static fr.openmc.core.features.city.sub.mascots.MascotsManager.upgradeMascots;
-
 @SuppressWarnings("UnstableApiUsage")
 public class MascotMenu extends Menu {
 
@@ -49,6 +47,8 @@ public class MascotMenu extends Menu {
 
     private final Mascot mascot;
     private City city;
+
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     public MascotMenu(Player owner, Mascot mascot) {
         super(owner);
@@ -100,7 +100,7 @@ public class MascotMenu extends Menu {
         })
                 .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
                 .setOnClick(inventoryClickEvent -> {
-                    if (!city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_CHANGE_SKIN)) {
+                    if (!city.permissions().hasPermission(player.getUniqueId(), CityPermission.MASCOT_CHANGE_SKIN)) {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
@@ -148,9 +148,9 @@ public class MascotMenu extends Menu {
                         }
 
                         UUID cityUUID = city.getUniqueId();
-                        if (movingMascots.contains(cityUUID)) return;
+                        if (mascotsManager.getMovingMascots().contains(cityUUID)) return;
 
-                        movingMascots.add(cityUUID);
+                        mascotsManager.addMovingMascot(city);
 
                         ItemStack mascotsMoveItem = OMCRegistry.CUSTOM_ITEMS.MASCOT_STICK.getBest();
                         ItemMeta meta = mascotsMoveItem.getItemMeta();
@@ -171,7 +171,7 @@ public class MascotMenu extends Menu {
                                 TranslationManager.translation("feature.city.mascots.menu.main.move.interaction.cancelled"),
                                 mascotMove -> {
                                     if (mascotMove == null) return true;
-                                    if (!movingMascots.contains(cityUUID)) return false;
+                                    if (!mascotsManager.getMovingMascots().contains(cityUUID)) return false;
 
                                     if (mascot == null) return false;
 
@@ -190,7 +190,7 @@ public class MascotMenu extends Menu {
                                     }
 
                                     mob.teleport(mascotMove);
-                                    movingMascots.remove(cityUUID);
+                                    mascotsManager.removeMovingMascot(city);
                                     mascot.setChunk(mascotMove.getChunk());
 
                                     DynamicCooldownManager.use(mascot.getMascotUUID(), "mascots:move", 5 * 3600 * 1000L);
@@ -250,7 +250,7 @@ public class MascotMenu extends Menu {
                         UUID cityUUID = city.getUniqueId();
                         int aywenite = mascotsLevels.getUpgradeCost();
                         if (ItemUtils.takeAywenite(player, aywenite)) {
-                            upgradeMascots(cityUUID);
+                            mascotsManager.upgradeMascots(cityUUID);
                             MessagesManager.sendMessage(player,
                                     TranslationManager.translation(
                                             "feature.city.mascots.menu.main.upgrade.success",

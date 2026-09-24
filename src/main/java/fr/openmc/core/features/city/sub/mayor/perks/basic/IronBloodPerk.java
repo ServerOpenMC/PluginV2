@@ -82,7 +82,7 @@ public class IronBloodPerk implements Listener {
                     .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
                         City enemyCity = City.ofPlayer(nearbyPlayer.getUniqueId());
-                        return enemyCity != null && !enemyCity.getUniqueId().equals(MascotUtils.getCityFromEntity(mascotUUID).getUniqueId());
+                        return enemyCity != null && !enemyCity.getUniqueId().equals(City.ofMascot(mascotUUID).getUniqueId());
                     })
                     .toList();
 

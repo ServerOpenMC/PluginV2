@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MascotsDamageListener implements Listener {
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
     private static final Set<EntityDamageEvent.DamageCause> BLOCKED_CAUSES = Set.of(
             EntityDamageEvent.DamageCause.SUFFOCATION,
             EntityDamageEvent.DamageCause.FALLING_BLOCK,
@@ -55,7 +56,7 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
+        City city = City.ofMascot(entity.getUniqueId());
         if (city == null) return;
 
         Mascot mascot = city.getMascot();
@@ -64,7 +65,7 @@ public class MascotsDamageListener implements Listener {
         // on return pour eviter d'actualiser 2 fois la vie
         if (city.isInWar()) return;
 
-        MascotUtils.updateDisplayName(entity, mascot, e.getFinalDamage());
+        mascot.updateDisplayName(entity, e.getFinalDamage());
     }
 
     @EventHandler
@@ -80,7 +81,7 @@ public class MascotsDamageListener implements Listener {
         }
 
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
-        String pdcCityData = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        String pdcCityData = data.get(mascotsManager.getMascotsKey(), PersistentDataType.STRING);
         if (pdcCityData == null) return;
         UUID pdcCityUUID = UUID.fromString(pdcCityData);
 
@@ -95,9 +96,8 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
         City city = City.ofPlayer(player);
-        City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
+        City cityEnemy = City.ofMascot(damageEntity.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
@@ -177,9 +177,9 @@ public class MascotsDamageListener implements Listener {
         }
 
         LivingEntity mob = (LivingEntity) damageEntity;
-        City cityMob = MascotUtils.getCityFromEntity(mob.getUniqueId());
+        City cityMob = City.ofMascot(mob.getUniqueId());
 
-        MascotUtils.updateDisplayName(mob, cityMob.getMascot(), e.getFinalDamage());
+        cityMob.getMascot().updateDisplayName(mob, e.getFinalDamage());
 
         try {
             if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor != 2) return;

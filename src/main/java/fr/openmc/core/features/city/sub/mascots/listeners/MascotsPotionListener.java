@@ -28,7 +28,7 @@ public class MascotsPotionListener implements Listener {
     private void handleMascotProtection(Cancellable event, LivingEntity affectedEntity) {
         if (!MascotUtils.canBeAMascot(affectedEntity)) return;
 
-        City cityMascot = MascotUtils.getCityFromEntity(affectedEntity.getUniqueId());
+        City cityMascot = City.ofMascot(affectedEntity.getUniqueId());
         if (cityMascot == null) return;
 
         if (!cityMascot.isInWar()) return;

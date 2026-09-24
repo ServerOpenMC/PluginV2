@@ -25,11 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class MascotsDeathListener implements Listener {
-    private final CityManager cityManager;
-
-    public MascotsDeathListener(CityManager cityManager) {
-        this.cityManager = cityManager;
-    }
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @EventHandler
     void onMascotDied(EntityDeathEvent e) {
@@ -39,7 +35,7 @@ public class MascotsDeathListener implements Listener {
         if (!MascotUtils.canBeAMascot(entity)) return;
 
         PersistentDataContainer data = entity.getPersistentDataContainer();
-        UUID cityUUID = UUID.fromString(data.get(MascotsManager.mascotsKey, PersistentDataType.STRING));
+        UUID cityUUID = UUID.fromString(data.get(mascotsManager.getMascotsKey(), PersistentDataType.STRING));
 
         City city = City.of(cityUUID);
 
@@ -50,7 +46,7 @@ public class MascotsDeathListener implements Listener {
         if (mascot == null) return;
 
         mascot.setAlive(false);
-        entity.customName(MascotsManager.getDeadMascotName());
+        entity.customName(mascotsManager.getDeadMascotName());
 
         e.setCancelled(true);
 

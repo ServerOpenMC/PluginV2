@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
@@ -125,7 +126,7 @@ public class CityChangeAction {
                 mob.setHealth(maxHealth);
             }
 
-            mob.customName(MascotsManager.getAliveMascotName(
+            mob.customName(OMCRegistry.CITY_FEATURES.MASCOTS.getAliveMascotName(
                     city.getName(),
                     mob.getHealth(),
                     maxHealth

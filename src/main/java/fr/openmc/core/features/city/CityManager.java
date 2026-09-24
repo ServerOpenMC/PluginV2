@@ -17,7 +17,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.db.*;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.features.city.sub.view.CityViewManager;
+import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
@@ -26,6 +26,7 @@ import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -40,13 +41,20 @@ import java.util.function.Supplier;
 @Credit(developers = {"iambibi_", "Gyro", "gab400", "Nocolm", "Axeno", "PuppyTransGirl"}, graphist = {"Tfloa", "Gexary"})
 public class CityManager extends Feature
         implements HasDatabase, HasCommands, HasRegistries {
-    private static final Map<UUID, City> cities = new HashMap<>();
-    public static final Map<String, City> citiesByName = new HashMap<>();
-    public static final Map<UUID, City> playerCities = new HashMap<>();
-    private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
+    private final Map<UUID, City> cities = new HashMap<>();
+    @Getter
+    private final Map<String, City> citiesByName = new HashMap<>();
+    @Getter
+    private final Map<UUID, City> playerCities = new HashMap<>();
+    private final Map<ChunkPos, City> claimedChunks = new HashMap<>();
+
+    private MascotsManager mascotsManager;
+    private CityClaimViewManager cityClaimViewManager;
 
     @Override
     public void init() {
+        mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
+        cityClaimViewManager = OMCRegistry.CITY_FEATURES.CLAIM_VIEW;
         loadCities();
     }
 
@@ -120,8 +128,6 @@ public class CityManager extends Feature
                 City city = getCity(claim.getCityUUID());
                 if (city != null) claimedChunks.put(claim.getChunkPos(), city);
             }
-
-            cities.values().forEach(City::initializeRanks);
         } catch (SQLException e) {
             throw new RuntimeException("Erreur du chargement des villes ", e);
         }
@@ -145,7 +151,7 @@ public class CityManager extends Feature
         if (city == null || playerUUID == null) return;
 
         playerCities.put(playerUUID, city);
-        CityViewManager.updateView(playerUUID);
+        cityClaimViewManager.updateView(playerUUID);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -166,7 +172,7 @@ public class CityManager extends Feature
         if (city == null || playerUUID == null) return;
 
         playerCities.remove(playerUUID);
-        CityViewManager.updateView(playerUUID);
+        cityClaimViewManager.updateView(playerUUID);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -251,7 +257,7 @@ public class CityManager extends Feature
 
     public void claimChunk(City city, ChunkPos chunkPos) {
         claimedChunks.put(chunkPos, city);
-        CityViewManager.updateAllViews();
+        cityClaimViewManager.updateAllViews();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -264,7 +270,7 @@ public class CityManager extends Feature
 
     public void unclaimChunk(City city, ChunkPos chunkPos) {
         claimedChunks.remove(chunkPos);
-        CityViewManager.updateAllViews();
+        cityClaimViewManager.updateAllViews();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -289,6 +295,11 @@ public class CityManager extends Feature
      */
     public Collection<City> getCities() {
         return cities.values();
+    }
+
+    public void updateCityByName(City city, String newName) {
+        citiesByName.remove(city.getName());
+        citiesByName.put(newName, city);
     }
 
     /**
@@ -521,7 +532,7 @@ public class CityManager extends Feature
             DynamicCooldownManager.clear(city.getUniqueId(), "city:type", false);
         }
 
-        MascotsManager.removeMascotsFromCity(city);
+        mascotsManager.removeMascotsFromCity(city);
         OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.removeNPCS(city.getUniqueId());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -559,6 +570,6 @@ public class CityManager extends Feature
             Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city));
         });
 
-        CityViewManager.updateAllViews();
+        cityClaimViewManager.updateAllViews();
     }
 }

@@ -213,7 +213,7 @@ public class BankManager extends Feature implements HasDatabase {
         double interest = .01; // base interest is 1%
 
         City city = City.ofPlayer(playerUUID);
-        if (city != null && city.getMayorManager().phaseMayor == 2) {
+        if (city != null && city.getMayorPhase() == 2) {
             if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }

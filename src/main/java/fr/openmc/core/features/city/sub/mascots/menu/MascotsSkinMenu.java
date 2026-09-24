@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotType;
 import fr.openmc.core.features.city.sub.milestone.rewards.MascotsSkinUnlockRewards;
@@ -29,19 +30,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.features.city.sub.mascots.MascotsManager.changeMascotsSkin;
-
 public class MascotsSkinMenu extends Menu {
-
     private final Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
     private final Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
     private final Material egg;
-    private final Mascot mascots;
+    private final Mascot mascot;
 
-    public MascotsSkinMenu(Player owner, Material egg, Mascot mascots) {
+    public MascotsSkinMenu(Player owner, Material egg, Mascot mascot) {
         super(owner);
         this.egg = egg;
-        this.mascots = mascots;
+        this.mascot = mascot;
     }
 
     @Override
@@ -117,7 +115,7 @@ public class MascotsSkinMenu extends Menu {
                         int aywenite = type.getPrice();
                         ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                         if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
-                            changeMascotsSkin(mascots, type.getEntityType(), getOwner(), aywenite);
+                            mascot.changeMascotsSkin(type.getEntityType(), getOwner(), aywenite);
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                             getOwner().closeInventory();
                         } else {

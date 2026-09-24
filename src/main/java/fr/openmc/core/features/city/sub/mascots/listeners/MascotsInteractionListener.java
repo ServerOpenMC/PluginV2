@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -24,11 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.UUID;
 
 public class MascotsInteractionListener implements Listener {
-    private final CityManager cityManager;
-
-    public MascotsInteractionListener(CityManager cityManager) {
-        this.cityManager = cityManager;
-    }
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @SneakyThrows
     @EventHandler
@@ -41,7 +38,7 @@ public class MascotsInteractionListener implements Listener {
         if (!MascotUtils.canBeAMascot(clickEntity)) return;
 
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
-        String mascotsData = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        String mascotsData = data.get(mascotsManager.getMascotsKey(), PersistentDataType.STRING);
         if (mascotsData == null) return;
         UUID mascotsUUID = UUID.fromString(mascotsData);
 

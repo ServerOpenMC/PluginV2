@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.sub.milestone.requirements.EventTemplateRequ
 import fr.openmc.core.features.city.sub.milestone.requirements.ItemDepositRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.TemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.rewards.*;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -259,7 +258,7 @@ public enum CityLevels {
             "feature.city.levels.level_5.description",
             List.of(
                     new TemplateRequirement(
-                            city -> city.getMayorManager().mayorNPCManager.hasNPCS(city.getUniqueId()),
+                            city -> OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.hasNPCS(city.getUniqueId()),
                             city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.place_urne")
                     ),

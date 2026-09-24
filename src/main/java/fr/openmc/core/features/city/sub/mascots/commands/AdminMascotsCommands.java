@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -17,6 +18,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("admmascot")
 @CommandPermission("omc.admins.commands.adminmascot")
 public class AdminMascotsCommands {
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.adminmascot.remove")
@@ -31,7 +33,7 @@ public class AdminMascotsCommands {
             return;
         }
 
-        MascotsManager.removeMascotsFromCity(city);
+        mascotsManager.removeMascotsFromCity(city);
         MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.mascots.admin.remove.success"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

@@ -275,7 +275,6 @@ public class Page1 implements Menu {
 
         int slot = event.slot();
 
-        // todo: arreter ce carnage
         if (CITY_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.mainCommand(player));
         } else if (QUEST_SLOTS.contains(slot)) {

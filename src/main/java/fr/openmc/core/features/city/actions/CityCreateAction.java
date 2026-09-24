@@ -8,7 +8,7 @@ import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.view.CityViewManager;
+import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -122,7 +122,7 @@ public class CityCreateAction {
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);
-        MascotsManager.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
+        OMCRegistry.CITY_FEATURES.MASCOTS.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
 
         // Feedback
 	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
@@ -134,7 +134,7 @@ public class CityCreateAction {
         DynamicCooldownManager.use(playerUUID, "city:big", 60000);
         DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
-        CityViewManager.updateAllViews();
+        OMCRegistry.CITY_FEATURES.CLAIM_VIEW.updateAllViews();
         return true;
     }
 }

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -25,11 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.UUID;
 
 public class MascotsRenameListener implements Listener {
-    private final CityManager cityManager;
-
-    public MascotsRenameListener(CityManager cityManager) {
-        this.cityManager = cityManager;
-    }
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @EventHandler
     public void onRenameWithNameTag(PlayerInteractEntityEvent e) {
@@ -47,7 +44,7 @@ public class MascotsRenameListener implements Listener {
         if (meta == null || !meta.hasDisplayName()) return;
 
         PersistentDataContainer data = entity.getPersistentDataContainer();
-        String cityUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        String cityUUID = data.get(mascotsManager.getMascotsKey(), PersistentDataType.STRING);
         if (cityUUID == null) return;
 
         e.setCancelled(true);

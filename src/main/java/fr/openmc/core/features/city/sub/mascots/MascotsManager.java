@@ -26,6 +26,7 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -48,17 +49,18 @@ import java.util.*;
 
 @Credit(developers = {"Nocolm"})
 public class MascotsManager extends Feature implements HasDatabase, HasCommands, HasListeners {
-    public static final List<UUID> movingMascots = new ArrayList<>();
-    public static final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
-    public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
-    public static NamespacedKey mascotsKey;
-    private static Dao<Mascot, String> mascotsDao;
-
-    private CityManager cityManager;
+    @Getter
+    private final List<UUID> movingMascots = new ArrayList<>();
+    @Getter
+    private final HashMap<UUID, Mascot> mascotsByCityUUID = new HashMap<>();
+    @Getter
+    private final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
+    @Getter
+    private NamespacedKey mascotsKey;
+    private Dao<Mascot, String> mascotsDao;
 
     @Override
     public void init() {
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -76,7 +78,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         if (OMCRegistry.HOOKS.PROTOCOL_LIB.isEnable())
             new MascotsSoundListener();
 
-        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
+        for (Mascot mascot : this.mascotsByCityUUID.values()) {
             MascotRegenerationUtils.mascotsRegeneration(mascot);
         }
     }
@@ -91,13 +93,13 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                () -> new MascotsInteractionListener(cityManager),
+                MascotsInteractionListener::new,
                 MascotsDamageListener::new,
-                () -> new MascotsDeathListener(cityManager),
+                MascotsDeathListener::new,
                 MascotsSleepingListener::new,
-                () -> new MascotImmuneListener(cityManager),
+                MascotImmuneListener::new,
                 MascotsTargetListener::new,
-                () -> new MascotsRenameListener(cityManager),
+                MascotsRenameListener::new,
                 MascotsPotionListener::new,
                 MascotsProtectionsListener::new
         );
@@ -105,7 +107,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
     @Override
     public void save() {
-        MascotsManager.saveMascots();
+        this.saveMascots();
     }
 
     @Override
@@ -114,7 +116,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
     }
 
-    public static void loadMascots() {
+    public void loadMascots() {
         try {
             assert mascotsDao != null;
             mascotsDao.queryForAll().forEach(mascot -> {
@@ -126,7 +128,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         }
     }
 
-    public static void saveMascots() {
+    public void saveMascots() {
         mascotsByCityUUID.forEach((cityUUID, mascot) -> {
             try {
                 mascotsDao.createOrUpdate(mascot);
@@ -136,7 +138,26 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         });
     }
 
-    public static void createMascot(City city, UUID cityUUID, String cityName, World playerWorld, Location mascotSpawn) {
+    public City getCityFromEntity(UUID entityUUID) {
+        City city = null;
+
+        if (mascotsByEntityUUID.containsKey(entityUUID)) {
+            Mascot mascot = mascotsByEntityUUID.get(entityUUID);
+            city = mascot.getCity();
+        }
+
+        return city;
+    }
+
+    public void addMovingMascot(City city) {
+        movingMascots.add(city.getUniqueId());
+    }
+
+    public void removeMovingMascot(City city) {
+        movingMascots.remove(city.getUniqueId());
+    }
+
+    public void createMascot(City city, UUID cityUUID, String cityName, World playerWorld, Location mascotSpawn) {
         LivingEntity mob = (LivingEntity) playerWorld.spawnEntity(mascotSpawn, EntityType.ZOMBIE);
 
         Chunk chunk = mascotSpawn.getChunk();
@@ -154,10 +175,14 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
             }
         });
 
-        MascotUtils.addMascotForCity(city, mob.getUniqueId(), chunk);
+        MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
+        UUID mascotUUID = mob.getUniqueId();
+        Mascot newMascot = new Mascot(city.getUniqueId(), mascotUUID, 1, true, true, chunk.getX(), chunk.getZ());
+        mascotsManager.getMascotsByCityUUID().put(city.getUniqueId(), newMascot);
+        mascotsManager.getMascotsByEntityUUID().put(mascotUUID, newMascot);
     }
 
-    public static void removeMascotsFromCity(City city) {
+    public void removeMascotsFromCity(City city) {
         Mascot mascot = city.getMascot();
 
         if (mascot == null) return;
@@ -174,10 +199,11 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
             }
         });
 
-        MascotUtils.removeMascotOfCity(mascot);
+        mascotsByCityUUID.remove(mascot.getCityUUID());
+        mascotsByEntityUUID.remove(mascot.getMascotUUID());
     }
 
-    public static void upgradeMascots(UUID cityUUID) {
+    public void upgradeMascots(UUID cityUUID) {
         City city = City.of(cityUUID);
         if (city == null) return;
 
@@ -215,74 +241,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         ));
     }
 
-    public static void changeMascotsSkin(Mascot mascots, EntityType skin, Player player, int aywenite) {
-        World world = Bukkit.getWorld("world");
-        LivingEntity entityMascot = (LivingEntity) mascots.getEntity();
-        Location mascotsLoc = entityMascot.getLocation();
-        UUID mascotUUID = entityMascot.getUniqueId();
-
-        boolean glowing = entityMascot.isGlowing();
-        long cooldown = 0;
-        boolean hasCooldown = false;
-
-        // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
-        if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && entityMascot.getHeight() <= 1.0) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.mascots.skin.error.space_above"),
-                    Prefix.CITY, MessageType.INFO, false);
-            return;
-        }
-
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                Location checkLoc = mascotsLoc.clone().add(x, 0, z);
-                Material blockType = checkLoc.getBlock().getType();
-
-                if (blockType != Material.AIR) {
-                    MessagesManager.sendMessage(player,
-                            TranslationManager.translation("feature.city.mascots.skin.error.space_around"),
-                            Prefix.CITY, MessageType.INFO, false);
-                    return;
-                }
-            }
-        }
-
-        double baseHealth = entityMascot.getHealth();
-        double maxHealth = entityMascot.getAttribute(Attribute.MAX_HEALTH).getValue();
-        String cityUUID = entityMascot.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
-
-        if (!DynamicCooldownManager.isReady(mascots.getMascotUUID(), "mascots:move")) {
-            cooldown = DynamicCooldownManager.getRemaining(mascots.getMascotUUID(), "mascots:move");
-            hasCooldown = true;
-            DynamicCooldownManager.clear(entityMascot.getUniqueId(), "mascots:move", false);
-        }
-
-        entityMascot.remove();
-
-        if (world == null) return;
-
-        LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
-        newMascots.setGlowing(glowing);
-
-        if (hasCooldown) {
-            DynamicCooldownManager.use(newMascots.getUniqueId(), "mascots:move", cooldown);
-        }
-
-        setMascotsData(newMascots, mascots.getCity().getName(), maxHealth, baseHealth);
-        PersistentDataContainer newData = newMascots.getPersistentDataContainer();
-        MascotsManager.mascotsByEntityUUID.remove(mascotUUID);
-        MascotsManager.mascotsByEntityUUID.put(newMascots.getUniqueId(), mascots);
-
-        if (cityUUID != null) {
-            newData.set(mascotsKey, PersistentDataType.STRING, cityUUID);
-            mascots.setMascotUUID(newMascots.getUniqueId());
-        }
-
-        ItemUtils.takeAywenite(player, aywenite);
-    }
-
-
-    private static void setMascotsData(LivingEntity mob, String cityName, double maxHealth, double baseHealth) {
+    public void setMascotsData(LivingEntity mob, String cityName, double maxHealth, double baseHealth) {
         mob.setAI(false);
 
         mob.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
@@ -315,7 +274,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         equipment.setItemInOffHandDropChance(0f);
     }
 
-    public static Component getAliveMascotName(String cityName, double health, double maxHealth) {
+    public Component getAliveMascotName(String cityName, double health, double maxHealth) {
         String formattedHealth = String.format(Locale.US, "%.0f", health);
         String formattedMaxHealth = String.format(Locale.US, "%.0f", maxHealth);
         return TranslationManager.translation(
@@ -326,7 +285,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         );
     }
 
-    public static Component getDeadMascotName() {
+    public Component getDeadMascotName() {
         return TranslationManager.translation("feature.city.mascots.name.dead");
     }
 

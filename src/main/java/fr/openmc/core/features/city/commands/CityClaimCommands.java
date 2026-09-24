@@ -1,12 +1,13 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.city.conditions.CityUnclaimCondition;
 import fr.openmc.core.features.city.menu.chunk.CityChunkMenu;
-import fr.openmc.core.features.city.sub.view.CityViewManager;
+import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -16,6 +17,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 
 public class CityClaimCommands {
+    private final CityClaimViewManager cityClaimViewManager = OMCRegistry.CITY_FEATURES.CLAIM_VIEW;
+
     @Command("city claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
@@ -47,7 +50,7 @@ public class CityClaimCommands {
     @Description("Voir les villes aux alentours")
     @CommandPermission("omc.commands.city.view")
     void view(Player player) {
-        CityViewManager.startView(player);
+        cityClaimViewManager.startView(player);
     }
 
     @Command("city map")
