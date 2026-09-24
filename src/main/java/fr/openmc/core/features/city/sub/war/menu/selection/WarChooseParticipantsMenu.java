@@ -8,6 +8,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -87,7 +88,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
             boolean isSelected = selected.contains(memberUUID);
             boolean isOwner = cityLaunch.hasPermission(memberUUID, CityPermission.OWNER);
-            boolean isMayor = cityLaunch.getMayorPhase() == 2
+            boolean isMayor = cityLaunch.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)
                     && cityLaunch.getMayor() != null
                     && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 

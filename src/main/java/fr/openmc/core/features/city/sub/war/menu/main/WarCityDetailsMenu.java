@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -69,7 +70,7 @@ public class WarCityDetailsMenu extends Menu {
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
-        if (city.getMayorPhase() == 2 && mayor != null) {
+        if (city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED) && mayor != null) {
             Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
             Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
             Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());

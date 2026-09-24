@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -23,11 +24,12 @@ public class MinerPerk implements Listener {
      * @param player The player to update.
      */
     public static void updatePlayerEffects(Player player) {
-        int phase = OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor;
+        City playerCity = City.ofPlayer(player);
+        if (playerCity == null) return;
 
-        if (phase == 2) {
-            City playerCity = City.ofPlayer(player);
-            if (playerCity == null) return;
+        MayorPhase phase = playerCity.getMayorPhase();
+
+        if (phase.equals(MayorPhase.MAYOR_ELECTED)) {
 
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.MINER.getId())) return;
 

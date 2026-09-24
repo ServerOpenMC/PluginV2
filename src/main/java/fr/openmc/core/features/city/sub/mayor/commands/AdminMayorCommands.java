@@ -27,9 +27,9 @@ public class AdminMayorCommands {
     ) {
         MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
         if (phase == 1) {
-            mayorManager.initPhase1();
+            mayorManager.initOpenElectionPhase();
         } else if (phase == 2){
-            mayorManager.initPhase2();
+            mayorManager.initElectedMayorPhase();
         }
     }
 

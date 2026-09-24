@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -23,12 +24,12 @@ public class MascotFriendlyPerk implements Listener {
      */
     public static void updatePlayerEffects(Player player) {
         City playerCity = City.ofPlayer(player.getUniqueId());
-        int phase = playerCity.getMayorPhase();
+        MayorPhase phase = playerCity.getMayorPhase();
         if (playerCity == null) return;
         if (playerCity.getMascot() == null) return;
 
         int level = playerCity.getMascot().getLevel();
-        if (phase == 2) {
+        if (phase.equals(MayorPhase.MAYOR_ELECTED)) {
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
 
             for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {

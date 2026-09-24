@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -120,9 +121,9 @@ public class DemonFruitPerk implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        int phase = mayorManager.phaseMayor;
+        MayorPhase phase = mayorManager.getMayorPhase();
 
-        if (phase == 2) {
+        if (phase.equals(MayorPhase.MAYOR_ELECTED)) {
             City playerCity = City.ofPlayer(player);
             if (playerCity == null) return;
 
@@ -152,9 +153,9 @@ public class DemonFruitPerk implements Listener {
         if (DreamUtils.isDreamWorld(event.getTo())) return;
 
         Player player = event.getPlayer();
-        int phase = mayorManager.phaseMayor;
+        MayorPhase phase = mayorManager.getMayorPhase();
 
-        if (phase == 2) {
+        if (phase.equals(MayorPhase.MAYOR_ELECTED)) {
             City playerCity = City.ofPlayer(player);
             if (playerCity == null) return;
 

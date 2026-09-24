@@ -6,6 +6,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
@@ -70,10 +71,9 @@ public class CooldownEndListener implements Listener {
         boolean hasMayorNow = FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR);
 
         if (!hadMayorBefore && hasMayorNow) {
-            if (mayorManager.phaseMayor == 1) {
-                mayorManager.initCityPhase1(city, null);
-            } else if (mayorManager.phaseMayor == 2) {
-                mayorManager.initCityPhase2(city);
+            switch (mayorManager.getMayorPhase()) {
+                case OPEN_ELECTION -> mayorManager.initCityPhase1(city, null);
+                case MAYOR_ELECTED -> mayorManager.initCityPhase2(city);
             }
         }
     }

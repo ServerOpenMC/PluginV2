@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorModifyMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
@@ -36,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class MayorElectionMenu extends Menu {
 
@@ -88,12 +87,12 @@ public class MayorElectionMenu extends Menu {
                         Component.text(mayorManager.getPlayerVote(player).getName())
                                 .decoration(TextDecoration.ITALIC, false)
                                 .color(mayorManager.getPlayerVote(player).getCandidateColor()),
-                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                 );
             } else {
                 loreElection = TranslationManager.translationLore(
                         "feature.city.mayor.menu.election.item.lore.not_voted",
-                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                 );
             }
 
@@ -101,7 +100,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.election.item.name"));
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
-                if (mayorManager.cityElections.get(city.getUniqueId()) == null) {
+                if (mayorManager.getCityElections().get(city.getUniqueId()) == null) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.election.error.no_candidate"), Prefix.MAYOR, MessageType.ERROR, true);
                     return;
                 }

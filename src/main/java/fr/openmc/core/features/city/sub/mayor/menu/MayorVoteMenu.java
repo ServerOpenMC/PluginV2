@@ -70,7 +70,7 @@ public class MayorVoteMenu extends PaginatedMenu {
         assert city != null;
 
         int totalVotes = city.getMembers().size();
-        for (MayorCandidate candidate : mayorManager.cityElections.get(city.getUniqueId())) {
+        for (MayorCandidate candidate : mayorManager.getCityElections().get(city.getUniqueId())) {
             Perks perk2 = PerkUtils.getPerkById(candidate.getIdChoicePerk2());
             Perks perk3 = PerkUtils.getPerkById(candidate.getIdChoicePerk3());
             NamedTextColor color = candidate.getCandidateColor();

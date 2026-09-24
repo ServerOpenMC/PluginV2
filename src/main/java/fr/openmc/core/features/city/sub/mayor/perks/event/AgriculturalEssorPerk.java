@@ -2,8 +2,10 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
@@ -36,7 +38,7 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (mayorManager.phaseMayor !=2) return;
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
 
@@ -56,7 +58,7 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     void onTimeEnd(CooldownEndEvent e) {
-        if (mayorManager.phaseMayor != 2) return;
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         String cooldownGroup = e.getGroup();
         if (!cooldownGroup.equals("city:agricultural_essor")) return;
@@ -78,7 +80,7 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     public void onCropBreak(BlockBreakEvent event) {
-        if (mayorManager.phaseMayor != 2) return;
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
         City city = City.ofPlayer(player);

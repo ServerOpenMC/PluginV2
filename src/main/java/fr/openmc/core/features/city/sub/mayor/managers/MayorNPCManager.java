@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.MayorNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.OwnerNpcMenu;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
@@ -223,7 +224,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                 return;
             }
 
-            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
+            if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_mayor_yet"), Prefix.MAYOR, MessageType.INFO, true);
                     return;
@@ -315,7 +316,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                 return;
             }
 
-            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
+            if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
                 if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) return;
 
                 Component message = TranslationManager.translation("feature.city.mayor.npc.move.prompt")

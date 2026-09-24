@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorColorMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -39,7 +40,7 @@ public class MayorCommandAction {
         }
 
         if (city.getElectionType() == ElectionType.ELECTION) {
-            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
+            if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
                 MayorElectionMenu menu = new MayorElectionMenu(player);
                 menu.open();
             } else {
@@ -47,10 +48,10 @@ public class MayorCommandAction {
                 menu.open();
             }
         } else {
-            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2) {
+            if (city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
                 MayorMandateMenu menu = new MayorMandateMenu(player);
                 menu.open();
-            } else if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 1) {
+            } else if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
                 if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
                     if (!city.hasMayor()) {
                         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {

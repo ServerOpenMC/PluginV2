@@ -7,6 +7,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
@@ -23,7 +24,6 @@ import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -41,7 +41,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 import java.util.*;
 
 public class MayorManager extends Feature implements HasListeners, HasCommands, HasDatabase {
@@ -69,15 +68,16 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
             NamedTextColor.GRAY,
             NamedTextColor.DARK_GRAY);
 
-    public static final DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
-    public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
-
-    // todo: rewrite
-    public int phaseMayor;
-    public Map<UUID, Mayor> cityMayor = new HashMap<>();
-    public final Map<UUID, CityLaw> cityLaws = new HashMap<>();
-    public Map<UUID, List<MayorCandidate>> cityElections = new HashMap<>();
-    public Map<UUID, List<MayorVote>> playerVote = new HashMap<>();
+    @Getter
+    private MayorPhase mayorPhase;
+    @Getter
+    private Map<UUID, Mayor> cityMayor = new HashMap<>();
+    @Getter
+    private final Map<UUID, CityLaw> cityLaws = new HashMap<>();
+    @Getter
+    private Map<UUID, List<MayorCandidate>> cityElections = new HashMap<>();
+    @Getter
+    private Map<UUID, List<MayorVote>> playerVote = new HashMap<>();
 
     private final Random RANDOM = new Random();
 
@@ -159,7 +159,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                 () -> new MineralRushPerk(this),
                 MilitaryDissuasion::new,
                 IdyllicRain::new,
-                () -> new UrneListener(fancyNpcsHook, cityManager, this),
+                () -> new UrneListener(fancyNpcsHook, this),
                 () -> this.mayorNPCManager
         );
     }
@@ -169,14 +169,14 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         try {
             MayorConstant constant = constantsDao.queryForFirst();
             if (constant == null) {
-                constant = new MayorConstant(1);
+                constant = new MayorConstant(MayorPhase.OPEN_ELECTION);
                 constantsDao.create(constant);
             }
 
-            if (constant.getPhase() != 1 && constant.getPhase() != 2) {
-                phaseMayor = 1;
+            if (!constant.getPhase().equals(MayorPhase.OPEN_ELECTION) && !constant.getPhase().equals(MayorPhase.MAYOR_ELECTED)) {
+                mayorPhase = MayorPhase.OPEN_ELECTION;
             } else {
-                phaseMayor = constant.getPhase();
+                mayorPhase = constant.getPhase();
             }
 
         } catch (SQLException e) {
@@ -186,11 +186,11 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
     public void saveMayorConstant() {
         try {
-            if (phaseMayor != 1 && phaseMayor != 2) {
-                phaseMayor = 1;
+            if (!mayorPhase.equals(MayorPhase.OPEN_ELECTION) && !mayorPhase.equals(MayorPhase.MAYOR_ELECTED)) {
+                mayorPhase = MayorPhase.OPEN_ELECTION;
             }
 
-            constantsDao.createOrUpdate(new MayorConstant(phaseMayor));
+            constantsDao.createOrUpdate(new MayorConstant(mayorPhase));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -301,9 +301,9 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     }
 
     // setup elections
-    public void initPhase1() {
+    public void initOpenElectionPhase() {
         // ---OUVERTURE DES ELECTIONS---
-        phaseMayor = 1;
+        mayorPhase = MayorPhase.OPEN_ELECTION;
 
         DynamicCooldownManager.clear("city:agricultural_essor");
         DynamicCooldownManager.clear("city:mineral_rush");
@@ -343,9 +343,9 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         Bukkit.broadcast(TranslationManager.translation("feature.city.mayor.broadcast.phase1"));
     }
 
-    public void initPhase2() {
+    public void initElectedMayorPhase() {
         OMCLogger.debug("MAYOR - INIT PHASE 2");
-        phaseMayor = 2;
+        mayorPhase = MayorPhase.MAYOR_ELECTED;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : cityManager.getCities()) {

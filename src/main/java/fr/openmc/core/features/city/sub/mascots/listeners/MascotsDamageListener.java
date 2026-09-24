@@ -1,13 +1,13 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.IronBloodPerk;
@@ -182,7 +182,7 @@ public class MascotsDamageListener implements Listener {
         cityMob.getMascot().updateDisplayName(mob, e.getFinalDamage());
 
         try {
-            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor != 2) return;
+            if (!cityMob.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
             if (!PerkUtils.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
 

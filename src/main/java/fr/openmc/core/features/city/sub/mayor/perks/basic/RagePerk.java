@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.homes.events.HomeTpEvent;
@@ -20,7 +21,7 @@ public class RagePerk implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor != 2) return;
+        if (!OMCRegistry.CITY_FEATURES.MAYOR.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
@@ -40,7 +41,7 @@ public class RagePerk implements Listener {
 
     @EventHandler
     public void onTpMove(HomeTpEvent event) {
-        if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor != 2) return;
+        if (!OMCRegistry.CITY_FEATURES.MAYOR.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
 

@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -35,7 +36,7 @@ public class MayorCommands {
         Location warp = law.getWarp();
 
         if (warp == null) {
-            if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2) {
+            if (playerCity.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }

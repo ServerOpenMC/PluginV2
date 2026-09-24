@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -62,18 +63,18 @@ public class MoreInfoMenu extends Menu {
         List<Component> lore1 = TranslationManager.translationLore("feature.city.mayor.menu.more_info.reforms.lore");
 
         MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
-        int phase = mayorManager.phaseMayor;
+        MayorPhase phase = mayorManager.getMayorPhase();
 
         inventory.put(11, new ItemMenuBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.more_info.elections.title"));
             itemMeta.lore(lore0);
-            itemMeta.setEnchantmentGlintOverride(phase != 2);
+            itemMeta.setEnchantmentGlintOverride(!phase.equals(MayorPhase.MAYOR_ELECTED));
         }));
 
         inventory.put(15, new ItemMenuBuilder(this, Material.CYAN_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.more_info.reforms.title"));
             itemMeta.lore(lore1);
-            itemMeta.setEnchantmentGlintOverride(phase == 2);
+            itemMeta.setEnchantmentGlintOverride(phase.equals(MayorPhase.MAYOR_ELECTED));
         }));
 
         inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));

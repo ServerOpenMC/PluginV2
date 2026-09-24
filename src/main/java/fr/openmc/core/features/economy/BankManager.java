@@ -8,6 +8,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
@@ -213,7 +214,7 @@ public class BankManager extends Feature implements HasDatabase {
         double interest = .01; // base interest is 1%
 
         City city = City.ofPlayer(playerUUID);
-        if (city != null && city.getMayorPhase() == 2) {
+        if (city != null && city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
             if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }

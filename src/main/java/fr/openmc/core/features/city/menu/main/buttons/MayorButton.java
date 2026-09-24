@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -22,9 +23,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class MayorButton {
     public static void init(Menu menu, City city, int[] slots) {
@@ -45,7 +43,6 @@ public class MayorButton {
     }
 
     private static List<Component> getDynamicLore(City city, Player player) {
-        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
         Component mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
                 ? city.getMayor().getName()
@@ -55,61 +52,56 @@ public class MayorButton {
 
         List<Component> lore;
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-            lore = switch (mayorManager.phaseMayor) {
-                case 2 -> TranslationManager.translationLore(
+            lore = switch (city.getMayorPhase()) {
+                case MayorPhase.MAYOR_ELECTED -> TranslationManager.translationLore(
                         "feature.city.menus.main.mayor.locked.phase2",
                         Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
                 );
-                case 1 -> TranslationManager.translationLore(
+                case MayorPhase.OPEN_ELECTION -> TranslationManager.translationLore(
                         "feature.city.menus.main.mayor.locked.phase1",
-                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED),
-                        Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
-                );
-                default -> TranslationManager.translationLore(
-                        "feature.city.menus.main.mayor.locked.error",
+                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED),
                         Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.RED)
                 );
             };
         } else {
             if (city.getElectionType() == ElectionType.ELECTION) {
-                lore = switch (mayorManager.phaseMayor) {
-                    case 2 -> TranslationManager.translationLore(
+                lore = switch (city.getMayorPhase()) {
+                    case MayorPhase.MAYOR_ELECTED -> TranslationManager.translationLore(
                             "feature.city.menus.main.mayor.election.phase2",
                             mayorComponent
                     );
-                    case 1 -> TranslationManager.translationLore(
+                    case MayorPhase.OPEN_ELECTION -> TranslationManager.translationLore(
                             "feature.city.menus.main.mayor.election.phase1",
-                            Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                            Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                     );
-                    default -> TranslationManager.translationLore("feature.city.menus.main.mayor.election.error");
                 };
             } else {
-                switch (mayorManager.phaseMayor) {
-                    case 2 -> lore = TranslationManager.translationLore(
+                switch (city.getMayorPhase()) {
+                    case MayorPhase.MAYOR_ELECTED -> lore = TranslationManager.translationLore(
                             "feature.city.menus.main.mayor.owner.phase2",
                             mayorComponent,
-                            Component.text(DateUtils.getTimeUntilNextDay(PHASE_1_DAY)).color(NamedTextColor.RED)
+                            Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.OPEN_ELECTION.getStartDay())).color(NamedTextColor.RED)
                     );
-                    case 1 -> {
+                    case MayorPhase.OPEN_ELECTION -> {
                         if (hasPermissionOwner) {
                             if (city.hasMayor()) {
                                 lore = TranslationManager.translationLore(
                                         "feature.city.menus.main.mayor.owner.phase1.has_mayor",
                                         Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.BLUE),
-                                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                                 );
                             } else {
                                 lore = TranslationManager.translationLore(
                                         "feature.city.menus.main.mayor.owner.phase1.no_mayor",
                                         Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.BLUE),
-                                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                                 );
                             }
                         } else {
                             lore = TranslationManager.translationLore(
                                     "feature.city.menus.main.mayor.owner.phase1.viewer",
                                     Component.text(MayorManager.MEMBER_REQUEST_ELECTION).color(NamedTextColor.BLUE),
-                                    Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                                    Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                             );
                         }
                     }

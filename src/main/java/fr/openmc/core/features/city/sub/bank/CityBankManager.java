@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.bank.commands.CityBankCommand;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.InterestRewards;
@@ -134,7 +135,7 @@ public class CityBankManager extends Feature implements HasCommands {
 
         interest += InterestRewards.getTotalInterest(city.getLevel());
 
-        if (mayorManager.phaseMayor == 2) {
+        if (mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
             if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }

@@ -25,6 +25,7 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
@@ -512,30 +513,30 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     }
 
     @Override
-    public int getMayorPhase() {
-        return mayorManager.phaseMayor;
+    public MayorPhase getMayorPhase() {
+        return mayorManager.getMayorPhase();
     }
 
     @Override
     public Mayor getMayor() {
-        return mayorManager.cityMayor.get(this.getUniqueId());
+        return mayorManager.getCityMayor().get(this.getUniqueId());
     }
 
     @Override
     public boolean hasMayor() {
-        Mayor mayor = mayorManager.cityMayor.get(this.getUniqueId());
+        Mayor mayor = mayorManager.getCityMayor().get(this.getUniqueId());
         return mayor != null && mayor.getMayorUUID() != null;
     }
 
     @Override
     public ElectionType getElectionType() {
-        Mayor mayor = mayorManager.cityMayor.get(this.getUniqueId());
+        Mayor mayor = mayorManager.getCityMayor().get(this.getUniqueId());
         return mayor == null ? null : mayor.getElectionType();
     }
 
     @Override
     public CityLaw getLaw() {
-        return mayorManager.cityLaws.get(this.getUniqueId());
+            return mayorManager.getCityLaws().get(this.getUniqueId());
     }
 
     @Override

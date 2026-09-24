@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -96,7 +97,7 @@ public class CityTopMenu extends PaginatedMenu {
                 Component wealthIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
                 Component powerComponent = Component.text(city.getPowerPoints()).color(NamedTextColor.RED);
 
-                if (OMCRegistry.CITY_FEATURES.MAYOR.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+                if (city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED) && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
                     Component mayorName = city.getMayor() == null
                             ? TranslationManager.translation("messages.menus.none")
                             : city.getMayor().getName();

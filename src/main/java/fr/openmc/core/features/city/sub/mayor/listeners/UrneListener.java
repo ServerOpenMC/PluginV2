@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -33,12 +34,10 @@ import java.util.Objects;
 
 public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
     private final FancyNpcsHook fancyNpcHook;
-    private final CityManager cityManager;
     private final MayorManager mayorManager;
 
-    public UrneListener(FancyNpcsHook fancyNpcsHook, CityManager cityManager, MayorManager mayorManager) {
+    public UrneListener(FancyNpcsHook fancyNpcsHook, MayorManager mayorManager) {
         this.fancyNpcHook = fancyNpcsHook;
-        this.cityManager = cityManager;
         this.mayorManager = mayorManager;
     }
 
@@ -79,12 +78,12 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
             return;
         }
 
-        if (mayorManager.phaseMayor != 1) {
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.election_already"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (mayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
+        if (mayorManager.getCityElections().get(playerCity.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.interact.no_candidate"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }

@@ -481,10 +481,6 @@ public class CityManager extends Feature
     public void deleteCity(City city) {
         if (city == null) return;
 
-        OMCRegistry.CITY_FEATURES.MAYOR.cityMayor.remove(city.getUniqueId());
-        OMCRegistry.CITY_FEATURES.MAYOR.cityElections.remove(city.getUniqueId());
-        OMCRegistry.CITY_FEATURES.MAYOR.playerVote.remove(city.getUniqueId());
-
         List<UUID> membersCopy = new ArrayList<>(city.getMembers());
         for (UUID memberId : membersCopy) {
             Player member = Bukkit.getPlayer(memberId);
