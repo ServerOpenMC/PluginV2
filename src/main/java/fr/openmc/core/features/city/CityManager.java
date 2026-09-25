@@ -18,10 +18,15 @@ import fr.openmc.core.features.city.models.db.*;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
+import fr.openmc.core.features.dream.registries.DreamFeaturesRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -60,9 +65,10 @@ public class CityManager extends Feature
 
     @Override
     public List<Supplier<LifecycleRegistry>> getRegistries() {
-        return List.of(
-                () -> OMCRegistry.CITY_FEATURES = new CityFeaturesRegistry()
-        );
+        return new ArrayList<>(List.of(
+                () -> SubRegistry.boot(new CityFeaturesRegistry(),
+                        r -> OMCRegistry.CITY_FEATURES = r)
+        ));
     }
 
     @Override

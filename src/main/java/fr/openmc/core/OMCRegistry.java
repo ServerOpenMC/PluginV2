@@ -9,6 +9,7 @@ import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
+import fr.openmc.core.features.friend.FriendsFeaturesRegistry;
 import fr.openmc.core.features.homes.HomeFeaturesRegistry;
 import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
@@ -69,6 +70,9 @@ public final class OMCRegistry {
 
     // * Registre concernant la feature des homes
     public static HomeFeaturesRegistry HOME_FEATURES;
+
+    // * Registre concernant la feature des villes
+    public static FriendsFeaturesRegistry FRIEND_FEATURES;
 
     // * Registre concernant la feature des shops
     public static ShopFeaturesRegistry SHOP_FEATURES;

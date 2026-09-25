@@ -1,4 +1,4 @@
-package fr.openmc.core.commands.admin.freeze;
+package fr.openmc.core.features.freeze;
 
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

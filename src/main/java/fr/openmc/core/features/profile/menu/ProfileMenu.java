@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfileMenu extends Menu {
+    private final static FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
     private final OfflinePlayer target;
 
     public ProfileMenu(Player owner) {
@@ -142,7 +143,7 @@ public class ProfileMenu extends Menu {
     private void addFriendsItem(Map<Integer, ItemMenuBuilder> inventory) {
         boolean selfProfile = isSelfProfile();
         boolean friends = !selfProfile
-                && FriendManager.areFriends(getOwner().getUniqueId(), target.getUniqueId());
+                && friendManager.areFriends(getOwner().getUniqueId(), target.getUniqueId());
         String nameKey = friends
                 ? "feature.profile.item.friends.name.friend"
                 : "feature.profile.item.friends.name";

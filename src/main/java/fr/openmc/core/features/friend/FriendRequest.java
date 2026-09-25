@@ -1,6 +1,7 @@
 package fr.openmc.core.features.friend;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class FriendRequest extends BukkitRunnable {
+
+    private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
 
     private final List<UUID> uuids = new ArrayList<>();
 
@@ -42,7 +45,7 @@ public class FriendRequest extends BukkitRunnable {
     public void removeRequest() {
         sendExpiryMessage(uuids.get(0));
         sendExpiryMessage(uuids.get(1));
-        FriendManager.removeRequest(this);
+        friendManager.removeRequest(this);
         uuids.clear();
     }
 

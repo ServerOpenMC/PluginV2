@@ -1,4 +1,4 @@
-package fr.openmc.core.commands.admin.freeze;
+package fr.openmc.core.features.freeze;
 
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import org.bukkit.entity.Player;

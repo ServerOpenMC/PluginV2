@@ -32,6 +32,7 @@ import java.util.UUID;
 public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
 
+    private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final LuckPermsHook luckPermsHook;
 
@@ -52,7 +53,7 @@ public class JoinQuitMessageListener implements Listener {
 
         tabList.updateTabList(player);
 
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
@@ -117,7 +118,7 @@ public class JoinQuitMessageListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
 
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
