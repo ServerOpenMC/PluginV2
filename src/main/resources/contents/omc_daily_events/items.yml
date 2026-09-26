@@ -66,6 +66,71 @@ items:
       - <lang:itemsadder.omc_daily_events.blessed_bread.lore.0>
       - <lang:itemsadder.omc_daily_events.blessed_bread.lore.1>
 
+  candy_red:
+    display_name: <lang:itemsadder.omc_daily_events.candy_red.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_red
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_daily_events.candy_red.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_yellow:
+    display_name: <lang:itemsadder.omc_daily_events.candy_yellow.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_yellow
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_daily_events.candy_yellow.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_green:
+    display_name: <lang:itemsadder.omc_daily_events.candy_green.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_green
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_daily_events.candy_green.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_blue:
+    display_name: <lang:itemsadder.omc_daily_events.candy_blue.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_blue
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_daily_events.candy_blue.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_brown:
+    display_name: <lang:itemsadder.omc_daily_events.candy_brown.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_brown
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_daily_events.candy_brown.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
 recipes:
   iaa_crafting_table:
     fermentum:

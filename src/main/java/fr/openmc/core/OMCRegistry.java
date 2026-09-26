@@ -14,6 +14,7 @@ import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
+import fr.openmc.core.registry.structures.CustomStructureRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
@@ -31,6 +32,7 @@ public final class OMCRegistry {
     public static CustomLootTableRegistry CUSTOM_LOOT_TABLES;
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
     public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
+    public static CustomStructureRegistry CUSTOM_STRUCTURES;
     public static CustomRegionRegistry CUSTOM_REGIONS;
     public static WorldTemplateRegistry WORLD_TEMPLATES;
 
@@ -58,6 +60,8 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> CUSTOM_STRUCTURES = new CustomStructureRegistry(),
+                    RegistryLoadingType.RUNTIME),
             new RegistryContext(() -> WORLD_TEMPLATES = new WorldTemplateRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),

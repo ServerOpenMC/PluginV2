@@ -1,0 +1,110 @@
+info:
+  namespace: omc_halloween
+
+items:
+  candy_red:
+    display_name: <lang:itemsadder.omc_halloween.candy_red.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_red
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy_red.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_yellow:
+    display_name: <lang:itemsadder.omc_halloween.candy_yellow.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_yellow
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy_yellow.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_green:
+    display_name: <lang:itemsadder.omc_halloween.candy_green.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_green
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy_green.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_blue:
+    display_name: <lang:itemsadder.omc_halloween.candy_blue.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_blue
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy_blue.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_brown:
+    display_name: <lang:itemsadder.omc_halloween.candy_brown.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_brown
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy_brown.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+recipes:
+  iaa_crafting_table:
+    fermentum:
+      shapeless: true
+      ingredients:
+        - item: omc_daily_events:golden_wheat
+          amount: 5
+        - item: omc_daily_events:golden_beetroot
+          amount: 5
+        - item: omc_daily_events:really_golden_carrot
+          amount: 5
+        - item: omc_daily_events:golden_potato
+          amount: 5
+        - item: omc_daily_events:golden_melon
+          amount: 5
+        - item: omc_daily_events:golden_pumpkin
+          amount: 5
+      result:
+        item: omc_daily_events:fermentum
+
+    blessed_bread:
+      enabled: true
+      pattern:
+        - FFF
+        - XXX
+        - XXX
+      pattern_2:
+        - XXX
+        - FFF
+        - XXX
+      pattern_3:
+        - XXX
+        - XXX
+        - FFF
+      ingredients:
+        F:
+          item: omc_daily_events:golden_wheat
+          amount: 192
+      result:
+        item: omc_daily_events:blessed_bread
+        amount: 1

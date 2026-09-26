@@ -118,6 +118,7 @@ public class OMCPlugin extends JavaPlugin {
             MailboxManager::new,
             DiscordLinkManager::new,
             ProfileManager::new,
+            () -> new fr.openmc.core.features.events.contents.halloween.halloween.HalloweenManager(),
             () -> new ElevatorManager(),
             () -> new CorpseManager(),
             QuestsManager::new,
