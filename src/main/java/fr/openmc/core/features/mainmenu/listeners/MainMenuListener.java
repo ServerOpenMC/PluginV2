@@ -8,15 +8,13 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.papermc.paper.adventure.PaperAdventure;
-import lombok.Getter;
 import net.minecraft.advancements.*;
-import net.minecraft.core.HolderSet;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,18 +30,34 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MainMenuListener implements Listener {
 
-    private final ClientboundUpdateAdvancementsPacket advancementPacket;
-    @Getter
-    private static final Map<UUID, ClientboundUpdateAdvancementsPacket> advancementPackets = new HashMap<>();
-    @Getter
-    private static final List<UUID> enabledAdvancements = new ArrayList<>();
+    private static final String PIPELINE_NAME = "omc_main_menu_injector";
+    private static final Identifier MENU_TAB_ID = Identifier.fromNamespaceAndPath("openmc_mainmenu", "mainmenu");
+
+    private static final Set<UUID> isModeAdvancementActived = new HashSet<>();
+    private static final Map<UUID, ClientboundUpdateAdvancementsPacket> mainMenuOpened = new ConcurrentHashMap<>();
+
+    private final ClientboundUpdateAdvancementsPacket tabMainMenuPacket;
 
     public MainMenuListener(OMCPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        advancementPacket = createEmptyAdvancementPacket();
+        this.tabMainMenuPacket = createMenuOnlyPacket();
+    }
+
+    private static ClientboundUpdateAdvancementsPacket createMenuOnlyPacket() {
+        AdvancementHolder holder = createMenuTabHolder();
+        ClientboundUpdateAdvancementsPacket.PositionedAdvancement positioned =
+                new ClientboundUpdateAdvancementsPacket.PositionedAdvancement(holder, 0, 0);
+        return new ClientboundUpdateAdvancementsPacket(
+                true,
+                List.of(positioned),
+                Set.of(),
+                Map.of(),
+                false
+        );
     }
 
     /**
@@ -54,35 +68,27 @@ public class MainMenuListener implements Listener {
     private static ClientboundUpdateAdvancementsPacket createEmptyAdvancementPacket() {
         // Rien de très important ici, on crée justes les instances nécessaires pour le packet avec le minimum requis.
         DisplayInfo displayInfo = new DisplayInfo(
-                ItemStackTemplate.fromNonEmptyStack(CraftItemStack.asNMSCopy(getInvisibleItem())),
+                ItemStackTemplate.fromNonEmptyStack(CraftItemStack.asNMSCopy(getMenuIcon())),
                 PaperAdventure.asVanilla(TranslationManager.translation("feature.mainmenu.advancements.loading")),
                 Component.empty(),
-                Optional.empty(),
+                Optional.of(new ClientAsset.ResourceTexture(
+                        Identifier.fromNamespaceAndPath("minecraft", "textures/gui/advancements/backgrounds/stone.png")
+                )),
                 AdvancementType.GOAL,
-                false,
-                false,
-                false
+                false, false, false
         );
         Advancement advancement = new Advancement(
                 Optional.empty(),
                 Optional.of(displayInfo),
-                new AdvancementRewards(0, HolderSet.empty(), new ArrayList<>(), Optional.empty()),
-                new HashMap<>(),
-                new AdvancementRequirements(new ArrayList<>()),
+                AdvancementRewards.EMPTY,
+                Map.of(),
+                new AdvancementRequirements(List.of()),
                 false
         );
-        AdvancementHolder advancementHolder = new AdvancementHolder(Identifier.fromNamespaceAndPath("openmc", "advancement"), advancement);
-        ClientboundUpdateAdvancementsPacket.PositionedAdvancement positionedAdvancement = new ClientboundUpdateAdvancementsPacket.PositionedAdvancement(advancementHolder, 0, 0);
-        return new ClientboundUpdateAdvancementsPacket(
-                true,
-                Collections.singletonList(positionedAdvancement),
-                Set.of(),
-                new HashMap<>(),
-                false
-        );
+        return new AdvancementHolder(MENU_TAB_ID, advancement);
     }
 
-    private static org.bukkit.inventory.ItemStack getInvisibleItem() {
+    private static org.bukkit.inventory.ItemStack getMenuIcon() {
         org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(Material.PAPER);
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
@@ -97,21 +103,25 @@ public class MainMenuListener implements Listener {
         Channel channel = connection.connection.channel;
         UUID playerUUID = player.getUniqueId();
 
-        if (channel.pipeline().get("packet_listener") != null) return;
+        if (channel.pipeline().get(PIPELINE_NAME) != null) return;
 
-        channel.pipeline().addBefore("packet_handler", "packet_listener", new ChannelDuplexHandler() {
+        channel.pipeline().addBefore("packet_handler", PIPELINE_NAME, new ChannelDuplexHandler() {
+
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                 if (msg instanceof ServerboundSeenAdvancementsPacket packet) {
-                    if (packet.getAction() == ServerboundSeenAdvancementsPacket.Action.OPENED_TAB && packet.getTab() != null && packet.getTab().getNamespace().equals("openmc")) {
+                    if (packet.getAction() == ServerboundSeenAdvancementsPacket.Action.OPENED_TAB
+                            && packet.getTab() != null
+                            && packet.getTab().getNamespace().equals("openmc_mainmenu")) {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
                                 MainMenu.openMainMenu(player);
                             }
                         }.runTask(OMCPlugin.getInstance());
-                    } else if (packet.getAction() == ServerboundSeenAdvancementsPacket.Action.CLOSED_SCREEN && enabledAdvancements.contains(playerUUID)) {
-                        connection.connection.send(advancementPacket);
+                    } else if (packet.getAction() == ServerboundSeenAdvancementsPacket.Action.CLOSED_SCREEN
+                            && isModeAdvancementActived.remove(playerUUID)) {
+                        connection.connection.send(tabMainMenuPacket);
                     }
                 }
                 super.channelRead(ctx, msg);
@@ -119,21 +129,38 @@ public class MainMenuListener implements Listener {
 
             @Override
             public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-                if (msg instanceof ClientboundUpdateAdvancementsPacket packet && !enabledAdvancements.contains(playerUUID)) {
-                    packet = new ClientboundUpdateAdvancementsPacket(
-                            true,
-                            packet.added(),
-                            packet.removed(),
-                            packet.progress(),
-                            true
-                    );
-                    advancementPackets.put(playerUUID, packet);
-                    super.write(ctx, advancementPacket, promise);
-                    return;
+                if (msg instanceof ClientboundUpdateAdvancementsPacket packet) {
+                    if (packet == tabMainMenuPacket) {
+                        super.write(ctx, packet, promise);
+                        return;
+                    }
+
+                    if (packet.shouldReset()) {
+                        mainMenuOpened.put(playerUUID, packet);
+
+                        if (isModeAdvancementActived.contains(playerUUID)) {
+                            // * Mode succes normal
+                            super.write(ctx, packet, promise);
+                        } else {
+                            // * Mode MainMenu OMC
+                            super.write(ctx, tabMainMenuPacket, promise);
+                        }
+                        return;
+                    }
                 }
                 super.write(ctx, msg, promise);
             }
         });
+    }
+
+    public static void setModeAdvancement(Player player) {
+        UUID uuid = player.getUniqueId();
+        isModeAdvancementActived.add(uuid);
+
+        ClientboundUpdateAdvancementsPacket realTree = mainMenuOpened.get(uuid);
+        if (realTree != null) {
+            ((CraftPlayer) player).getHandle().connection.send(realTree);
+        }
     }
 
     @EventHandler
@@ -143,7 +170,8 @@ public class MainMenuListener implements Listener {
 
     @EventHandler
     void onPlayerQuit(PlayerQuitEvent event) {
-        advancementPackets.remove(event.getPlayer().getUniqueId());
-        enabledAdvancements.remove(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        isModeAdvancementActived.remove(uuid);
+        mainMenuOpened.remove(uuid);
     }
 }
