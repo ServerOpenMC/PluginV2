@@ -47,6 +47,11 @@ public class MainMenuListener implements Listener {
         this.tabMainMenuPacket = createMenuOnlyPacket();
     }
 
+    /**
+     * Créé un packet de progrès vides avec écrit "Chargement..." en attendant que le menu principal soit affiché.
+     *
+     * @return Un packet {@link ClientboundUpdateAdvancementsPacket} avec les progrès vides.
+     */
     private static ClientboundUpdateAdvancementsPacket createMenuOnlyPacket() {
         AdvancementHolder holder = createMenuTabHolder();
         ClientboundUpdateAdvancementsPacket.PositionedAdvancement positioned =
@@ -60,13 +65,7 @@ public class MainMenuListener implements Listener {
         );
     }
 
-    /**
-     * Créé un packet de progrès vides avec écrit "Chargement..." en attendant que le menu principal soit affiché.
-     *
-     * @return Un packet {@link ClientboundUpdateAdvancementsPacket} avec les progrès vides.
-     */
-    private static ClientboundUpdateAdvancementsPacket createEmptyAdvancementPacket() {
-        // Rien de très important ici, on crée justes les instances nécessaires pour le packet avec le minimum requis.
+    private static AdvancementHolder createMenuTabHolder() {
         DisplayInfo displayInfo = new DisplayInfo(
                 ItemStackTemplate.fromNonEmptyStack(CraftItemStack.asNMSCopy(getMenuIcon())),
                 PaperAdventure.asVanilla(TranslationManager.translation("feature.mainmenu.advancements.loading")),
