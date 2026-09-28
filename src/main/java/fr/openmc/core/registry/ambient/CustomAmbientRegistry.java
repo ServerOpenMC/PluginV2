@@ -29,7 +29,7 @@ import java.util.Set;
 public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
         implements KeyedRegistry<String, CustomAmbient>, HasListeners {
     public static final String NAMESPACE = "omc_ambient";
-    private final OMCDatapack ambientDatapack = new OMCDatapack("openmc", NAMESPACE);
+    private final OMCDatapack ambientDatapack = new OMCDatapack(NAMESPACE);
 
     // ** REGISTER AMBIENT **
     public final CustomAmbient DARK = register(new DarkAmbient());

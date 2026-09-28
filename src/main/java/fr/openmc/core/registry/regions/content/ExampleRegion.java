@@ -17,12 +17,12 @@ public class ExampleRegion extends Region {
     }
 
     @Override
-    public BlockVector3 getMin() {
+    public BlockVector3 getPos1() {
         return null;
     }
 
     @Override
-    public BlockVector3 getMax() {
+    public BlockVector3 getPos2() {
         return null;
     }
 }

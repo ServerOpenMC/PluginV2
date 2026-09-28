@@ -1,6 +1,7 @@
 package fr.openmc.core.features.leaderboards.commands;
 
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.leaderboards.LeaderBoard;
+import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -13,66 +14,39 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
-
-import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 @Command({"leaderboard", "lb"})
-public class LeaderboardCommands {
-    @CommandPlaceholder()
-    void mainCommand(CommandSender sender) {
+public class LeaderBoardCommands {
+    @CommandPriority.Low
+    @Subcommand("<leaderboardName>")
+    void mainCommand(CommandSender sender,
+                     @Named("leaderboardName")
+                     @SuggestWith(LeaderBoardAutoComplete.class)
+                     String leaderboard) {
+            Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
+            if (lb.isPresent()){
+                MessagesManager.sendMessage(sender,lb.get().createComponent(), Prefix.OPENMC,MessageType.INFO,false);
+                return;
+            }
         MessagesManager.sendMessage(sender, TranslationManager.translation("feature.leaderboards.command.invalid")
                 .color(NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, false);
     }
 
-    @Subcommand({"contributeurs"})
-    @CommandPermission("omc.commands.leaderboard.contributors")
-    @Description("Affiche le leaderboard des contributeurs GitHub")
-    void contributorsCommand(CommandSender sender) {
-        sender.sendMessage(createContributorsTextLeaderboard());
-    }
-
-    @Subcommand({"argent"})
-    @CommandPermission("omc.commands.leaderboard.money.player")
-    @Description("Affiche le leaderboard de l'argent des joueurs")
-    void moneyCommand(CommandSender sender) {
-        sender.sendMessage(createMoneyTextLeaderboard());
-    }
-
-    @Subcommand({"cityMoney"})
-    @CommandPermission("omc.commands.leaderboard.money.city")
-    @Description("Affiche le leaderboard de l'argent des villes")
-    void cityMoneyCommand(CommandSender sender) {
-        sender.sendMessage(createCityMoneyTextLeaderboard());
-    }
-
-    @Subcommand({"playtime"})
-    @CommandPermission("omc.commands.leaderboard.money.playtime")
-    @Description("Affiche le leaderboard du temps de jeu des joueurs")
-    void playtimeCommand(CommandSender sender) {
-        sender.sendMessage(createPlayTimeTextLeaderboard());
-    }
-
-    @Subcommand({"pumpkinCount"})
-    @CommandPermission("omc.commands.leaderboard.money.pumpkin")
-    @Description("Affiche le leaderboard des citrouilles des joueurs")
-    void pumpkinCountCommand(CommandSender sender) {
-        sender.sendMessage(createPumpkinCountTextLeaderboard());
-    }
-
-
-    @Subcommand("setPos")
-    @CommandPermission("op")
+    @Subcommand("setPos <leaderboardName>")
+    @CommandPermission("omc.admins.commands.leaderboard.setpos")
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(
             Player player,
             @Named("leaderboardName")
-            @Suggest({"contributors", "money", "ville-money", "playtime", "pumpkin-count"})
+            @SuggestWith(LeaderBoardAutoComplete.class)
             String leaderboard
     ) {
-        if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime") || leaderboard.equals("pumpkin-count")) {
+        Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
+        if (lb.isPresent()) {
             try {
-                LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
+                lb.get().setLocation(player.getLocation());
                 MessagesManager.sendMessage(
                         player,
                         TranslationManager.translation(
@@ -110,40 +84,43 @@ public class LeaderboardCommands {
     }
 
     @Subcommand("disable")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.disable")
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
-        LeaderboardManager.disable();
+        LeaderBoardManager.stop();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_disabled")
                 .color(NamedTextColor.RED));
     }
 
     @Subcommand("enable")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.enable")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        LeaderboardManager.enable();
+        LeaderBoardManager.start();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_enabled")
                 .color(NamedTextColor.GREEN));
     }
 
     @Subcommand("update")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.update")
     @Description("Met à jour les Holograms.")
     void updateCommand(CommandSender sender) {
-        LeaderboardManager.updateGithubContributorsMap();
-        LeaderboardManager.updatePlayerMoneyMap();
-        LeaderboardManager.updateCityMoneyMap();
-        LeaderboardManager.updatePlayTimeMap();
-        LeaderboardManager.updatePumpkinCountMap();
-        LeaderboardManager.updateHolograms();
-        LeaderboardManager.updateHologramsViewers();
+        LeaderBoardManager.update();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_updated")
                 .color(NamedTextColor.GREEN));
     }
 
+    @Subcommand("reload")
+    @CommandPermission("omc.admins.commands.leaderboard.reload")
+    @Description("Recharge la configuration et les hologrammes.")
+    void reloadCommand(CommandSender sender) {
+        LeaderBoardManager.reload();
+        sender.sendMessage(Component.text("Les leaderboards ont été rechargés.")
+                .color(NamedTextColor.GREEN));
+    }
+
     @Subcommand("setScale")
-    @CommandPermission("op")
+    @CommandPermission("omc.admins.commands.leaderboard.setscale")
     @Description("Défini la taille des Holograms.")
     void setScaleCommand(
             Player player,
@@ -155,7 +132,7 @@ public class LeaderboardCommands {
                 scaleComponent
         ).color(NamedTextColor.GREEN));
         try {
-            LeaderboardManager.setScale(scale);
+            LeaderBoard.setScale(scale);
             player.sendMessage(TranslationManager.translation(
                     "feature.leaderboards.command.scale_changed",
                     scaleComponent

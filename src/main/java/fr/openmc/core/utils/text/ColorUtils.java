@@ -3,6 +3,7 @@ package fr.openmc.core.utils.text;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -61,6 +62,18 @@ public class ColorUtils {
         colorToMaterial.put(LIGHT_PURPLE, Material.MAGENTA_WOOL);
         colorToMaterial.put(YELLOW, Material.YELLOW_WOOL);
         colorToMaterial.put(WHITE, Material.WHITE_WOOL);
+    }
+
+    /**
+     * Retourne une couleur correspondant au rang
+     */
+    public static TextColor getRankColor(int rank) {
+        return switch (rank) {
+            case 1 -> TextColor.color(0xFFD700);
+            case 2 -> TextColor.color(0xC0C0C0);
+            case 3 -> TextColor.color(0x614E1A);
+            default -> TextColor.color(0x4B4B4B);
+        };
     }
 
     /**
