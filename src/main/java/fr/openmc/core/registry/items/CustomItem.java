@@ -9,7 +9,10 @@ import fr.openmc.core.hooks.itemsadder.sprite.SpriteUtils;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.riftengine.api.scanner.items.ItemEntry;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ObjectComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,7 +98,12 @@ public abstract class CustomItem {
         if (OMCPlugin.getInstance() != null) {
             this.itemEntry = OMCRegistry.SCANNERS.ITEMS.getFromNamespacedId(
                     ItemsAdderHook.getItemsAdderPath(OMCPlugin.getInstance().getDataPath()), id);
-            this.sprite = SpriteUtils.getSprite(this);
+            ObjectComponent sprite = SpriteUtils.getSprite(this);
+            if (sprite != null) {
+                HoverEvent<?> hoverEvent = this.getBest().displayName().hoverEvent();
+                if (hoverEvent != null && hoverEvent.asHoverEvent() != null)
+                    this.sprite = sprite.hoverEvent(hoverEvent.asHoverEvent());
+            }
         } else {
             this.itemEntry = null;
             this.sprite = null;
