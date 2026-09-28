@@ -294,6 +294,8 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     @Override
     public void postInit() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
+
+        values().forEach(CustomItem::updateSprite);
     }
 
     @Override

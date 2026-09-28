@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.plugin.PluginManager;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
@@ -128,7 +129,7 @@ public abstract class Hooks {
     /**
      * Initialise les méthodes du hook lorsqu'il est actif.
      */
-    protected void init() {
+    protected void init() throws IOException {
         // a @Override dans les classes si besoin
     }
 

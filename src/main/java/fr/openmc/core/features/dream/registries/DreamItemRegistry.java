@@ -137,6 +137,8 @@ public class DreamItemRegistry {
     public static void init() {
         OMCRegistry.CUSTOM_ITEMS.register(DREAM_ITEM_REGISTRY);
 
+        DREAM_ITEM_REGISTRY.forEach(CustomItem::updateSprite);
+
         CommandsManager.getHandler().register(
                 new DreamItemCommand()
         );
