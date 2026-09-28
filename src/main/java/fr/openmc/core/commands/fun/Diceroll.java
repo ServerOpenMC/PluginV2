@@ -27,17 +27,4 @@ public class Diceroll {
         MessagesManager.sendMessage(player, TranslationManager.translation("command.fun.diceroll.success",
                 Component.text(result).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.INFO, true);
     }
-
-    @Command("tses")
-    @CommandPermission("omc.commands.diceroll")
-    @Description("Faire un lancé de dés (Donne un nombre aléatoire entre 1 et 10)")
-    private void diceroeffell(Player player) {
-        for (CustomItem item : OMCRegistry.CUSTOM_ITEMS.values()) {
-            ObjectComponent sprite = SpriteUtils.getSprite(item);
-            if (sprite != null)
-                player.sendMessage(Component.text(item.getId() + " : ").append(sprite));
-            else
-                player.sendMessage(Component.text(item.getId() + " : ").append(Component.text("No sprite")));
-        }
-    }
 }
