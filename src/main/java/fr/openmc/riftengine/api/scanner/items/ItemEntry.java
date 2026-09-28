@@ -9,10 +9,7 @@ import lombok.Getter;
 import org.bukkit.Material;
 
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -101,6 +98,15 @@ public class ItemEntry {
             }
             if (graphics.hasTexture()) {
                 return Collections.singleton(IdentifierUtils.normalizeId(graphics.texture(), namespace));
+            }
+            if (graphics.hasTextures()) {
+                Set<String> texturesNormalized = new HashSet<>();
+
+                for (String value : graphics.textures().values()) {
+                    texturesNormalized.add(IdentifierUtils.normalizeId(value, namespace));
+                }
+                
+                return texturesNormalized;
             }
         }
 

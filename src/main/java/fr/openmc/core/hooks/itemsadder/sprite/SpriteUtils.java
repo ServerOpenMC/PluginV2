@@ -30,7 +30,16 @@ public class SpriteUtils {
             return null;
         }
         String bestResourceId = bestResourcesId.stream().findFirst().orElseThrow();
-        Key resourceKey = Key.key("_" + IdentifierUtils.removeExtensionPath(bestResourceId));
+
+        String prefix = "_";
+
+        if (itemEntry.getBehaviour().isBlockBehaviour()
+                && itemEntry.getGraphics() != null
+                && itemEntry.getGraphics().hasTextures()) {
+            prefix += "b_";
+        }
+
+        Key resourceKey = Key.key(prefix + IdentifierUtils.removeExtensionPath(bestResourceId));
 
         System.out.println("atlas " + atlasKey.asMinimalString());
         System.out.println("resource " + resourceKey.asMinimalString());
