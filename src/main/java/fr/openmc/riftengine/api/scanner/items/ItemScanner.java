@@ -24,7 +24,6 @@ public class ItemScanner extends AbstractScanner<List<ItemEntry>, Path> {
         List<ItemEntry> result = new ArrayList<>();
 
         for (Path ymlFile : ymlFiles) {
-            System.out.println(ymlFile.toString());
             Map<String, Object> root = YmlUtils.loadYml(ymlFile);
 
             if (root == null) continue;

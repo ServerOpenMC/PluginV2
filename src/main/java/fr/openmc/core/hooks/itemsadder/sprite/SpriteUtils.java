@@ -16,19 +16,14 @@ public class SpriteUtils {
     public static ObjectComponent getSprite(CustomItem item) {
         ItemEntry itemEntry = item.getItemEntry();
 
-        if (itemEntry == null) {
-            OMCLogger.warn("ItemEntry is null for item " + item.getId());
-            return null;
-        }
+        if (itemEntry == null)  return null;
 
         Key atlasKey = itemEntry.getBehaviour().isBlockBehaviour() ? Key.key("minecraft", "blocks")
                 : Key.key("minecraft", "items");
 
         Set<String> bestResourcesId = itemEntry.getBestResourcesId();
-        if (bestResourcesId == null || bestResourcesId.isEmpty()) {
-            OMCLogger.warn("BestResourcesId is null for item " + item.getId());
-            return null;
-        }
+        if (bestResourcesId == null || bestResourcesId.isEmpty()) return null;
+
         String bestResourceId = bestResourcesId.stream().findFirst().orElseThrow();
 
         String prefix = "_";
@@ -40,9 +35,6 @@ public class SpriteUtils {
         }
 
         Key resourceKey = Key.key(prefix + IdentifierUtils.removeExtensionPath(bestResourceId));
-
-        System.out.println("atlas " + atlasKey.asMinimalString());
-        System.out.println("resource " + resourceKey.asMinimalString());
 
         return Component.object(ObjectContents.sprite(atlasKey, resourceKey));
     }
