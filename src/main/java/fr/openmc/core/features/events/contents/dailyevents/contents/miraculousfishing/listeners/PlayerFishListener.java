@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,49 +39,66 @@ public class PlayerFishListener implements Listener {
 
     @EventHandler
     public void onStartFishing(PlayerFishEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
-
         Player player = event.getPlayer();
         FishHook hook = event.getHook();
 
-        FishingAttributeManager.applyFishingSpeedModifier(player, hook);
+        boolean miraculousFishingActive = DailyEventsManager.isActiveDailyEvent()
+                && DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent;
 
-        if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
+        if (miraculousFishingActive) {
+            FishingAttributeManager.applyFishingSpeedModifier(player, hook);
+        }
 
-        if (FishingMiniGameManager.isActive(player)) return;
+        if (event.isCancelled() || event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
+            return;
+        }
+
+        if (FishingMiniGameManager.isActive(player)) {
+            return;
+        }
 
         Entity caughtEntity = event.getCaught();
+        if (!(caughtEntity instanceof Item caughtItem)) {
+            return;
+        }
+
+        ItemStack vanillaReward = caughtItem.getItemStack().clone();
         Location hookLocation = hook.getLocation().clone();
 
         boolean started = FishingMiniGameManager.start(player, result ->
-                giveFishingReward(player, hookLocation, result));
+                handleFishingReward(player, hookLocation, vanillaReward, miraculousFishingActive, result));
 
-        if (!started) return;
-
-        if (caughtEntity instanceof Item caughtItem) {
-            caughtItem.remove();
+        if (!started) {
+            return;
         }
 
-        ParticleUtils.spawnDispersingParticles(player,
+        caughtItem.remove();
+
+        ParticleUtils.spawnDispersingParticles(
+                player,
                 Particle.CLOUD,
                 hookLocation,
-                35, 0.1D, null);
+                35,
+                0.1D,
+                null
+        );
     }
 
     @EventHandler
     public void onHookOnWater(FishHookStateChangeEvent event) {
         if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) {
+            return;
+        }
 
         Entity hook = event.getEntity();
         World world = hook.getWorld();
 
-        if (event.getNewHookState().equals(FishHook.HookState.BOBBING)) {
-            // * SFX
+        if (event.getNewHookState() == FishHook.HookState.BOBBING) {
             ParticleUtils.sendParticlePacket(
                     hook.getLocation().getNearbyEntitiesByType(Player.class, 30),
-                    Particle.POOF, hook.getLocation(),
+                    Particle.POOF,
+                    hook.getLocation(),
                     5,
                     0.1,
                     0.1,
@@ -92,17 +110,44 @@ public class PlayerFishListener implements Listener {
         }
     }
 
-    private void giveFishingReward(Player player, Location hookLocation, FishingMiniGameResult result) {
+    private void handleFishingReward(
+            Player player,
+            Location hookLocation,
+            ItemStack vanillaReward,
+            boolean miraculousFishingActive,
+            FishingMiniGameResult result
+    ) {
+        if (miraculousFishingActive) {
+            giveMiraculousFishingReward(player, hookLocation, result);
+            return;
+        }
+
+        giveVanillaFishingReward(player, vanillaReward, result);
+    }
+
+    private void giveMiraculousFishingReward(
+            Player player,
+            Location hookLocation,
+            FishingMiniGameResult result
+    ) {
         List<CustomLoot> loots = FishingAttributeManager.rollFishingLoots(result);
         List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
 
-        MessagesManager.sendMessage(player, TranslationManager.translation(
-                "feature.dailyevents.miraculousfishing.loot_table.get",
-                Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
-        ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
+        MessagesManager.sendMessage(
+                player,
+                TranslationManager.translation(
+                        "feature.dailyevents.miraculousfishing.loot_table.get",
+                        Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
+                ),
+                Prefix.MIRACULOUS_FISHING,
+                MessageType.INFO,
+                false
+        );
 
         if (loots.size() * 2 == finalLoots.size()) {
-            player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
+            player.sendMessage(TranslationManager.translation(
+                    "feature.dailyevents.miraculousfishing.loot_table.get.double_hook"
+            ));
         }
 
         player.sendMessage(TranslationManager.translation(
@@ -114,6 +159,25 @@ public class PlayerFishListener implements Listener {
         ));
 
         sendLoot(player, hookLocation, finalLoots);
+    }
+
+    private void giveVanillaFishingReward(
+            Player player,
+            ItemStack reward,
+            FishingMiniGameResult result
+    ) {
+        player.sendMessage(TranslationManager.translation(
+                switch (result) {
+                    case PERFECT -> "feature.dailyevents.miraculousfishing.minigame.result.perfect";
+                    case GOOD -> "feature.dailyevents.miraculousfishing.minigame.result.good";
+                    case MISS -> "feature.dailyevents.miraculousfishing.minigame.result.miss";
+                }
+        ));
+
+        var leftovers = player.getInventory().addItem(reward);
+        leftovers.values().forEach(item ->
+                player.getWorld().dropItemNaturally(player.getLocation(), item)
+        );
     }
 
     private void sendLoot(Player player, Location hookLocation, Collection<CustomLoot> loots) {
