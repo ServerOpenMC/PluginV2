@@ -12,6 +12,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 public class FishingMiniGameMenu extends Menu {
@@ -36,8 +36,8 @@ public class FishingMiniGameMenu extends Menu {
 
     private final Consumer<FishingMiniGameResult> callback;
 
-    private int cursorSlot = randomTrackSlot();
-    private int direction = ThreadLocalRandom.current().nextBoolean() ? 1 : -1;
+    private int cursorSlot = TRACK_START;
+    private int direction = 1;
     private boolean started;
     private boolean finished;
     private BukkitTask animationTask;
@@ -124,8 +124,7 @@ public class FishingMiniGameMenu extends Menu {
                         return;
                     }
 
-                    moveCursor();
-                    update();
+                    renderCursor();
                 },
                 UPDATE_PERIOD_TICKS,
                 UPDATE_PERIOD_TICKS
@@ -145,6 +144,22 @@ public class FishingMiniGameMenu extends Menu {
 
         finished = true;
         cancelTasks();
+    }
+
+    private void renderCursor() {
+        int previousCursorSlot = cursorSlot;
+
+        moveCursor();
+
+        Inventory inventory = getOwner().getOpenInventory().getTopInventory();
+        if (inventory.getHolder() != this) {
+            finish(FishingMiniGameResult.MISS);
+            return;
+        }
+
+        inventory.setItem(previousCursorSlot, createTrackItem(previousCursorSlot));
+        inventory.setItem(cursorSlot, createCursorItem());
+        getOwner().updateInventory();
     }
 
     private void moveCursor() {
@@ -192,26 +207,34 @@ public class FishingMiniGameMenu extends Menu {
 
     private void addTrack(Map<Integer, ItemMenuBuilder> content) {
         for (int slot = TRACK_START; slot <= TRACK_END; slot++) {
-            Material material;
-            String translationKey;
-
-            if (slot == PERFECT_SLOT) {
-                material = Material.SEA_LANTERN;
-                translationKey = "feature.dailyevents.miraculousfishing.minigame.perfect_zone";
-            } else if (slot >= GOOD_ZONE_START && slot <= GOOD_ZONE_END) {
-                material = Material.EMERALD_BLOCK;
-                translationKey = "feature.dailyevents.miraculousfishing.minigame.good_zone";
-            } else {
-                material = Material.GRAY_CONCRETE;
-                translationKey = "feature.dailyevents.miraculousfishing.minigame.miss_zone";
-            }
-
-            content.put(slot, icon(material, translationKey));
+            content.put(slot, createTrackItem(slot));
         }
     }
 
+    private ItemMenuBuilder createTrackItem(int slot) {
+        Material material;
+        String translationKey;
+
+        if (slot == PERFECT_SLOT) {
+            material = Material.SEA_LANTERN;
+            translationKey = "feature.dailyevents.miraculousfishing.minigame.perfect_zone";
+        } else if (slot >= GOOD_ZONE_START && slot <= GOOD_ZONE_END) {
+            material = Material.EMERALD_BLOCK;
+            translationKey = "feature.dailyevents.miraculousfishing.minigame.good_zone";
+        } else {
+            material = Material.GRAY_CONCRETE;
+            translationKey = "feature.dailyevents.miraculousfishing.minigame.miss_zone";
+        }
+
+        return icon(material, translationKey);
+    }
+
     private void addCursor(Map<Integer, ItemMenuBuilder> content) {
-        content.put(cursorSlot, new ItemMenuBuilder(this, Material.AMETHYST_SHARD,
+        content.put(cursorSlot, createCursorItem());
+    }
+
+    private ItemMenuBuilder createCursorItem() {
+        return new ItemMenuBuilder(this, Material.AMETHYST_SHARD,
                 itemMeta -> {
                     itemMeta.displayName(
                             TranslationManager.translation(
@@ -219,7 +242,7 @@ public class FishingMiniGameMenu extends Menu {
                             )
                     );
                     itemMeta.setEnchantmentGlintOverride(true);
-                }));
+                });
     }
 
     private void addInfo(Map<Integer, ItemMenuBuilder> content) {
@@ -308,7 +331,4 @@ public class FishingMiniGameMenu extends Menu {
         }
     }
 
-    private static int randomTrackSlot() {
-        return ThreadLocalRandom.current().nextInt(TRACK_START, TRACK_END + 1);
-    }
 }
