@@ -150,13 +150,7 @@ public class PlayerFishListener implements Listener {
             ));
         }
 
-        player.sendMessage(TranslationManager.translation(
-                switch (result) {
-                    case PERFECT -> "feature.dailyevents.miraculousfishing.minigame.result.perfect";
-                    case GOOD -> "feature.dailyevents.miraculousfishing.minigame.result.good";
-                    case MISS -> "feature.dailyevents.miraculousfishing.minigame.result.miss";
-                }
-        ));
+        sendMiniGameResult(player, result);
 
         sendLoot(player, hookLocation, finalLoots);
     }
@@ -178,6 +172,16 @@ public class PlayerFishListener implements Listener {
         leftovers.values().forEach(item ->
                 player.getWorld().dropItemNaturally(player.getLocation(), item)
         );
+    }
+
+    private void sendMiniGameResult(Player player, FishingMiniGameResult result) {
+        String translationKey = switch (result) {
+            case PERFECT -> "feature.dailyevents.miraculousfishing.minigame.result.perfect";
+            case GOOD -> "feature.dailyevents.miraculousfishing.minigame.result.good";
+            case MISS -> "feature.dailyevents.miraculousfishing.minigame.result.miss";
+        };
+
+        player.sendMessage(TranslationManager.translation(translationKey));
     }
 
     private void sendLoot(Player player, Location hookLocation, Collection<CustomLoot> loots) {
