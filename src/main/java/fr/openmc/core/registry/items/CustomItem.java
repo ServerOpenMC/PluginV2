@@ -2,10 +2,17 @@ package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.hooks.itemsadder.sprite.SpriteUtils;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.riftengine.api.scanner.items.ItemEntry;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ObjectComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,11 +21,12 @@ import java.util.Optional;
 public abstract class CustomItem {
     @Getter
     private final String id;
+    @Getter
+    private ItemEntry itemEntry;
+    @Getter
+    private ObjectComponent sprite;
 
-    /**
-     * -- GETTER --
-     *  Méthode à override afin d'ajouter des metas personnalisées
-     */
+    // @Override afin d'ajouter des metas personnalisées
     @Getter
     private CustomItemMeta meta;
 
@@ -28,8 +36,8 @@ public abstract class CustomItem {
     }
 
     public CustomItem(CustomItemMeta meta) {
+        this(meta.getId());
         this.meta = meta;
-        this.id = meta.getId();
     }
 
     public abstract @NotNull ItemStack getVanilla();
@@ -56,13 +64,11 @@ public abstract class CustomItem {
             return citem.get().getId().equals(this.getId());
         }
 
-        if (object instanceof String otherObjectName) {
+        if (object instanceof String otherObjectName)
             return this.getId().equals(otherObjectName);
-        }
 
-        if (object instanceof CustomItem citem) {
+        if (object instanceof CustomItem citem)
             return citem.getId().equals(this.getId());
-        }
 
         return false;
     }
@@ -85,5 +91,22 @@ public abstract class CustomItem {
         ItemUtils.setTag(item, CustomItemRegistry.CUSTOM_ITEM_KEY, this.getId());
 
         return item;
+    }
+
+    public void updateSprite() {
+        // Seulement init si on est dans le runtime
+        if (OMCPlugin.getInstance() != null) {
+            this.itemEntry = OMCRegistry.SCANNERS.ITEMS.getFromNamespacedId(
+                    ItemsAdderHook.getItemsAdderPath(OMCPlugin.getInstance().getDataPath()), id);
+            ObjectComponent sprite = SpriteUtils.getSprite(this);
+            if (sprite != null) {
+                HoverEvent<?> hoverEvent = this.getBest().displayName().hoverEvent();
+                if (hoverEvent != null && hoverEvent.asHoverEvent() != null)
+                    this.sprite = sprite.hoverEvent(hoverEvent.asHoverEvent());
+            }
+        } else {
+            this.itemEntry = null;
+            this.sprite = null;
+        }
     }
 }
