@@ -31,9 +31,10 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
         if (playerName == null)
             playerName = CachePlayerName.getName(player.getUniqueId());
 
-        return Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE)
-                .appendSpace()
-                .append(Component.text(playerName));
+        return Component.textOfChildren(
+                Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE),
+                Component.space()
+        ).append(Component.text(playerName));
     }
 
     @Override

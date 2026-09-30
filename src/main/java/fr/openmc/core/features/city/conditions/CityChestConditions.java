@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
@@ -52,9 +53,10 @@ public class CityChestConditions {
         }
 
         if (city.getChestWatcher() != null) {
+            OMCOfflinePlayer chestWatcher = OMCOfflinePlayer.of(city.getChestWatcher());
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.chest.open.already_opened_by",
-                    Component.text(Bukkit.getPlayer(city.getChestWatcher()).getName())
+                    chestWatcher.getNameWithHead()
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
