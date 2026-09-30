@@ -1,11 +1,11 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.FishingAttributeManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
-import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.minigame.FishingMiniGameManager;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.minigame.FishingMiniGameResult;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.MethodLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
@@ -19,6 +19,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.event.entity.FishHookStateChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -45,35 +46,26 @@ public class PlayerFishListener implements Listener {
 
         FishingAttributeManager.applyFishingSpeedModifier(player, hook);
 
-        if (event.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
-            Entity caughtEntity = event.getCaught();
-            if (caughtEntity instanceof Item caughtItem) {
-                caughtItem.remove();
-            }
+        if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
 
-            CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
+        if (FishingMiniGameManager.isActive(player)) return;
 
-            List<CustomLoot> loots = fishingLootTable.rollLoots().loots();
+        Entity caughtEntity = event.getCaught();
+        Location hookLocation = hook.getLocation().clone();
 
-            List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
+        boolean started = FishingMiniGameManager.start(player, result ->
+                giveFishingReward(player, hookLocation, result));
 
-            // * SFX
-            ParticleUtils.spawnDispersingParticles(player,
-                    Particle.CLOUD,
-                    hook.getLocation(),
-                    35, 0.1D, null);
+        if (!started) return;
 
-            MessagesManager.sendMessage(player, TranslationManager.translation(
-                    "feature.dailyevents.miraculousfishing.loot_table.get",
-                    Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
-            ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
-
-            if (loots.size() * 2 == finalLoots.size()) {
-                player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
-            }
-
-            sendLoot(player, hook, finalLoots);
+        if (caughtEntity instanceof Item caughtItem) {
+            caughtItem.remove();
         }
+
+        ParticleUtils.spawnDispersingParticles(player,
+                Particle.CLOUD,
+                hookLocation,
+                35, 0.1D, null);
     }
 
     @EventHandler
@@ -98,23 +90,37 @@ public class PlayerFishListener implements Listener {
             );
             world.playSound(hook.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 2f, 0.7f);
         }
-
     }
 
-    /**
-     * Gère l'envoie des loots obtenu, du hook vers le joueur
-     * @param player le joueur ciblé
-     * @param hook le hook lancé par le joueur
-     * @param loots les loots obtenus par le joueur
-     */
-    private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
+    private void giveFishingReward(Player player, Location hookLocation, FishingMiniGameResult result) {
+        List<CustomLoot> loots = FishingAttributeManager.rollFishingLoots(result);
+        List<CustomLoot> finalLoots = FishingAttributeManager.applyDoubleHookChance(player, loots);
+
+        MessagesManager.sendMessage(player, TranslationManager.translation(
+                "feature.dailyevents.miraculousfishing.loot_table.get",
+                Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
+        ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
+
+        if (loots.size() * 2 == finalLoots.size()) {
+            player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
+        }
+
+        player.sendMessage(TranslationManager.translation(
+                switch (result) {
+                    case PERFECT -> "feature.dailyevents.miraculousfishing.minigame.result.perfect";
+                    case GOOD -> "feature.dailyevents.miraculousfishing.minigame.result.good";
+                    case MISS -> "feature.dailyevents.miraculousfishing.minigame.result.miss";
+                }
+        ));
+
+        sendLoot(player, hookLocation, finalLoots);
+    }
+
+    private void sendLoot(Player player, Location hookLocation, Collection<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
             RngUtils.sendSoundRng(player, loot.getChance());
+            MiraculousFishingManager.simulateLaunchLoot(player, hookLocation, loot);
 
-            MiraculousFishingManager.simulateLaunchLoot(player, hook.getLocation(), loot);
-
-            // * Si y'a des sous loots, alors on affiche les sous loots obtenu,
-            // en modiant leur probabilité corresponde à la réalité
             if (loot instanceof TableLoot) {
                 List<CustomLoot> subLoots = loot.run(player).loots();
 
@@ -122,12 +128,10 @@ public class PlayerFishListener implements Listener {
                     subLoot.setChance(loot.getChance() * subLoot.getChance());
                 }
 
-                sendLoot(player, hook, subLoots);
-            }
-            // * Si c'est un loot de type MoneyLoot ou MethodLoot,
-                // on exécute le loot, car on ne le donne va via un item
-            else if (loot instanceof MoneyLoot || loot instanceof MethodLoot)
+                sendLoot(player, hookLocation, subLoots);
+            } else if (loot instanceof MoneyLoot || loot instanceof MethodLoot) {
                 loot.run(player);
+            }
         }
     }
 }
