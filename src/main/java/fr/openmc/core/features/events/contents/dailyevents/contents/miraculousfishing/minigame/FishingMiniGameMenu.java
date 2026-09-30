@@ -19,21 +19,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 public class FishingMiniGameMenu extends Menu {
     private static final int TRACK_START = 10;
-    private static final int TRACK_END = 16;
-    private static final int GOOD_ZONE_START = 12;
-    private static final int GOOD_ZONE_END = 14;
-    private static final int PERFECT_SLOT = 13;
-    private static final int ACTION_SLOT = 22;
+    private static final int TRACK_END = 18;
+    private static final int GOOD_ZONE_START = 13;
+    private static final int GOOD_ZONE_END = 15;
+    private static final int PERFECT_SLOT = 14;
+    private static final int ACTION_SLOT = 40;
+    private static final int INFO_SLOT = 4;
     private static final long GAME_DURATION_TICKS = 100L;
     private static final long UPDATE_PERIOD_TICKS = 2L;
+    private static final List<Integer> NON_TAKABLE_SLOTS = List.of();
 
     private final Consumer<FishingMiniGameResult> callback;
-    private int cursorSlot = TRACK_START;
-    private int direction = 1;
+
+    private int cursorSlot = randomTrackSlot();
+    private int direction = ThreadLocalRandom.current().nextBoolean() ? 1 : -1;
     private boolean started;
     private boolean finished;
     private BukkitTask animationTask;
@@ -46,7 +50,9 @@ public class FishingMiniGameMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.dailyevents.miraculousfishing.minigame.name");
+        return TranslationManager.translation(
+                "feature.dailyevents.miraculousfishing.minigame.name"
+        );
     }
 
     @Override
@@ -56,19 +62,17 @@ public class FishingMiniGameMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGER;
     }
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
         event.setCancelled(true);
 
-        if (event.getClickedInventory() == null
-                || event.getClickedInventory() != event.getView().getTopInventory()) {
-            return;
-        }
-
-        if (event.getSlot() != ACTION_SLOT || finished) {
+        if (finished
+                || event.getClickedInventory() == null
+                || event.getClickedInventory() != event.getView().getTopInventory()
+                || event.getSlot() != ACTION_SLOT) {
             return;
         }
 
@@ -79,54 +83,11 @@ public class FishingMiniGameMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        for (int slot = 0; slot < getInventorySize().getSize(); slot++) {
-            content.put(slot, new ItemMenuBuilder(this, Material.BLACK_STAINED_GLASS_PANE,
-                    itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true));
-        }
-
-        for (int slot = TRACK_START; slot <= TRACK_END; slot++) {
-            Material material;
-            if (slot == PERFECT_SLOT) {
-                material = Material.GOLD_BLOCK;
-            } else if (slot >= GOOD_ZONE_START && slot <= GOOD_ZONE_END) {
-                material = Material.LIME_STAINED_GLASS_PANE;
-            } else {
-                material = Material.GRAY_STAINED_GLASS_PANE;
-            }
-
-            String translationKey = slot == PERFECT_SLOT
-                    ? "feature.dailyevents.miraculousfishing.minigame.perfect_zone"
-                    : "feature.dailyevents.miraculousfishing.minigame.good_zone";
-
-            content.put(slot, new ItemMenuBuilder(this, material,
-                    itemMeta -> itemMeta.displayName(TranslationManager.translation(translationKey))));
-        }
-
-        content.put(cursorSlot, new ItemMenuBuilder(this, Material.LIGHT_BLUE_STAINED_GLASS_PANE,
-                itemMeta -> itemMeta.displayName(
-                        TranslationManager.translation("feature.dailyevents.miraculousfishing.minigame.cursor")
-                )));
-
-        content.put(ACTION_SLOT, new ItemMenuBuilder(this, Material.FISHING_ROD,
-                itemMeta -> {
-                    itemMeta.displayName(
-                            TranslationManager.translation("feature.dailyevents.miraculousfishing.minigame.action")
-                    );
-                    itemMeta.lore(TranslationManager.translationLore(
-                            "feature.dailyevents.miraculousfishing.minigame.action_lore"
-                    ));
-                    itemMeta.setEnchantmentGlintOverride(true);
-                }));
-
-        content.put(4, new ItemMenuBuilder(this, Material.CLOCK,
-                itemMeta -> {
-                    itemMeta.displayName(
-                            TranslationManager.translation("feature.dailyevents.miraculousfishing.minigame.instruction")
-                    );
-                    itemMeta.lore(TranslationManager.translationLore(
-                            "feature.dailyevents.miraculousfishing.minigame.instruction_lore"
-                    ));
-                }));
+        fillBackground(content);
+        addTrack(content);
+        addCursor(content);
+        addInfo(content);
+        addAction(content);
 
         return content;
     }
@@ -140,7 +101,7 @@ public class FishingMiniGameMenu extends Menu {
 
     @Override
     public List<Integer> getTakableSlot() {
-        return List.of();
+        return NON_TAKABLE_SLOTS;
     }
 
     void start() {
@@ -163,11 +124,7 @@ public class FishingMiniGameMenu extends Menu {
                         return;
                     }
 
-                    if (cursorSlot == TRACK_END || cursorSlot == TRACK_START) {
-                        direction *= -1;
-                    }
-
-                    cursorSlot += direction;
+                    moveCursor();
                     update();
                 },
                 UPDATE_PERIOD_TICKS,
@@ -187,14 +144,15 @@ public class FishingMiniGameMenu extends Menu {
         }
 
         finished = true;
+        cancelTasks();
+    }
 
-        if (animationTask != null) {
-            animationTask.cancel();
+    private void moveCursor() {
+        if (cursorSlot == TRACK_END || cursorSlot == TRACK_START) {
+            direction *= -1;
         }
 
-        if (timeoutTask != null) {
-            timeoutTask.cancel();
-        }
+        cursorSlot += direction;
     }
 
     private FishingMiniGameResult resolveResult() {
@@ -209,36 +167,148 @@ public class FishingMiniGameMenu extends Menu {
         return FishingMiniGameResult.MISS;
     }
 
+    private void fillBackground(Map<Integer, ItemMenuBuilder> content) {
+        int size = getInventorySize().getSize();
+
+        for (int slot = 0; slot < size; slot++) {
+            Material material = slot < 9 || slot >= size - 9
+                    ? Material.PRISMARINE_BRICKS
+                    : Material.BLUE_STAINED_GLASS_PANE;
+
+            content.put(slot, pane(material));
+        }
+
+        for (int slot = 9; slot < size - 9; slot++) {
+            if (slot / 9 == 1 || slot / 9 == 3) {
+                content.put(slot, pane(Material.LIGHT_BLUE_STAINED_GLASS_PANE));
+            }
+        }
+
+        content.put(0, icon(Material.COD, "feature.dailyevents.miraculousfishing.minigame.fish"));
+        content.put(8, icon(Material.COD, "feature.dailyevents.miraculousfishing.minigame.fish"));
+        content.put(size - 9, icon(Material.COD, "feature.dailyevents.miraculousfishing.minigame.fish"));
+        content.put(size - 1, icon(Material.COD, "feature.dailyevents.miraculousfishing.minigame.fish"));
+    }
+
+    private void addTrack(Map<Integer, ItemMenuBuilder> content) {
+        for (int slot = TRACK_START; slot <= TRACK_END; slot++) {
+            Material material;
+            String translationKey;
+
+            if (slot == PERFECT_SLOT) {
+                material = Material.SEA_LANTERN;
+                translationKey = "feature.dailyevents.miraculousfishing.minigame.perfect_zone";
+            } else if (slot >= GOOD_ZONE_START && slot <= GOOD_ZONE_END) {
+                material = Material.EMERALD_BLOCK;
+                translationKey = "feature.dailyevents.miraculousfishing.minigame.good_zone";
+            } else {
+                material = Material.GRAY_CONCRETE;
+                translationKey = "feature.dailyevents.miraculousfishing.minigame.miss_zone";
+            }
+
+            content.put(slot, icon(material, translationKey));
+        }
+    }
+
+    private void addCursor(Map<Integer, ItemMenuBuilder> content) {
+        content.put(cursorSlot, new ItemMenuBuilder(this, Material.AMETHYST_SHARD,
+                itemMeta -> {
+                    itemMeta.displayName(
+                            TranslationManager.translation(
+                                    "feature.dailyevents.miraculousfishing.minigame.cursor"
+                            )
+                    );
+                    itemMeta.setEnchantmentGlintOverride(true);
+                }));
+    }
+
+    private void addInfo(Map<Integer, ItemMenuBuilder> content) {
+        content.put(INFO_SLOT, new ItemMenuBuilder(this, Material.HEART_OF_THE_SEA,
+                itemMeta -> {
+                    itemMeta.displayName(TranslationManager.translation(
+                            "feature.dailyevents.miraculousfishing.minigame.instruction"
+                    ));
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.dailyevents.miraculousfishing.minigame.instruction_lore"
+                    ));
+                    itemMeta.setEnchantmentGlintOverride(true);
+                }));
+    }
+
+    private void addAction(Map<Integer, ItemMenuBuilder> content) {
+        content.put(ACTION_SLOT, new ItemMenuBuilder(this, Material.FISHING_ROD,
+                itemMeta -> {
+                    itemMeta.displayName(TranslationManager.translation(
+                            "feature.dailyevents.miraculousfishing.minigame.action"
+                    ));
+                    itemMeta.lore(TranslationManager.translationLore(
+                            "feature.dailyevents.miraculousfishing.minigame.action_lore"
+                    ));
+                    itemMeta.setEnchantmentGlintOverride(true);
+                }));
+    }
+
+    private ItemMenuBuilder pane(Material material) {
+        return new ItemMenuBuilder(this, material,
+                itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
+    }
+
+    private ItemMenuBuilder icon(Material material, String translationKey) {
+        return new ItemMenuBuilder(this, material,
+                itemMeta -> itemMeta.displayName(
+                        TranslationManager.translation(translationKey)
+                ));
+    }
+
     private void finish(FishingMiniGameResult result) {
         if (finished) {
             return;
         }
 
         finished = true;
-
-        if (animationTask != null) {
-            animationTask.cancel();
-        }
-
-        if (timeoutTask != null) {
-            timeoutTask.cancel();
-        }
-
+        cancelTasks();
         FishingMiniGameManager.remove(getOwner());
 
         if (!getOwner().isOnline()) {
             return;
         }
 
-        getOwner().playSound(
-                getOwner().getLocation(),
-                result == FishingMiniGameResult.MISS
-                        ? Sound.BLOCK_NOTE_BLOCK_BASS
-                        : Sound.ENTITY_PLAYER_LEVELUP,
-                1F,
-                result == FishingMiniGameResult.PERFECT ? 1.4F : 1F
-        );
+        Sound sound;
+        float pitch;
+
+        switch (result) {
+            case PERFECT -> {
+                sound = Sound.ENTITY_PLAYER_LEVELUP;
+                pitch = 1.5F;
+            }
+            case GOOD -> {
+                sound = Sound.ENTITY_PLAYER_LEVELUP;
+                pitch = 1.15F;
+            }
+            default -> {
+                sound = Sound.BLOCK_NOTE_BLOCK_BASS;
+                pitch = 0.8F;
+            }
+        }
+
+        getOwner().playSound(getOwner().getLocation(), sound, 1F, pitch);
         getOwner().closeInventory();
         callback.accept(result);
+    }
+
+    private void cancelTasks() {
+        if (animationTask != null) {
+            animationTask.cancel();
+            animationTask = null;
+        }
+
+        if (timeoutTask != null) {
+            timeoutTask.cancel();
+            timeoutTask = null;
+        }
+    }
+
+    private static int randomTrackSlot() {
+        return ThreadLocalRandom.current().nextInt(TRACK_START, TRACK_END + 1);
     }
 }
