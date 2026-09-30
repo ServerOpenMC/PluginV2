@@ -56,7 +56,7 @@ public class HomeUpgradeManager {
             if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), ayweniteAmount)) {
                 player.message().sendError(
                         TranslationManager.translation("core.utils.aywenite.not_enough",
-                                Cmponent.text(ayweniteAmount),
+                                Component.text(ayweniteAmount),
                                 OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                         ),
                         Prefix.OPENMC,

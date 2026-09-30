@@ -87,6 +87,8 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
 
     /* Blocs */
     public final CustomItem AYWENITE_BLOCK = register("omc_blocks:aywenite_block", Material.AMETHYST_BLOCK);
+    public final CustomItem AYWENITE_ORE = register("omc_blocks:aywenite_ore", Material.AMETHYST_BLOCK);
+    public final CustomItem DEEPSLATE_AYWENITE_ORE = register("omc_blocks:deepslate_aywenite_ore", Material.AMETHYST_BLOCK);
     public final CustomItem PELUCHE_SEINYY = register("omc_plush:peluche_seinyy", Material.PAPER);
     public final CustomItem PELUCHE_AWYEN = register("omc_plush:peluche_awyen", Material.PAPER);
     public final CustomItem PELUCHE_ROOT = register("omc_plush:peluche_root", Material.PAPER);
