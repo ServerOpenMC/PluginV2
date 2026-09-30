@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
@@ -16,7 +16,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;

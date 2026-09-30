@@ -1,7 +1,7 @@
 package fr.openmc.core.features.mainmenu.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
 import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;

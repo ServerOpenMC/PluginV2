@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;

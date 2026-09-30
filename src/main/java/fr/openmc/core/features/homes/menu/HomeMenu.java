@@ -1,8 +1,8 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.entity.player.OMCOfflinePlayer;
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;

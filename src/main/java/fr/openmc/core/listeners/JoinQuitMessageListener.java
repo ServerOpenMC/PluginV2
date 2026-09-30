@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.SpawnManager;
@@ -18,6 +19,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.object.ObjectContents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,28 +33,27 @@ import java.util.UUID;
 public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
 
-    public static final String JOIN_MESSAGE = "§8[§a§l+§8] §r%s%s";
-    public static final String QUIT_MESSAGE = "§8[§c§l-§8] §r%s%s";
-
     public JoinQuitMessageListener() {
         this.balanceOnJoin = OMCPlugin.getInstance().getConfig().getDouble("money-on-first-join", 500D);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
+        final OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
-        MessagesManager.sendMessage(player, TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
+        player.message().send(TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.updateTabList(player);
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
-                final Player friend = player.getServer().getPlayer(friendUUID);
+                final Player friend = Bukkit.getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                    MessagesManager.sendMessage(friend, TranslationManager.translation(
+                    player.message().send(TranslationManager.translation(
                             "core.player.join.friend_online",
-                            Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN)
+                            Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE)
+                                    .appendSpace()
+                                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN))
                     ), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -69,7 +70,7 @@ public class JoinQuitMessageListener implements Listener {
 
                 int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    MessagesManager.sendMessage(player,
+                    player.message().send(
                             TranslationManager.translation("core.player.join.quest_reward", Component.text(pendingRewardsNumber))
                                     .append(Component.text(" "))
                                     .append(TranslationManager.translation("core.player.join.quest_reward_click"))
@@ -84,7 +85,12 @@ public class JoinQuitMessageListener implements Listener {
         });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.joinMessage(Component.text(JOIN_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
+            event.joinMessage(Component.text("§8[§a§l+§8] §r")
+                    .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
+                    .appendSpace()
+                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
+                    .append(Component.text(player.getName()))
+            );
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
@@ -107,13 +113,13 @@ public class JoinQuitMessageListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
+        final OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
-                final Player friend = player.getServer().getPlayer(friendUUID);
+                final Player friend = Bukkit.getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, TranslationManager.translation(
                             "core.player.quit.friend_offline",
@@ -144,7 +150,11 @@ public class JoinQuitMessageListener implements Listener {
         }
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.quitMessage(Component.text(QUIT_MESSAGE.formatted(LuckPermsHook.getFormattedPAPIPrefix(player), player.getName())));
+            event.quitMessage(Component.text("§8[§c§l-§8] §r")
+                    .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
+                    .appendSpace()
+                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
+                    .append(Component.text(player.getName()))
+            );
     }
-
 }

@@ -1,11 +1,14 @@
-package fr.openmc.api.entity.player;
+package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.entity.player.sub.OMCPlayerCity;
-import fr.openmc.api.entity.player.sub.OMCPlayerEconomy;
-import fr.openmc.api.entity.player.sub.OMCPlayerMessage;
-import fr.openmc.api.entity.player.sub.OMCPlayerSettings;
+import fr.openmc.api.omcplayer.sub.OMCPlayerCity;
+import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
+import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
+import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
+import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +38,23 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
         if (player instanceof OMCPlayer omcPlayer)
             return omcPlayer;
         return CACHE.computeIfAbsent(player.getUniqueId(), id -> new OMCPlayerImpl(player));
+    }
+
+    @Override
+    public @Nullable Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public @Nullable CraftPlayer getCraftPlayer() {
+        return (CraftPlayer) player;
+    }
+
+    @Override
+    public ServerPlayer getServerPlayer() {
+        if (getCraftPlayer() == null)
+            throw new IllegalStateException("getCraftPlayer() ne devrait pas être null");
+        return getCraftPlayer().getHandle();
     }
 
     public static void removeCache(UUID uuid) {
