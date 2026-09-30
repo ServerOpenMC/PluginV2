@@ -10,6 +10,7 @@ import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.minecraft.world.inventory.ContainerInput;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -99,6 +100,7 @@ public class PacketMenuListener extends PacketAdapter {
                 PacketMenuLib.getOpenMenus().remove(uuid);
                 PacketMenuLib.getWindowIds().remove(uuid);
                 PacketMenuLib.updateInv(Objects.requireNonNull(player));
+                player.postEffects().remove(Key.key("minecraft", "blur"));
             } // We don't verify if it is a good window id because if we do, the player can close the inventory without a packet and the event will never be called
         }
     }

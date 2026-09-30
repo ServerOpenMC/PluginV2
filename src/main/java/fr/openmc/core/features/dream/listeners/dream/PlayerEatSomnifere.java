@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
@@ -8,6 +9,9 @@ import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import net.kyori.adventure.key.Key;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -49,5 +53,16 @@ public class PlayerEatSomnifere implements Listener {
                 DreamManager.tpPlayerToLastDreamLocation(player);
             }
         }
+        applyPostEffect(player);
+    }
+
+    private void applyPostEffect(Player player) {
+        player.postEffects().add(Key.key("minecraft", "spider"));
+        player.postEffects().add(Key.key("minecraft", "invert"));
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                player.postEffects().remove(Key.key("minecraft", "spider"));
+                player.postEffects().remove(Key.key("minecraft", "invert"));
+        }, 80L);
     }
 }
