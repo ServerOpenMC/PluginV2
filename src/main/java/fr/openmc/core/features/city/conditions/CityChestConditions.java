@@ -12,6 +12,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -97,7 +98,10 @@ public class CityChestConditions {
 
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
         if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), aywenite)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(aywenite)), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("core.utils.aywenite.not_enough",
+                    Component.text(aywenite),
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
+            ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

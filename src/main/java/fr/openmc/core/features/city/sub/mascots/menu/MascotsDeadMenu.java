@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -72,7 +73,8 @@ public class MascotsDeadMenu extends Menu {
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.mascots.menu.dead.lore",
                         Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
-                        Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
+                        Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE),
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 City city = CityManager.getCity(cityUUID);
@@ -89,7 +91,8 @@ public class MascotsDeadMenu extends Menu {
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation(
                                 "feature.city.mascots.menu.dead.reduce.success",
-                                Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
+                                Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE),
+                                OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                         ),
                         Prefix.CITY, MessageType.SUCCESS, false);
             });

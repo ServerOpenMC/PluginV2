@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
@@ -104,7 +105,8 @@ public class NoCityMenu extends Menu {
                             "feature.city.menus.no_city.create.lore.ready",
                             Component.text(CityCreateConditions.MONEY_CREATE).color(NamedTextColor.GOLD),
                             Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
-                            Component.text(CityCreateConditions.AYWENITE_CREATE).color(NamedTextColor.LIGHT_PURPLE)
+                            Component.text(CityCreateConditions.AYWENITE_CREATE).color(NamedTextColor.LIGHT_PURPLE),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                     );
                 }
 

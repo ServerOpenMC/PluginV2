@@ -288,8 +288,8 @@ public class ItemUtils {
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("core.utils.aywenite.not_enough",
-                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(amount)),
+                            Component.text(amount),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true
@@ -311,7 +311,7 @@ public class ItemUtils {
                     player,
                     TranslationManager.translation("core.utils.aywenite.not_enough_space",
                             Component.text(amount),
-                            item.getItemMeta().displayName().color(NamedTextColor.LIGHT_PURPLE)),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true
