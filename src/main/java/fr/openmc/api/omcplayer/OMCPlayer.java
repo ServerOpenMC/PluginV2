@@ -35,7 +35,7 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
         return OMCPlayerImpl.of(player);
     }
 
-    static OMCPlayer of(@Nullable UUID playerUUID) {
+    static OMCPlayer of(UUID playerUUID) {
         return OMCPlayerImpl.of(playerUUID);
     }
 

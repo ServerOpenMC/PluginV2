@@ -36,16 +36,27 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     }
 
     static OMCPlayer of(Player player) {
-        if (player instanceof OMCPlayer omcPlayer)
-            return omcPlayer;
-        return CACHE.computeIfAbsent(player.getUniqueId(), id -> new OMCPlayerImpl(player));
+        if (player == null) throw new IllegalArgumentException("player ne peut pas être null");
+
+
+        return CACHE.compute(player.getUniqueId(), (id, cachedPlayer) -> {
+            if (cachedPlayer == null) return new OMCPlayerImpl(player);
+
+            Player cachedBukkitPlayer = cachedPlayer.getPlayer();
+
+            if (cachedBukkitPlayer == null) return new OMCPlayerImpl(player);
+
+            return cachedPlayer;
+        });
     }
 
     static OMCPlayer of(UUID playerUUID) {
         Player playerBukkit = Bukkit.getPlayer(playerUUID);
-        return CACHE.computeIfAbsent(playerUUID, id -> new OMCPlayerImpl(playerBukkit));
-    }
 
+        if (playerBukkit == null) return;
+
+        return of(playerBukkit);
+    }
 
     @Override
     public @Nullable Player getPlayer() {
@@ -62,6 +73,10 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
         if (getCraftPlayer() == null)
             throw new IllegalStateException("getCraftPlayer() ne devrait pas être null");
         return getCraftPlayer().getHandle();
+    }
+
+    public static OMCPlayer getCache(UUID uuid) {
+        return CACHE.get(uuid);
     }
 
     public static void removeCache(UUID uuid) {

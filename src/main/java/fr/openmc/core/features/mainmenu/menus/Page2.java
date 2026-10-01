@@ -166,13 +166,11 @@ public class Page2 implements Menu {
             return;
         }
 
-        if (event.clickType() != ClickType.LEFT_CLICK) {
-            return;
-        }
+        if (event.clickType() != ClickType.LEFT_CLICK) return;
 
         if (DreamUtils.isInDreamWorld(player)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player,
+            player.message().send(
                     TranslationManager.translation("feature.mainmenu.message.dream_world")
                             .color(NamedTextColor.RED),
                     Prefix.OPENMC, MessageType.ERROR, true);
@@ -189,7 +187,7 @@ public class Page2 implements Menu {
         } else if (ADVANCEMENTS_SLOT == slot) {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                ServerPlayer nmsPlayer = player.getServerPlayer();
                 ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
                 if (packet == null)
                     return;
@@ -204,7 +202,7 @@ public class Page2 implements Menu {
             });
         } else if (LEADERBOARD_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player,
+            player.message().send(
                     TranslationManager.translation(
                             "feature.mainmenu.message.leaderboard_dev",
                             Component.text(FontImageWrapper.replaceFontImages(":sad:"))
@@ -218,7 +216,7 @@ public class Page2 implements Menu {
                 || COMING_SOON_3_SLOTS.contains(slot) || COMING_SOON_4_SLOTS.contains(slot)
                 || COMING_SOON_5_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.mainmenu.message.coming_soon")
+            player.message().send(TranslationManager.translation("feature.mainmenu.message.coming_soon")
                     .color(NamedTextColor.GOLD), Prefix.OPENMC, MessageType.INFO, true);
         }
     }
