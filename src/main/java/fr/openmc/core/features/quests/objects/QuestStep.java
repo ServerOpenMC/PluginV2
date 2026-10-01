@@ -2,6 +2,7 @@ package fr.openmc.core.features.quests.objects;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,7 +36,11 @@ public class QuestStep {
      * @return The description of the step with the target number replaced
      */
     public Component getDescription() {
-        return this.description.replaceText(b -> {
+        Component result = this.description;
+        if (result instanceof TranslatableComponent translatable) {
+            result = translatable.arguments(Component.text(this.target));
+        }
+        return result.replaceText(b -> {
             b.matchLiteral("[target]");
             b.replacement(String.valueOf(this.target));
         });

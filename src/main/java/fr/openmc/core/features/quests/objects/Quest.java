@@ -15,6 +15,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -650,7 +651,11 @@ public class Quest {
     }
 
     private Component formattedQuestComponent(Component initial, String target, String s) {
-        return initial.replaceText(b -> {
+        Component result = initial;
+        if (result instanceof TranslatableComponent translatable) {
+            result = translatable.arguments(Component.text(target), Component.text(s));
+        }
+        return result.replaceText(b -> {
             b.matchLiteral("[target]");
             b.replacement(String.valueOf(target));
         }).replaceText(b -> {
