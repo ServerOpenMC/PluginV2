@@ -123,7 +123,9 @@ public class JoinQuitMessageListener implements Listener {
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
                     MessagesManager.sendMessage(friend, TranslationManager.translation(
                             "core.player.quit.friend_offline",
-                            Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.YELLOW)
+                            Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE)
+                                    .appendSpace()
+                                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())).color(NamedTextColor.YELLOW)
                     ), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -133,18 +135,19 @@ public class JoinQuitMessageListener implements Listener {
         });
 
         if (TPAManager.requesterHasPendingRequest(player)) {
-            Player targetTPA = TPAManager.getTargetByRequester(player);
+            OMCPlayer targetTPA = TPAManager.getTargetByRequester(player);
+            if (targetTPA == null) return;
             TPAManager.removeRequest(player, targetTPA);
             MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
                     "core.player.tpa.expired_target",
-                    Component.text(player.getName()).color(NamedTextColor.GOLD)
+                    targetTPA.getNameWithHead().color(NamedTextColor.GOLD)
             ), Prefix.OPENMC, MessageType.INFO, true);
         } else if (TPAManager.hasPendingRequest(player)) {
-            for (Player requester : TPAManager.getRequesters(player)) {
+            for (OMCPlayer requester : TPAManager.getRequesters(player)) {
                 TPAManager.removeRequest(requester, player);
                 MessagesManager.sendMessage(requester, TranslationManager.translation(
                         "core.player.tpa.expired_requester",
-                        Component.text(player.getName()).color(NamedTextColor.GOLD)
+                        requester.getNameWithHead().color(NamedTextColor.GOLD)
                 ), Prefix.OPENMC, MessageType.WARNING, true);
             }
         }
