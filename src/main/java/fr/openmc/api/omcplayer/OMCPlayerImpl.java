@@ -53,7 +53,7 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     static OMCPlayer of(UUID playerUUID) {
         Player playerBukkit = Bukkit.getPlayer(playerUUID);
 
-        if (playerBukkit == null) return;
+        if (playerBukkit == null) throw new IllegalArgumentException("player ne peut pas être null");
 
         return of(playerBukkit);
     }
