@@ -6,6 +6,7 @@ import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
 import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
 import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,12 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
             return omcPlayer;
         return CACHE.computeIfAbsent(player.getUniqueId(), id -> new OMCPlayerImpl(player));
     }
+
+    static OMCPlayer of(UUID playerUUID) {
+        Player playerBukkit = Bukkit.getPlayer(playerUUID);
+        return CACHE.computeIfAbsent(playerUUID, id -> new OMCPlayerImpl(playerBukkit));
+    }
+
 
     @Override
     public @Nullable Player getPlayer() {

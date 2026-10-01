@@ -9,6 +9,8 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 /**
  * Wrapper autour d'un {@link Player} pour les methodes propres a OpenMC
  * (economie, ville, menus...).
@@ -31,6 +33,10 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
 
     static OMCPlayer of(@Nullable Player player) {
         return OMCPlayerImpl.of(player);
+    }
+
+    static OMCPlayer of(@Nullable UUID playerUUID) {
+        return OMCPlayerImpl.of(playerUUID);
     }
 
     @Nullable Player getPlayer();

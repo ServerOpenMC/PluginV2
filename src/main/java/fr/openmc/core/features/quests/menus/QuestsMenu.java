@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -34,29 +35,29 @@ public class QuestsMenu extends Menu {
     private int currentPage;
     private static String TITLE;
     private final int totalPages;
-    private Player target;
+    private OMCPlayer target;
     private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
 
-    public QuestsMenu(Player player, int currentPage) {
+    public QuestsMenu(OMCPlayer player, int currentPage) {
         super(player);
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
         this.target = player;
     }
 
-    public QuestsMenu(Player player, Player target, int currentPage) {
+    public QuestsMenu(OMCPlayer player, OMCPlayer target, int currentPage) {
         super(player);
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
         this.target = target;
     }
 
-    public QuestsMenu(Player player) {
+    public QuestsMenu(OMCPlayer player) {
         this(player, 0);
         this.target = player;
     }
 
-    public QuestsMenu(Player player, Player target) {
+    public QuestsMenu(OMCPlayer player, OMCPlayer target) {
         this(player, 0);
         this.target = target;
     }

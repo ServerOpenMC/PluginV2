@@ -90,7 +90,7 @@ public class LetterMenu extends Menu {
     }
 
     public void accept(Player player) {
-        if (!this.letter.getReceiver().equals(player.getUniqueId())) return;
+        if (!this.letter.getReceiverUUID().equals(player.getUniqueId())) return;
         ItemStack[] items = getLetterItems();
 
         if (MailboxManager.deleteLetter(letterHead.getLetterId())) {

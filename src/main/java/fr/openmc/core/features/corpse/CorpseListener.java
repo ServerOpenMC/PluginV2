@@ -91,8 +91,7 @@ public class CorpseListener implements Listener {
 
     @EventHandler
     public void onNPCInteraction(NpcInteractEvent event) {
-
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         if (event.getNpc().getData().getName().startsWith("corpse-")) {
             UUID ownerUUID = UUID.fromString(event.getNpc().getData().getName().replace("corpse-", ""));

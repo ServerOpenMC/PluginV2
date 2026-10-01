@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.bukkit;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -301,7 +302,7 @@ public class ItemUtils {
         return true;
     }
 
-    public static boolean giveItem(Player player, ItemStack item, int amount) {
+    public static boolean giveItem(OMCPlayer player, ItemStack item, int amount) {
         if (item == null) return false;
 
         item.setAmount(amount);

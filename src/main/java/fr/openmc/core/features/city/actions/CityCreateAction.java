@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -38,7 +39,7 @@ public class CityCreateAction {
 
     private static final Map<UUID, String> pendingCities = new HashMap<>();
 
-    public static void beginCreateCity(Player player, String cityName) {
+    public static void beginCreateCity(OMCPlayer player, String cityName) {
         if (cityName == null) return;
         if (!CityCreateConditions.canCityCreate(player, cityName)) return;
 

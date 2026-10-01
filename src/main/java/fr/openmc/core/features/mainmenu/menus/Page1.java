@@ -245,8 +245,7 @@ public class Page1 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = event.player();
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = OMCPlayer.of(event.player());
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
             PacketMenuLib.closeMenu(player);
             return;
@@ -277,7 +276,7 @@ public class Page1 implements Menu {
         } else if (SHOP_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
         } else if (HOME_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(omcPlayer, null));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new ProfileMenu(player).open());

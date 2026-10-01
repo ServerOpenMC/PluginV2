@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.quests;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public record QuestDialogReward(Enum<? extends MilestoneStep> step, List<Component> dialogs) implements QuestReward {
     @Override
-    public void giveReward(Player player) {
+    public void giveReward(OMCPlayer player) {
         Bukkit.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             player.closeInventory();
             MilestoneDialog.addToMilestoneDialog(player);

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mailboxes.letter;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
@@ -28,7 +29,7 @@ public class LetterHead extends ItemStack {
     private final int itemsCount;
     private final ItemStack[] items;
 
-    public LetterHead(OfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
+    public LetterHead(OMCOfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
         super(Material.PLAYER_HEAD, 1);
         this.letterId = letterId;
         this.itemsCount = itemsCount;

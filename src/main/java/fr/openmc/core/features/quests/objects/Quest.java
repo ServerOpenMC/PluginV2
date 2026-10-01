@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.objects;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.quests.events.QuestCompleteEvent;
@@ -18,10 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -287,7 +285,7 @@ public class Quest {
         if (!playerCompletedTiers.contains(tierIndex) && tierIndex < this.tiers.size() && !this.isFullyCompleted(uuid)) {
             playerCompletedTiers.add(tierIndex);
             this.currentTier.put(uuid, Math.min(tierIndex + 1, this.tiers.size()));
-            Player player = Bukkit.getPlayer(uuid);
+            OMCPlayer player = OMCPlayer.of(uuid);
             QuestTier tier = this.tiers.get(tierIndex);
             boolean isLastTier = tierIndex == this.tiers.size() - 1;
 
@@ -409,7 +407,7 @@ public class Quest {
      * @param tierIndex The index of the tier for which to claim rewards
      * @return true if all rewards were claimed, false otherwise
      */
-    public boolean claimPendingRewards(Player player, int tierIndex) {
+    public boolean claimPendingRewards(OMCPlayer player, int tierIndex) {
         UUID playerUUID = player.getUniqueId();
         List<QuestReward> rewards = getPendingRewardsForTier(playerUUID, tierIndex);
         if (rewards == null || rewards.isEmpty()) {

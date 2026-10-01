@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.actions.CityCreateAction;
@@ -62,11 +63,10 @@ public class NoCityMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-
-            Component nameNotif;
-            List<Component> loreNotif = new ArrayList<>();
+        Component nameNotif;
+        List<Component> loreNotif = new ArrayList<>();
         if (!CityInviteCommands.invitations.containsKey(player)) {
                 nameNotif = TranslationManager.translation("feature.city.menus.no_city.invitations.none.title");
 	            loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.none.lore"));
