@@ -2,7 +2,7 @@
     "processors": [
         {
             "processor_type": "block_ignore",
-            "blocks": [{"Name": "air"}]
+            "blocks": [{"id": "air"}]
         }
     ]
 }

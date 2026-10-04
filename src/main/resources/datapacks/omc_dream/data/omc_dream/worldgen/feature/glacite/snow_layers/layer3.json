@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": {
+          "id": "minecraft:snow",
+          "properties": {
+            "layers": "2"
+          }
+        },
+        "weight": 2
+      },
+      {
+        "data": {
+          "id": "minecraft:snow",
+          "properties": {
+            "layers": "3"
+          }
+        },
+        "weight": 1
+      }
+    ]
+  }
+}

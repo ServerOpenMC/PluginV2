@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class PackMetadataInjector implements DatapackInjector {
-    private static final double[] PACK_FORMAT = new double[] {107.1, 1};
+    private static final double[] PACK_FORMAT = new double[] {121.0, 1};
 
     @Override
     public void inject(File rootFile) {

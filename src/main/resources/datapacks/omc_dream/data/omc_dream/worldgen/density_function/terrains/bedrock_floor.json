@@ -1,9 +1,10 @@
 {
   "type": "minecraft:range_choice",
   "input": {
-    "type": "minecraft:y_clamped_gradient",
-    "from_y": -60,
-    "to_y": -65,
+    "type": "minecraft:gradient",
+    "axis": "y",
+    "from_coordinate": -60,
+    "to_coordinate": -65,
     "from_value": 0,
     "to_value": 1
   },

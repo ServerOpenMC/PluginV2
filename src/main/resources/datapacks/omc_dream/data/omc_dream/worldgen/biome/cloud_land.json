@@ -10,20 +10,22 @@
         },
         "probability": 0.01
       }
-    ]
+    ],
+    "minecraft:gameplay/natural_mob_spawns": {
+      "spawn_costs": {},
+      "spawns_by_category": {}
+    },
+    "minecraft:gameplay/creature_world_gen_spawn_probability": 0
   },
   "temperature": 0.8,
   "downfall": 0.9,
   "has_precipitation": false,
   "temperature_modifier": "none",
-  "creature_spawn_probability": 0,
   "effects": {
     "water_color": 15068927,
     "grass_color": 10137777,
     "foliage_color": 12763842
   },
-  "spawners": {},
-  "spawn_costs": {},
   "carvers": [],
   "features": []
 }

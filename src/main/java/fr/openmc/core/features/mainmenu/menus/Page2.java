@@ -20,12 +20,9 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -190,13 +187,7 @@ public class Page2 implements Menu {
         } else if (ADVANCEMENTS_SLOT == slot) {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-                ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
-                if (packet == null)
-                    return;
-
-                nmsPlayer.connection.send(packet);
-                MainMenuListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
+                MainMenuListener.setModeAdvancement(player);
                 Component message = TranslationManager.translation(
                         "feature.mainmenu.message.advancements_hint",
                         Component.keybind("key.advancements").color(NamedTextColor.YELLOW)
