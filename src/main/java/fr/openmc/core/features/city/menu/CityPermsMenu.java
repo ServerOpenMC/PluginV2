@@ -5,6 +5,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -53,7 +55,7 @@ public class CityPermsMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         Set<CityPermission> memberPerms = city.getPermissions(memberUUID);
         for (CityPermission permission : CityPermission.values()) {
@@ -89,7 +91,7 @@ public class CityPermsMenu extends PaginatedMenu {
                 if (!edit)
                     MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, true);
                 else {
-                    CityPermsCommands.swap(player, CacheOfflinePlayer.getOfflinePlayer(memberUUID), permission);
+                    CityPermsCommands.swap(player, OMCOfflinePlayer.of(memberUUID), permission);
                     new CityPermsMenu(player, memberUUID, true).open();
                 }
             }).hide(ItemUtils.getDataComponentType());
@@ -121,8 +123,8 @@ public class CityPermsMenu extends PaginatedMenu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.menus.perms.bulk.title"));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.menus.perms.bulk.lore"));
             }).setOnClick(inventoryClickEvent -> {
-                if (inventoryClickEvent.isLeftClick()) CityPermsCommands.removeAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
-                else if (inventoryClickEvent.isRightClick()) CityPermsCommands.addAll(getOwner(), CacheOfflinePlayer.getOfflinePlayer(memberUUID));
+                if (inventoryClickEvent.isLeftClick()) CityPermsCommands.removeAll(getOwner(), OMCOfflinePlayer.of(memberUUID));
+                else if (inventoryClickEvent.isRightClick()) CityPermsCommands.addAll(getOwner(), OMCOfflinePlayer.of(memberUUID));
                 
 	            new CityPermsMenu(getOwner(), memberUUID, true).open();
             }));

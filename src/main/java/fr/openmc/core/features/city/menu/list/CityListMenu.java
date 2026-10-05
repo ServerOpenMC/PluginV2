@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -76,12 +77,13 @@ public class CityListMenu extends PaginatedMenu {
 		List<ItemStack> items = new ArrayList<>();
 		for (City city : cities) {
 			UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
+			OMCOfflinePlayer owner = OMCOfflinePlayer.of(ownerUUID);
 
 			if (ownerUUID == null) continue;
 
 			List<Component> cityLore = new ArrayList<>();
 
-			Component ownerComponent = CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY);
+			Component ownerComponent = owner.getNameWithHead().color(NamedTextColor.GRAY);
 			Component levelComponent = Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA);
 			Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
 			Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
@@ -92,7 +94,7 @@ public class CityListMenu extends PaginatedMenu {
 			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
 				Component mayorCity = city.getMayor() == null
 						? TranslationManager.translation("messages.menus.none")
-						: city.getMayor().getName();
+						: city.getMayor().getOMCOfflinePlayer().getNameWithHead();
 				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
 				Component mayorComponent = mayorCity.color(mayorColor).decoration(TextDecoration.ITALIC, false);
 				cityLore.addAll(TranslationManager.translationLore(

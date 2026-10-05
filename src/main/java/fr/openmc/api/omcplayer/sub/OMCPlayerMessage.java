@@ -1,4 +1,4 @@
-package fr.openmc.api.entity.player.sub;
+package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

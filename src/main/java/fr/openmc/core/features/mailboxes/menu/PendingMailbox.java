@@ -125,7 +125,7 @@ public class PendingMailbox extends PaginatedMenu {
 
         int itemsCount = letter.getNumItems();
         ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-        Player sender = CacheOfflinePlayer.getOfflinePlayer(letter.getSender()).getPlayer();
+        Player sender = CacheOfflinePlayer.getOfflinePlayer(letter.getSenderUUID()).getPlayer();
 
         if (MailboxManager.deleteLetter(id)) {
             if (sender != null)

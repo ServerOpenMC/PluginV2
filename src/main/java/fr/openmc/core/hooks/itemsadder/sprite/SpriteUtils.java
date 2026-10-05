@@ -8,6 +8,7 @@ import fr.openmc.riftengine.api.utils.IdentifierUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ObjectComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.object.ObjectContents;
 
 import java.util.Set;
@@ -36,6 +37,7 @@ public class SpriteUtils {
 
         Key resourceKey = Key.key(prefix + IdentifierUtils.removeExtensionPath(bestResourceId));
 
-        return Component.object(ObjectContents.sprite(atlasKey, resourceKey));
+        return Component.object(ObjectContents.sprite(atlasKey, resourceKey))
+                .color(NamedTextColor.WHITE);
     }
 }

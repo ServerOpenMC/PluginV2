@@ -1,4 +1,4 @@
-package fr.openmc.api.entity.player.sub;
+package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.core.features.economy.EconomyManager;
 import org.bukkit.entity.Player;

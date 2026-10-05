@@ -46,7 +46,7 @@ public class MayorButton {
     private static List<Component> getDynamicLore(City city, Player player) {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
         Component mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
-                ? city.getMayor().getName()
+                ? city.getMayor().getOMCOfflinePlayer().getNameWithHead()
                 : TranslationManager.translation("messages.menus.none");
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         Component mayorComponent = mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false);

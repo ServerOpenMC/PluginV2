@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
