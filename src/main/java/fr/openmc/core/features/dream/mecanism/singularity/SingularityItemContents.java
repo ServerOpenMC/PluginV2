@@ -10,18 +10,18 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "singularity_contents")
-public class SingularityContents {
+public class SingularityItemContents {
     @Getter
     @DatabaseField(columnName = "uuid", id = true)
     private UUID playerUUID;
     @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     private byte[] content;
 
-    SingularityContents() {
+    SingularityItemContents() {
         // required for ORMLite
     }
 
-    public SingularityContents(UUID playerUUID, ItemStack[] content) {
+    public SingularityItemContents(UUID playerUUID, ItemStack[] content) {
         this.playerUUID = playerUUID;
 
         this.setContent(content);

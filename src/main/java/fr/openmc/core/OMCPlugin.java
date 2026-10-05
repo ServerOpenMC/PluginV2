@@ -54,6 +54,7 @@ import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
+import fr.openmc.core.features.singularity.SingularityManager;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.features.tpa.TPAManager;
@@ -129,6 +130,7 @@ public class OMCPlugin extends JavaPlugin {
             ChatAnimationManager::new,
             EventsManager::new,
             DreamManager::new,
+            SingularityManager::new,
             MultiBlockManager::new,
             MilestonesManager::new,
             () -> new LeaderBoardManager(),

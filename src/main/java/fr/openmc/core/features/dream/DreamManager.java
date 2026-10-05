@@ -33,7 +33,7 @@ import fr.openmc.core.features.dream.mecanism.rng.DreamLootListener;
 import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
 import fr.openmc.core.features.dream.mecanism.sfx.ghost.DreamGhostManager;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityCraftListener;
-import fr.openmc.core.features.dream.mecanism.singularity.SingularityManager;
+import fr.openmc.core.features.dream.mecanism.singularity.SingularityItemManager;
 import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteNpcManager;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DBPlayerSave;
@@ -82,7 +82,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         CloudFishingManager.init();
         MetalDetectorManager.init();
         ColdManager.init();
-        SingularityManager.init();
+        SingularityItemManager.init();
         DreamGhostManager.init();
 
         // ** LOAD DATAS **
@@ -134,7 +134,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         TableUtils.createTableIfNotExists(connectionSource, DBPlayerSave.class);
         savePlayerDao = DaoManager.createDao(connectionSource, DBPlayerSave.class);
 
-        SingularityManager.initDB(connectionSource);
+        SingularityItemManager.initDB(connectionSource);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class DreamManager extends Feature implements HasDatabase, LoadAfterItems
         DreamManager.saveAllPlayerSaveData();
         DreamManager.saveAllDreamPlayerData();
 
-        SingularityManager.disable();
+        SingularityItemManager.disable();
 
         DreamDimensionManager.save();
     }

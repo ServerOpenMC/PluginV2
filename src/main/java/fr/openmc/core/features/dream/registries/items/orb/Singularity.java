@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.registries.items.orb;
 
-import fr.openmc.core.features.dream.mecanism.singularity.SingularityMenu;
+import fr.openmc.core.features.dream.mecanism.singularity.SingularityItemMenu;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
@@ -29,6 +29,6 @@ public class Singularity extends DreamItem implements UsableItem {
 
     @Override
     public void onRightClick(Player player, PlayerInteractEvent event) {
-        new SingularityMenu(player).open();
+        new SingularityItemMenu(player).open();
     }
 }

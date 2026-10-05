@@ -16,6 +16,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
+import fr.openmc.core.features.singularity.contents.mobs.WormHole;
 import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
@@ -120,6 +121,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
     public final CustomMobEntry VAMPIRE_SLAVE = register(new CustomMobEntry(
             "omc_daily_events:vampire_slave",
             VampireSlave::new
+    ));
+
+    public final CustomMobEntry WORM_HOLE = register(new CustomMobEntry(
+            "omc_singularity:worm_hole",
+            WormHole::new
     ));
 
     public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();

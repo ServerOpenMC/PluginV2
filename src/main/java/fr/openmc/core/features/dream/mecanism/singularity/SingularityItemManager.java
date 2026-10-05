@@ -11,22 +11,22 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SingularityManager {
-    public static final HashMap<UUID, SingularityContents> singularityContents = new HashMap<>();
+public class SingularityItemManager {
+    public static final HashMap<UUID, SingularityItemContents> singularityContents = new HashMap<>();
 
-    private static Dao<SingularityContents, String> singularityContentsDao;
+    private static Dao<SingularityItemContents, String> singularityContentsDao;
 
     public static void init() {
         loadAllSingularityContentsData();
     }
 
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, SingularityContents.class);
-        singularityContentsDao = DaoManager.createDao(connectionSource, SingularityContents.class);
+        TableUtils.createTableIfNotExists(connectionSource, SingularityItemContents.class);
+        singularityContentsDao = DaoManager.createDao(connectionSource, SingularityItemContents.class);
     }
 
     public static void disable() {
-        SingularityManager.saveAllSingularityContentsData();
+        SingularityItemManager.saveAllSingularityContentsData();
     }
 
     private static void loadAllSingularityContentsData() {
@@ -42,7 +42,7 @@ public class SingularityManager {
 
     public static void saveAllSingularityContentsData() {
         try {
-            for (SingularityContents contents : singularityContents.values()) {
+            for (SingularityItemContents contents : singularityContents.values()) {
                 singularityContentsDao.createOrUpdate(contents);
             }
         } catch (SQLException e) {
@@ -53,10 +53,10 @@ public class SingularityManager {
     public static void addSingularityContents(Player player, ItemStack[] items) {
         if (singularityContents.containsKey(player.getUniqueId())) return;
 
-        singularityContents.put(player.getUniqueId(), new SingularityContents(player.getUniqueId(), items));
+        singularityContents.put(player.getUniqueId(), new SingularityItemContents(player.getUniqueId(), items));
     }
 
-    public static SingularityContents getSingularityContents(Player player) {
+    public static SingularityItemContents getSingularityContents(Player player) {
         if (!singularityContents.containsKey(player.getUniqueId())) return null;
 
         return singularityContents.get(player.getUniqueId());

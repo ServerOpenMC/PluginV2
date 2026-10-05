@@ -26,8 +26,8 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class SingularityMenu extends PaginatedMenu {
-    public SingularityMenu(Player owner) {
+public class SingularityItemMenu extends PaginatedMenu {
+    public SingularityItemMenu(Player owner) {
         super(owner);
     }
 
@@ -43,7 +43,7 @@ public class SingularityMenu extends PaginatedMenu {
 
     @Override
     public List<ItemStack> getItems() {
-        SingularityContents singuContents = SingularityManager.getSingularityContents(getOwner());
+        SingularityItemContents singuContents = SingularityItemManager.getSingularityContents(getOwner());
 
         if (singuContents == null) {
             return Collections.emptyList();
@@ -201,10 +201,10 @@ public class SingularityMenu extends PaginatedMenu {
             player.getInventory().addItem(item);
         }
 
-        SingularityContents contents = SingularityManager.getSingularityContents(player);
+        SingularityItemContents contents = SingularityItemManager.getSingularityContents(player);
 
         if (contents == null) {
-            SingularityManager.addSingularityContents(player, validContents);
+            SingularityItemManager.addSingularityContents(player, validContents);
         } else {
             contents.setContent(validContents);
         }
