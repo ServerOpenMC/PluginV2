@@ -1,7 +1,9 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.minigame.FishingMiniGameResult;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
@@ -28,24 +30,14 @@ public class FishingAttributeManager {
             OMCRegistry.CUSTOM_ITEMS.ANCIENT_FISHER_BOOTS
     );
 
-    /**
-     * Applique un modificateur de vitesse de pêche à un FishHook.
-     * @param hook le hook qui aura son temps réduit
-     */
     public static void applyFishingSpeedModifier(Player player, FishHook hook) {
         double fishingSpeed = getFishingSpped(player);
         hook.setWaitTime((int) (hook.getMinWaitTime() * (1 - fishingSpeed)),
                 (int) (hook.getMaxWaitTime() * (1 - fishingSpeed)));
     }
 
-    /**
-     * Donne la fishing speed d'un joueur en prenant compte des modifieurs de la peche miraculeuse
-     * @param player le joueur ciblé
-     * @return le pourcentage d'augmentation de vitesse de pêche
-     */
     public static double getFishingSpped(Player player) {
         double base = FISHING_SPEED_MODIFIER;
-
         PlayerInventory inv = player.getInventory();
 
         ItemStack[] armor = {
@@ -57,7 +49,6 @@ public class FishingAttributeManager {
 
         for (ItemStack item : armor) {
             Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(item);
-
             if (ci.isPresent() && FISHER_ARMOR.contains(ci.get())) {
                 base += ARMOR_FISHING_SPEED_MODIFIER;
             }
@@ -66,14 +57,8 @@ public class FishingAttributeManager {
         return base;
     }
 
-    /**
-     * Donne la chance de pouvoir avoir une double prise
-     * @param player le joueur ciblé
-     * @return la chance associé au joueur
-     */
     public static double getDoubleHookChance(Player player) {
         double base = DOUBLE_HOOK_MODIFIER;
-
         PlayerInventory inv = player.getInventory();
 
         ItemStack[] armor = {
@@ -85,7 +70,6 @@ public class FishingAttributeManager {
 
         for (ItemStack item : armor) {
             Optional<CustomItem> ci = OMCRegistry.CUSTOM_ITEMS.get(item);
-
             if (ci.isPresent() && FISHER_ARMOR.contains(ci.get())) {
                 base += ARMOR_DOUBLE_HOOK_MODIFIER;
             }
@@ -95,11 +79,73 @@ public class FishingAttributeManager {
     }
 
     /**
-     * Applique le modifier de double prise
-     * @param player le joueur ciblé
-     * @param loots les loots initiaux
-     * @return les loots finaux
+     * Génère le loot en fonction du résultat du mini-jeu.
+     * Un meilleur résultat augmente le poids relatif des loots les plus rares.
      */
+    public static List<CustomLoot> rollFishingLoots(FishingMiniGameResult miniGameResult) {
+        CustomLootTable fishingLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.MIRACULOUS_FISHING;
+
+        List<CustomLoot> allLoots = new ArrayList<>(fishingLootTable.getLoots());
+
+        List<CustomLoot> resultLoots = allLoots.stream()
+                .filter(loot -> loot.getChance() >= 1.0)
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+
+        List<CustomLoot> candidates = allLoots.stream()
+                .filter(loot -> loot.getChance() < 1.0)
+                .toList();
+
+        if (candidates.isEmpty()) {
+            return resultLoots;
+        }
+
+        double maxChance = candidates.stream()
+                .mapToDouble(CustomLoot::getChance)
+                .max()
+                .orElse(0.0);
+
+        if (maxChance <= 0.0) {
+            resultLoots.add(candidates.getFirst());
+            return resultLoots;
+        }
+
+        double totalWeight = candidates.stream()
+                .mapToDouble(loot -> getRarityAdjustedChance(loot.getChance(), maxChance, miniGameResult))
+                .sum();
+
+        if (totalWeight <= 0.0) {
+            resultLoots.add(candidates.getFirst());
+            return resultLoots;
+        }
+
+        double roll = ThreadLocalRandom.current().nextDouble(totalWeight);
+        double cumulativeWeight = 0.0;
+
+        for (CustomLoot loot : candidates) {
+            cumulativeWeight += getRarityAdjustedChance(loot.getChance(), maxChance, miniGameResult);
+            if (roll < cumulativeWeight) {
+                resultLoots.add(loot);
+                return resultLoots;
+            }
+        }
+
+        resultLoots.add(candidates.getLast());
+        return resultLoots;
+    }
+
+    /**
+     * Ajuste le poids d'un loot selon sa rareté.
+     * Plus la chance de base est faible, plus le bonus est important.
+     */
+    static double getRarityAdjustedChance(double chance, double maxChance, FishingMiniGameResult miniGameResult) {
+        if (chance <= 0.0 || maxChance <= 0.0) {
+            return 0.0;
+        }
+
+        double rarity = Math.max(0.0, Math.min(1.0, 1.0 - (chance / maxChance)));
+        return chance * (1.0 + miniGameResult.getRarityBonus() * rarity);
+    }
+
     public static List<CustomLoot> applyDoubleHookChance(Player player, List<CustomLoot> loots) {
         double doubleHookChance = getDoubleHookChance(player);
         if (doubleHookChance == 0) return loots;
@@ -107,7 +153,6 @@ public class FishingAttributeManager {
 
         List<CustomLoot> doubledLoots = new ArrayList<>(loots);
         doubledLoots.addAll(loots);
-
         return doubledLoots;
     }
 }
