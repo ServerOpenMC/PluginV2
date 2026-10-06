@@ -18,6 +18,8 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SingularityCraftListener implements Listener {
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+
     @EventHandler
     public void onCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
@@ -29,7 +31,7 @@ public class SingularityCraftListener implements Listener {
 
         if (!dreamItem.getId().equals(OMCRegistry.DREAM_ITEM.SINGULARITY.getId())) return;
 
-        MailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
+        mailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
 
         // * SFX
         World world = player.getWorld();

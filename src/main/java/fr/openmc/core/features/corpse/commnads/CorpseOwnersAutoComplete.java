@@ -16,7 +16,7 @@ public class CorpseOwnersAutoComplete implements SuggestionProvider<BukkitComman
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
 
-        return OMCRegistry.FEATURES.CORPSE.get().CORPSE_NPC_MANAGER.corpseNpcMap.keySet()
+        return OMCRegistry.FEATURES.CORPSE.get().corpseNPCManager.corpseNpcMap.keySet()
                 .stream()
                 .map(CacheOfflinePlayer::getOfflinePlayer)
                 .filter(Objects::nonNull)

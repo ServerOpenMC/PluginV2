@@ -6,11 +6,13 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.commnads.CorpseCommand;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
@@ -55,7 +57,8 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
     private Map<UUID, DBCorpse> corpsesDB;
     private Dao<DBCorpse, String> corpsesDao;
 
-    public CorpseNPCManager CORPSE_NPC_MANAGER;
+    public CorpseNPCManager corpseNPCManager;
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
 
     public final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
 
@@ -67,8 +70,9 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
     @Override
     public void init() {
-        CORPSE_NPC_MANAGER = new CorpseNPCManager(this);
-        CORPSE_NPC_MANAGER.init();
+        corpseNPCManager = new CorpseNPCManager(this);
+
+        corpseNPCManager.init();
         corpsesDB = loadAllCorpses();
         startVoidDetection();
     }
@@ -178,7 +182,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
             }
         }
 
-        return CORPSE_NPC_MANAGER.createNPCS(
+        return corpseNPCManager.createNPCS(
                 player,
                 location,
                 player.getEquipment().getHelmet(),
@@ -202,13 +206,13 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
             throw new RuntimeException(e);
         }
 
-        CORPSE_NPC_MANAGER.removeNPCS(ownerUUID);
+        corpseNPCManager.removeNPCS(ownerUUID);
 
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
 
         switch (found) {
             case FOUND -> {
-                DynamicCooldownManager.clear(ownerUUID, CORPSE_NPC_MANAGER.COOLDOWN_GROUP, false);
+                DynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
                         Prefix.CORPSE, MessageType.SUCCESS, true);
@@ -218,13 +222,13 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                             .color(TextColor.color(Color.YELLOW.asRGB())),
                     Prefix.CORPSE, MessageType.WARNING, true);
 
-            case STRIP -> DynamicCooldownManager.clear(ownerUUID, CORPSE_NPC_MANAGER.COOLDOWN_GROUP, false);
+            case STRIP -> DynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
 
             case ABORT -> {
                 for (ItemStack item : items)
                     deathLoc.getWorld().dropItem(deathLoc, item);
 
-                DynamicCooldownManager.clear(ownerUUID, CORPSE_NPC_MANAGER.COOLDOWN_GROUP, false);
+                DynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.abort")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
                         Prefix.CORPSE, MessageType.SUCCESS, true);
@@ -234,8 +238,8 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
     public void sendMailItems(Player player, OfflinePlayer receiver, ItemStack[] items) {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            if (!MailboxManager.sendItems(player, receiver, items))
-                MailboxManager.givePlayerItems(player, items);
+            if (!mailboxManager.sendItems(player, receiver, items))
+                mailboxManager.givePlayerItems(player, items);
         });
     }
 
@@ -266,11 +270,11 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
 
         if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CORPSE_NPC_MANAGER.COOLDOWN_GROUP) == null) return alreadyEnd;
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CORPSE_NPC_MANAGER.COOLDOWN_GROUP).isReady()) return alreadyEnd;
+        if (DynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
+        if (DynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
         return Component.text(
                 DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID)
-                        .get(CORPSE_NPC_MANAGER.COOLDOWN_GROUP)
+                        .get(corpseNPCManager.COOLDOWN_GROUP)
                         .getRemaining()), NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
     }
 

@@ -37,7 +37,7 @@ public class CorpseListener implements Listener {
 
     public CorpseListener(CorpseManager corpseManager) {
         this.corpseManager = corpseManager;
-        this.corpseNPCManager = corpseManager.CORPSE_NPC_MANAGER;
+        this.corpseNPCManager = corpseManager.corpseNPCManager;
     }
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;

@@ -31,6 +31,7 @@ public class MascotsSoundListener {
 
     public MascotsSoundListener() {
         MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
+        PlayerSettingsManager playerSettingsManager = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
                 OMCPlugin.getInstance(),
@@ -56,7 +57,7 @@ public class MascotsSoundListener {
                 if (soundEntity == null) return;
 
                 UUID playerUUID = event.getPlayer().getUniqueId();
-                if (PlayerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
+                if (playerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
                     return;
 
                 double x = packet.getIntegers().read(0) / 8.0;

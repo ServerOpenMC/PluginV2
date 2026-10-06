@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -34,6 +35,8 @@ import java.util.stream.Stream;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
 public class SendingLetter extends Menu {
+    private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+
     private final OfflinePlayer receiver;
     private boolean hasSent = false;
 
@@ -79,8 +82,8 @@ public class SendingLetter extends Menu {
 
     private void sendMailItems(Player player, OfflinePlayer receiver, ItemStack[] items) {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            if (!MailboxManager.sendItems(player, receiver, items))
-                MailboxManager.givePlayerItems(player, items);
+            if (!MAILBOX_MANAGER.sendItems(player, receiver, items))
+                MAILBOX_MANAGER.givePlayerItems(player, items);
         });
     }
 
@@ -109,7 +112,7 @@ public class SendingLetter extends Menu {
     @Override
     public void onClose(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
-        if (!hasSent) MailboxManager.givePlayerItems(getOwner(), getItems(inv));
+        if (!hasSent) MAILBOX_MANAGER.givePlayerItems(getOwner(), getItems(inv));
     }
 
     @Override

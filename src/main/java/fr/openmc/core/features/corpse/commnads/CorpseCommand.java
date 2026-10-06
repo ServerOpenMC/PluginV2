@@ -22,7 +22,7 @@ public class CorpseCommand {
 
     public CorpseCommand(CorpseManager corpseManager) {
         this.corpseManager = corpseManager;
-        this.corpseNPCManager = corpseManager.CORPSE_NPC_MANAGER;
+        this.corpseNPCManager = corpseManager.corpseNPCManager;
     }
 
     @Subcommand("abort")

@@ -6,9 +6,9 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerMailbox extends PaginatedMenu {
+    private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public PlayerMailbox(Player player) {
         super(player);
@@ -54,7 +55,7 @@ public class PlayerMailbox extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        MailboxManager.getReceivedLetters(getOwner()).forEach(letter ->
+        MAILBOX_MANAGER.getReceivedLetters(getOwner()).forEach(letter ->
                 items.add(new ItemMenuBuilder(this, letter.toLetterHead())
                         .setOnClick(e -> new LetterMenu(getOwner(), letter).open()))
         );
@@ -96,6 +97,6 @@ public class PlayerMailbox extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return MailboxManager.getReceivedLetters(getOwner()).size();
+        return MAILBOX_MANAGER.getReceivedLetters(getOwner()).size();
     }
 }

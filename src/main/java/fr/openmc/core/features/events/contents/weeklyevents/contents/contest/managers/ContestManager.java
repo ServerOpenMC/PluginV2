@@ -65,6 +65,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent
 @Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
 public class ContestManager extends Feature implements HasDatabase, HasRegistries {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
     private TradeYMLManager tradeYMLManager;
     private ContestPlayerManager contestPlayerManager;
 
@@ -562,7 +563,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
 
             tradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
             dataPlayer = new HashMap<>(); // on supprime les données précédentes des joueurs
-            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
+            mailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
     }
 

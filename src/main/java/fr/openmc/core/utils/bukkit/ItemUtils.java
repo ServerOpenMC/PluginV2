@@ -316,7 +316,7 @@ public class ItemUtils {
                     MessageType.ERROR,
                     true
             );
-            MailboxManager.sendItems(player, player, new ItemStack[]{ item });
+            OMCRegistry.FEATURES.MAILBOX.get().sendItems(player, player, new ItemStack[]{ item });
             return false;
         }
 

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
+	private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public OpenContestMenuQuest() {
         super(
@@ -70,7 +71,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 
 									ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
 
-									MailboxManager.sendItems(player, player, itemsArray);
+									MAILBOX_MANAGER.sendItems(player, player, itemsArray);
 								}
 						)
                 )

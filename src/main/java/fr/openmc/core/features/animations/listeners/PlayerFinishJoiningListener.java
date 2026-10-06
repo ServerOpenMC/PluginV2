@@ -2,6 +2,7 @@ package fr.openmc.core.features.animations.listeners;
 
 import dev.lone.itemsadder.api.CustomPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -17,12 +18,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import static fr.openmc.core.features.animations.listeners.EmoteListener.playingAnimations;
 
 public class PlayerFinishJoiningListener implements Listener, NotLoadInUnitTest {
+    private final PlayerSettingsManager playerSettingsManager = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         boolean onGround = player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid();
-        if (!(boolean) PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.JOIN_ANIMATION)) return;
+        if (!(boolean) playerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.JOIN_ANIMATION)) return;
         if (player.isFlying() || !onGround || player.getGameMode().equals(GameMode.SPECTATOR)) return;
 
         playingAnimations.put(player, new PlayerAnimationInfo());

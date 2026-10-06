@@ -49,6 +49,8 @@ import java.util.*;
 @SuppressWarnings("UnstableApiUsage")
 public class HalloweenManager extends Feature implements HasDatabase, HasCommands, HasListeners {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+
     private Object2ObjectMap<UUID, HalloweenData> halloweenData;
     private Dao<HalloweenData, String> halloweenDataDao;
 
@@ -226,7 +228,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
             playerItemsMap.put(offlinePlayer, rewards.toArray(new ItemStack[0]));
         }
 
-        MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
+        mailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
 
         NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
         Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");

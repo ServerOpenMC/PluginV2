@@ -58,7 +58,7 @@ public class MainScoreboard extends BaseScoreboard {
         List<Component> lines = new ArrayList<>(getDefaultLines(player, false));
 
         // Corpse
-        if (corpseManager.CORPSE_NPC_MANAGER.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
+        if (corpseManager.corpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
 
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
