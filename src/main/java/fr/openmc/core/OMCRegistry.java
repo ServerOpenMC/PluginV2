@@ -11,6 +11,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
 import fr.openmc.core.features.friend.FriendsFeaturesRegistry;
 import fr.openmc.core.features.homes.HomeFeaturesRegistry;
+import fr.openmc.core.features.quests.QuestsFeatureRegistry;
 import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
@@ -73,6 +74,9 @@ public final class OMCRegistry {
 
     // * Registre concernant la feature des villes
     public static FriendsFeaturesRegistry FRIEND_FEATURES;
+
+    // * Registre concernant la feature des quests
+    public static QuestsFeatureRegistry QUEST_FEATURES;
 
     // * Registre concernant la feature des shops
     public static ShopFeaturesRegistry SHOP_FEATURES;

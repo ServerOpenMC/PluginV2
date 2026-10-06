@@ -34,6 +34,7 @@ public class JoinQuitMessageListener implements Listener {
 
     private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final QuestsManager questsManager = OMCRegistry.FEATURES.QUESTS.get();
     private final LuckPermsHook luckPermsHook;
 
     public static final String JOIN_MESSAGE = "§8[§a§l+§8] §r%s%s";
@@ -70,7 +71,7 @@ public class JoinQuitMessageListener implements Listener {
 
         // Quest pending reward notification
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            for (Quest quest : QuestsManager.getAllQuests()) {
+            for (Quest quest : questsManager.getAllQuests()) {
                 if (!quest.hasPendingRewards(player.getUniqueId()))
                     continue;
 
@@ -116,7 +117,7 @@ public class JoinQuitMessageListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> questsManager.saveQuests(player.getUniqueId()));
 
         friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {

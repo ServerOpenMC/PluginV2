@@ -1,18 +1,25 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.CityFeaturesRegistry;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
+import lombok.Getter;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * QuestsManager is responsible for managing quests in the game.
@@ -21,8 +28,10 @@ import java.util.*;
  * and saving quest progress for players.
  */
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
-public class QuestsManager extends Feature implements HasCommands {
-    static final Map<String, Quest> quests = new HashMap<>();
+public class QuestsManager extends Feature implements HasCommands, HasRegistries {
+    @Getter
+    private final Map<String, Quest> quests = new HashMap<>();
+    private QuestProgressSaveManager questProgressSaveManager;
 
     /**
      * Initialisation for QuestsManager.
@@ -31,8 +40,10 @@ public class QuestsManager extends Feature implements HasCommands {
      */
     @Override
     public void init() {
+        questProgressSaveManager = OMCRegistry.QUEST_FEATURES.QUEST_PROGRESS;
+
         loadDefaultQuests();
-        QuestProgressSaveManager.loadAllQuestProgress();
+        questProgressSaveManager.loadAllQuestProgress();
     }
 
     @Override
@@ -44,7 +55,15 @@ public class QuestsManager extends Feature implements HasCommands {
 
     @Override
     public void save() {
-        QuestsManager.saveQuests();
+        this.saveQuests();
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return new ArrayList<>(List.of(
+                () -> SubRegistry.boot(new QuestsFeatureRegistry(),
+                        r -> OMCRegistry.QUEST_FEATURES = r)
+        ));
     }
 
     /**
@@ -53,7 +72,7 @@ public class QuestsManager extends Feature implements HasCommands {
      *
      * @param quest the quest to register
      */
-    public static void registerQuest(Quest quest) {
+    public void registerQuest(Quest quest) {
         String questName = PlainTextComponentSerializer.plainText().serialize(quest.getName());
         if (!quests.containsKey(questName)) {
             quests.put(questName, quest);
@@ -70,7 +89,7 @@ public class QuestsManager extends Feature implements HasCommands {
      *
      * @param quests the quests to register
      */
-    public static void registerQuests(Quest... quests) {
+    public void registerQuests(Quest... quests) {
         for (Quest quest : quests) {
             registerQuest(quest);
         }
@@ -80,7 +99,7 @@ public class QuestsManager extends Feature implements HasCommands {
      * Load default quests.
      * This method is called in the constructor of QuestsManager.
      */
-    public static void loadDefaultQuests() {
+    public void loadDefaultQuests() {
         registerQuests(
                 new BreakStoneQuest(),
                 new WalkQuests(),
@@ -110,7 +129,7 @@ public class QuestsManager extends Feature implements HasCommands {
      *
      * @return the quest if found, null otherwise
      */
-    public static List<Quest> getAllQuests() {
+    public List<Quest> getAllQuests() {
         return quests.values().stream().toList();
     }
 
@@ -119,8 +138,8 @@ public class QuestsManager extends Feature implements HasCommands {
      * <p>
      * This method is called when the server is shutting down.
      */
-    public static void saveQuests() {
-        QuestProgressSaveManager.saveAllQuestProgress();
+    public void saveQuests() {
+        questProgressSaveManager.saveAllQuestProgress();
     }
 
     /**
@@ -130,7 +149,7 @@ public class QuestsManager extends Feature implements HasCommands {
      *
      * @param playerUUID the UUID of the player
      */
-    public static void saveQuests(UUID playerUUID) {
-        QuestProgressSaveManager.savePlayerQuestProgress(playerUUID);
+    public void saveQuests(UUID playerUUID) {
+        questProgressSaveManager.savePlayerQuestProgress(playerUUID);
     }
 }

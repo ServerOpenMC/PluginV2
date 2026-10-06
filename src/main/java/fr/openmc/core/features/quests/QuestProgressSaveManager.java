@@ -1,6 +1,7 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -19,14 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class QuestProgressSaveManager extends Feature {
 
-    private static final String SAVE_FOLDER = "quests";
-    static final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
+    private final String SAVE_FOLDER = "quests";
+    private final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
+    private QuestsManager questsManager;
 
     /**
      * Init for QuestProgressSaveManager.
      */
     @Override
     public void init() {
+        this.questsManager = OMCRegistry.FEATURES.QUESTS.get();
+
         File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
@@ -42,13 +46,13 @@ public class QuestProgressSaveManager extends Feature {
      * Loads the quest progress for a specific player.
      * @param playerUUID the UUID of the player
      */
-    public static void loadPlayerQuestProgress(UUID playerUUID) {
+    public void loadPlayerQuestProgress(UUID playerUUID) {
         File playerFile = getPlayerProgressFile(playerUUID);
         if (playerFile.exists()) {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerFile);
             Map<String, Object> playerProgress = new HashMap<>();
 
-            for (Quest quest : QuestsManager.quests.values()) {
+            for (Quest quest : questsManager.getQuests().values()) {
                 String questName = PlainTextComponentSerializer.plainText().serialize(quest.getName());
 
                 int progress = config.getInt(questName + ".progress", 0);
@@ -94,11 +98,11 @@ public class QuestProgressSaveManager extends Feature {
      * Saves the quest progress for a specific player.
      * @param playerUUID the UUID of the player
      */
-    public static void savePlayerQuestProgress(UUID playerUUID) {
+    public void savePlayerQuestProgress(UUID playerUUID) {
         File playerFile = getPlayerProgressFile(playerUUID);
         YamlConfiguration config = new YamlConfiguration();
 
-        for (Quest quest : QuestsManager.quests.values()) {
+        for (Quest quest : questsManager.getQuests().values()) {
             String questName = PlainTextComponentSerializer.plainText().serialize(quest.getName());
             int progress = quest.getProgress().getOrDefault(playerUUID, 0);
             int currentTier = quest.getCurrentTierIndex(playerUUID);
@@ -134,7 +138,7 @@ public class QuestProgressSaveManager extends Feature {
     /**
      * Saves the quest progress for all players currently online.
      */
-    public static void saveAllQuestProgress() {
+    public void saveAllQuestProgress() {
         OMCPlugin.getInstance().getServer().getOnlinePlayers().forEach((player) ->
                 savePlayerQuestProgress(player.getUniqueId())
         );
@@ -144,14 +148,14 @@ public class QuestProgressSaveManager extends Feature {
      * Deletes the quest progress file for a specific player.
      * @param playerUUID the UUID of the player
      */
-    private static File getPlayerProgressFile(UUID playerUUID) {
+    private File getPlayerProgressFile(UUID playerUUID) {
         return new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER + File.separator + playerUUID + ".yml");
     }
 
     /**
      * Loads the quest progress for all players.
      */
-    public static void loadAllQuestProgress() {
+    public void loadAllQuestProgress() {
         File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
         File[] playerFiles = saveFolder.listFiles((dir, name) -> name.endsWith(".yml"));
 
