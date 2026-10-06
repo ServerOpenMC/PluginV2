@@ -1,8 +1,10 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
+import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -17,6 +19,8 @@ public class DreamItemDropsListener implements Listener {
     @EventHandler
     public void onPlayerDrop(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
+
+        if (ItemUtils.isSimilar(DreamItemRegistry.SINGULARITY.getBest(), item) && DreamUtils.isInDream(event.getPlayer())) return;
 
         if (DreamItemRegistry.getByItemStack(item) instanceof DreamItem dreamItem && dreamItem.getRarity().equals(DreamRarity.ONIRISIME)) {
             event.setCancelled(true);

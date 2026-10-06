@@ -1,5 +1,7 @@
 package fr.openmc.core.features.dream.models.registry.items;
 
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -11,6 +13,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 public abstract class DreamItem extends CustomItem {
@@ -132,5 +135,25 @@ public abstract class DreamItem extends CustomItem {
         item.lore(this.getGeneratedLore());
 
         return item;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof ItemStack anotherItem) {
+            DreamItem ditem = DreamItemRegistry.getByItemStack(anotherItem);
+
+            if (ditem == null) return false;
+            return ditem.getId().equals(this.getId());
+        }
+
+        if (object instanceof String otherObjectName) {
+            return this.getId().equals(otherObjectName);
+        }
+
+        if (object instanceof CustomItem citem) {
+            return citem.getId().equals(this.getId());
+        }
+
+        return false;
     }
 }

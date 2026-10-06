@@ -17,6 +17,9 @@ public class WormHoleDB {
     @Getter
     private UUID ownerUUID;
     @DatabaseField
+    @Getter
+    private int stageInt;
+    @DatabaseField
     private double x;
     @DatabaseField
     private double y;
@@ -29,12 +32,13 @@ public class WormHoleDB {
         // required for ORMLite
     }
 
-    public WormHoleDB(UUID ownerUUID, Location wormLocation) {
+    public WormHoleDB(UUID ownerUUID, Location wormLocation, WormHoleStage stage) {
         this.ownerUUID = ownerUUID;
         this.world = wormLocation.getWorld().getName();
         this.x = wormLocation.getX();
         this.y = wormLocation.getY();
         this.z = wormLocation.getZ();
+        this.stageInt = stage.getStage();
     }
 
     public Location getLocation() {

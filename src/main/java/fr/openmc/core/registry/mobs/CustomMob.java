@@ -1,5 +1,8 @@
 package fr.openmc.core.registry.mobs;
 
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -12,6 +15,7 @@ import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
@@ -138,7 +142,7 @@ public abstract class CustomMob<T extends Entity> {
                 .orElse(20.0);
     }
 
-    public void registerAsCustomMob(LivingEntity entity) {
+    public void registerAsCustomMob(Entity entity) {
         entity.getPersistentDataContainer().set(
                 CustomMobRegistry.CUSTOM_MOB_KEY,
                 PersistentDataType.STRING,
@@ -146,7 +150,20 @@ public abstract class CustomMob<T extends Entity> {
         );
     }
 
-    public void unregisterAsCustomMob(LivingEntity entity) {
+    public void unregisterAsCustomMob(Entity entity) {
         entity.getPersistentDataContainer().remove(CustomMobRegistry.CUSTOM_MOB_KEY);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof CustomMob<?> customMob) {
+            return customMob.getId().equals(this.getId());
+        } else if (object instanceof Entity entity) {
+            return entity.getPersistentDataContainer().has(CustomMobRegistry.CUSTOM_MOB_KEY, PersistentDataType.STRING)
+                    && entity.getPersistentDataContainer().get(CustomMobRegistry.CUSTOM_MOB_KEY, PersistentDataType.STRING)
+                    .equals(this.getId());
+        }
+
+        return false;
     }
 }
