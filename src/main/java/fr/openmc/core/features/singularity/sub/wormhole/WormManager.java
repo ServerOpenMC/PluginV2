@@ -47,7 +47,7 @@ public class WormManager extends Feature implements HasDatabase {
     }
 
     public static void createAndSpawn(UUID ownerUUID, Location location) {
-        ItemDisplay wormHole = (ItemDisplay) OMCRegistry.CUSTOM_MOBS.WORM_HOLE.getMob().spawn(location, entity -> {
+        OMCRegistry.CUSTOM_MOBS.WORM_HOLE.getMob().spawn(location, entity -> {
             entity.getPersistentDataContainer().set(OWNER_WORM_UUID, PersistentDataType.STRING, ownerUUID.toString());
         });
 
