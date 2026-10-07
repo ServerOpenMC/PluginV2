@@ -155,14 +155,16 @@ public class CityChestMenu extends PaginatedMenu {
                     "feature.city.menus.chest.upgrade.lore.max",
                     moneyValue,
                     moneyIcon,
-                    ayweniteValue
+                    ayweniteValue,
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             );
         } else {
             loreUpgrade = TranslationManager.translationLore(
                     "feature.city.menus.chest.upgrade.lore.click",
                     moneyValue,
                     moneyIcon,
-                    ayweniteValue
+                    ayweniteValue,
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             );
         }
 

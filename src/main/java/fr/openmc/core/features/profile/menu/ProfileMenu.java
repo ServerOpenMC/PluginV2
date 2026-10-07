@@ -3,6 +3,8 @@ package fr.openmc.core.features.profile.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -35,15 +37,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfileMenu extends Menu {
+    private final OMCOfflinePlayer target;
     private final static DiscordLinkManager DISCORD_LINK_MANAGER = OMCRegistry.FEATURES.DISCORD_LINK.get();
     private final static FriendManager FRIEND_MANAGER = OMCRegistry.FEATURES.FRIENDS.get();
-    private final OfflinePlayer target;
 
-    public ProfileMenu(Player owner) {
+    public ProfileMenu(OMCPlayer owner) {
         this(owner, owner);
     }
 
-    public ProfileMenu(Player owner, OfflinePlayer target) {
+    public ProfileMenu(OMCPlayer owner, OMCOfflinePlayer target) {
         super(owner);
         this.target = target;
     }
@@ -128,7 +130,7 @@ public class ProfileMenu extends Menu {
                 }
         ).setOnClick(click -> {
             if (click.getWhoClicked().getUniqueId() == target.getUniqueId()) {
-                Player owner = getOwner();
+                OMCPlayer owner = getOwner();
                 Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                     gitHubHook.refreshContributorId(target.getUniqueId());
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {

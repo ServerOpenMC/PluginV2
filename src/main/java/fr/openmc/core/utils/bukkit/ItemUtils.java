@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.bukkit;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -288,8 +289,8 @@ public class ItemUtils {
             MessagesManager.sendMessage(
                     player,
                     TranslationManager.translation("core.utils.aywenite.not_enough",
-                            Component.text("Aywenite").color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(amount)),
+                            Component.text(amount),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true
@@ -301,7 +302,7 @@ public class ItemUtils {
         return true;
     }
 
-    public static boolean giveItem(Player player, ItemStack item, int amount) {
+    public static boolean giveItem(OMCPlayer player, ItemStack item, int amount) {
         if (item == null) return false;
 
         item.setAmount(amount);
@@ -311,7 +312,7 @@ public class ItemUtils {
                     player,
                     TranslationManager.translation("core.utils.aywenite.not_enough_space",
                             Component.text(amount),
-                            item.getItemMeta().displayName().color(NamedTextColor.LIGHT_PURPLE)),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true

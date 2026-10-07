@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -58,9 +58,9 @@ public class HomeUpgradeManager extends Feature {
 
             if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), ayweniteAmount)) {
                 player.message().sendError(
-                        TranslationManager.translation(
-                                "feature.homes.upgrade.not_enough_aywenite",
-                                Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE)
+                        TranslationManager.translation("core.utils.aywenite.not_enough",
+                                Component.text(ayweniteAmount),
+                                OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                         ),
                         Prefix.OPENMC,
                         true
@@ -97,7 +97,8 @@ public class HomeUpgradeManager extends Feature {
                             "feature.homes.upgrade.success",
                             Component.text(updatedHomesLimit).color(NamedTextColor.YELLOW),
                             Component.text(nextUpgrade.getPrice()).color(NamedTextColor.YELLOW),
-                            Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE)
+                            Component.text(ayweniteAmount).color(NamedTextColor.LIGHT_PURPLE),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                     ), Prefix.HOME, true);
         } else {
             player.message().sendError(

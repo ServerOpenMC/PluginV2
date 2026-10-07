@@ -1,9 +1,11 @@
 package fr.openmc.core;
 
 import fr.openmc.api.cooldown.CooldownInterceptor;
-import fr.openmc.api.entity.player.OMCPlayer;
-import fr.openmc.api.entity.player.OMCPlayerParameterType;
-import fr.openmc.api.entity.player.OMCPlayerSenderResolver;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.api.omcplayer.lamp.OMCOfflinePlayerParameterType;
+import fr.openmc.api.omcplayer.lamp.OMCPlayerParameterType;
+import fr.openmc.api.omcplayer.lamp.OMCPlayerSenderResolver;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.debug.ToastCommand;
@@ -39,6 +41,8 @@ public class CommandsManager {
                 .commandCondition(new CooldownInterceptor())
                 .parameterTypes(builder ->
                         builder.addParameterType(OMCPlayer.class, new OMCPlayerParameterType()))
+                .parameterTypes(builder ->
+                        builder.addParameterType(OMCOfflinePlayer.class, new OMCOfflinePlayerParameterType()))
                 .build();
 
         registerCommands();

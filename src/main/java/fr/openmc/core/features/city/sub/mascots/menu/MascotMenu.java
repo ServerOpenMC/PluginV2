@@ -225,7 +225,8 @@ public class MascotMenu extends Menu {
         } else {
             requiredAmount.add(TranslationManager.translation(
                     "feature.city.mascots.menu.main.upgrade.cost",
-                    Component.text(mascotsLevels.getUpgradeCost()).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+                    Component.text(mascotsLevels.getUpgradeCost()).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             ));
         }
 
@@ -260,8 +261,6 @@ public class MascotMenu extends Menu {
                             player.closeInventory();
                             return;
                         }
-                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascots.menu.main.upgrade.not_enough_aywenite"), Prefix.CITY, MessageType.ERROR, false);
-
                     } else {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                     }
@@ -275,7 +274,8 @@ public class MascotMenu extends Menu {
                 List<Component> lore = TranslationManager.translationLore(
                         "feature.city.mascots.menu.main.immunity.lore",
                         Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))).color(NamedTextColor.GRAY),
-                        Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+                        Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                 );
 
                 return new ItemMenuBuilder(this, Material.DIAMOND, itemMeta -> {
@@ -294,7 +294,8 @@ public class MascotMenu extends Menu {
                     MessagesManager.sendMessage(player,
                             TranslationManager.translation(
                                     "feature.city.mascots.menu.main.immunity.reduce.success",
-                                    Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE)
+                                    Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE),
+                                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                             ),
                             Prefix.CITY, MessageType.SUCCESS, false);
                 });

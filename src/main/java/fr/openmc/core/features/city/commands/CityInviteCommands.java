@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityInviteConditions;
@@ -44,13 +44,13 @@ public class CityInviteCommands {
             playerInvitations.add(sender);
         }
         sender.message().sendSuccess(
-                TranslationManager.translation("feature.city.invite.commands.invite.success", target.displayName()),
+                TranslationManager.translation("feature.city.invite.commands.invite.success", target.getNameWithHead()),
                 Prefix.CITY
         );
         target.message().sendInfo(
                 TranslationManager.translation(
                                 "feature.city.invite.commands.invite.received",
-                                sender.displayName(),
+                                sender.getNameWithHead(),
                                 Component.text(city.getName())
                         )
                         .append(Component.newline())
@@ -88,7 +88,7 @@ public class CityInviteCommands {
             player.message().sendError(
                     TranslationManager.translation(
                             "feature.city.invite.commands.accept.not_invited",
-                            inviter.displayName()
+                            inviter.getNameWithHead()
                     ),
                     Prefix.CITY
             );
@@ -109,7 +109,7 @@ public class CityInviteCommands {
         );
         if (inviter.isOnline()) {
             inviter.message().sendSuccess(
-                    TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.displayName()),
+                    TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.getNameWithHead()),
                     Prefix.CITY,
                     true
             );

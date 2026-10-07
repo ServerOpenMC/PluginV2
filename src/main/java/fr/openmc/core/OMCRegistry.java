@@ -27,6 +27,7 @@ import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
@@ -53,6 +54,9 @@ public final class OMCRegistry {
     // * Registre des features
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
+
+    // * Registres internes
+    public static ScannerRegistry SCANNERS;
 
     // ** Registre concernant la feature des animations dans le chat
     public static ChatAnimationLootTableRegistry CHAT_ANIMATION_LOOT_TABLE;
@@ -113,7 +117,10 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> FEATURES = new FeaturesRegistry(),
-                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA)
+                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> SCANNERS = new ScannerRegistry(),
+                    RegistryLoadingType.RUNTIME)
     ));
 
     private OMCRegistry() {}

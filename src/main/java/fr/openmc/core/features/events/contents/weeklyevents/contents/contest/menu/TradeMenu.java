@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
@@ -58,7 +59,7 @@ public class TradeMenu extends Menu {
 
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
         Component campName = CONTEST_PLAYER_MANAGER.getPlayerCampComponent(player);
@@ -151,7 +152,7 @@ public class TradeMenu extends Menu {
      * @param shellsEarned le nombre de coquillages à attribuer
      * @param tradeName    le nom du trade sous forme de composant traduisible
      */
-    private void handleSingleTrade(Player player, ItemStack item, int itemsRemoved, int shellsEarned, TranslatableComponent tradeName) {
+    private void handleSingleTrade(OMCPlayer player, ItemStack item, int itemsRemoved, int shellsEarned, TranslatableComponent tradeName) {
         if (!ItemUtils.hasEnoughItems(player, item, itemsRemoved)) {
             sendNotEnoughMessage(player);
             return;
@@ -174,7 +175,7 @@ public class TradeMenu extends Menu {
      * @param amountShell le nombre de coquillages attribués pour cet échange
      * @param tradeName   le nom du trade sous forme de composant traduisible
      */
-    private void handleBulkTrade(Player player, ItemStack item, int amount, int amountShell, TranslatableComponent tradeName) {
+    private void handleBulkTrade(OMCPlayer player, ItemStack item, int amount, int amountShell, TranslatableComponent tradeName) {
         if (!ItemUtils.hasEnoughItems(player, item, amount)) {
             sendNotEnoughMessage(player);
             return;
@@ -198,7 +199,7 @@ public class TradeMenu extends Menu {
      * @param player le joueur destinataire des coquillages
      * @param amount le nombre total de coquillages à attribuer
      */
-    private void giveShells(Player player, int amount) {
+    private void giveShells(OMCPlayer player, int amount) {
         ItemStack baseShell = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
         List<ItemStack> stacks = ItemUtils.splitAmountIntoStack(baseShell, amount);
         List<ItemStack> leftovers = new ArrayList<>();

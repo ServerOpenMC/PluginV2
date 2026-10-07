@@ -61,6 +61,7 @@ public class HomeUpgradeMenu extends Menu {
                         Component.text(nextUpgrade.getPrice()).color(NamedTextColor.GREEN),
                         Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
                         Component.text(nextUpgrade.getAyweniteCost()).color(NamedTextColor.LIGHT_PURPLE),
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite(),
                         Component.text(nextUpgrade.getLimit()).color(NamedTextColor.YELLOW)
                 ));
             }

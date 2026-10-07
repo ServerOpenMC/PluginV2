@@ -1,6 +1,7 @@
 package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -18,7 +19,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPADenyCommand {
 	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
-	
+
 	/**
 	 * Command to deny a teleportation request
 	 * @param target The player denying the request.
@@ -27,25 +28,25 @@ public class TPADenyCommand {
 	@Command("tpadeny")
 	@CommandPermission("omc.commands.tpa")
 	public void tpaDeny(
-			Player target,
+			OMCPlayer target,
 			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player")
-			Player player
+			OMCPlayer player
 	) {
 		if (!tpaManager.hasPendingRequest(target)) {
-			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.deny.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
+			target.message().send(TranslationManager.translation("feature.tpa.deny.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (tpaManager.hasMultipleRequests(target)) {
 			if (player == null) {
-				MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.deny.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
+				target.message().send(TranslationManager.translation("feature.tpa.deny.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
 			if (!tpaManager.getRequesters(target).contains(player)) {
-				MessagesManager.sendMessage(target, TranslationManager.translation(
+				player.message().send(TranslationManager.translation(
 						"feature.tpa.deny.no_request_from",
-						Component.text(player.getName()).color(NamedTextColor.GOLD)
+						player.getNameWithHead().color(NamedTextColor.GOLD)
 				), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
@@ -53,13 +54,13 @@ public class TPADenyCommand {
 			player = tpaManager.getRequesters(target).getFirst();
 		}
 		
-		MessagesManager.sendMessage(target, TranslationManager.translation(
+		target.message().send(TranslationManager.translation(
 				"feature.tpa.deny.success",
-				Component.text(player.getName()).color(NamedTextColor.GOLD)
+				player.getNameWithHead().color(NamedTextColor.GOLD)
 		), Prefix.OPENMC, MessageType.SUCCESS, false);
-		MessagesManager.sendMessage(player, TranslationManager.translation(
+		player.message().send(TranslationManager.translation(
 				"feature.tpa.deny.denied",
-				Component.text(target.getName()).color(NamedTextColor.GOLD)
+				target.getNameWithHead().color(NamedTextColor.GOLD)
 		), Prefix.OPENMC, MessageType.ERROR, false);
 
 		tpaManager.removeRequest(player, target);

@@ -52,7 +52,11 @@ public class CityCreateConditions {
         }
 
         if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), AYWENITE_CREATE)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(AYWENITE_CREATE)), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("core.utils.aywenite.not_enough",
+                            Component.text(AYWENITE_CREATE),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
+                    ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

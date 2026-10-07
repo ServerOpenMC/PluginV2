@@ -2,6 +2,8 @@ package fr.openmc.core.features.friend.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -68,7 +70,7 @@ public class FriendCommand {
             player.message().sendInfo(
                     TranslationManager.translation(
                             "feature.friend.add.sent",
-                            Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                            target.getNameWithHead().color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     true
@@ -91,7 +93,7 @@ public class FriendCommand {
                                 target,
                                 TranslationManager.translation(
                                         "feature.friend.request.ignored",
-                                        Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                                        player.getNameWithHead().color(NamedTextColor.YELLOW)
                                 ),
                                 Prefix.FRIEND,
                                 MessageType.INFO,
@@ -108,7 +110,7 @@ public class FriendCommand {
             target.message().sendInfo(
                     TranslationManager.translation(
                                     "feature.friend.request.received",
-                                    Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                                    player.getNameWithHead().color(NamedTextColor.YELLOW)
                             ).appendNewline()
                             .append(acceptButton).appendSpace()
                             .append(ignoreButton).appendSpace()
@@ -129,44 +131,37 @@ public class FriendCommand {
     @Subcommand("remove")
     @Description("Supprimer un ami de votre liste")
     public void removeCommand(
-            Player player,
-            @Named("ami") @SuggestWith(FriendsAutoComplete.class) String targetName
+            OMCPlayer player,
+            @Named("ami") @SuggestWith(FriendsAutoComplete.class) OMCOfflinePlayer target
     ) {
         try {
-            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-            String playerName = target.getName() != null ? target.getName() : "null";
-
             if (!target.hasPlayedBefore()) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
+                player.message().send(TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
             if (!friendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.not_friend"), Prefix.FRIEND, MessageType.ERROR, true);
+                player.message().send(TranslationManager.translation("feature.friend.remove.not_friend"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (!friendManager.removeFriend(player.getUniqueId(), target.getUniqueId())) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
+                player.message().send(TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-           Component targetDisplayName = target.getName() != null
-                    ? Component.text(playerName)
-                    : TranslationManager.translation("feature.friend.unknown_player");
-            MessagesManager.sendMessage(
-                    player,
-                    TranslationManager.translation(
+
+            player.message().send(TranslationManager.translation(
                             "feature.friend.remove.success",
-                            targetDisplayName.color(NamedTextColor.YELLOW)
+                            target.getNameWithHead().color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
-                    true
-            );
+                    true);
+
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
                 MessagesManager.sendMessage(
                         targetPlayer,
                         TranslationManager.translation(
                                 "feature.friend.remove.removed_by",
-                                Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                                player.getNameWithHead().color(NamedTextColor.YELLOW)
                         ),
                         Prefix.FRIEND,
                         MessageType.INFO,
@@ -174,7 +169,7 @@ public class FriendCommand {
                 );
             }
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
+            player.message().send(TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }
@@ -183,7 +178,7 @@ public class FriendCommand {
     @Description("Afficher la liste de vos amis")
     @Syntax("[page]")
     public void listCommand(
-            Player player,
+            OMCPlayer player,
             @Named("page") @Optional Integer page
     ) {
         int currentPage = (page != null && page > 0) ? page : 1;
@@ -191,7 +186,7 @@ public class FriendCommand {
 
         friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friends -> {
             if (friends.isEmpty()) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.list.none"), Prefix.FRIEND, MessageType.ERROR, true);
+                player.message().send(TranslationManager.translation("feature.friend.list.none"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
 
@@ -199,9 +194,7 @@ public class FriendCommand {
             int totalPages = (int) Math.ceil((double) friendsList.size() / ITEMS_PER_PAGE);
 
             if (currentPage > totalPages) {
-                MessagesManager.sendMessage(
-                        player,
-                        TranslationManager.translation(
+                player.message().send(TranslationManager.translation(
                                 "feature.friend.list.page_invalid",
                                 Component.text(currentPage).color(NamedTextColor.RED),
                                 Component.text(totalPages).color(NamedTextColor.RED)
@@ -222,14 +215,11 @@ public class FriendCommand {
                             Component.text(totalPages)
                     )
                     .color(NamedTextColor.GOLD);
-            player.sendMessage(header);
+            player.message().send(header);
+
             for (int i = startIndex; i < endIndex; i++) {
                 UUID friendUUID = friendsList.get(i);
-                OfflinePlayer friend = CacheOfflinePlayer.getOfflinePlayer(friendUUID);
-                String friendName = friend.getName() != null ? friend.getName() : "null";
-                Component friendNameComponent = friend.getName() != null
-                        ? Component.text(friendName)
-                        : TranslationManager.translation("feature.friend.unknown_player");
+                OMCOfflinePlayer friend = OMCOfflinePlayer.of(friendUUID);
 
                 try {
                     Timestamp timestamp = friendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
@@ -248,7 +238,7 @@ public class FriendCommand {
 
                     TextComponent friendComponent = Component.text("  " + (i + 1) + ". ")
                             .color(NamedTextColor.GRAY)
-                            .append(friendNameComponent
+                            .append(friend.getNameWithHead()
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
@@ -271,7 +261,7 @@ public class FriendCommand {
 
                     Component actions = TranslationManager.translation("feature.friend.list.action.remove")
                             .color(NamedTextColor.RED)
-                            .clickEvent(ClickEvent.runCommand("/friends remove " + friendName))
+                            .clickEvent(ClickEvent.runCommand("/friends remove " + friend.getName()))
                             .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.friend.list.action.remove_hover").color(NamedTextColor.RED)));
 
                     player.sendMessage(friendComponent.append(statusIcon).append(dateInfo).appendSpace().append(actions));
@@ -280,7 +270,7 @@ public class FriendCommand {
                     player.sendMessage(
                             TranslationManager.translation(
                                     "feature.friend.list.fetch_error",
-                                    Component.text(friendName).color(NamedTextColor.RED)
+                                    friend.getNameWithHead().color(NamedTextColor.RED)
                             ).color(NamedTextColor.RED)
                     );
                     throw new RuntimeException(e);
@@ -329,7 +319,7 @@ public class FriendCommand {
                 player.sendMessage(navigation);
             }
         }).exceptionally(ex -> {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.list.error"), Prefix.FRIEND, MessageType.ERROR, true);
+            player.message().send(TranslationManager.translation("feature.friend.list.error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(ex);
         });
     }
@@ -337,11 +327,10 @@ public class FriendCommand {
     @Subcommand("accept")
     @Description("Accepter une demande d'ami")
     public void acceptCommand(
-            Player player,
-            @Named("ami") @SuggestWith(FriendsRequestAutoComplete.class) String targetName
+            OMCPlayer player,
+            @Named("ami") @SuggestWith(FriendsRequestAutoComplete.class) OMCOfflinePlayer target
     ) {
         try {
-            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
@@ -350,15 +339,12 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
+
             friendManager.addFriend(player.getUniqueId(), target.getUniqueId());
-            Component targetDisplayName = target.getName() != null
-                    ? Component.text(targetName)
-                    : TranslationManager.translation("feature.friend.unknown_player");
-            MessagesManager.sendMessage(
-                    player,
+            player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.accepted",
-                            targetDisplayName.color(NamedTextColor.YELLOW)
+                            target.getNameWithHead().color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
@@ -369,7 +355,7 @@ public class FriendCommand {
                         targetPlayer,
                         TranslationManager.translation(
                                 "feature.friend.request.accepted",
-                                Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                                player.getNameWithHead().color(NamedTextColor.YELLOW)
                         ),
                         Prefix.FRIEND,
                         MessageType.INFO,
@@ -377,7 +363,7 @@ public class FriendCommand {
                 );
             }
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.accept_error"), Prefix.FRIEND, MessageType.ERROR, true);
+            player.message().send(TranslationManager.translation("feature.friend.request.accept_error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }
@@ -385,28 +371,25 @@ public class FriendCommand {
     @Subcommand("deny")
     @Description("Refuser une demande d'ami")
     public void denyCommand(
-            Player player,
-            @Named("demande d'ami") @SuggestWith(FriendsRequestAutoComplete.class) String targetName
+            OMCPlayer player,
+            @Named("demande d'ami") @SuggestWith(FriendsRequestAutoComplete.class) OMCOfflinePlayer target
     ) {
         try {
-            OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
+
             if (!friendManager.isRequestPending(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
+
             friendManager.removeRequest(friendManager.getRequest(target.getUniqueId()));
-            Component targetDisplayName = target.getName() != null
-                    ? Component.text(target.getName())
-                    : TranslationManager.translation("feature.friend.unknown_player");
-            MessagesManager.sendMessage(
-                    player,
+            player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.denied",
-                            targetDisplayName.color(NamedTextColor.YELLOW)
+                            target.getNameWithHead().color(NamedTextColor.YELLOW)
                     ),
                     Prefix.FRIEND,
                     MessageType.INFO,
@@ -425,7 +408,7 @@ public class FriendCommand {
                 );
             }
         } catch (Exception e) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.deny_error"), Prefix.FRIEND, MessageType.ERROR, true);
+            player.message().send(TranslationManager.translation("feature.friend.request.deny_error"), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
         }
     }

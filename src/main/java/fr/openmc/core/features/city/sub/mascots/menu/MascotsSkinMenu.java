@@ -100,7 +100,8 @@ public class MascotsSkinMenu extends Menu {
         } else {
             loreMascots.add(TranslationManager.translation(
                     "feature.city.mascots.menu.skin.lore.price_required",
-                    Component.text(type.getPrice()).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+                    Component.text(type.getPrice()).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             ));
         }
 
@@ -113,13 +114,16 @@ public class MascotsSkinMenu extends Menu {
                     }
                     if (!egg.equals(type.getSpawnEgg())) {
                         int aywenite = type.getPrice();
-                        ItemStack ISAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
-                        if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
+                        ItemStack isAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
+                        if (ItemUtils.hasEnoughItems(getOwner(), isAywenite, aywenite)) {
                             mascot.changeMascotsSkin(type.getEntityType(), getOwner(), aywenite);
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                             getOwner().closeInventory();
                         } else {
-                            MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.city.mascots.menu.skin.error.not_enough_aywenite"), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(getOwner(), TranslationManager.translation("core.utils.aywenite.not_enough",
+                                    Component.text(aywenite),
+                                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
+                            ), Prefix.CITY, MessageType.ERROR, false);
                             getOwner().closeInventory();
                         }
                     } else {

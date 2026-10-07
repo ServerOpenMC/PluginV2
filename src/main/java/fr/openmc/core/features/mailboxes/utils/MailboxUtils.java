@@ -1,6 +1,7 @@
 package fr.openmc.core.features.mailboxes.utils;
 
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -13,11 +14,10 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class MailboxUtils {
-    public static Component getPlayerName(OfflinePlayer player) {
-        String pName = player.getName();
-        Component displayName = pName == null
+    public static Component getPlayerName(OMCOfflinePlayer player) {
+        Component displayName = player.getNameWithHead() == null
                 ? TranslationManager.translation("feature.mailboxes.player.unknown")
-                : Component.text(pName);
+                : player.getNameWithHead();
         return Component.text("⬤ ", player.isConnected() ? NamedTextColor.DARK_GREEN : NamedTextColor.DARK_RED)
                         .append(displayName.color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD))
                         .decoration(TextDecoration.ITALIC, false);
@@ -40,7 +40,7 @@ public class MailboxUtils {
         return HoverEvent.showText(message.color(NamedTextColor.GRAY));
     }
 
-    public static ItemStack getHead(OfflinePlayer player) {
+    public static ItemStack getHead(OMCOfflinePlayer player) {
         return getHead(player, getPlayerName(player));
     }
 }

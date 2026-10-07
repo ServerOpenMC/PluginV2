@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.command;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.quests.rewards;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -33,15 +34,14 @@ public class QuestMoneyReward implements QuestReward {
      * @param player The player to whom the reward will be given.
      */
     @Override
-    public void giveReward(Player player) {
+    public void giveReward(OMCPlayer player) {
         economyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
-        Component amountComponent = Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount) +
+        Component amountComponent = Component.text(economyManager.getFormattedSimplifiedNumber(amount) +
                         " " + economyManager.getEconomyIcon())
                 .color(NamedTextColor.YELLOW);
         Component message = TranslationManager.translation("feature.quests.message.money_reward", amountComponent)
                 .color(NamedTextColor.GREEN);
-        MessagesManager.sendMessage(
-                player,
+        player.message().send(
                 message,
                 Prefix.QUEST,
                 MessageType.SUCCESS,

@@ -103,8 +103,4 @@ public class PendingMailbox extends PaginatedMenu {
     public int getSizeOfItems() {
         return MAILBOX_MANAGER.getSentLetters(getOwner()).size();
     }
-
-    public static void cancelLetter(Player player, int id) {
-
-    }
 }

@@ -3,7 +3,7 @@ package fr.openmc.core.features.corpse;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
@@ -101,8 +101,7 @@ public class CorpseListener implements Listener {
 
     @EventHandler
     public void onNPCInteraction(NpcInteractEvent event) {
-
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         if (event.getNpc().getData().getName().startsWith("corpse-")) {
             UUID ownerUUID = UUID.fromString(event.getNpc().getData().getName().replace("corpse-", ""));

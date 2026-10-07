@@ -5,6 +5,8 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.commnads.CorpseCommand;
@@ -236,7 +238,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         }
     }
 
-    public void sendMailItems(Player player, OfflinePlayer receiver, ItemStack[] items) {
+    public void sendMailItems(OMCPlayer player, OMCOfflinePlayer receiver, ItemStack[] items) {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             if (!mailboxManager.sendItems(player, receiver, items))
                 mailboxManager.givePlayerItems(player, items);

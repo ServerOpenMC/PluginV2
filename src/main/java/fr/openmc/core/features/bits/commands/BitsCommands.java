@@ -1,5 +1,6 @@
 package fr.openmc.core.features.bits.commands;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.bits.BitsManager;
@@ -43,12 +44,14 @@ public class BitsCommands {
     @Subcommand("set")
     @Description("Permet de définir les bits d'un joueur")
     @CommandPermission("omc.admin.commands.bits.set")
-    public void setBits(CommandSender sender, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
+    public void setBits(CommandSender sender,
+                        @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
+                        @Range(min = 1E-10) double amount) {
         bitsManager.setBits(target.getUniqueId(), amount);
         MessagesManager.sendMessage(sender,
                 TranslationManager.translation(
                         "feature.economy.bits.set.success",
-                        Component.text(target.getName()).color(NamedTextColor.YELLOW),
+                        target.getNameWithHead().color(NamedTextColor.YELLOW),
                         Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -56,7 +59,7 @@ public class BitsCommands {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.set.target",
-                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                            Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -65,13 +68,15 @@ public class BitsCommands {
     @Subcommand("add")
     @Description("Permet d'ajouter des bits à un joueur")
     @CommandPermission("omc.admin.commands.bits.add")
-    public void addBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
+    public void addBits(CommandSender player,
+                        @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
+                        @Range(min = 1E-10) double amount) {
         bitsManager.addBits(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.add.success",
                         Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
-                        Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                        target.getNameWithHead().color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
@@ -87,13 +92,15 @@ public class BitsCommands {
     @Subcommand("remove")
     @Description("Permet de retirer des bits à un joueur")
     @CommandPermission("omc.admin.commands.bits.remove")
-    public void removeBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target, @Range(min = 1E-10) double amount) {
+    public void removeBits(CommandSender player,
+                           @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
+                           @Range(min = 1E-10) double amount) {
         if (bitsManager.withdrawBits(target.getUniqueId(), amount)) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.economy.bits.remove.success",
                             Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
-                            Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                            target.getNameWithHead().color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.SUCCESS, true);
             if (target.isOnline()) {
@@ -112,12 +119,13 @@ public class BitsCommands {
     @Subcommand("reset")
     @Description("Permet de réinitialiser les bits d'un joueur")
     @CommandPermission("omc.admin.commands.bits.reset")
-    public void resetBits(CommandSender player, @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target) {
+    public void resetBits(CommandSender player,
+                          @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target) {
         bitsManager.setBits(target.getUniqueId(), 0);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.reset.success",
-                        Component.text(target.getName()).color(NamedTextColor.YELLOW),
+                        target.getNameWithHead().color(NamedTextColor.YELLOW),
                         Component.text(economyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);

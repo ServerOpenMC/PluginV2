@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mailboxes.letter;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -21,7 +22,7 @@ import static fr.openmc.core.utils.text.InputUtils.pluralize;
 @Getter
 public class SenderLetter extends ItemStack {
 
-    public SenderLetter(OfflinePlayer player, int itemsCount, LocalDateTime sentAt, boolean refused) {
+    public SenderLetter(OMCOfflinePlayer player, int itemsCount, LocalDateTime sentAt, boolean refused) {
         super(Material.PLAYER_HEAD, 1);
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
         skullMeta.setOwningPlayer(player);

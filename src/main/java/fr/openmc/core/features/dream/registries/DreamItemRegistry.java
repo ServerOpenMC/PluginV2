@@ -140,6 +140,8 @@ public class DreamItemRegistry extends SubRegistry<String, DreamItem> {
                 DreamItemConvertorListener::new,
                 DreamItemDropsListener::new
         );
+
+        // todo: check DREAM_ITEM_REGISTRY.forEach(CustomItem::updateSprite);
     }
 
     public Map<String, DreamItem> getBootstrapRegistry() {

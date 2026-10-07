@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.models;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.EnumUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.EntityUtils;
@@ -65,7 +66,8 @@ public enum MascotType {
 
             meta.lore(TranslationManager.translationLore(
                     "feature.city.mascots.skin.requirement",
-                    Component.text(price).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+                    Component.text(price).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             ));
 
             if (selected)

@@ -8,6 +8,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -57,10 +58,11 @@ public class PlayersList extends PaginatedMenu {
         List<ItemStack> pageItems = new java.util.ArrayList<>();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == getOwner()) continue;
+            OMCPlayer omcPlayer = OMCPlayer.of(onlinePlayer);
             if (!MAILBOX_MANAGER.canSend(getOwner(), onlinePlayer)) continue;
             pageItems.add(new ItemMenuBuilder(this, ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()))
                     .setOnClick(event -> {
-                        new SendingLetter(getOwner(), onlinePlayer).open();
+                        new SendingLetter(getOwner(), omcPlayer).open();
                     }));
         }
         return pageItems;

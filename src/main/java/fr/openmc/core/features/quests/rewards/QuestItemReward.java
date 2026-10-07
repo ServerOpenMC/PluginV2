@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -56,7 +57,7 @@ public class QuestItemReward implements QuestReward {
      * @param player the target player for the reward.
      */
     @Override
-    public void giveReward(Player player) {
+    public void giveReward(OMCPlayer player) {
         int remaining = amount;
         while (remaining > 0) {
             int stackAmount = Math.min(remaining, itemStack.getMaxStackSize());

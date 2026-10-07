@@ -3,6 +3,8 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
@@ -70,7 +72,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.create")
     @Description("Créer une ville")
     void create(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @Optional String name
     ) {
         if (!CityCreateConditions.canCityCreate(player, null)) {

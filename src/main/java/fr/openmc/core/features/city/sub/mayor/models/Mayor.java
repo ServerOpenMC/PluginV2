@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -78,5 +79,9 @@ public class Mayor {
 
     public void setElectionType(ElectionType type) {
         this.electionType = type.name();
+    }
+
+    public OMCOfflinePlayer getOMCOfflinePlayer() {
+        return OMCOfflinePlayer.of(this.mayorUUID);
     }
 }

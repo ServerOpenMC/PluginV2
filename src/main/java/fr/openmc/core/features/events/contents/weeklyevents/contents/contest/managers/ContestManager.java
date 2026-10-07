@@ -526,7 +526,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                     .appendNewline()
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.aywenite.prefix"))
                     .append(Component.text(aywenite).color(NamedTextColor.LIGHT_PURPLE))
-                    .append(TranslationManager.translation("feature.events.contest.book.page.rewards.aywenite.suffix"))
+                    .append(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite())
                     .appendNewline()
                     .append(TranslationManager.translation("feature.events.contest.book.page.rewards.boost.prefix"))
                     .append(Component.text(multiplicator).color(NamedTextColor.AQUA));

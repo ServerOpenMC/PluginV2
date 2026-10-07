@@ -2,6 +2,7 @@ package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -28,13 +29,13 @@ public class Pay {
         if (player.economy().pay(target.getUniqueId(), amount, String.format("Paiement de %s à %s", player.getName(), target.getName()))) {
             player.message().sendSuccess(TranslationManager.translation(
                     "feature.economy.pay.success",
-                    Component.text(target.getName()).color(NamedTextColor.YELLOW),
+                    target.getNameWithHead().color(NamedTextColor.YELLOW),
                     Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
             ));
             target.message().sendInfo(TranslationManager.translation(
                     "feature.economy.pay.received",
                     Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW),
-                    Component.text(player.getName()).color(NamedTextColor.YELLOW)
+                    player.getNameWithHead().color(NamedTextColor.YELLOW)
             ));
         } else {
             player.message().sendError(TranslationManager.translation("feature.economy.pay.not_enough"));

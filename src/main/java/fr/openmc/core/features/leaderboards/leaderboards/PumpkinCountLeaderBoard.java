@@ -1,5 +1,6 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
@@ -48,7 +49,8 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
 
         for (int i = 0; i < datas.size(); i++){
             HalloweenData data = datas.get(i);
-            Component name = CachePlayerName.name(data.getPlayerUUID());
+            OMCOfflinePlayer player = OMCOfflinePlayer.of(data.getPlayerUUID());
+            Component name = player.getNameWithHead();
             String formattedPumpkinCount = EconomyUtils.getFormattedSimplifiedNumber(data.getPumpkinCount());
             Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
             text = text.append(Component.text("\n").append(TranslationManager.translation(

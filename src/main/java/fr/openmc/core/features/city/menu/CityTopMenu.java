@@ -7,6 +7,11 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -84,11 +89,12 @@ public class CityTopMenu extends PaginatedMenu {
 
         cities.forEach(city -> {
             UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
+            OMCOfflinePlayer owner = OMCOfflinePlayer.of(ownerUUID);
 
             if (ownerUUID != null) {
                 List<Component> cityLore = new ArrayList<>();
 
-                Component ownerComponent = CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY);
+                Component ownerComponent = owner.getNameWithHead().color(NamedTextColor.GRAY);
                 Component levelComponent = Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA);
                 Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
                 Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
@@ -100,7 +106,7 @@ public class CityTopMenu extends PaginatedMenu {
                 if (city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED) && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
                     Component mayorName = city.getMayor() == null
                             ? TranslationManager.translation("messages.menus.none")
-                            : city.getMayor().getName();
+                            : city.getMayor().getOMCOfflinePlayer().getNameWithHead();
                     NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null)
                             ? NamedTextColor.WHITE
                             : city.getMayor().getMayorColor();

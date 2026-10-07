@@ -2,6 +2,11 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
 import fr.openmc.core.features.city.commands.autocomplete.CityPermissionsAutoComplete;
 import fr.openmc.core.features.city.conditions.CityPermsConditions;
@@ -22,34 +27,37 @@ public class CityPermsCommands {
     @Subcommand("switch")
     @CommandPermission("omc.commands.city.perm.switch")
     @Description("Inverse la permission d'un joueur")
-    public static void swap(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player, @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission) {
+    public static void swap(
+            OMCPlayer sender,
+            @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player,
+            @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
 
         City city = City.ofPlayer(sender);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.hasPermission(player.getUniqueId(), permission)) {
             city.removePermission(player.getUniqueId(), permission);
-            MessagesManager.sendMessage(sender, TranslationManager.translation(
+            sender.message().send(TranslationManager.translation(
                     "feature.city.perms.commands.switch.removed",
-                    CachePlayerName.name(player.getUniqueId()),
+                    player.getNameWithHead(),
                     Component.text(permission.toString())
             ), Prefix.CITY, MessageType.SUCCESS, false);
         } else {
             city.addPermission(player.getUniqueId(), permission);
-	        MessagesManager.sendMessage(sender, TranslationManager.translation(
+	        sender.message().send(TranslationManager.translation(
                     "feature.city.perms.commands.switch.added",
-                    CachePlayerName.name(player.getUniqueId()),
+                    player.getNameWithHead(),
                     permission.getDisplayName()
             ), Prefix.CITY, MessageType.SUCCESS, false);
         }
@@ -59,8 +67,8 @@ public class CityPermsCommands {
     @CommandPermission("omc.commands.city.perm.add")
     @Description("Ajouter des permissions à un membre")
     void add(
-            Player sender,
-            @Named("membre") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player,
+            OMCPlayer sender,
+            @Named("membre") @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player,
             @Named("permission") @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission
     ) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
@@ -69,27 +77,27 @@ public class CityPermsCommands {
         City city = City.ofPlayer(sender);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.hasPermission(player.getUniqueId(), permission)) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation(
+            sender.message().send(TranslationManager.translation(
                     "feature.city.perms.commands.add.already_has",
-                    CachePlayerName.name(player.getUniqueId())
+                    player.getNameWithHead()
             ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.addPermission(player.getUniqueId(), permission);
-        MessagesManager.sendMessage(sender, TranslationManager.translation(
+        sender.message().send(TranslationManager.translation(
                 "feature.city.perms.commands.modified",
-                CachePlayerName.name(player.getUniqueId())
+                player.getNameWithHead()
         ), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
@@ -97,8 +105,8 @@ public class CityPermsCommands {
     @CommandPermission("omc.commands.city.perm.remove")
     @Description("Retirer des permissions à un membre")
     void remove(
-            Player sender,
-            @Named("membre") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player,
+            OMCPlayer sender,
+            @Named("membre") @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player,
             @Named("permission") @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission
     ) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
@@ -107,27 +115,27 @@ public class CityPermsCommands {
         City city = City.ofPlayer(sender);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasPermission(player.getUniqueId(), permission)) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation(
+            sender.message().send(TranslationManager.translation(
                     "feature.city.perms.commands.remove.does_not_have",
-                    CachePlayerName.name(player.getUniqueId())
+                    player.getNameWithHead()
             ), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.removePermission(player.getUniqueId(), permission);
-        MessagesManager.sendMessage(sender, TranslationManager.translation(
+        sender.message().send(TranslationManager.translation(
                 "feature.city.perms.commands.modified",
-                CachePlayerName.name(player.getUniqueId())
+                sender.getNameWithHead()
         ), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
@@ -135,7 +143,7 @@ public class CityPermsCommands {
     @Subcommand("get")
     @CommandPermission("omc.commands.city.perm.get")
     @Description("Obtenir les permissions d'un membre")
-    void get(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player) {
+    void get(OMCPlayer sender, @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         new CityPermsMenu(sender, player.getUniqueId(), false).open();
     }
@@ -143,19 +151,19 @@ public class CityPermsCommands {
     @Subcommand("removeall")
     @CommandPermission("omc.commands.city.perm.removeall")
     @Description("Retirer toutes les permissions d'un membre")
-    public static void removeAll(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player) {
+    public static void removeAll(OMCPlayer sender, @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
         City city = City.ofPlayer(sender);
         
         if (city == null) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
@@ -168,17 +176,17 @@ public class CityPermsCommands {
     @Subcommand("addall")
     @CommandPermission("omc.commands.city.perm.addall")
     @Description("Ajouter toutes les permissions à un membre")
-    public static void addAll(Player sender, @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player) {
+    public static void addAll(OMCPlayer sender, @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player) {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
         City city = City.ofPlayer(sender);
         if (city == null) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("messages.city.target_in_other_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         

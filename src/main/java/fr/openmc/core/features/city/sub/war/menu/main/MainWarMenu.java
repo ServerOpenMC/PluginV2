@@ -6,6 +6,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -79,7 +81,8 @@ public class MainWarMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
+
         List<City> warCities = cityManager.getCities().stream()
                 .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
                 .toList();
@@ -104,8 +107,7 @@ public class MainWarMenu extends PaginatedMenu {
                     Component.empty(),
                     TranslationManager.translation(
                             "feature.city.war.menu.main.owner",
-                            Component.text(PlainTextComponentSerializer.plainText().serialize(CachePlayerName.name(player.getUniqueId())))
-                                    .color(NamedTextColor.LIGHT_PURPLE)
+                            player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE)
                     ).color(NamedTextColor.GRAY),
                     TranslationManager.translation(
                             "feature.city.war.menu.main.population_online",

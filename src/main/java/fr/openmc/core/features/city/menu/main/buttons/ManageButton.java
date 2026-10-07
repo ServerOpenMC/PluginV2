@@ -2,6 +2,10 @@ package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.menu.CityModifyMenu;
@@ -52,16 +56,17 @@ public class ManageButton {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         Component mayorName = (city.getMayor() != null && city.getMayor().getName() != null)
-                ? city.getMayor().getName()
+                ? city.getMayor().getOMCOfflinePlayer().getNameWithHead()
                 : TranslationManager.translation("messages.menus.none");
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
+        OMCOfflinePlayer owner = OMCOfflinePlayer.of(ownerUUID);
 
         List<Component> lore;
         if (hasPermissionRenameCity || hasPermissionOwner) {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.manage.lore.edit",
-                    CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY),
+                    owner.getNameWithHead().color(NamedTextColor.GRAY),
                     mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false),
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.LIGHT_PURPLE)
@@ -69,7 +74,7 @@ public class ManageButton {
         } else {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.manage.lore.view",
-                    CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY),
+                    owner.getNameWithHead().color(NamedTextColor.GRAY),
                     mayorName.color(mayorColor).decoration(TextDecoration.ITALIC, false),
                     Component.text(city.getMembers().size()).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.LIGHT_PURPLE)

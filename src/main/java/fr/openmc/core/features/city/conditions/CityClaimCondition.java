@@ -45,8 +45,10 @@ public class CityClaimCondition {
         if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), amount)) {
             MessagesManager.sendMessage(
                     player,
-                    TranslationManager.translation("feature.city.conditions.resource.not_enough_aywenite", Component.text(amount)),
-                    Prefix.OPENMC,
+                    TranslationManager.translation("core.utils.aywenite.not_enough",
+                            Component.text(amount),
+                            OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
+                    ), Prefix.OPENMC,
                     MessageType.ERROR,
                     false
             );
