@@ -22,7 +22,7 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
     private Component message;
 
     @Override
-    public void init() {
+    public void onEnable() {
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 

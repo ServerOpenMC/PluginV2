@@ -98,7 +98,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
      * - Programme le lancement et la fin des différentes phases du contest
      */
     @Override
-    public void init() {
+    public void onEnable() {
         this.tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
         this.contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
 
@@ -131,7 +131,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveContestData();
         this.saveContestPlayerData();
     }

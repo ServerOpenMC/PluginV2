@@ -32,7 +32,7 @@ public class TradeYMLManager extends Feature {
      * Initialise le fichier contest.yml et charge sa configuration.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         contestFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "contest.yml");
         loadContestConfig();
     }

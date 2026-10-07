@@ -29,7 +29,7 @@ import java.util.UUID;
 public class TabList extends Feature {
 
     @Override
-    public void init() {
+    public void onEnable() {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
         protocolManager.addPacketListener(new PacketAdapter(OMCPlugin.getInstance(),

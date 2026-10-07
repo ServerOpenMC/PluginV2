@@ -131,8 +131,9 @@ public class CityCreateAction {
                         Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)),
                 Prefix.CITY, MessageType.INFO, false);
 
-        DynamicCooldownManager.use(playerUUID, "city:big", 60000);
-        DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
+        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+        dynamicCooldownManager.use(playerUUID, "city:big", 60000);
+        dynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
         OMCRegistry.CITY_FEATURES.CLAIM_VIEW.updateAllViews();
         return true;

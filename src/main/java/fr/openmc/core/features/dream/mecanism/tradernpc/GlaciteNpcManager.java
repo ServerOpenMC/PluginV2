@@ -21,7 +21,7 @@ import java.util.UUID;
 public class GlaciteNpcManager extends Feature implements HasListeners {
 
     @Override
-    public void init() {
+    public void onEnable() {
         DreamDimensionManager dreamDimensionManager = OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION;
 
         if (dreamDimensionManager.hasSeedChanged()) {

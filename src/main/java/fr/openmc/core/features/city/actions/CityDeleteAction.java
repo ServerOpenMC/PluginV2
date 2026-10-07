@@ -43,7 +43,7 @@ public class CityDeleteAction {
                     OMCRegistry.FEATURES.CITY.get().deleteCity(city);
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, MessageType.SUCCESS, false);
 
-                    DynamicCooldownManager.use(playerUUID, "city:big", 60000); // 1 minute
+                    OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get().use(playerUUID, "city:big", 60000); // 1 minute
                     player.closeInventory();
                 },
                 player::closeInventory,

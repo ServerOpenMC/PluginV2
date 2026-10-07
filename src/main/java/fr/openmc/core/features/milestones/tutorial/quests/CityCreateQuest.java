@@ -59,7 +59,7 @@ public class CityCreateQuest extends MilestoneQuest implements Listener {
     public void onCityCreate(CityCreationEvent event) {
         Player player = event.getOwner();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }
@@ -68,7 +68,7 @@ public class CityCreateQuest extends MilestoneQuest implements Listener {
     public void onPlayerJoinCity(MemberJoinEvent event) {
         OfflinePlayer player = event.getPlayer();
 
-        if (MilestonesManager.getPlayerStep(type, player.getUniqueId()) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player.getUniqueId()) != step.ordinal()) return;
 
         if (player.isOnline()) {
             this.incrementProgress(player.getUniqueId());

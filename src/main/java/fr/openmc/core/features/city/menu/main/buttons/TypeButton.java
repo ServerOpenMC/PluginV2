@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
@@ -24,10 +25,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class TypeButton {
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
             MenuUtils.runDynamicButtonItem(player, menu, slots, getItemSupplier(menu, city, player))
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
@@ -44,7 +47,7 @@ public class TypeButton {
             meta.itemName(TranslationManager.translation("feature.city.menus.main.type.title"));
             meta.lore(getDynamicLore(city, player));
             meta.setItemModel(NamespacedKey.minecraft("air"));
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (!(city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE))) return;
 
             new CityTypeMenu(player).open();
@@ -54,7 +57,7 @@ public class TypeButton {
     private static List<Component> getDynamicLore(City city, Player player) {
         boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.CHANGE_TYPE);
         boolean showWarCommand = city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR);
-        boolean hasCooldown = !DynamicCooldownManager.isReady(city.getUniqueId(), "city:type");
+        boolean hasCooldown = !dynamicCooldownManager.isReady(city.getUniqueId(), "city:type");
 
         List<Component> lore = new ArrayList<>();
         lore.add(TranslationManager.translation(
@@ -69,7 +72,7 @@ public class TypeButton {
         if (hasCooldown) {
             lore.add(TranslationManager.translation(
                     "feature.city.menus.main.type.lore.cooldown",
-                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
+                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
                             .decoration(TextDecoration.ITALIC, false).color(NamedTextColor.GRAY)
             ));
         }

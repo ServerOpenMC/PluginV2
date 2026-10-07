@@ -29,7 +29,7 @@ import java.util.Set;
 public class AnimationsManager extends Feature implements HasListeners, HasCommands {
 
     @Override
-    public void init() {
+    public void onEnable() {
         OMCPlugin plugin = OMCPlugin.getInstance();
 
         saveAllAnimation(plugin);
@@ -49,7 +49,7 @@ public class AnimationsManager extends Feature implements HasListeners, HasComma
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         // nothing to save
     }
 

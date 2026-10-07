@@ -48,7 +48,8 @@ public class MascotMenu extends Menu {
     private final Mascot mascot;
     private City city;
 
-    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+    private static final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     public MascotMenu(Player owner, Mascot mascot) {
         super(owner);
@@ -111,10 +112,10 @@ public class MascotMenu extends Menu {
         Supplier<ItemMenuBuilder> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
 
-            if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
+            if (!dynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
                 lorePosMascot = TranslationManager.translationLore(
                         "feature.city.mascots.menu.main.move.lore.cooldown",
-                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(this.mascot.getMascotUUID(), "mascots:move"))).color(NamedTextColor.GRAY)
+                        Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(this.mascot.getMascotUUID(), "mascots:move"))).color(NamedTextColor.GRAY)
                 );
             } else {
                 lorePosMascot = TranslationManager.translationLore("feature.city.mascots.menu.main.move.lore.ready");
@@ -126,8 +127,8 @@ public class MascotMenu extends Menu {
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             })
                     .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
-                    .setOnClick(inventoryClickEvent -> {
-                        if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
+                    .setOnClick(_ -> {
+                        if (!dynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
                             return;
                         }
                         if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.MASCOT_MOVE)) {
@@ -193,7 +194,7 @@ public class MascotMenu extends Menu {
                                     mascotsManager.removeMovingMascot(city);
                                     mascot.setChunk(mascotMove.getChunk());
 
-                                    DynamicCooldownManager.use(mascot.getMascotUUID(), "mascots:move", 5 * 3600 * 1000L);
+                                    dynamicCooldownManager.use(mascot.getMascotUUID(), "mascots:move", 5 * 3600 * 1000L);
                                     return true;
                                 },
                                 null
@@ -201,7 +202,7 @@ public class MascotMenu extends Menu {
                         player.closeInventory();
                     });
         };
-        if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
+        if (!dynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
             MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
@@ -273,7 +274,7 @@ public class MascotMenu extends Menu {
             Supplier<ItemMenuBuilder> immunityItemSupplier = () -> {
                 List<Component> lore = TranslationManager.translationLore(
                         "feature.city.mascots.menu.main.immunity.lore",
-                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))).color(NamedTextColor.GRAY),
+                        Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))).color(NamedTextColor.GRAY),
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
                         OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                 );
@@ -289,7 +290,7 @@ public class MascotMenu extends Menu {
                     }
 
                     if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
-                    DynamicCooldownManager.reduceCooldown(player, city.getUniqueId(), "city:immunity", COOLDOWN_REDUCE);
+                    dynamicCooldownManager.reduceCooldown(player, city.getUniqueId(), "city:immunity", COOLDOWN_REDUCE);
 
                     MessagesManager.sendMessage(player,
                             TranslationManager.translation(

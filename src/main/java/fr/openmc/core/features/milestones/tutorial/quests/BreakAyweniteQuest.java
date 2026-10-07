@@ -59,7 +59,7 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreakBlock(BlockBreakEvent event) {
-        if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
         if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) return;
 

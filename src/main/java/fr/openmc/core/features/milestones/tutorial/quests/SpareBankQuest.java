@@ -59,7 +59,7 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
 
         if (player == null || !player.isOnline()) return;
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

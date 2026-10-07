@@ -30,12 +30,12 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
     public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 50% d'avoir une golden crosps sur des crops
 
     @Override
-    public void init() {
+    public void onEnable() {
         ObeseCropsRegistry.init();
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         ObeseCropsRegistry.save();
     }
 

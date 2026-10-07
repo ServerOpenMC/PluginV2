@@ -32,6 +32,7 @@ import java.util.UUID;
 @CommandPermission("omc.commands.city.war")
 public class WarCommand {
     private final WarManager warManager;
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public WarCommand() {
         this.warManager = OMCRegistry.CITY_FEATURES.WAR;
@@ -64,7 +65,7 @@ public class WarCommand {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.city.war.command.city_immune",
-                            Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(playerCity.getUniqueId(), "city:immunity")))
+                            Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(playerCity.getUniqueId(), "city:immunity")))
                                     .color(NamedTextColor.GOLD)
                     ),
                     Prefix.CITY, MessageType.ERROR, false);

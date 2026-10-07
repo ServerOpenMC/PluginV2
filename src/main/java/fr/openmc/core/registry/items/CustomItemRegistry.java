@@ -2,7 +2,6 @@ package fr.openmc.core.registry.items;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.contents.items.KitchenBox;
 import fr.openmc.core.features.bits.contents.items.MedievalBox;
@@ -14,11 +13,13 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.Registry;
+import fr.openmc.core.registry.items.commands.CustomItemCommand;
+import fr.openmc.core.registry.items.commands.CustomItemsDebugCommand;
 import fr.openmc.core.registry.items.contents.AywenCap;
 import fr.openmc.core.registry.items.contents.Hammer;
 import fr.openmc.core.registry.items.listeners.BlockBreakListener;
@@ -40,7 +41,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class CustomItemRegistry extends Registry<String, CustomItem>
-        implements KeyedRegistry<String, CustomItem>, HasListeners {
+        implements KeyedRegistry<String, CustomItem>, HasListeners, HasCommands {
 
     public static final NamespacedKey CUSTOM_ITEM_KEY =
             new NamespacedKey("openmc", "custom_item");
@@ -295,10 +296,11 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     }
 
     @Override
-    public void postInit() {
-        CommandsManager.getHandler().register(new CustomItemsDebugCommand());
-
-        values().forEach(CustomItem::updateSprite);
+    public Set<Object> getCommands() {
+        return Set.of(
+                new CustomItemCommand(),
+                new CustomItemsDebugCommand()
+        );
     }
 
     @Override

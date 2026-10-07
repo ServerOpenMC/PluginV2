@@ -3,6 +3,7 @@ package fr.openmc.core.commands.utils;
 import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -60,7 +61,7 @@ public class RTPCommands {
             messageKey = "command.utils.rtp.must_wait")
     @Cooldown(15)
     public void rtp(Player player) {
-        if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
+        if (OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get().isReady(player.getUniqueId(), "player:rtp")) {
             rtpPlayer(player, 0);
         }
     }
@@ -122,7 +123,7 @@ public class RTPCommands {
                         Component.text(loc.getBlockZ()).color(NamedTextColor.YELLOW)
                 ).color(NamedTextColor.GREEN), Prefix.OPENMC, MessageType.SUCCESS, true);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L)
+                OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get().use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L)
         );
     }
 }

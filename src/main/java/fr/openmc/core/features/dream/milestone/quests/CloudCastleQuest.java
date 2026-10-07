@@ -34,7 +34,7 @@ public class CloudCastleQuest extends MilestoneQuest implements Listener {
 		if (!e.getStructure().equals(DreamStructure.CLOUD_CASTLE)) return;
 		Player player = e.getPlayer();
 		
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());
 	}
 }

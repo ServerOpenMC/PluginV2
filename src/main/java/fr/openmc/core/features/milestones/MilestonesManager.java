@@ -29,12 +29,12 @@ import java.util.*;
 
 @Credit(developers = {"iambibi_", "gab400"})
 public class MilestonesManager extends Feature implements HasDatabase, HasListeners, HasCommands {
-    private static final Set<Milestone<?>> milestones = new HashSet<>();
+    private final Set<Milestone<?>> milestones = new HashSet<>();
 
-    private static Dao<MilestoneModel, String> millestoneDao;
+    private Dao<MilestoneModel, String> millestoneDao;
 
     @Override
-    public void init() {
+    public void onEnable() {
 		Arrays.stream(MilestoneType.values()).toList().forEach(milestoneType -> registerMilestone(milestoneType.getMilestone()));
 
 	    loadMilestonesData();
@@ -54,8 +54,8 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
     }
 
     @Override
-    public void save() {
-        MilestonesManager.saveMilestonesData();
+    public void onDisable() {
+        this.saveMilestonesData();
     }
 
     /**
@@ -73,7 +73,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * Load all milestone data from the database.
      * This method retrieves all MilestoneModel entries and populates the player data for each milestone type.
      */
-    public static void loadMilestonesData() {
+    public void loadMilestonesData() {
         try {
             BossbarManager bossbarManager = OMCRegistry.FEATURES.BOSSBAR.get();
             List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
@@ -93,7 +93,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * Save all milestone data to the database.
      * This method iterates through each milestone and saves the player data for each milestone type.
      */
-    public static void saveMilestonesData() {
+    public void saveMilestonesData() {
         try {
             for (Milestone<?> milestone : milestones) {
                 for (Map.Entry<UUID, MilestoneModel> entry : milestone.getPlayerData().entrySet()) {
@@ -110,7 +110,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
 	/**
 	 * Load the quest progress for each player of each milestone
 	 */
-	public static void loadMilestonesProgress() {
+	public void loadMilestonesProgress() {
 		for (Milestone<?> milestone : milestones) {
 			if (milestone.getPlayerData().isEmpty()) continue;
 			// Pour tous les joueurs du milestone, la progression est chargée à l'étape actuelle
@@ -131,7 +131,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * @param milestone the milestone to get data for
      * @return a map of player UUIDs to their MilestoneModel
      */
-    public static Map<UUID, MilestoneModel> getMilestoneData(Milestone<?> milestone) {
+    public Map<UUID, MilestoneModel> getMilestoneData(Milestone<?> milestone) {
         return milestone.getPlayerData();
     }
 
@@ -140,7 +140,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * @param type the type of milestone to get data for
      * @return a map of player UUIDs to their MilestoneModel
      */
-    public static Map<UUID, MilestoneModel> getMilestoneData(MilestoneType type) {
+    public Map<UUID, MilestoneModel> getMilestoneData(MilestoneType type) {
         return type.getMilestone().getPlayerData();
     }
 
@@ -150,7 +150,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * @param playerUUID the UUID of the player
      * @return the step of the milestone for the player
      */
-    public static int getPlayerStep(MilestoneType type, UUID playerUUID) {
+    public int getPlayerStep(MilestoneType type, UUID playerUUID) {
         var data = getMilestoneData(type);
         if (data == null) return 0;
         return data.get(playerUUID).getStep();
@@ -163,7 +163,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * @param player the player to get the step for
      * @return the step of the milestone for the player
      */
-    public static int getPlayerStep(MilestoneType type, Player player) {
+    public int getPlayerStep(MilestoneType type, Player player) {
         return getPlayerStep(type, player.getUniqueId());
     }
 
@@ -173,7 +173,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * @param playerUUID the UUID of the player
      * @param step the step to set for the player
      */
-    public static void setPlayerStep(MilestoneType type, UUID playerUUID, int step) {
+    public void setPlayerStep(MilestoneType type, UUID playerUUID, int step) {
         getMilestoneData(type).get(playerUUID).setStep(step);
     }
 
@@ -183,7 +183,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * @param player the player to set the step for
      * @param step the step to set for the player
      */
-    public static void setPlayerStep(MilestoneType type, Player player, int step) {
+    public void setPlayerStep(MilestoneType type, Player player, int step) {
         setPlayerStep(type, player.getUniqueId(), step);
     }
 
@@ -191,7 +191,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * Get all registered milestones.
      * @return a set of all registered milestones
      */
-    public static Set<Milestone<?>> getRegisteredMilestones() {
+    public Set<Milestone<?>> getRegisteredMilestones() {
         return milestones;
     }
 
@@ -200,7 +200,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * This method adds the provided milestone to the internal set and registers it quests.
      * @param milestone the milestone to register
      */
-    public static void registerMilestone(Milestone<?> milestone) {
+    public void registerMilestone(Milestone<?> milestone) {
 		if (milestone == null) return;
 		milestones.add(milestone);
 		
@@ -212,7 +212,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
      * This method iterates through the steps of the milestone and registers any Listener instances.
      * @param milestone the milestone whose quests are to be registered
      */
-    public static void registerQuestMilestone(Milestone<?> milestone) {
+    public void registerQuestMilestone(Milestone<?> milestone) {
         for (Quest quest : milestone.getSteps()) {
             if (quest instanceof Listener listener) {
                 OMCPlugin.getInstance().getServer().getPluginManager().registerEvents(listener, OMCPlugin.getInstance());

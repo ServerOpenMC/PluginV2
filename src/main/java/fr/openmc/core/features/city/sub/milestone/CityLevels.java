@@ -731,6 +731,8 @@ public enum CityLevels {
     private final List<CityRewards> rewards;
     private final long upgradeTime;
 
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
     /**
      * Constructeur de l'énumération des niveaux de ville.
      *
@@ -775,6 +777,6 @@ public enum CityLevels {
      * @param city la ville concernée
      */
     public void runUpgradeTime(City city) {
-        DynamicCooldownManager.use(city.getUniqueId(), "city:upgrade-level", upgradeTime * 1000);
+        dynamicCooldownManager.use(city.getUniqueId(), "city:upgrade-level", upgradeTime * 1000);
     }
 }

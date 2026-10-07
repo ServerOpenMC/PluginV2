@@ -60,7 +60,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     private record PendingLink(UUID playerUUID, long expiresAt, BukkitTask pollTask) { }
 
     @Override
-    protected void init() {
+    protected void onEnable() {
         linkCache.clear();
         loadConfig();
         loadAll();

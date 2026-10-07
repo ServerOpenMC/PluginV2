@@ -46,7 +46,7 @@ public class HomeUpgradeQuest extends MilestoneQuest implements Listener {
     public void onHomeUpgrade(HomeUpgradeEvent event) {
         Player player = event.getOwner();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

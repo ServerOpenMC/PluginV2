@@ -28,7 +28,7 @@ public class QuestProgressSaveManager extends Feature {
      * Init for QuestProgressSaveManager.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         this.questsManager = OMCRegistry.FEATURES.QUESTS.get();
 
         File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
@@ -38,7 +38,7 @@ public class QuestProgressSaveManager extends Feature {
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         // not used, already saved in QuestManager
     }
 

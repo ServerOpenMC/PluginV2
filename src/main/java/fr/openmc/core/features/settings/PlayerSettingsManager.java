@@ -35,7 +35,7 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     private Dao<PlayerSettingEntity, Long> playerSettingDao;
 
     @Override
-    public void init() {
+    public void onEnable() {
         this.loadAllPlayerSettings();
     }
 
@@ -52,7 +52,7 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveAllSettings();
     }
 

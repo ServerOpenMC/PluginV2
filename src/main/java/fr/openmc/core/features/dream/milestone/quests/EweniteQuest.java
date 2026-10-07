@@ -38,7 +38,7 @@ public class EweniteQuest extends MilestoneQuest implements Listener {
 			DreamItem item = OMCRegistry.DREAM_ITEM.getByItemStack(e.getItem().getItemStack());
 			if (item == null) return;
 			if (item instanceof Ewenite) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 				this.incrementProgressInDream(player.getUniqueId());
 			}
 		}
@@ -48,7 +48,7 @@ public class EweniteQuest extends MilestoneQuest implements Listener {
 	public void onTrade(GlaciteTradeEvent e) {
 		Player player = e.getPlayer();
 		if (e.getTrade().getResult() instanceof Ewenite) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 			this.incrementProgressInDream(player.getUniqueId());
 		}
 	}

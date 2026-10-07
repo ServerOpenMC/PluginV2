@@ -39,7 +39,7 @@ public class PlayerCloneNpc extends Feature {
      * and removes any NPCs that match the player clone prefix.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         // fetch les npcs apres 30 secondes le temps que fancy npc s'initialise.
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {

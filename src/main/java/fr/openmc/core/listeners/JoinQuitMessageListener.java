@@ -34,8 +34,8 @@ import java.util.UUID;
 public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
 
+    private final SpawnManager spawnManager = OMCRegistry.FEATURES.SPAWN.get();
     private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final QuestsManager questsManager = OMCRegistry.FEATURES.QUESTS.get();
     private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
     private final LuckPermsHook luckPermsHook;
@@ -103,7 +103,7 @@ public class JoinQuitMessageListener implements Listener {
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
-            player.teleport(SpawnManager.getSpawnLocation());
+            player.teleport(spawnManager.getSpawnLocation());
             player.economy().setBalance(this.balanceOnJoin);
         }
 

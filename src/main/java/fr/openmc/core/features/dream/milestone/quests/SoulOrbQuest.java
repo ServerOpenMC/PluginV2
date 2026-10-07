@@ -36,7 +36,7 @@ public class SoulOrbQuest extends MilestoneQuest implements Listener {
 		DreamItem item = e.getCraftedItem();
 		if (item == null) return;
 		if (item instanceof SoulOrb) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 			
 			this.incrementProgressInDream(player.getUniqueId());
 		}

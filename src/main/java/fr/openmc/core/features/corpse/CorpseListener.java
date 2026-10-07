@@ -5,6 +5,7 @@ import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 public class CorpseListener implements Listener {
 
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final CorpseManager corpseManager;
     private final CorpseNPCManager corpseNPCManager;
 
@@ -118,7 +120,7 @@ public class CorpseListener implements Listener {
                 return;
             }
 
-            if (DynamicCooldownManager.isReady(ownerUUID, "corpse")) return;
+            if (dynamicCooldownManager.isReady(ownerUUID, "corpse")) return;
 
             if (corpse.isKillByPlayer() && !player.getUniqueId().equals(corpse.getPlayerUUID())) {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());

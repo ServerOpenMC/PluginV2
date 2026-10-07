@@ -14,6 +14,7 @@ import fr.openmc.core.features.homes.HomeFeaturesRegistry;
 import fr.openmc.core.features.quests.QuestsFeatureRegistry;
 import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.RegistryContext;
@@ -150,6 +151,11 @@ public final class OMCRegistry {
             if (r instanceof HasListeners hasListeners)
                 OMCPlugin.registerEvents(hasListeners.getListeners());
 
+            if (r instanceof HasCommands hasCommands)
+                for (Object command : hasCommands.getCommands()) {
+                    CommandsManager.getHandler().register(command);
+                }
+
             r.init();
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
@@ -164,6 +170,11 @@ public final class OMCRegistry {
 
             if (r instanceof HasListeners hasListeners)
                 OMCPlugin.registerEvents(hasListeners.getListeners());
+
+            if (r instanceof HasCommands hasCommands)
+                for (Object command : hasCommands.getCommands()) {
+                    CommandsManager.getHandler().register(command);
+                }
 
             r.postInit();
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());

@@ -51,7 +51,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 							return;
 						}
 						
-						if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) > DreamSteps.FIND_CUBE.ordinal()) {
+						if (milestonesManager.getPlayerStep(MilestoneType.DREAM, player) > DreamSteps.FIND_CUBE.ordinal()) {
 							this.cancel();
 							return;
 						}
@@ -78,7 +78,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 			DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(itemLoot.getItemLootWithAmount());
 			if (dreamItem == null) return;
 			if (dreamItem instanceof CrystalizedPickaxe) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
+				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
 				this.incrementProgressInDream(player.getUniqueId());
 			}
 		}
@@ -87,7 +87,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 	@EventHandler
 	public void onPlayerReturnDim(DreamEnterEvent e) {
 		Player player = e.getPlayer();
-		if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) == DreamSteps.FIND_CUBE.ordinal()) {
+		if (milestonesManager.getPlayerStep(MilestoneType.DREAM, player) == DreamSteps.FIND_CUBE.ordinal()) {
 			this.actionsAfterDialog.accept(player);
 		}
 	}

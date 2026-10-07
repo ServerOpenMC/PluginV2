@@ -59,7 +59,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     private BukkitTask tickTask;
 
     @Override
-    protected void init() {
+    protected void onEnable() {
         dimensionsFolder = new File(OMCPlugin.getInstance().getDataFolder(), "data/dimensions");
         FilesUtils.createDirectoryIfNotExists(dimensionsFolder);
         saveDefaultDimensions();
@@ -83,7 +83,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         saveProgress();
         if (tickTask != null) tickTask.cancel();
     }

@@ -91,7 +91,7 @@ public class EconomyManagerTest {
         Map<UUID, EconomyPlayer> balancesBeforeSave = EconomyManager.loadAllBalances();
         assertFalse(balancesBeforeSave.containsKey(playerUUID));
 
-        new EconomyManager().save();
+        new EconomyManager().onDisable();
 
         Map<UUID, EconomyPlayer> balancesAfterSave = EconomyManager.loadAllBalances();
         assertEquals(500.0, balancesAfterSave.get(playerUUID).getBalance());

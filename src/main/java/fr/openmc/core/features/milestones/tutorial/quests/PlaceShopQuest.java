@@ -44,7 +44,7 @@ public class PlaceShopQuest extends MilestoneQuest implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerPlaceShop(PlaceShopEvent event) {
-        if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
         Player player = event.getPlayer();
         this.incrementProgress(player.getUniqueId());

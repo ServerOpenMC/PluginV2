@@ -39,7 +39,6 @@ import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.profile.ProfileManager;
-import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
@@ -74,6 +73,8 @@ public class FeaturesRegistry extends Registry<String, Feature>
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 
+    public final FeatureEntry<DynamicCooldownManager> DYNAMIC_COOLDOWN = declare(FeatureLoadingType.RUNTIME,
+            DynamicCooldownManager::new);
     public final FeatureEntry<HologramLoader> HOLOGRAM_LOADER = declare(FeatureLoadingType.RUNTIME,
             () -> new HologramLoader(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<TicketManager> TICKETS = declare(FeatureLoadingType.RUNTIME,
@@ -134,8 +135,6 @@ public class FeaturesRegistry extends Registry<String, Feature>
             ShopManager::new);
     public final FeatureEntry<CityManager> CITY = declare(FeatureLoadingType.AFTER_IA,
             CityManager::new);
-    public final FeatureEntry<DynamicCooldownManager> DYNAMIC_COOLDOWN = declare(FeatureLoadingType.AFTER_IA,
-            DynamicCooldownManager::new);
     public final FeatureEntry<WeeklyEventsManager> WEEKLY_EVENTS = declare(FeatureLoadingType.AFTER_IA,
             WeeklyEventsManager::new);
     public final FeatureEntry<DailyEventsManager> DAILY_EVENTS = declare(FeatureLoadingType.AFTER_IA,
@@ -182,13 +181,13 @@ public class FeaturesRegistry extends Registry<String, Feature>
     @Override
     public void stop() {
         for (Feature feature : values()) {
-            feature.startSave();
+            feature.startDisable();
         }
     }
 
     @Override
     public Feature register(String id, Feature feature) {
-        feature.startInit();
+        feature.startEnable();
         super.register(id, feature);
         return feature;
     }

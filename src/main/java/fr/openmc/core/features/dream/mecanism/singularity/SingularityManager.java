@@ -19,7 +19,7 @@ public class SingularityManager extends Feature implements HasDatabase {
     private Dao<SingularityContents, String> singularityContentsDao;
 
     @Override
-    public void init() {
+    public void onEnable() {
         this.loadAllSingularityContentsData();
     }
 
@@ -30,7 +30,7 @@ public class SingularityManager extends Feature implements HasDatabase {
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveAllSingularityContentsData();
     }
 

@@ -31,6 +31,7 @@ import java.util.UUID;
 
 public class MineralRushPerk implements Listener {
 
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final MayorManager mayorManager;
 
     public MineralRushPerk(MayorManager mayorManager) {
@@ -49,10 +50,10 @@ public class MineralRushPerk implements Listener {
 
         if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.mayor.perk.event.mineral.start",
-                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))).color(NamedTextColor.RED)
+                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))).color(NamedTextColor.RED)
             ), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
@@ -92,7 +93,7 @@ public class MineralRushPerk implements Listener {
 
         if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
-        if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
+        if (dynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         Block block = event.getBlock();
 
@@ -119,7 +120,7 @@ public class MineralRushPerk implements Listener {
 
         if (city == null) return;
         if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         String namespace = event.getNamespacedID();
         if (!namespace.equals("omc_blocks:aywenite_ore") && !namespace.equals("omc_blocks:deepslate_aywenite_ore")) return;

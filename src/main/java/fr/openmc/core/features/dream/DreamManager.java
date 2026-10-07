@@ -57,6 +57,7 @@ import java.util.function.Supplier;
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"}, builders = {"Mcross_bow"})
 public class DreamManager extends Feature
         implements HasDatabase, HasCommands, HasListeners, HasRegistries {
+    private final SpawnManager spawnManager = OMCRegistry.FEATURES.SPAWN.get();
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
@@ -68,7 +69,7 @@ public class DreamManager extends Feature
     private Dao<DBPlayerSave, String> savePlayerDao;
 
     @Override
-    public void init() {
+    public void onEnable() {
         // ** LOAD DATAS **
         loadAllDreamPlayerData();
         loadAllPlayerSaveData();
@@ -134,7 +135,7 @@ public class DreamManager extends Feature
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveAllPlayerSaveData();
         this.saveAllDreamPlayerData();
     }
@@ -290,7 +291,7 @@ public class DreamManager extends Feature
         DBPlayerSave playerSave = playerSaveData.remove(player.getUniqueId());
 
         if (playerSave == null) {
-            player.teleportAsync(SpawnManager.getSpawnLocation());
+            player.teleportAsync(spawnManager.getSpawnLocation());
             OMCLogger.warn("Nothing to load from {}({})", player.getName(), player.getUniqueId());
             return;
         }

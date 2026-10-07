@@ -41,7 +41,9 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jour en millisecondes
     public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+
     public final Map<UUID, War> warsByAttacker = new HashMap<>();
     public final Map<UUID, War> warsByDefender = new HashMap<>();
 
@@ -71,12 +73,12 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
      * Initializes the WarManager by registering commands and listeners.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         loadWarHistories();
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         saveWarHistories();
     }
 
@@ -280,8 +282,8 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
 
             claimsWon = (int) Math.ceil(totalClaims * percent * (1 + (level / 10.0)));
 
-            DynamicCooldownManager.use(loser.getUniqueId(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
-            DynamicCooldownManager.use(winner.getUniqueId(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
+            dynamicCooldownManager.use(loser.getUniqueId(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
+            dynamicCooldownManager.use(winner.getUniqueId(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
 
             int actualClaims = transferChunksAfterWar(winner, loser, claimsWon);
             if (actualClaims < claimsWon) {
@@ -290,8 +292,8 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
                 winner.updateBalance(bonusMoney);
             }
         } else {
-            DynamicCooldownManager.use(war.getCityDefender().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
-            DynamicCooldownManager.use(war.getCityAttacker().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
+            dynamicCooldownManager.use(war.getCityDefender().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
+            dynamicCooldownManager.use(war.getCityAttacker().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
         }
 
         broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, bonusMoney, Math.abs(claimsWon));

@@ -46,7 +46,7 @@ public class ClaimLetterQuest extends MilestoneQuest implements Listener {
     public void onClaimLetter(ClaimLetterEvent event) {
         Player player = event.getPlayer();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

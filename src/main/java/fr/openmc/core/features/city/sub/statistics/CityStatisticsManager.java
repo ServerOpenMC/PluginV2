@@ -33,12 +33,12 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
      * Initialise le gestionnaire des statistiques des villes en chargeant les statistiques depuis la base de données.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         loadCityStatistics();
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         saveCityStatistics();
     }
 

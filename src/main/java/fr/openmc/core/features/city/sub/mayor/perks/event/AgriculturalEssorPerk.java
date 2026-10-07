@@ -30,6 +30,7 @@ import java.util.UUID;
 
 public class AgriculturalEssorPerk implements Listener {
 
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final MayorManager mayorManager;
 
     public AgriculturalEssorPerk(MayorManager mayorManager) {
@@ -48,10 +49,10 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) {
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.mayor.perk.event.agricultural.start",
-                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:agricultural_essor"))).color(NamedTextColor.RED)
+                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:agricultural_essor"))).color(NamedTextColor.RED)
             ), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
@@ -89,7 +90,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (!PerkUtils.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
-        if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) return;
+        if (dynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) return;
 
         Block block = event.getBlock();
 

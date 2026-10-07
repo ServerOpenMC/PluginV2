@@ -29,7 +29,7 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
     private final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
 
     @Override
-    public void init() {
+    public void onEnable() {
         luckPermsHook = OMCRegistry.HOOKS.LUCK_PERMS;
 
         registerScoreboard(
@@ -86,13 +86,13 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
             playerUpdates.put(active, now);
 
             if (luckPermsHook.isEnable() && globalTeamManager != null) {
-                globalTeamManager.updatePlayerTeam(player);
+                globalTeamManager.updatePlayerTeam(omcPlayer);
             }
         });
     }
 
     public SternalBoard createNewBoard(OMCPlayer player) {
-        SternalBoard board = new SternalBoard(player);
+        SternalBoard board = new SternalBoard(player.getPlayer()); // getPlayer obligatoire afin d'éviter un pb d'instance
         updateBoard(player, board);
         boardCache.create(board);
         return board;

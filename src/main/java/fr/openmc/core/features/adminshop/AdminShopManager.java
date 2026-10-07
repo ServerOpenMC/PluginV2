@@ -41,7 +41,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * Initializes the AdminShopManager by loading the configuration.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         adminShopYAML = new AdminShopYAML(this);
         adminShopYAML.loadConfig();
     }

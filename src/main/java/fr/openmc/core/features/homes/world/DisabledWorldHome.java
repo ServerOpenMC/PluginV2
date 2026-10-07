@@ -2,6 +2,7 @@ package fr.openmc.core.features.homes.world;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -18,20 +19,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DisabledWorldHome {
+public class DisabledWorldHome extends Feature {
 
-    private static File file;
-    private static FileConfiguration config;
-    private static Map<String, WorldDisableInfo> disabledWorlds;
+    private File file;
+    private FileConfiguration config;
+    private Map<String, WorldDisableInfo> disabledWorlds;
 
-    public static void init() {
+    @Override
+    public void onEnable() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "disabled_world_home.yml");
         disabledWorlds = new HashMap<>();
         loadConfig();
     }
 
-    public static void loadConfig() {
-        if(!file.exists()) {
+    public void loadConfig() {
+        if (!file.exists()) {
             file.getParentFile().mkdirs();
             try {
                 file.createNewFile();
@@ -43,13 +45,13 @@ public class DisabledWorldHome {
         loadDisabledWorlds();
     }
 
-    private static void loadDisabledWorlds() {
+    private void loadDisabledWorlds() {
         disabledWorlds.clear();
         ConfigurationSection sections = config.getConfigurationSection("disabled-worlds");
-        if(sections != null) {
-            for(String key : sections.getKeys(false)) {
+        if (sections != null) {
+            for (String key : sections.getKeys(false)) {
                 ConfigurationSection section = sections.getConfigurationSection(key);
-                if(section != null) {
+                if (section != null) {
                     String addedBy = section.getString("added-by", "unknown");
                     long addedOn = section.getLong("added-on", 0);
                     disabledWorlds.put(key, new WorldDisableInfo(addedBy, addedOn));
@@ -58,10 +60,10 @@ public class DisabledWorldHome {
         }
     }
 
-    public static void saveConfig() {
+    public void saveConfig() {
         OMCLogger.info("Saving disabled worlds config...");
         config.set("disabled-worlds", null);
-        for(Map.Entry<String, WorldDisableInfo> entry : disabledWorlds.entrySet()) {
+        for (Map.Entry<String, WorldDisableInfo> entry : disabledWorlds.entrySet()) {
             String key = entry.getKey();
             WorldDisableInfo info = entry.getValue();
             config.set("disabled-worlds." + key + ".added-by", info.addedBy());
@@ -74,30 +76,30 @@ public class DisabledWorldHome {
         }
     }
 
-    public static void addDisabledWorld(World world, Player player) {
-        if(!disabledWorlds.containsKey(world.getName())) {
+    public  void addDisabledWorld(World world, Player player) {
+        if (!disabledWorlds.containsKey(world.getName())) {
             disabledWorlds.put(world.getName(), new WorldDisableInfo(player.getName(), System.currentTimeMillis()));
             saveConfig();
         }
     }
 
-    public static void removeDisabledWorld(World world) {
-        if(disabledWorlds.remove(world.getName()) != null) {
+    public void removeDisabledWorld(World world) {
+        if (disabledWorlds.remove(world.getName()) != null) {
             saveConfig();
         }
     }
 
-    public static boolean isDisabledWorld(World world) {
+    public boolean isDisabledWorld(World world) {
         return disabledWorlds.containsKey(world.getName());
     }
 
-    public static List<String> getDisabledWorlds() {
+    public List<String> getDisabledWorlds() {
         return new ArrayList<>(disabledWorlds.keySet());
     }
 
-    public static Component getDisabledWorldInfo(String world) {
+    public Component getDisabledWorldInfo(String world) {
         WorldDisableInfo info = disabledWorlds.get(world);
-        if(info != null) {
+        if (info != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             return TranslationManager.translation(
                     "feature.homes.world.info",

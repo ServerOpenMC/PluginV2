@@ -39,7 +39,7 @@ public class QuestsManager extends Feature implements HasCommands, HasRegistries
      * loads default quests, and loads all quest progress.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         questProgressSaveManager = OMCRegistry.QUEST_FEATURES.QUEST_PROGRESS;
 
         loadDefaultQuests();
@@ -54,7 +54,7 @@ public class QuestsManager extends Feature implements HasCommands, HasRegistries
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveQuests();
     }
 

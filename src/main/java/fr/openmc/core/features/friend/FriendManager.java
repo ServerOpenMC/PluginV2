@@ -34,7 +34,7 @@ public class FriendManager extends Feature implements HasCommands, HasRegistries
     private FriendSQLManager friendSQLManager;
 
     @Override
-    public void init() {
+    public void onEnable() {
         friendSQLManager = OMCRegistry.FRIEND_FEATURES.FRIEND_DB;
     }
 

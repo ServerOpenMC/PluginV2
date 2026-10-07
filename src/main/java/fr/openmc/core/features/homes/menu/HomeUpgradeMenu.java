@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeUpgradeMenu extends Menu {
-    private final HomeUpgradeManager homeUpgradeManager =OMCRegistry.HOME_FEATURES.HOME_UPGRADE;
+    private final HomeUpgradeManager homeUpgradeManager = OMCRegistry.HOME_FEATURES.HOME_UPGRADE;
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public HomeUpgradeMenu(Player owner) {

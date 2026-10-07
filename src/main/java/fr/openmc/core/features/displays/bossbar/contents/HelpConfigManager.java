@@ -24,14 +24,14 @@ public class HelpConfigManager extends Feature {
      * Initialise le gestionnaire en chargeant la configuration et les messages par défaut.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "bossbars.yml");
         loadConfig();
         loadDefaultMessages();
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         // not used
     }
 

@@ -76,7 +76,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
      * <p>Charge les notations, enregistre les commandes et les listeners, et planifie la tâche nocturne.</p>
      */
     @Override
-    public void init() {
+    public void onEnable() {
         loadNotations();
 
         scheduleMidnightTask();
@@ -84,7 +84,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         saveNotations();
     }
 

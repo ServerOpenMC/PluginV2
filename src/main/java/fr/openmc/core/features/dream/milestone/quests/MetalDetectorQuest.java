@@ -40,7 +40,7 @@ public class MetalDetectorQuest extends MilestoneQuest implements Listener {
 			DreamItem item = OMCRegistry.DREAM_ITEM.getByItemStack(baseItem);
 			if (item == null) return;
 			if (item instanceof MetalDetector) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 				this.incrementProgressInDream(player.getUniqueId(), baseItem.getAmount());
 			}
 		}

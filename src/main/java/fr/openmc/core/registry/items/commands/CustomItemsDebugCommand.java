@@ -1,6 +1,7 @@
-package fr.openmc.core.registry.items;
+package fr.openmc.core.registry.items.commands;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

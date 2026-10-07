@@ -34,7 +34,7 @@ public class IllusionistQuest extends MilestoneQuest implements Listener {
 		if (!DreamUtils.isInDreamWorld(player)) return;
 		
 		if (!e.getNpc().getData().getName().startsWith("glacite-")) return;
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());
 	}
 }

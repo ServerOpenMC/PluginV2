@@ -60,7 +60,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     private Dao<Mascot, String> mascotsDao;
 
     @Override
-    public void init() {
+    public void onEnable() {
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -106,7 +106,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveMascots();
     }
 

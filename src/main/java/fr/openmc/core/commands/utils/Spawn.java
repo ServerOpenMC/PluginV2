@@ -1,5 +1,6 @@
 package fr.openmc.core.commands.utils;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -15,6 +16,7 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Spawn {
+    private final SpawnManager spawnManager = OMCRegistry.FEATURES.SPAWN.get();
 
     @Command("spawn")
     @Description("Permet de se rendre au spawn")
@@ -24,7 +26,7 @@ public class Spawn {
             @Named("player") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) Player target
     ) {
         
-        Location spawnLocation = SpawnManager.getSpawnLocation();
+        Location spawnLocation = spawnManager.getSpawnLocation();
 
         if (sender instanceof Player player && (target == null || player.getUniqueId().equals(target.getUniqueId()))) {
             PlayerUtils.sendFadeTitleTeleport(player, spawnLocation);

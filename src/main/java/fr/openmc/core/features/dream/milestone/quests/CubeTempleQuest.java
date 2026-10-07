@@ -34,7 +34,7 @@ public class CubeTempleQuest extends MilestoneQuest implements Listener {
 		if (!e.getStructure().equals(DreamStructure.CUBE_TEMPLE)) return;
 		Player player = e.getPlayer();
 		
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());
 	}
 }

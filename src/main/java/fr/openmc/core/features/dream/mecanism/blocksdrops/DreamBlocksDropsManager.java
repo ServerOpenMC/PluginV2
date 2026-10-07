@@ -16,7 +16,7 @@ public class DreamBlocksDropsManager extends Feature implements HasListeners {
     private final HashMap<Material, ItemStack> customDrops = new HashMap<>();
 
     @Override
-    public void init() {
+    public void onEnable() {
         registerCustomDrop(Material.SCULK, OMCRegistry.DREAM_ITEM.CORRUPTED_SCULK);
         registerCustomDrop(Material.PALE_OAK_WOOD, OMCRegistry.DREAM_ITEM.OLD_PALE_OAK_WOOD);
         registerCustomDrop(Material.ACACIA_WOOD, OMCRegistry.DREAM_ITEM.OLD_PALE_OAK_WOOD);

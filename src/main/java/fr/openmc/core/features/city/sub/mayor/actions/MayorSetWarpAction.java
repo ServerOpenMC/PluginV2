@@ -23,6 +23,9 @@ import java.util.List;
 import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 public class MayorSetWarpAction {
+    private final static DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
+    // todo: fixer erreur et mettre les champs en static pour les instances par classe ahah
     public static void setWarp(Player player) {
         City city = City.ofPlayer(player.getUniqueId());
 
@@ -35,7 +38,7 @@ public class MayorSetWarpAction {
             return;
         }
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "mayor:law-move-warp")) {
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "mayor:law-move-warp")) {
             return;
         }
         CityLaw law = city.getLaw();
@@ -56,7 +59,7 @@ public class MayorSetWarpAction {
                         return false;
                     }
 
-                    DynamicCooldownManager.use(city.getUniqueId(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+                    dynamicCooldownManager.use(city.getUniqueId(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
                     law.setWarp(locationClick);
                     MessagesManager.sendMessage(player, TranslationManager.translation(
                             "feature.city.mayor.warp.success",

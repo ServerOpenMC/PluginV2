@@ -62,7 +62,6 @@ import static fr.openmc.core.features.city.actions.CityCreateAction.FREE_CLAIMS;
 public class City implements CityInterface, CityChunks, CityMembers, CityChest,
         CityRanks, CityPermissions, CityEconomy, CityWar, CityNotations,
         CityStatistic, CityMayor {
-
     private final UUID uniqueId;
     private String name;
     private Set<UUID> members;
@@ -77,6 +76,7 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     private int freeClaims;
     private int level;
 
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
     private static final MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
     private static final CityRankManager cityRankManager = OMCRegistry.CITY_FEATURES.RANKS;
@@ -530,7 +530,7 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     @Override
     public boolean isImmune() {
         if (this.getMascot() == null) return false;
-        return this.getMascot().isImmunity() && !DynamicCooldownManager.isReady(this.getUniqueId(), "city:immunity");
+        return this.getMascot().isImmunity() && !dynamicCooldownManager.isReady(this.getUniqueId(), "city:immunity");
     }
 
     @Override

@@ -31,7 +31,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
     private static File file = null;
 
     @Override
-    public void init() {
+    public void onEnable() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "multiblocks.yml");
         if (!file.exists()) {
             OMCPlugin.getInstance().saveResource("data/multiblocks.yml", false);
@@ -101,7 +101,7 @@ public class MultiBlockManager extends Feature implements HasListeners, HasComma
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         saveConfig();
     }
 

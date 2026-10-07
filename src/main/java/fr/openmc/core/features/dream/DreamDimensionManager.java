@@ -23,7 +23,7 @@ public class DreamDimensionManager extends Feature {
     private boolean seedChanged = false;
 
     @Override
-    public void init() {
+    public void onEnable() {
         seedFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "seed.yml");
         loadSeed();
         DREAM_WORLD = Bukkit.getWorld(DIMENSION_NAME);
@@ -32,7 +32,7 @@ public class DreamDimensionManager extends Feature {
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         OMCLogger.info("[DreamDimensionManager] Saving seed: {}", DREAM_WORLD.getSeed());
         saveSeed(DREAM_WORLD.getSeed());
     }

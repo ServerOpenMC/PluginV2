@@ -38,7 +38,7 @@ public class CraftsQuest extends MilestoneQuest implements Listener {
 		Player player = e.getPlayer();
 		if (!DreamUtils.isInDreamWorld(player)) return;
 		
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());
 	}
 }

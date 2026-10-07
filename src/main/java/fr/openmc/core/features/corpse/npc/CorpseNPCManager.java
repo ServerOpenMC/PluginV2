@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class CorpseNPCManager {
-
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     public final HashMap<UUID, CorpseNPC> corpseNpcMap = new HashMap<>();
     public final String COOLDOWN_GROUP = "corpse";
 
@@ -133,10 +133,10 @@ public class CorpseNPCManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), npcCorpse::spawnForAll);
 
-        if (DynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
-                && DynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
-            DynamicCooldownManager.clear(owner.getUniqueId(), COOLDOWN_GROUP, false);
-        DynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 20 * 60 * 60 * 100); // 2h -> 7200000
+        if (dynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
+                && dynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
+            dynamicCooldownManager.clear(owner.getUniqueId(), COOLDOWN_GROUP, false);
+        dynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 20 * 60 * 60 * 100); // 2h -> 7200000
 
         return true;
     }

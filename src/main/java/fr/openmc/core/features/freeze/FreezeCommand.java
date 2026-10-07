@@ -1,5 +1,6 @@
 package fr.openmc.core.features.freeze;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -8,7 +9,7 @@ import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class FreezeCommand {
-	
+	private final FreezeManager freezeManager = OMCRegistry.FEATURES.FREEZE.get();
 	/**
 	 * Freeze a player
 	 *
@@ -18,6 +19,6 @@ public class FreezeCommand {
 	@Command("freeze")
 	@CommandPermission("omc.admins.commands.freeze")
 	public void onCommand(Player player, @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
-		FreezeManager.switchFreeze(player, target);
+		freezeManager.switchFreeze(player, target);
 	}
 }

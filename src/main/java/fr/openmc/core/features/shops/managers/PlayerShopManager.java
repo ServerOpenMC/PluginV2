@@ -36,7 +36,7 @@ public class PlayerShopManager extends Feature {
     private ShopDatabaseManager shopDatabaseManager;
 
     @Override
-    public void init() {
+    public void onEnable() {
         shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
     }
     

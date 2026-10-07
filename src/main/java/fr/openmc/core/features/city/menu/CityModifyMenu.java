@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
@@ -35,12 +36,10 @@ import java.util.function.Supplier;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 public class CityModifyMenu extends Menu {
-
-    private final CityManager cityManager;
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public CityModifyMenu(Player owner) {
         super(owner);
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
     }
 
     @Override
@@ -140,35 +139,36 @@ public class CityModifyMenu extends Menu {
         }));
 
         Supplier<ItemMenuBuilder> deleteItemSupplier = () -> {
-                List<Component> loreDelete;
-                if (hasPermissionOwner) {
-                    if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                        loreDelete = TranslationManager.translationLore(
-                                "feature.city.menus.modify.delete.lore.wait",
-                                Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
-                        );
-                    } else {
-                        loreDelete = TranslationManager.translationLore("feature.city.menus.modify.delete.lore.click");
-                    }
-                } else {
-                    loreDelete = List.of(
-                            TranslationManager.translation("messages.global.cannot_do_this")
+            List<Component> loreDelete;
+            if (hasPermissionOwner) {
+                if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+                    loreDelete = TranslationManager.translationLore(
+                            "feature.city.menus.modify.delete.lore.wait",
+                            Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
                     );
+                } else {
+                    loreDelete = TranslationManager.translationLore("feature.city.menus.modify.delete.lore.click");
                 }
-                return new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
-                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
-                    itemMeta.lore(loreDelete);
-                }).setOnClick(inventoryClickEvent -> {
-                    CityDeleteAction.startDeleteCity(player);
-                });
-            };
-
-            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
-                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {
-                inventory.put(15, deleteItemSupplier.get());
+                loreDelete = List.of(
+                        TranslationManager.translation("messages.global.cannot_do_this")
+                );
             }
+
+            return new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
+                itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
+                itemMeta.lore(loreDelete);
+            }).setOnClick(inventoryClickEvent -> {
+                CityDeleteAction.startDeleteCity(player);
+            });
+        };
+
+        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+            MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
+                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+        } else {
+            inventory.put(15, deleteItemSupplier.get());
+        }
 
         inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 

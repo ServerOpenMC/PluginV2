@@ -1,7 +1,9 @@
 package fr.openmc.core.features.milestones.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.MilestoneUtils;
+import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -19,6 +21,7 @@ import java.util.function.Consumer;
 
 @Getter
 public class MilestoneQuest extends Quest {
+    protected final static MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
 
     protected final MilestoneType type;
     protected final Enum<? extends MilestoneStep> step;

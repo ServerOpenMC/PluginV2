@@ -55,7 +55,7 @@ public class ChatAnimationManager extends Feature implements HasListeners, HasRe
     }
 
     @Override
-    public void init() {
+    public void onEnable() {
         ANIMATIONS = new HashSet<>(Set.of(
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.DIAMOND_ORE), 2, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.SCULK), 15, 60L),
@@ -134,7 +134,7 @@ public class ChatAnimationManager extends Feature implements HasListeners, HasRe
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         if (scheduleTask != null) scheduleTask.cancel();
         forceStopCurrent();
     }

@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
+import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
@@ -20,6 +21,7 @@ import fr.openmc.core.registry.features.Feature;
 public class HomeFeaturesRegistry extends SubRegistry<String, Feature> {
 
     public final HomeUpgradeManager HOME_UPGRADE = register(new HomeUpgradeManager());
+    public final DisabledWorldHome DISABLED_WORLD_HOME = register(new DisabledWorldHome());
 
     @Override
     public KeyedRegistry<String, ? super Feature> getParentRegistry() {

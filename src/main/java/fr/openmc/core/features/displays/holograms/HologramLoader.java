@@ -41,7 +41,7 @@ public class HologramLoader extends Feature implements HasCommands {
     }
 
     @Override
-    public void init() {
+    public void onEnable() {
         File hologramFolder = getHologramFolder();
         hologramFolder.mkdirs();
 
@@ -61,7 +61,7 @@ public class HologramLoader extends Feature implements HasCommands {
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.unloadAll();
     }
 

@@ -37,7 +37,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     private final TransactionsManager transactionsManager = OMCRegistry.FEATURES.TRANSACTIONS.get();
 
     @Override
-    public void init() {
+    public void onEnable() {
         balances = loadAllBalances();
     }
 
@@ -58,7 +58,7 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         saveAllBalances();
     }
 

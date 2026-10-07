@@ -44,6 +44,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class MayorManager extends Feature implements HasListeners, HasCommands, HasDatabase {
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
     @Getter
     private static ConnectionSource connectionSource;
 
@@ -88,7 +90,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     }
 
     @Override
-    public void init() {
+    public void onEnable() {
         // LISTENERS
         new PhaseListener(this, OMCPlugin.getInstance());
 
@@ -100,7 +102,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveMayorConstant();
         this.savePlayersVote();
         this.saveMayorCandidates();
@@ -305,8 +307,8 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         // ---OUVERTURE DES ELECTIONS---
         mayorPhase = MayorPhase.OPEN_ELECTION;
 
-        DynamicCooldownManager.clear("city:agricultural_essor");
-        DynamicCooldownManager.clear("city:mineral_rush");
+        dynamicCooldownManager.clear("city:agricultural_essor");
+        dynamicCooldownManager.clear("city:mineral_rush");
 
         // On vide toutes les tables
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

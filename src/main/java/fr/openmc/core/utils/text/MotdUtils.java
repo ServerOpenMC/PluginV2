@@ -16,7 +16,7 @@ public class MotdUtils extends Feature {
     private YamlConfiguration motdConfig = null;
 
     @Override
-    public void init() {
+    public void onEnable() {
         File motdFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "motd.yml");
 
         if (!motdFile.exists()) {

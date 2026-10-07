@@ -96,15 +96,17 @@ public class CityChangeAction {
             return;
         }
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
+        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
 	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.must_wait_before_change_type",
-                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))),
+                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.changeType();
-        DynamicCooldownManager.use(city.getUniqueId(), "city:type", COOLDOWN_CHANGE_TYPE);
+        dynamicCooldownManager.use(city.getUniqueId(), "city:type", COOLDOWN_CHANGE_TYPE);
 
         LivingEntity mob = (LivingEntity) mascot.getEntity();
         MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());

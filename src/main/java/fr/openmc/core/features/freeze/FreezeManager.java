@@ -20,8 +20,8 @@ import java.util.Set;
 
 public class FreezeManager extends Feature implements HasCommands, HasListeners {
 	
-	public static final Set<Player> FROZEN_PLAYERS = new HashSet<>();
-	private static Player player;
+	public final Set<Player> FROZEN_PLAYERS = new HashSet<>();
+	private Player player;
 
 	@Override
 	public Set<Object> getCommands() {
@@ -41,8 +41,8 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 	 * @param player The player who freeze/unfreeze
 	 * @param target The player to freeze/unfreeze
 	 */
-	public static void switchFreeze(Player player, Player target) {
-		FreezeManager.player = player;
+	public void switchFreeze(Player player, Player target) {
+		this.player = player;
 		if (target == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("command.admin.freeze.player_not_found"), Prefix.OPENMC, MessageType.ERROR, false);
 		} else {
@@ -74,7 +74,7 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 	 *
 	 * @param reason The reason of the disconnection
 	 */
-	public static void contactFreezer(PlayerQuitEvent.QuitReason reason) {
+	public void contactFreezer(PlayerQuitEvent.QuitReason reason) {
 		if (player == null) return;
 		switch (reason) {
 			case KICKED -> MessagesManager.sendMessage(player, TranslationManager.translation("command.admin.freeze.quit_reason.kicked"), Prefix.OPENMC, MessageType.INFO, true);

@@ -22,7 +22,7 @@ public class CityRankManager extends Feature implements HasDatabase, HasCommands
 	private Dao<DBCityRank, String> ranksDao;
 
 	@Override
-	public void init() {
+	public void onEnable() {
 		loadRanks();
 	}
 

@@ -1,4 +1,4 @@
-package fr.openmc.core.commands.debug;
+package fr.openmc.core.registry.items.commands;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.CustomItemAutoComplete;
@@ -7,6 +7,8 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import revxrsal.commands.annotation.Command;
@@ -38,5 +40,13 @@ public class CustomItemCommand {
         }
 
         player.getInventory().addItem(finalItem);
+    }
+
+    @Subcommand("listspirite")
+    public void listspirite(Player player) {
+        player.sendMessage(TranslationManager.translation("command.registry.custom_items_debug.list.title"));
+        for (CustomItem item : OMCRegistry.CUSTOM_ITEMS.values()) {
+            player.sendMessage(Component.text(item.getId()).append(item.getSprite() == null ? Component.text(" (no sprite)").color(NamedTextColor.RED) : item.getSprite()));
+        }
     }
 }

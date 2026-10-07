@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
@@ -10,12 +11,14 @@ import org.bukkit.OfflinePlayer;
 import java.util.List;
 
 public class OMCPlayerHome extends OMCPlayerFeat {
+    private final HomesManager homesManager = OMCRegistry.FEATURES.HOMES.get();
+
     public OMCPlayerHome(OfflinePlayer player) {
         super(player);
     }
 
     public List<Home> getHomes() {
-        return HomesManager.homes
+        return homesManager.getHomes()
                 .stream()
                 .filter(home -> home.getOwner().equals(getUniqueId()))
                 .toList();
@@ -29,42 +32,42 @@ public class OMCPlayerHome extends OMCPlayerFeat {
     }
 
     public boolean setHome(Home home) {
-        return HomesManager.homes.add(home);
+        return homesManager.addHome(home);
     }
 
     public boolean removeHome(Home home) {
-        return HomesManager.homes.remove(home);
+        return homesManager.removeHome(home);
     }
 
     public void renameHome(Home home, String newName) {
-        home.setName(newName);
+        homesManager.renameHome(home, newName);
     }
 
     public void relocateHome(Home home, Location newLoc) {
-        HomesManager.homes.remove(home);
+        homesManager.relocateHome(home, newLoc);
     }
 
     public HomeLimits getHomeLimit() {
-        HomeLimit homeLimit = HomesManager.homeLimits.stream()
+        HomeLimit homeLimit = homesManager.getHomeLimits().stream()
                 .filter(hl -> hl.getPlayerUUID().equals(getUniqueId()))
                 .findFirst()
                 .orElse(null);
 
         if (homeLimit == null) {
             homeLimit = new HomeLimit(getUniqueId(), HomeLimits.LIMIT_0);
-            HomesManager.homeLimits.add(homeLimit);
+            homesManager.addHomeLimit(homeLimit);
         }
 
         return homeLimit.getHomeLimit();
     }
 
     public void updateHomeLimit() {
-        HomeLimit homeLimit = HomesManager.homeLimits.stream()
+        HomeLimit homeLimit = homesManager.getHomeLimits().stream()
                 .filter(hl -> hl.getPlayerUUID().equals(getUniqueId()))
                 .findFirst()
                 .orElse(null);
         if (homeLimit == null) {
-            HomesManager.homeLimits.add(new HomeLimit(getUniqueId(), HomeLimits.LIMIT_0));
+            homesManager.addHomeLimit(new HomeLimit(getUniqueId(), HomeLimits.LIMIT_0));
         } else {
             int currentLimitIndex = homeLimit.getHomeLimit().ordinal();
             HomeLimits newLimit = HomeLimits.values()[currentLimitIndex + 1];

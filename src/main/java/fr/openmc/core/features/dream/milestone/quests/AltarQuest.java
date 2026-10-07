@@ -43,7 +43,7 @@ public class AltarQuest extends MilestoneQuest implements Listener {
 		DreamItem item = e.getItem();
 		if (item == null) return;
 		if (item instanceof DominationOrb) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 			
 			this.incrementProgressInDream(player.getUniqueId());
 		}

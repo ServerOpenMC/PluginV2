@@ -26,7 +26,7 @@ public abstract class Feature {
     /**
      * Lance l'initialisation avec des règles en fonction des interfaces mises (NotUnitTest, LoadIfEnable<Hook>)
      */
-    public final void startInit() {
+    public final void startEnable() {
         try {
             // * Enregistre et charge les registres
             if (this instanceof HasRegistries hasRegistries) {
@@ -39,7 +39,7 @@ public abstract class Feature {
             }
 
             DatabaseManager.startFeatureDB(this);
-            init();
+            onEnable();
 
             // Enregistre les listeners
             if (this instanceof HasListeners hasListeners) {
@@ -83,11 +83,11 @@ public abstract class Feature {
     /**
      * Sauvegarde la feature si elle a ete initialisée.
      */
-    public final void startSave() {
+    public final void startDisable() {
         if (!initialize) return;
 
         try {
-            save();
+            onDisable();
             OMCLogger.successFormatted("Feature " + this.getClass().getSimpleName() + " sauvegardée correctement.");
         } catch (Exception e) {
             initialize = false;
@@ -108,14 +108,14 @@ public abstract class Feature {
     /**
      * Initialise la feature.
      */
-    protected void init() {
+    protected void onEnable() {
         // doit etre @Override dans les features qui ont une initialisation a faire
     }
 
     /**
      * Sauvegarde l'état de la feature.
      */
-    protected void save() {
+    protected void onDisable() {
         // doit etre @Override dans les features qui ont une save a faire
     }
 }

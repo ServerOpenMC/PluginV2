@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class HomeChangeIconMenu extends PaginatedMenu {
+    private static final HomeIconCacheManager homeIconCacheManager = OMCRegistry.FEATURES.HOME_ICON_CACHE.get();
 
     private final Home home;
     private HomeIcon.IconCategory currentCategory = HomeIcon.IconCategory.ALL;
@@ -85,8 +86,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         Player player = getOwner();
 
-        if (!searchQuery.isEmpty()) return HomeIconCacheManager.searchIcons(searchQuery, this, home, player);
-        else return HomeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
+        if (!searchQuery.isEmpty()) return homeIconCacheManager.searchIcons(searchQuery, this, home, player);
+        else return homeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
     }
 
     @Override

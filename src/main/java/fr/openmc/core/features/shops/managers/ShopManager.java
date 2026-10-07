@@ -45,7 +45,7 @@ public class ShopManager extends Feature implements HasListeners, HasCommands, H
 	private ShopDatabaseManager shopDatabaseManager;
 	
 	@Override
-	protected void init() {
+	protected void onEnable() {
 		shopDatabaseManager = OMCRegistry.SHOP_FEATURES.SHOP_DB;
 		loadShops();
 		loadShopItems();
@@ -53,7 +53,7 @@ public class ShopManager extends Feature implements HasListeners, HasCommands, H
 	}
 	
 	@Override
-	protected void save() {
+	protected void onDisable() {
 		saveShops();
 		saveShopItems();
 		saveShopSales();

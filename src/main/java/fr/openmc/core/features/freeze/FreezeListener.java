@@ -1,5 +1,6 @@
 package fr.openmc.core.features.freeze;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class FreezeListener implements Listener {
+	private final FreezeManager freezeManager = OMCRegistry.FEATURES.FREEZE.get();
 	
 	/**
 	 * When a player disconnects, if he is frozen, we ban him for 30 days
@@ -25,9 +27,9 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		if (FreezeManager.FROZEN_PLAYERS.contains(player)) {
+		if (freezeManager.FROZEN_PLAYERS.contains(player)) {
 			if (event.getReason() != PlayerQuitEvent.QuitReason.DISCONNECTED) {
-				FreezeManager.contactFreezer(event.getReason());
+				freezeManager.contactFreezer(event.getReason());
 			}
 		}
 	}
@@ -40,7 +42,7 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (FreezeManager.FROZEN_PLAYERS.contains(player)) {
+		if (freezeManager.FROZEN_PLAYERS.contains(player)) {
 			player.setInvulnerable(true);
 			player.showTitle(Title.title(TranslationManager.translation("command.admin.freeze.title"),
 					TranslationManager.translation("command.admin.freeze.subtitle")));
@@ -55,7 +57,7 @@ public class FreezeListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
-		if (FreezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
+		if (freezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
@@ -68,7 +70,7 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof Player player && FreezeManager.FROZEN_PLAYERS.contains(player)) {
+		if (entity instanceof Player player && freezeManager.FROZEN_PLAYERS.contains(player)) {
 			event.setCancelled(true);
 		}
 	}
@@ -80,7 +82,7 @@ public class FreezeListener implements Listener {
 	 */
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
-		if (FreezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
+		if (freezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}

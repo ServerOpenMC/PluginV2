@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.core.OMCPlugin;
@@ -53,7 +54,7 @@ public class GlobalTeamManager {
         }
     }
 
-    public void updatePlayerTeam(Player player) {
+    public void updatePlayerTeam(OMCPlayer player) {
         if (player == null || luckPerms == null) return;
 
         UUID uuid = player.getUniqueId();
@@ -132,8 +133,8 @@ public class GlobalTeamManager {
         broadcast(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false));
     }
 
-    private void syncExistingTeamsTo(Player player) {
-        var connection = ((CraftPlayer) player).getHandle().connection;
+    private void syncExistingTeamsTo(OMCPlayer player) {
+        var connection = player.getServerPlayer().connection;
 
         for (var entry : teams.entrySet()) {
             TeamState state = entry.getValue();
@@ -174,7 +175,7 @@ public class GlobalTeamManager {
         }
     }
 
-    private Group getPlayerHighestWeightGroup(Player player) {
+    private Group getPlayerHighestWeightGroup(OMCPlayer player) {
         var user = luckPerms.getUserManager().getUser(player.getUniqueId());
         if (user == null) return null;
 

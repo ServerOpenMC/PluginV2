@@ -27,7 +27,7 @@ public class BossbarManager extends Feature implements HasCommands {
     private final Map<UUID, Set<String>> offBossbars = new HashMap<>();
 
     @Override
-    public void init() {
+    public void onEnable() {
         registerBossbars(
                 new MainBossbar(),
                 new DreamBossBar(OMCRegistry.FEATURES.DREAM.get()),

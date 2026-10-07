@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.milestone.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -13,10 +14,12 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class AdminCityMilestoneCommands {
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
     @Command({"admcity milestone skipUpgrade"})
     @CommandPermission("omc.admins.commands.milestone")
     @Description("Skip l'upgrade d'un level")
-    void adminSkinUpgrade(
+    public void adminSkinUpgrade(
             Player sender,
             @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
@@ -28,7 +31,7 @@ public class AdminCityMilestoneCommands {
         }
 
         MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.levels.admin.skip_upgrade.success"), Prefix.STAFF, MessageType.SUCCESS, false);
-        DynamicCooldownManager.clear(city.getUniqueId(), "city:upgrade-level", true);
+        dynamicCooldownManager.clear(city.getUniqueId(), "city:upgrade-level", true);
     }
 
     @Command({"admcity milestone setlevel"})

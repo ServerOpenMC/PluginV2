@@ -35,7 +35,7 @@ public class CraftingTableQuest extends MilestoneQuest implements Listener {
 			Recipe recipe = e.getRecipe();
 			if (recipe.getResult().getType() != Material.CRAFTING_TABLE) return;
 			
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 			this.incrementProgressInDream(player.getUniqueId());
 		}
 	}

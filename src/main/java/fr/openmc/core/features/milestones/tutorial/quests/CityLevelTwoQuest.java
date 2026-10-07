@@ -50,7 +50,7 @@ public class CityLevelTwoQuest extends MilestoneQuest implements Listener {
         City city = event.getCity();
 
         for (UUID memberUUID : city.getMembers()) {
-            if (MilestonesManager.getPlayerStep(type, memberUUID) != step.ordinal()) return;
+            if (milestonesManager.getPlayerStep(type, memberUUID) != step.ordinal()) return;
 
             this.incrementProgress(memberUUID);
         }

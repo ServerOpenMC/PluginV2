@@ -56,7 +56,7 @@ public class BankManager extends Feature implements HasDatabase {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     @Override
-    public void init() {
+    public void onEnable() {
         banks = loadAllBanks();
         CommandsManager.getHandler().register(new BankCommands());
         updateInterestTimer();

@@ -16,7 +16,7 @@ import java.util.Set;
 @Credit(developers = {"miseur"}, graphist = {"Tfloa"})
 public class MainMenu extends Feature implements HasCommands {
     @Override
-    public void init() {
+    public void onEnable() {
         new MainMenuListener(OMCPlugin.getInstance(), this);
     }
 

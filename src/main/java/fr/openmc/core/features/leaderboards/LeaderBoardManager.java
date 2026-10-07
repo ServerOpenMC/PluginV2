@@ -36,7 +36,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Ha
     private BukkitTask viewerTimer;
 
     @Override
-    public void init() {
+    public void onEnable() {
         CITY_MONEY_LEADERBOARD = new CityMoneyLeaderBoard();
         CONTRIBUTORS_LEADERBOARD = new ContributorsLeaderBoard();
         MONEY_LEADERBOARD = new MoneyLeaderBoard();

@@ -32,7 +32,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
     public AltarManager ALTAR;
 
     @Override
-    public void init() {
+    public void onEnable() {
         ConfigurationSerialization.registerClass(DreamBlock.class);
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data/dream", "registered_blocks.yml");
         load();
@@ -65,7 +65,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
         dreamBlocks.clear();
         if (DreamDimensionManager.DREAM_WORLD.getName().equalsIgnoreCase(DreamDimensionManager.DIMENSION_NAME) && OMCRegistry.DREAM_FEATURES.DREAM_DIMENSION.hasSeedChanged()) {
             config.set("blocks", new ArrayList<>());
-            save();
+            onDisable();
             return;
         }
 
@@ -78,7 +78,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
         }
     }
 
-    public void save() {
+    public void onDisable() {
         config.set("blocks", dreamBlocks);
 
         try {
@@ -94,7 +94,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
             dreamBlocks.add(entry);
             cacheByType.computeIfAbsent(type.toLowerCase(), k -> new ArrayList<>())
                     .add(entry);
-            save();
+            onDisable();
         }
     }
 

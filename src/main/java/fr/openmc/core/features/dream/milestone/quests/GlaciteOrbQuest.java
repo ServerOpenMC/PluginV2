@@ -31,7 +31,7 @@ public class GlaciteOrbQuest extends MilestoneQuest implements Listener {
 	public void onTrade(GlaciteTradeEvent e) {
 		Player player = e.getPlayer();
 		if (e.getTrade().getResult() instanceof GlaciteOrb) {
-			if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 			this.incrementProgressInDream(player.getUniqueId());
 		}
 	}

@@ -29,6 +29,7 @@ import java.util.UUID;
 @Setter
 @DatabaseTable(tableName = "mascots")
 public class Mascot {
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @DatabaseField(id = true)
@@ -137,10 +138,10 @@ public class Mascot {
         double maxHealth = entityMascot.getAttribute(Attribute.MAX_HEALTH).getValue();
         String cityUUID = entityMascot.getPersistentDataContainer().get(mascotsManager.getMascotsKey(), PersistentDataType.STRING);
 
-        if (!DynamicCooldownManager.isReady(this.getMascotUUID(), "mascots:move")) {
-            cooldown = DynamicCooldownManager.getRemaining(this.getMascotUUID(), "mascots:move");
+        if (!dynamicCooldownManager.isReady(this.getMascotUUID(), "mascots:move")) {
+            cooldown = dynamicCooldownManager.getRemaining(this.getMascotUUID(), "mascots:move");
             hasCooldown = true;
-            DynamicCooldownManager.clear(entityMascot.getUniqueId(), "mascots:move", false);
+            dynamicCooldownManager.clear(entityMascot.getUniqueId(), "mascots:move", false);
         }
 
         entityMascot.remove();
@@ -151,7 +152,7 @@ public class Mascot {
         newMascots.setGlowing(glowing);
 
         if (hasCooldown) {
-            DynamicCooldownManager.use(newMascots.getUniqueId(), "mascots:move", cooldown);
+            dynamicCooldownManager.use(newMascots.getUniqueId(), "mascots:move", cooldown);
         }
 
         mascotsManager.setMascotsData(newMascots, this.getCity().getName(), maxHealth, baseHealth);

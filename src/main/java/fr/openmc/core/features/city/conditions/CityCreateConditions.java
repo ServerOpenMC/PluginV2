@@ -30,10 +30,11 @@ public class CityCreateConditions {
      * @return booleen
      */
     public static boolean canCityCreate(OMCPlayer player, String cityName) {
-        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
             player.message().send(TranslationManager.translation(
                     "feature.city.conditions.create.must_wait",
-                    Component.text(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
+                    Component.text(dynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
             ), Prefix.CITY, MessageType.INFO, false);
             return false;
         }

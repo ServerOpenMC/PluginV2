@@ -47,7 +47,7 @@ public class OpenSettingsMenuQuest extends MilestoneQuest implements Listener {
     public void onSettingsMenuOpen(OpenMenuEvent event) {
         Player player = event.getPlayer();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         if (event.getMenu() == null) return;
 

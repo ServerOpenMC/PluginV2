@@ -37,7 +37,7 @@ public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegi
      * Initialise la gestion des WeeklyEvents.
      */
     @Override
-    public void init() {
+    public void onEnable() {
         data = load();
 
         scheduleNextPhase();

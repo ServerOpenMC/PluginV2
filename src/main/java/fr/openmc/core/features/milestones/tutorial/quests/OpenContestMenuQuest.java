@@ -82,7 +82,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
     public void onContestCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         if (!event.getMessage().equals("/contest")) return;
 

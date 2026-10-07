@@ -22,6 +22,8 @@ import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.registry.features.loading.FeatureEntry;
 import fr.openmc.core.registry.features.loading.FeatureLoadingType;
 import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,13 +35,12 @@ import java.util.function.Supplier;
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
 public class HomesManager extends Feature implements HasDatabase, HasCommands, HasRegistries {
-    public static final List<Home> homes = new ArrayList<>();
-    public static final List<HomeLimit> homeLimits = new ArrayList<>();
+    @Getter
+    private final List<Home> homes = new ArrayList<>();
+    private final List<HomeLimit> homeLimits = new ArrayList<>();
 
     @Override
-    public void init() {
-        DisabledWorldHome.init();
-
+    public void onEnable() {
         loadHomeLimit();
         loadHomes();
     }
@@ -58,7 +59,7 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         saveHomes();
         saveHomeLimit();
     }
@@ -73,8 +74,8 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
 
     // DB methods
 
-    private static Dao<Home, UUID> homesDao;
-    private static Dao<HomeLimit, UUID> limitsDao;
+    private Dao<Home, UUID> homesDao;
+    private Dao<HomeLimit, UUID> limitsDao;
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -85,7 +86,7 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
         limitsDao = DaoManager.createDao(connectionSource, HomeLimit.class);
     }
 
-    private static void loadHomeLimit() {
+    private void loadHomeLimit() {
         try {
             homeLimits.addAll(limitsDao.queryForAll());
 
@@ -97,7 +98,7 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
         }
     }
 
-    private static void saveHomeLimit() {
+    private void saveHomeLimit() {
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
             limitsDao.create(homeLimits);
@@ -106,7 +107,7 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
         }
     }
 
-    private static void loadHomes() {
+    private void loadHomes() {
         try {
             homes.addAll(homesDao.queryForAll());
         } catch (SQLException e) {
@@ -114,7 +115,7 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
         }
     }
 
-    private static void saveHomes() {
+    private void saveHomes() {
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Home.class);
             for (Home home : homes) {
@@ -123,5 +124,25 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
         } catch (SQLException e) {
             throw new RuntimeException("Erreur de sauvegarde des Homes ", e);
         }
+    }
+
+    public boolean addHome(Home home) {
+        return homes.add(home);
+    }
+
+    public boolean removeHome(Home home) {
+        return homes.remove(home);
+    }
+
+    public void renameHome(Home home, String newName) {
+        home.setName(newName);
+    }
+
+    public void relocateHome(Home home, Location location) {
+        home.setLocation(location);
+    }
+
+    public void addHomeLimit(HomeLimit homeLimit) {
+        homeLimits.add(homeLimit);
     }
 }

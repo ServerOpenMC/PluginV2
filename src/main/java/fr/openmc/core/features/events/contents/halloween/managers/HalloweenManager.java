@@ -55,7 +55,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
     private Object2ObjectMap<UUID, HalloweenData> halloweenData;
     private Dao<HalloweenData, String> halloweenDataDao;
 
-    public void init() {
+    public void onEnable() {
        halloweenData = loadAllHalloweenDatas();
     }
 

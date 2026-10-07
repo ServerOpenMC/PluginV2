@@ -40,7 +40,7 @@ public class CraftDominationOrbQuest extends MilestoneQuest implements Listener 
 			DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 			if (dreamItem == null) return;
 			if (dreamItem instanceof DominationOrb) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 				this.incrementProgressInDream(player.getUniqueId());
 			}
 		}

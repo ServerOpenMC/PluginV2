@@ -58,7 +58,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
     private final PlayerSettingsManager playerSettingsManager = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
 
     @Override
-    public void init() {
+    public void onEnable() {
         this.loadLetters();
     }
 
@@ -70,7 +70,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         this.saveLetters();
     }
 

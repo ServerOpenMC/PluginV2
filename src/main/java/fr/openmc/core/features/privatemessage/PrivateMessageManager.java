@@ -26,7 +26,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
     private final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
 
     @Override
-    public void init() {
+    public void onEnable() {
         this.socialSpyManager = OMCRegistry.FEATURES.SOCIAL_SPY.get();
     }
 

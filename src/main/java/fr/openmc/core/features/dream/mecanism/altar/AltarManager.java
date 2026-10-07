@@ -35,7 +35,7 @@ public class AltarManager extends Feature implements HasListeners {
     public final Map<Location, ItemDisplay> floatingItems = new HashMap<>();
 
     @Override
-    public void init() {
+    public void onEnable() {
         new AltarCheckTask(this).runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
         new AltarParticlesTask().runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
     }

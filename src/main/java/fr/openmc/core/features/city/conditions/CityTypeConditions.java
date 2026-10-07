@@ -43,10 +43,11 @@ public class CityTypeConditions {
             return false;
         }
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
+        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
 	        MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.type.must_wait",
-                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
+                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

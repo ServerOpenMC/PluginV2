@@ -22,6 +22,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class RelocateHomeCommand {
+    private final DisabledWorldHome disabledWorldHome = OMCRegistry.HOME_FEATURES.DISABLED_WORLD_HOME;
 
     @Command("relocatehome")
     @Description("Déplace votre home")
@@ -33,7 +34,7 @@ public class RelocateHomeCommand {
 
         Location location = player.getLocation();
 
-        if (DisabledWorldHome.isDisabledWorld(location.getWorld())) {
+        if (disabledWorldHome.isDisabledWorld(location.getWorld())) {
             player.message().sendError(TranslationManager.translation("feature.homes.command.disabled_world"), Prefix.HOME, true);
             return;
         }

@@ -57,13 +57,13 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
     private Dao<IncomingEventsDB, Integer> incomingEventsDao;
 
     @Override
-    public void init() {
+    public void onEnable() {
         incomingEvents = loadIncomingEvents();
         nextEventTask = scheduleNextEventTask();
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         if (outgoingEvent != null) {
             outgoingEvent.getDailyEvent().end();
         }

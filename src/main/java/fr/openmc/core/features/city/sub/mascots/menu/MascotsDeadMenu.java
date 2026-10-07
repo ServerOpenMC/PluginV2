@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MascotsDeadMenu extends Menu {
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     private final UUID cityUUID;
 
@@ -72,7 +73,7 @@ public class MascotsDeadMenu extends Menu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.dead.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.mascots.menu.dead.lore",
-                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
+                        Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE),
                         OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                 ));
@@ -86,7 +87,7 @@ public class MascotsDeadMenu extends Menu {
 
                 if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
 
-                DynamicCooldownManager.reduceCooldown(player, cityUUID, "city:immunity", COOLDOWN_REDUCE);
+                dynamicCooldownManager.reduceCooldown(player, cityUUID, "city:immunity", COOLDOWN_REDUCE);
 
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation(

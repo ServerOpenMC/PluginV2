@@ -46,7 +46,7 @@ public class TicketManager extends Feature implements HasListeners {
     }
 
     @Override
-    public void init() {
+    public void onEnable() {
         this.loadPlayerStats(statsDirectory);
     }
 

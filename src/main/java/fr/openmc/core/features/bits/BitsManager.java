@@ -43,7 +43,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     public static final double BITS_PER_LINE_REQ = 250d;
 
     @Override
-    public void init() {
+    public void onEnable() {
         this.gitHubHook = OMCRegistry.HOOKS.GITHUB;
         this.itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
 
@@ -67,7 +67,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         saveAllBits();
     }
 

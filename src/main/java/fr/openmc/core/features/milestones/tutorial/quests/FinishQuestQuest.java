@@ -48,7 +48,7 @@ public class FinishQuestQuest extends MilestoneQuest implements Listener {
 
         if (event.getQuest().getClass() == OpenQuestMenuQuest.class) return;
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

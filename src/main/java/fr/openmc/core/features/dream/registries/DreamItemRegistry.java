@@ -141,7 +141,7 @@ public class DreamItemRegistry extends SubRegistry<String, DreamItem> {
                 DreamItemDropsListener::new
         );
 
-        // todo: check DREAM_ITEM_REGISTRY.forEach(CustomItem::updateSprite);
+        OMCRegistry.CUSTOM_ITEMS.values().forEach(CustomItem::updateSprite);
     }
 
     public Map<String, DreamItem> getBootstrapRegistry() {

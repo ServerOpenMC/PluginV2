@@ -1,6 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -105,10 +107,11 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.manage.delete.must_wait",
-                    Component.text(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
+                    Component.text(dynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
             ), Prefix.CITY, MessageType.INFO, false);
             return false;
         }

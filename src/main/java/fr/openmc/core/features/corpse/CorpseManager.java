@@ -61,6 +61,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
     public CorpseNPCManager corpseNPCManager;
     private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
 
@@ -71,7 +72,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
 
     @Override
-    public void init() {
+    public void onEnable() {
         corpseNPCManager = new CorpseNPCManager(this);
 
         corpseNPCManager.init();
@@ -86,7 +87,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         saveAllCorpses();
     }
 
@@ -214,7 +215,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
         switch (found) {
             case FOUND -> {
-                DynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
+                dynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
                         Prefix.CORPSE, MessageType.SUCCESS, true);
@@ -224,13 +225,13 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                             .color(TextColor.color(Color.YELLOW.asRGB())),
                     Prefix.CORPSE, MessageType.WARNING, true);
 
-            case STRIP -> DynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
+            case STRIP -> dynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
 
             case ABORT -> {
                 for (ItemStack item : items)
                     deathLoc.getWorld().dropItem(deathLoc, item);
 
-                DynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
+                dynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.abort")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
                         Prefix.CORPSE, MessageType.SUCCESS, true);
@@ -271,11 +272,11 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
         Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
 
-        if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
+        if (dynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
+        if (dynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
+        if (dynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
         return Component.text(
-                DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID)
+                DateUtils.convertMillisToTime(dynamicCooldownManager.getCooldowns(playerUUID)
                         .get(corpseNPCManager.COOLDOWN_GROUP)
                         .getRemaining()), NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
     }
