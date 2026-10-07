@@ -52,6 +52,7 @@ import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.profile.ProfileManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.reports.ReportsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.features.tickets.TicketManager;
@@ -137,7 +138,8 @@ public class OMCPlugin extends JavaPlugin {
             BossbarManager::new,
             ShopManager::new,
             HomeIconCacheManager::new,
-            DimensionOpenerManager::new
+            DimensionOpenerManager::new,
+            ReportsManager::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();
