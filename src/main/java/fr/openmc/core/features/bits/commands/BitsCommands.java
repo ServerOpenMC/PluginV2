@@ -59,7 +59,7 @@ public class BitsCommands {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.set.target",
-                            Component.text(BitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }

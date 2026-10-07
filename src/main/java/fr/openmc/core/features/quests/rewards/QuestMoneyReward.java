@@ -36,7 +36,7 @@ public class QuestMoneyReward implements QuestReward {
     @Override
     public void giveReward(OMCPlayer player) {
         economyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
-        Component amountComponent = Component.text(economyManager.getFormattedSimplifiedNumber(amount) +
+        Component amountComponent = Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount) +
                         " " + economyManager.getEconomyIcon())
                 .color(NamedTextColor.YELLOW);
         Component message = TranslationManager.translation("feature.quests.message.money_reward", amountComponent)

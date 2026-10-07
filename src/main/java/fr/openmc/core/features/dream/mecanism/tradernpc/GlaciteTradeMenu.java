@@ -182,7 +182,7 @@ public class GlaciteTradeMenu extends Menu {
             lore.addAll(TranslationManager.translationLore(
                     "feature.dream.trader.menu.trade.lore.ewenite",
                     Component.text(trade.getEweniteCost()).color(NamedTextColor.DARK_PURPLE),
-                    DreamItemRegistry.EWENITE.getSprite()
+                    OMCRegistry.DREAM_ITEM.EWENITE.getSprite()
             ));
 
         lore.add(Component.text(""));

@@ -8,11 +8,6 @@ import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
@@ -284,7 +279,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
 
                     int itemsCount = letter.getNumItems();
                     ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-                    Player sender = CacheOfflinePlayer.getOfflinePlayer(letter.getSender()).getPlayer();
+                    Player sender = CacheOfflinePlayer.getOfflinePlayer(letter.getSenderUUID()).getPlayer();
 
                     if (this.deleteLetter(letterId)) {
                         if (sender != null)

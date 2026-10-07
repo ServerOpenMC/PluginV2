@@ -1,6 +1,5 @@
 package fr.openmc.core.registry.hooks;
 
-import fr.openmc.api.entity.player.OMCPlayerImpl;
 import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;

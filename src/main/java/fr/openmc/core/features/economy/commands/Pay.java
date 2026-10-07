@@ -1,6 +1,5 @@
 package fr.openmc.core.features.economy.commands;
 
-import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;

@@ -2,6 +2,7 @@ package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -62,7 +63,7 @@ public class Money {
                 TranslationManager.translation(
                         "feature.economy.money.set.success",
                         target.getNameWithHead().color(NamedTextColor.YELLOW),
-                        Component.texteconomyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
+                        Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {

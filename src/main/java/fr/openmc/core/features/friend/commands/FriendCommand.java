@@ -1,6 +1,5 @@
 package fr.openmc.core.features.friend.commands;
 
-import fr.openmc.api.entity.player.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
