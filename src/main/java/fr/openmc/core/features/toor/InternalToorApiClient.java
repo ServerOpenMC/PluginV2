@@ -13,7 +13,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class InternalToorApiClient {
-    private final DiscordLinkManager discordLinkManager = OMCRegistry.FEATURES.DISCORD_LINK.get();
+    private final DiscordLinkManager discordLinkManager;
+
+    public InternalToorApiClient(DiscordLinkManager discordLinkManager) {
+        this.discordLinkManager = discordLinkManager;
+    }
 
     public record LinkStatus(boolean linked, String discordUserId, String discordUsername) {
         public static final LinkStatus NOT_LINKED = new LinkStatus(false, null, null);

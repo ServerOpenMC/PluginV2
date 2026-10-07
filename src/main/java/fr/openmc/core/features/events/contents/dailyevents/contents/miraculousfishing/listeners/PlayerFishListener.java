@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.FishingAttributeManager;
@@ -41,7 +42,7 @@ public class PlayerFishListener implements Listener {
         if (!dailyEventsManager.isActiveDailyEvent()
                 || !(dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         FishHook hook = event.getHook();
 
         FishingAttributeManager.applyFishingSpeedModifier(player, hook);
@@ -64,13 +65,13 @@ public class PlayerFishListener implements Listener {
                     hook.getLocation(),
                     35, 0.1D, null);
 
-            MessagesManager.sendMessage(player, TranslationManager.translation(
+            player.message().send(TranslationManager.translation(
                     "feature.dailyevents.miraculousfishing.loot_table.get",
                     Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
             ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
             if (loots.size() * 2 == finalLoots.size()) {
-                player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
+                player.message().send(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
             }
 
             sendLoot(player, hook, finalLoots);
@@ -108,7 +109,7 @@ public class PlayerFishListener implements Listener {
      * @param hook le hook lancé par le joueur
      * @param loots les loots obtenus par le joueur
      */
-    private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
+    private void sendLoot(OMCPlayer player, FishHook hook, Collection<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
             RngUtils.sendSoundRng(player, loot.getChance());
 

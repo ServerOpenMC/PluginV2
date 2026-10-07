@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -25,13 +26,13 @@ public class PlayerDeathListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onPlayerDead(PlayerDeathEvent event) {
         if (event.isCancelled()) return;
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
-        double balance = economyManager.getBalance(player.getUniqueId());
+        double balance = player.economy().getBalance();
 
          if (balance>0 && !DreamUtils.isInDreamWorld(player)) {
-             economyManager.withdrawBalance(player.getUniqueId(), balance * LOSS_MONEY);
-             MessagesManager.sendMessage(player, TranslationManager.translation(
+             player.economy().withdrawBalance(balance * LOSS_MONEY);
+             player.message().send(TranslationManager.translation(
                      "core.player.death.message",
                      Component.text(EconomyUtils.getFormattedSimplifiedNumber(balance) + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
                      Component.text(EconomyUtils.getFormattedSimplifiedNumber(balance * LOSS_MONEY) + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)

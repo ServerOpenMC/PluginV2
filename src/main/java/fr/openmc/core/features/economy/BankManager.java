@@ -4,6 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -169,10 +171,10 @@ public class BankManager extends Feature implements HasDatabase {
     }
 
     public void withdraw(UUID playerUUID, String input) {
-        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
+        OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(playerUUID);
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.global.invalid_input"),
+            offlinePlayer.message().send(TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.BANK, MessageType.ERROR, true);
             return;
         }
@@ -180,14 +182,13 @@ public class BankManager extends Feature implements HasDatabase {
         double amount = InputUtils.convertToMoneyValue(input);
 
         if (!withdraw(playerUUID, amount)) {
-            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.withdraw.not_enough"), Prefix.BANK, MessageType.ERROR, false);
+            offlinePlayer.message().send(TranslationManager.translation("feature.economy.bank.withdraw.not_enough"), Prefix.BANK, MessageType.ERROR, false);
             return;
         }
 
-        economyManager.addBalance(playerUUID, amount, "Retrait banque personnelle");
+        offlinePlayer.economy().addBalance(amount, "Retrait banque personnelle");
 
-        MessagesManager.sendMessage(offlinePlayer,
-                TranslationManager.translation(
+        offlinePlayer.message().send(TranslationManager.translation(
                         "feature.economy.bank.withdraw.transferred",
                         Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(economyManager.getEconomyIcon())
@@ -230,15 +231,14 @@ public class BankManager extends Feature implements HasDatabase {
         City city = City.ofPlayer(playerUUID);
         if (city == null) return;
 
-
         double allowedAmount = Math.min(amount, Math.max(0, PlayerBankLimitRewards.getBankBalanceLimit(city.getLevel()) - getBankBalance(playerUUID)));
         if (allowedAmount <= 0) return;
 
         deposit(playerUUID, allowedAmount);
 
-        Player sender = Bukkit.getPlayer(playerUUID);
+        OMCOfflinePlayer sender = OMCOfflinePlayer.of(playerUUID);
         if (sender != null)
-            MessagesManager.sendMessage(sender,
+            sender.message().send(
                     TranslationManager.translation(
                             "feature.economy.bank.interest.received",
                             Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),

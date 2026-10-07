@@ -1,5 +1,6 @@
 package fr.openmc.core.features.shops;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.managers.PlayerShopManager;
@@ -27,9 +28,9 @@ public class ShopCommand {
     @CommandPlaceholder
     @CommandPermission("omc.commands.shop")
     @Description("Create a shop")
-    public void createShop(Player player) {
-        if (!economyManager.hasEnoughMoney(player.getUniqueId(), 500)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money",
+    public void createShop(OMCPlayer player) {
+        if (!player.economy().hasEnoughMoney(500)) {
+            player.message().send(TranslationManager.translation("feature.shop.player.not_enough_money",
                     Component.text("500 " + economyManager.getEconomyIcon(), NamedTextColor.RED)), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
@@ -38,7 +39,7 @@ public class ShopCommand {
     
     @Subcommand("bypass")
     @CommandPermission("omc.admins.commands.shop.bypass")
-    public void bypass(Player player) {
+    public void bypass(OMCPlayer player) {
         if (!shopManager.shopBypass.contains(player.getUniqueId())) shopManager.shopBypass.add(player.getUniqueId());
         else shopManager.shopBypass.remove(player.getUniqueId());
     }

@@ -5,6 +5,8 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -427,14 +429,14 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
         List<UUID> losers = new ArrayList<>();
 
         // STATS PERSO + REWARDS
-        Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
+        Map<UUID, ItemStack[]> playerItemsMap = new HashMap<>();
         AtomicInteger rank = new AtomicInteger(1);
 
         orderedMap.forEach((uuid, dataPlayer1) -> {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(uuid);
             int points = dataPlayer1.getPoints();
 
             if (offlinePlayer.isOnline()) {
@@ -482,7 +484,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                economyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Gagnant");
+                offlinePlayer.economy().addBalance(money, "Récompense contest - Gagnant");
  
                 // Gagnant - Aywenite
                 int ayweniteMin = 40;
@@ -503,7 +505,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                economyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Perdant");
+                offlinePlayer.economy().addBalance(money, "Récompense contest - Perdant");
 
                 // Perdant - Aywenite
                 int ayweniteMin = 20;
@@ -541,7 +543,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
             itemListRewards.add(ayweniteItemStack);
 
             ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
-            playerItemsMap.put(offlinePlayer, rewards);
+            playerItemsMap.put(offlinePlayer.getUniqueId(), rewards);
             rank.getAndIncrement();
         });
         

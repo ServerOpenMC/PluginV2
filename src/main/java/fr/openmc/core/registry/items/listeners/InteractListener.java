@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.items.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.LootboxBlock;
@@ -19,7 +20,7 @@ public class InteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     void onInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);

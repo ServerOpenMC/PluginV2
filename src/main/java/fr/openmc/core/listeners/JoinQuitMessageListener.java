@@ -104,7 +104,7 @@ public class JoinQuitMessageListener implements Listener {
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
             player.teleport(SpawnManager.getSpawnLocation());
-            economyManager.setBalance(player.getUniqueId(), this.balanceOnJoin);
+            player.economy().setBalance(this.balanceOnJoin);
         }
 
         new BukkitRunnable() {

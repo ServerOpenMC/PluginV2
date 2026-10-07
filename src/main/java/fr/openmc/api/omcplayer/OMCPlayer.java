@@ -43,12 +43,6 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
     @Nullable CraftPlayer getCraftPlayer();
     ServerPlayer getServerPlayer();
 
-    OMCPlayerMessage message();
-
-    OMCPlayerEconomy economy();
-
-    OMCPlayerCity city();
-
     OMCPlayerSettings settings();
 
 }

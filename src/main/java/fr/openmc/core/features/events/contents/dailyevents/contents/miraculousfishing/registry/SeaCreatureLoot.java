@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
@@ -77,12 +78,12 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OMCPlayer receiver) {
         // déjà lancé dans MiraculousFishingManager.simulateLaunchLoot
         return LootReward.loots(Collections.singleton(this));
     }
 
-    public void showLoot(Player player) {
+    public void showLoot(OMCPlayer player) {
         new LootsInfoMenu(
                 player,
                 TranslationManager.translation("feature.dailyevents.miraculousfishing.menu.loot_info.sea_creature"),

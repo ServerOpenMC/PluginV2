@@ -1,6 +1,7 @@
 package fr.openmc.core.features.displays.scoreboards.sb;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -35,12 +36,12 @@ import static net.kyori.adventure.text.Component.text;
 public class CityWarScoreboard extends BaseScoreboard {
     private final WarManager warManager = OMCRegistry.CITY_FEATURES.WAR;
     @Override
-    protected void updateTitle(Player player, SternalBoard board) {
+    protected void updateTitle(OMCPlayer player, SternalBoard board) {
         board.updateTitle(getTitle());
     }
 
     @Override
-    public void update(Player player, SternalBoard board) {
+    public void update(OMCPlayer player, SternalBoard board) {
 
         City city = City.ofPlayer(player.getUniqueId());
         if (city == null || !city.isInWar()) return;
@@ -148,7 +149,7 @@ public class CityWarScoreboard extends BaseScoreboard {
     }
 
     @Override
-    public boolean shouldDisplay(Player player) {
+    public boolean shouldDisplay(OMCPlayer player) {
         if (!player.getWorld().getName().equalsIgnoreCase("world")) return false;
         City city = City.ofPlayer(player.getUniqueId());
         return city != null && city.isInWar();

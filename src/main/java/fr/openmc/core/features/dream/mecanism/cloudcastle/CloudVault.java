@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -33,7 +34,7 @@ public class CloudVault implements Listener {
 
     @EventHandler
     public void onLootGenerate(BlockDispenseLootEvent event) {
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         if (player == null) return;
 

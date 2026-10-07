@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.lootboxes;
 
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.lootboxes.menu.LootboxOpenMenu;
 import fr.openmc.core.registry.loottable.CustomLootTable;
@@ -63,11 +64,11 @@ public abstract class CustomLootbox {
         this.options = options;
     }
 
-    public void open(Player player) {
+    public void open(OMCPlayer player) {
         new LootboxOpenMenu(player, this).open();
     }
 
-    public void openInfo(Player player) {
+    public void openInfo(OMCPlayer player) {
         new LootsInfoMenu(player, this.getName(), this.getLootTable().getLoots()).open();
     }
 }

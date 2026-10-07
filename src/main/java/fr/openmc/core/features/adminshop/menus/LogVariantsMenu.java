@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
@@ -34,7 +35,7 @@ public class LogVariantsMenu extends Menu {
     );
     private final AdminShopManager manager;
 
-    public LogVariantsMenu(Player owner, AdminShopManager manager, String categoryId, ShopItem originalItem) {
+    public LogVariantsMenu(OMCPlayer owner, AdminShopManager manager, String categoryId, ShopItem originalItem) {
         super(owner);
         this.manager = manager;
         this.categoryId = categoryId;

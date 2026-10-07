@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class MotdUtils extends Feature {
-    private static Component motd;
-    private static YamlConfiguration motdConfig = null;
+    private YamlConfiguration motdConfig = null;
 
     @Override
     public void init() {
@@ -39,7 +38,7 @@ public class MotdUtils extends Feature {
                 String line2 = (String) motdData.get("line2");
 
 
-                motd = Component.text(line1 + "\n" + line2);
+                Component motd = Component.text(line1 + "\n" + line2);
                 Bukkit.getServer().motd(motd);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12 000 ticks = 10 minutes

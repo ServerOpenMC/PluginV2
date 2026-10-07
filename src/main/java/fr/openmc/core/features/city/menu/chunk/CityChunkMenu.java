@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.OMCRegistry;
@@ -37,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CityChunkMenu extends Menu {
     public static final Map<String, ChunkDataCache> CHUNK_CACHE = new ConcurrentHashMap<>();
 
-    private final Player player;
+    private final OMCPlayer player;
     private final int playerChunkX, playerChunkZ, startX, startZ;
     private final City playerCity;
     private final UUID playerCityUUID;
@@ -49,7 +50,7 @@ public class CityChunkMenu extends Menu {
 
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
-    public CityChunkMenu(Player owner) {
+    public CityChunkMenu(OMCPlayer owner) {
         super(owner);
         this.player = owner;
 
@@ -335,16 +336,16 @@ public class CityChunkMenu extends Menu {
         }).setOnClick(event -> handleChunkClaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
-    private void handleChunkClaimClick(Player player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
+    private void handleChunkClaimClick(OMCPlayer player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
         City cityCheck = City.ofPlayer(player);
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -371,16 +372,16 @@ public class CityChunkMenu extends Menu {
         menu.open();
     }
 
-    private void handleChunkUnclaimClick(Player player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
+    private void handleChunkUnclaimClick(OMCPlayer player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
         City cityCheck = City.ofPlayer(player);
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.city.player_cannot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

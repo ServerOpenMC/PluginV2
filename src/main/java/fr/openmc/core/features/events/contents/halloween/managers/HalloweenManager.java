@@ -7,6 +7,7 @@ import com.j256.ormlite.table.TableUtils;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -120,7 +121,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
     }
 
     public void endEvent() {
-        Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
+        Map<UUID, ItemStack[]> playerItemsMap = new HashMap<>();
 
         Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
@@ -139,7 +140,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
             rank = entries.getKey();
             String playerName = entries.getValue().getKey();
             String pumpkinCount = entries.getValue().getValue();
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
+            OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(playerName);
 
             List<ItemStack> rewards = new ArrayList<>();
 
@@ -168,7 +169,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone(), aywenite.clone()));
-                    economyManager.addBalance(offlinePlayer.getUniqueId(), 30000);
+                    offlinePlayer.economy().addBalance(30000);
                 }
 
                 case 2 -> {
@@ -192,7 +193,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone()));
-                    economyManager.addBalance(offlinePlayer.getUniqueId(), 20000);
+                    offlinePlayer.economy().addBalance(20000);
                 }
 
                 case 3 -> {
@@ -216,16 +217,16 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite));
-                    economyManager.addBalance(offlinePlayer.getUniqueId(), 10000);
+                    offlinePlayer.economy().addBalance(10000);
                 }
 
                 default -> {
                     if (!pumpkinCount.equals("0"))
-                        economyManager.addBalance(offlinePlayer.getUniqueId(), 3000);
+                        offlinePlayer.economy().addBalance(3000);
                 }
             }
 
-            playerItemsMap.put(offlinePlayer, rewards.toArray(new ItemStack[0]));
+            playerItemsMap.put(offlinePlayer.getUniqueId(), rewards.toArray(new ItemStack[0]));
         }
 
         mailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);

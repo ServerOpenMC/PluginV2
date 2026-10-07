@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
@@ -59,7 +60,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The ID of the category.
      * @param itemId       The ID of the item.
      */
-    public void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
+    public void openBuyConfirmMenu(OMCPlayer player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
@@ -73,7 +74,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The ID of the category.
      * @param itemId       The ID of the item.
      */
-    public void openSellConfirmMenu(Player player, String categoryId, String itemId) {
+    public void openSellConfirmMenu(OMCPlayer player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
@@ -92,7 +93,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId  The ID of the item.
      * @param amount  The quantity to purchase.
      */
-    public void buyItem(Player player, String itemId, int amount) {
+    public void buyItem(OMCPlayer player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
@@ -112,7 +113,7 @@ public class AdminShopManager extends Feature implements HasCommands {
         }
 
         double totalPrice = item.getActualBuyPrice() * amount;
-        if (economyManager.withdrawBalance(player.getUniqueId(), totalPrice, "Achat AdminShop - " + amount + "x " + itemId)) {
+        if (player.economy().withdrawBalance(totalPrice, "Achat AdminShop - " + amount + "x " + itemId)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
@@ -133,7 +134,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId  The ID of the item.
      * @param amount  The quantity to sell.
      */
-    public void sellItem(Player player, String itemId, int amount) {
+    public void sellItem(OMCPlayer player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId); // Get the item from the current category
         if (item == null) return;
 
@@ -156,7 +157,7 @@ public class AdminShopManager extends Feature implements HasCommands {
 
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
         ItemUtils.removeItemsFromPlayerInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
-        economyManager.addBalance(player.getUniqueId(), totalPrice, "Vente AdminShop"); // Add money to the player's balance
+        player.economy().addBalance(totalPrice, "Vente AdminShop"); // Add money to the player's balance
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
         });
@@ -203,7 +204,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId     The item ID.
      * @return The ShopItem or null if not found.
      */
-    private ShopItem getItemSafe(Player player, String categoryId, String itemId) {
+    private ShopItem getItemSafe(OMCPlayer player, String categoryId, String itemId) {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
         if (item == null) sendError(player, TranslationManager.translation("feature.adminshop.item_not_found"));
         return item;
@@ -216,7 +217,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param itemId The item ID.
      * @return The ShopItem or null if not available.
      */
-    private ShopItem getCurrentItem(Player player, String itemId) {
+    private ShopItem getCurrentItem(OMCPlayer player, String itemId) {
         String categoryId = getPlayerCategory(player);
         if (categoryId == null) {
             sendError(player, TranslationManager.translation("feature.adminshop.isnt_in_category"));
@@ -231,7 +232,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player The player.
      * @return The category ID or null.
      */
-    private String getPlayerCategory(Player player) {
+    private String getPlayerCategory(OMCPlayer player) {
         return currentCategory.get(player.getUniqueId());
     }
 
@@ -241,8 +242,8 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player  The player.
      * @param message The error message.
      */
-    private void sendError(Player player, Component message) {
-        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.ERROR, true);
+    private void sendError(OMCPlayer player, Component message) {
+        player.message().sendError(message, Prefix.ADMINSHOP, true);
     }
 
     /**
@@ -251,8 +252,8 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player  The player.
      * @param message The information message.
      */
-    private void sendInfo(Player player, Component message) {
-        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.INFO, true);
+    private void sendInfo(OMCPlayer player, Component message) {
+        player.message().sendInfo(message, Prefix.ADMINSHOP, true);
     }
 
     /**
@@ -260,7 +261,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      *
      * @param player The player.
      */
-    public void openMainMenu(Player player) {
+    public void openMainMenu(OMCPlayer player) {
         new AdminShopMenu(player, this).open();
     }
 
@@ -271,7 +272,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
      */
-    public void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+    public void openColorVariantsMenu(OMCPlayer player, String categoryId, ShopItem originalItem) {
         new ColorVariantsMenu(player, this, categoryId, originalItem).open();
     }
 
@@ -282,7 +283,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
      */
-    public void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+    public void openLeavesVariantsMenu(OMCPlayer player, String categoryId, ShopItem originalItem) {
         new LeavesVariantsMenu(player, this, categoryId, originalItem).open();
     }
 
@@ -293,7 +294,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param categoryId   The category ID.
      * @param originalItem The original ShopItem.
      */
-    public void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
+    public void openLogVariantsMenu(OMCPlayer player, String categoryId, ShopItem originalItem) {
         new LogVariantsMenu(player, this, categoryId, originalItem).open();
     }
 

@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.loottable.LootReward;
@@ -39,8 +40,8 @@ public class MoneyLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
-        economyManager.addBalance(receiver.getUniqueId(), money);
+    public LootReward run(OMCPlayer receiver) {
+        receiver.economy().addBalance(money);
         return LootReward.loots(Collections.singleton(this));
     }
 

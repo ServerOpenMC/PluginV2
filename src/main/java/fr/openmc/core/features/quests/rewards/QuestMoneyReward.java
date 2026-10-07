@@ -35,7 +35,8 @@ public class QuestMoneyReward implements QuestReward {
      */
     @Override
     public void giveReward(OMCPlayer player) {
-        economyManager.addBalance(player.getUniqueId(), amount, "Récompense de quête");
+        player.economy().addBalance(amount, "Récompense de quête");
+
         Component amountComponent = Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount) +
                         " " + economyManager.getEconomyIcon())
                 .color(NamedTextColor.YELLOW);

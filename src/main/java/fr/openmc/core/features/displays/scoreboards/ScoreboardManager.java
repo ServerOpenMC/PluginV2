@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.api.scoreboard.repository.impl.ObjectCacheRepositoryImpl;
@@ -58,9 +59,10 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
         long now = System.currentTimeMillis();
 
         Bukkit.getOnlinePlayers().forEach(player -> {
+            OMCPlayer omcPlayer = OMCPlayer.of(player);
             BaseScoreboard active = null;
             for (BaseScoreboard sb : scoreboards) {
-                if (sb.shouldDisplay(player)) {
+                if (sb.shouldDisplay(omcPlayer)) {
                     active = sb;
                     break;
                 }
@@ -77,10 +79,10 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
             if (now - last < active.updateInterval() * 1000L) return;
 
 
-            SternalBoard board = boardCache.find(player.getUniqueId()) == null ? createNewBoard(player) : boardCache.find(player.getUniqueId());
+            SternalBoard board = boardCache.find(player.getUniqueId()) == null ? createNewBoard(omcPlayer) : boardCache.find(player.getUniqueId());
 
-            active.updateTitle(player, board);
-            active.update(player, board);
+            active.updateTitle(omcPlayer, board);
+            active.update(omcPlayer, board);
             playerUpdates.put(active, now);
 
             if (luckPermsHook.isEnable() && globalTeamManager != null) {
@@ -89,14 +91,14 @@ public class ScoreboardManager extends Feature implements Listener, HasListeners
         });
     }
 
-    public SternalBoard createNewBoard(Player player) {
+    public SternalBoard createNewBoard(OMCPlayer player) {
         SternalBoard board = new SternalBoard(player);
         updateBoard(player, board);
         boardCache.create(board);
         return board;
     }
 
-    public void updateBoard(Player player, SternalBoard board) {
+    public void updateBoard(OMCPlayer player, SternalBoard board) {
         for (BaseScoreboard scoreboard : scoreboards) {
             if (scoreboard.shouldDisplay(player)) {
                 scoreboard.init(player, board);

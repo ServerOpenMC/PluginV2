@@ -123,19 +123,19 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
         }
     }
 
-    public void sendItemsToAOfflinePlayerBatch(Map<OfflinePlayer, ItemStack[]> playerItemsMap) {
-        for (Map.Entry<OfflinePlayer, ItemStack[]> entry : playerItemsMap.entrySet()) {
+    public void sendItemsToAOfflinePlayerBatch(Map<UUID, ItemStack[]> playerItemsMap) {
+        for (Map.Entry<UUID, ItemStack[]> entry : playerItemsMap.entrySet()) {
             sendItemsToOfflinePlayer(entry.getKey(), entry.getValue());
         }
     }
 
-    public void sendItemsToOfflinePlayer(OfflinePlayer player, ItemStack[] items) {
+    public void sendItemsToOfflinePlayer(UUID playerUUID, ItemStack[] items) {
         try {
             int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
 
             byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
 
-            Letter letter = new Letter(nextLetterId++, player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
+            Letter letter = new Letter(nextLetterId++, playerUUID, playerUUID, itemsBytes, numItems,
                     Timestamp.valueOf(DateUtils.getLocalDateTime()), false);
             letters.add(letter);
         } catch (IOException e) {

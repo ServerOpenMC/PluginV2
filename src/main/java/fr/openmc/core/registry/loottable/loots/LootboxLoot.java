@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
 import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class LootboxLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OMCPlayer receiver) {
         lootbox.open(receiver);
         return LootReward.loots(Collections.singleton(this));
     }

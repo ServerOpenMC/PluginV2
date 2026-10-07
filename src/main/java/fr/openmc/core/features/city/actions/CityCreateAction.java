@@ -44,8 +44,7 @@ public class CityCreateAction {
         pendingCities.put(player.getUniqueId(), cityName);
 
         if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
-        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
-        if (!economyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
+        if (!player.economy().withdrawBalance(CityCreateConditions.MONEY_CREATE)) return;
 
         ItemInteraction.runLocationInteraction(
                 player,
@@ -62,7 +61,7 @@ public class CityCreateAction {
                 () -> {
                     pendingCities.remove(player.getUniqueId());
                     ItemUtils.giveItem(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), CityCreateConditions.AYWENITE_CREATE);
-                    economyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
+                    player.economy().addBalance(CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
                 }
         );
     }
@@ -79,33 +78,33 @@ public class CityCreateAction {
         return stick;
     }
 
-    private static boolean isValidLocation(Player player, Location location) {
+    private static boolean isValidLocation(OMCPlayer player, Location location) {
         if (location == null || location.getWorld() == null) return false;
         if (!"world".equals(location.getWorld().getName())) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascot.mascot_wand.can_only_place_mascot"),
-                    Prefix.CITY, MessageType.ERROR, false);
-            return false;
+	       player.message().send(TranslationManager.translation("feature.city.mascot.mascot_wand.can_only_place_mascot"),
+                   Prefix.CITY, MessageType.ERROR, false);
+           return false;
         }
         if (location.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascot.mascot_wand.hasnot_block_above"),
-                    Prefix.CITY, MessageType.ERROR, false);
+	       player.message().send(TranslationManager.translation("feature.city.mascot.mascot_wand.hasnot_block_above"),
+                   Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
     }
 
-    public static boolean finalizeCreation(Player player, Location mascotLocation) {
+    public static boolean finalizeCreation(OMCPlayer player, Location mascotLocation) {
         Chunk chunk = mascotLocation.getChunk();
 
         if (OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.is_in_region"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.city.claim.is_in_region"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
         if (cityManager.isChunkClaimedInRadius(chunk, 1)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
+            player.message().send(TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
                     Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -126,8 +125,8 @@ public class CityCreateAction {
         OMCRegistry.CITY_FEATURES.MASCOTS.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
 
         // Feedback
-	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
-        MessagesManager.sendMessage(player,
+	    player.message().send(TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
+        player.message().send(
                 TranslationManager.translation("feature.city.create.free_claim",
                         Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)),
                 Prefix.CITY, MessageType.INFO, false);

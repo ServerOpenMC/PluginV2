@@ -68,7 +68,7 @@ public class HomeUpgradeManager extends Feature {
                 return;
             }
 
-            if (economyManager.getBalance(player.getUniqueId()) < price) {
+            if (player.economy().getBalance() < price) {
                 player.message().sendError(
                         TranslationManager.translation(
                                 "feature.homes.upgrade.not_enough_money",
@@ -82,7 +82,7 @@ public class HomeUpgradeManager extends Feature {
             }
 
             ItemUtils.takeAywenite(player, ayweniteAmount);
-            economyManager.withdrawBalance(player.getUniqueId(), price);
+            player.economy().withdrawBalance(price);
 
             player.home().updateHomeLimit();
 

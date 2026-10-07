@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
@@ -39,12 +40,12 @@ public class PlantationLootListener implements Listener {
         if (!(event.getBlock().getBlockData() instanceof Ageable ageable)) return;
         if (ageable.getAge() != ageable.getMaximumAge()) return;
 
-        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.CROPS.rollLootsWithoutGuarantee(event.getPlayer()).loots();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.CROPS.rollLootsWithoutGuarantee(player).loots();
 
         if (loots.isEmpty()) return;
 
-        Player player = event.getPlayer();
-        MessagesManager.sendMessage(player, TranslationManager.translation(
+        player.message().send(TranslationManager.translation(
                 "feature.dailyevents.golden_harvest.loot_table.crop_break.message"
         ), Prefix.GOLDEN_HARVEST, MessageType.INFO, false);
 

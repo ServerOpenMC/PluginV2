@@ -176,8 +176,7 @@ public class DimensionContributeMenu extends Menu {
             if (current.getType() != step.getMaterial()) {
                 getOwner().getOpenInventory().getTopInventory().setItem(INPUT_SLOT, null);
                 getOwner().getInventory().addItem(current);
-                MessagesManager.sendMessage(
-                        getOwner(),
+                getOwner().message().send(
                         TranslationManager.translation(
                                 "feature.dimopener.contribute.wrong_item",
                                 Component.text(step.getMaterial().toString(), NamedTextColor.YELLOW)
@@ -193,20 +192,17 @@ public class DimensionContributeMenu extends Menu {
             var result = manager.contributeItems(getOwner(), dimensionId, amount);
 
             switch (result) {
-                case SUCCESS -> MessagesManager.sendMessage(
-                        getOwner(),
+                case SUCCESS -> getOwner().message().send(
                         TranslationManager.translation("feature.dimopener.contribute.items_success", Component.text(amount)),
                         Prefix.OPENMC, MessageType.SUCCESS, false
                 );
-                case STEP_COMPLETED -> MessagesManager.sendMessage(
-                        getOwner(),
+                case STEP_COMPLETED -> getOwner().message().send(
                         TranslationManager.translation("feature.dimopener.contribute.step_completed"),
                         Prefix.OPENMC, MessageType.SUCCESS, false
                 );
                 case REQUIRED_DIMENSION_NOT_OPENED -> {
                     getOwner().getInventory().addItem(current);
-                    MessagesManager.sendMessage(
-                            getOwner(),
+                    getOwner().message().send(
                             TranslationManager.translation("feature.dimopener.contribute.required_not_opened"),
                             Prefix.OPENMC, MessageType.ERROR, false
                     );
@@ -231,7 +227,7 @@ public class DimensionContributeMenu extends Menu {
             meta.lore(List.of(
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.balance",
-                            Component.text(economyManager.getMiniBalance(getOwner().getUniqueId()), NamedTextColor.GOLD)
+                            Component.text(getOwner().economy().getMiniBalance(), NamedTextColor.GOLD)
                     ),
                     TranslationManager.translation(
                             "feature.dimopener.menu.money.remaining",
@@ -245,7 +241,7 @@ public class DimensionContributeMenu extends Menu {
 
     @SuppressWarnings("UnstableApiUsage")
     private void openMoneyDialog(double remaining) {
-        double balance = economyManager.getBalance(getOwner().getUniqueId());
+        double balance = getOwner().economy().getBalance();
         float max = (float) Math.max(1, Math.min(balance, remaining));
         float initial = Math.min(max, 1f);
 
@@ -278,26 +274,22 @@ public class DimensionContributeMenu extends Menu {
                                             var result = manager.contributeMoney(getOwner(), dimensionId, amount);
 
                                             switch (result) {
-                                                case SUCCESS -> MessagesManager.sendMessage(
-                                                        getOwner(),
+                                                case SUCCESS -> getOwner().message().send(
                                                         TranslationManager.translation(
                                                                 "feature.dimopener.contribute.money_success",
                                                                 Component.text(economyManager.getFormattedNumber(amount), NamedTextColor.GREEN)
                                                         ),
                                                         Prefix.DIMOPENER, MessageType.SUCCESS, false
                                                 );
-                                                case STEP_COMPLETED -> MessagesManager.sendMessage(
-                                                        getOwner(),
+                                                case STEP_COMPLETED -> getOwner().message().send(
                                                         TranslationManager.translation("feature.dimopener.contribute.step_completed"),
                                                         Prefix.DIMOPENER, MessageType.SUCCESS, false
                                                 );
-                                                case REQUIRED_DIMENSION_NOT_OPENED -> MessagesManager.sendMessage(
-                                                        getOwner(),
+                                                case REQUIRED_DIMENSION_NOT_OPENED -> getOwner().message().send(
                                                         TranslationManager.translation("feature.dimopener.contribute.required_not_opened"),
                                                         Prefix.DIMOPENER, MessageType.ERROR, false
                                                 );
-                                                default -> MessagesManager.sendMessage(
-                                                        getOwner(),
+                                                default -> getOwner().message().send(
                                                         TranslationManager.translation("feature.dimopener.contribute.impossible"),
                                                         Prefix.DIMOPENER, MessageType.ERROR, false
                                                 );

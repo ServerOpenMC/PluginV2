@@ -1,5 +1,6 @@
 package fr.openmc.core.features.chatanimations.contents.quizz;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.ChatAnimation;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
@@ -24,7 +25,7 @@ public class QuizzListener implements Listener {
                 .toLowerCase();
 
         if (quizz.getAnswers().contains(message)) {
-            Player winner = event.getPlayer();
+            OMCPlayer winner = OMCPlayer.of(event.getPlayer());
             animation.complete(winner);
             event.setCancelled(true);
         }

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.bank;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
@@ -53,11 +54,11 @@ public class CityBankManager extends Feature implements HasCommands {
      * @param player The player depositing into the bank
      * @param input  The input string to get the money value
      */
-    public void depositCityBank(City city, Player player, String input) {
+    public void depositCityBank(City city, OMCPlayer player, String input) {
         if (!CityBankConditions.canCityDeposit(city, player)) return;
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.invalid_input"),
+            player.message().send(TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
@@ -65,14 +66,14 @@ public class CityBankManager extends Feature implements HasCommands {
         double amount = InputUtils.convertToMoneyValue(input);
 
         if (city == null || city.getLevel() < 2) {
-            MessagesManager.sendMessage(player,
+            player.message().send(
                     TranslationManager.translation("feature.city.bank.errors.min_level"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (!economyManager.withdrawBalance(player.getUniqueId(), amount)) {
-            MessagesManager.sendMessage(player,
+        if (!player.economy().withdrawBalance(amount)) {
+            player.message().send(
                     TranslationManager.translation("messages.global.player_missing_money"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -80,7 +81,7 @@ public class CityBankManager extends Feature implements HasCommands {
 
         city.updateBalance(amount);
 
-        MessagesManager.sendMessage(player,
+        player.message().send(
                 TranslationManager.translation(
                         "feature.city.bank.deposit.success",
                         Component.text(economyManager.getFormattedNumber(amount))
@@ -94,11 +95,11 @@ public class CityBankManager extends Feature implements HasCommands {
      * @param player The player withdrawing from the bank
      * @param input  The input string to get the money value
      */
-    public void withdrawCityBank(City city, Player player, String input) {
+    public void withdrawCityBank(City city, OMCPlayer player, String input) {
         if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.invalid_input"),
+            player.message().send(TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
@@ -106,18 +107,16 @@ public class CityBankManager extends Feature implements HasCommands {
         double amount = InputUtils.convertToMoneyValue(input);
 
         if (city.getBalance() < amount) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.bank.errors.not_enough_city_money"),
+            player.message().send(TranslationManager.translation("feature.city.bank.errors.not_enough_city_money"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.updateBalance(-amount);
-        economyManager.addBalance(player.getUniqueId(), amount, "Retrait banque de ville");
+        player.economy().addBalance(amount, "Retrait banque de ville");
 
-        MessagesManager.sendMessage(player,
-                TranslationManager.translation(
-                        "feature.city.bank.withdraw.success",
+        player.message().send(TranslationManager.translation(
+                "feature.city.bank.withdraw.success",
                         Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
                 ),

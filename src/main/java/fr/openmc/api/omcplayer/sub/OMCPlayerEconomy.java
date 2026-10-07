@@ -2,7 +2,9 @@ package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -10,7 +12,7 @@ import java.util.UUID;
 public class OMCPlayerEconomy extends OMCPlayerFeat {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
-    public OMCPlayerEconomy(Player player) {
+    public OMCPlayerEconomy(OfflinePlayer player) {
         super(player);
     }
 
@@ -30,6 +32,15 @@ public class OMCPlayerEconomy extends OMCPlayerFeat {
      */
     public String getFormattedBalance() {
         return economyManager.getFormattedBalance(getUniqueId());
+    }
+
+    /**
+     * Recupere la balance du joueur formatté au mini (ect 2.4M + le logo de la monnaie)
+     *
+     * @return la balance du joueur formatee
+     */
+    public String getMiniBalance() {
+        return economyManager.getMiniBalance(getUniqueId());
     }
 
     public void addBalance(double amount) {
@@ -54,5 +65,9 @@ public class OMCPlayerEconomy extends OMCPlayerFeat {
 
     public boolean pay(UUID targetUUID, double amount, @Nullable String reason) {
         return economyManager.transferBalance(getUniqueId(), targetUUID, amount, reason);
+    }
+
+    public boolean hasEnoughMoney(int requiredAmount) {
+        return economyManager.hasEnoughMoney(getUniqueId(), requiredAmount);
     }
 }

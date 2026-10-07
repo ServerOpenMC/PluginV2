@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.registries.items.tools;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -49,7 +50,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
     }
 
     @Override
-    public void onRightClick(Player player, PlayerInteractEvent event) {
+    public void onRightClick(OMCPlayer player, PlayerInteractEvent event) {
         Block clicked = event.getClickedBlock();
         if (clicked == null) return;
 
@@ -87,12 +88,12 @@ public class MetalDetector extends DreamItem implements UsableItem {
     }
 
     @Override
-    public void onSneakClick(Player player, PlayerInteractEvent event) {
+    public void onSneakClick(OMCPlayer player, PlayerInteractEvent event) {
         if (!event.getAction().isRightClick()) return;
 
         World world = player.getWorld();
         if (!DreamUtils.isDreamWorld(world)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.metal_detector.message.must_be_dream"), Prefix.DREAM, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.dream.item.metal_detector.message.must_be_dream"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 
@@ -104,7 +105,7 @@ public class MetalDetector extends DreamItem implements UsableItem {
         if (item == null) return;
 
         if (player.hasCooldown(item)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.metal_detector.message.reset_cooldown"), Prefix.DREAM, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.dream.item.metal_detector.message.reset_cooldown"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }
 

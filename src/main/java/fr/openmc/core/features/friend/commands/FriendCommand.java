@@ -227,7 +227,7 @@ public class FriendCommand {
                     boolean isOnline = friend.isOnline();
 
                     City city = City.ofPlayer(friend.getUniqueId());
-                    String formattedMoney = economyManager.getFormattedBalance(friend.getUniqueId());
+                    String formattedMoney = friend.economy().getFormattedBalance();
                     Component cityComponent = city != null ? Component.text(city.getName()).color(NamedTextColor.YELLOW) :
                             TranslationManager.translation("feature.friend.list.city.none").color(NamedTextColor.YELLOW);
                     Component moneyComponent = Component.text(formattedMoney).color(NamedTextColor.YELLOW);

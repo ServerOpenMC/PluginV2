@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
@@ -402,12 +403,17 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     }
 
     @Override
-    public boolean hasPermission(UUID uuid, CityPermission permission) {
+    public boolean hasPermission(UUID playerUUID, CityPermission permission) {
         if (this.permissions == null)
             this.permissions = cityManager.getCityPermissions(this);
 
-        Set<CityPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
+        Set<CityPermission> playerPerms = permissions.getOrDefault(playerUUID, new HashSet<>());
         return playerPerms.contains(CityPermission.OWNER) || playerPerms.contains(permission);
+    }
+
+    @Override
+    public boolean hasPermission(Player player, CityPermission permission) {
+        return hasPermission(player.getUniqueId(), permission);
     }
 
     @Override
@@ -432,6 +438,11 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     }
 
     @Override
+    public void addPermission(Player player, CityPermission permission) {
+        addPermission(player.getUniqueId(), permission);
+    }
+
+    @Override
     public void removePermission(UUID playerUUID, CityPermission permission) {
         if (this.permissions == null)
             this.permissions = cityManager.getCityPermissions(this);
@@ -451,11 +462,21 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     }
 
     @Override
+    public void removePermission(Player player, CityPermission permission) {
+        removePermission(player.getUniqueId(), permission);
+    }
+
+    @Override
     public void clearPermissions(UUID playerUUID) {
         if (this.permissions == null)
             this.permissions = cityManager.getCityPermissions(this);
 
         permissions.remove(playerUUID);
+    }
+
+    @Override
+    public void clearPermissions(Player player) {
+        clearPermissions(player.getUniqueId());
     }
 
     @Override
@@ -482,12 +503,12 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     }
 
     @Override
-    public void depositCityBank(Player player, String input) {
+    public void depositCityBank(OMCPlayer player, String input) {
         cityBankManager.depositCityBank(this, player, input);
     }
 
     @Override
-    public void withdrawCityBank(Player player, String input) {
+    public void withdrawCityBank(OMCPlayer player, String input) {
         cityBankManager.withdrawCityBank(this, player, input);
     }
 

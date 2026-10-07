@@ -5,6 +5,7 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
@@ -37,7 +38,7 @@ public class ConfirmMenu extends Menu {
     private int quantity;
     private final int maxQuantity;
 
-    public ConfirmMenu(Player owner, AdminShopManager manager, ShopItem shopItem, boolean isBuying) {
+    public ConfirmMenu(OMCPlayer owner, AdminShopManager manager, ShopItem shopItem, boolean isBuying) {
         super(owner);
         this.manager = manager;
         this.shopItem = shopItem;
@@ -220,13 +221,13 @@ public class ConfirmMenu extends Menu {
         this.open();
     }
 
-    private int getMaxBuyQuantity(Player player, ShopItem shopItem) {
+    private int getMaxBuyQuantity(OMCPlayer player, ShopItem shopItem) {
         int freePlaces = ItemUtils.getFreePlacesForItem(player, shopItem.getMaterial());
 
         double buyPrice = shopItem.getActualBuyPrice();
         if (buyPrice <= 0) return freePlaces;
 
-        double balance = economyManager.getBalance(player.getUniqueId());
+        double balance = player.economy().getBalance();
         int affordable = (int) Math.floor(balance / buyPrice);
 
         return Math.min(freePlaces, affordable);

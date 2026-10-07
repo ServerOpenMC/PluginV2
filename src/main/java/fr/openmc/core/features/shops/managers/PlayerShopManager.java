@@ -1,6 +1,7 @@
 package fr.openmc.core.features.shops.managers;
 
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
@@ -44,9 +45,9 @@ public class PlayerShopManager extends Feature {
      *
      * @param player The player who is initiating the shop creation process.
      */
-    public void startCreatingShop(Player player) {
-        if (!economyManager.withdrawBalance(player.getUniqueId(), 500)) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.not_enough_money",
+    public void startCreatingShop(OMCPlayer player) {
+        if (!player.economy().withdrawBalance(500)) {
+			player.message().send(TranslationManager.translation("feature.shop.player.not_enough_money",
                     Component.text("500 " + economyManager.getEconomyIcon(), NamedTextColor.RED)), Prefix.SHOP, MessageType.ERROR, true);
 			return;
         }
@@ -63,8 +64,8 @@ public class PlayerShopManager extends Feature {
 	                return createShop(player, location);
                 },
                 () -> {
-                    economyManager.addBalance(player.getUniqueId(), 500, "Canceling shop creation");
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.cancelling_pay",
+                    player.economy().addBalance(500, "Canceling shop creation");
+                    player.message().send(TranslationManager.translation("feature.shop.player.cancelling_pay",
                             Component.text("500 " + economyManager.getEconomyIcon()).color(NamedTextColor.GREEN)), Prefix.SHOP, MessageType.INFO, true);
                 }
         );
@@ -77,7 +78,7 @@ public class PlayerShopManager extends Feature {
      * @param location The location where the shop is to be created.
      * @return true if the shop creation is successful, false otherwise.
      */
-    private boolean createShop(Player player, Location location) {
+    private boolean createShop(OMCPlayer player, Location location) {
         Shop shop = new Shop(player.getUniqueId(), location.setRotation(0, 0));
         CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
@@ -90,7 +91,7 @@ public class PlayerShopManager extends Feature {
                     && city != null
                     && !city.equals(City.of(location.getChunk())))
             || (cityManager.isChunkClaimed(location.getChunk()) && city == null)) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
+                player.message().send(TranslationManager.translation("feature.shop.player.chunk_claimed"), Prefix.SHOP, MessageType.ERROR, true);
                 return false;
             }
         }
@@ -99,12 +100,12 @@ public class PlayerShopManager extends Feature {
         Block cashBlock = shop.getMultiblock().cashBlockLoc().getBlock();
         
         if (barrel.getType() != Material.AIR) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.cant_create_barrel"), Prefix.SHOP, MessageType.ERROR, true);
+            player.message().send(TranslationManager.translation("feature.shop.player.cant_create_barrel"), Prefix.SHOP, MessageType.ERROR, true);
             return false;
         }
         
         if (cashBlock.getType() != Material.AIR) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.cant_create_cash"), Prefix.SHOP, MessageType.ERROR, true);
+            player.message().send(TranslationManager.translation("feature.shop.player.cant_create_cash"), Prefix.SHOP, MessageType.ERROR, true);
             return false;
         }
         
@@ -118,15 +119,15 @@ public class PlayerShopManager extends Feature {
             
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 if (!shopDatabaseManager.saveDBShop(shop)) {
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.cannot_save_location"), Prefix.SHOP, MessageType.ERROR, false);
+                    player.message().send(TranslationManager.translation("feature.shop.error.cannot_save_location"), Prefix.SHOP, MessageType.ERROR, false);
 	                OMCLogger.error("Error when saving shop location for player {}! Trying to remove shop...", player.getName());
-                    if (!shopManager.removeShop(shop)) MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.cannot_delete"), Prefix.SHOP, MessageType.ERROR, false);
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.pay_back",
+                    if (!shopManager.removeShop(shop)) player.message().send(TranslationManager.translation("feature.shop.error.cannot_delete"), Prefix.SHOP, MessageType.ERROR, false);
+                    player.message().send(TranslationManager.translation("feature.shop.error.pay_back",
                             Component.text("500 " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)), Prefix.SHOP, MessageType.INFO, true);
                 }
                 else {
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.success_created"), Prefix.SHOP, MessageType.SUCCESS, true);
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.withdraw_money",
+                    player.message().send(TranslationManager.translation("feature.shop.player.success_created"), Prefix.SHOP, MessageType.SUCCESS, true);
+                    player.message().send(TranslationManager.translation("feature.shop.player.withdraw_money",
                             Component.text("500 " + economyManager.getEconomyIcon()).color(NamedTextColor.RED)), Prefix.SHOP, MessageType.SUCCESS, false);
                 }
             });
@@ -135,7 +136,7 @@ public class PlayerShopManager extends Feature {
                     Bukkit.getPluginManager().callEvent(new PlaceShopEvent(player)));
             return true;
         } else {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.multiblock"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.error.multiblock"), Prefix.SHOP, MessageType.ERROR, false);
             return false;
         }
     }
@@ -147,14 +148,14 @@ public class PlayerShopManager extends Feature {
      * @param shop   The shop to be deleted. If the shop is null or not empty, the deletion
      *               process will be aborted with a warning message.
      */
-    public void deleteShop(Player player, Shop shop) {
+    public void deleteShop(OMCPlayer player, Shop shop) {
         if (shop == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.not_found"), Prefix.SHOP, MessageType.WARNING, false);
+            player.message().send(TranslationManager.translation("feature.shop.error.not_found"), Prefix.SHOP, MessageType.WARNING, false);
             return;
         }
         
         if (shop.getItem() != null && shop.getItem().getAmount() > 0) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.is_not_empty"), Prefix.SHOP, MessageType.WARNING, false);
+            player.message().send(TranslationManager.translation("feature.shop.player.is_not_empty"), Prefix.SHOP, MessageType.WARNING, false);
             return;
         }
         
@@ -163,31 +164,31 @@ public class PlayerShopManager extends Feature {
         
         if (world.getBlockAt(shop.getMultiblock().stockBlockLoc()).getState() instanceof Barrel barrel) {
             if (!barrel.getInventory().isEmpty()) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.barrel_is_not_empty"), Prefix.SHOP, MessageType.WARNING, false);
+                player.message().send(TranslationManager.translation("feature.shop.player.barrel_is_not_empty"), Prefix.SHOP, MessageType.WARNING, false);
                 return;
             }
         } else {
             OMCLogger.error("Barrel block is not an instance of barrel");
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.barrel"), Prefix.SHOP, MessageType.WARNING, false);
+            player.message().send(TranslationManager.translation("feature.shop.error.barrel"), Prefix.SHOP, MessageType.WARNING, false);
             return;
         }
         
         if (!shopManager.removeShop(shop)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.cannot_delete"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.error.cannot_delete"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             if (!shopDatabaseManager.deleteDBShop(shop)) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.cannot_remove_furniture"), Prefix.SHOP, MessageType.ERROR, false);
+                player.message().send(TranslationManager.translation("feature.shop.error.cannot_remove_furniture"), Prefix.SHOP, MessageType.ERROR, false);
                 OMCLogger.error("Error when " + player.getName() + " trying to delete his shop!");
             }
         });
-        
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.deleted"), Prefix.SHOP, MessageType.SUCCESS, false);
-        
-        economyManager.addBalance(player.getUniqueId(), 400);
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.player.pay_back",
+
+        player.message().send(TranslationManager.translation("feature.shop.player.deleted"), Prefix.SHOP, MessageType.SUCCESS, false);
+
+        player.economy().addBalance(400);
+        player.message().send(TranslationManager.translation("feature.shop.player.pay_back",
                 Component.text("400 " + economyManager.getEconomyIcon()).color(NamedTextColor.GREEN)), Prefix.SHOP, MessageType.SUCCESS, true);
     }
 }

@@ -4,6 +4,7 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -57,9 +58,9 @@ public class CityBankWithdrawMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = City.ofPlayer(player);
+        City city = player.city().getCity();
         if (city == null) return new HashMap<>();
 
         boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW);
@@ -82,7 +83,7 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.all.title"));
             itemMeta.lore(loreBankWithdrawAll);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             city.withdrawCityBank(player, String.valueOf(moneyBankCity));
             player.closeInventory();
         }));
@@ -102,7 +103,7 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(13, new ItemMenuBuilder(this, new ItemStack(Material.DISPENSER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.half.title"));
             itemMeta.lore(loreBankWithdrawHalf);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             city.withdrawCityBank(player, String.valueOf(halfMoneyBankCity));
             player.closeInventory();
         }));
@@ -119,7 +120,7 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.input.title"));
             itemMeta.lore(loreBankWithdrawInput);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
             DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.withdraw.input.prompt"), MAX_LENGTH, input -> {

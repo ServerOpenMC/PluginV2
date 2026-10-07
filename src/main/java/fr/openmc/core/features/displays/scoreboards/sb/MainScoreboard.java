@@ -3,6 +3,7 @@ package fr.openmc.core.features.displays.scoreboards.sb;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
@@ -49,12 +50,12 @@ public class MainScoreboard extends BaseScoreboard {
     }
 
     @Override
-    protected void updateTitle(Player player, SternalBoard board) {
+    protected void updateTitle(OMCPlayer player, SternalBoard board) {
         board.updateTitle(getTitle());
     }
 
     @Override
-    public void update(Player player, SternalBoard board) {
+    public void update(OMCPlayer player, SternalBoard board) {
         List<Component> lines = new ArrayList<>(getDefaultLines(player, false));
 
         // Corpse
@@ -101,7 +102,7 @@ public class MainScoreboard extends BaseScoreboard {
         board.updateLines(lines);
     }
 
-    public static List<Component> getDefaultLines(Player player, boolean inWar) {
+    public static List<Component> getDefaultLines(OMCPlayer player, boolean inWar) {
         BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
         EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
@@ -117,7 +118,7 @@ public class MainScoreboard extends BaseScoreboard {
                 : TranslationManager.translation("feature.displays.scoreboard.location.wilderness", true);
         location = (chunkCity != null) ? toSmall(player, chunkCity.getName()) : location;
 
-        String balance = economyManager.getMiniBalance(player.getUniqueId());
+        String balance = player.economy().getMiniBalance();
         double bits = bitsManager.getBits(player.getUniqueId());
 
         List<Component> lines = new ArrayList<>();
@@ -184,7 +185,7 @@ public class MainScoreboard extends BaseScoreboard {
     }
 
     @Override
-    public boolean shouldDisplay(Player player) {
+    public boolean shouldDisplay(OMCPlayer player) {
         return true; // Toujours afficher ce scoreboard par défaut
     }
 

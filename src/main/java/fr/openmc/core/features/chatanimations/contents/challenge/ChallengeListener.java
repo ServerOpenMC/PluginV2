@@ -1,6 +1,7 @@
 package fr.openmc.core.features.chatanimations.contents.challenge;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.chatanimations.ChatAnimation;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
@@ -27,12 +28,11 @@ public class ChallengeListener implements Listener {
         if (animation.isFinished()) return;
         if (!challenge.getKeyBlock().matches(event.getBlock())) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
 
         if (count >= challenge.getTarget()) {
-            Player winner = event.getPlayer();
-            animation.complete(winner);
+            animation.complete(player);
         }
     }
 
@@ -43,7 +43,7 @@ public class ChallengeListener implements Listener {
         if (!(animation instanceof JumpChallenge challenge)) return;
         if (animation.isFinished()) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
 
         if (count >= challenge.getTarget()) {
@@ -59,7 +59,7 @@ public class ChallengeListener implements Listener {
         if (animation.isFinished()) return;
         if (event.getEntity().getType() != challenge.getEntityType()) return;
 
-        Player killer = event.getEntity().getKiller();
+        OMCPlayer killer = OMCPlayer.of(event.getEntity().getKiller());
         if (killer == null) return;
 
         int count = challenge.getProgress().merge(killer.getUniqueId(), 1, Integer::sum);
@@ -77,6 +77,7 @@ public class ChallengeListener implements Listener {
         if (animation.isFinished()) return;
         if (!ItemUtils.isSimilar(event.getRecipe().getResult(), challenge.getItem())) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
+        OMCPlayer playerOMC = OMCPlayer.of(player);
 
         int count;
         if (!event.isShiftClick()) {
@@ -88,10 +89,10 @@ public class ChallengeListener implements Listener {
             maxCraftable = Math.min(maxCraftable, capacity);
             if (maxCraftable == 0) return;
 
-            count = challenge.getProgress().merge(player.getUniqueId(), maxCraftable, Integer::sum);
+            count = challenge.getProgress().merge(playerOMC.getUniqueId(), maxCraftable, Integer::sum);
         }
         if (count >= challenge.getTarget()) {
-            animation.complete(player);
+            animation.complete(playerOMC);
         }
     }
 
@@ -104,7 +105,7 @@ public class ChallengeListener implements Listener {
         if (!(animation instanceof FishingChallenge challenge)) return;
         if (animation.isFinished()) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
 
         if (count >= challenge.getTarget()) {
@@ -120,7 +121,7 @@ public class ChallengeListener implements Listener {
         if (animation.isFinished()) return;
         if (!challenge.getKeyBlock().matches(event.getBlock())) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
 
         if (count >= challenge.getTarget()) {
@@ -137,7 +138,7 @@ public class ChallengeListener implements Listener {
         if (!(animation instanceof WalkDistanceChallenge challenge)) return;
         if (animation.isFinished()) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         double distance = event.getFrom().distance(event.getTo());
         double total = challenge.getProgress().merge(player.getUniqueId(), distance, Double::sum);
 

@@ -43,7 +43,7 @@ public class Money {
                         TranslationManager.translation(
                                 "feature.economy.money.others",
                                 target.getNameWithHead().color(NamedTextColor.YELLOW),
-                                Component.text(economyManager.getFormattedBalance(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                                Component.text(target.economy().getFormattedBalance()).color(NamedTextColor.YELLOW)
                         ),
                         Prefix.OPENMC, MessageType.INFO, true);
             } else {
@@ -58,7 +58,7 @@ public class Money {
     public void setMoney(CommandSender player,
                          @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                          @Range(min = 1E-10) double amount) {
-        economyManager.setBalance(target.getUniqueId(), amount);
+        target.economy().setBalance(amount);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.money.set.success",
@@ -67,7 +67,7 @@ public class Money {
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
-            MessagesManager.sendMessage(target.getPlayer(),
+            target.message().send(
                     TranslationManager.translation(
                             "feature.economy.money.set.target",
                             Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
@@ -82,7 +82,7 @@ public class Money {
     public void addMoney(CommandSender player,
                          @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                          @Range(min = 1E-10) double amount) {
-        economyManager.addBalance(target.getUniqueId(), amount, "Admin - Ajout par " + player == null ? "Console" : player.getName());
+        target.economy().addBalance(amount, "Admin - Ajout par " + player == null ? "Console" : player.getName());
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.money.add.success",
@@ -90,6 +90,7 @@ public class Money {
                         target.getNameWithHead().color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
+
         if (target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
@@ -106,7 +107,7 @@ public class Money {
     public void removeMoney(CommandSender player,
                             @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                             @Range(min = 1E-10) double amount) {
-        if (economyManager.withdrawBalance(target.getUniqueId(), amount, "Admin  - Retirer par " + player == null ? "Console" : player.getName())) {
+        if (target.economy().withdrawBalance(amount, "Admin  - Retirer par " + player == null ? "Console" : player.getName())) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.economy.money.remove.success",
@@ -115,7 +116,7 @@ public class Money {
                     ),
                     Prefix.OPENMC, MessageType.SUCCESS, true);
             if (target.isOnline()) {
-                MessagesManager.sendMessage(target.getPlayer(),
+                target.message().send(
                         TranslationManager.translation(
                                 "feature.economy.money.remove.target",
                                 Component.text(economyManager.getFormattedNumber(amount)).color(NamedTextColor.YELLOW)
@@ -132,7 +133,7 @@ public class Money {
     @CommandPermission("omc.admin.commands.money.reset")
     public void resetMoney(CommandSender player,
                            @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target) {
-        economyManager.setBalance(target.getUniqueId(), 0);
+        target.economy().setBalance(0);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.money.reset.success",
@@ -141,7 +142,7 @@ public class Money {
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
-            MessagesManager.sendMessage(target.getPlayer(),
+            target.message().send(
                     TranslationManager.translation(
                             "feature.economy.money.reset.target",
                             Component.text(economyManager.getFormattedNumber(0)).color(NamedTextColor.YELLOW)

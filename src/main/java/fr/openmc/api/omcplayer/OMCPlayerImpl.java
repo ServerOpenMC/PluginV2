@@ -21,17 +21,11 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
     @Delegate(types = Player.class)
     private final Player player;
-    private final OMCPlayerMessage message;
-    private final OMCPlayerCity city;
-    private final OMCPlayerEconomy economy;
     private final OMCPlayerSettings settings;
 
     private OMCPlayerImpl(Player player) {
         super(player);
         this.player = player;
-        this.message = new OMCPlayerMessage(player);
-        this.city = new OMCPlayerCity(player);
-        this.economy = new OMCPlayerEconomy(player);
         this.settings = new OMCPlayerSettings(player);
     }
 
@@ -84,21 +78,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
     public static void removeCache(UUID uuid) {
         CACHE.remove(uuid);
-    }
-
-    @Override
-    public OMCPlayerMessage message() {
-        return message;
-    }
-
-    @Override
-    public OMCPlayerEconomy economy() {
-        return economy;
-    }
-
-    @Override
-    public OMCPlayerCity city() {
-        return city;
     }
 
     @Override

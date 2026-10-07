@@ -20,7 +20,6 @@ public class ListenersManager {
                 OMCPlayerCacheListener::new,
                 HappyGhastListener::new,
                 SessionsListener::new,
-                JoinQuitMessageListener::new,
                 ClockInfos::new,
                 ChronometerListener::new,
                 ItemInteraction::new,
@@ -34,6 +33,16 @@ public class ListenersManager {
                 () -> new RegionTrackingListener(),
                 () -> new SpawnerExtractorListener(),
                 () -> new ItemsAddersListener()
+        );
+    }
+
+    /**
+     * Enregistre les listeners.
+     */
+    public static void postInit() {
+        // () -> : nécessaire si y'a un package d'api externe (ex com.comphenix.protocol)
+        registerEvents(
+                JoinQuitMessageListener::new
         );
     }
 

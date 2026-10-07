@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.bank.commands;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
@@ -30,7 +31,7 @@ public class CityBankCommand {
 
     @Command({"city bank deposit", "ville bank deposit"})
     @Description("Met de votre argent dans la banque de ville")
-    public void deposit(Player player,
+    public void deposit(OMCPlayer player,
                  @Named("montant") @Range(min = 1) String input) {
         City city = City.ofPlayer(player);
 
@@ -41,8 +42,8 @@ public class CityBankCommand {
 
     @Command({"city bank withdraw", "ville bank withdraw"})
     @Description("Prend de l'argent de la banque de ville")
-    public void withdraw(Player player,
-                  @Named("montant") @Range(min = 1) String input) {
+    public void withdraw(OMCPlayer player,
+                         @Named("montant") @Range(min = 1) String input) {
         City city = City.ofPlayer(player);
 
         if (!CityBankConditions.canCityWithdraw(city, player)) return;

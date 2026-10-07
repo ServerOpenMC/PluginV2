@@ -4,6 +4,7 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -56,9 +57,9 @@ public class PersonalBankDepositMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        double moneyPlayer = economyManager.getBalance(player.getUniqueId());
+        double moneyPlayer = player.economy().getBalance();
         double halfMoneyPlayer = moneyPlayer/2;
 
         List<Component> loreBankDepositAll = TranslationManager.translationLore(
@@ -70,7 +71,7 @@ public class PersonalBankDepositMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.all.name"));
             itemMeta.lore(loreBankDepositAll);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             bankManager.deposit(player.getUniqueId(), String.valueOf(moneyPlayer));
             player.closeInventory();
         }));
@@ -85,7 +86,7 @@ public class PersonalBankDepositMenu extends Menu {
         inventory.put(13, new ItemMenuBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.half.name"));
             itemMeta.lore(loreBankDepositHalf);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             bankManager.deposit(player.getUniqueId(), String.valueOf(halfMoneyPlayer));
             player.closeInventory();
         }));
@@ -95,7 +96,7 @@ public class PersonalBankDepositMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.input.name"));
             itemMeta.lore(loreBankDepositInput);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             DialogInput.send(player, TranslationManager.translation("feature.economy.bank.deposit.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
 

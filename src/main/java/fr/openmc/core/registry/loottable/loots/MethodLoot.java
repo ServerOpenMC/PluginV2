@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +17,9 @@ public class MethodLoot implements CustomLoot, RepresentedItem {
     private final Component text;
     @Setter
     private double chance;
-    private final Consumer<Player> receiverAction;
+    private final Consumer<OMCPlayer> receiverAction;
 
-    public MethodLoot(ItemStack representativeItem, Component text, Consumer<Player> receiverAction, double chance) {
+    public MethodLoot(ItemStack representativeItem, Component text, Consumer<OMCPlayer> receiverAction, double chance) {
         this.representativeItem = representativeItem;
         this.text = text;
         this.chance = chance;
@@ -31,7 +32,7 @@ public class MethodLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OMCPlayer receiver) {
         receiverAction.accept(receiver);
         return LootReward.loots(Collections.singleton(this));
     }

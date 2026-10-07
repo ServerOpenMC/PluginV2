@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.LootReward;
@@ -51,7 +52,7 @@ public class TableLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OMCPlayer receiver) {
         if (this.giveRewards)
             return lootTable.rollLoots(receiver).copy();
         else

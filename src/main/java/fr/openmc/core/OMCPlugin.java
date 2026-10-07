@@ -98,6 +98,9 @@ public class OMCPlugin extends JavaPlugin {
         /* REGISTRIES */
         OMCRegistry.postInitAll();
 
+        /* LISTENERS */
+        ListenersManager.postInit();
+
         if (OMCRegistry.HOOKS.WORLD_GUARD.isEnable()) {
             ContestParticlesUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
         }

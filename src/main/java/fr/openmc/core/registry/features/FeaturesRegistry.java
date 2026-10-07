@@ -74,7 +74,6 @@ public class FeaturesRegistry extends Registry<String, Feature>
 
     private final List<FeatureEntry<?>> declarations = new ArrayList<>();
 
-
     public final FeatureEntry<HologramLoader> HOLOGRAM_LOADER = declare(FeatureLoadingType.RUNTIME,
             () -> new HologramLoader(), NOT_IN_UNIT_TEST);
     public final FeatureEntry<TicketManager> TICKETS = declare(FeatureLoadingType.RUNTIME,
@@ -111,18 +110,16 @@ public class FeaturesRegistry extends Registry<String, Feature>
             AdminShopManager::new);
     public final FeatureEntry<HelpConfigManager> HELP_CONFIG = declare(FeatureLoadingType.RUNTIME,
             HelpConfigManager::new);
-    public final FeatureEntry<AnimationsManager> ANIMATIONS = declare(FeatureLoadingType.RUNTIME,
-            () -> new AnimationsManager(), NOT_IN_UNIT_TEST, NEED_ITEMS_ADDER);
-    public final FeatureEntry<HalloweenManager> HALLOWEEN = declare(FeatureLoadingType.RUNTIME,
-            HalloweenManager::new);
-    public final FeatureEntry<QuestProgressSaveManager> QUEST_PROGRESS = declare(FeatureLoadingType.RUNTIME,
-            QuestProgressSaveManager::new);
     public final FeatureEntry<MotdUtils> MOTD = declare(FeatureLoadingType.RUNTIME,
             MotdUtils::new);
     public final FeatureEntry<PlayerSettingsManager> PLAYER_SETTINGS = declare(FeatureLoadingType.RUNTIME,
             PlayerSettingsManager::new);
+    public final FeatureEntry<AnimationsManager> ANIMATIONS = declare(FeatureLoadingType.RUNTIME,
+            () -> new AnimationsManager(), NOT_IN_UNIT_TEST, NEED_ITEMS_ADDER);
     public final FeatureEntry<MailboxManager> MAILBOX = declare(FeatureLoadingType.RUNTIME,
             MailboxManager::new);
+    public final FeatureEntry<HalloweenManager> HALLOWEEN = declare(FeatureLoadingType.RUNTIME,
+            HalloweenManager::new);
     public final FeatureEntry<DiscordLinkManager> DISCORD_LINK = declare(FeatureLoadingType.RUNTIME,
             DiscordLinkManager::new);
     public final FeatureEntry<CorpseManager> CORPSE = declare(FeatureLoadingType.RUNTIME,

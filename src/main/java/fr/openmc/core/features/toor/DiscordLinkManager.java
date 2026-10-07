@@ -6,11 +6,13 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.toor.commands.LinkCommand;
 import fr.openmc.core.features.toor.commands.UnlinkCommand;
 import fr.openmc.core.features.toor.event.ConnectToDiscordEvent;
 import fr.openmc.core.features.toor.models.DBDiscordLink;
 import fr.openmc.core.features.toor.utils.RequestSigner;
+import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -37,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class DiscordLinkManager extends Feature implements HasDatabase, HasCommands {
+    private final BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
+    private final GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
 
     private Dao<DBDiscordLink, UUID> discordLinksDao;
     private final Map<UUID, DBDiscordLink> linkCache = new ConcurrentHashMap<>();
@@ -45,7 +49,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     private final Map<String, PendingLink> pendingLinks = new ConcurrentHashMap<>();
     private final TtlCache<String, String> discordUsernameCache = new TtlCache<>(10, TimeUnit.MINUTES);
 
-    public final InternalToorApiClient toorApiClient = new InternalToorApiClient();
+    public final InternalToorApiClient toorApiClient = new InternalToorApiClient(this);
 
     private final long CODE_TTL_MS = 10 * 60 * 1000;
     private final long POLL_INTERNAL_TICKS = 20L * 3;
@@ -53,8 +57,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     @Getter
     private String botUrl = "http://localhost:3000";
 
-    private record PendingLink(UUID playerUUID, long expiresAt, BukkitTask pollTask) {
-    }
+    private record PendingLink(UUID playerUUID, long expiresAt, BukkitTask pollTask) { }
 
     @Override
     protected void init() {
@@ -152,9 +155,9 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         notifyPlayer(playerUUID, "feature.discord.success", MessageType.SUCCESS, Component.text(discordUsername));
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(),
                 () -> Bukkit.getPluginManager().callEvent(new ConnectToDiscordEvent(playerUUID, discordUserId, discordUsername)));
-        Long githubId = OMCRegistry.HOOKS.GITHUB.getContributorId(playerUUID);
+        Long githubId = gitHubHook.getContributorId(playerUUID);
         if (githubId != null)
-            OMCRegistry.FEATURES.BITS.get().applyContributorBitsUpdate(githubId);
+            bitsManager.applyContributorBitsUpdate(githubId);
     }
 
     private void confirmLink(UUID playerUUID, String discordUserId) {

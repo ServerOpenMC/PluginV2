@@ -2,6 +2,7 @@ package fr.openmc.core.features.dimopener;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dimopener.commands.DimensionCommands;
@@ -148,24 +149,24 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
         REQUIRED_DIMENSION_NOT_OPENED
     }
 
-    public ContributeResult contributeItems(Player player, String dimensionId, int amount) {
+    public ContributeResult contributeItems(OMCPlayer player, String dimensionId, int amount) {
         return contribute(player, dimensionId, amount, StepDimensionData.Type.ITEMS);
     }
 
-    public ContributeResult contributeMoney(Player player, String dimensionId, double amount) {
+    public ContributeResult contributeMoney(OMCPlayer player, String dimensionId, double amount) {
         if (amount <= 0) return ContributeResult.WRONG_STEP_STATE;
 
         DimensionData data = dimensions.get(dimensionId.toLowerCase());
         if (data == null) return ContributeResult.INVALID_STEP;
         if (!isPrerequisiteMet(data)) return ContributeResult.REQUIRED_DIMENSION_NOT_OPENED;
 
-        if (!economyManager.withdrawBalance(player.getUniqueId(), amount, "Dimension Opener : " + dimensionId)) {
+        if (!player.economy().withdrawBalance(amount, "Dimension Opener : " + dimensionId)) {
             return ContributeResult.WRONG_STEP_STATE;
         }
         return contribute(player, dimensionId, amount, StepDimensionData.Type.MONEY);
     }
 
-    private ContributeResult contribute(Player player, String dimensionId, double amount, StepDimensionData.Type expectedType) {
+    private ContributeResult contribute(OMCPlayer player, String dimensionId, double amount, StepDimensionData.Type expectedType) {
         String id = dimensionId.toLowerCase();
         DimensionData data = dimensions.get(id);
         DimensionProgress progress = progressMap.get(id);

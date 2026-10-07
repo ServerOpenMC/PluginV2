@@ -149,7 +149,7 @@ public class VampireBossLootManager {
             }
         }
 
-        mailBoxManager.sendItemsToOfflinePlayer(offlinePlayer, rewards.toArray(ItemStack[]::new));
+        mailBoxManager.sendItemsToOfflinePlayer(offlinePlayer.getUniqueId(), rewards.toArray(ItemStack[]::new));
     }
 
     private double getChanceMultiplier(double participation) {

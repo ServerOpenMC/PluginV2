@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -30,7 +31,7 @@ public class PlayerFishListener implements Listener {
 
     @EventHandler
     public void onStartFishing(PlayerFishEvent event) {
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         if (!DreamUtils.isInDreamWorld(player)) return;
 
         FishHook hook = event.getHook();

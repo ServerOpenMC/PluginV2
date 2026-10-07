@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.loottable.LootReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,7 +11,7 @@ public interface CustomLoot {
     Component getDisplayText();
     double getChance();
     void setChance(double chance);
-    LootReward run(Player receiver);
+    LootReward run(OMCPlayer receiver);
 
     default ItemStack getRepresentativeItem() {
         if (this instanceof RepresentedItem representedItem)

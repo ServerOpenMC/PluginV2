@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
@@ -28,7 +29,7 @@ public abstract class CustomLootTable {
                 .sum();
     }
 
-    public LootReward rollLoots(Player receiver) {
+    public LootReward rollLoots(OMCPlayer receiver) {
         List<CustomLoot> guaranted = this.getLoots().stream()
                 .filter(loot -> loot.getChance() >= 1.0)
                 .toList();
@@ -97,7 +98,7 @@ public abstract class CustomLootTable {
         return LootReward.loots(result);
     }
 
-    public LootReward rollLootsWithAmount(Player receiver, int amountRoll) {
+    public LootReward rollLootsWithAmount(OMCPlayer receiver, int amountRoll) {
         List<CustomLoot> loot = new ArrayList<>();
 
         for (int i = 0; i < amountRoll; i++) {
@@ -107,7 +108,7 @@ public abstract class CustomLootTable {
         return LootReward.loots(loot);
     }
 
-    public LootReward rollLootsWithoutGuarantee(Player receiver) {
+    public LootReward rollLootsWithoutGuarantee(OMCPlayer receiver) {
         List<CustomLoot> result = new ArrayList<>();
 
         double roll = ThreadLocalRandom.current().nextDouble();
@@ -157,7 +158,7 @@ public abstract class CustomLootTable {
         return LootReward.loots(pool);
     }
 
-    public void openMenu(Player player) {
+    public void openMenu(OMCPlayer player) {
         new LootsInfoMenu(player, this.getName(), this.getLoots()).open();
     }
 }

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.chatanimations;
 
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.LootReward;
@@ -26,7 +27,7 @@ public abstract class ChatAnimation {
         // a override si besoin
     }
 
-    public void complete(Player winner) {
+    public void complete(OMCPlayer winner) {
         if (finished) return;
         finished = true;
 

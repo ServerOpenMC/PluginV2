@@ -4,6 +4,7 @@ import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -57,14 +58,14 @@ public class CityBankDepositMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = City.ofPlayer(player);
+        City city = player.city().getCity();
         assert city != null;
 
-        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT);
+        boolean hasPermissionMoneyGive = city.hasPermission(player, CityPermission.MONEY_DEPOSIT);
 
-        double moneyPlayer = economyManager.getBalance(player.getUniqueId());
+        double moneyPlayer = player.economy().getBalance();
         double halfMoneyPlayer = moneyPlayer / 2;
 
         List<Component> loreBankDepositAll;
@@ -82,7 +83,7 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.all.title"));
             itemMeta.lore(loreBankDepositAll);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             city.depositCityBank(player, String.valueOf(moneyPlayer));
             player.closeInventory();
         }));
@@ -103,7 +104,7 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(13, new ItemMenuBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.half.title"));
             itemMeta.lore(loreBankDepositHalf);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             city.depositCityBank(player, String.valueOf(halfMoneyPlayer));
             player.closeInventory();
         }));
@@ -120,14 +121,13 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.deposit.input.title"));
             itemMeta.lore(loreBankDepositInput);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
             DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.deposit.input.prompt"), MAX_LENGTH, input -> {
-                        if (input == null) return;
+                if (input == null) return;
                 city.depositCityBank(player, input);
-                    }
-            );
+            });
 
         }));
 

@@ -2,6 +2,7 @@ package fr.openmc.core.features.shops.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.ShopFurniture;
@@ -144,13 +145,13 @@ public class Shop {
      * to the owner's balance.
      */
     public void withdrawTurnover() {
-        Player player = CacheOfflinePlayer.getOfflinePlayer(getOwnerUUID()).getPlayer();
+        OMCPlayer player = OMCPlayer.of(getOwnerUUID());
         if (player == null) return;
         if (!isOwner(player)) return;
         if (getTurnover() <= 0) return;
         double tempTurnover = getTurnover();
-        economyManager.addBalance(player.getUniqueId(), tempTurnover * 0.8, "turnover");
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.get_turnover",
+        player.economy().addBalance(tempTurnover * 0.8, "turnover");
+        player.message().send(TranslationManager.translation("feature.shop.get_turnover",
                 Component.text(tempTurnover * 0.8 + " " + economyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
         setTurnover(0);
     }
@@ -162,22 +163,22 @@ public class Shop {
      * @param player the player attempting to make the purchase
      * @param amount the quantity of items the player wants to buy
      */
-    public void buy(Player player, int amount) {
+    public void buy(OMCPlayer player, int amount) {
         if (isOwner(player)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         if (this.item.getAmount() < amount) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         if (!ItemUtils.hasEnoughSpace(player, item.getItemStack(), amount)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_space"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.not_enough_space"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         double totalPrice = this.item.getPrice(amount);
-        if (!economyManager.withdrawBalance(player.getUniqueId(), totalPrice, getName() + " buying")) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_money"), Prefix.SHOP, MessageType.ERROR, false);
+        if (!player.economy().withdrawBalance(totalPrice, getName() + " buying")) {
+            player.message().send(TranslationManager.translation("feature.shop.not_enough_money"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         player.give(ItemUtils.splitAmountIntoStack(item.clone().getItemStack(), amount));

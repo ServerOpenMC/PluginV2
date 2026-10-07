@@ -1,6 +1,7 @@
 package fr.openmc.core.features.displays.scoreboards;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -18,7 +19,7 @@ public abstract class BaseScoreboard {
      * @param player Le joueur
      * @param board Le scoreboard à initialiser
      */
-    public void init(Player player, SternalBoard board) {
+    public void init(OMCPlayer player, SternalBoard board) {
         updateTitle(player, board);
         update(player, board);
     }
@@ -29,7 +30,7 @@ public abstract class BaseScoreboard {
      * @param player Le joueur du scoreboard à mettre à jour
      * @param board Le scoreboard à mettre à jour
      */
-    protected abstract void updateTitle(Player player, SternalBoard board);
+    protected abstract void updateTitle(OMCPlayer player, SternalBoard board);
 
     /**
      * Met à jour les lignes du scoreboard
@@ -37,7 +38,7 @@ public abstract class BaseScoreboard {
      * @param player Le joueur
      * @param board Le scoreboard à mettre à jour
      */
-    protected abstract void update(Player player, SternalBoard board);
+    protected abstract void update(OMCPlayer player, SternalBoard board);
 
     /**
      * Détermine si le scoreboard doit être affiché pour un joueur
@@ -45,7 +46,7 @@ public abstract class BaseScoreboard {
      * @param player Le joueur à vérifier
      * @return true si le scoreboard doit être affiché, false sinon
      */
-    protected abstract boolean shouldDisplay(Player player);
+    protected abstract boolean shouldDisplay(OMCPlayer player);
 
     /**
      * @return La priorité du scoreboard (plus la valeur est haute, plus la priorité est élevée).

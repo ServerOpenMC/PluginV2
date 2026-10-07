@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.registries.items.tools;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
@@ -40,15 +41,15 @@ public class MeteoWand extends DreamItem implements UsableItem {
     }
 
     @Override
-    public void onRightClick(Player player, PlayerInteractEvent event) {
+    public void onRightClick(OMCPlayer player, PlayerInteractEvent event) {
         World world = player.getWorld();
         if (!world.getName().equals("world")) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.must_be_overworld"), Prefix.OPENMC, MessageType.WARNING, false);
+            player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.must_be_overworld"), Prefix.OPENMC, MessageType.WARNING, false);
             return;
         }
 
         if (!DynamicCooldownManager.isReady(player.getUniqueId(), "player:meteo_wand")) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.cooldown", Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "player:meteo_wand"))).color(NamedTextColor.GREEN)), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.cooldown", Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "player:meteo_wand"))).color(NamedTextColor.GREEN)), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -70,7 +71,7 @@ public class MeteoWand extends DreamItem implements UsableItem {
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
 
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.success"), Prefix.OPENMC, MessageType.SUCCESS, false);
+        player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.success"), Prefix.OPENMC, MessageType.SUCCESS, false);
         DynamicCooldownManager.use(player.getUniqueId(), "player:meteo_wand", COOLDOWN_METEO_WAND);
     }
 }

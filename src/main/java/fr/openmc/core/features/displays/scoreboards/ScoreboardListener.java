@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +17,7 @@ public class ScoreboardListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         SternalBoard board = manager.boardCache.find(player.getUniqueId());
 
         if (board == null) manager.createNewBoard(player);
