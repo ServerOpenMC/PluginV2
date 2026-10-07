@@ -33,7 +33,6 @@ public class AnimationsManager extends Feature implements HasListeners, HasComma
         OMCPlugin plugin = OMCPlugin.getInstance();
 
         saveAllAnimation(plugin);
-
         loadAllAnimations(plugin);
     }
 
@@ -54,7 +53,7 @@ public class AnimationsManager extends Feature implements HasListeners, HasComma
         // nothing to save
     }
 
-    public static JsonObject loadAnimation(OMCPlugin plugin, String resourcePath) {
+    private JsonObject loadAnimation(OMCPlugin plugin, String resourcePath) {
         try (InputStream inputStream = plugin.getResource(resourcePath)) {
             if (inputStream == null) {
                 OMCLogger.error("Animation resource not found: {}", resourcePath);
@@ -71,7 +70,7 @@ public class AnimationsManager extends Feature implements HasListeners, HasComma
         }
     }
 
-    public static void loadAllAnimations(OMCPlugin plugin) {
+    private void loadAllAnimations(OMCPlugin plugin) {
         for (Animation animation : Animation.values()) {
             String animationName = animation.getNameAnimation();
 
@@ -106,7 +105,7 @@ public class AnimationsManager extends Feature implements HasListeners, HasComma
         }
     }
 
-    public static void saveAllAnimation(OMCPlugin plugin) {
+    private void saveAllAnimation(OMCPlugin plugin) {
         for (Animation animation : Animation.values()) {
             String animationJsonName = animation.getNameAnimation();
 
@@ -115,7 +114,7 @@ public class AnimationsManager extends Feature implements HasListeners, HasComma
         }
     }
 
-    public static void saveDefaultAnimation(OMCPlugin plugin, String resourcePath) {
+    private void saveDefaultAnimation(OMCPlugin plugin, String resourcePath) {
         File folder = new File(plugin.getDataFolder(), "data/animations");
         if (!folder.exists()) {
             folder.mkdirs();

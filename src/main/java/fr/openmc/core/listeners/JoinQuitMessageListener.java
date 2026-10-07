@@ -35,6 +35,7 @@ public class JoinQuitMessageListener implements Listener {
     private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final QuestsManager questsManager = OMCRegistry.FEATURES.QUESTS.get();
+    private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
     private final LuckPermsHook luckPermsHook;
 
     public static final String JOIN_MESSAGE = "§8[§a§l+§8] §r%s%s";
@@ -134,16 +135,16 @@ public class JoinQuitMessageListener implements Listener {
             return null;
         });
 
-        if (TPAManager.requesterHasPendingRequest(player)) {
-            Player targetTPA = TPAManager.getTargetByRequester(player);
-            TPAManager.removeRequest(player, targetTPA);
+        if (tpaManager.requesterHasPendingRequest(player)) {
+            Player targetTPA = tpaManager.getTargetByRequester(player);
+            tpaManager.removeRequest(player, targetTPA);
             MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
                     "core.player.tpa.expired_target",
                     Component.text(player.getName()).color(NamedTextColor.GOLD)
             ), Prefix.OPENMC, MessageType.INFO, true);
-        } else if (TPAManager.hasPendingRequest(player)) {
-            for (Player requester : TPAManager.getRequesters(player)) {
-                TPAManager.removeRequest(requester, player);
+        } else if (tpaManager.hasPendingRequest(player)) {
+            for (Player requester : tpaManager.getRequesters(player)) {
+                tpaManager.removeRequest(requester, player);
                 MessagesManager.sendMessage(requester, TranslationManager.translation(
                         "core.player.tpa.expired_requester",
                         Component.text(player.getName()).color(NamedTextColor.GOLD)

@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ShopStatsMenu extends Menu {
-	private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+	private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 	
 	private final Shop shop;
 	private int totalSoldItems = 0;
@@ -75,7 +75,7 @@ public class ShopStatsMenu extends Menu {
 						Component.text(this.totalSoldItems).color(NamedTextColor.DARK_GREEN)))));
 		map.put(13, new ItemMenuBuilder(this, Material.GOLD_BLOCK, itemMeta ->
 				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.turnover.title",
-						Component.text(this.shop.getTurnover() + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)))));
+						Component.text(this.shop.getTurnover() + " " + ECONOMY_MANAGER.getEconomyIcon()).color(NamedTextColor.GOLD)))));
 		map.put(14, new ItemMenuBuilder(this, Material.PLAYER_HEAD, itemMeta ->
 				itemMeta.displayName(TranslationManager.translation("feature.shop.menu.stats.buyers.title",
 						Component.text(this.totalUniquePlayers.size()).color(NamedTextColor.LIGHT_PURPLE)))));

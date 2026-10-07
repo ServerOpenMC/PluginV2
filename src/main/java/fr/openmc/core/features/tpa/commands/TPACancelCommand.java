@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -12,6 +13,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPACancelCommand {
+	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
 	
 	/**
 	 * Command to cancel a teleport request.
@@ -20,19 +22,19 @@ public class TPACancelCommand {
 	@Command("tpacancel")
 	@CommandPermission("omc.commands.tpa")
 	public void tpaCancel(Player player) {
-		if (!TPAManager.requesterHasPendingRequest(player)) {
+		if (!tpaManager.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		Player target = TPAManager.getTargetByRequester(player);
+		Player target = tpaManager.getTargetByRequester(player);
 
 		if (target == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
-		TPAManager.removeRequest(player, target);
+		tpaManager.removeRequest(player, target);
 		MessagesManager.sendMessage(player, TranslationManager.translation(
 				"feature.tpa.cancel.success",
 				Component.text(target.getName()).color(NamedTextColor.GOLD)

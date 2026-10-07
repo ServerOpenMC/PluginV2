@@ -35,7 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfileMenu extends Menu {
-    private final static FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
+    private final static DiscordLinkManager DISCORD_LINK_MANAGER = OMCRegistry.FEATURES.DISCORD_LINK.get();
+    private final static FriendManager FRIEND_MANAGER = OMCRegistry.FEATURES.FRIENDS.get();
     private final OfflinePlayer target;
 
     public ProfileMenu(Player owner) {
@@ -99,7 +100,7 @@ public class ProfileMenu extends Menu {
                 ? "feature.profile.status.online"
                 : "feature.profile.status.offline";
 
-        String discordUsername = DiscordLinkManager.getLinkedDiscordUsername(target.getUniqueId());
+        String discordUsername = DISCORD_LINK_MANAGER.getLinkedDiscordUsername(target.getUniqueId());
         Long githubId = gitHubHook.getContributorId(target.getUniqueId());
         String githubUsername = githubId == null ? null : gitHubHook.getUsernameById(githubId);
 
@@ -143,7 +144,7 @@ public class ProfileMenu extends Menu {
     private void addFriendsItem(Map<Integer, ItemMenuBuilder> inventory) {
         boolean selfProfile = isSelfProfile();
         boolean friends = !selfProfile
-                && friendManager.areFriends(getOwner().getUniqueId(), target.getUniqueId());
+                && FRIEND_MANAGER.areFriends(getOwner().getUniqueId(), target.getUniqueId());
         String nameKey = friends
                 ? "feature.profile.item.friends.name.friend"
                 : "feature.profile.item.friends.name";

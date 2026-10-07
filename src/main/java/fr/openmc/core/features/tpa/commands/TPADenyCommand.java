@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -16,6 +17,7 @@ import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPADenyCommand {
+	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
 	
 	/**
 	 * Command to deny a teleportation request
@@ -29,18 +31,18 @@ public class TPADenyCommand {
 			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player")
 			Player player
 	) {
-		if (!TPAManager.hasPendingRequest(target)) {
+		if (!tpaManager.hasPendingRequest(target)) {
 			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.deny.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		if (TPAManager.hasMultipleRequests(target)) {
+		if (tpaManager.hasMultipleRequests(target)) {
 			if (player == null) {
 				MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.deny.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
-			if (!TPAManager.getRequesters(target).contains(player)) {
+			if (!tpaManager.getRequesters(target).contains(player)) {
 				MessagesManager.sendMessage(target, TranslationManager.translation(
 						"feature.tpa.deny.no_request_from",
 						Component.text(player.getName()).color(NamedTextColor.GOLD)
@@ -48,7 +50,7 @@ public class TPADenyCommand {
 				return;
 			}
 		} else {
-			player = TPAManager.getRequesters(target).getFirst();
+			player = tpaManager.getRequesters(target).getFirst();
 		}
 		
 		MessagesManager.sendMessage(target, TranslationManager.translation(
@@ -60,7 +62,7 @@ public class TPADenyCommand {
 				Component.text(target.getName()).color(NamedTextColor.GOLD)
 		), Prefix.OPENMC, MessageType.ERROR, false);
 
-		TPAManager.removeRequest(player, target);
+		tpaManager.removeRequest(player, target);
 	}
 	
 }

@@ -1,5 +1,7 @@
 package fr.openmc.core.features.analytics;
 
+import fr.openmc.core.OMCRegistry;
+
 import java.util.UUID;
 
 public enum Stats {
@@ -13,6 +15,8 @@ public enum Stats {
         this.scope = scope;
     }
 
+    private final AnalyticsManager analyticsManager = OMCRegistry.FEATURES.ANALYTICS.get();
+
     /**
      * Return the stats for a player
      * 
@@ -21,7 +25,7 @@ public enum Stats {
      * @return The stats of the player, if unavailable, it will return `0`
      */
     public int get(UUID playerUUID, int defaultValue) {
-        return AnalyticsManager.getStatistic(this.scope, playerUUID, defaultValue);
+        return analyticsManager.getStatistic(this.scope, playerUUID, defaultValue);
     }
 
     /**
@@ -41,7 +45,7 @@ public enum Stats {
      * @param value  the amount to increment the statistic
      */
     public void increment(UUID playerUUID, int value) {
-        AnalyticsManager.incrementStatistic(this.scope, playerUUID, value);
+        analyticsManager.incrementStatistic(this.scope, playerUUID, value);
     }
 
     /**

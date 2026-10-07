@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class AnalyticsManager extends Feature implements HasDatabase {
-    static Dao<Statistic, String> statsDao;
+    private Dao<Statistic, String> statsDao;
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -25,7 +25,7 @@ public class AnalyticsManager extends Feature implements HasDatabase {
         statsDao = DaoManager.createDao(connectionSource, Statistic.class);
     }
 
-    public static boolean isEnabled() {
+    public boolean isEnabled() {
         return OMCPlugin.getConfigs().getBoolean("features.analytics", false);
     }
 
@@ -38,7 +38,7 @@ public class AnalyticsManager extends Feature implements HasDatabase {
      *                     or didn't work
      * @return The stats of the player, if unavailable, it will return defaultValue
      */
-    static int getStatistic(String scope, UUID playerUUID, int defaultValue) {
+    public int getStatistic(String scope, UUID playerUUID, int defaultValue) {
         if (!isEnabled())
             return defaultValue;
 
@@ -64,7 +64,7 @@ public class AnalyticsManager extends Feature implements HasDatabase {
      * @param value  The amount to increment the statistic
      *
      */
-    static void incrementStatistic(String scope, UUID playerUUID, int value) {
+    public void incrementStatistic(String scope, UUID playerUUID, int value) {
         if (!isEnabled())
             return;
 

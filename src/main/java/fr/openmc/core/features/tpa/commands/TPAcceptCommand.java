@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
@@ -20,6 +21,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.Objects;
 
 public class TPAcceptCommand {
+	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
 	
 	/**
 	 * Accept a teleportation request from another player.
@@ -33,18 +35,18 @@ public class TPAcceptCommand {
 			Player target,
 			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player") Player player
 	) {
-		if (!TPAManager.hasPendingRequest(target)) {
+		if (!tpaManager.hasPendingRequest(target)) {
 			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		if (TPAManager.hasMultipleRequests(target)) {
+		if (tpaManager.hasMultipleRequests(target)) {
 			if (player == null) {
 				MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
-			if (!TPAManager.getRequesters(target).contains(player)) {
+			if (!tpaManager.getRequesters(target).contains(player)) {
 				MessagesManager.sendMessage(target, TranslationManager.translation(
 						"feature.tpa.accept.no_request_from",
 						Component.text(player.getName()).color(NamedTextColor.GOLD)
@@ -52,7 +54,7 @@ public class TPAcceptCommand {
 				return;
 			}
 		} else {
-			player = TPAManager.getRequesters(target).getFirst();
+			player = tpaManager.getRequesters(target).getFirst();
 		}
 		
 		if (target.getFallDistance() > 0) {
@@ -66,8 +68,8 @@ public class TPAcceptCommand {
 			return;
 		}
 		
-		if (TPAManager.getTargetByRequester(player) != null) {
-			if (Objects.equals(TPAManager.getTargetByRequester(player), target)) teleport(player, target);
+		if (tpaManager.getTargetByRequester(player) != null) {
+			if (Objects.equals(tpaManager.getTargetByRequester(player), target)) teleport(player, target);
 		}
 	}
 	
@@ -76,6 +78,6 @@ public class TPAcceptCommand {
 		PlayerUtils.sendFadeTitleTeleport(requester, loc);
 		MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
 		MessagesManager.sendMessage(requester, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
-		TPAManager.removeRequest(requester, target);
+		tpaManager.removeRequest(requester, target);
 	}
 }

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ShopSalesMenu extends PaginatedMenu {
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
     private final Shop shop;
     
     public ShopSalesMenu(Player owner, Shop shop) {
@@ -69,7 +69,7 @@ public class ShopSalesMenu extends PaginatedMenu {
                 itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.sales.item.lore",
                                 Component.text(s.getDate().toLocalDateTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))).color(NamedTextColor.GREEN),
                                 Component.text(s.getAmount()).color(NamedTextColor.GOLD),
-                                Component.text(s.getPrice() + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)));
+                                Component.text(s.getPrice() + " " + ECONOMY_MANAGER.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)));
             });
             items.add(item);
         });
@@ -85,7 +85,7 @@ public class ShopSalesMenu extends PaginatedMenu {
             Component lastRemoval = this.shop.getLastWithdrawal() == null ? TranslationManager.translation("global.never") : Component.text(this.shop.getLastWithdrawal().toLocalDateTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)));
             itemMeta.displayName(TranslationManager.translation("feature.shop.menu.sales.get_turnover.name"));
             itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.sales.get_turnover.lore",
-                    Component.text(this.shop.getTurnover() * 0.8 + " " + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD), lastRemoval.color(NamedTextColor.LIGHT_PURPLE)));
+                    Component.text(this.shop.getTurnover() * 0.8 + " " + ECONOMY_MANAGER.getEconomyIcon()).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD), lastRemoval.color(NamedTextColor.LIGHT_PURPLE)));
         }).setOnClick(_ -> {
             this.shop.withdrawTurnover();
             this.shop.setLastWithdrawalToNow();

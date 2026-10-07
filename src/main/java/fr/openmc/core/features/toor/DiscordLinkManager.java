@@ -6,13 +6,11 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.toor.commands.LinkCommand;
 import fr.openmc.core.features.toor.commands.UnlinkCommand;
 import fr.openmc.core.features.toor.event.ConnectToDiscordEvent;
 import fr.openmc.core.features.toor.models.DBDiscordLink;
 import fr.openmc.core.features.toor.utils.RequestSigner;
-import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -40,18 +38,20 @@ import java.util.concurrent.TimeUnit;
 
 public class DiscordLinkManager extends Feature implements HasDatabase, HasCommands {
 
-    private static Dao<DBDiscordLink, UUID> discordLinksDao;
-    private static final Map<UUID, DBDiscordLink> linkCache = new ConcurrentHashMap<>();
+    private Dao<DBDiscordLink, UUID> discordLinksDao;
+    private final Map<UUID, DBDiscordLink> linkCache = new ConcurrentHashMap<>();
 
     // Map<code, (Player, expireAt, task)>
-    private static final Map<String, PendingLink> pendingLinks = new ConcurrentHashMap<>();
-    private static final TtlCache<String, String> discordUsernameCache = new TtlCache<>(10, TimeUnit.MINUTES);
+    private final Map<String, PendingLink> pendingLinks = new ConcurrentHashMap<>();
+    private final TtlCache<String, String> discordUsernameCache = new TtlCache<>(10, TimeUnit.MINUTES);
 
-    private static final long CODE_TTL_MS = 10 * 60 * 1000;
-    private static final long POLL_INTERNAL_TICKS = 20L * 3;
+    public final InternalToorApiClient toorApiClient = new InternalToorApiClient();
+
+    private final long CODE_TTL_MS = 10 * 60 * 1000;
+    private final long POLL_INTERNAL_TICKS = 20L * 3;
 
     @Getter
-    private static String botUrl = "http://localhost:3000";
+    private String botUrl = "http://localhost:3000";
 
     private record PendingLink(UUID playerUUID, long expiresAt, BukkitTask pollTask) {
     }
@@ -77,7 +77,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         );
     }
 
-    private static void loadConfig() {
+    private void loadConfig() {
         File dataFolder = OMCPlugin.getInstance().getDataFolder();
         File configFile = new File(dataFolder, "data/discord/discord.yml");
         File defaultKeyFile = new File(dataFolder, "data/discord/plugin_private.pem");
@@ -97,7 +97,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         RequestSigner.init(keyFile.toPath());
     }
 
-    private static void loadAll() {
+    private void loadAll() {
         try {
             for (DBDiscordLink link : discordLinksDao.queryForAll()) {
                 linkCache.put(link.getPlayerUUID(), link);
@@ -107,18 +107,16 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         }
     }
 
-    public static boolean isLinked(UUID playerUUID) {
+    public boolean isLinked(UUID playerUUID) {
         return linkCache.containsKey(playerUUID);
     }
 
-    public static String startLink(Player player) {
+    public String startLink(Player player) {
         UUID playerUUID = player.getUniqueId();
         cancelPendingFor(playerUUID);
 
-        InternalToorApiClient.LinkRequestResult result = InternalToorApiClient.requestLinkCode(playerUUID, player.getName());
-        if (!result.success()) {
-            return null;
-        }
+        InternalToorApiClient.LinkRequestResult result = toorApiClient.requestLinkCode(playerUUID, player.getName());
+        if (!result.success()) return null;
 
         String code = result.code();
         BukkitTask pollTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
@@ -132,7 +130,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         return code;
     }
 
-    private static void pollCode(String code, UUID playerUUID) {
+    private void pollCode(String code, UUID playerUUID) {
         PendingLink pending = pendingLinks.get(code);
         if (pending == null) return;
 
@@ -142,14 +140,14 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
             return;
         }
 
-        InternalToorApiClient.LinkStatus status = InternalToorApiClient.checkLinkStatus(code);
+        InternalToorApiClient.LinkStatus status = toorApiClient.checkLinkStatus(code);
         if (!status.linked()) return;
 
         String discordUserId = status.discordUserId();
         String discordUsername = status.discordUsername();
 
         confirmLink(playerUUID, status.discordUserId());
-        InternalToorApiClient.consumeCode(code);
+        toorApiClient.consumeCode(code);
         cancelPendingFor(playerUUID);
         notifyPlayer(playerUUID, "feature.discord.success", MessageType.SUCCESS, Component.text(discordUsername));
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(),
@@ -159,7 +157,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
             OMCRegistry.FEATURES.BITS.get().applyContributorBitsUpdate(githubId);
     }
 
-    private static void confirmLink(UUID playerUUID, String discordUserId) {
+    private void confirmLink(UUID playerUUID, String discordUserId) {
         DBDiscordLink link = new DBDiscordLink(playerUUID, discordUserId);
         linkCache.put(playerUUID, link);
         try {
@@ -169,7 +167,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         }
     }
 
-    private static void notifyPlayer(UUID playerUUID, String translationKey, MessageType type, ComponentLike... args) {
+    private void notifyPlayer(UUID playerUUID, String translationKey, MessageType type, ComponentLike... args) {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null && player.isOnline()) {
@@ -178,7 +176,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         });
     }
 
-    private static void cancelPendingFor(UUID playerUUID) {
+    private void cancelPendingFor(UUID playerUUID) {
         pendingLinks.entrySet().removeIf(entry -> {
             if (entry.getValue().playerUUID().equals(playerUUID)) {
                 entry.getValue().pollTask().cancel();
@@ -188,7 +186,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         });
     }
 
-    public static boolean unlink(UUID playerUUID) {
+    public boolean unlink(UUID playerUUID) {
         if (!linkCache.containsKey(playerUUID)) return false;
 
         cancelPendingFor(playerUUID);
@@ -201,19 +199,19 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(),
-                () -> InternalToorApiClient.notifyUnlink(playerUUID));
+                () -> toorApiClient.notifyUnlink(playerUUID));
 
         return true;
     }
 
-    public static String getLinkedDiscordId(UUID playerUUID) {
+    public String getLinkedDiscordId(UUID playerUUID) {
         DBDiscordLink link = linkCache.get(playerUUID);
         return link == null ? null : link.getDiscordUserId();
     }
 
-    public static String getLinkedDiscordUsername(UUID playerUUID) {
+    public String getLinkedDiscordUsername(UUID playerUUID) {
         String discordId = getLinkedDiscordId(playerUUID);
         if (discordId == null) return null;
-        return discordUsernameCache.getOrCompute(discordId, InternalToorApiClient::getDiscordUsername);
+        return discordUsernameCache.getOrCompute(discordId, toorApiClient::getDiscordUsername);
     }
 }

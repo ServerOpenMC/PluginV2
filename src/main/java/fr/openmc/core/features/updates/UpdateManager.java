@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class UpdateManager extends Feature implements HasCommands, HasListeners {
     @Getter
-    static Component message;
+    private Component message;
 
     @Override
     public void init() {

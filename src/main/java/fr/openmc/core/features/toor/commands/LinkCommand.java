@@ -1,5 +1,6 @@
 package fr.openmc.core.features.toor.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -20,17 +21,18 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Description("Permet de lier son compte Discord a son compte Minecraft")
 @CommandPermission("omc.commands.discord.link")
 public class LinkCommand {
+    private final DiscordLinkManager discordLinkManager = OMCRegistry.FEATURES.DISCORD_LINK.get();
 
     @CommandPlaceholder
     public void link(Player player) {
-        if (DiscordLinkManager.isLinked(player.getUniqueId())) {
+        if (discordLinkManager.isLinked(player.getUniqueId())) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.discord.already_linked"),
                     Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
-        String code = DiscordLinkManager.startLink(player);
+        String code = discordLinkManager.startLink(player);
 
         if (code == null) {
             MessagesManager.sendMessage(player,

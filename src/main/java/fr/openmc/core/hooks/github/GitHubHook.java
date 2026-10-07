@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.toor.InternalToorApiClient;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.github.models.DBGithubMinecraft;
@@ -74,7 +75,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     public Long getContributorId(UUID playerUUID) {
         if (githubLinkCache.contains(playerUUID)) return githubLinkCache.get(playerUUID);
 
-        InternalToorApiClient.GithubStatus status = InternalToorApiClient.checkGithubStatus(playerUUID);
+        InternalToorApiClient.GithubStatus status = OMCRegistry.FEATURES.DISCORD_LINK.get().toorApiClient.checkGithubStatus(playerUUID);
 
         if (status.linked()) {
             Long githubId = status.githubUserId();
@@ -262,6 +263,6 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     public String getUsernameById(long githubId) {
-        return usernameCache.getOrCompute(githubId, InternalToorApiClient::getGithubUsername);
+        return usernameCache.getOrCompute(githubId, OMCRegistry.FEATURES.DISCORD_LINK.get().toorApiClient::getGithubUsername);
     }
 }
