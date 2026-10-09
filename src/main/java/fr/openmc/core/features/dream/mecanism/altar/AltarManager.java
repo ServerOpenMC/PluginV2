@@ -43,7 +43,7 @@ public class AltarManager extends Feature implements HasListeners {
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                AltarListener::new
+                () -> new AltarListener(this)
         );
     }
 

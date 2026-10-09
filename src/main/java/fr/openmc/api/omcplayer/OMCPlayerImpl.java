@@ -39,8 +39,9 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
             if (cachedBukkitPlayer == null
                     || !cachedBukkitPlayer.isOnline()
-                    || !cachedBukkitPlayer.equals(player))
+                    || cachedBukkitPlayer != player)
                 return new OMCPlayerImpl(player);
+
 
             return cachedPlayer;
         });
