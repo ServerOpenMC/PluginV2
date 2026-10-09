@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -65,14 +66,13 @@ public class CityModifyMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = City.ofPlayer(player);
+        City city = player.city().getCity();
         assert city != null;
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
-
 
         List<Component> loreRename;
 
@@ -90,20 +90,20 @@ public class CityModifyMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.rename.title"));
             itemMeta.lore(loreRename);
-        }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = City.ofPlayer(player);
+        }).setOnClick(_ -> {
+            City cityCheck = player.city().getCity();
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
             DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                 if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
-                    City playerCity = City.ofPlayer(player);
+                    City playerCity = player.city().getCity();
 
                     playerCity.rename(input);
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, MessageType.SUCCESS, false);
+                    player.message().sendSuccess(TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, false);
 
                 } else {
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.modify.rename.invalid"), Prefix.CITY, MessageType.ERROR, true);
+                    player.message().sendError(TranslationManager.translation("feature.city.menus.modify.rename.invalid"), Prefix.CITY, true);
                 }
             });
 
@@ -158,9 +158,8 @@ public class CityModifyMenu extends Menu {
             return new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
                 itemMeta.lore(loreDelete);
-            }).setOnClick(inventoryClickEvent -> {
-                CityDeleteAction.startDeleteCity(player);
-            });
+            }).setOnClick(_ ->
+                    CityDeleteAction.startDeleteCity(player));
         };
 
         if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
@@ -66,9 +67,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = City.ofPlayer(player);
+        City city = player.city().getCity();
         assert city != null;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
@@ -76,7 +77,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         for (UUID uuid : city.getMembers()) {
-            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            OMCOfflinePlayer playerOffline = OMCOfflinePlayer.of(uuid);
 
             String title = city.getRankName(uuid) + " ";
 

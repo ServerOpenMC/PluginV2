@@ -12,11 +12,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener  {
-    private final CityManager cityManager;
     private final MayorManager mayorManager;
 
-    public JoinListener(CityManager cityManager, MayorManager mayorManager) {
-        this.cityManager = cityManager;
+    public JoinListener(MayorManager mayorManager) {
         this.mayorManager = mayorManager;
     }
 

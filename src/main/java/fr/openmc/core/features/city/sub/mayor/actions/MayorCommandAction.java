@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.actions;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -23,19 +24,19 @@ import org.bukkit.entity.Player;
 
 public class MayorCommandAction {
 
-    public static void launchInteractionMenu(Player player) {
+    public static void launchInteractionMenu(OMCPlayer player) {
         City city = City.ofPlayer(player);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation(
+            player.message().sendError(TranslationManager.translation(
                     "feature.city.mayor.error.feature_locked",
                     Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.GOLD)
-            ), Prefix.CITY, MessageType.ERROR, false);
+            ), Prefix.CITY, false);
             return;
         }
 

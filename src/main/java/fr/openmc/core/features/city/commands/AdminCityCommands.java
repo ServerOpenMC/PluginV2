@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.CityManager;
@@ -157,9 +158,9 @@ public class AdminCityCommands {
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
     void setOwner(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
-            @Named("nouveau propriétaire") @SuggestWith(OnlinePlayerAutoComplete.class) Player newOwner) {
+            @Named("nouveau propriétaire") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer newOwner) {
         City city = City.of(name);
 
         if (city == null) {

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.dialog.DialogInput;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.CityManager;
@@ -93,7 +94,7 @@ public class CityCommands {
     @Subcommand("delete")
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
-    void delete(Player sender) {
+    void delete(OMCPlayer sender) {
         CityDeleteAction.startDeleteCity(sender);
     }
 
@@ -101,33 +102,34 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.rename")
     @Description("Renommer une ville")
     void rename(
-            Player player,
+            OMCPlayer player,
             @Named("nouveau nom") String name
     ) {
-        City playerCity = City.ofPlayer(player);
+        City playerCity = player.city().getCity();
 
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
         if (!InputUtils.isInputCityName(name)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation(
+	        player.message().sendError(TranslationManager.translation(
                     "feature.city.commands.rename.invalid_name",
                     Component.text(MAX_LENGTH_CITY)
-            ), Prefix.CITY, MessageType.ERROR, false);
+            ), Prefix.CITY, false);
             return;
         }
 
         playerCity.rename(name);
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(name)), Prefix.CITY, MessageType.SUCCESS, false);
+        player.message().sendSuccess(TranslationManager.translation("feature.city.commands.rename.success",
+                Component.text(name)), Prefix.CITY, false);
     }
 
     @Subcommand("transfer")
     @CommandPermission("omc.commands.city.transfer")
     @Description("Transfert la propriété de votre ville")
     void transfer(
-            Player sender,
-            @Named("nouveau propriétaire") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player
+            OMCPlayer sender,
+            @Named("nouveau propriétaire") @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player
     ) {
-        City playerCity = City.ofPlayer(sender);
+        City playerCity = sender.city().getCity();
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
 
@@ -140,8 +142,8 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
     void kick(
-            Player sender,
-            @SuggestWith(CityMembersAutoComplete.class) @Named("membre à exclure") OfflinePlayer player
+            OMCPlayer sender,
+            @SuggestWith(CityMembersAutoComplete.class) @Named("membre à exclure") OMCOfflinePlayer player
     ) {
         CityKickAction.startKick(sender, player);
     }
@@ -149,8 +151,8 @@ public class CityCommands {
     @Subcommand("leave")
     @CommandPermission("omc.commands.city.leave")
     @Description("Quitter votre ville")
-    void leave(Player player) {
-        City city = City.ofPlayer(player);
+    void leave(OMCPlayer player) {
+        City city = player.city().getCity();
         if (!CityLeaveCondition.canCityLeave(city, player)) return;
 
         CityLeaveAction.startLeave(player);
@@ -158,9 +160,9 @@ public class CityCommands {
 
     @Subcommand("list")
     @CommandPermission("omc.commands.city.list")
-    public void list(Player player) {
+    public void list(OMCPlayer player) {
         if (cityManager.getCities().isEmpty()) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.list.empty"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.commands.list.empty"), Prefix.CITY, false);
             return;
         }
         
@@ -170,7 +172,7 @@ public class CityCommands {
 
     @Subcommand("type")
     @CommandPermission("omc.commands.city.type")
-    public void change(Player sender) {
-        new CityTypeMenu(sender).open();
+    public void change(OMCPlayer player) {
+        new CityTypeMenu(player).open();
     }
 }

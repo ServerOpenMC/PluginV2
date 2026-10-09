@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityType;
@@ -33,15 +34,15 @@ public class CityChangeAction {
     private static final long COOLDOWN_CHANGE_TYPE = 2 * 24 * 60 * 60 * 1000L; // 2 jours
     private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
 
-    public static void beginChangeCity(Player player, CityType typeChange) {
-        City city = City.ofPlayer(player.getUniqueId());
+    public static void beginChangeCity(OMCPlayer player, CityType typeChange) {
+        City city = player.city().getCity();
 
         if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
 
         if (typeChange.equals(CityType.WAR) && !FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.havent_unlocked_feature",
+	        player.message().sendError(TranslationManager.translation("messages.city.havent_unlocked_feature",
                             Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR))),
-                    Prefix.CITY, MessageType.ERROR, false);
+                    Prefix.CITY, false);
             return;
         }
 
@@ -75,11 +76,11 @@ public class CityChangeAction {
         menu.open();
     }
 
-    public static void finishChange(Player sender) {
-        City city = City.ofPlayer(sender);
+    public static void finishChange(OMCPlayer sender) {
+        City city = sender.city().getCity();
 
         if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().sendError(TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, false);
             return;
         }
 
@@ -88,21 +89,19 @@ public class CityChangeAction {
         Mascot mascot = city.getMascot();
 
         if (mascot == null) {
-	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.mascot_not_exist_change_type"),
-                    Prefix.CITY, MessageType.ERROR, false);
+	        sender.message().sendError(TranslationManager.translation("feature.city.type.mascot_not_exist_change_type"), Prefix.CITY, false);
             return;
         }
 
         if (!mascot.isAlive()) {
-	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.mascot_must_by_alive_change_type"),
-                    Prefix.CITY, MessageType.ERROR, false);
+	        sender.message().sendError(TranslationManager.translation("feature.city.type.mascot_must_by_alive_change_type"), Prefix.CITY, false);
             return;
         }
 
         if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.must_wait_before_change_type",
+	        sender.message().sendError(TranslationManager.translation("feature.city.type.must_wait_before_change_type",
                     Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")))),
-                    Prefix.CITY, MessageType.ERROR, false);
+                    Prefix.CITY, false);
             return;
         }
 
@@ -143,8 +142,8 @@ public class CityChangeAction {
         Component cityTypeActuel = city.getType() == CityType.WAR ? inPeace : inWar;
         Component cityTypeAfter = city.getType() == CityType.WAR ? inWar : inPeace;
 
-        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.change_type_success",
+        sender.message().sendSuccess(TranslationManager.translation("feature.city.type.change_type_success",
                         cityTypeActuel, cityTypeAfter),
-                Prefix.CITY, MessageType.SUCCESS, false);
+                Prefix.CITY, false);
     }
 }

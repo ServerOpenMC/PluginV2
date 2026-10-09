@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -168,7 +169,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
     private void onUrneBreakEvent(FurnitureBreakEvent event) {
         if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         City playerCity = City.ofPlayer(player);
         if (playerCity == null) {
@@ -177,7 +178,7 @@ public class UrneListener implements Listener, LoadIfEnable<ItemsAdderHook> {
         }
 
         if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.urne.break.not_owner"), Prefix.MAYOR, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.mayor.urne.break.not_owner"), Prefix.MAYOR, false);
             event.setCancelled(true);
             return;
         }

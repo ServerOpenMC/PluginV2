@@ -44,7 +44,7 @@ public class CityBankManager extends Feature implements HasCommands {
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new CityBankCommand(cityManager)
+                new CityBankCommand()
         );
     }
 

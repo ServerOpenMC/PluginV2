@@ -1,6 +1,8 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
@@ -17,23 +19,16 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CityTransferAction {
-    public static void transfer(Player player, City city, OfflinePlayer playerToTransfer) {
-        OfflinePlayer owner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER));
-        String playerName = playerToTransfer.getName();
+    public static void transfer(OMCPlayer player, City city, OMCOfflinePlayer playerToTransfer) {
+        OMCOfflinePlayer owner = OMCOfflinePlayer.of(city.getPlayerWithPermission(CityPermission.OWNER));
 
-        if (owner.isOnline()) {
-            if (!CityManageConditions.canCityTransfer(city, owner.getPlayer())) return;
-        }
+        if (!CityManageConditions.canCityTransfer(city, owner)) return;
 
         ConfirmMenu menu = new ConfirmMenu(player,
                 () -> {
                     city.changeOwner(playerToTransfer.getUniqueId());
-                    MessagesManager.sendMessage(player,
-                            TranslationManager.translation("feature.city.transfer.success", Component.text(playerName)),
-                            Prefix.CITY,
-                            MessageType.SUCCESS,
-                            false
-                    );
+                    player.message().sendSuccess(TranslationManager.translation("feature.city.transfer.success",
+                           playerToTransfer.getNameWithHead()), Prefix.CITY, false);
 
                     if (playerToTransfer.isOnline()) {
                         MessagesManager.sendMessage(playerToTransfer.getPlayer(),
@@ -48,11 +43,11 @@ public class CityTransferAction {
                 player::closeInventory,
                 List.of(TranslationManager.translation(
                         "feature.city.transfer.confirm.accept",
-                        Component.text(playerName).color(NamedTextColor.GRAY)
+                        playerToTransfer.getNameWithHead().color(NamedTextColor.GRAY)
                 )),
                 List.of(TranslationManager.translation(
                         "feature.city.transfer.confirm.deny",
-                        Component.text(playerName).color(NamedTextColor.GRAY)
+                        playerToTransfer.getNameWithHead().color(NamedTextColor.GRAY)
                 )));
         menu.open();
     }

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
@@ -23,13 +24,13 @@ public class CityDeleteAction {
     private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
     private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
-    public static void startDeleteCity(Player player) {
+    public static void startDeleteCity(OMCPlayer player) {
         UUID playerUUID = player.getUniqueId();
 
-        City city = City.ofPlayer(player);
+        City city = player.city().getCity();
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, true);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, true);
             player.closeInventory();
             return;
         }
@@ -45,7 +46,7 @@ public class CityDeleteAction {
                     }
 
                     CITY_MANAGER.deleteCity(city);
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, MessageType.SUCCESS, false);
+                    player.message().sendSuccess(TranslationManager.translation("feature.city.delete.success"), Prefix.CITY, false);
 
                     DYNAMIC_COOLDOWN_MANAGER.use(playerUUID, "city:big", 60000); // 1 minute
                     player.closeInventory();

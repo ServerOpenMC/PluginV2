@@ -12,15 +12,10 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Range;
 
 public class CityBankCommand {
-    private final CityManager cityManager;
-
-    public CityBankCommand(CityManager cityManager) {
-        this.cityManager = cityManager;
-    }
 
     @Command({"city bank", "ville bank"})
     @Description("Ouvre le menu de la banque de ville")
-    public void bank(Player player) {
+    public void bank(OMCPlayer player) {
         City playerCity = City.ofPlayer(player);
         if (playerCity == null) return;
 

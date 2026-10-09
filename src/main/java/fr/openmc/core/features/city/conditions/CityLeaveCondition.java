@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -21,16 +22,17 @@ public class CityLeaveCondition {
      * @param player le joueur qui veut quitter
      * @return booleen
      */
-    public static boolean canCityLeave(City city, Player player) {
+    public static boolean canCityLeave(City city, OMCPlayer player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return false;
         }
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.leave.owner_cant_leave"), Prefix.CITY, MessageType.ERROR, false);
+	        player.message().sendError(TranslationManager.translation("feature.city.conditions.leave.owner_cant_leave"), Prefix.CITY, false);
             return false;
         }
+
         return true;
     }
 }

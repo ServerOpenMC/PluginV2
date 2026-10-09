@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
@@ -21,14 +22,14 @@ public class MayorCommands {
     @Command({"city mayor", "ville maire"})
     @CommandPermission("omc.commands.city.mayor")
     @Description("Ouvre le menu des maires")
-    void mayor(Player sender) {
+    void mayor(OMCPlayer sender) {
         MayorCommandAction.launchInteractionMenu(sender);
     }
 
     @Command({"city warp", "ville warp"})
     @Description("Teleporte au warp commun de la ville")
-    void warp(Player player) {
-        City playerCity = City.ofPlayer(player);
+    void warp(OMCPlayer player) {
+        City playerCity = player.city().getCity();
 
         if (playerCity == null) return;
 
@@ -37,10 +38,10 @@ public class MayorCommands {
 
         if (warp == null) {
             if (playerCity.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, MessageType.INFO, true);
+                player.message().sendInfo(TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, true);
                 return;
             }
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.no_mayor"), Prefix.CITY, MessageType.INFO, true);
+            player.message().sendInfo(TranslationManager.translation("feature.city.mayor.command.warp.not_set.no_mayor"), Prefix.CITY, true);
             return;
         }
 
@@ -52,7 +53,7 @@ public class MayorCommands {
 
     @Command({"city setwarp", "ville setwarp"})
     @Description("Déplacer le warp de votre ville")
-    void setWarpCommand(Player player) {
+    void setWarpCommand(OMCPlayer player) {
         MayorSetWarpAction.setWarp(player);
     }
 }

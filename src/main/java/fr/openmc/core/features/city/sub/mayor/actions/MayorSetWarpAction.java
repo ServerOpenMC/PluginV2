@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -25,22 +26,22 @@ import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_
 public class MayorSetWarpAction {
     private final static DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
-    // todo: fixer erreur et mettre les champs en static pour les instances par classe ahah
-    public static void setWarp(Player player) {
-        City city = City.ofPlayer(player.getUniqueId());
+    public static void setWarp(OMCPlayer player) {
+        City city = player.city().getCity();
 
         if (city == null) return;
 
         Mayor mayor = city.getMayor();
 
-        if ((mayor == null || !player.getUniqueId().equals(city.getMayor().getMayorUUID())) && !city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.warp.error.not_mayor"), Prefix.MAYOR, MessageType.ERROR, false);
+        if ((mayor == null
+                || !player.getUniqueId().equals(city.getMayor().getMayorUUID()))
+                && !city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
+            player.message().sendError(TranslationManager.translation("feature.city.mayor.warp.error.not_mayor"), Prefix.MAYOR, false);
             return;
         }
 
-        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "mayor:law-move-warp")) {
-            return;
-        }
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "mayor:law-move-warp")) return;
+
         CityLaw law = city.getLaw();
 
         ItemInteraction.runLocationInteraction(
@@ -55,18 +56,18 @@ public class MayorSetWarpAction {
                     Chunk chunk = locationClick.getChunk();
 
                     if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
-                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.warp.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
+                        player.message().sendError(TranslationManager.translation("feature.city.mayor.warp.error.outside_city"), Prefix.CITY, false);
                         return false;
                     }
 
                     dynamicCooldownManager.use(city.getUniqueId(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
                     law.setWarp(locationClick);
-                    MessagesManager.sendMessage(player, TranslationManager.translation(
+                    player.message().sendSuccess(TranslationManager.translation(
                             "feature.city.mayor.warp.success",
                             Component.text(locationClick.x()).color(NamedTextColor.GOLD),
                             Component.text(locationClick.y()).color(NamedTextColor.GOLD),
                             Component.text(locationClick.z()).color(NamedTextColor.GOLD)
-                    ), Prefix.CITY, MessageType.SUCCESS, false);
+                    ), Prefix.CITY, false);
                     return true;
                 },
                 null

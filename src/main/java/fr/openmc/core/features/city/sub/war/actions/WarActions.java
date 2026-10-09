@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -29,6 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WarActions {
+    private static final WarManager warManager = OMCRegistry.CITY_FEATURES.WAR;
 
     /**
      * Begins the process of launching a war against another city.
@@ -36,92 +38,71 @@ public class WarActions {
      * @param player     The player initiating the war.
      * @param cityAttack The city that is being attacked.
      */
-    public static void beginLaunchWar(Player player, City cityAttack) {
+    public static void beginLaunchWar(OMCPlayer player, City cityAttack) {
         UUID launcherUUID = player.getUniqueId();
-        WarManager warManager = OMCRegistry.CITY_FEATURES.WAR;
         City launchCity = City.ofPlayer(launcherUUID);
 
         if (launchCity == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(launchCity, FeaturesRewards.Feature.WAR)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation(
+            player.message().sendError(TranslationManager.translation(
                     "messages.city.havent_unlocked_feature",
                     Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR))
                             .color(NamedTextColor.RED)
-            ), Prefix.CITY, MessageType.ERROR, false);
+            ), Prefix.CITY, false);
             return;
         }
 
         if (!launchCity.getType().equals(CityType.WAR)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.type_required"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.type_required"), Prefix.CITY, false);
             return;
         }
 
         if (!cityAttack.getType().equals(CityType.WAR)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.target_not_war"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.target_not_war"), Prefix.CITY, false);
             return;
         }
 
         if (!launchCity.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.no_permission_launch"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.no_permission_launch"), Prefix.CITY, false);
             return;
         }
 
         if (warManager.getPendingDefenseFor(launchCity) != null) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.already_declared"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.already_declared"), Prefix.CITY, false);
             return;
         }
 
         if (launchCity.isInWar()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.already_in_war"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.already_in_war"), Prefix.CITY, false);
             return;
         }
 
         if (warManager.getPendingDefenseFor(cityAttack) != null) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.target_preparing"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.target_preparing"), Prefix.CITY, false);
             return;
         }
 
         if (cityAttack.isInWar()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.target_in_war"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.target_in_war"), Prefix.CITY, false);
             return;
         }
 
         if (cityAttack.isImmune()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.target_immune"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.target_immune"), Prefix.CITY, false);
             return;
         }
 
         if (launchCity.isImmune()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.city_immune"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.city_immune"), Prefix.CITY, false);
             return;
         }
 
         if (cityAttack.getOnlineMembers().isEmpty()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.target_no_online"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.target_no_online"), Prefix.CITY, false);
             return;
         }
 
@@ -130,9 +111,7 @@ public class WarActions {
         int maxSize = Math.min(attackers, defenders);
 
         if (maxSize < 1) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.no_combat"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.no_combat"), Prefix.CITY, false);
             return;
         }
 
@@ -143,22 +122,16 @@ public class WarActions {
      * Notifie le joueur des règles à suivre pour les guerres.
      * @param player le joueur à notifier
      */
-    public static void notifyWarRules(Player player) {
+    public static void notifyWarRules(OMCPlayer player) {
         ConfirmMenu menu = new ConfirmMenu(player,
                 player::closeInventory,
                 () -> {
-                    MessagesManager.sendMessage(player,
-                            TranslationManager.translation("feature.city.war.disagree_reported"),
-                            Prefix.CITY, MessageType.ERROR, false);
+                    player.message().sendError(TranslationManager.translation("feature.city.war.disagree_reported"), Prefix.CITY, false);
                     OMCLogger.error("Joueur " + player.getName() + " a refusé les règles des guerres, Note au cas ou d'un drame");
                     player.closeInventory();
                 },
-                TranslationManager.translationLore(
-                        "feature.city.war.agree_war_rules.lore"
-                ),
-                TranslationManager.translationLore(
-                        "feature.city.war.disagree_war_rules.lore"
-                )
+                TranslationManager.translationLore("feature.city.war.agree_war_rules.lore"),
+                TranslationManager.translationLore("feature.city.war.disagree_war_rules.lore")
         );
         menu.open();
     }
@@ -171,14 +144,14 @@ public class WarActions {
      * @param cityAttack The city being attacked.
      * @param count      The number of participants for each side.
      */
-    public static void preFinishLaunchWar(Player player, City cityLaunch, City cityAttack, int count) {
+    public static void preFinishLaunchWar(OMCPlayer player, City cityLaunch, City cityAttack, int count) {
         List<UUID> available = cityLaunch.getOnlineMembers().stream().toList();
 
         if (available.size() < count) {
-            MessagesManager.sendMessage(player, TranslationManager.translation(
+            player.message().sendError(TranslationManager.translation(
                     "feature.city.war.begin.not_enough_members",
                     Component.text(count).color(NamedTextColor.RED)
-            ), Prefix.CITY, MessageType.ERROR, false);
+            ), Prefix.CITY, false);
             return;
         }
 
@@ -193,11 +166,9 @@ public class WarActions {
      * @param cityAttack   The city being attacked.
      * @param attackers    The list of UUIDs of players from the launching city who will participate in the war.
      */
-    public static void confirmLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
+    public static void confirmLaunchWar(OMCPlayer player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.city_already_in_war"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.city_already_in_war"), Prefix.CITY, false);
             return;
         }
 
@@ -230,11 +201,9 @@ public class WarActions {
      * @param cityAttack   The city being attacked.
      * @param attackers    The list of UUIDs of players from the launching city who will participate in the war.
      */
-    public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
+    public static void finishLaunchWar(OMCPlayer player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.war.begin.city_already_in_war"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.war.begin.city_already_in_war"), Prefix.CITY, false);
             return;
         }
 
@@ -251,12 +220,12 @@ public class WarActions {
                 .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.war.begin.defense.hover_join")));
 
         for (UUID uuid : allDefenders) {
-            Player defender = Bukkit.getPlayer(uuid);
+            OMCPlayer defender = OMCPlayer.of(uuid);
             if (defender != null && defender.isOnline()) {
                 notifyWarRules(defender);
 
-                MessagesManager.sendMessage(defender, info, Prefix.CITY, MessageType.WARNING, false);
-                defender.sendMessage(clickToJoin);
+                defender.message().sendWarning(info, Prefix.CITY, false);
+                defender.message().sendInfo(clickToJoin);
             }
         }
 
@@ -266,20 +235,20 @@ public class WarActions {
         );
 
         for (UUID uuid : attackers) {
-            Player attacker = Bukkit.getPlayer(uuid);
+            OMCPlayer attacker = OMCPlayer.of(uuid);
             if (attacker != null && attacker.isOnline()) {
                 notifyWarRules(attacker);
-                MessagesManager.sendMessage(attacker, infoAttackers, Prefix.CITY, MessageType.INFO, false);
+                attacker.message().sendInfo(infoAttackers, Prefix.CITY, false);
             }
         }
 
-        MessagesManager.sendMessage(player, TranslationManager.translation(
+        player.message().sendInfo(TranslationManager.translation(
                 "feature.city.war.begin.waiting_defense",
                 Component.text(cityAttack.getName()).color(NamedTextColor.YELLOW)
-        ), Prefix.CITY, MessageType.INFO, false);
+        ), Prefix.CITY, false);
 
         WarPendingDefense pending = new WarPendingDefense(cityLaunch, cityAttack, attackers, requiredParticipants);
-        OMCRegistry.CITY_FEATURES.WAR.addPendingDefense(pending);
+        warManager.addPendingDefense(pending);
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (pending.isAlreadyExecuted()) return;
@@ -345,6 +314,6 @@ public class WarActions {
             }
         }
 
-        OMCRegistry.CITY_FEATURES.WAR.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
+        warManager.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
     }
 }

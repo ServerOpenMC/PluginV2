@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -13,8 +14,8 @@ import org.bukkit.entity.Player;
 
 public class CityLeaveAction {
 
-    public static void startLeave(Player player) {
-        City city = City.ofPlayer(player.getUniqueId());
+    public static void startLeave(OMCPlayer player) {
+        City city = player.city().getCity();
 
         if (city == null) return;
 
@@ -22,24 +23,23 @@ public class CityLeaveAction {
 
         city.removePlayer(player.getUniqueId());
 
-        MessagesManager.sendMessage(player,
-                TranslationManager.translation("feature.city.leave.success", Component.text(city.getName())),
+        player.message().sendSuccess(
+                TranslationManager.translation("feature.city.leave.success",
+                        Component.text(city.getName())),
                 Prefix.CITY,
-                MessageType.SUCCESS,
                 false
         );
 
         city.getOnlineMembers().forEach(memberUUID -> {
             if (memberUUID.equals(player.getUniqueId())) return;
-            Player onlineMember = Bukkit.getPlayer(memberUUID);
-            MessagesManager.sendMessage(onlineMember,
+            OMCPlayer onlineMember = OMCPlayer.of(memberUUID);
+            onlineMember.message().sendInfo(
                     TranslationManager.translation(
                             "feature.city.leave.info",
-                            Component.text(player.getName()),
+                            player.getNameWithHead(),
                             Component.text(city.getName())
                     ),
                     Prefix.CITY,
-                    MessageType.INFO,
                     true
             );
         });

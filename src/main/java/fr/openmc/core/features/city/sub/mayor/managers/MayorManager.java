@@ -147,7 +147,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                () -> new JoinListener(cityManager, this),
+                () -> new JoinListener(this),
                 RagePerk::new,
                 MinerPerk::new,
                 MascotFriendlyPerk::new,

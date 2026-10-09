@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.bank.conditions;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.CityType;
@@ -25,19 +26,17 @@ public class CityBankConditions {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canOpenCityBank(City city, Player player) {
+    public static boolean canOpenCityBank(City city, OMCPlayer player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return false;
         }
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CITY_BANK)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation(
-                            "feature.city.bank.errors.feature_locked",
-                            Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CITY_BANK))
-                    ),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation(
+                    "feature.city.bank.errors.feature_locked",
+                    Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CITY_BANK))
+            ), Prefix.CITY, false);
             return false;
         }
 
@@ -51,42 +50,19 @@ public class CityBankConditions {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityDeposit(City city, Player player) {
+    public static boolean canCityDeposit(City city, OMCPlayer player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return false;
         }
 
         if (!canOpenCityBank(city, player)) return false;
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_DEPOSIT))) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.bank.errors.no_permission_deposit"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.bank.errors.no_permission_deposit"), Prefix.CITY, false);
             return false;
         }
 
-        return true;
-    }
-
-    /**
-     * Retourne un booleen pour dire si le joueur peut voir la balance de sa ville
-     *
-     * @param player le joueur sur lequel tester les permissions
-     * @return booleen
-     */
-    public static boolean canCityBalance(City city, Player player) {
-        if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE))) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.bank.errors.no_permission_balance"),
-                    Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
         return true;
     }
 
@@ -97,23 +73,19 @@ public class CityBankConditions {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityWithdraw(City city, Player player) {
+    public static boolean canCityWithdraw(City city, OMCPlayer player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW))) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.bank.errors.no_permission_withdraw"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.bank.errors.no_permission_withdraw"), Prefix.CITY, false);
             return false;
         }
 
         if (city.getType().equals(CityType.WAR)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.city.bank.errors.war_blocked"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.bank.errors.war_blocked"), Prefix.CITY, false);
             return false;
         }
 
