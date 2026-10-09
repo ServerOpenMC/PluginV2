@@ -32,7 +32,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     static OMCPlayer of(Player player) {
         if (player == null) throw new IllegalArgumentException("player ne peut pas être null");
 
-
         return CACHE.compute(player.getUniqueId(), (id, cachedPlayer) -> {
             if (cachedPlayer == null) return new OMCPlayerImpl(player);
 

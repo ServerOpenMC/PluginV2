@@ -1,4 +1,4 @@
-package fr.openmc.core.registry.ambient;
+package fr.openmc.core.utils;
 
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import lombok.Getter;
@@ -16,14 +16,14 @@ import java.io.IOException;
  * - C'est pourquoi il faut redem le serveur afin que le datapack puisse bien entrer dans le registre.
  * - Donc cela nécessite 2 lancements pour faire tourner une premiere fois le plugin.
  */
-public class RegistriesLoadConfig {
+public class ReloadConfig {
     private static File registriesConfigFile;
     private static FileConfiguration registriesConfig;
     @Getter
     private static boolean mustRestart;
 
     public static void init(File dataFolder) {
-        registriesConfigFile = new File(dataFolder + "/data/registry", "load.yml");
+        registriesConfigFile = new File(dataFolder + "/data/", "reload.yml");
         registriesConfig = YamlConfiguration.loadConfiguration(registriesConfigFile);
 
         // * Premier lancement du plugin où suppression du fichier par une classe externe (ex CustomAmbientRegistry)

@@ -10,6 +10,7 @@ import fr.openmc.core.registry.hooks.ApiHook;
 import fr.openmc.core.registry.hooks.Hooks;
 import fr.openmc.core.hooks.itemsadder.sprite.SpriteUtils;
 import fr.openmc.core.utils.FilesUtils;
+import fr.openmc.core.utils.ReloadConfig;
 import fr.openmc.core.utils.ZipUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,6 +67,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
 
     private Path extractResourcePack() throws IOException {
         Path packPath = getPackPath();
+        if (packPath == null) return null;
         Path rpExtractedPath = OMCPlugin.getInstance().getDataPath().resolve("rp-extracted");
         FilesUtils.deleteDirectory(rpExtractedPath.toFile());
         Path unzipDir = Files.createDirectory(rpExtractedPath);
@@ -231,12 +234,16 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     }
 
     public static Path getPackPath() {
-        File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/plugins/
-        File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/plugins/ItemsAdder
-        File outputDir = new File(itemsAdderDir, "output"); // * root/plugins/ItemsAdder/output
-        File generatedDir = new File(outputDir, "generated.zip"); // * root/plugins/ItemsAdder/output/generated.zip
+        try {
+            File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/plugins/
+            File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/plugins/ItemsAdder
+            File outputDir = new File(itemsAdderDir, "output"); // * root/plugins/ItemsAdder/output
+            File generatedDir = new File(outputDir, "generated.zip"); // * root/plugins/ItemsAdder/output/generated.zip
 
-        return generatedDir.toPath();
+            return generatedDir.toPath();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

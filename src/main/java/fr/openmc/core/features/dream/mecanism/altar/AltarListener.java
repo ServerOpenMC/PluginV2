@@ -19,13 +19,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class AltarListener implements Listener {
 
-    private final DreamBlocksManager dreamBlocksManager;
-    private final AltarManager altarManager;
-
-    public AltarListener() {
-        this.dreamBlocksManager = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS;
-        this.altarManager = dreamBlocksManager.ALTAR;
-    }
+    private final DreamBlocksManager dreamBlocksManager = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS;
+    private final AltarManager altarManager = dreamBlocksManager.ALTAR;
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
