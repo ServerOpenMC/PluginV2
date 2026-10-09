@@ -291,24 +291,27 @@ public class CityManager extends Feature
         });
     }
 
+    public Map<UUID, List<CityInvite>> getInvitationsMap() {
+        return invitations;
+    }
+
     public List<CityInvite> getInvitations(UUID invitedUUID) {
         return invitations.getOrDefault(invitedUUID, new ArrayList<>());
     }
 
     public boolean hasInvitation(UUID invitedUUID) {
-        return !invitations.getOrDefault(invitedUUID, new ArrayList<>()).isEmpty();
+        return !getInvitations(invitedUUID).isEmpty();
     }
 
     public CityInvite getInvitation(UUID invitedUUID, UUID inviterUUID) {
-        return invitations.getOrDefault(invitedUUID, new ArrayList<>()).stream()
+        return getInvitations(invitedUUID).stream()
                 .filter(invite -> invite.inviterUUID().equals(inviterUUID))
                 .findFirst()
                 .orElse(null);
     }
 
     public boolean hasInvitation(UUID invitedUUID, UUID inviterUUID) {
-        return invitations.getOrDefault(invitedUUID, new ArrayList<>()).stream()
-                .anyMatch(invite -> invite.inviterUUID().equals(inviterUUID));
+        return getInvitation(invitedUUID, inviterUUID) != null;
     }
 
     public void addInvitation(UUID invitedUUID, CityInvite invite) {
@@ -319,6 +322,7 @@ public class CityManager extends Feature
     public void removeInvitation(UUID invitedUUID, UUID inviterUUID) {
         invitations.computeIfAbsent(invitedUUID, _ -> new ArrayList<>())
                 .removeIf(invite -> invite.inviterUUID().equals(inviterUUID));
+        invitations.values().removeIf(List::isEmpty);
     }
 
     public void clearInvitations(UUID invitedUUID) {

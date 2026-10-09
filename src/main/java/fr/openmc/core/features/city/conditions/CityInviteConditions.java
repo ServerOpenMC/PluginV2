@@ -30,59 +30,59 @@ public class CityInviteConditions {
      * Retourne un booleen pour dire si le joueur peut etre invité
      *
      * @param city   la ville sur laquelle on fait les actions
-     * @param player le joueur sur lequel tester les permissions
-     * @param target le joueur sur lequel tester s'il peut etre inviter
+     * @param inviter le joueur sur lequel tester les permissions
+     * @param invited le joueur sur lequel tester s'il peut etre inviter
      * @return booleen
      */
-    public static boolean canCityInvitePlayer(City city, OMCPlayer player, OMCPlayer target) {
-        UUID playerUUID = player.getUniqueId();
-        UUID targetUUID = target.getUniqueId();
+    public static boolean canCityInvitePlayer(City city, OMCPlayer inviter, OMCPlayer invited) {
+        UUID inviterUUID = inviter.getUniqueId();
+        UUID invitedUUID = invited.getUniqueId();
 
         if (city == null) {
-            player.message().sendError(
+            inviter.message().sendError(
                     TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY
             );
             return false;
         }
 
-        if (!(city.hasPermission(playerUUID, CityPermission.INVITE))) {
-            player.message().sendError(
+        if (!(city.hasPermission(inviterUUID, CityPermission.INVITE))) {
+            inviter.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.no_permission"), Prefix.CITY
             );
             return false;
         }
 
-        if (playerUUID.equals(targetUUID)) {
-            player.message().sendError(
+        if (inviterUUID.equals(invitedUUID)) {
+            inviter.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.self"), Prefix.CITY
             );
             return false;
         }
 
 
-        if (City.ofPlayer(targetUUID) != null) {
-            player.message().sendError(
+        if (City.ofPlayer(invitedUUID) != null) {
+            inviter.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.target_already_in_city"), Prefix.CITY
             );
             return false;
         }
 
-        if (!player.settings().canReceiveCityInvite(targetUUID)) {
-            player.message().sendError(
+        if (!inviter.settings().canReceiveCityInvite(invitedUUID)) {
+            inviter.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.target_cant_receive"), Prefix.CITY
             );
             return false;
         }
 
-        if (cityManager.hasInvitation(targetUUID, playerUUID)) {
-            player.message().sendError(
+        if (cityManager.hasInvitation(invitedUUID, inviterUUID)) {
+            inviter.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.already_invited"), Prefix.CITY
             );
             return false;
         }
 
         if (city.getMembers().size() >= MemberLimitRewards.getMemberLimit(city.getLevel())) {
-            player.message().sendError(
+            inviter.message().sendError(
                     TranslationManager.translation(
                             "feature.city.conditions.invite.member_limit_reached",
                             Component.text(MemberLimitRewards.getMemberLimit(city.getLevel()))
@@ -98,11 +98,11 @@ public class CityInviteConditions {
     /**
      * Retourne un booleen pour dire si le joueur peut refuser l'invitation
      *
-     * @param player le joueur sur lequel tester les permissions
+     * @param invited le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityInviteDeny(OMCPlayer player, OMCOfflinePlayer inviter) {
-        return hasPendingInvitation(player, inviter);
+    public static boolean canCityInviteDeny(OMCPlayer invited, OMCOfflinePlayer inviter) {
+        return hasPendingInvitation(invited, inviter);
     }
 
     /**
@@ -142,7 +142,18 @@ public class CityInviteConditions {
         return true;
     }
 
-    private static boolean hasPendingInvitation(OMCPlayer invited, OMCOfflinePlayer inviter) {
+    /**
+     * Retourne un booleen pour dire si le joueur peut annuler une invitation
+     *
+     * @param invited       le joueur qui est invité
+     * @param inviter       le joueur qui invite
+     * @return booleen
+     */
+    public static boolean canCityInviteCancel(OMCOfflinePlayer invited, OMCPlayer inviter) {
+        return hasPendingInvitation(invited, inviter);
+    }
+
+    private static boolean hasPendingInvitation(OMCOfflinePlayer invited, OMCOfflinePlayer inviter) {
         UUID invitedUUID = invited.getUniqueId();
 
         if (!cityManager.hasInvitation(invitedUUID)) {
