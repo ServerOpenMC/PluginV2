@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CityChangeAction {
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+
     private static final long COOLDOWN_CHANGE_TYPE = 2 * 24 * 60 * 60 * 1000L; // 2 jours
     private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
 
@@ -95,8 +98,6 @@ public class CityChangeAction {
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-
-        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
         if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
 	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.type.must_wait_before_change_type",

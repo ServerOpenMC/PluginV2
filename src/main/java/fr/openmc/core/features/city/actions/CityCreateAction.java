@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CityCreateAction {
+    private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
+    private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static final int FREE_CLAIMS = 9;
     public static final long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
@@ -101,9 +103,7 @@ public class CityCreateAction {
             return false;
         }
 
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
-
-        if (cityManager.isChunkClaimedInRadius(chunk, 1)) {
+        if (CITY_MANAGER.isChunkClaimedInRadius(chunk, 1)) {
             player.message().send(TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
                     Prefix.CITY, MessageType.ERROR, false);
             return false;
@@ -131,9 +131,8 @@ public class CityCreateAction {
                         Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)),
                 Prefix.CITY, MessageType.INFO, false);
 
-        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
-        dynamicCooldownManager.use(playerUUID, "city:big", 60000);
-        dynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
+        DYNAMIC_COOLDOWN_MANAGER.use(playerUUID, "city:big", 60000);
+        DYNAMIC_COOLDOWN_MANAGER.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
         OMCRegistry.CITY_FEATURES.CLAIM_VIEW.updateAllViews();
         return true;

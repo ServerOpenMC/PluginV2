@@ -4,6 +4,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -18,6 +19,7 @@ import org.bukkit.entity.Player;
  * pour claim une zone (utile pour faire une modif sur menu et commandes).
  */
 public class CityClaimCondition {
+    private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     /**
      * Retourne un booleen pour dire si la ville peut etre etendu
@@ -60,7 +62,7 @@ public class CityClaimCondition {
         if (city.getBalance() < money) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.conditions.claim.not_enough_city_money",
-                    Component.text(money + OMCRegistry.FEATURES.ECONOMY.get().getEconomyIcon())
+                    Component.text(money + ECONOMY_MANAGER.getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

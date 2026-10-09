@@ -19,6 +19,8 @@ import org.bukkit.entity.Player;
  * pour creer une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityCreateConditions {
+    private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
+    private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static final double MONEY_CREATE = 3500.0;
     public static final int AYWENITE_CREATE = 30;
@@ -30,11 +32,10 @@ public class CityCreateConditions {
      * @return booleen
      */
     public static boolean canCityCreate(OMCPlayer player, String cityName) {
-        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
-        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+        if (!DYNAMIC_COOLDOWN_MANAGER.isReady(player.getUniqueId(), "city:big")) {
             player.message().send(TranslationManager.translation(
                     "feature.city.conditions.create.must_wait",
-                    Component.text(dynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
+                    Component.text(DYNAMIC_COOLDOWN_MANAGER.getRemaining(player.getUniqueId(), "city:big") / 1000)
             ), Prefix.CITY, MessageType.INFO, false);
             return false;
         }
@@ -45,11 +46,10 @@ public class CityCreateConditions {
             return false;
         }
 
-        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
-        if (player.economy().getBalance() < MONEY_CREATE) {
+        if (ECONOMY_MANAGER.getBalance(player.getUniqueId()) < MONEY_CREATE) {
             player.message().send(TranslationManager.translation(
                     "feature.city.conditions.create.not_enough_player_money",
-                    Component.text(MONEY_CREATE + economyManager.getEconomyIcon())
+                    Component.text(MONEY_CREATE + ECONOMY_MANAGER.getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

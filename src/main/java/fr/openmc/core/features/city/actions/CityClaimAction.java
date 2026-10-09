@@ -4,6 +4,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -19,6 +20,9 @@ import java.util.Set;
 
 
 public class CityClaimAction {
+    private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
+    private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
+
     private static final int[][] CARDINAL_OFFSETS = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 
     public static int calculatePrice(int chunkCount) {
@@ -34,7 +38,6 @@ public class CityClaimAction {
     }
 
     public static void startClaim(Player sender, int chunkX, int chunkZ) {
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
         City city = City.ofPlayer(sender);
         org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
@@ -60,7 +63,7 @@ public class CityClaimAction {
             return;
         }
 
-        if (cityManager.isChunkClaimed(chunkX, chunkZ)) {
+        if (CITY_MANAGER.isChunkClaimed(chunkX, chunkZ)) {
             City chunkCity = City.of(chunkX, chunkZ);
             if (chunkCity == null) return;
             String cityName = chunkCity.getName();
@@ -75,7 +78,7 @@ public class CityClaimAction {
         if (city.getFreeClaims() <= 0) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.city_not_enough_money",
-                                Component.text(price + OMCRegistry.FEATURES.ECONOMY.get().getEconomyIcon())),
+                                Component.text(price + ECONOMY_MANAGER.getEconomyIcon())),
                         Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
