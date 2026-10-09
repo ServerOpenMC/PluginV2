@@ -1,6 +1,10 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
@@ -20,6 +24,7 @@ import java.util.UUID;
  * pour inviter une personne (utile pour faire une modif sur menu et commandes).
  */
 public class CityInviteConditions {
+    private static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
     /**
      * Retourne un booleen pour dire si le joueur peut etre invité
@@ -32,6 +37,7 @@ public class CityInviteConditions {
     public static boolean canCityInvitePlayer(City city, OMCPlayer player, OMCPlayer target) {
         UUID playerUUID = player.getUniqueId();
         UUID targetUUID = target.getUniqueId();
+
         if (city == null) {
             player.message().sendError(
                     TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY
@@ -46,6 +52,14 @@ public class CityInviteConditions {
             return false;
         }
 
+        if (playerUUID.equals(targetUUID)) {
+            player.message().sendError(
+                    TranslationManager.translation("feature.city.conditions.invite.self"), Prefix.CITY
+            );
+            return false;
+        }
+
+
         if (City.ofPlayer(targetUUID) != null) {
             player.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.target_already_in_city"), Prefix.CITY
@@ -56,6 +70,13 @@ public class CityInviteConditions {
         if (!player.settings().canReceiveCityInvite(targetUUID)) {
             player.message().sendError(
                     TranslationManager.translation("feature.city.conditions.invite.target_cant_receive"), Prefix.CITY
+            );
+            return false;
+        }
+
+        if (cityManager.hasInvitation(targetUUID, playerUUID)) {
+            player.message().sendError(
+                    TranslationManager.translation("feature.city.conditions.invite.already_invited"), Prefix.CITY
             );
             return false;
         }
@@ -80,59 +101,63 @@ public class CityInviteConditions {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityInviteDeny(OMCPlayer player, OMCPlayer inviter) {
-        List<Player> playerInvitations = CityInviteCommands.invitations.get(player);
-
-        if (playerInvitations == null) {
-            player.message().sendError(
-                    TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY
-            );
-            return false;
-        }
-
-        if (!playerInvitations.contains(inviter)) {
-            player.message().send(
-                    TranslationManager.translation("feature.city.invite.commands.accept.not_invited", Component.text(inviter.getName())), Prefix.CITY
-            );
-            return false;
-        }
-
-        return true;
+    public static boolean canCityInviteDeny(OMCPlayer player, OMCOfflinePlayer inviter) {
+        return hasPendingInvitation(player, inviter);
     }
 
     /**
      * Retourne un booleen pour dire si le joueur peut etre invité
      *
-     * @param newCity       la ville sur laquelle on fait les actions
+     * @param invited       le joueur qui est invité
      * @param inviter       le joueur qui invite
-     * @param invitedPlayer le joueur qui est invité
      * @return booleen
      */
-    public static boolean canCityInviteAccept(City newCity, Player inviter, Player invitedPlayer) {
-        if (!CityInviteCommands.invitations.containsKey(invitedPlayer)) {
-            MessagesManager.sendMessage(invitedPlayer, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false);
+    public static boolean canCityInviteAccept(OMCPlayer invited, OMCOfflinePlayer inviter) {
+        if (!hasPendingInvitation(invited, inviter)) return false;
+
+        CityInvite invite = cityManager.getInvitation(invited.getUniqueId(), inviter.getUniqueId());
+
+        City city = invite.city();
+
+        if (city == null) {
+            invited.message().sendError(
+                    TranslationManager.translation("feature.city.conditions.invite.expired"), Prefix.CITY, false);
             return false;
         }
 
-        if (newCity == null) {
-            MessagesManager.sendMessage(invitedPlayer, TranslationManager.translation("feature.city.conditions.invite.expired"), Prefix.CITY, MessageType.ERROR, false);
-
-            List<Player> playerInvitations = CityInviteCommands.invitations.get(invitedPlayer);
-            playerInvitations.remove(inviter);
-            if (playerInvitations.isEmpty()) {
-                CityInviteCommands.invitations.remove(invitedPlayer);
-            }
+        if (City.ofPlayer(invited.getUniqueId()) != null) {
+            invited.message().sendError(
+                    TranslationManager.translation("messages.city.player_already_in_city"), Prefix.CITY, false);
             return false;
         }
 
-        if (newCity.getMembers().size() >= MemberLimitRewards.getMemberLimit(newCity.getLevel())) {
-            MessagesManager.sendMessage(invitedPlayer, TranslationManager.translation("feature.city.conditions.invite.city_member_limit_reached"), Prefix.CITY, MessageType.ERROR, false);
+        if (city.getMembers().size() >= MemberLimitRewards.getMemberLimit(city.getLevel())) {
+            invited.message().sendError(
+                    TranslationManager.translation("feature.city.conditions.invite.city_member_limit_reached"), Prefix.CITY, false);
+            cityManager.removeInvitation(invited.getUniqueId(), inviter.getUniqueId());
+            return false;
+        }
 
-            List<Player> playerInvitations = CityInviteCommands.invitations.get(invitedPlayer);
-            playerInvitations.remove(inviter);
-            if (playerInvitations.isEmpty()) {
-                CityInviteCommands.invitations.remove(invitedPlayer);
-            }
+
+        return true;
+    }
+
+    private static boolean hasPendingInvitation(OMCPlayer invited, OMCOfflinePlayer inviter) {
+        UUID invitedUUID = invited.getUniqueId();
+
+        if (!cityManager.hasInvitation(invitedUUID)) {
+            invited.message().sendError(TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, false);
+            return false;
+        }
+
+        if (!cityManager.hasInvitation(invitedUUID, inviter.getUniqueId())) {
+            invited.message().sendError(
+                    TranslationManager.translation(
+                            "feature.city.invite.commands.accept.not_invited",
+                            inviter.getNameWithHead()
+                    ),
+                    Prefix.CITY
+            );
             return false;
         }
 

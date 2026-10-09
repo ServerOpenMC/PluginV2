@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
@@ -7,8 +8,12 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,6 +32,7 @@ import java.util.Map;
 
 public class InvitationsMenu extends PaginatedMenu {
 
+    private static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
     public InvitationsMenu(Player owner) {
         super(owner);
     }
@@ -59,25 +65,21 @@ public class InvitationsMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
-        List<Player> invitations = CityInviteCommands.invitations.get(player);
+        OMCPlayer player = getOwner();
 
         List<Component> invitationLore = TranslationManager.translationLore("feature.city.menus.invitations.item.lore");
 
-        for (Player inviter : invitations) {
-            City inviterCity = City.ofPlayer(inviter);
+        for (CityInvite invite : cityManager.getInvitations(player.getUniqueId())) {
+            City inviterCity = invite.city();
 
             if (inviterCity == null) {
-                invitations.remove(inviter);
-                if (invitations.isEmpty()) {
-                    CityInviteCommands.invitations.remove(player);
-                }
+                cityManager.removeInvitation(player.getUniqueId(), invite.inviterUUID());
                 return getItems();
             }
 
             Component invitationName = TranslationManager.translation(
                     "feature.city.menus.invitations.item.name",
-                    Component.text(inviter.getName()).color(NamedTextColor.GRAY),
+                    CachePlayerName.name(invite.inviterUUID()).color(NamedTextColor.GRAY),
                     Component.text(inviterCity.getName()).color(NamedTextColor.GRAY)
             );
 
@@ -85,19 +87,19 @@ public class InvitationsMenu extends PaginatedMenu {
                 itemMeta.itemName(invitationName);
                 itemMeta.lore(invitationLore);
             }).setOnClick(_ -> {
-                OMCPlayer omcPlayer = OMCPlayer.of(player);
-                OMCPlayer omcInviter = OMCPlayer.of(inviter);
+                OMCOfflinePlayer omcInviter = OMCPlayer.of(invite.inviterUUID());
                 new ConfirmMenu(player,
                         () -> {
-                            CityInviteCommands.acceptInvitation(omcPlayer, omcInviter);
+                            CityInviteCommands.acceptInvitation(player, omcInviter);
                             player.closeInventory();
                         },
                         () -> {
-                            CityInviteCommands.denyInvitation(omcPlayer, omcInviter);
+                            CityInviteCommands.denyInvitation(player, omcInviter);
                             player.closeInventory();
                         },
                         List.of(TranslationManager.translation("messages.global.accept")),
-                        List.of(TranslationManager.translation("feature.city.menus.invitations.confirm.deny", Component.text(inviter.getName()).color(NamedTextColor.GRAY)))).open();
+                        List.of(TranslationManager.translation("feature.city.menus.invitations.confirm.deny",
+                                omcInviter.getNameWithHead()))).open();
             }));
         }
 

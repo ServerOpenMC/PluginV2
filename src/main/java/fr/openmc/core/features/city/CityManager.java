@@ -12,6 +12,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
+import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.db.*;
@@ -48,6 +49,7 @@ public class CityManager extends Feature
     @Getter
     private final Map<UUID, City> playerCities = new HashMap<>();
     private final Map<ChunkPos, City> claimedChunks = new HashMap<>();
+    private final Map<UUID, List<CityInvite>> invitations = new HashMap<>(); // invité -> liste d'invitations
 
     private MascotsManager mascotsManager;
     private CityClaimViewManager cityClaimViewManager;
@@ -287,6 +289,46 @@ public class CityManager extends Feature
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public List<CityInvite> getInvitations(UUID invitedUUID) {
+        return invitations.getOrDefault(invitedUUID, new ArrayList<>());
+    }
+
+    public boolean hasInvitation(UUID invitedUUID) {
+        return !invitations.getOrDefault(invitedUUID, new ArrayList<>()).isEmpty();
+    }
+
+    public CityInvite getInvitation(UUID invitedUUID, UUID inviterUUID) {
+        return invitations.getOrDefault(invitedUUID, new ArrayList<>()).stream()
+                .filter(invite -> invite.inviterUUID().equals(inviterUUID))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean hasInvitation(UUID invitedUUID, UUID inviterUUID) {
+        return invitations.getOrDefault(invitedUUID, new ArrayList<>()).stream()
+                .anyMatch(invite -> invite.inviterUUID().equals(inviterUUID));
+    }
+
+    public void addInvitation(UUID invitedUUID, CityInvite invite) {
+        invitations.computeIfAbsent(invitedUUID, _ -> new ArrayList<>())
+                .add(invite);
+    }
+
+    public void removeInvitation(UUID invitedUUID, UUID inviterUUID) {
+        invitations.computeIfAbsent(invitedUUID, _ -> new ArrayList<>())
+                .removeIf(invite -> invite.inviterUUID().equals(inviterUUID));
+    }
+
+    public void clearInvitations(UUID invitedUUID) {
+        invitations.remove(invitedUUID);
+    }
+
+    public void removeInvitationsToCity(UUID cityUUID) {
+        invitations.values()
+                .forEach(invites -> invites.removeIf(invite -> invite.city().getUniqueId().equals(cityUUID)));
+        invitations.values().removeIf(List::isEmpty);
     }
 
     // ==================== General helper methods ====================
@@ -562,12 +604,13 @@ public class CityManager extends Feature
             }
         });
 
+        removeInvitationsToCity(city.getUniqueId());
+
         cities.remove(city.getUniqueId());
         citiesByName.remove(city.getName());
 
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city));
-        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city)));
 
         cityClaimViewManager.updateAllViews();
     }

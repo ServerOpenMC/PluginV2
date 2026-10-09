@@ -9,9 +9,11 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -38,6 +40,7 @@ public class NoCityMenu extends Menu {
 
     private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private static final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
     public NoCityMenu(Player owner) {
         super(owner);
@@ -70,16 +73,17 @@ public class NoCityMenu extends Menu {
 
         Component nameNotif;
         List<Component> loreNotif = new ArrayList<>();
-        if (!CityInviteCommands.invitations.containsKey(player)) {
+        if (!cityManager.hasInvitation(player.getUniqueId())) {
                 nameNotif = TranslationManager.translation("feature.city.menus.no_city.invitations.none.title");
 	            loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.none.lore"));
 
             inventory.put(15, new ItemMenuBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
-            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false)));
+            }).setOnClick(_ ->
+                    player.message().sendError(TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, false)));
         } else {
-            List<Player> invitations = CityInviteCommands.invitations.get(player);
+            List<CityInvite> invitations = cityManager.getInvitations(player.getUniqueId());
             nameNotif = TranslationManager.translation(
                     "feature.city.menus.no_city.invitations.count.title",
                     Component.text(invitations.size()),
@@ -91,9 +95,8 @@ public class NoCityMenu extends Menu {
             inventory.put(15, new ItemMenuBuilder(this, Material.BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
-            }).setOnClick(inventoryClickEvent -> {
-                new InvitationsMenu(player).open();
-            }));
+            }).setOnClick(_ ->
+                    new InvitationsMenu(player).open()));
         }
 
         Supplier<ItemMenuBuilder> createItemSupplier = () -> {

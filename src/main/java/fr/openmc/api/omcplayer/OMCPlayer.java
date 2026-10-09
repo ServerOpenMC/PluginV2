@@ -43,6 +43,7 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
     @Nullable CraftPlayer getCraftPlayer();
     ServerPlayer getServerPlayer();
 
+    // todo: faire un cooldown et chronometer + simple d'utilisation ahah
     OMCPlayerSettings settings();
 
 }
