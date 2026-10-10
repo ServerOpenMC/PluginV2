@@ -90,7 +90,7 @@ public class ShopSellingMenu extends PaginatedMenu {
 			list.add(new ItemMenuBuilder(this, item, itemMeta -> {
 				if (itemMeta.hasLore()) itemMeta.lore().addAll(TranslationManager.translationLore("feature.shop.menu.selling.item_lore"));
 				else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.selling.item_lore"));
-			}).setOnClick(_ -> DialogInput.send(getOwner(),
+			}).setOnClick(_ -> getOwner().inputs().sendStringDialogInput(
 					TranslationManager.translation("feature.shop.menu.selling.price_input"),
 					Integer.MAX_VALUE,
 					s -> {

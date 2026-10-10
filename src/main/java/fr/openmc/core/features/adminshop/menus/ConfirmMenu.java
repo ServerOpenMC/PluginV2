@@ -112,8 +112,7 @@ public class ConfirmMenu extends Menu {
             meta.lore(lore);
         }).setOnClick(event -> {
             switch (event.getClick()) {
-                case ClickType.MIDDLE -> DialogInput.sendFloat(
-                        getOwner(),
+                case ClickType.MIDDLE -> getOwner().inputs().sendFloatDialogInput(
                         TranslationManager.translation("feature.adminshop.menu.confirm.input"),
                         1,
                         maxQuantity,

@@ -51,9 +51,8 @@ public class PlayerShopManager extends Feature {
                     Component.text("500 " + economyManager.getEconomyIcon(), NamedTextColor.RED)), Prefix.SHOP, MessageType.ERROR, true);
 			return;
         }
-        
-        ItemInteraction.runLocationInteraction(
-                player,
+
+        player.inputs().sendLocationInput(
                 ItemStack.of(Material.BARREL),
                 "shops:shop_creator",
                 300,

@@ -53,8 +53,7 @@ public class CityCreateAction {
         if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
         if (!player.economy().withdrawBalance(CityCreateConditions.MONEY_CREATE)) return;
 
-        ItemInteraction.runLocationInteraction(
-                player,
+        player.inputs().sendLocationInput(
                 getMascotStick(),
                 "mascot:stick",
                 300,

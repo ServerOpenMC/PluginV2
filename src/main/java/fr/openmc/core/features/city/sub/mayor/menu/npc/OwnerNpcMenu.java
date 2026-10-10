@@ -165,7 +165,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(46, new ItemMenuBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.npc.move.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.npc.move.lore"));
-            }).setOnClick(inventoryClickEvent -> {
+            }).setOnClick(_ -> {
                 List<Component> loreItemNPC = List.of(
                         TranslationManager.translation("feature.city.mayor.npc.move.item.lore")
                 );
@@ -175,8 +175,8 @@ public class OwnerNpcMenu extends Menu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                 itemMeta.lore(loreItemNPC);
                 itemToGive.setItemMeta(itemMeta);
-                ItemInteraction.runLocationInteraction(
-                        player,
+
+                player.inputs().sendLocationInput(
                         itemToGive,
                         "mayor:owner-npc-move",
                         300,

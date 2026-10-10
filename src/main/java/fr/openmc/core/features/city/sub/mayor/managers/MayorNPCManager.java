@@ -242,8 +242,8 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                             itemMeta.lore(loreItemNPC);
                             itemToGive.setItemMeta(itemMeta);
-                            ItemInteraction.runLocationInteraction(
-                                    player,
+
+                            player.inputs().sendLocationInput(
                                     itemToGive,
                                     "mayor:mayor-npc-move",
                                     300,
@@ -329,8 +329,8 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                             itemMeta.lore(loreItemNPC);
                             itemToGive.setItemMeta(itemMeta);
-                            ItemInteraction.runLocationInteraction(
-                                    player,
+
+                            player.inputs().sendLocationInput(
                                     itemToGive,
                                     "mayor:owner-npc-move",
                                     300,

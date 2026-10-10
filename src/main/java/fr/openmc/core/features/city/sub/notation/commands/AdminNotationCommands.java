@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.notation.commands;
 
 import fr.openmc.api.input.dialog.DialogInput;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
@@ -31,16 +32,16 @@ public class AdminNotationCommands {
 
     @Command({"admcity notation edit"})
     @CommandPermission("omc.admins.commands.admcity.notation")
-    public void editNotations(Player sender) {
+    public void editNotations(OMCPlayer sender) {
 	    Component exempleTip = TranslationManager.translation("feature.city.notation.admin.edit.example",
                 Component.text(DateUtils.getWeekFormat()),
                 Component.text(DateUtils.getNextWeekFormat()));
-        DialogInput.send(sender, TranslationManager.translation("feature.city.notation.admin.edit.prompt",
+        sender.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.notation.admin.edit.prompt",
                         exempleTip),
                 7, weekStr -> {
                     if (weekStr == null || weekStr.isEmpty()) {
-	                    MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.edit.invalid",
-                                exempleTip), Prefix.STAFF, MessageType.ERROR, false);
+	                    sender.message().sendError(TranslationManager.translation("feature.city.notation.admin.edit.invalid",
+                                exempleTip), Prefix.STAFF, false);
                         return;
                     }
 
@@ -50,26 +51,26 @@ public class AdminNotationCommands {
                             .toList();
 
                     if (cities.isEmpty()) {
-                        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.edit.none"), Prefix.STAFF, MessageType.ERROR, false);
+                        sender.message().sendError(TranslationManager.translation("feature.city.notation.admin.edit.none"), Prefix.STAFF, false);
                         return;
                     }
 
                     try {
                         NotationEditionDialog.send(sender, weekStr, cities, null);
                     } catch (Exception e) {
-                        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.edit.error"), Prefix.STAFF, MessageType.ERROR, false);
+                        sender.message().sendError(TranslationManager.translation("feature.city.notation.admin.edit.error"), Prefix.STAFF, false);
                     }
                 });
     }
 
     @Command({"admcity notation publish"})
     @CommandPermission("omc.admins.commands.admcity.notation")
-    public void publishNotations(Player sender) {
+    public void publishNotations(OMCPlayer sender) {
         String weekStr = DateUtils.getWeekFormat();
 
         if (!notationManager.notationPerWeek.containsKey(weekStr)) {
-	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.publish.missing",
-                    Component.text(weekStr)), Prefix.STAFF, MessageType.ERROR, false);
+            sender.message().sendError(TranslationManager.translation("feature.city.notation.admin.publish.missing",
+                    Component.text(weekStr)), Prefix.STAFF, false);
             return;
         }
 
@@ -81,8 +82,8 @@ public class AdminNotationCommands {
 
         notationManager.giveReward(weekStr);
 	    
-	    MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.notation.admin.publish.success",
-                Component.text(weekStr)), Prefix.STAFF, MessageType.ERROR, false);
+	    sender.message().sendError(TranslationManager.translation("feature.city.notation.admin.publish.success",
+                Component.text(weekStr)), Prefix.STAFF, false);
 
     }
 }

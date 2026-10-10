@@ -92,7 +92,7 @@ public class CityModifyMenu extends Menu {
             City cityCheck = player.city().getCity();
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
-            DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                 if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
                     City playerCity = player.city().getCity();

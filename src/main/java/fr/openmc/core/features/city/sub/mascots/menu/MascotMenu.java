@@ -164,8 +164,7 @@ public class MascotMenu extends Menu {
                         }
                         mascotsMoveItem.setItemMeta(meta);
 
-                        ItemInteraction.runLocationInteraction(
-                                player,
+                        player.inputs().sendLocationInput(
                                 mascotsMoveItem,
                                 "mascots:moveInteraction",
                                 120,

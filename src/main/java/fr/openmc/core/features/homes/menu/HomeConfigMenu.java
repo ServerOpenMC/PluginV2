@@ -65,7 +65,7 @@ public class HomeConfigMenu extends Menu {
         content.put(22, new ItemMenuBuilder(this, Material.NAME_TAG, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.config.rename.name"));
             itemMeta.lore(TranslationManager.translationLore("feature.homes.config.rename.lore"));
-        }).setOnClick(e -> DialogInput.send(getOwner(), TranslationManager.translation("feature.homes.config.rename.prompt"), MAX_LENGTH_HOME_NAME, input -> {
+        }).setOnClick(_ -> player.inputs().sendStringDialogInput(TranslationManager.translation("feature.homes.config.rename.prompt"), MAX_LENGTH_HOME_NAME, input -> {
             if (input == null) return;
 
             if (!HomeUtil.isValidHomeName(input)) return;

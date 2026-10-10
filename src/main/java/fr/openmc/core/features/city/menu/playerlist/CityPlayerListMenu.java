@@ -149,8 +149,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
-        Player player = getOwner();
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = getOwner();
 
         City playerCity = City.ofPlayer(player);
 
@@ -170,15 +169,15 @@ public class CityPlayerListMenu extends PaginatedMenu {
                             Component.text(MemberLimitRewards.getMemberLimit(playerCity.getLevel())).color(NamedTextColor.GRAY)
                     )
             );
-        }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
+        }).setOnClick(_ -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (input == null) return;
 
                 if (InputUtils.isInputPlayer(input)) {
                     OMCPlayer playerToInvite = OMCPlayer.of(Bukkit.getPlayer(input));
-                    CityInviteCommands.invite(omcPlayer, playerToInvite);
+                    CityInviteCommands.invite(player, playerToInvite);
                 } else {
-                    omcPlayer.message().sendError(TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, true);
+                    player.message().sendError(TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, true);
                 }
             });
         }));

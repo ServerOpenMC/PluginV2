@@ -124,7 +124,7 @@ public class CityBankDepositMenu extends Menu {
         }).setOnClick(_ -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-            DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.deposit.input.prompt"), MAX_LENGTH, input -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.bank.menu.deposit.input.prompt"), MAX_LENGTH, input -> {
                 if (input == null) return;
                 city.depositCityBank(player, input);
             });

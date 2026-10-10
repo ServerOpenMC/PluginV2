@@ -123,7 +123,7 @@ public class CityBankWithdrawMenu extends Menu {
         }).setOnClick(_ -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-            DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.withdraw.input.prompt"), MAX_LENGTH, input -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.bank.menu.withdraw.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
                         city.withdrawCityBank(player, input);
                     }

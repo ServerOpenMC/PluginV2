@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.api.chronometer.Chronometer;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.api.omcplayer.OMCPlayer;
@@ -17,13 +15,9 @@ import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.city.menu.main.CityMenu;
 import fr.openmc.core.utils.text.InputUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -84,7 +78,7 @@ public class CityCommands {
             return;
         }
 
-        DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
+        player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                     if (input == null) return;
                     CityCreateAction.beginCreateCity(player, input);
                 }

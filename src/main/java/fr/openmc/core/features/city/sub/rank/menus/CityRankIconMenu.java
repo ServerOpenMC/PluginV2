@@ -116,20 +116,18 @@ public class CityRankIconMenu extends PaginatedMenu {
 		map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_SEARCH, itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.search.title"));
 			itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.search.lore"));
-		}).setOnClick(event -> {
-			DialogInput.send(getOwner(), TranslationManager.translation("feature.city.rank.menu.icon.search.prompt"), MAX_LENGTH, input -> {
-				if (input == null) return;
-				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, input).open();
-			});
-		}));
+		}).setOnClick(_ ->
+				getOwner().inputs().sendStringDialogInput(TranslationManager.translation("feature.city.rank.menu.icon.search.prompt"), MAX_LENGTH,
+						input -> {
+					if (input == null) return;
+            		new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, input).open();
+        })));
 		
 		if (filter != null && !filter.isEmpty()) {
 			map.put(53, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation("feature.city.rank.menu.icon.clear.title"));
 				itemMeta.lore(TranslationManager.translationLore("feature.city.rank.menu.icon.clear.lore"));
-			}).setOnClick(event -> {
-				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open();
-			}));
+			}).setOnClick(_ -> new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open()));
 		}
 		return map;
 	}
@@ -167,7 +165,6 @@ public class CityRankIconMenu extends PaginatedMenu {
 	 * @return List of filtered materials.
 	 */
 	private List<Material> getFilteredMaterials() {
-		World world = getOwner().getWorld();
 		return Arrays.stream(Material.values())
 				.filter(material -> !material.isLegacy())
 				.filter(Material::isItem)

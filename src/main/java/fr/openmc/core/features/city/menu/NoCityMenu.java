@@ -120,7 +120,7 @@ public class NoCityMenu extends Menu {
                 }).setOnClick(_ -> {
                     if (!player.cooldown().isReady("city:big")) return;
 
-                    DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
+                    player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                                 if (input == null) return;
                                 CityCreateAction.beginCreateCity(player, input);
                             }

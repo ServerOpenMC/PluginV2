@@ -146,7 +146,7 @@ public class ShopMenu extends Menu {
             
             map.put(31, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_SHOP, itemMeta ->
                     itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.modify_price.title"))).setOnClick(_ ->
-                    DialogInput.send(getOwner(),
+                    getOwner().inputs().sendStringDialogInput(
                             TranslationManager.translation("feature.shop.menu.selling.price_input"),
                             Integer.MAX_VALUE,
                             s -> {

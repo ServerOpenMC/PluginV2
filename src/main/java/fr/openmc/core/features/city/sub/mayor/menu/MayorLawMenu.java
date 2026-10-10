@@ -243,8 +243,7 @@ public class MayorLawMenu extends Menu {
             }).setOnClick(_ -> {
                 if (dynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
 
-                    ChatInput.sendInput(
-                            player,
+                    player.inputs().sendStringChatInput(
                             TranslationManager.translation("feature.city.mayor.menu.law.announce.prompt"),
                             input -> {
                                 if (input == null)

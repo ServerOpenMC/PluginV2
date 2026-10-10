@@ -44,8 +44,7 @@ public class MayorSetWarpAction {
 
         CityLaw law = city.getLaw();
 
-        ItemInteraction.runLocationInteraction(
-                player,
+        player.inputs().sendLocationInput(
                 getWarpWand(),
                 "mayor:wait-set-warp",
                 300,

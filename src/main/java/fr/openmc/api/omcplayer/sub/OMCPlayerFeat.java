@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ public class OMCPlayerFeat {
     }
 
     @Nullable
-    public Player getPlayer() {
-        return offlinePlayer instanceof Player online ? online : offlinePlayer.getPlayer();
+    public OMCPlayer getPlayer() {
+        return OMCPlayer.of(offlinePlayer instanceof Player online ? online : offlinePlayer.getPlayer());
     }
 }

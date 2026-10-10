@@ -118,7 +118,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
 
-                DialogInput.send(getOwner(), TranslationManager.translation("feature.homes.icon.search.prompt"), MAX_LENGTH, input -> {
+                getOwner().inputs().sendStringDialogInput(TranslationManager.translation("feature.homes.icon.search.prompt"), MAX_LENGTH, input -> {
                     if (input == null) return;
 
                     searchQuery = input;
