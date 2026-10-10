@@ -142,7 +142,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         return corpses;
     }
 
-    public boolean createCorpse(Player player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
+    public boolean createCorpse(OMCPlayer player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
 
         if (hasCorpseDB(player.getUniqueId())) return false;
 
@@ -268,15 +268,14 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                     TextColor.color(0xFF8F06)).decoration(TextDecoration.BOLD, false).font(Key.key("minecraft", "default"));
     }
 
-    public Component getRemainingTime(UUID playerUUID) {
-
+    public Component getRemainingTime(OMCPlayer player) {
         Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
 
-        if (dynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
-        if (dynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
-        if (dynamicCooldownManager.getCooldowns(playerUUID).get(corpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
+        if (player.cooldown().getCooldowns() == null) return alreadyEnd;
+        if (player.cooldown().getCooldowns().get(corpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
+        if (player.cooldown().getCooldowns().get(corpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
         return Component.text(
-                DateUtils.convertMillisToTime(dynamicCooldownManager.getCooldowns(playerUUID)
+                DateUtils.convertMillisToTime(player.cooldown().getCooldowns()
                         .get(corpseNPCManager.COOLDOWN_GROUP)
                         .getRemaining()), NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
     }

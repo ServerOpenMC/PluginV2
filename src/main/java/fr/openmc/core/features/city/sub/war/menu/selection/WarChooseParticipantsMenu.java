@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
@@ -140,7 +141,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         map.put(49, ItemMenuTemplate.BTN_CANCEL.apply(this));
         map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
@@ -156,12 +157,12 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
             ).color(NamedTextColor.GRAY)));
         }).setOnClick(e -> {
             if (selected.size() != count) {
-                MessagesManager.sendMessage(player,
+                player.message().sendError(
                         TranslationManager.translation(
                                 "feature.city.war.menu.participants.must_select",
                                 Component.text(count).color(NamedTextColor.RED)
                         ),
-                        Prefix.CITY, MessageType.ERROR, false);
+                        Prefix.CITY, false);
                 return;
             }
 

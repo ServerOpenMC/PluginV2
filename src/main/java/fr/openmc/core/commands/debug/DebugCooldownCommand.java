@@ -2,6 +2,7 @@ package fr.openmc.core.commands.debug;
 
 import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Player;
@@ -12,16 +13,14 @@ import revxrsal.commands.annotation.Suggest;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class DebugCooldownCommand {
-    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
-
     @Command("debug cooldown")
     @CommandPermission("omc.debug.cooldown")
     @Description("Test de cooldown")
     @DynamicCooldown(group="test", messageKey = "command.api.cooldown.debug.must_wait")
-    public void cooldown(Player player, @Named("isSuccess") @Suggest({"success", "error"}) String isSuccess) {
+    public void cooldown(OMCPlayer player, @Named("isSuccess") @Suggest({"success", "error"}) String isSuccess) {
         if (isSuccess.equals("success")) {
             player.sendMessage(TranslationManager.translation("command.debug.cooldown.success"));
-            dynamicCooldownManager.use(player.getUniqueId(), "test" ,5000);
+            player.cooldown().use("test" ,5000);
         } else {
             player.sendMessage(TranslationManager.translation("command.debug.cooldown.error"));
         }

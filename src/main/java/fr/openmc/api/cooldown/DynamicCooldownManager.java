@@ -156,18 +156,12 @@ public class DynamicCooldownManager extends Feature implements HasDatabase, HasC
     public void reduceCooldown(Player player, UUID uuid, String group, long reductionMillis) {
         var userCooldowns = cooldowns.get(uuid);
 
-        if (userCooldowns == null) {
-            return;
-        }
+        if (userCooldowns == null) return;
 
         Cooldown cooldown = userCooldowns.get(group);
-        if (cooldown == null) {
-            return;
-        }
+        if (cooldown == null) return;
 
-        if (cooldown.isReady()) {
-            return;
-        }
+        if (cooldown.isReady()) return;
 
         long remaining = cooldown.getRemaining();
         long newRemaining = Math.max(0, remaining - reductionMillis);
@@ -188,26 +182,16 @@ public class DynamicCooldownManager extends Feature implements HasDatabase, HasC
     }
 
     /**
-     * Removes all expired cooldowns
-     */
-    public void cleanup() {
-        cooldowns.entrySet().removeIf(entry -> {
-            entry.getValue().entrySet().removeIf(groupEntry -> groupEntry.getValue().isReady());
-            return entry.getValue().isEmpty();
-        });
-    }
-
-    /**
      * Removes all cooldowns for group
      *
      * @param group Cooldown group
      */
     public void clear(String group) {
-        cooldowns.forEach((uuid, userCooldowns) -> {
+        cooldowns.forEach((_, userCooldowns) -> {
             Cooldown removed = userCooldowns.remove(group);
             if (removed != null) removed.cancelTask();
         });
-        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty()); // A test
+        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
     /**

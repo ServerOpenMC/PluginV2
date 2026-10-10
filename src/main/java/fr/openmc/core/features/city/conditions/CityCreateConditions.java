@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
  */
 public class CityCreateConditions {
     private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
-    private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static final double MONEY_CREATE = 3500.0;
     public static final int AYWENITE_CREATE = 30;
@@ -32,39 +31,39 @@ public class CityCreateConditions {
      * @return booleen
      */
     public static boolean canCityCreate(OMCPlayer player, String cityName) {
-        if (!DYNAMIC_COOLDOWN_MANAGER.isReady(player.getUniqueId(), "city:big")) {
-            player.message().send(TranslationManager.translation(
+        if (!player.cooldown().isReady("city:big")) {
+            player.message().sendInfo(TranslationManager.translation(
                     "feature.city.conditions.create.must_wait",
-                    Component.text(DYNAMIC_COOLDOWN_MANAGER.getRemaining(player.getUniqueId(), "city:big") / 1000)
-            ), Prefix.CITY, MessageType.INFO, false);
+                    Component.text(player.cooldown().getRemaining("city:big") / 1000)
+            ), Prefix.CITY, true);
             return false;
         }
 
         if (City.ofPlayer(player.getUniqueId()) != null) {
-            player.message().send(TranslationManager.translation("messages.city.player_already_in_city"),
-                    Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_already_in_city"),
+                    Prefix.CITY, true);
             return false;
         }
 
-        if (ECONOMY_MANAGER.getBalance(player.getUniqueId()) < MONEY_CREATE) {
-            player.message().send(TranslationManager.translation(
+        if (player.economy().getBalance() < MONEY_CREATE) {
+            player.message().sendError(TranslationManager.translation(
                     "feature.city.conditions.create.not_enough_player_money",
                     Component.text(MONEY_CREATE + ECONOMY_MANAGER.getEconomyIcon())
-            ), Prefix.CITY, MessageType.ERROR, false);
+            ), Prefix.CITY, true);
             return false;
         }
 
         if (!ItemUtils.hasEnoughItems(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), AYWENITE_CREATE)) {
-            player.message().send(TranslationManager.translation("core.utils.aywenite.not_enough",
+            player.message().sendError(TranslationManager.translation("core.utils.aywenite.not_enough",
                             Component.text(AYWENITE_CREATE),
                             OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
-                    ), Prefix.CITY, MessageType.ERROR, false);
+                    ), Prefix.CITY, true);
             return false;
         }
 
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
-            player.message().send(TranslationManager.translation("feature.city.commands.rename.invalid_name",
-                    Component.text(InputUtils.MAX_LENGTH_CITY)), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.commands.rename.invalid_name",
+                    Component.text(InputUtils.MAX_LENGTH_CITY)), Prefix.CITY, true);
             return false;
         }
 

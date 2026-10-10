@@ -61,17 +61,14 @@ public class CorpseListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-
         if (!corpseManager.ALLOWED_DIM.contains(event.getPlayer().getWorld().getName())) return;
 
-        Player player = event.getPlayer();
-
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         boolean killByPlayer = false;
 
-        if (omcPlayer.city().hasCity())
-            if (omcPlayer.city().getCity().isInWar()) return;
+        if (player.city().hasCity())
+            if (player.city().getCity().isInWar()) return;
 
         EntityDamageEvent.DamageCause cause = null;
 
@@ -143,8 +140,8 @@ public class CorpseListener implements Listener {
             }
 
             if (!player.getUniqueId().equals(corpse.getPlayerUUID())) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.corpse.messages.not_owner"),
-                        Prefix.CORPSE, MessageType.WARNING, true);
+                player.message().sendWarning(TranslationManager.translation("feature.corpse.messages.not_owner"),
+                        Prefix.CORPSE, false);
                 return;
             }
 
@@ -154,8 +151,7 @@ public class CorpseListener implements Listener {
 
             if (player.getInventory().isEmpty()) {
                 player.getInventory().setContents(inventory);
-            }
-            else {
+            } else {
                 List<ItemStack> remaining = new ArrayList<>();
 
                 for (ItemStack item :  inventory) {

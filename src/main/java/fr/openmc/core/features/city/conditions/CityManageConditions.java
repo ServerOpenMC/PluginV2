@@ -21,8 +21,6 @@ import java.util.UUID;
  * pour modifier une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityManageConditions {
-    private final static DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
-
     /**
      * Retourne un booleen pour dire si la ville peut etre rename
      *
@@ -110,10 +108,10 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+        if (!player.cooldown().isReady("city:big")) {
             player.message().sendInfo(TranslationManager.translation(
                     "feature.city.conditions.manage.delete.must_wait",
-                    Component.text(dynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big") / 1000)
+                    Component.text(player.cooldown().getRemaining("city:big") / 1000)
             ), Prefix.CITY, false);
             return false;
         }

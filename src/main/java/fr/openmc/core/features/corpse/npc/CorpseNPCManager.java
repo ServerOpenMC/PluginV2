@@ -6,6 +6,7 @@ import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.data.property.NpcVisibility;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.CorpseManager;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class CorpseNPCManager {
-    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     public final HashMap<UUID, CorpseNPC> corpseNpcMap = new HashMap<>();
     public final String COOLDOWN_GROUP = "corpse";
 
@@ -65,7 +65,7 @@ public class CorpseNPCManager {
 
     }
 
-    public boolean createNPCS(Player owner, CorpseNPC corpseNPC) {
+    public boolean createNPCS(OMCPlayer owner, CorpseNPC corpseNPC) {
         return createNPCS(owner,
                 corpseNPC.getLocation(),
                 corpseNPC.getHelmet(),
@@ -77,7 +77,7 @@ public class CorpseNPCManager {
         );
     }
 
-    public boolean createNPCS(Player owner, DBCorpse corpse) {
+    public boolean createNPCS(OMCPlayer owner, DBCorpse corpse) {
         return createNPCS(owner,
                 corpse.getLocation(),
                 null,
@@ -89,7 +89,7 @@ public class CorpseNPCManager {
         );
     }
 
-    public boolean createNPCS(Player owner, Location deathLocation, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, Pose pose,  boolean all) {
+    public boolean createNPCS(OMCPlayer owner, Location deathLocation, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, Pose pose, boolean all) {
         if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return false;
 
         UUID ownerUUID = owner.getUniqueId();
@@ -133,10 +133,10 @@ public class CorpseNPCManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), npcCorpse::spawnForAll);
 
-        if (dynamicCooldownManager.getCooldowns(owner.getUniqueId()) != null
-                && dynamicCooldownManager.getCooldowns(owner.getUniqueId()).containsKey(COOLDOWN_GROUP))
-            dynamicCooldownManager.clear(owner.getUniqueId(), COOLDOWN_GROUP, false);
-        dynamicCooldownManager.use(owner.getUniqueId(), COOLDOWN_GROUP, 20 * 60 * 60 * 100); // 2h -> 7200000
+        if (owner.cooldown().getCooldowns() != null
+                && owner.cooldown().getCooldowns().containsKey(COOLDOWN_GROUP))
+            owner.cooldown().clear(COOLDOWN_GROUP, false);
+        owner.cooldown().use(COOLDOWN_GROUP, 20 * 60 * 60 * 100); // 2h -> 7200000
 
         return true;
     }

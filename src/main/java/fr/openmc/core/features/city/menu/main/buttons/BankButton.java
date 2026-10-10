@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 public class BankButton {
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
-        Player player = menu.getOwner();
+        OMCPlayer player = menu.getOwner();
         MenuUtils.createButtonItem(
                 contents,
                 slots,

@@ -60,7 +60,6 @@ public class MainScoreboard extends BaseScoreboard {
 
         // Corpse
         if (corpseManager.corpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
-
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
                     Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title")))
@@ -69,7 +68,7 @@ public class MainScoreboard extends BaseScoreboard {
                     .appendSpace()
                     .append(corpseManager.getCorpseDirection(player, corpse))
                     .appendSpace()
-                    .append(corpseManager.getRemainingTime(player.getUniqueId()))
+                    .append(corpseManager.getRemainingTime(player))
             );
         }
 

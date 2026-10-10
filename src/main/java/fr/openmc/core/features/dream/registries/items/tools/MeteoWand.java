@@ -43,16 +43,15 @@ public class MeteoWand extends DreamItem implements UsableItem {
 
     @Override
     public void onRightClick(OMCPlayer player, PlayerInteractEvent event) {
-        DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
         World world = player.getWorld();
         if (!world.getName().equals("world")) {
             player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.must_be_overworld"), Prefix.OPENMC, MessageType.WARNING, false);
             return;
         }
 
-        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "player:meteo_wand")) {
+        if (!player.cooldown().isReady("player:meteo_wand")) {
             player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.cooldown",
-                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(player.getUniqueId(), "player:meteo_wand"))).color(NamedTextColor.GREEN)),
+                    Component.text(DateUtils.convertMillisToTime(player.cooldown().getRemaining("player:meteo_wand"))).color(NamedTextColor.GREEN)),
                     Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
@@ -76,6 +75,6 @@ public class MeteoWand extends DreamItem implements UsableItem {
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
 
         player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.success"), Prefix.OPENMC, MessageType.SUCCESS, false);
-        dynamicCooldownManager.use(player.getUniqueId(), "player:meteo_wand", COOLDOWN_METEO_WAND);
+        player.cooldown().use("player:meteo_wand", COOLDOWN_METEO_WAND);
     }
 }

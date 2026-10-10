@@ -37,8 +37,6 @@ import java.util.function.Supplier;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 public class CityModifyMenu extends Menu {
-    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
-
     public CityModifyMenu(Player owner) {
         super(owner);
     }
@@ -141,10 +139,10 @@ public class CityModifyMenu extends Menu {
         Supplier<ItemMenuBuilder> deleteItemSupplier = () -> {
             List<Component> loreDelete;
             if (hasPermissionOwner) {
-                if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+                if (!player.cooldown().isReady("city:big")) {
                     loreDelete = TranslationManager.translationLore(
                             "feature.city.menus.modify.delete.lore.wait",
-                            Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
+                            Component.text(player.cooldown().getRemainingFormatted("city:big")).color(NamedTextColor.RED)
                     );
                 } else {
                     loreDelete = TranslationManager.translationLore("feature.city.menus.modify.delete.lore.click");
@@ -162,7 +160,7 @@ public class CityModifyMenu extends Menu {
                     CityDeleteAction.startDeleteCity(player));
         };
 
-        if (!dynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+        if (!player.cooldown().isReady("city:big")) {
             MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {

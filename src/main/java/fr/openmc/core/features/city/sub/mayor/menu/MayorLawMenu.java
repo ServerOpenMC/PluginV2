@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
@@ -82,7 +83,7 @@ public class MayorLawMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         City city = City.ofPlayer(player);
         Mayor mayor = city.getMayor();
@@ -134,7 +135,7 @@ public class MayorLawMenu extends Menu {
                     Component messageLawPVP = pvpEnabled
                             ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.message.enable")
                             : TranslationManager.translation("feature.city.mayor.menu.law.pvp.message.disable");
-                    MessagesManager.sendMessage(player, messageLawPVP, Prefix.MAYOR, MessageType.SUCCESS, false);
+                    player.message().sendSuccess(messageLawPVP, Prefix.MAYOR, false);
 
                     Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                         new MayorLawMenu(player).open();

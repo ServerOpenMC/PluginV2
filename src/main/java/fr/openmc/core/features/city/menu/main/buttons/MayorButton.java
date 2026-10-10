@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -26,14 +27,14 @@ import java.util.function.Supplier;
 
 public class MayorButton {
     public static void init(Menu menu, City city, int[] slots) {
-        Player player = menu.getOwner();
+        OMCPlayer player = menu.getOwner();
 
         MenuUtils.runDynamicButtonItem(player, menu, slots, getItemSupplier(menu, city, player))
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60);
 
     }
 
-    private static Supplier<ItemMenuBuilder> getItemSupplier(Menu menu, City city, Player player) {
+    private static Supplier<ItemMenuBuilder> getItemSupplier(Menu menu, City city, OMCPlayer player) {
         return () ->
                 new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.mayor.title"));

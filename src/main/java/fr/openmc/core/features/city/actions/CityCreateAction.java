@@ -8,7 +8,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.chat.CityChatListener;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -32,6 +34,9 @@ import java.util.UUID;
 
 public class CityCreateAction {
     private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
+    private static final MayorManager MAYOR_MANAGER = OMCRegistry.CITY_FEATURES.MAYOR;
+    private static final MascotsManager MASCOTS_MANAGER = OMCRegistry.CITY_FEATURES.MASCOTS;
+    private static final CityClaimViewManager CLAIM_VIEW_MANAGER = OMCRegistry.CITY_FEATURES.CLAIM_VIEW;
     private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static final int FREE_CLAIMS = 9;
@@ -111,18 +116,17 @@ public class CityCreateAction {
 
         UUID cityUUID = UUID.randomUUID();
 
-        UUID playerUUID = player.getUniqueId();
-        String pendingCityName = pendingCities.remove(playerUUID);
+        String pendingCityName = pendingCities.remove(player.getUniqueId());
         if (pendingCityName == null) return false;
 
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
         // Lois
-        OMCRegistry.CITY_FEATURES.MAYOR.createCityLaws(city, false, null);
+        MAYOR_MANAGER.createCityLaws(city, false, null);
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);
-        OMCRegistry.CITY_FEATURES.MASCOTS.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
+        MASCOTS_MANAGER.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
 
         // Feedback
 	    player.message().send(TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
@@ -131,10 +135,10 @@ public class CityCreateAction {
                         Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)),
                 Prefix.CITY, MessageType.INFO, false);
 
-        DYNAMIC_COOLDOWN_MANAGER.use(playerUUID, "city:big", 60000);
+        player.cooldown().use("city:big", 60000);
         DYNAMIC_COOLDOWN_MANAGER.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
-        OMCRegistry.CITY_FEATURES.CLAIM_VIEW.updateAllViews();
+        CLAIM_VIEW_MANAGER.updateAllViews();
         return true;
     }
 }

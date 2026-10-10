@@ -1,6 +1,7 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.DateUtils;
@@ -15,32 +16,20 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class CooldownCommand {
-    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
-
     @Command("cooldowns")
     @Description("Permet d'avoir la liste des cooldowns")
     @CommandPermission("omc.commands.cooldowns")
-    public void cooldowns(Player sender) {
-        if (dynamicCooldownManager.getCooldowns(sender.getUniqueId()) == null) {
-            MessagesManager.sendMessage(
-                    sender,
-                    TranslationManager.translation("command.utils.cooldowns.no_cooldown"),
-                    Prefix.OPENMC,
-                    MessageType.INFO,
-                    true
-            );
+    public void cooldowns(OMCPlayer sender) {
+        if (sender.cooldown().getCooldowns() == null) {
+            sender.message().sendInfo(TranslationManager.translation("command.utils.cooldowns.no_cooldown"),
+                    Prefix.OPENMC, false);
             return;
         }
 
-        MessagesManager.sendMessage(
-                sender,
-                TranslationManager.translation("command.utils.cooldowns.list_cooldowns"),
-                Prefix.OPENMC,
-                MessageType.INFO,
-                true
-        );
+        sender.message().sendInfo(TranslationManager.translation("command.utils.cooldowns.list_cooldowns"),
+                Prefix.OPENMC, false);
 
-        dynamicCooldownManager.getCooldowns(sender.getUniqueId()).forEach(
+        sender.cooldown().getCooldowns().forEach(
                 (group, cooldown) -> sender.sendMessage(TranslationManager.translation("command.utils.cooldowns.list",
                         Component.text(group),
                         Component.text(DateUtils.convertMillisToTime(cooldown.getRemaining()))
@@ -50,7 +39,7 @@ public class CooldownCommand {
         City playerCity = City.ofPlayer(sender);
 
         if (playerCity != null) {
-            dynamicCooldownManager.getCooldowns(playerCity.getUniqueId()).forEach(
+            sender.cooldown().getCooldowns().forEach(
                     (group, cooldown) -> sender.sendMessage(TranslationManager.translation("command.utils.cooldowns.list",
                             Component.text(group),
                             Component.text(DateUtils.convertMillisToTime(cooldown.getRemaining()))
