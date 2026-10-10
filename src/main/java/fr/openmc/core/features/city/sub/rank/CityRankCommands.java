@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.rank;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -51,7 +52,7 @@ public class CityRankCommands {
 	
 	@Subcommand("add")
 	@CommandPermission("omc.commands.city.rank.add")
-    public void add(Player player) {
+    public void add(OMCPlayer player) {
         CityRankAction.beginCreateRank(player);
 	}
 	
@@ -158,19 +159,23 @@ public class CityRankCommands {
 	
 	@Subcommand("assign")
 	@CommandPermission("omc.commands.city.rank.assign")
-	public void assign(Player player, @Optional @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName, @Optional @Named("player") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer target) {
+	public void assign(OMCPlayer player,
+					   @Optional @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName,
+					   @Optional @Named("player") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer target) {
 		CityRankAction.assignRank(player, rankName, target);
 	}
 	
 	@Subcommand("rename")
 	@CommandPermission("omc.commands.city.rank.rename")
-	public void rename(Player player, @Named("old") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
+	public void rename(OMCPlayer player,
+					   @Named("old") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
 		CityRankAction.renameRank(player, rankName);
 	}
 	
 	@Subcommand("delete")
 	@CommandPermission("omc.commands.city.rank.delete")
-	public void delete(Player player, @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
+	public void delete(OMCPlayer player,
+					   @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
 		CityRankAction.deleteRank(player, rankName);
 	}
 }

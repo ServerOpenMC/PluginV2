@@ -3,6 +3,7 @@ package fr.openmc.core.features.corpse;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -46,10 +47,9 @@ public class CorpseListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
-        if (corpseManager.hasCorpseDB(player.getUniqueId())) {
-
+        if (player.corpse().hasCorpseDB()) {
             DBCorpse dbCorpse = corpseManager.getCorpsesDB().get(player.getUniqueId());
 
             if (dbCorpse.isKillByPlayer()) return;
@@ -78,9 +78,9 @@ public class CorpseListener implements Listener {
         if (event.getEntity().getKiller() != null && !event.getEntity().getKiller().getUniqueId().equals(player.getUniqueId()))
             killByPlayer = true;
 
-        if (!corpseManager.hasCorpseDB(player.getUniqueId())
+        if (!player.corpse().hasCorpseDB()
                 && !corpseNPCManager.hasNPC(player.getUniqueId())) {
-            if (corpseManager.createCorpse(player, killByPlayer, cause)) {
+            if (player.corpse().createCorpse(killByPlayer, cause)) {
                 event.setDroppedExp(0);
                 event.getDrops().clear();
             }
@@ -120,19 +120,17 @@ public class CorpseListener implements Listener {
             if (dynamicCooldownManager.isReady(ownerUUID, "corpse")) return;
 
             if (corpse.isKillByPlayer() && !player.getUniqueId().equals(corpse.getPlayerUUID())) {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
-                OfflinePlayer offlineOwner = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
+                OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(player.getUniqueId());
+                OMCOfflinePlayer offlineOwner = OMCOfflinePlayer.of(ownerUUID);
 
-                if (offlinePlayer != null)
-                    MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.strip",
+                offlinePlayer.message().sendInfo(TranslationManager.translation("feature.corpse.messages.strip",
                                             Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
                                     .color(TextColor.color(Color.YELLOW.asRGB())),
-                            Prefix.CORPSE, MessageType.INFO, true);
+                            Prefix.CORPSE, true);
 
-                if (offlineOwner != null)
-                    MessagesManager.sendMessage(offlineOwner, TranslationManager.translation("feature.corpse.messages.warn_strip")
-                                    .color(TextColor.color(Color.YELLOW.asRGB())),
-                            Prefix.CORPSE, MessageType.WARNING, true);
+                offlinePlayer.message().sendWarning(TranslationManager.translation("feature.corpse.messages.warn_strip")
+                                .color(TextColor.color(Color.YELLOW.asRGB())),
+                            Prefix.CORPSE, true);
 
                 corpse.dropLoot();
                 corpseManager.deleteCorpse(ownerUUID, FoundTypes.STRIP);

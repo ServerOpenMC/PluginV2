@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.rank.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -57,7 +58,7 @@ public class CityRanksMenu extends Menu {
 	@Override
 	public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
 		Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-		Player player = getOwner();
+		OMCPlayer player = getOwner();
 		
 		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
 		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS);

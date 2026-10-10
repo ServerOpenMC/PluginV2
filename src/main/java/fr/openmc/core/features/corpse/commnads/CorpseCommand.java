@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corpse.commnads;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.FoundTypes;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
@@ -27,7 +28,7 @@ public class CorpseCommand {
 
     @Subcommand("abort")
     @Description("Abandonner votre cadavre")
-    void onAbort(Player sender) {
+    void onAbort(OMCPlayer sender) {
         if (corpseNPCManager.getNPC(sender.getUniqueId()) instanceof CorpseNPC npc) {
 
             if (npc.isKillByPlayer()) {
@@ -36,20 +37,20 @@ public class CorpseCommand {
                 return;
             }
 
-            corpseManager.deleteCorpse(sender.getUniqueId(), FoundTypes.ABORT);
+            sender.corpse().deleteCorpse(FoundTypes.ABORT);
         } else
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.no_corpse"),
                     Prefix.CORPSE, MessageType.WARNING, true);
     }
 
     @Subcommand("locate")
-    void onLocate(Player sender) {
+    void onLocate(OMCPlayer sender) {
         if (corpseNPCManager.getNPC(sender.getUniqueId()) instanceof CorpseNPC npc) {
-            MessagesManager.sendMessage(sender, corpseManager.getCorpseDirection(sender, npc),
-                    Prefix.CORPSE, MessageType.SUCCESS, true);
+            sender.message().sendSuccess(sender.corpse().getCorpseDirection(npc),
+                    Prefix.CORPSE, true);
         } else
-            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.corpse.no_corpse_found"),
-                    Prefix.CORPSE, MessageType.WARNING, true);
+            sender.message().sendWarning(TranslationManager.translation("feature.corpse.no_corpse_found"),
+                    Prefix.CORPSE, true);
     }
 
     @Subcommand("locate")

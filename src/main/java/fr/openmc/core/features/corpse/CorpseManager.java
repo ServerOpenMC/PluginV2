@@ -91,6 +91,20 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         saveAllCorpses();
     }
 
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                () -> new CorpseListener(this)
+        );
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new CorpseCommand(this)
+        );
+    }
+
     private void saveAllCorpses() {
         try {
             corpsesDao.callBatchTasks(() -> {
@@ -143,8 +157,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
     }
 
     public boolean createCorpse(OMCPlayer player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
-
-        if (hasCorpseDB(player.getUniqueId())) return false;
+        if (player.corpse().hasCorpseDB()) return false;
 
         ItemStack[] contents = player.getInventory().getContents().clone();
 
@@ -251,19 +264,17 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         return corpsesDB.containsKey(playerUUID);
     }
 
-    public Location getLastSafePositionOf(Player player) {
+    private Location getLastSafePositionOf(Player player) {
         if (!lastSafeLocation.containsKey(player.getUniqueId())) return player.getLocation();
         return lastSafeLocation.get(player.getUniqueId());
     }
 
     public Component getCorpseDirection(Player player, CorpseNPC corpse) {
-
         if (player.getWorld() != corpse.getLocation().getWorld())
             return TranslationManager.translation(WorldUtils.getDisplayedWorldName(corpse.getLocation().getWorld().getName()))
                     .color(TextColor.color(0xFF8F06))
                     .decoration(TextDecoration.BOLD, false);
-        else
-            return Component.text(
+        else return Component.text(
                             DirectionUtils.getDirectionArrow(player, corpse.getLocation()),
                     TextColor.color(0xFF8F06)).decoration(TextDecoration.BOLD, false).font(Key.key("minecraft", "default"));
     }
@@ -285,20 +296,6 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                 + " x: " + location.getBlockX()
                 + " y: " + location.getBlockY()
                 + " z: " + location.getBlockZ()
-        );
-    }
-
-    @Override
-    public Set<ListenerFactory> getListeners() {
-        return Set.of(
-                () -> new CorpseListener(this)
-        );
-    }
-
-    @Override
-    public Set<Object> getCommands() {
-        return Set.of(
-                new CorpseCommand(this)
         );
     }
 }

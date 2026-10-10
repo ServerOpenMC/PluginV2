@@ -21,6 +21,7 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     private final OMCPlayerSettings settings;
     private final OMCPlayerChronometer chronometer;
     private final OMCPlayerInputs intpus;
+    private final OMCPlayerCorpse corpse;
 
     private OMCPlayerImpl(Player player) {
         super(player);
@@ -28,6 +29,7 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
         this.settings = new OMCPlayerSettings(player);
         this.chronometer = new OMCPlayerChronometer(player);
         this.intpus = new OMCPlayerInputs(player);
+        this.corpse = new OMCPlayerCorpse(player);
     }
 
     static OMCPlayer of(Player player) {
@@ -94,6 +96,11 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     @Override
     public OMCPlayerInputs inputs() {
         return intpus;
+    }
+
+    @Override
+    public OMCPlayerCorpse corpse() {
+        return corpse;
     }
 
     @Override

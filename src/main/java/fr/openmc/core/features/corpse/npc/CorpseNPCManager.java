@@ -33,7 +33,6 @@ public class CorpseNPCManager {
     }
 
     public void init() {
-
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
                 if (npc.getData().getName().startsWith("corpse-")) {

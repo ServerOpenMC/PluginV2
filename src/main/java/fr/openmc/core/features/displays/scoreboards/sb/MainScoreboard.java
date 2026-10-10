@@ -66,9 +66,9 @@ public class MainScoreboard extends BaseScoreboard {
                     .font(SmallCapsUtils.SMALL_CAPS_FONT)
                     .decoration(TextDecoration.BOLD, true)
                     .appendSpace()
-                    .append(corpseManager.getCorpseDirection(player, corpse))
+                    .append(player.corpse().getCorpseDirection(corpse))
                     .appendSpace()
-                    .append(corpseManager.getRemainingTime(player))
+                    .append(player.corpse().getRemainingTime())
             );
         }
 

@@ -44,4 +44,5 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
     OMCPlayerSettings settings();
     OMCPlayerChronometer chronometer();
     OMCPlayerInputs inputs();
+    OMCPlayerCorpse corpse();
 }
