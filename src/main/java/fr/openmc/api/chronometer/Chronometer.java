@@ -99,9 +99,8 @@ public class Chronometer {
 
                 if (timerEnd(entityUUID, group)) {
 
-                    if (entity instanceof Player player && finishMessage != null) {
+                    if (entity instanceof Player player && finishMessage != null)
                         sendMessage(player, finishMessageType, finishMessage);
-                    }
 
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
 
@@ -133,9 +132,8 @@ public class Chronometer {
         if (chronometer.containsKey(entityUUID)) {
             chronometer.remove(entityUUID);
 
-            if (entity instanceof Player player && message != null) {
+            if (entity instanceof Player player && message != null)
                 sendMessage(player, messageType, message);
-            }
         }
 
         if (activeTasks.containsKey(entityUUID)) {
@@ -163,32 +161,17 @@ public class Chronometer {
                 activeTasks.get(entityUUID).remove(group);
             }
 
-            if (entity instanceof Player player && message != null) {
+            if (entity instanceof Player player && message != null)
                 sendMessage(player, messageType, message);
-            }
 
-            if (chronometer.get(entityUUID).isEmpty()) {
+            if (chronometer.get(entityUUID).isEmpty())
                 chronometer.remove(entityUUID);
-            }
         } else {
             if (entity instanceof Player player) {
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation("api.chronometer.chronometer_not_found",
                                 Component.text(group).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.INFO, false);
             }
-        }
-    }
-
-    public static void listChronometers(Entity entity, Player owner) {
-        UUID entitytUUID = entity.getUniqueId();
-
-        if (chronometer.containsKey(entitytUUID)) {
-            owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on"));
-            chronometer.get(entitytUUID).forEach((group, time) ->
-                    owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on_list",
-                            Component.text(group), Component.text(time).color(NamedTextColor.GOLD)).color(NamedTextColor.YELLOW)));
-        } else {
-            owner.sendMessage(TranslationManager.translation("api.chronometer.none_chronometer_player"));
         }
     }
 

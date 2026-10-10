@@ -5,6 +5,7 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -69,19 +70,19 @@ public class MayorNpcMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-            Mayor mayor = city.getMayor();
+        Mayor mayor = city.getMayor();
 
-            Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
-            Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
+        Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+        Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
-            List<Component> loreMayor = new ArrayList<>(List.of(
-                    TranslationManager.translation(
-                            "feature.city.mayor.menu.mayor.lore.header",
-                            Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
-                    )
-            ));
+        List<Component> loreMayor = new ArrayList<>(List.of(
+                TranslationManager.translation(
+                        "feature.city.mayor.menu.mayor.lore.header",
+                        Component.text(city.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                )
+        ));
         loreMayor.add(Component.empty());
 	    loreMayor.add(perk2 == null ? TranslationManager.translation("feature.city.menus.common.error") :
                 TranslationManager.translation(perk2.getNameKey()));
@@ -118,7 +119,7 @@ public class MayorNpcMenu extends Menu {
                 inventory.put(46, new ItemMenuBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.npc.move.name").color(NamedTextColor.GREEN));
                     itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.npc.move.lore"));
-                }).setOnClick(inventoryClickEvent -> {
+                }).setOnClick(_ -> {
                     List<Component> loreItemNPC = List.of(
                             TranslationManager.translation("feature.city.mayor.npc.move.item.lore")
                     );

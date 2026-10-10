@@ -8,6 +8,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.commands.*;
@@ -532,21 +533,17 @@ public class CityManager extends Feature
 
         List<UUID> membersCopy = new ArrayList<>(city.getMembers());
         for (UUID memberId : membersCopy) {
-            Player member = Bukkit.getPlayer(memberId);
+            OMCPlayer member = OMCPlayer.of(memberId);
             if (member != null)
                 city.removePlayer(memberId);
 
-            member = CacheOfflinePlayer.getOfflinePlayer(memberId).getPlayer();
-            if (member == null)
-                continue;
+            if (member == null) continue;
 
-            if (Chronometer.containsChronometer(memberId, "mascot:stick"))
-                if (Bukkit.getEntity(memberId) != null)
-                    Chronometer.stopChronometer(member, "mascot:stick", null, null);
+            if (member.chronometer().containsChronometer("mascot:stick"))
+                member.chronometer().stopChronometer("mascot:stick", null, null);
 
             Mascot mascot = city.getMascot();
-            if (mascot == null)
-                continue;
+            if (mascot == null) continue;
 
             if (!dynamicCooldownManager.isReady(mascot.getMascotUUID(), "mascots:move")) {
                 if (Bukkit.getEntity(memberId) != null) {
@@ -573,9 +570,8 @@ public class CityManager extends Feature
             }
         }
 
-        if (dynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
+        if (dynamicCooldownManager.isReady(city.getUniqueId(), "city:type"))
             dynamicCooldownManager.clear(city.getUniqueId(), "city:type", false);
-        }
 
         mascotsManager.removeMascotsFromCity(city);
         OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.removeNPCS(city.getUniqueId());

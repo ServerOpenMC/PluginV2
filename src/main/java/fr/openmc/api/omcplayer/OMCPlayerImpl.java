@@ -1,9 +1,6 @@
 package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.omcplayer.sub.OMCPlayerCity;
-import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
-import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
-import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
+import fr.openmc.api.omcplayer.sub.*;
 import lombok.experimental.Delegate;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
@@ -22,11 +19,13 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     @Delegate(types = Player.class)
     private final Player player;
     private final OMCPlayerSettings settings;
+    private final OMCPlayerChronometer chronometer;
 
     private OMCPlayerImpl(Player player) {
         super(player);
         this.player = player;
         this.settings = new OMCPlayerSettings(player);
+        this.chronometer = new OMCPlayerChronometer(player);
     }
 
     static OMCPlayer of(Player player) {
@@ -83,6 +82,11 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     @Override
     public OMCPlayerSettings settings() {
         return settings;
+    }
+
+    @Override
+    public OMCPlayerChronometer chronometer() {
+        return chronometer;
     }
 
     @Override

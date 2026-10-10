@@ -38,29 +38,31 @@ public class CityCommands {
     }
 
     @CommandPlaceholder()
-    public static void mainCommand(Player player) {
-        if (!Chronometer.containsChronometer(player.getUniqueId(), "mascot:stick")) {
-            City playerCity = City.ofPlayer(player);
-                if (playerCity == null) {
-                    NoCityMenu menu = new NoCityMenu(player);
-                    menu.open();
-                } else {
-                    CityMenu menu = new CityMenu(player);
-                    menu.open();
-                }
+    public static void mainCommand(OMCPlayer player) {
+        if (player.chronometer().containsChronometer("mascot:stick")) {
+            player.message().sendError(TranslationManager.translation("feature.city.commands.menu.must_place_mascot"), Prefix.CITY, false);
+            return;
+        }
+
+        City playerCity = City.ofPlayer(player);
+
+        if (playerCity == null) {
+            NoCityMenu menu = new NoCityMenu(player);
+            menu.open();
         } else {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.menu.must_place_mascot"), Prefix.CITY, MessageType.ERROR, false);
+            CityMenu menu = new CityMenu(player);
+            menu.open();
         }
     }
 
     @Subcommand("info")
     @CommandPermission("omc.commands.city.info")
     @Description("Avoir des informations sur votre ville")
-    void info(Player player) {
+    void info(OMCPlayer player) {
         City city = City.ofPlayer(player);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return;
         }
 
@@ -75,9 +77,7 @@ public class CityCommands {
             OMCPlayer player,
             @Named("nom de ville") @Optional String name
     ) {
-        if (!CityCreateConditions.canCityCreate(player, null)) {
-            return;
-        }
+        if (!CityCreateConditions.canCityCreate(player, null)) return;
 
         if (name != null) {
             CityCreateAction.beginCreateCity(player, name);
@@ -132,7 +132,6 @@ public class CityCommands {
         City playerCity = sender.city().getCity();
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
-
         if (playerCity == null) return;
 
         CityTransferAction.transfer(sender, playerCity, player);

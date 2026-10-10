@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -83,11 +84,11 @@ public class MascotMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         Mascot mascot = city.getMascot();
         if (mascot == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, false);
             player.closeInventory();
             return map;
         }
@@ -100,7 +101,7 @@ public class MascotMenu extends Menu {
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
         })
                 .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
-                .setOnClick(inventoryClickEvent -> {
+                .setOnClick(_ -> {
                     if (!city.permissions().hasPermission(player.getUniqueId(), CityPermission.MASCOT_CHANGE_SKIN)) {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
@@ -184,9 +185,7 @@ public class MascotMenu extends Menu {
                                     int chunkZ = chunk.getZ();
 
                                     if (!city.hasChunk(chunkX, chunkZ)) {
-                                        MessagesManager.sendMessage(player,
-                                                TranslationManager.translation("feature.city.mascots.menu.main.move.error.invalid_chunk"),
-                                                Prefix.CITY, MessageType.INFO, false);
+                                        player.message().sendInfo(TranslationManager.translation("feature.city.mascots.menu.main.move.error.invalid_chunk"), Prefix.CITY, false);
                                         return false;
                                     }
 
@@ -239,12 +238,12 @@ public class MascotMenu extends Menu {
 
         itemBuilder.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft:netherite_upgrade_smithing_template"));
         map.put(15, itemBuilder
-                .setOnClick(inventoryClickEvent -> {
+                .setOnClick(_ -> {
                     if (mascotsLevels.equals(MascotsLevels.level10)) return;
                     if (currentMascotLevel >= maxMascotLevel) return;
 
                     if (city == null) {
-                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+                        player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
                         player.closeInventory();
                         return;
                     }
@@ -253,17 +252,17 @@ public class MascotMenu extends Menu {
                         int aywenite = mascotsLevels.getUpgradeCost();
                         if (ItemUtils.takeAywenite(player, aywenite)) {
                             mascotsManager.upgradeMascots(cityUUID);
-                            MessagesManager.sendMessage(player,
+                            player.message().sendInfo(
                                     TranslationManager.translation(
                                             "feature.city.mascots.menu.main.upgrade.success",
                                             Component.text(mascot.getLevel()).color(NamedTextColor.RED)
                                     ),
-                                    Prefix.CITY, MessageType.ERROR, false);
+                                    Prefix.CITY, false);
                             player.closeInventory();
                             return;
                         }
                     } else {
-                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, MessageType.ERROR, false);
+                        player.message().sendError(TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, false);
                     }
                     player.closeInventory();
                 }));
@@ -282,9 +281,9 @@ public class MascotMenu extends Menu {
                 return new ItemMenuBuilder(this, Material.DIAMOND, itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.main.immunity.title"));
                     itemMeta.lore(lore);
-                }).setOnClick(inventoryClickEvent -> {
+                }).setOnClick(_ -> {
                     if (city == null) {
-                        MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+                        player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
                         player.closeInventory();
                         return;
                     }
@@ -292,13 +291,13 @@ public class MascotMenu extends Menu {
                     if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
                     dynamicCooldownManager.reduceCooldown(player, city.getUniqueId(), "city:immunity", COOLDOWN_REDUCE);
 
-                    MessagesManager.sendMessage(player,
+                    player.message().sendInfo(
                             TranslationManager.translation(
                                     "feature.city.mascots.menu.main.immunity.reduce.success",
                                     Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE),
                                     OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                             ),
-                            Prefix.CITY, MessageType.SUCCESS, false);
+                            Prefix.CITY, false);
                 });
             };
 

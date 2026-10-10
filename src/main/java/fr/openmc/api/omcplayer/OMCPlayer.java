@@ -1,9 +1,6 @@
 package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.omcplayer.sub.OMCPlayerCity;
-import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
-import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
-import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
+import fr.openmc.api.omcplayer.sub.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -43,7 +40,7 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
     @Nullable CraftPlayer getCraftPlayer();
     ServerPlayer getServerPlayer();
 
-    // todo: faire un cooldown et chronometer + simple d'utilisation ahah
+    // todo: faire un corpse(), ecttttttt
     OMCPlayerSettings settings();
-
+    OMCPlayerChronometer chronometer();
 }

@@ -6,6 +6,7 @@ import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -193,7 +194,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
     public void onInteractWithMayorNPC(NpcInteractEvent event) {
         if (!fancyNpcsHook.isEnable()) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         Npc npc = event.getNpc();
 
@@ -201,16 +202,16 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
             UUID cityUUID = UUID.fromString(npc.getData().getName().replace("mayor-", ""));
             City city = City.of(cityUUID);
             if (city == null) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
+                player.message().sendError(TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, false);
                 removeNPCS(cityUUID);
                 return;
             }
 
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-	            MessagesManager.sendMessage(player, TranslationManager.translation(
+	            player.message().sendError(TranslationManager.translation(
                         "feature.city.mayor.npc.error.feature_locked",
                         Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR))
-                ), Prefix.CITY, MessageType.ERROR, false);
+                ), Prefix.CITY, false);
                 return;
             }
 
@@ -219,14 +220,14 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
             int chunkZ = chunkTest.getZ();
 
             if (!city.hasChunk(chunkX, chunkZ)) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
+                player.message().sendError(TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, false);
                 removeNPCS(cityUUID);
                 return;
             }
 
             if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
-                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_mayor_yet"), Prefix.MAYOR, MessageType.INFO, true);
+                if (!player.getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
+                    player.message().sendInfo(TranslationManager.translation("feature.city.mayor.npc.info.no_mayor_yet"), Prefix.MAYOR, true);
                     return;
                 }
 
@@ -255,18 +256,16 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
 
                                         City cityByChunk = City.of(chunk.getX(), chunk.getZ());
                                         if (cityByChunk == null) {
-                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
+                                            player.message().sendError(TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, false);
                                             return false;
                                         }
 
                                         City playerCity = City.ofPlayer(player);
 
-                                        if (playerCity == null) {
-                                            return false;
-                                        }
+                                        if (playerCity == null) return false;
 
                                         if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
-                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
+                                            player.message().sendError(TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, false);
                                             return false;
                                         }
 
@@ -279,14 +278,14 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                         }))
                         .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.mayor.npc.move.hover")));
 
-                MessagesManager.sendMessage(player, message, Prefix.MAYOR, MessageType.INFO, false);
+                player.message().sendInfo(message, Prefix.MAYOR, false);
 
                 event.setCancelled(true);
                 return;
             }
 
             if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.info.no_election_unlocked"), Prefix.MAYOR, MessageType.INFO, true);
+                player.message().sendInfo(TranslationManager.translation("feature.city.mayor.npc.info.no_election_unlocked"), Prefix.MAYOR, true);
                 return;
             }
 
@@ -295,23 +294,23 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
             UUID cityUUID = UUID.fromString(npc.getData().getName().replace("owner-", ""));
             City city = City.of(cityUUID);
             if (city == null) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
+                player.message().sendError(TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, false);
                 removeNPCS(cityUUID);
                 return;
             }
 
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-	            MessagesManager.sendMessage(player, TranslationManager.translation(
+                player.message().sendError(TranslationManager.translation(
                         "feature.city.mayor.npc.error.feature_locked",
                         Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR)).color(NamedTextColor.GOLD)
-                ), Prefix.CITY, MessageType.ERROR, false);
+                ), Prefix.CITY, false);
                 return;
             }
 
             Chunk npcChuck = event.getNpc().getData().getLocation().getChunk();
 
             if (!city.hasChunk(npcChuck.getX(), npcChuck.getZ())) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, MessageType.ERROR, false);
+                player.message().sendError(TranslationManager.translation("feature.city.mayor.error.not_in_city"), Prefix.MAYOR, false);
                 removeNPCS(cityUUID);
                 return;
             }
@@ -344,18 +343,16 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
 
                                         City cityByChunk = City.of(chunk.getX(), chunk.getZ());
                                         if (cityByChunk == null) {
-                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
+                                            player.message().sendError(TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, false);
                                             return false;
                                         }
 
                                         City playerCity = City.ofPlayer(player);
 
-                                        if (playerCity == null) {
-                                            return false;
-                                        }
+                                        if (playerCity == null) return false;
 
                                         if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
-                                            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
+                                            player.message().sendError(TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, false);
                                             return false;
                                         }
 
@@ -368,7 +365,7 @@ public class MayorNPCManager implements Listener, LoadIfEnable<FancyNpcsHook> {
                         }))
                         .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.mayor.npc.move.hover")));
 
-                MessagesManager.sendMessage(player, message, Prefix.MAYOR, MessageType.INFO, false);
+                player.message().sendInfo(message, Prefix.MAYOR, false);
 
                 event.setCancelled(true);
                 return;

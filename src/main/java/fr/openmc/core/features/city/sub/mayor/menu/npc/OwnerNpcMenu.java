@@ -5,6 +5,7 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -71,7 +72,7 @@ public class OwnerNpcMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         Mayor mayor = city.getMayor();
         UUID uuidOwner = city.getPlayerWithPermission((CityPermission.OWNER));
