@@ -1,7 +1,8 @@
 package fr.openmc.core.features.city.sub.notation.menu;
 
 import fr.openmc.api.input.dialog.ButtonType;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
@@ -32,6 +33,7 @@ import java.util.List;
 public class NotationEditionDialog {
 
     public static void send(Player player, String weekStr, List<City> cities, Integer cityEditIndex) {
+        NotationManager notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
 
         cityEditIndex = cityEditIndex == null ? 0 : cityEditIndex;
         City cityEdited = cities.get(cityEditIndex);
@@ -158,7 +160,7 @@ public class NotationEditionDialog {
                                                     weekStr
                                             );
 
-                                            NotationManager.createOrUpdateNotation(cityNotation);
+                                            notationManager.createOrUpdateNotation(cityNotation);
 
                                             if (finalCityEditIndex + 1 < cities.size()) {
                                                 NotationEditionDialog.send(player, weekStr, cities, finalCityEditIndex + 1);

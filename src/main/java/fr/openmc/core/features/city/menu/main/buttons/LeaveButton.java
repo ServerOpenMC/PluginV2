@@ -4,17 +4,16 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ public class LeaveButton {
     private static boolean hasPermissionOwner;
 
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
-        Player player = menu.getOwner();
+        OMCPlayer player = menu.getOwner();
         hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         MenuUtils.createButtonItem(
@@ -33,10 +32,10 @@ public class LeaveButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.leave.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
+                }).setOnClick(_ -> {
                     if (hasPermissionOwner) return;
 
-                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                    City cityCheck = player.city().getCity();
                     if (!CityLeaveCondition.canCityLeave(cityCheck, player)) return;
 
                     new ConfirmMenu(player,
@@ -45,8 +44,10 @@ public class LeaveButton {
                                 player.closeInventory();
                             },
                             player::closeInventory,
-                            List.of(TranslationManager.translation("feature.city.menus.main.leave.confirm.accept", Component.text(city.getName()).color(NamedTextColor.GRAY))),
-                            List.of(TranslationManager.translation("feature.city.menus.main.leave.confirm.deny", Component.text(city.getName()).color(NamedTextColor.GRAY)))
+                            List.of(TranslationManager.translation("feature.city.menus.main.leave.confirm.accept",
+                                    Component.text(city.getName()).color(NamedTextColor.GRAY))),
+                            List.of(TranslationManager.translation("feature.city.menus.main.leave.confirm.deny",
+                                    Component.text(city.getName()).color(NamedTextColor.GRAY)))
                     ).open();
                 })
         );

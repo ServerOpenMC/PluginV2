@@ -37,6 +37,7 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.blood
 @SuppressWarnings("UnstableApiUsage")
 @Getter
 public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl, Listener {
+    private final static VampireBossLootManager VAMPIRE_BOSS_LOOT = new VampireBossLootManager();
     private final Random random = ThreadLocalRandom.current();
     private final List<MobAttack> attacks;
     private Mannequin mannequin;
@@ -84,9 +85,9 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
                 null
         );
 
-        VampireBossLootManager.giveContributions(thisMob);
+        VAMPIRE_BOSS_LOOT.giveContributions(thisMob);
 
-        VampireBossLootManager.damageContributions.clear();
+        VAMPIRE_BOSS_LOOT.damageContributions.clear();
         mannequin = null;
     }
 
@@ -181,11 +182,11 @@ public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl,
         if (effectiveDamage > 0) {
             double actualDamage = 0;
 
-            if (VampireBossLootManager.damageContributions.containsKey(player.getUniqueId())) {
-                actualDamage = VampireBossLootManager.damageContributions.get(player.getUniqueId());
+            if (VAMPIRE_BOSS_LOOT.damageContributions.containsKey(player.getUniqueId())) {
+                actualDamage = VAMPIRE_BOSS_LOOT.damageContributions.get(player.getUniqueId());
             }
 
-            VampireBossLootManager.damageContributions.put(player.getUniqueId(), actualDamage + effectiveDamage);
+            VAMPIRE_BOSS_LOOT.damageContributions.put(player.getUniqueId(), actualDamage + effectiveDamage);
         }
 
         if (ThreadLocalRandom.current().nextDouble() < 0.25) {

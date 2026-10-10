@@ -11,7 +11,6 @@ import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -35,6 +34,7 @@ import java.util.Map;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
+    private final static MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
     private final Letter letter;
     private final LetterHead letterHead;
     private ItemStack[] letterItems;
@@ -58,50 +58,19 @@ public class LetterMenu extends Menu {
         this.letterHead = letter.toLetterHead();
     }
 
-    public static void refuseLetter(Player player, int id) {
-        Letter letter = MailboxManager.getById(player, id);
-        if (letter != null && !letter.isRefused()) {
-            if (letter.refuse()) {
-                MessagesManager.sendMessage(
-                        player,
-                        TranslationManager.translation(
-                                "feature.mailboxes.message.refuse_success",
-                                Component.text(id).color(NamedTextColor.GREEN)
-                        ).color(NamedTextColor.DARK_GREEN),
-                        Prefix.MAILBOX,
-                        MessageType.SUCCESS,
-                        true
-                );
-                return;
-            }
-        }
-
-        Component message = TranslationManager.translation(
-                "feature.mailboxes.message.letter_not_found",
-                Component.text(id).color(NamedTextColor.RED)
-        ).color(NamedTextColor.DARK_RED);
-        MessagesManager.sendMessage(
-                player,
-                message,
-                Prefix.MAILBOX,
-                MessageType.ERROR,
-                true
-        );
-    }
-
     public void accept(Player player) {
         if (!this.letter.getReceiverUUID().equals(player.getUniqueId())) return;
         ItemStack[] items = getLetterItems();
 
-        if (MailboxManager.deleteLetter(letterHead.getLetterId())) {
-            HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(items);
-            World world = getOwner().getWorld();
+        if (mailboxManager.deleteLetter(letterHead.getLetterId())) {
+            HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(items);
+            World world = player.getWorld();
             for (ItemStack item : remainingItems.values()) {
-                world.dropItemNaturally(getOwner().getLocation(), item);
+                world.dropItemNaturally(player.getLocation(), item);
             }
 
             MessagesManager.sendMessage(
-                    getOwner(),
+                    player,
                     TranslationManager.translation(
                             "feature.mailboxes.message.items_received",
                             Component.text(letterHead.getItemsCount()).color(NamedTextColor.GREEN),
@@ -113,7 +82,7 @@ public class LetterMenu extends Menu {
             );
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                    Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(getOwner(), letter))
+                    Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(player, letter))
             );
 
 
@@ -173,7 +142,7 @@ public class LetterMenu extends Menu {
                                         .decoration(TextDecoration.ITALIC, false)
                         ),
                         OMCRegistry.CUSTOM_ITEMS.MAILBOX_REFUSE_BTN, NamedTextColor.DARK_RED, true)
-                .setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
+                .setOnClick(e -> mailboxManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
         content.put(53, ItemMenuTemplate.BTN_CLOSE.apply(this)
                 .setOnClick(_ -> cancel()));
 

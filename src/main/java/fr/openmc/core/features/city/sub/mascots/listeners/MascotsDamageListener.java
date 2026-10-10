@@ -1,14 +1,14 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.IronBloodPerk;
 import fr.openmc.core.features.city.sub.war.War;
@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MascotsDamageListener implements Listener {
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
     private static final Set<EntityDamageEvent.DamageCause> BLOCKED_CAUSES = Set.of(
             EntityDamageEvent.DamageCause.SUFFOCATION,
             EntityDamageEvent.DamageCause.FALLING_BLOCK,
@@ -55,7 +56,7 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
+        City city = City.ofMascot(entity.getUniqueId());
         if (city == null) return;
 
         Mascot mascot = city.getMascot();
@@ -64,7 +65,7 @@ public class MascotsDamageListener implements Listener {
         // on return pour eviter d'actualiser 2 fois la vie
         if (city.isInWar()) return;
 
-        MascotUtils.updateDisplayName(entity, mascot, e.getFinalDamage());
+        mascot.updateDisplayName(entity, e.getFinalDamage());
     }
 
     @EventHandler
@@ -80,7 +81,7 @@ public class MascotsDamageListener implements Listener {
         }
 
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
-        String pdcCityData = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        String pdcCityData = data.get(mascotsManager.getMascotsKey(), PersistentDataType.STRING);
         if (pdcCityData == null) return;
         UUID pdcCityUUID = UUID.fromString(pdcCityData);
 
@@ -95,8 +96,8 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
+        City city = City.ofPlayer(player);
+        City cityEnemy = City.ofMascot(damageEntity.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
@@ -176,14 +177,14 @@ public class MascotsDamageListener implements Listener {
         }
 
         LivingEntity mob = (LivingEntity) damageEntity;
-        City cityMob = MascotUtils.getCityFromEntity(mob.getUniqueId());
+        City cityMob = City.ofMascot(mob.getUniqueId());
 
-        MascotUtils.updateDisplayName(mob, cityMob.getMascot(), e.getFinalDamage());
+        cityMob.getMascot().updateDisplayName(mob, e.getFinalDamage());
 
         try {
-            if (MayorManager.phaseMayor != 2) return;
+            if (!cityMob.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
-            if (!PerkManager.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
+            if (!PerkUtils.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
 
             IronBloodPerk.spawnGolem(player, cityMob, mob);
         } catch (Exception ex) {

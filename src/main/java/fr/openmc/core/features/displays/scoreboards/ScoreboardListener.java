@@ -1,26 +1,30 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static fr.openmc.core.features.displays.scoreboards.ScoreboardManager.*;
-
 public class ScoreboardListener implements Listener {
+
+    private final ScoreboardManager manager;
+    public ScoreboardListener(ScoreboardManager manager) {
+        this.manager = manager;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        SternalBoard board = boardCache.find(player.getUniqueId());
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        SternalBoard board = manager.boardCache.find(player.getUniqueId());
 
-        if (board == null) createNewBoard(player);
-        else updateBoard(player, board);
+        if (board == null) manager.createNewBoard(player);
+        else manager.updateBoard(player, board);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        cleanupPlayer(event.getPlayer());
+        manager.cleanupPlayer(event.getPlayer());
     }
 }

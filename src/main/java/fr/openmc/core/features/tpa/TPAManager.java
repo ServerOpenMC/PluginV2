@@ -1,21 +1,17 @@
 package fr.openmc.core.features.tpa;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.tpa.commands.TPACancelCommand;
 import fr.openmc.core.features.tpa.commands.TPACommand;
 import fr.openmc.core.features.tpa.commands.TPADenyCommand;
 import fr.openmc.core.features.tpa.commands.TPAcceptCommand;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +26,8 @@ public class TPAManager extends Feature implements HasCommands {
 	 * Map to store teleport requests
 	 * The key is the target player's UUID, and the value is a list of requesters' UUIDs
 	 */
-	private static final ConcurrentHashMap<UUID, List<UUID>> tpaRequests = new ConcurrentHashMap<>();
-	private static final ConcurrentHashMap<UUID, Long> tpaRequestTime = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<UUID, List<UUID>> tpaRequests = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<UUID, Long> tpaRequestTime = new ConcurrentHashMap<>();
 
 	@Override
 	public Set<Object> getCommands() {
@@ -48,7 +44,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param target The player to check
 	 * @return true if the player has a pending request, false otherwise
 	 */
-	public static boolean hasPendingRequest(OMCPlayer target) {
+	public boolean hasPendingRequest(OMCPlayer target) {
 		return tpaRequests.get(target.getUniqueId()) != null && !tpaRequests.get(target.getUniqueId()).isEmpty();
 	}
 	
@@ -57,7 +53,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param player The player to check
 	 * @return true if the requester has a pending request, false otherwise
 	 */
-	public static boolean requesterHasPendingRequest(OMCPlayer player) {
+	public boolean requesterHasPendingRequest(OMCPlayer player) {
 		for (List<UUID> requesters : tpaRequests.values()) {
 			if (requesters.contains(player.getUniqueId())) {
 				return true;
@@ -71,7 +67,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param target The target player
 	 * @return true if the target has multiple requests, false otherwise
 	 */
-	public static boolean hasMultipleRequests(OMCPlayer target) {
+	public boolean hasMultipleRequests(OMCPlayer target) {
 		List<UUID> requesters = tpaRequests.get(target.getUniqueId());
 		return requesters != null && requesters.size() > 1;
 	}
@@ -81,7 +77,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param player The player who sent the request
 	 * @param target The target player
 	 */
-	public static void addRequest(OMCPlayer player, OMCPlayer target) {
+	public void addRequest(OMCPlayer player, OMCPlayer target) {
 		tpaRequests.computeIfAbsent(target.getUniqueId(), k -> new ArrayList<>()).add(player.getUniqueId());
 		tpaRequestTime.put(player.getUniqueId(), System.currentTimeMillis());
 	}
@@ -91,7 +87,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param player The player who sent the request
 	 * @param target The target player
 	 */
-	public static void expireRequest(OMCPlayer player, OMCPlayer target) {
+	public void expireRequest(OMCPlayer player, OMCPlayer target) {
 		if (tpaRequests.containsKey(target.getUniqueId())) {
 			if (tpaRequests.get(target.getUniqueId()).contains(player.getUniqueId())) {
 				long requestTime = tpaRequestTime.get(player.getUniqueId());
@@ -116,7 +112,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param target The target player
 	 * @return List of players who sent requests to the target player, or null if none
 	 */
-	public static List<OMCPlayer> getRequesters(OMCPlayer target) {
+	public List<OMCPlayer> getRequesters(OMCPlayer target) {
 		List<OMCPlayer> requesters = new ArrayList<>();
 		for (UUID playerUUID : tpaRequests.get(target.getUniqueId())) {
 			requesters.add(OMCPlayer.of(playerUUID));
@@ -129,7 +125,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param player The player who sent the request
 	 * @param target The target player
 	 */
-	public static void removeRequest(OMCPlayer player, OMCPlayer target) {
+	public void removeRequest(OMCPlayer player, OMCPlayer target) {
 		tpaRequests.compute(target.getUniqueId(), (key, requesters) -> {
 			if (requesters != null) {
 				requesters.remove(player.getUniqueId());
@@ -146,7 +142,7 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param requester The requester player
 	 * @return The target player, or null if not found
 	 */
-	public static OMCPlayer getTargetByRequester(OMCPlayer requester) {
+	public OMCPlayer getTargetByRequester(OMCPlayer requester) {
 		for (UUID targetUUID : tpaRequests.keySet()) {
 			if (tpaRequests.get(targetUUID).contains(requester.getUniqueId())) {
 				return OMCPlayer.of(targetUUID);

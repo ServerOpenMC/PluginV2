@@ -1,7 +1,7 @@
 package fr.openmc.riftengine.api.scanner.items;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.registry.scanner.AbstractScanner;
 import org.bukkit.Material;

@@ -1,10 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.Bukkit;
@@ -24,13 +23,14 @@ public class MinerPerk implements Listener {
      * @param player The player to update.
      */
     public static void updatePlayerEffects(Player player) {
-        int phase = MayorManager.phaseMayor;
+        City playerCity = City.ofPlayer(player);
+        if (playerCity == null) return;
 
-        if (phase == 2) {
-            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-            if (playerCity == null) return;
+        MayorPhase phase = playerCity.getMayorPhase();
 
-            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MINER.getId())) return;
+        if (phase.equals(MayorPhase.MAYOR_ELECTED)) {
+
+            if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.MINER.getId())) return;
 
             player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 0, false, false));
         } else {

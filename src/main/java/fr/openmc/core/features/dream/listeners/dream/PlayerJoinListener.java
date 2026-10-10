@@ -14,6 +14,11 @@ import java.io.IOException;
   Protection si le joueur se reco dans la dimension des reves.
  */
 public class PlayerJoinListener implements Listener {
+    private final DreamManager dreamManager;
+
+    public PlayerJoinListener(DreamManager manager) {
+        this.dreamManager = manager;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoinInDream(PlayerJoinEvent event) {
@@ -22,7 +27,7 @@ public class PlayerJoinListener implements Listener {
         if (!DreamUtils.isInDreamWorld(player)) return;
 
         try {
-            DreamManager.preloadSavePlayer(player, player.getLocation());
+            dreamManager.preloadSavePlayer(player, player.getLocation());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

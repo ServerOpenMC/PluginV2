@@ -7,7 +7,6 @@ import fr.openmc.api.omcplayer.lamp.OMCOfflinePlayerParameterType;
 import fr.openmc.api.omcplayer.lamp.OMCPlayerParameterType;
 import fr.openmc.api.omcplayer.lamp.OMCPlayerSenderResolver;
 import fr.openmc.core.commands.debug.ChronometerCommand;
-import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.debug.ToastCommand;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
@@ -60,7 +59,6 @@ public class CommandsManager {
                 new ChronometerCommand(),
                 new Restart(),
                 new CreditsCommand(),
-                new CustomItemCommand(),
                 new CustomAmbientCommands(),
                 new CustomMobsCommands(),
                 new ToastCommand(),

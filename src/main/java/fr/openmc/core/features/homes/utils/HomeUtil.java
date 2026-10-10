@@ -4,10 +4,6 @@ import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class HomeUtil {

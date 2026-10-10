@@ -3,7 +3,6 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
+	private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public OpenContestMenuQuest() {
         super(
@@ -70,7 +70,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 
 									ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
 
-									MailboxManager.sendItems(player, player, itemsArray);
+									MAILBOX_MANAGER.sendItems(player, player, itemsArray);
 								}
 						)
                 )
@@ -81,7 +81,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
     public void onContestCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         if (!event.getMessage().equals("/contest")) return;
 

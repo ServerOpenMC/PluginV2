@@ -3,11 +3,10 @@ package fr.openmc.api.input.location;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.chronometer.ChronometerInfo;
 import fr.openmc.api.chronometer.ChronometerType;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -52,7 +51,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet de donner un objet à une personne et de quand elle clique avec l'Item, la méthode renverra la positon ou il a cliqué
      */
-    public static void runLocationInteraction(Player player,
+    public static void runLocationInteraction(OMCPlayer player,
                                               ItemStack item,
                                               String chronometerGroup,
                                               int chronometerTime,
@@ -61,21 +60,21 @@ public class ItemInteraction implements Listener {
                                               Function<Location, Boolean> result,
                                               Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("api.iteminteraction.not_egnough_space"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.not_egnough_space"), Prefix.OPENMC, false);
             return;
         }
 
-        if (Chronometer.containsChronometer(player.getUniqueId(), chronometerGroup)) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("api.iteminteraction.have_already_item"), Prefix.OPENMC, MessageType.ERROR, false);
+        if (player.chronometer().containsChronometer(chronometerGroup)) {
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.have_already_item"), Prefix.OPENMC, false);
             return;
         }
 
         ItemStack itemInteraction = getItemInteraction(item, chronometerGroup);
 
         player.closeInventory();
-        Chronometer.startChronometer(player, chronometerGroup, chronometerTime, ChronometerType.ACTION_BAR, startMessage, ChronometerType.ACTION_BAR, endMessage);
+        player.chronometer().startChronometer(chronometerGroup, chronometerTime, ChronometerType.ACTION_BAR, startMessage, ChronometerType.ACTION_BAR, endMessage);
 
         ItemStack oldItemHand = player.getInventory().getItemInMainHand();
         player.getInventory().setItemInMainHand(itemInteraction);
@@ -104,7 +103,7 @@ public class ItemInteraction implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         ItemStack item = event.getItem();
         if (isItemInteraction(item)) {
             event.setCancelled(true);
@@ -138,7 +137,7 @@ public class ItemInteraction implements Listener {
 
                             ChronometerInfo chronoInfo = interactionInfo.chronometerInfo();
                             if (chronoInfo != null) {
-                                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
+                                player.chronometer().stopChronometer(chronoInfo.chronometerGroup(), null, null);
                             }
 
                             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(interactionId);
@@ -159,7 +158,7 @@ public class ItemInteraction implements Listener {
      */
     @EventHandler
     void onPlayerQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
+        OMCPlayer player = OMCPlayer.of(e.getPlayer());
 
         stopAllInteractions(player);
     }
@@ -169,7 +168,7 @@ public class ItemInteraction implements Listener {
      */
     @EventHandler
     void onPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         stopAllInteractions(player);
     }
@@ -192,7 +191,7 @@ public class ItemInteraction implements Listener {
 
     @EventHandler
     public void onBundling(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
+        OMCPlayer player = OMCPlayer.of((Player) event.getWhoClicked());
 
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
@@ -200,14 +199,14 @@ public class ItemInteraction implements Listener {
         if (clickedItem != null && MaterialUtils.isBundle(clickedItem)) {
             if (isItemInteraction(cursorItem)) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player,
-                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+                player.message().sendError(
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
             }
         } else if (MaterialUtils.isBundle(cursorItem)) {
             if (isItemInteraction(clickedItem)) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player,
-                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+                player.message().sendError(
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
             }
         }
     }
@@ -217,7 +216,7 @@ public class ItemInteraction implements Listener {
      */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
+        OMCPlayer player = OMCPlayer.of((Player) event.getWhoClicked());
 
         ItemStack protectedItem = null;
         if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR) {
@@ -225,41 +224,39 @@ public class ItemInteraction implements Listener {
         } else if (event.getCursor() != null && event.getCursor().getType() != Material.AIR) {
             protectedItem = event.getCursor();
         }
-        if (protectedItem == null)
-            return;
+        if (protectedItem == null) return;
 
-        if (!isItemInteraction(protectedItem))
-            return;
+        if (!isItemInteraction(protectedItem)) return;
 
         if (event.getClickedInventory() != null) {
             InventoryType invType = event.getClickedInventory().getType();
             if (invType != InventoryType.PLAYER &&
                     invType != InventoryType.CREATIVE &&
                     invType != InventoryType.CRAFTING) {
-                MessagesManager.sendMessage(player,
-                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+                player.message().sendError(
+                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
                 event.setCancelled(true);
                 return;
             }
         }
 
         if (event.getSlotType() == InventoryType.SlotType.CRAFTING) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.isShiftClick()) {
-            MessagesManager.sendMessage(player,
-                    TranslationManager.translation("api.iteminteraction.cant_move_item_by_shiftclick"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.cant_move_item_by_shiftclick"), Prefix.OPENMC, false);
             event.setCancelled(true);
         }
     }
@@ -270,11 +267,12 @@ public class ItemInteraction implements Listener {
     @EventHandler
     void onItemDrop(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         if (isItemInteraction(item)) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(event.getPlayer(),
-                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.cant_throw_item"), Prefix.OPENMC, false);
         }
     }
 
@@ -283,18 +281,16 @@ public class ItemInteraction implements Listener {
      */
     @EventHandler
     public void onItemFrameInteract(PlayerInteractEntityEvent event) {
-        if (!(event.getRightClicked() instanceof ItemFrame))
-            return;
+        if (!(event.getRightClicked() instanceof ItemFrame)) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (!isItemInteraction(item))
-            return;
+        if (!isItemInteraction(item)) return;
 
         event.setCancelled(true);
-        MessagesManager.sendMessage(event.getPlayer(),
-                TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, MessageType.ERROR, false);
+        player.message().sendError(
+                TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
     }
 
     /*
@@ -319,7 +315,7 @@ public class ItemInteraction implements Listener {
      */
     @EventHandler
     void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        Player player = (Player) e.getEntity();
+        OMCPlayer player = OMCPlayer.of((Player) e.getEntity());
         String chronometerGroup = e.getGroup();
 
         HashMap<String, Runnable> playerCallbacksMap = playerCallbacksFail.get(player.getUniqueId());
@@ -338,7 +334,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet d'arreter une interaction
      */
-    public static void stopInteraction(Player player, String chronometerGroup) {
+    public static void stopInteraction(OMCPlayer player, String chronometerGroup) {
         HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
@@ -349,7 +345,7 @@ public class ItemInteraction implements Listener {
             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
 
             if (chronoInfo != null) {
-                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
+                player.chronometer().stopChronometer(chronoInfo.chronometerGroup(), null, null);
             }
 
             int slotOfItem = ItemUtils.getSlotOfItem(player, item);
@@ -357,13 +353,11 @@ public class ItemInteraction implements Listener {
             player.getInventory().remove(item);
             if (slotOfItem != -1) player.getInventory().setItem(slotOfItem, oldItem);
 
-            if (ItemUtils.isSimilar(player.getInventory().getItemInOffHand(), item)) {
+            if (ItemUtils.isSimilar(player.getInventory().getItemInOffHand(), item))
                 player.getInventory().setItemInOffHand(null);
-            }
 
-            if (ItemUtils.isSimilar(player.getItemOnCursor(), item)) {
+            if (ItemUtils.isSimilar(player.getItemOnCursor(), item))
                 player.setItemOnCursor(null);
-            }
 
             playerCallbacksMap.remove(chronometerGroup);
             playerChronometerMap.remove(chronometerGroup);
@@ -375,7 +369,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet d'arreter toutes les intéractions d'un joueur
      */
-    public static void stopAllInteractions(Player player) {
+    public static void stopAllInteractions(OMCPlayer player) {
         if (player == null) return;
 
         HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());

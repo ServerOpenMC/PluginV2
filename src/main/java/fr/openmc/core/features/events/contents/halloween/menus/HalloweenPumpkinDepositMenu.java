@@ -3,6 +3,7 @@ package fr.openmc.core.features.events.contents.halloween.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 public class HalloweenPumpkinDepositMenu extends Menu {
+    private final HalloweenManager halloweenManager = OMCRegistry.FEATURES.HALLOWEEN.get();
+
     public HalloweenPumpkinDepositMenu(Player owner) {
         super(owner);
     }
@@ -67,7 +70,7 @@ public class HalloweenPumpkinDepositMenu extends Menu {
                     }
 
 
-                    HalloweenManager.depositPumpkins(player.getUniqueId(), pumpkinCount);
+                    halloweenManager.depositPumpkins(player.getUniqueId(), pumpkinCount);
                     MessagesManager.sendMessage(
                             player,
                             TranslationManager.translation(

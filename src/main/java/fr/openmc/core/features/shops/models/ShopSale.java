@@ -2,6 +2,7 @@ package fr.openmc.core.features.shops.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import lombok.Getter;
@@ -14,6 +15,8 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "shop_sales")
 public class ShopSale {
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
+
     @DatabaseField(canBeNull = false, id = true, columnName = "sale_uuid")
     private UUID saleUUID;
     @DatabaseField(canBeNull = false, columnName = "shop_uuid")
@@ -56,7 +59,7 @@ public class ShopSale {
      * @return the {@code Shop} corresponding to the {@code shopUUID} of this sale
      */
     public Shop getShop() {
-        return ShopManager.getShopByUUID(this.shopUUID);
+        return shopManager.getShopByUUID(this.shopUUID);
     }
     
     /**

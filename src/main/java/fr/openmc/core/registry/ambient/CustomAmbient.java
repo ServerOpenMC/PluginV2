@@ -3,7 +3,7 @@ package fr.openmc.core.registry.ambient;
 import com.google.gson.JsonObject;
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
 import fr.openmc.core.utils.MathUtils;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
@@ -125,7 +125,7 @@ public abstract class CustomAmbient {
     private void refreshLeaderBoards(Player player) {
         Bukkit.getScheduler().runTaskLater(
                 fr.openmc.core.OMCPlugin.getInstance(),
-                () -> LeaderBoardManager.refreshViewer(player),
+                () -> OMCRegistry.FEATURES.LEADERBOARD.get().refreshViewer(player),
                 1L
         );
     }

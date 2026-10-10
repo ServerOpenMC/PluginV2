@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.mascots.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import org.bukkit.attribute.Attribute;
@@ -46,7 +47,8 @@ public class MascotRegenerationUtils {
         }
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        if (!data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) return;
+        MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
+        if (!data.has(mascotsManager.getMascotsKey(), PersistentDataType.STRING)) return;
 
         if (!mascot.isAlive()) return;
 
@@ -67,7 +69,7 @@ public class MascotRegenerationUtils {
                 double maxHealth = mascots.getAttribute(Attribute.MAX_HEALTH).getValue();
                 if (mascots.getHealth() >= maxHealth) {
 
-                    mascots.customName(MascotsManager.getAliveMascotName(
+                    mascots.customName(mascotsManager.getAliveMascotName(
                             mascot.getCity().getName(),
                             mascots.getHealth(),
                             maxHealth
@@ -79,7 +81,7 @@ public class MascotRegenerationUtils {
 
                 double newHealth = Math.min(mascots.getHealth() + 1, maxHealth);
                 mascots.setHealth(newHealth);
-                mascots.customName(MascotsManager.getAliveMascotName(
+                mascots.customName(mascotsManager.getAliveMascotName(
                         mascot.getCity().getName(),
                         mascots.getHealth(),
                         maxHealth

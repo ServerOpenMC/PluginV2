@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.singularity;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -19,19 +19,21 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class SingularityCraftListener implements Listener {
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+
     @EventHandler
     public void onCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
         if (item == null) return;
 
-        DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+        DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
         if (dreamItem == null) return;
         if (!(event.getWhoClicked() instanceof Player playerr)) return;
         OMCPlayer player = OMCPlayer.of(playerr);
 
-        if (!dreamItem.getId().equals(DreamItemRegistry.SINGULARITY.getId())) return;
+        if (!dreamItem.getId().equals(OMCRegistry.DREAM_ITEM.SINGULARITY.getId())) return;
 
-        MailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
+        mailboxManager.sendItems(player, player, new ItemStack[] { dreamItem.getBest() });
 
         // * SFX
         World world = player.getWorld();

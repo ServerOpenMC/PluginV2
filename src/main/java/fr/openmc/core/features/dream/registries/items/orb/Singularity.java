@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.registries.items.orb;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.dream.mecanism.singularity.SingularityMenu;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,7 +28,7 @@ public class Singularity extends DreamItem implements UsableItem {
     }
 
     @Override
-    public void onRightClick(Player player, PlayerInteractEvent event) {
+    public void onRightClick(OMCPlayer player, PlayerInteractEvent event) {
         new SingularityMenu(player).open();
     }
 }

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.milestone.requirements;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.EventCityRequirement;
 import net.kyori.adventure.text.Component;

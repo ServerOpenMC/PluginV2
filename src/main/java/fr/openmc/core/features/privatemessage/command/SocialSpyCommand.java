@@ -15,11 +15,17 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("socialspy")
 public class SocialSpyCommand {
 
+    private final SocialSpyManager manager;
+
+    public SocialSpyCommand(SocialSpyManager manager) {
+        this.manager = manager;
+    }
+
     @CommandPlaceholder()
     @Description("Active ou désactive le social spy")
     @CommandPermission("omc.admin.commands.privatemessage.socialspy")
     public void toggleSocialSpyCommand(Player player) {
-        SocialSpyManager.toggleSocialSpy(player);
+        manager.toggleSocialSpy(player);
     }
 
     @Subcommand("toggle")
@@ -29,9 +35,9 @@ public class SocialSpyCommand {
             Player admin,
             @SuggestWith(OnlinePlayerAutoComplete.class) @Named("target") Player target
     ) {
-        SocialSpyManager.toggleSocialSpy(target);
+        manager.toggleSocialSpy(target);
 
-        Component status = SocialSpyManager.hasSocialSpyEnabled(target)
+        Component status = manager.hasSocialSpyEnabled(target)
                 ? TranslationManager.translation("feature.privatemessage.socialspy.status.enabled")
                 : TranslationManager.translation("feature.privatemessage.socialspy.status.disabled");
 
@@ -50,7 +56,7 @@ public class SocialSpyCommand {
         Component spyList = Component.empty();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (SocialSpyManager.hasSocialSpyEnabled(onlinePlayer)) {
+            if (manager.hasSocialSpyEnabled(onlinePlayer)) {
                 if (spyCount > 0) {
                     spyList = spyList.appendNewline();
                 }

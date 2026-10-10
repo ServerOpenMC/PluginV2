@@ -1,15 +1,13 @@
 package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Optional;
@@ -17,7 +15,8 @@ import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPADenyCommand {
-	
+	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
+
 	/**
 	 * Command to deny a teleportation request
 	 * @param target The player denying the request.
@@ -30,18 +29,18 @@ public class TPADenyCommand {
 			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player")
 			OMCPlayer player
 	) {
-		if (!TPAManager.hasPendingRequest(target)) {
+		if (!tpaManager.hasPendingRequest(target)) {
 			target.message().send(TranslationManager.translation("feature.tpa.deny.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		if (TPAManager.hasMultipleRequests(target)) {
+		if (tpaManager.hasMultipleRequests(target)) {
 			if (player == null) {
 				target.message().send(TranslationManager.translation("feature.tpa.deny.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
-			if (!TPAManager.getRequesters(target).contains(player)) {
+			if (!tpaManager.getRequesters(target).contains(player)) {
 				player.message().send(TranslationManager.translation(
 						"feature.tpa.deny.no_request_from",
 						player.getNameWithHead().color(NamedTextColor.GOLD)
@@ -49,7 +48,7 @@ public class TPADenyCommand {
 				return;
 			}
 		} else {
-			player = TPAManager.getRequesters(target).getFirst();
+			player = tpaManager.getRequesters(target).getFirst();
 		}
 		
 		target.message().send(TranslationManager.translation(
@@ -61,7 +60,7 @@ public class TPADenyCommand {
 				target.getNameWithHead().color(NamedTextColor.GOLD)
 		), Prefix.OPENMC, MessageType.ERROR, false);
 
-		TPAManager.removeRequest(player, target);
+		tpaManager.removeRequest(player, target);
 	}
 	
 }

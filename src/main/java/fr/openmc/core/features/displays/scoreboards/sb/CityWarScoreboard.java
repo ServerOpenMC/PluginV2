@@ -1,9 +1,10 @@
 package fr.openmc.core.features.displays.scoreboards.sb;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
@@ -23,7 +24,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +33,16 @@ import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class CityWarScoreboard extends BaseScoreboard {
+    private final WarManager warManager = OMCRegistry.CITY_FEATURES.WAR;
     @Override
-    protected void updateTitle(Player player, SternalBoard board) {
+    protected void updateTitle(OMCPlayer player, SternalBoard board) {
         board.updateTitle(getTitle());
     }
 
     @Override
-    public void update(Player player, SternalBoard board) {
+    public void update(OMCPlayer player, SternalBoard board) {
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
         if (city == null || !city.isInWar()) return;
 
         War war = city.getWar();
@@ -66,12 +67,12 @@ public class CityWarScoreboard extends BaseScoreboard {
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
                     .deserialize("<gradient:#FF7518:#FFD580><title></gradient>",
-                            Placeholder.component("title", toSmall(player, WarManager.getFormattedPhase(war.getPhase()))));
-            case COMBAT -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+                            Placeholder.component("title", toSmall(player, warManager.getFormattedPhase(war.getPhase()))));
+            case COMBAT -> phaseComponent = toSmall(player, warManager.getFormattedPhase(war.getPhase()))
                     .color(TextColor.color(0xFC1C1C));
-            case ENDED -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+            case ENDED -> phaseComponent = toSmall(player, warManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.GRAY);
-            default -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+            default -> phaseComponent = toSmall(player, warManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.WHITE);
         }
 
@@ -147,9 +148,9 @@ public class CityWarScoreboard extends BaseScoreboard {
     }
 
     @Override
-    public boolean shouldDisplay(Player player) {
+    public boolean shouldDisplay(OMCPlayer player) {
         if (!player.getWorld().getName().equalsIgnoreCase("world")) return false;
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player.getUniqueId());
         return city != null && city.isInWar();
     }
 

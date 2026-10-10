@@ -14,6 +14,8 @@ import net.kyori.adventure.text.Component;
 import java.util.Set;
 
 public class QuizzLootTable extends CustomLootTable {
+    private final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+
     @Override
     public Component getName() {
         return TranslationManager.translation("feature.chatanimations.quizz.table.name");
@@ -29,8 +31,8 @@ public class QuizzLootTable extends CustomLootTable {
         return Set.of(
                 new MoneyLoot(100, 300, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
-                        (player) -> WeeklyEventsManager.isEventActive()
-                                && WeeklyEventsManager.getCurrentEvent() instanceof Contest contest
+                        (player) -> weeklyEventsManager.isEventActive()
+                                && weeklyEventsManager.getCurrentEvent() instanceof Contest contest
                                 && ContestPhase.TRADE_PHASE.getPhase().equals(contest.getActivePhase()),
                         1,
                         50

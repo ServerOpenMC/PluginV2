@@ -24,9 +24,11 @@ import java.util.Map;
 
 public class AdminShopCategoryMenu extends Menu {
     private final String categoryId;
+    private final AdminShopManager manager;
 
-    public AdminShopCategoryMenu(Player owner, String categoryId) {
+    public AdminShopCategoryMenu(Player owner, AdminShopManager manager, String categoryId) {
         super(owner);
+        this.manager = manager;
         this.categoryId = categoryId;
     }
 
@@ -57,7 +59,7 @@ public class AdminShopCategoryMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        Map<String, ShopItem> categoryItems = AdminShopManager.getCategoryItems(categoryId);
+        Map<String, ShopItem> categoryItems = manager.getCategoryItems(categoryId);
 
         if (categoryItems != null) {
             for (ShopItem item : categoryItems.values()) {
@@ -73,15 +75,15 @@ public class AdminShopCategoryMenu extends Menu {
                             : AdminShopUtils.extractLoreForItem(item));
                 }).setOnClick(event -> {
                     if (material.name().endsWith("_LEAVES"))
-                        AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item);
+                        manager.openLeavesVariantsMenu(getOwner(), categoryId, item);
                     else if (material.name().endsWith("_LOG"))
-                        AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
+                        manager.openLogVariantsMenu(getOwner(), categoryId, item);
                     else if (item.isHasColorVariant())
-                        AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
+                        manager.openColorVariantsMenu(getOwner(), categoryId, item);
                     else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                        AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
+                        manager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
                     else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                        AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
+                        manager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
                 }).setItemId(item.getId()));
             }
         }

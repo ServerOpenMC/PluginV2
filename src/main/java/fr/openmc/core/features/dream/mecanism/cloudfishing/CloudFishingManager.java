@@ -1,8 +1,9 @@
 package fr.openmc.core.features.dream.mecanism.cloudfishing;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
-import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -15,23 +16,24 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class CloudFishingManager {
+public class CloudFishingManager extends Feature implements HasListeners {
     @Getter
-    private static final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
+    private final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
 
     public static final double Y_CLOUD_FISHING = 120 - 5; // CloudChunk.MIN_HEIGHT_CLOUD - 5
-    public static final CustomLootTable FISHING_LOOT_TABLE = DreamLootTableRegistry.CLOUD_FISHING;
 
-    public static void init() {
-        OMCPlugin.registerEvents(
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
                 PlayerFishListener::new
         );
     }
 
-    public static void simulateDreamFishing(Player player, FishHook hook) {
+    public void simulateDreamFishing(Player player, FishHook hook) {
         World world = hook.getWorld();
         Random random = ThreadLocalRandom.current();
 
@@ -70,7 +72,7 @@ public class CloudFishingManager {
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 3L);
     }
 
-    private static void onFishBite(Player player, FishHook hook) {
+    private void onFishBite(Player player, FishHook hook) {
         if (!hook.isValid() || !player.isOnline()) return;
 
         player.playSound(player.getLocation(), Sound.ENTITY_FISHING_BOBBER_SPLASH, 0.6F, 1F);

@@ -1,6 +1,6 @@
 package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.omcplayer.sub.OMCPlayerHome;
+import fr.openmc.api.omcplayer.sub.*;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import lombok.experimental.Delegate;
 import net.kyori.adventure.text.Component;
@@ -15,10 +15,18 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Delegate(types = OfflinePlayer.class)
     private final OfflinePlayer player;
     private final OMCPlayerHome home;
+    private final OMCPlayerEconomy economy;
+    private final OMCPlayerCity city;
+    private final OMCPlayerMessage message;
+    private final OMCPlayerCooldown cooldown;
 
     OMCOfflinePlayerImpl(OfflinePlayer player) {
         this.player = player;
         this.home = new OMCPlayerHome(player);
+        this.economy = new OMCPlayerEconomy(player);
+        this.city = new OMCPlayerCity(player);
+        this.message = new OMCPlayerMessage(player);
+        this.cooldown = new OMCPlayerCooldown(player);
     }
 
     @Override
@@ -38,6 +46,11 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     }
 
     @Override
+    public OMCPlayerMessage message() {
+        return message;
+    }
+
+    @Override
     public @NotNull OfflinePlayer getOfflinePlayer() {
         return player;
     }
@@ -45,5 +58,20 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Override
     public OMCPlayerHome home() {
         return home;
+    }
+
+    @Override
+    public OMCPlayerEconomy economy() {
+        return economy;
+    }
+
+    @Override
+    public OMCPlayerCity city() {
+        return city;
+    }
+
+    @Override
+    public OMCPlayerCooldown cooldown() {
+        return cooldown;
     }
 }

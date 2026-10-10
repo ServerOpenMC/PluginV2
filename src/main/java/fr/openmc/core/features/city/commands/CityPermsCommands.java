@@ -2,21 +2,16 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
 import fr.openmc.core.features.city.commands.autocomplete.CityPermissionsAutoComplete;
 import fr.openmc.core.features.city.conditions.CityPermsConditions;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
-import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -32,7 +27,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
 
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (city == null) {
             sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -72,7 +67,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
       
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (city == null) {
             sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -110,7 +105,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
   
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (city == null) {
             sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -153,7 +148,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
         
         if (city == null) {
             sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -178,7 +173,7 @@ public class CityPermsCommands {
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
         if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
         if (city == null) {
             sender.message().send(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
             return;

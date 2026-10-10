@@ -2,6 +2,7 @@ package fr.openmc.core.features.mailboxes.commands;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -10,22 +11,18 @@ import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"mailbox", "mb", "letter", "mail", "lettre", "boite", "courrier"})
 @CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
 
     @CommandPlaceholder()
     public void mailbox(OMCPlayer player) {
@@ -56,7 +53,7 @@ public class MailboxCommand {
                     Prefix.MAILBOX, MessageType.ERROR, true);
             return;
         }
-        if (!MailboxManager.canSend(player, receiverPlayer)) {
+        if (!mailboxManager.canSend(player, receiverPlayer)) {
             player.message().send(
                     TranslationManager.translation(
                             "feature.mailboxes.message.cannot_send",
@@ -82,7 +79,7 @@ public class MailboxCommand {
     @Subcommand("open")
     @Description("Ouvrir une lettre")
     public void openMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter letter = MailboxManager.getById(player, id);
+        Letter letter = mailboxManager.getById(player, id);
         if (letter == null) return;
         LetterMenu mailbox = new LetterMenu(player, letter);
         mailbox.open();
@@ -92,14 +89,39 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Refuser une lettre")
     public void refuseMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        LetterMenu.refuseLetter(player, id);
+        Letter letter = mailboxManager.getById(player, id);
+        if (letter != null && !letter.isRefused()) {
+            if (letter.refuse()) {
+                player.message().send(
+                        TranslationManager.translation(
+                                "feature.mailboxes.message.refuse_success",
+                                Component.text(id).color(NamedTextColor.GREEN)
+                        ).color(NamedTextColor.DARK_GREEN),
+                        Prefix.MAILBOX,
+                        MessageType.SUCCESS,
+                        true
+                );
+                return;
+            }
+        }
+
+        Component message = TranslationManager.translation(
+                "feature.mailboxes.message.letter_not_found",
+                Component.text(id).color(NamedTextColor.RED)
+        ).color(NamedTextColor.DARK_RED);
+        player.message().send(
+                message,
+                Prefix.MAILBOX,
+                MessageType.ERROR,
+                true
+        );
     }
 
     @Subcommand("cancel")
     @SecretCommand
     @Description("Annuler une lettre")
     public void cancelMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter letter = MailboxManager.getById(player, id);
+        Letter letter = mailboxManager.getById(player, id);
         if (letter == null) {
             player.message().send(
                     TranslationManager.translation(
@@ -112,6 +134,6 @@ public class MailboxCommand {
             );
             return;
         }
-        MailboxMenuManager.sendConfirmMenuToCancelLetter(player, letter);
+        mailboxManager.sendConfirmMenuToCancelLetter(player, letter);
     }
 }

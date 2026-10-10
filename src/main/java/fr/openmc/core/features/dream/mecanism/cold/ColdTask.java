@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.cold;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.registries.DreamBiome;
 import fr.openmc.core.features.dream.registries.DreamStructure;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ColdTask extends BukkitRunnable {
+    private final ColdManager coldManager = OMCRegistry.DREAM_FEATURES.COLD;
     private int counter = 0;
     private int lastColdLevel = 0;
     private final DreamPlayer dreamPlayer;
@@ -22,9 +24,9 @@ public class ColdTask extends BukkitRunnable {
     public void run() {
         counter += 20;
         int cold = dreamPlayer.getCold();
-        boolean nearHeat = ColdManager.isNearHeatSource(player);
+        boolean nearHeat = coldManager.isNearHeatSource(player);
         boolean isInBaseCamp = DreamStructure.isInInsideDreamStructure(player.getLocation(), DreamStructure.BASE_CAMP);
-        double resistance = ColdManager.calculateColdResistance(player);
+        double resistance = coldManager.calculateColdResistance(player);
         boolean inColdBiome = DreamBiome.isInDreamBiome(player, DreamBiome.GLACITE_GROTTO);
 
         // Retrait du froid que si le joueur n'est pas en crea ou en spec
@@ -55,13 +57,13 @@ public class ColdTask extends BukkitRunnable {
             return;
         }
 
-        int newLevel = ColdManager.getColdLevel(cold);
+        int newLevel = coldManager.getColdLevel(cold);
         if (newLevel > lastColdLevel) {
-            ColdManager.sendColdLevelMessage(player, newLevel);
+            coldManager.sendColdLevelMessage(player, newLevel);
         }
         lastColdLevel = newLevel;
 
-        ColdManager.applyColdEffects(player, cold);
+        coldManager.applyColdEffects(player, cold);
         dreamPlayer.setCold(cold);
     }
 }

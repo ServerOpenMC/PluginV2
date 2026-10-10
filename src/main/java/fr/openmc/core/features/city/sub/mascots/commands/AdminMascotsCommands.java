@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mascots.commands;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -18,6 +18,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("admmascot")
 @CommandPermission("omc.admins.commands.adminmascot")
 public class AdminMascotsCommands {
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.adminmascot.remove")
@@ -25,14 +26,14 @@ public class AdminMascotsCommands {
             Player sender,
             @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String cityName
     ) {
-        City city = CityManager.getCityByName(cityName);
+        City city = City.of(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.city.not_found"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        MascotsManager.removeMascotsFromCity(city);
+        mascotsManager.removeMascotsFromCity(city);
         MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.mascots.admin.remove.success"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

@@ -3,11 +3,11 @@ package fr.openmc.core.features.dream.mecanism.singularity;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.TakeFromSingularityEvent;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -27,6 +27,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class SingularityMenu extends PaginatedMenu {
+    private final SingularityManager singularityManager = OMCRegistry.DREAM_FEATURES.SINGULARITY;
+
     public SingularityMenu(Player owner) {
         super(owner);
     }
@@ -43,7 +45,7 @@ public class SingularityMenu extends PaginatedMenu {
 
     @Override
     public List<ItemStack> getItems() {
-        SingularityContents singuContents = SingularityManager.getSingularityContents(getOwner());
+        SingularityContents singuContents = singularityManager.getSingularityContents(getOwner());
 
         if (singuContents == null) {
             return Collections.emptyList();
@@ -103,11 +105,11 @@ public class SingularityMenu extends PaginatedMenu {
         boolean clickInMenu = raw < menuSize;
         boolean clickInPlayerInv = raw >= menuSize;
 
-        DreamItem cursorDream = DreamItemRegistry.getByItemStack(cursor);
-        DreamItem currentDream = DreamItemRegistry.getByItemStack(current);
+        DreamItem cursorDream = OMCRegistry.DREAM_ITEM.getByItemStack(cursor);
+        DreamItem currentDream = OMCRegistry.DREAM_ITEM.getByItemStack(current);
 
-        if ((cursorDream != null && cursorDream.getId().equals(DreamItemRegistry.SINGULARITY.getId()))
-                || (currentDream != null && currentDream.getId().equals(DreamItemRegistry.SINGULARITY.getId()))) {
+        if ((cursorDream != null && cursorDream.getId().equals(OMCRegistry.DREAM_ITEM.SINGULARITY.getId()))
+                || (currentDream != null && currentDream.getId().equals(OMCRegistry.DREAM_ITEM.SINGULARITY.getId()))) {
             event.setCancelled(true);
             return;
         }
@@ -188,7 +190,7 @@ public class SingularityMenu extends PaginatedMenu {
             ItemStack item = inventoryContents[i];
             if (item == null || item.getType() == Material.AIR) continue;
 
-            DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+            DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 
             if (dreamItem == null || !dreamItem.isTransferable() || hasEnchantments(item)) {
                 toReturnToPlayer.add(item);
@@ -201,10 +203,10 @@ public class SingularityMenu extends PaginatedMenu {
             player.getInventory().addItem(item);
         }
 
-        SingularityContents contents = SingularityManager.getSingularityContents(player);
+        SingularityContents contents = singularityManager.getSingularityContents(player);
 
         if (contents == null) {
-            SingularityManager.addSingularityContents(player, validContents);
+            singularityManager.addSingularityContents(player, validContents);
         } else {
             contents.setContent(validContents);
         }

@@ -1,13 +1,9 @@
 package fr.openmc.core.registry.loottable;
 
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.bits.contents.loottables.KitchenLootTable;
 import fr.openmc.core.features.bits.contents.loottables.MedievalLootTable;
 import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
 import fr.openmc.core.features.bits.contents.loottables.OfficeLootTable;
-import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeLootTable;
-import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
@@ -21,6 +17,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.FishingFurnitureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.LegendaryFishingTreasureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.RareFishingTreasureLootTable;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
 public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {
@@ -48,9 +46,6 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable KITCHEN_BOX = register(new KitchenLootTable());
     public final CustomLootTable OFFICE_BOX = register(new OfficeLootTable());
     public final CustomLootTable MODERN_BOX = register(new ModernLootTable());
-
-    public final CustomLootTable QUIZZ = register(new QuizzLootTable());
-    public final CustomLootTable CHALLENGE = register(new ChallengeLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {

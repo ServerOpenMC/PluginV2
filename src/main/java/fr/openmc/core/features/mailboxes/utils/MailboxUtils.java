@@ -32,11 +32,6 @@ public class MailboxUtils {
         return head;
     }
 
-    public static Component colorText(String text, NamedTextColor color, boolean nonItalic) {
-        Component component = Component.text(text, color);
-        return nonItalic ? nonItalic(component) : component;
-    }
-
     public static Component nonItalic(Component name) {
         return name.decoration(TextDecoration.ITALIC, false);
     }

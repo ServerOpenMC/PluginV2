@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.commands.autocomplete;
 
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;

@@ -3,9 +3,9 @@ package fr.openmc.core.features.milestones.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.menu.NoCityMenu;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainMilestonesMenu extends Menu {
+    private final static MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
 
     public MainMilestonesMenu(Player owner) {
         super(owner);
@@ -61,7 +62,7 @@ public class MainMilestonesMenu extends Menu {
         inventory.put(10, new ItemMenuBuilder(this, tutoMilestone.getIcon(), itemMeta -> {
             itemMeta.displayName(tutoMilestone.getName().decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(tutoMilestone.getDescription());
-            itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
+            itemMeta.setEnchantmentGlintOverride(milestonesManager.getPlayerStep(tutoMilestone.getType(), player) + 1 >= tutoMilestone.getSteps().size());
         }).setOnClick(_ -> tutoMilestone.getMenu(player).open()));
         
 	    List<Component> loreMilestoneVille = new ArrayList<>();
@@ -71,7 +72,7 @@ public class MainMilestonesMenu extends Menu {
         loreMilestoneVille.add(Component.empty());
         loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.details"));
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player.getUniqueId());
         if (playerCity == null) {
             loreMilestoneVille.add(Component.empty());
             loreMilestoneVille.add(TranslationManager.translation("feature.milestones.menu.city.lore.need_city"));
@@ -89,7 +90,7 @@ public class MainMilestonesMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.city.name")
                     .decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(loreMilestoneVille);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (playerCity == null) {
                 new NoCityMenu(player).open();
             } else {
@@ -102,8 +103,8 @@ public class MainMilestonesMenu extends Menu {
         inventory.put(14, new ItemMenuBuilder(this, dreamMilestone.getIcon(), itemMeta -> {
             itemMeta.displayName(dreamMilestone.getName().decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(dreamMilestone.getDescription());
-            itemMeta.setEnchantmentGlintOverride(MilestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
-        }).setOnClick(inventoryClickEvent -> dreamMilestone.getMenu(player).open()));
+            itemMeta.setEnchantmentGlintOverride(milestonesManager.getPlayerStep(dreamMilestone.getType(), player) + 1 >= dreamMilestone.getSteps().size());
+        }).setOnClick(_ -> dreamMilestone.getMenu(player).open()));
 
         inventory.put(16, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.milestones.menu.coming_soon"))));
 

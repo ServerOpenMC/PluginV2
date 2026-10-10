@@ -3,12 +3,14 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
 import fr.openmc.core.features.city.sub.notation.menu.NotationDialog;
 import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -41,14 +43,15 @@ public class NotationsButton {
     }
 
     private static List<Component> getDynamicLore(City city, CityNotation notation) {
+        EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
         List<Component> lore;
         if (notation != null) {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.notation.lore",
                     Component.text(Math.floor(notation.getTotalNote())).color(NamedTextColor.BLUE),
                     Component.text(NotationNote.getMaxTotalNote()).color(NamedTextColor.BLUE),
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
-                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(notation.getMoney())).color(NamedTextColor.GOLD),
+                    Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD)
             );
         } else {
             if (FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.NOTATION)) {

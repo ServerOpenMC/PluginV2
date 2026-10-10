@@ -2,7 +2,6 @@ package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -30,7 +29,7 @@ public class SleepQuest extends MilestoneQuest implements Listener {
 	public void onDreamEnter(DreamEnterEvent e) {
 		Player player = e.getPlayer();
 		
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		
 		this.incrementProgressInDream(player.getUniqueId());
 	}

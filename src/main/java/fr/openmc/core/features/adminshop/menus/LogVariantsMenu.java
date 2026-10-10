@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
@@ -15,7 +16,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -32,9 +32,11 @@ public class LogVariantsMenu extends Menu {
         Material.ACACIA_LOG, Material.DARK_OAK_LOG, Material.MANGROVE_LOG, Material.CHERRY_LOG,
         Material.PALE_OAK_LOG
     );
+    private final AdminShopManager manager;
 
-    public LogVariantsMenu(Player owner, String categoryId, ShopItem originalItem) {
+    public LogVariantsMenu(OMCPlayer owner, AdminShopManager manager, String categoryId, ShopItem originalItem) {
         super(owner);
+        this.manager = manager;
         this.categoryId = categoryId;
         this.originalItem = originalItem;
     }
@@ -99,11 +101,11 @@ public class LogVariantsMenu extends Menu {
 
 
                         if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            manager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            manager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
                         }
                     }));
         }

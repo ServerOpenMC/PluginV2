@@ -1,14 +1,16 @@
 package fr.openmc.core.features.chatanimations;
 
 
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 
 public abstract class ChatAnimation {
+    private final ChatAnimationManager chatAnimationManager = OMCRegistry.FEATURES.CHAT_ANIMATIONS.get();
     @Setter
     private boolean finished = false;
     @Getter
@@ -24,7 +26,7 @@ public abstract class ChatAnimation {
         // a override si besoin
     }
 
-    public void complete(Player winner) {
+    public void complete(OMCPlayer winner) {
         if (finished) return;
         finished = true;
 
@@ -34,7 +36,7 @@ public abstract class ChatAnimation {
         else
             loot = reward.rollLoots(winner);
 
-        ChatAnimationManager.onAnimationCompleted(this, winner, loot);
+        chatAnimationManager.onAnimationCompleted(this, winner, loot);
         this.stop();
     }
 

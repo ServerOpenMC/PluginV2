@@ -1,8 +1,8 @@
 package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.omcplayer.sub.OMCPlayerCity;
-import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
-import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
+import fr.openmc.api.omcplayer.sub.OMCPlayerChronometer;
+import fr.openmc.api.omcplayer.sub.OMCPlayerCorpse;
+import fr.openmc.api.omcplayer.sub.OMCPlayerInputs;
 import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,23 +21,22 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
     @Delegate(types = Player.class)
     private final Player player;
-    private final OMCPlayerMessage message;
-    private final OMCPlayerCity city;
-    private final OMCPlayerEconomy economy;
     private final OMCPlayerSettings settings;
+    private final OMCPlayerChronometer chronometer;
+    private final OMCPlayerInputs intpus;
+    private final OMCPlayerCorpse corpse;
 
     private OMCPlayerImpl(Player player) {
         super(player);
         this.player = player;
-        this.message = new OMCPlayerMessage(player);
-        this.city = new OMCPlayerCity(player);
-        this.economy = new OMCPlayerEconomy(player);
         this.settings = new OMCPlayerSettings(player);
+        this.chronometer = new OMCPlayerChronometer(player);
+        this.intpus = new OMCPlayerInputs(player);
+        this.corpse = new OMCPlayerCorpse(player);
     }
 
     static OMCPlayer of(Player player) {
         if (player == null) throw new IllegalArgumentException("player ne peut pas être null");
-
 
         return CACHE.compute(player.getUniqueId(), (id, cachedPlayer) -> {
             if (cachedPlayer == null) return new OMCPlayerImpl(player);
@@ -46,8 +45,9 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
             if (cachedBukkitPlayer == null
                     || !cachedBukkitPlayer.isOnline()
-                    || !cachedBukkitPlayer.equals(player))
+                    || cachedBukkitPlayer != player)
                 return new OMCPlayerImpl(player);
+
 
             return cachedPlayer;
         });
@@ -87,23 +87,23 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     }
 
     @Override
-    public OMCPlayerMessage message() {
-        return message;
-    }
-
-    @Override
-    public OMCPlayerEconomy economy() {
-        return economy;
-    }
-
-    @Override
-    public OMCPlayerCity city() {
-        return city;
-    }
-
-    @Override
     public OMCPlayerSettings settings() {
         return settings;
+    }
+
+    @Override
+    public OMCPlayerChronometer chronometer() {
+        return chronometer;
+    }
+
+    @Override
+    public OMCPlayerInputs inputs() {
+        return intpus;
+    }
+
+    @Override
+    public OMCPlayerCorpse corpse() {
+        return corpse;
     }
 
     @Override

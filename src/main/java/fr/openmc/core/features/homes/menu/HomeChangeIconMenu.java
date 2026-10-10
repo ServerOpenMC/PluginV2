@@ -1,7 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -33,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class HomeChangeIconMenu extends PaginatedMenu {
+    private static final HomeIconCacheManager homeIconCacheManager = OMCRegistry.FEATURES.HOME_ICON_CACHE.get();
 
     private final Home home;
     private HomeIcon.IconCategory currentCategory = HomeIcon.IconCategory.ALL;
@@ -85,8 +85,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         Player player = getOwner();
 
-        if (!searchQuery.isEmpty()) return HomeIconCacheManager.searchIcons(searchQuery, this, home, player);
-        else return HomeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
+        if (!searchQuery.isEmpty()) return homeIconCacheManager.searchIcons(searchQuery, this, home, player);
+        else return homeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
 
-                DialogInput.send(getOwner(), TranslationManager.translation("feature.homes.icon.search.prompt"), MAX_LENGTH, input -> {
+                getOwner().inputs().sendStringDialogInput(TranslationManager.translation("feature.homes.icon.search.prompt"), MAX_LENGTH, input -> {
                     if (input == null) return;
 
                     searchQuery = input;

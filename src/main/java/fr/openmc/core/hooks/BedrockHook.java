@@ -1,6 +1,7 @@
 package fr.openmc.core.hooks;
 
-import fr.openmc.core.bootstrap.hooks.Hooks;
+
+import fr.openmc.core.registry.hooks.Hooks;
 import org.bukkit.entity.Player;
 //import org.geysermc.floodgate.api.FloodgateApi;
 //import org.geysermc.geyser.api.GeyserApi;

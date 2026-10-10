@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
@@ -8,12 +9,14 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class OMCPlayerSettings extends OMCPlayerFeat {
+    private static final PlayerSettingsManager PLAYER_SETTINGS = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
+
     public OMCPlayerSettings(Player player) {
         super(player);
     }
 
     public PlayerSettings getSettings() {
-        return PlayerSettingsManager.getPlayerSettings(getUniqueId());
+        return PLAYER_SETTINGS.getPlayerSettings(getUniqueId());
     }
 
     public boolean canReceiveFriendRequest(UUID senderUUID) {

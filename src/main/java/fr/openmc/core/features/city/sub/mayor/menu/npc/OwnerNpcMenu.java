@@ -1,17 +1,17 @@
 package fr.openmc.core.features.city.sub.mayor.menu.npc;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -71,14 +71,14 @@ public class OwnerNpcMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         Mayor mayor = city.getMayor();
         UUID uuidOwner = city.getPlayerWithPermission((CityPermission.OWNER));
 
         String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName();
 
-        Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+        Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
         if (electionType == ElectionType.ELECTION) {
             List<Component> loreOwner = new ArrayList<>(List.of(
                     TranslationManager.translation(
@@ -105,8 +105,8 @@ public class OwnerNpcMenu extends Menu {
                 itemMeta.lore(lorePerk1);
             }).hide(perk1 == null ? null : perk1.getToHide()));
         } else {
-            Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-            Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+            Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+            Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
             List<Component> loreOwner = new ArrayList<>(List.of(
                     TranslationManager.translation(
@@ -164,7 +164,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(46, new ItemMenuBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.npc.move.name").color(NamedTextColor.GREEN));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.mayor.menu.npc.move.lore"));
-            }).setOnClick(inventoryClickEvent -> {
+            }).setOnClick(_ -> {
                 List<Component> loreItemNPC = List.of(
                         TranslationManager.translation("feature.city.mayor.npc.move.item.lore")
                 );
@@ -174,8 +174,8 @@ public class OwnerNpcMenu extends Menu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.npc.move.item.name"));
                 itemMeta.lore(loreItemNPC);
                 itemToGive.setItemMeta(itemMeta);
-                ItemInteraction.runLocationInteraction(
-                        player,
+
+                player.inputs().sendLocationInput(
                         itemToGive,
                         "mayor:owner-npc-move",
                         300,
@@ -186,25 +186,24 @@ public class OwnerNpcMenu extends Menu {
 
                             Chunk chunk = locationClick.getChunk();
 
-                            City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                            CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
+                            City cityByChunk = City.of(chunk);
                             if (cityByChunk == null) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                 return false;
                             }
 
-                            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                            City playerCity = City.ofPlayer(player);
 
-                            if (playerCity == null) {
-                                return false;
-                            }
+                            if (playerCity == null) return false;
 
                             if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);
                                 return false;
                             }
 
-                            NPCManager.moveNPC("owner", locationClick, city.getUniqueId());
-                            NPCManager.updateNPCS(city.getUniqueId());
+                            OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.moveNPC("owner", locationClick, city.getUniqueId());
+                            OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.updateNPCS(city.getUniqueId());
                             return true;
                         },
                         null

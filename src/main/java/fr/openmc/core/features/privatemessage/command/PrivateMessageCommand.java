@@ -11,6 +11,12 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class PrivateMessageCommand {
 
+    private final PrivateMessageManager manager;
+
+    public PrivateMessageCommand(PrivateMessageManager manager) {
+        this.manager = manager;
+    }
+
     @Command({"msg", "w", "whisper", "tell"})
     @Description("Envoie un message privé à un joueur")
     @CommandPermission("omc.commands.privatemessage.msg")
@@ -19,7 +25,7 @@ public class PrivateMessageCommand {
             @Named("joueur") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target,
             @Named("message") String message
     ) {
-        PrivateMessageManager.sendPrivateMessage(player, target, message);
+        manager.sendPrivateMessage(player, target, message);
     }
 
     @Command("r")
@@ -29,7 +35,7 @@ public class PrivateMessageCommand {
             OMCPlayer player,
             @Named("message") String message
     ) {
-        PrivateMessageManager.replyToLastMessage(player, message);
+        manager.replyToLastMessage(player, message);
     }
 
 }

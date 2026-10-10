@@ -1,10 +1,10 @@
 package fr.openmc.core.features.adminshop.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
@@ -29,14 +29,17 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class ConfirmMenu extends Menu {
+    private final AdminShopManager manager;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     private final ShopItem shopItem;
     private final boolean isBuying;
     private int quantity;
     private final int maxQuantity;
 
-    public ConfirmMenu(Player owner, ShopItem shopItem, boolean isBuying) {
+    public ConfirmMenu(OMCPlayer owner, AdminShopManager manager, ShopItem shopItem, boolean isBuying) {
         super(owner);
+        this.manager = manager;
         this.shopItem = shopItem;
         this.isBuying = isBuying;
         this.quantity = 1;
@@ -75,10 +78,10 @@ public class ConfirmMenu extends Menu {
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
-                Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
-                Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
+                Component.text(manager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
+                Component.text(economyManager.getEconomyIcon(), NamedTextColor.GREEN),
+                Component.text(manager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
+                Component.text(economyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 shiftRightSellAll
 
         );
@@ -108,8 +111,7 @@ public class ConfirmMenu extends Menu {
             meta.lore(lore);
         }).setOnClick(event -> {
             switch (event.getClick()) {
-                case ClickType.MIDDLE -> DialogInput.sendFloat(
-                        getOwner(),
+                case ClickType.MIDDLE -> getOwner().inputs().sendFloatDialogInput(
                         TranslationManager.translation("feature.adminshop.menu.confirm.input"),
                         1,
                         maxQuantity,
@@ -127,7 +129,7 @@ public class ConfirmMenu extends Menu {
                 case ClickType.SHIFT_RIGHT -> {
                     if (!isBuying && ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())) > 0) {
                         getOwner().closeInventory();
-                        AdminShopManager.sellItem(
+                        manager.sellItem(
                                 getOwner(),
                                 shopItem.getId(),
                                 ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())));
@@ -146,8 +148,8 @@ public class ConfirmMenu extends Menu {
             meta.displayName(TranslationManager.translation("messages.global.accept"));
         }).setOnClick(event -> {
             getOwner().closeInventory();
-            if (isBuying) AdminShopManager.buyItem(getOwner(), shopItem.getId(), quantity);
-            else AdminShopManager.sellItem(getOwner(), shopItem.getId(), quantity);
+            if (isBuying) manager.buyItem(getOwner(), shopItem.getId(), quantity);
+            else manager.sellItem(getOwner(), shopItem.getId(), quantity);
         }));
 
         return content;
@@ -217,13 +219,13 @@ public class ConfirmMenu extends Menu {
         this.open();
     }
 
-    private int getMaxBuyQuantity(Player player, ShopItem shopItem) {
+    private int getMaxBuyQuantity(OMCPlayer player, ShopItem shopItem) {
         int freePlaces = ItemUtils.getFreePlacesForItem(player, shopItem.getMaterial());
 
         double buyPrice = shopItem.getActualBuyPrice();
         if (buyPrice <= 0) return freePlaces;
 
-        double balance = EconomyManager.getBalance(player.getUniqueId());
+        double balance = player.economy().getBalance();
         int affordable = (int) Math.floor(balance / buyPrice);
 
         return Math.min(freePlaces, affordable);

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminShopUtils {
+    public static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     /**
      * Generates the lore (description) for an item in the admin shop.
@@ -45,6 +47,6 @@ public class AdminShopUtils {
      * @return A string representation of the price, including the economy icon.
      */
     public static String formatPrice(double price) {
-        return String.format("%.2f", price) + " " + EconomyManager.getEconomyIcon();
+        return String.format("%.2f", price) + " " + ECONOMY_MANAGER.getEconomyIcon();
     }
 }

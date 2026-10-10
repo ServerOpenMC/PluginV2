@@ -3,8 +3,8 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
@@ -16,14 +16,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
 
 public class BankButton {
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
-        Player player = menu.getOwner();
+        OMCPlayer player = menu.getOwner();
         MenuUtils.createButtonItem(
                 contents,
                 slots,
@@ -31,8 +30,8 @@ public class BankButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.bank.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
-                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                }).setOnClick(_ -> {
+                    City cityCheck = City.ofPlayer(player);
                     if (cityCheck == null) {
                         MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                         return;

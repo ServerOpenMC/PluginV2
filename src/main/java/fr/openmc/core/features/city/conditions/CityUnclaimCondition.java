@@ -1,13 +1,11 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
@@ -22,16 +20,16 @@ public class CityUnclaimCondition {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityUnclaim(City city, Player player) {
-        if (player.getWorld() != Bukkit.getWorld("world")) return false;
+    public static boolean canCityUnclaim(City city, OMCPlayer player) {
+        if (!player.getWorld().equals(Bukkit.getWorld("world"))) return false;
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.CLAIM))) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.conditions.unclaim.no_permission"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.conditions.unclaim.no_permission"), Prefix.CITY, false);
             return false;
         }
 

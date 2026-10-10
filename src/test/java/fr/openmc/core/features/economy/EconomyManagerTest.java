@@ -1,23 +1,20 @@
 package fr.openmc.core.features.economy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.economy.models.EconomyPlayer;
+import fr.openmc.mock.MockBukkitHelper;
+import fr.openmc.mock.ServerMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.mock.MockBukkitHelper;
-import fr.openmc.mock.ServerMock;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EconomyManagerTest {
     private ServerMock server;
@@ -91,7 +88,7 @@ public class EconomyManagerTest {
         Map<UUID, EconomyPlayer> balancesBeforeSave = EconomyManager.loadAllBalances();
         assertFalse(balancesBeforeSave.containsKey(playerUUID));
 
-        new EconomyManager().save();
+        new EconomyManager().onDisable();
 
         Map<UUID, EconomyPlayer> balancesAfterSave = EconomyManager.loadAllBalances();
         assertEquals(500.0, balancesAfterSave.get(playerUUID).getBalance());

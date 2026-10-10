@@ -1,6 +1,5 @@
 package fr.openmc.core.hooks.itemsadder.placeholders;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.placeholders.DreamItemMaterialPlaceholder;
 import fr.openmc.core.features.dream.placeholders.DreamItemNamePlaceholder;
 import fr.openmc.core.features.dream.placeholders.DreamItemTooltipPlaceholder;
@@ -8,6 +7,8 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.placeholder.GoldenCropsChancePlaceholder;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.placeholder.DoubleHookChancePlaceholder;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.placeholder.FishingSpeedPlaceholder;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -10,12 +10,9 @@ import com.comphenix.protocol.events.PacketEvent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.hooks.ProtocolLibHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
@@ -29,12 +26,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<ProtocolLibHook> {
-    private static ProtocolManager protocolManager = null;
+public class TabList extends Feature {
 
     @Override
-    public void init() {
-        protocolManager = ProtocolLibrary.getProtocolManager();
+    public void onEnable() {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
         protocolManager.addPacketListener(new PacketAdapter(OMCPlugin.getInstance(),
                 ListenerPriority.NORMAL, PacketType.Play.Server.PLAYER_INFO) {
@@ -75,13 +71,13 @@ public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<
         });
     }
 
-    public static void updateHeaderFooter(OMCPlayer omcPlayer, Component header, Component footer) {
+    public void updateHeaderFooter(OMCPlayer omcPlayer, Component header, Component footer) {
         ServerPlayer nmsPlayer = omcPlayer.getServerPlayer();
         nmsPlayer.connection.send(new ClientboundTabListPacket(
                 PaperAdventure.asVanilla(header), PaperAdventure.asVanilla(footer)));
     }
 
-    public static void updateTabList(OMCPlayer omcPlayer) {
+    public void updateTabList(OMCPlayer omcPlayer) {
         int visibleOnlinePlayers = 0;
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (omcPlayer.canSee(p)) {
@@ -91,7 +87,7 @@ public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<
 
         boolean isInDream = DreamUtils.isInDream(omcPlayer);
         String logo;
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             logo = FontImageWrapper.replaceFontImages(isInDream ? ":dream_openmc:" : ":openmc:");
         } else {
             logo = "OPEN MC";

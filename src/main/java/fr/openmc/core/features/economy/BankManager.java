@@ -4,21 +4,22 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.bank.CityBankManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.InputUtils;
@@ -31,7 +32,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
@@ -46,14 +46,15 @@ import java.util.UUID;
 
 public class BankManager extends Feature implements HasDatabase {
     @Getter
-    private static Map<UUID, Bank> banks;
+    private Map<UUID, Bank> banks;
+    private Dao<Bank, String> banksDao;
 
-    private static Dao<Bank, String> banksDao;
+    private BukkitTask interestTask;
 
-    private static BukkitTask interestTask;
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     @Override
-    public void init() {
+    public void onEnable() {
         banks = loadAllBanks();
         CommandsManager.getHandler().register(new BankCommands());
         updateInterestTimer();
@@ -65,12 +66,12 @@ public class BankManager extends Feature implements HasDatabase {
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
 
-    public static double getBankBalance(UUID playerUUID) {
+    public double getBankBalance(UUID playerUUID) {
         Bank bank = getPlayerBank(playerUUID);
         return bank.getBalance();
     }
 
-    public static boolean deposit(UUID playerUUID, double amount) {
+    public boolean deposit(UUID playerUUID, double amount) {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 Bukkit.getPluginManager().callEvent(new BankDepositEvent(playerUUID))
         );
@@ -80,7 +81,7 @@ public class BankManager extends Feature implements HasDatabase {
         return saveBank(bank);
     }
 
-    public static boolean withdraw(UUID playerUUID, double amount) {
+    public boolean withdraw(UUID playerUUID, double amount) {
         Bank bank = getPlayerBank(playerUUID);
 
         if (bank.getBalance() < amount) {
@@ -90,16 +91,16 @@ public class BankManager extends Feature implements HasDatabase {
         return saveBank(bank);
     }
 
-    public static double getBalance(UUID playerUUID) {
+    public double getBalance(UUID playerUUID) {
         Bank bank = getPlayerBank(playerUUID);
         return bank.getBalance();
     }
 
-    private static Bank getPlayerBank(UUID playerUUID) {
+    private Bank getPlayerBank(UUID playerUUID) {
         return banks.computeIfAbsent(playerUUID, Bank::new);
     }
 
-    private static boolean saveBank(Bank bank) {
+    private boolean saveBank(Bank bank) {
         try {
             banks.put(bank.getPlayerUUID(), bank);
             banksDao.createOrUpdate(bank);
@@ -110,7 +111,7 @@ public class BankManager extends Feature implements HasDatabase {
         }
     }
 
-    public static void deposit(UUID playerUUID, String input) {
+    public void deposit(UUID playerUUID, String input) {
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
         if (!InputUtils.isInputMoney(input)) {
@@ -120,7 +121,7 @@ public class BankManager extends Feature implements HasDatabase {
         }
 
         double amount = InputUtils.convertToMoneyValue(input);
-        City city = CityManager.getPlayerCity(playerUUID);
+        City city = City.ofPlayer(playerUUID);
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(offlinePlayer,
@@ -135,14 +136,14 @@ public class BankManager extends Feature implements HasDatabase {
         if (currentBalance >= limit) {
             MessagesManager.sendMessage(offlinePlayer,
                     TranslationManager.translation("feature.economy.bank.deposit.limit_reached",
-                            Component.text(EconomyManager.getFormattedNumber(limit)).color(NamedTextColor.LIGHT_PURPLE)),
+                            Component.text(economyManager.getFormattedNumber(limit)).color(NamedTextColor.LIGHT_PURPLE)),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
         }
 
         double allowedAmount = Math.min(amount, limit - currentBalance);
 
-        if (!EconomyManager.withdrawBalance(playerUUID, allowedAmount)) {
+        if (!economyManager.withdrawBalance(playerUUID, allowedAmount)) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.deposit.not_enough_money"),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
@@ -154,24 +155,24 @@ public class BankManager extends Feature implements HasDatabase {
             MessagesManager.sendMessage(offlinePlayer,
                     TranslationManager.translation(
                             "feature.economy.bank.deposit.partial",
-                            Component.text(EconomyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE)
+                            Component.text(economyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE)
                     ),
                     Prefix.BANK, MessageType.ERROR, false);
         } else {
             MessagesManager.sendMessage(offlinePlayer,
                     TranslationManager.translation(
                             "feature.economy.bank.deposit.success",
-                            Component.text(EconomyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE)
+                            Component.text(economyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE)
                     ),
                     Prefix.BANK, MessageType.SUCCESS, false);
         }
     }
 
-    public static void withdraw(UUID playerUUID, String input) {
-        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
+    public void withdraw(UUID playerUUID, String input) {
+        OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(playerUUID);
 
         if (!InputUtils.isInputMoney(input)) {
-            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.global.invalid_input"),
+            offlinePlayer.message().send(TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.BANK, MessageType.ERROR, true);
             return;
         }
@@ -179,22 +180,21 @@ public class BankManager extends Feature implements HasDatabase {
         double amount = InputUtils.convertToMoneyValue(input);
 
         if (!withdraw(playerUUID, amount)) {
-            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.withdraw.not_enough"), Prefix.BANK, MessageType.ERROR, false);
+            offlinePlayer.message().send(TranslationManager.translation("feature.economy.bank.withdraw.not_enough"), Prefix.BANK, MessageType.ERROR, false);
             return;
         }
 
-        EconomyManager.addBalance(playerUUID, amount, "Retrait banque personnelle");
+        offlinePlayer.economy().addBalance(amount, "Retrait banque personnelle");
 
-        MessagesManager.sendMessage(offlinePlayer,
-                TranslationManager.translation(
+        offlinePlayer.message().send(TranslationManager.translation(
                         "feature.economy.bank.withdraw.transferred",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
-                        Component.text(EconomyManager.getEconomyIcon())
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(economyManager.getEconomyIcon())
                 ),
                 Prefix.BANK, MessageType.SUCCESS, false);
     }
 
-    private static Map<UUID, Bank> loadAllBanks() {
+    private Map<UUID, Bank> loadAllBanks() {
         Map<UUID, Bank> newBanks = new HashMap<>();
         try {
             List<Bank> dbBanks = banksDao.queryForAll();
@@ -209,12 +209,12 @@ public class BankManager extends Feature implements HasDatabase {
     }
 
     // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
-    public static double calculatePlayerInterest(UUID playerUUID) {
+    public double calculatePlayerInterest(UUID playerUUID) {
         double interest = .01; // base interest is 1%
 
-        if (MayorManager.phaseMayor == 2) {
-            City city = CityManager.getPlayerCity(playerUUID);
-            if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
+        City city = City.ofPlayer(playerUUID);
+        if (city != null && city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
+            if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }
         }
@@ -222,41 +222,40 @@ public class BankManager extends Feature implements HasDatabase {
         return interest;
     }
 
-    public static void applyPlayerInterest(UUID playerUUID) {
+    public void applyPlayerInterest(UUID playerUUID) {
         double interest = calculatePlayerInterest(playerUUID);
         double amount = getBankBalance(playerUUID) * interest;
 
-        City city = CityManager.getPlayerCity(playerUUID);
+        City city = City.ofPlayer(playerUUID);
         if (city == null) return;
-
 
         double allowedAmount = Math.min(amount, Math.max(0, PlayerBankLimitRewards.getBankBalanceLimit(city.getLevel()) - getBankBalance(playerUUID)));
         if (allowedAmount <= 0) return;
 
         deposit(playerUUID, allowedAmount);
 
-        Player sender = Bukkit.getPlayer(playerUUID);
+        OMCOfflinePlayer sender = OMCOfflinePlayer.of(playerUUID);
         if (sender != null)
-            MessagesManager.sendMessage(sender,
+            sender.message().send(
                     TranslationManager.translation(
                             "feature.economy.bank.interest.received",
                             Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(EconomyManager.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(EconomyManager.getEconomyIcon())
+                            Component.text(EconomyUtils.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(economyManager.getEconomyIcon())
                     ),
                     Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT
     // PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
-    public static void applyAllPlayerInterests() {
+    public void applyAllPlayerInterests() {
         banks = loadAllBanks();
         for (UUID player : banks.keySet()) {
             applyPlayerInterest(player);
         }
     }
 
-    public static void updateInterestTimer() {
+    public void updateInterestTimer() {
         if (OMCPlugin.isUnitTestVersion()) return;
 
         if (interestTask != null) return;
@@ -268,14 +267,14 @@ public class BankManager extends Feature implements HasDatabase {
                 () -> {
                     OMCLogger.info("Applying all player interests...");
                     applyAllPlayerInterests();
-                    CityBankManager.applyAllCityInterests();
+                    OMCRegistry.CITY_FEATURES.CITY_BANK.applyAllCityInterests();
                     OMCLogger.info("All player interests applied successfully.");
 
                     interestTask = null;
 
                     Bukkit.getScheduler().runTaskLater(
                             OMCPlugin.getInstance(),
-                            BankManager::updateInterestTimer,
+                            this::updateInterestTimer,
                             20L * 10
                     );
                 },
@@ -283,7 +282,7 @@ public class BankManager extends Feature implements HasDatabase {
         );
     }
 
-    public static long getSecondsUntilInterest() {
+    public long getSecondsUntilInterest() {
         LocalDateTime now = DateUtils.getLocalDateTime();
         LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0)
                 .withSecond(0);

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.tasks;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
@@ -15,9 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ShowBeginningEventTask extends BukkitRunnable {
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
     @Override
     public void run() {
-        ScheduleDailyEvent nextEvent = DailyEventsManager.incomingEvents.getFirst();
+        ScheduleDailyEvent nextEvent = dailyEventsManager.getIncomingEvents().getFirst();
         DailyEvent dailyEvent = nextEvent.getDailyEvent();
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {

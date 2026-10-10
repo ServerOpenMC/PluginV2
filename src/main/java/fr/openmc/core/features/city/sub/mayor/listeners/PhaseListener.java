@@ -2,11 +2,9 @@ package fr.openmc.core.features.city.sub.mayor.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class PhaseListener {
 
@@ -16,20 +14,20 @@ public class PhaseListener {
      *
      * @param plugin The OMCPlugin instance.
      */
-    public PhaseListener(OMCPlugin plugin) {
+    public PhaseListener(MayorManager mayorManager, OMCPlugin plugin) {
         BukkitRunnable eventRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                int phase = MayorManager.phaseMayor;
+                MayorPhase phase = mayorManager.getMayorPhase();
 
                 // PHASE 1 - Elections - Mardi à Mercredi
-                if (phase == 2 && PHASE_1_DAY == DateUtils.getCurrentDayOfWeek()) {
-                    MayorManager.initPhase1();
+                if (phase.equals(MayorPhase.MAYOR_ELECTED) && MayorPhase.OPEN_ELECTION.getStartDay() == DateUtils.getCurrentDayOfWeek()) {
+                    phase.getRunnable().run();
                 }
 
                 // PHASE 2 - Maire Elu - Jeudi à Jeudi Prochain
-                if (phase == 1 && PHASE_2_DAY == DateUtils.getCurrentDayOfWeek()) {
-                    MayorManager.initPhase2();
+                if (phase.equals(MayorPhase.OPEN_ELECTION) && MayorPhase.MAYOR_ELECTED.getStartDay() == DateUtils.getCurrentDayOfWeek()) {
+                    phase.getRunnable().run();
                 }
             }
         };

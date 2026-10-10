@@ -12,10 +12,8 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import lombok.Getter;
 import net.minecraft.world.inventory.ContainerInput;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class PacketMenuListener extends PacketAdapter {

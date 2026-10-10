@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
@@ -9,14 +10,12 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -24,10 +23,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import java.util.List;
 
 public class PlantationLootListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+
     @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
@@ -36,12 +37,12 @@ public class PlantationLootListener implements Listener {
         if (!(event.getBlock().getBlockData() instanceof Ageable ageable)) return;
         if (ageable.getAge() != ageable.getMaximumAge()) return;
 
-        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.CROPS.rollLootsWithoutGuarantee(event.getPlayer()).loots();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        List<CustomLoot> loots = OMCRegistry.CUSTOM_LOOT_TABLES.CROPS.rollLootsWithoutGuarantee(player).loots();
 
         if (loots.isEmpty()) return;
 
-        Player player = event.getPlayer();
-        MessagesManager.sendMessage(player, TranslationManager.translation(
+        player.message().send(TranslationManager.translation(
                 "feature.dailyevents.golden_harvest.loot_table.crop_break.message"
         ), Prefix.GOLDEN_HARVEST, MessageType.INFO, false);
 

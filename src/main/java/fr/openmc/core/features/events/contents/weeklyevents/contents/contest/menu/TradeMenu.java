@@ -10,7 +10,6 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.man
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -29,6 +28,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class TradeMenu extends Menu {
+    private static final ContestManager CONTEST_MANAGER = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
+    private static final TradeYMLManager TRADE_YML_MANAGER = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
+    private static final ContestPlayerManager CONTEST_PLAYER_MANAGER = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
+    private static final MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public TradeMenu(Player owner) {
         super(owner);
@@ -59,8 +62,8 @@ public class TradeMenu extends Menu {
         OMCPlayer player = getOwner();
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        Component campName = ContestPlayerManager.getPlayerCampComponent(player);
-        NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
+        Component campName = CONTEST_PLAYER_MANAGER.getPlayerCampComponent(player);
+        NamedTextColor campColor = CONTEST_MANAGER.getDataPlayer().get(player.getUniqueId()).getColor();
 
         ItemStack shellContest = OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL.getBest();
 
@@ -76,7 +79,7 @@ public class TradeMenu extends Menu {
             itemMeta.lore(loreTrade);
         }));
 
-        List<Map<String, Object>> trades = TradeYMLManager.getTradeSelected(true)
+        List<Map<String, Object>> trades = TRADE_YML_MANAGER.getTradeSelected(true)
                 .stream()
                 .sorted(Comparator.comparing(trade -> (String) trade.get("ress")))
                 .toList();
@@ -97,7 +100,7 @@ public class TradeMenu extends Menu {
 
             inventory.put(tradeSlots.get(i), new ItemMenuBuilder(this, material, meta -> meta.lore(lore))
                     .setOnClick(event -> {
-                        if (!ItemsAdderHook.isEnable()) {
+                        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
                             MessagesManager.sendMessage(player,
                                     TranslationManager.translation("feature.events.contest.trade.unavailable"),
                                     Prefix.CONTEST, MessageType.ERROR, true);
@@ -207,7 +210,7 @@ public class TradeMenu extends Menu {
             }
         }
         if (!leftovers.isEmpty()) {
-            MailboxManager.sendItems(player, player, leftovers.toArray(new ItemStack[0]));
+            MAILBOX_MANAGER.sendItems(player, player, leftovers.toArray(new ItemStack[0]));
         }
     }
 

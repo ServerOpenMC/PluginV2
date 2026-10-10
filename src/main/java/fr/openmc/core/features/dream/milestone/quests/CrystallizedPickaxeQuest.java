@@ -1,15 +1,14 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.events.DreamEnterEvent;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.tools.CrystalizedPickaxe;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -35,7 +34,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.crystallized_pickaxe.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.crystallized_pickaxe.description"),
-				DreamItemRegistry.CRYSTALIZED_PICKAXE,
+				OMCRegistry.DREAM_ITEM.CRYSTALIZED_PICKAXE,
 				MilestoneType.DREAM,
 				DreamSteps.CRYSTALLIZED_PICKAXE,
 				new QuestTier(1),
@@ -51,7 +50,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 							return;
 						}
 						
-						if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) > DreamSteps.FIND_CUBE.ordinal()) {
+						if (milestonesManager.getPlayerStep(MilestoneType.DREAM, player) > DreamSteps.FIND_CUBE.ordinal()) {
 							this.cancel();
 							return;
 						}
@@ -75,10 +74,10 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 		for (CustomLoot loot : e.getLoot()) {
 			if (!(loot instanceof ItemLoot itemLoot)) continue;
 
-			DreamItem dreamItem = DreamItemRegistry.getByItemStack(itemLoot.getItemLootWithAmount());
+			DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(itemLoot.getItemLootWithAmount());
 			if (dreamItem == null) return;
 			if (dreamItem instanceof CrystalizedPickaxe) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
+				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) continue;
 				this.incrementProgressInDream(player.getUniqueId());
 			}
 		}
@@ -87,7 +86,7 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 	@EventHandler
 	public void onPlayerReturnDim(DreamEnterEvent e) {
 		Player player = e.getPlayer();
-		if (MilestonesManager.getPlayerStep(MilestoneType.DREAM, player) == DreamSteps.FIND_CUBE.ordinal()) {
+		if (milestonesManager.getPlayerStep(MilestoneType.DREAM, player) == DreamSteps.FIND_CUBE.ordinal()) {
 			this.actionsAfterDialog.accept(player);
 		}
 	}

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -9,7 +9,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -43,7 +42,7 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
                         ),
                         new QuestMethodsReward(
                                 player -> {
-                                    if (ShopManager.getShopCountOf(player) > 0) {
+                                    if (OMCRegistry.FEATURES.SHOP.get().getShopCountOf(player) > 0) {
                                         TutorialSteps.PLACE_SHOP.getQuest().incrementProgress(player.getUniqueId());
                                     }
                                 }
@@ -58,7 +57,7 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
 
         if (player == null || !player.isOnline()) return;
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

@@ -2,20 +2,21 @@ package fr.openmc.core.registry.ambient;
 
 import fr.openmc.api.datapacks.OMCDatapack;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient.BloodyAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.ambient.GoldenAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient.BlessedAmbient;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
 import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
 import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
 import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
 import fr.openmc.core.registry.ambient.listeners.CustomAmbientListener;
+import fr.openmc.core.utils.ReloadConfig;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
@@ -57,9 +58,9 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
     public void bootstrap(BootstrapContext context) throws IOException {
         // * On check si la config à été enlevé,
         // on l'eneleve avant le démarrage des datapacks (utile si y'a une erreur avec celui ci)
-        RegistriesLoadConfig.init(context.getDataDirectory().toFile());
+        ReloadConfig.init(context.getDataDirectory().toFile());
 
-        if (RegistriesLoadConfig.isMustRestart()) {
+        if (ReloadConfig.isMustRestart()) {
             OMCLogger.infoFormatted("Suppression du datapack/" + ambientDatapack.ID_DATAPACK_INJECTED);
             ambientDatapack.cleanupBootstrap(context);
         }
@@ -71,7 +72,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
             ambient.getAmbientBuilder().runInjectors(ambient, ambientDatapack);
         }
 
-        if (RegistriesLoadConfig.isMustRestart() || checkIfAmbientChange()) {
+        if (ReloadConfig.isMustRestart() || checkIfAmbientChange()) {
             try {
                 ambientDatapack.buildRuntime(() -> {
                     OMCLogger.warnFormatted("ATTENTION! Restart du serveur afin d'appliquer les changements dans les registres");

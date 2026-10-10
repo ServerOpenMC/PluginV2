@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.weeklyevents.models;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.models.Event;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class WeeklyEvent extends Event {
+    private final static WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
     public abstract String getId();
     public abstract List<WeeklyEventPhase> getPhases();
 
@@ -14,8 +16,8 @@ public abstract class WeeklyEvent extends Event {
      * Retourne true si on est temporellement dans une phase active de cet event.
      */
     public boolean isActive() {
-        return WeeklyEventsManager.getCurrentEvent() == this
-                && WeeklyEventsManager.isEventActive();
+        return weeklyEventsManager.getCurrentEvent() == this
+                && weeklyEventsManager.isEventActive();
     }
 
     /**
@@ -23,7 +25,7 @@ public abstract class WeeklyEvent extends Event {
      */
     public WeeklyEventPhase getActivePhase() {
         if (!isActive()) return null;
-        return WeeklyEventsManager.getCurrentPhase();
+        return weeklyEventsManager.getCurrentPhase();
     }
 
     /**

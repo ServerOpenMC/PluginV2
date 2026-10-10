@@ -15,6 +15,12 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command({"dimension", "dimensions", "dimopener"})
 public class DimensionCommands {
 
+    private final DimensionOpenerManager manager;
+
+    public DimensionCommands(DimensionOpenerManager manager) {
+        this.manager = manager;
+    }
+
     @CommandPlaceholder()
     public void openMenu(Player player) {
         new DimensionListMenu(player).open();
@@ -23,13 +29,13 @@ public class DimensionCommands {
     @Subcommand("bypass")
     @CommandPermission("omc.admins.commands.dimopener.bypass")
     public void bypass(Player player) {
-        if (DimensionOpenerManager.hasBypass(player)) {
-            DimensionOpenerManager.removeBypass(player);
+        if (manager.hasBypass(player)) {
+            manager.removeBypass(player);
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dimopener.command.unbypass"), Prefix.STAFF, MessageType.SUCCESS, false);
             return;
         }
 
-        DimensionOpenerManager.addBypass(player);
+        manager.addBypass(player);
         MessagesManager.sendMessage(player, TranslationManager.translation("feature.dimopener.command.bypass"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 }

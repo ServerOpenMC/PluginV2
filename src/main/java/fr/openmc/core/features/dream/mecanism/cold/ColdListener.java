@@ -14,13 +14,19 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 
 public class ColdListener implements Listener {
+    private final DreamManager dreamManager;
+
+    public ColdListener(DreamManager dreamManager) {
+        this.dreamManager = dreamManager;
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onGlaciteGrottoEntered(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 		if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
 
         if (DreamBiome.isInDreamBiome(player, DreamBiome.GLACITE_GROTTO)) {
-            DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+            DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
             if (dreamPlayer == null) return;
 
             if (dreamPlayer.getColdTask() != null) return;

@@ -1,6 +1,5 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -48,7 +47,7 @@ public class FinishQuestQuest extends MilestoneQuest implements Listener {
 
         if (event.getQuest().getClass() == OpenQuestMenuQuest.class) return;
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

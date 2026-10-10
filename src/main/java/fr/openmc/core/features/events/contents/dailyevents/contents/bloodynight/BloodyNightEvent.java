@@ -2,11 +2,10 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasFeature;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.menu.BloodyNightMenu;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
+import fr.openmc.core.lifecycle.interfaces.HasFeature;
 import fr.openmc.core.registry.ambient.CustomAmbient;
 import fr.openmc.core.utils.nms.toast.CustomToastData;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -116,7 +115,7 @@ public class BloodyNightEvent extends DailyEvent
     }
 
     @Override
-    public Feature getFeature() {
+    public BloodyNightManager feature() {
         return new BloodyNightManager();
     }
 }

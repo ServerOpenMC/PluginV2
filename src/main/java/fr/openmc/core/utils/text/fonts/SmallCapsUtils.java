@@ -19,7 +19,8 @@ public class SmallCapsUtils {
     }
 
     public static Component toSmallComponent(Player player, Component text) {
-        return BedrockHook.isBedrockPlayer(player) ? toSmallComponentBedrock(text) : toSmallComponent(text);
+        return BedrockHook.isBedrockPlayer(player) ?
+                toSmallComponentBedrock(text) : toSmallComponent(text);
     }
 
     public static Component toSmallComponent(Component text){

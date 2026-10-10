@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.text.messages;
 
-import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.OMCRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -33,7 +33,7 @@ public class MessagesManager {
                         .append(message)
                 );
 
-        if(sender instanceof Player player && sound && PlayerSettingsManager.shouldPlayNotificationSound(player.getUniqueId())) {
+        if(sender instanceof Player player && sound && OMCRegistry.FEATURES.PLAYER_SETTINGS.get().shouldPlayNotificationSound(player.getUniqueId())) {
             player.playSound(player.getLocation(), type.getSound(), soundVolume, 1.0F);
         }
 

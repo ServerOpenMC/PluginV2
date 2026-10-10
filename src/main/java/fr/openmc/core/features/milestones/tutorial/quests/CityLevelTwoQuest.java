@@ -1,8 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -50,7 +49,7 @@ public class CityLevelTwoQuest extends MilestoneQuest implements Listener {
         City city = event.getCity();
 
         for (UUID memberUUID : city.getMembers()) {
-            if (MilestonesManager.getPlayerStep(type, memberUUID) != step.ordinal()) return;
+            if (milestonesManager.getPlayerStep(type, memberUUID) != step.ordinal()) return;
 
             this.incrementProgress(memberUUID);
         }

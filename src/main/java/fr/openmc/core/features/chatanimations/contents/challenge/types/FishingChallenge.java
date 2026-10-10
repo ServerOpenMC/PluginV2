@@ -17,7 +17,7 @@ public class FishingChallenge extends ChallengeAnimation {
     private final Map<UUID, Integer> progress = new HashMap<>();
 
     public FishingChallenge(int target, long time) {
-        this(target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public FishingChallenge(int target, CustomLootTable reward, long time) {

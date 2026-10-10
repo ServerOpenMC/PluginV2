@@ -1,23 +1,21 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -26,7 +24,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -67,9 +64,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = player.city().getCity();
         assert city != null;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
@@ -77,7 +74,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         for (UUID uuid : city.getMembers()) {
-            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            OMCOfflinePlayer playerOffline = OMCOfflinePlayer.of(uuid);
 
             String title = city.getRankName(uuid) + " ";
 
@@ -149,10 +146,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
-        Player player = getOwner();
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = getOwner();
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         map.put(45, new ItemMenuBuilder(this, Material.ARROW, true));
@@ -170,15 +166,15 @@ public class CityPlayerListMenu extends PaginatedMenu {
                             Component.text(MemberLimitRewards.getMemberLimit(playerCity.getLevel())).color(NamedTextColor.GRAY)
                     )
             );
-        }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
+        }).setOnClick(_ -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (input == null) return;
 
                 if (InputUtils.isInputPlayer(input)) {
                     OMCPlayer playerToInvite = OMCPlayer.of(Bukkit.getPlayer(input));
-                    CityInviteCommands.invite(omcPlayer, playerToInvite);
+                    CityInviteCommands.invite(player, playerToInvite);
                 } else {
-                    omcPlayer.message().sendError(TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, true);
+                    player.message().sendError(TranslationManager.translation("feature.city.menus.members.invite.invalid"), Prefix.CITY, true);
                 }
             });
         }));

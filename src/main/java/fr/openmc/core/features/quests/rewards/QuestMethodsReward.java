@@ -1,7 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import org.bukkit.entity.Player;
 
 import java.util.function.Consumer;
 

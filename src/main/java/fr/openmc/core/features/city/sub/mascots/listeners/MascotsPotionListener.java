@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.listeners;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
@@ -28,7 +28,7 @@ public class MascotsPotionListener implements Listener {
     private void handleMascotProtection(Cancellable event, LivingEntity affectedEntity) {
         if (!MascotUtils.canBeAMascot(affectedEntity)) return;
 
-        City cityMascot = MascotUtils.getCityFromEntity(affectedEntity.getUniqueId());
+        City cityMascot = City.ofMascot(affectedEntity.getUniqueId());
         if (cityMascot == null) return;
 
         if (!cityMascot.isInWar()) return;

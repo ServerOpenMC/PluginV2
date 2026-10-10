@@ -1,12 +1,12 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.RespawnListener;
+import fr.openmc.core.registry.features.Feature;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,12 +19,13 @@ import java.util.Set;
 
 public class SpawnManager extends Feature implements HasCommands, HasListeners {
 
-    private static File spawnFile;
-    private static FileConfiguration spawnConfig;
-    @Getter private static Location spawnLocation;
+    private File spawnFile;
+    private FileConfiguration spawnConfig;
+    @Getter
+    private Location spawnLocation;
 
     @Override
-    public void init() {
+    public void onEnable() {
         spawnFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "spawn.yml");
         loadSpawnConfig();
     }
@@ -42,8 +43,8 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         return Set.of(RespawnListener::new);
     }
 
-    private static void loadSpawnConfig() {
-        if(!spawnFile.exists()) {
+    private void loadSpawnConfig() {
+        if (!spawnFile.exists()) {
             spawnFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/spawn.yml", false);
         }
@@ -52,7 +53,7 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         loadSpawnLocation();
     }
 
-    private static void loadSpawnLocation() {
+    private void loadSpawnLocation() {
         if (spawnConfig.contains("spawn")) {
             World world = OMCPlugin.getInstance().getServer().getWorld(spawnConfig.getString("spawn.world", "world"));
             double x = spawnConfig.getDouble("spawn.x", 0.0);
@@ -69,7 +70,7 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         }
     }
 
-    public static void setSpawn(Location location) {
+    public void setSpawn(Location location) {
         spawnLocation = location;
         spawnConfig.set("spawn.world", location.getWorld().getName());
         spawnConfig.set("spawn.x", location.getX());
@@ -80,7 +81,7 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
         saveSpawnConfig();
     }
 
-    private static void saveSpawnConfig() {
+    private void saveSpawnConfig() {
         try {
             spawnConfig.save(spawnFile);
         } catch (IOException e) {

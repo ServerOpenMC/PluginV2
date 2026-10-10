@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.nms.entity;
 
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;

@@ -3,6 +3,7 @@ package fr.openmc.core.features.homes.command;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class SetHomeCommand {
+    private final DisabledWorldHome disabledWorldHome = OMCRegistry.HOME_FEATURES.DISABLED_WORLD_HOME;
 
     @Command("sethome")
     @Description("Permet de définir votre home")
@@ -33,7 +35,7 @@ public class SetHomeCommand {
             OMCPlayer player,
             @Named("home") @SuggestWith(HomeAutoComplete.class) String name
     ) {
-        if (DisabledWorldHome.isDisabledWorld(player.getWorld())) {
+        if (disabledWorldHome.isDisabledWorld(player.getWorld())) {
             player.message().sendError(TranslationManager.translation("feature.homes.command.disabled_world"), Prefix.HOME, true);
             return;
         }

@@ -1,10 +1,10 @@
 package fr.openmc.core.features.updates;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -19,10 +19,10 @@ import java.util.Set;
 
 public class UpdateManager extends Feature implements HasCommands, HasListeners {
     @Getter
-    static Component message;
+    private Component message;
 
     @Override
-    public void init() {
+    public void onEnable() {
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
@@ -43,20 +43,20 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new UpdateCommand()
+                new UpdateCommand(this)
         );
     }
 
     @Override
     public Set<ListenerFactory> getListeners() {
-        return Set.of(UpdateListener::new);
+        return Set.of(() -> new UpdateListener(this));
     }
 
-    public static void sendUpdateMessage(Player player) {
+    public void sendUpdateMessage(Player player) {
         player.sendMessage(message);
     }
 
-    public static void sendUpdateBroadcast() {
+    public void sendUpdateBroadcast() {
         Bukkit.broadcast(message);
     }
 

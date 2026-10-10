@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.models.dailyevent;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.EndEventTask;
 import fr.openmc.core.features.events.models.Event;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public abstract class DailyEvent extends Event {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
     /**
      * L'identifiant de l'evenement afin de le serialize dans la db
      * @return un string
@@ -73,9 +75,9 @@ public abstract class DailyEvent extends Event {
         }
 
         // * Programmation de la fin de l'evenement
-        DailyEventsManager.endEventTask = new EndEventTask()
+        dailyEventsManager.setEndEventTask(new EndEventTask()
                 .runTaskLater(OMCPlugin.getInstance(),
-                        DailyEventsManager.outgoingEvent.getDailyEvent().getDuration() * 60L * 20L);
+                        dailyEventsManager.getOutgoingEvent().getDailyEvent().getDuration() * 60L * 20L));
     }
 
     /**
@@ -87,8 +89,8 @@ public abstract class DailyEvent extends Event {
                 .filter(p -> p.getWorld().getName().equals(this.getWorldEvent()))
                 .collect(Collectors.toSet());
 
-        DailyEventsManager.outgoingEvent = null;
-        DailyEventsManager.endEventTask = null;
+        dailyEventsManager.setOutgoingEvent(null);
+        dailyEventsManager.setEndEventTask(null);
 
         // * Arret de l'evenement
         this.onEnd().run();

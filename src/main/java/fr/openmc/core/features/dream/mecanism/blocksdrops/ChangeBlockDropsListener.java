@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.blocksdrops;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -10,6 +11,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ChangeBlockDropsListener implements Listener {
+    private final DreamBlocksDropsManager dreamBlocksDropsManager;
+
+    public ChangeBlockDropsListener() {
+        this.dreamBlocksDropsManager = OMCRegistry.DREAM_FEATURES.BLOCK_DROPS;
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
@@ -18,7 +25,7 @@ public class ChangeBlockDropsListener implements Listener {
 
         Material type = block.getType();
 
-        ItemStack customDrop = DreamBlocksDropsManager.getCustomDrop(type);
+        ItemStack customDrop = dreamBlocksDropsManager.getCustomDrop(type);
 
         event.setDropItems(false);
         event.setExpToDrop(0);

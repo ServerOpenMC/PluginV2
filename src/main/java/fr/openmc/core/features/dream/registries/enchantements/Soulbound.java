@@ -1,10 +1,8 @@
 package fr.openmc.core.features.dream.registries.enchantements;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
 import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
@@ -73,8 +71,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         Enchantment enchant = this.getEnchantment();
         if (enchant == null) return;
@@ -86,7 +83,7 @@ public class Soulbound extends DreamEnchantment implements Listener {
             if (item == null) continue;
             if (!item.getEnchantments().containsKey(enchant)) continue;
 
-            if (DynamicCooldownManager.isReady(uuid, "player:soulbound")) {
+            if (player.cooldown().isReady("player:soulbound")) {
                 hasEnchantment = true;
                 maxSoulboundLevel = Math.max(maxSoulboundLevel, item.getEnchantmentLevel(enchant));
                 event.getItemsToKeep().add(item);
@@ -94,10 +91,11 @@ public class Soulbound extends DreamEnchantment implements Listener {
             }
         }
 
-        if (hasEnchantment && DynamicCooldownManager.isReady(uuid, "player:soulbound")) {
+        if (hasEnchantment && player.cooldown().isReady("player:soulbound")) {
             event.setShouldDropExperience(false);
-            DynamicCooldownManager.use(uuid, "player:soulbound", getCooldown(maxSoulboundLevel));
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.enchantment.soulbound.message.effect", Component.text(DateUtils.convertMillisToTime(getCooldown(maxSoulboundLevel))).color(NamedTextColor.GREEN)), Prefix.DREAM, MessageType.SUCCESS, false);
+            player.cooldown().use("player:soulbound", getCooldown(maxSoulboundLevel));
+            player.message().sendSuccess(TranslationManager.translation("feature.dream.enchantment.soulbound.message.effect",
+                    Component.text(DateUtils.convertMillisToTime(getCooldown(maxSoulboundLevel))).color(NamedTextColor.GREEN)), Prefix.DREAM, false);
         }
     }
 

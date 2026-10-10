@@ -2,8 +2,8 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -13,8 +13,6 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,6 +20,7 @@ import org.bukkit.entity.Player;
  * pour tout ce qui est autour du coffre de ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityChestConditions {
+    private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     public static final int UPGRADE_PER_MONEY = 5000;
     public static final int UPGRADE_PER_AYWENITE = 10;
@@ -93,7 +92,7 @@ public class CityChestConditions {
         if (city.getBalance() < price) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "messages.city.city_not_enough_money",
-                    Component.text(price + EconomyManager.getEconomyIcon())
+                    Component.text(price + ECONOMY_MANAGER.getEconomyIcon())
             ), Prefix.CITY, MessageType.ERROR, true);
             return false;
         }

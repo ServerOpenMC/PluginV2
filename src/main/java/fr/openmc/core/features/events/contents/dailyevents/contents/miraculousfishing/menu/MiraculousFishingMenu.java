@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MiraculousFishingMenu extends Menu {
+    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     public MiraculousFishingMenu(Player owner) {
         super(owner);
@@ -50,8 +51,8 @@ public class MiraculousFishingMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        boolean isActived = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent;
+        boolean isActived = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent;
 
         inventory.put(11, new ItemMenuBuilder(this, Material.FISHING_ROD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.miraculousfishing.menu.info.fishing_speed.name"));

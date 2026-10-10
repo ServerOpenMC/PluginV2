@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.regions;
 
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.regions.content.ExampleRegion;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;

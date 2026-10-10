@@ -6,7 +6,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.CityRequirement;
 import fr.openmc.core.features.city.sub.milestone.CityRewards;
@@ -29,6 +30,7 @@ import java.util.function.Supplier;
 
 public class CityMilestoneMenu extends Menu {
 
+    private final static DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final City city;
 
     public CityMilestoneMenu(Player owner, City city) {
@@ -88,9 +90,9 @@ public class CityMilestoneMenu extends Menu {
                     .setOnClick(e -> {
                         if (!active) return;
 
-                        if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") > 0) return;
+                        if (dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") > 0) return;
 
-                        if (level.isCompleted(city) && DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") == 0) {
+                        if (level.isCompleted(city) && dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") == 0) {
                             level.runUpgradeTime(city);
                             new CityMilestoneMenu(player, city).open();
                             return;
@@ -99,7 +101,7 @@ public class CityMilestoneMenu extends Menu {
                         new LevelMilestoneMenu(player, city, level).open();
                     });
 
-            if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:upgrade-level") && active) {
+            if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:upgrade-level") && active) {
                 MenuUtils.runDynamicItem(player, this, slot, upgradeItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {
@@ -189,10 +191,10 @@ public class CityMilestoneMenu extends Menu {
             lore.add(TranslationManager.translation("feature.city.levels.menu.status.unlocked"));
         } else {
             lore.add(Component.empty());
-            if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") != 0 && city.getLevel() + 1 == level.ordinal() + 1) {
+            if (dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") != 0 && city.getLevel() + 1 == level.ordinal() + 1) {
                 lore.addAll(TranslationManager.translationLore(
                         "feature.city.levels.menu.unlock.remaining",
-                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level")))
+                        Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level")))
                                 .color(NamedTextColor.DARK_AQUA)
                 ));
             } else {
@@ -204,9 +206,9 @@ public class CityMilestoneMenu extends Menu {
             }
         }
 
-        if (active && DynamicCooldownManager.isReady(city.getUniqueId(), "city:upgrade-level") && level.isCompleted(city)) {
+        if (active && dynamicCooldownManager.isReady(city.getUniqueId(), "city:upgrade-level") && level.isCompleted(city)) {
             lore.add(TranslationManager.translation("feature.city.levels.menu.click.start_upgrade"));
-        } else if (active && DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") == 0) {
+        } else if (active && dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") == 0) {
             lore.add(TranslationManager.translation("feature.city.levels.menu.click.contribute"));
         }
 

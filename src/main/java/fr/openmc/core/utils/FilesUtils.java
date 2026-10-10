@@ -1,7 +1,7 @@
 package fr.openmc.core.utils;
 
 import fr.openmc.core.OMCBootstrap;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 
 import java.io.File;
 import java.io.IOException;

@@ -3,22 +3,19 @@ package fr.openmc.core.features.corpse;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -26,19 +23,29 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class CorpseListener implements Listener {
+
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+    private final CorpseManager corpseManager;
+    private final CorpseNPCManager corpseNPCManager;
+
+    public CorpseListener(CorpseManager corpseManager) {
+        this.corpseManager = corpseManager;
+        this.corpseNPCManager = corpseManager.corpseNPCManager;
+    }
 
     private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
-        if (CorpseManager.hasCorpseDB(player.getUniqueId())) {
-
-            DBCorpse dbCorpse = CorpseManager.getCorpsesDB().get(player.getUniqueId());
+        if (player.corpse().hasCorpseDB()) {
+            DBCorpse dbCorpse = corpseManager.getCorpsesDB().get(player.getUniqueId());
 
             if (dbCorpse.isKillByPlayer()) return;
 
@@ -49,17 +56,14 @@ public class CorpseListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if (!corpseManager.ALLOWED_DIM.contains(event.getPlayer().getWorld().getName())) return;
 
-        if (!CorpseManager.ALLOWED_DIM.contains(event.getPlayer().getWorld().getName())) return;
-
-        Player player = event.getPlayer();
-
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
         boolean killByPlayer = false;
 
-        if (omcPlayer.city().hasCity())
-            if (omcPlayer.city().getCity().isInWar()) return;
+        if (player.city().hasCity())
+            if (player.city().getCity().isInWar()) return;
 
         EntityDamageEvent.DamageCause cause = null;
 
@@ -69,9 +73,9 @@ public class CorpseListener implements Listener {
         if (event.getEntity().getKiller() != null && !event.getEntity().getKiller().getUniqueId().equals(player.getUniqueId()))
             killByPlayer = true;
 
-        if (!CorpseManager.hasCorpseDB(player.getUniqueId())
-                &&!CorpseNPCManager.hasNPC(player.getUniqueId())) {
-            if (CorpseManager.createCorpse(player, killByPlayer, cause)) {
+        if (!player.corpse().hasCorpseDB()
+                && !corpseNPCManager.hasNPC(player.getUniqueId())) {
+            if (player.corpse().createCorpse(killByPlayer, cause)) {
                 event.setDroppedExp(0);
                 event.getDrops().clear();
             }
@@ -84,9 +88,9 @@ public class CorpseListener implements Listener {
         String group = event.getGroup();
 
         if (ownerUUID == null) return;
-        if (group == null || !group.equals(CorpseNPCManager.COOLDOWN_GROUP)) return;
+        if (group == null || !group.equals(corpseNPCManager.COOLDOWN_GROUP)) return;
 
-        CorpseManager.deleteCorpse(ownerUUID, FoundTypes.NOT_FOUND);
+        corpseManager.deleteCorpse(ownerUUID, FoundTypes.NOT_FOUND);
     }
 
     @EventHandler
@@ -96,43 +100,41 @@ public class CorpseListener implements Listener {
         if (event.getNpc().getData().getName().startsWith("corpse-")) {
             UUID ownerUUID = UUID.fromString(event.getNpc().getData().getName().replace("corpse-", ""));
 
-            if (!CorpseManager.hasCorpseDB(ownerUUID)) {
+            if (!corpseManager.hasCorpseDB(ownerUUID)) {
                 OMCPlugin.getInstance().getLogger().warning("Corpse found with no DB");
                 return;
             }
 
-            DBCorpse corpse = CorpseManager.getCorpsesDB().get(ownerUUID);
+            DBCorpse corpse = corpseManager.getCorpsesDB().get(ownerUUID);
 
             if (!corpse.getPlayerUUID().equals(ownerUUID)) {
                 OMCPlugin.getInstance().getLogger().warning("The ownerUUID did not match with the corpse's playerUUID");
                 return;
             }
 
-            if (DynamicCooldownManager.isReady(ownerUUID, "corpse")) return;
+            if (dynamicCooldownManager.isReady(ownerUUID, "corpse")) return;
 
             if (corpse.isKillByPlayer() && !player.getUniqueId().equals(corpse.getPlayerUUID())) {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
-                OfflinePlayer offlineOwner = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
+                OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(player.getUniqueId());
+                OMCOfflinePlayer offlineOwner = OMCOfflinePlayer.of(ownerUUID);
 
-                if (offlinePlayer != null)
-                    MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.strip",
+                offlinePlayer.message().sendInfo(TranslationManager.translation("feature.corpse.messages.strip",
                                             Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
                                     .color(TextColor.color(Color.YELLOW.asRGB())),
-                            Prefix.CORPSE, MessageType.INFO, true);
+                            Prefix.CORPSE, true);
 
-                if (offlineOwner != null)
-                    MessagesManager.sendMessage(offlineOwner, TranslationManager.translation("feature.corpse.messages.warn_strip")
-                                    .color(TextColor.color(Color.YELLOW.asRGB())),
-                            Prefix.CORPSE, MessageType.WARNING, true);
+                offlinePlayer.message().sendWarning(TranslationManager.translation("feature.corpse.messages.warn_strip")
+                                .color(TextColor.color(Color.YELLOW.asRGB())),
+                            Prefix.CORPSE, true);
 
                 corpse.dropLoot();
-                CorpseManager.deleteCorpse(ownerUUID, FoundTypes.STRIP);
+                corpseManager.deleteCorpse(ownerUUID, FoundTypes.STRIP);
                 return;
             }
 
             if (!player.getUniqueId().equals(corpse.getPlayerUUID())) {
-                MessagesManager.sendMessage(player, TranslationManager.translation("feature.corpse.messages.not_owner"),
-                        Prefix.CORPSE, MessageType.WARNING, true);
+                player.message().sendWarning(TranslationManager.translation("feature.corpse.messages.not_owner"),
+                        Prefix.CORPSE, false);
                 return;
             }
 
@@ -142,8 +144,7 @@ public class CorpseListener implements Listener {
 
             if (player.getInventory().isEmpty()) {
                 player.getInventory().setContents(inventory);
-            }
-            else {
+            } else {
                 List<ItemStack> remaining = new ArrayList<>();
 
                 for (ItemStack item :  inventory) {
@@ -156,7 +157,7 @@ public class CorpseListener implements Listener {
 
                 if (!remaining.isEmpty()) {
                     ItemStack[] rm = remaining.toArray(ItemStack[]::new);
-                    CorpseManager.sendMailItems(player, player, rm);
+                    corpseManager.sendMailItems(player, player, rm);
                 }
             }
 
@@ -164,7 +165,7 @@ public class CorpseListener implements Listener {
 
             player.playSound(player.getLocation(), equipSound, 1f, 0);
 
-            CorpseManager.deleteCorpse(ownerUUID, FoundTypes.FOUND);
+            corpseManager.deleteCorpse(ownerUUID, FoundTypes.FOUND);
         }
     }
 

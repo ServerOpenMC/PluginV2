@@ -1,21 +1,17 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 
 public class CityLeaveAction {
 
-    public static void startLeave(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+    public static void startLeave(OMCPlayer player) {
+        City city = player.city().getCity();
 
         if (city == null) return;
 
@@ -23,24 +19,23 @@ public class CityLeaveAction {
 
         city.removePlayer(player.getUniqueId());
 
-        MessagesManager.sendMessage(player,
-                TranslationManager.translation("feature.city.leave.success", Component.text(city.getName())),
+        player.message().sendSuccess(
+                TranslationManager.translation("feature.city.leave.success",
+                        Component.text(city.getName())),
                 Prefix.CITY,
-                MessageType.SUCCESS,
                 false
         );
 
         city.getOnlineMembers().forEach(memberUUID -> {
             if (memberUUID.equals(player.getUniqueId())) return;
-            Player onlineMember = Bukkit.getPlayer(memberUUID);
-            MessagesManager.sendMessage(onlineMember,
+            OMCPlayer onlineMember = OMCPlayer.of(memberUUID);
+            onlineMember.message().sendInfo(
                     TranslationManager.translation(
                             "feature.city.leave.info",
-                            Component.text(player.getName()),
+                            player.getNameWithHead(),
                             Component.text(city.getName())
                     ),
                     Prefix.CITY,
-                    MessageType.INFO,
                     true
             );
         });

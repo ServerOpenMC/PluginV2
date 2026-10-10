@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.registry.SeaCreatureLoot;
 import fr.openmc.core.registry.items.CustomItem;
@@ -14,7 +15,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +27,7 @@ public class LootsInfoMenu extends PaginatedMenu {
     private final Component name;
     private final Collection<CustomLoot> loots;
 
-    public LootsInfoMenu(Player owner, Component name, Collection<CustomLoot> loots) {
+    public LootsInfoMenu(OMCPlayer owner, Component name, Collection<CustomLoot> loots) {
         super(owner);
         this.name = name;
         this.loots = loots;

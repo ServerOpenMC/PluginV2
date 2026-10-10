@@ -1,7 +1,8 @@
 package fr.openmc.core.features.city.sub.war;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
 import lombok.Getter;
@@ -176,7 +177,7 @@ public class War {
     public void end() {
         this.phase = WarPhase.ENDED;
 
-        WarManager.endWar(this);
+        OMCRegistry.CITY_FEATURES.WAR.endWar(this);
     }
 
     /**

@@ -1,7 +1,8 @@
 package fr.openmc.core.features.leaderboards;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.world.entities.TextDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -16,11 +17,10 @@ import org.joml.Vector3f;
 
 import java.io.IOException;
 
-import static fr.openmc.core.features.leaderboards.LeaderBoardManager.reload;
-
 public abstract class LeaderBoard {
 
-    public static final FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
+    private final LeaderBoardManager manager = OMCRegistry.FEATURES.LEADERBOARD.get();
+    public final FileConfiguration config = YamlConfiguration.loadConfiguration(manager.getLeaderBoardFile());
 
     @Getter
     protected Location location;
@@ -56,22 +56,22 @@ public abstract class LeaderBoard {
 
         if (changed) {
             try {
-                config.save(LeaderBoardManager.getLeaderBoardFile());
+                config.save(manager.getLeaderBoardFile());
             } catch (IOException e) {
                 throw new IllegalStateException("Can't save leaderboard config", e);
             }
         }
     }
 
-    private static Location getDefaultLocation() {
+    private Location getDefaultLocation() {
         World world = Bukkit.getWorld("world");
         if (world == null && !Bukkit.getWorlds().isEmpty())
             world = Bukkit.getWorlds().getFirst();
         return world == null ? null : new Location(world, 0, 0, 0);
     }
 
-    private static float getScale() {
-        return (float) config.getDouble("scale", 0.75D);
+    private float getScale() {
+        return (float) config.getDouble(getId() + "-scale", 0.75D);
     }
 
     public abstract double getUpdateDelay();
@@ -83,7 +83,7 @@ public abstract class LeaderBoard {
     public void setLocation(Location location) throws IOException{
         this.location = location;
         config.set(getId() + "-location", location);
-        config.save(LeaderBoardManager.getLeaderBoardFile());
+        config.save(manager.getLeaderBoardFile());
         if(this.display != null)
             this.display.setLocation(location);
     }
@@ -124,10 +124,10 @@ public abstract class LeaderBoard {
         }
     }
 
-    public static void setScale(float scale) throws IOException {
-        config.set("scale", scale);
-        config.save(LeaderBoardManager.getLeaderBoardFile());
-        reload();
+    public void setScale(float scale) throws IOException {
+        config.set(getId() + "-scale", scale);
+        config.save(manager.getLeaderBoardFile());
+        manager.reload();
     }
 
 }

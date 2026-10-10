@@ -1,29 +1,29 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.autocomplete.InvitedAutoComplete;
+import fr.openmc.core.features.city.commands.autocomplete.InviterAutoComplete;
 import fr.openmc.core.features.city.conditions.CityInviteConditions;
+import fr.openmc.core.features.city.models.CityInvite;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 
 public class CityInviteCommands {
-    public static final HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
+    public static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
     @Command("city invite")
     @CommandPermission("omc.commands.city.invite")
@@ -32,34 +32,31 @@ public class CityInviteCommands {
             OMCPlayer sender,
             @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
     ) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        City city = City.ofPlayer(sender);
 
         if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
 
-        List<Player> playerInvitations = invitations.get(target);
-        if (playerInvitations == null) {
-            List<Player> newInvitations = new ArrayList<>();
-            newInvitations.add(sender);
-            invitations.put(target, newInvitations);
-        } else {
-            playerInvitations.add(sender);
-        }
+        cityManager.addInvitation(target.getUniqueId(), new CityInvite(sender.getUniqueId(), city));
+
         sender.message().sendSuccess(
-                TranslationManager.translation("feature.city.invite.commands.invite.success", target.getNameWithHead()),
+                TranslationManager.translation("feature.city.invite.commands.invite.success", target.getNameWithHead())
+                        .appendNewline()
+                        .append(TranslationManager.translation("feature.city.invite.commands.invite.cancel")),
                 Prefix.CITY
         );
+
         target.message().sendInfo(
                 TranslationManager.translation(
                                 "feature.city.invite.commands.invite.received",
                                 sender.getNameWithHead(),
                                 Component.text(city.getName())
                         )
-                        .append(Component.newline())
+                        .appendNewline()
                         .append(TranslationManager.translation("feature.city.invite.commands.invite.accept")
                                 .clickEvent(ClickEvent.runCommand("/city accept " + sender.getName()))
                                 .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.invite.commands.invite.accept_hover")))
                         )
-                        .append(Component.newline())
+                        .appendNewline()
                         .append(TranslationManager.translation("feature.city.invite.commands.invite.deny")
                                 .clickEvent(ClickEvent.runCommand("/city deny " + sender.getName()))
                                 .hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.city.invite.commands.invite.deny_hover")))
@@ -73,48 +70,28 @@ public class CityInviteCommands {
     @Description("Accepter une invitation")
     public static void acceptInvitation(
             OMCPlayer player,
-            @Named("inviteur") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer inviter
+            @Named("inviteur") @SuggestWith(InviterAutoComplete.class) OMCOfflinePlayer inviter
     ) {
-        List<Player> playerInvitations = invitations.get(player);
+        if (!CityInviteConditions.canCityInviteAccept(player, inviter)) return;
 
-        if (playerInvitations == null) {
-            player.message().sendError(
-                    TranslationManager.translation("feature.city.invite.commands.accept.none_pending"),
-                    Prefix.CITY
-            );
-            return;
-        }
+        CityInvite invite = cityManager.getInvitation(player.getUniqueId(), inviter.getUniqueId());
+        City city = invite.city();
 
-        if (!playerInvitations.contains(inviter)) {
-            player.message().sendError(
-                    TranslationManager.translation(
-                            "feature.city.invite.commands.accept.not_invited",
-                            inviter.getNameWithHead()
-                    ),
-                    Prefix.CITY
-            );
-            return;
-        }
-
-        City newCity = CityManager.getPlayerCity(inviter.getUniqueId());
-
-        if (!CityInviteConditions.canCityInviteAccept(newCity, inviter, player)) return;
-
-        newCity.addPlayer(player.getUniqueId());
-
-        invitations.remove(player);
+        city.addPlayer(player.getUniqueId());
+        cityManager.clearInvitations(player.getUniqueId());
 
         player.message().sendSuccess(
-                TranslationManager.translation("feature.city.invite.commands.accept.joined", Component.text(newCity.getName())),
+                TranslationManager.translation("feature.city.invite.commands.accept.joined",
+                        Component.text(city.getName())),
                 Prefix.CITY
         );
-        if (inviter.isOnline()) {
-            inviter.message().sendSuccess(
-                    TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified", player.getNameWithHead()),
-                    Prefix.CITY,
-                    true
-            );
-        }
+
+        inviter.message().sendSuccess(
+                TranslationManager.translation("feature.city.invite.commands.accept.inviter_notified",
+                        player.getNameWithHead()),
+                Prefix.CITY,
+                true
+        );
     }
 
     @Command("city deny")
@@ -122,18 +99,45 @@ public class CityInviteCommands {
     @Description("Refuser une invitation")
     public static void denyInvitation(
             OMCPlayer player,
-            @Named("inviteur") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer inviter
+            @Named("inviteur") @SuggestWith(InviterAutoComplete.class) OMCOfflinePlayer inviter
     ) {
         if (!CityInviteConditions.canCityInviteDeny(player, inviter)) return;
 
-        invitations.remove(player);
+        cityManager.removeInvitation(inviter.getUniqueId(), player.getUniqueId());
 
-        if (inviter.isOnline()) {
-            inviter.message().sendWarning(
-                    TranslationManager.translation("feature.city.invite.commands.deny.inviter_notified", Component.text(player.getName())),
-                    Prefix.CITY,
-                    true
-            );
-        }
+        inviter.message().sendWarning(
+                TranslationManager.translation("feature.city.invite.commands.deny.inviter_notified",
+                        player.getNameWithHead()),
+                Prefix.CITY,
+                true
+        );
+    }
+
+    @Command("city cancel")
+    @CommandPermission("omc.commands.city.cancel")
+    @Description("Annuler une invitation")
+    public static void cancelInvitation(
+            OMCPlayer player,
+            @Named("invité") @SuggestWith(InvitedAutoComplete.class) OMCOfflinePlayer invited
+    ) {
+        if (!CityInviteConditions.canCityInviteCancel(invited, player)) return;
+
+        City city = cityManager.getInvitation(invited.getUniqueId(), player.getUniqueId()).city();
+        cityManager.removeInvitation(player.getUniqueId(), player.getUniqueId());
+
+        invited.message().sendInfo(
+                TranslationManager.translation("feature.city.invite.commands.cancel.invited_notified",
+                        player.getNameWithHead(),
+                        Component.text(city.getName())),
+                Prefix.CITY,
+                true
+        );
+
+        player.message().sendInfo(
+                TranslationManager.translation("feature.city.invite.commands.cancel.cancelled",
+                        invited.getNameWithHead()),
+                Prefix.CITY,
+                true
+        );
     }
 }

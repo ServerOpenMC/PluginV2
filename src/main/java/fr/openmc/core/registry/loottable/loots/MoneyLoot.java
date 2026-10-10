@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.loottable.LootReward;
@@ -9,13 +10,13 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 
 @Getter
 public class MoneyLoot implements CustomLoot, RepresentedItem {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     @Setter
     private double chance;
     private final int money;
@@ -33,13 +34,13 @@ public class MoneyLoot implements CustomLoot, RepresentedItem {
     public Component getDisplayText() {
         return Component.text(money, NamedTextColor.GOLD)
                 .appendSpace()
-                .append(Component.text(EconomyManager.getEconomyIcon()))
+                .append(Component.text(economyManager.getEconomyIcon()))
                 .decoration(TextDecoration.ITALIC, false);
     }
 
     @Override
-    public LootReward run(Player receiver) {
-        EconomyManager.addBalance(receiver.getUniqueId(), money);
+    public LootReward run(OMCPlayer receiver) {
+        receiver.economy().addBalance(money);
         return LootReward.loots(Collections.singleton(this));
     }
 

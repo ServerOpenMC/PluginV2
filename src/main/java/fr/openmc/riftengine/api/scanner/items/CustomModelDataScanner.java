@@ -4,7 +4,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.registry.scanner.AbstractScanner;
-import org.apache.commons.io.file.PathUtils;
 import org.bukkit.Material;
 
 import java.nio.file.Path;

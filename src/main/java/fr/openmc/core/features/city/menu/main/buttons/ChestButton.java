@@ -4,13 +4,11 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,8 +29,8 @@ public class ChestButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.chest.title"));
                     itemMeta.lore(getDynamicLore(city, player));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
-                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                }).setOnClick(_ -> {
+                    City cityCheck = City.ofPlayer(player);
 
                     if (!CityChestConditions.canCityChestOpen(cityCheck, player)) return;
 

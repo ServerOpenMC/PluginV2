@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -35,7 +35,7 @@ public class CraftingConvertorListener implements Listener {
                 String formatIaKey = namespace + ":" + formatKey;
                 formatIaKey = formatIaKey.replaceFirst(".*?(omc_dream)", "$1");
 
-                DreamItem dreamItem = DreamItemRegistry.getByName(formatIaKey);
+                DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByName(formatIaKey);
 
                 if (dreamItem != null) {
                     event.getInventory().setResult(dreamItem.getBest());
@@ -69,7 +69,7 @@ public class CraftingConvertorListener implements Listener {
 
                 formatIaKey = formatIaKey.replaceFirst(".*?(omc_dream)", "$1");
 
-                DreamItem dreamItem = DreamItemRegistry.getByName(formatIaKey);
+                DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByName(formatIaKey);
 
                 if (dreamItem != null) {
                     event.getInventory().setResult(dreamItem.getBest());

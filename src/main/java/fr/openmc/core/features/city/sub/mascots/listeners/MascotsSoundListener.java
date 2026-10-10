@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -29,6 +30,9 @@ public class MascotsSoundListener {
     );
 
     public MascotsSoundListener() {
+        MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
+        PlayerSettingsManager playerSettingsManager = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
+
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
                 OMCPlugin.getInstance(),
                 ListenerPriority.NORMAL,
@@ -53,7 +57,7 @@ public class MascotsSoundListener {
                 if (soundEntity == null) return;
 
                 UUID playerUUID = event.getPlayer().getUniqueId();
-                if (PlayerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
+                if (playerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
                     return;
 
                 double x = packet.getIntegers().read(0) / 8.0;
@@ -66,8 +70,8 @@ public class MascotsSoundListener {
 
                 List<Mascot> mascotsNear = world.getNearbyEntities(location, 16, 16, 16)
                         .stream()
-                        .filter(entity -> MascotsManager.mascotsByEntityUUID.containsKey(entity.getUniqueId()))
-                        .map(entity -> MascotsManager.mascotsByEntityUUID.get(entity.getUniqueId()))
+                        .filter(entity -> mascotsManager.getMascotsByEntityUUID().containsKey(entity.getUniqueId()))
+                        .map(entity -> mascotsManager.getMascotsByEntityUUID().get(entity.getUniqueId()))
                         .toList();
 
                 for (Mascot mascot : mascotsNear) {

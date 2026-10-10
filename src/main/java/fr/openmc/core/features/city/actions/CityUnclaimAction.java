@@ -1,16 +1,13 @@
 package fr.openmc.core.features.city.actions;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -25,21 +22,21 @@ public class CityUnclaimAction {
         return (chunkCount - 1) / 3;
     }
 
-    public static void startUnclaim(Player sender, int chunkX, int chunkZ) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+    public static void startUnclaim(OMCPlayer sender, int chunkX, int chunkZ) {
+        City city = City.ofPlayer(sender.getUniqueId());
         World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.claim.cant_claim_here"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("feature.city.claim.cant_claim_here"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasChunk(chunkX, chunkZ)) {
-	        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.unclaim.must_own_claim"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("feature.city.unclaim.must_own_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.getMascot().getChunk().getX() == chunkX && city.getMascot().getChunk().getZ() == chunkZ) {
-            MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.unclaim.cant_unclaim_mascot_claim"), Prefix.CITY, MessageType.ERROR, false);
+            sender.message().send(TranslationManager.translation("feature.city.unclaim.cant_unclaim_mascot_claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -48,7 +45,7 @@ public class CityUnclaimAction {
             int price = calculatePrice(city.getChunks().size());
             int ayweniteNb = calculateAywenite(city.getChunks().size());
 
-            EconomyManager.addBalance(sender.getUniqueId(), price, "Unclaim de chunk de ville");
+            sender.economy().addBalance(price, "Unclaim de chunk de ville");
             ItemStack aywenite = ayweniteItemStack.clone();
             aywenite.setAmount(ayweniteNb);
             for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {
@@ -58,6 +55,6 @@ public class CityUnclaimAction {
 
         city.removeChunk(chunkX, chunkZ);
 
-        MessagesManager.sendMessage(sender, TranslationManager.translation("feature.city.unclaim.success"), Prefix.CITY, MessageType.SUCCESS, false);
+        sender.message().send(TranslationManager.translation("feature.city.unclaim.success"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

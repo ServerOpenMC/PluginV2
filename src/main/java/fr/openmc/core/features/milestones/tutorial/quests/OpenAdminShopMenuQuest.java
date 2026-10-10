@@ -2,7 +2,6 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -47,7 +46,7 @@ public class OpenAdminShopMenuQuest extends MilestoneQuest implements Listener {
     public void onAdminShopMenuOpen(OpenMenuEvent event) {
         Player player = event.getPlayer();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         if (event.getMenu() == null) return;
 

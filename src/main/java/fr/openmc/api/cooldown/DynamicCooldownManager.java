@@ -2,21 +2,16 @@ package fr.openmc.api.cooldown;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.debug.DebugCooldownCommand;
 import fr.openmc.core.commands.utils.CooldownCommand;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -24,73 +19,9 @@ import java.util.*;
 /**
  * Main class for managing cooldowns
  */
-public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasCommands {
-
-    /**
-     * Represents a single cooldown with duration and last use time
-     */
-    @DatabaseTable(tableName = "cooldowns")
-    public static class Cooldown {
-        @DatabaseField(generatedId = true)
-        private int id;
-        @DatabaseField(uniqueCombo = true, canBeNull = false)
-        private UUID uniqueId;
-        @DatabaseField(uniqueCombo = true, canBeNull = false)
-        private String group;
-        @DatabaseField(canBeNull = false)
-        private long duration;
-        @DatabaseField(canBeNull = false)
-        private long lastUse;
-        private BukkitTask scheduledTask;
-
-        Cooldown() {
-            // required for ORMLite
-        }
-
-        /**
-         * @param duration Cooldown duration in ms
-         */
-        public Cooldown(UUID cooldownUUID, String group, long duration, long lastUse) {
-            this.duration = duration;
-            this.lastUse = lastUse;
-            this.uniqueId = cooldownUUID;
-            this.group = group;
-
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                    Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group))
-            );
-
-            long delayTicks = getRemaining() / 50; //ticks
-
-            this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                        Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group))
-                );
-                DynamicCooldownManager.clear(this.uniqueId, this.group, false);
-            }, delayTicks);
-        }
-
-        public void cancelTask() {
-            if (scheduledTask != null) scheduledTask.cancel();
-        }
-
-        /**
-         * @return true if cooldown has expired
-         */
-        public boolean isReady() {
-            return System.currentTimeMillis() - lastUse > duration;
-        }
-
-        /**
-         * @return remaining time in milliseconds
-         */
-        public long getRemaining() {
-            return Math.max(0, duration - (System.currentTimeMillis() - lastUse));
-        }
-    }
-
+public class DynamicCooldownManager extends Feature implements HasDatabase, HasCommands {
     @Override
-    public void init() {
+    public void onEnable() {
         loadCooldowns();
     }
 
@@ -104,14 +35,14 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
 
 
     @Override
-    public void save() {
-        DynamicCooldownManager.saveCooldowns();
+    public void onDisable() {
+        this.saveCooldowns();
     }
 
     // Map structure: UUID -> (Group -> Cooldown)
-    private static final Map<UUID, Map<String, Cooldown>> cooldowns = new HashMap<>();
+    private final Map<UUID, Map<String, Cooldown>> cooldowns = new HashMap<>();
 
-    private static Dao<Cooldown, String> cooldownDao;
+    private Dao<Cooldown, String> cooldownDao;
 
     @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -119,26 +50,26 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
         cooldownDao = DaoManager.createDao(connectionSource, Cooldown.class);
     }
 
-    public static void loadCooldowns() {
+    public void loadCooldowns() {
         try {
             List<Cooldown> dbCooldowns = cooldownDao.queryForAll();
 
             for (Cooldown cooldown : dbCooldowns) {
                 if (cooldown.isReady()) {
-                    Bukkit.getPluginManager().callEvent(new CooldownEndEvent(cooldown.uniqueId, cooldown.group));
+                    Bukkit.getPluginManager().callEvent(new CooldownEndEvent(cooldown.getUniqueId(), cooldown.getGroup()));
                     cooldownDao.delete(cooldown);
                     continue;
                 }
 
-                cooldowns.computeIfAbsent(cooldown.uniqueId, k -> new HashMap<>())
-                        .put(cooldown.group, new Cooldown(cooldown.uniqueId, cooldown.group, cooldown.duration, cooldown.lastUse));
+                cooldowns.computeIfAbsent(cooldown.getUniqueId(), k -> new HashMap<>())
+                        .put(cooldown.getGroup(), new Cooldown(cooldown.getUniqueId(), cooldown.getGroup(), cooldown.getDuration(), cooldown.getLastUse()));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des cooldowns depuis la base de données", e);
         }
     }
 
-    public static void saveCooldowns() {
+    public void saveCooldowns() {
         OMCLogger.info("Saving cooldowns...");
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
@@ -166,7 +97,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      * @param uuid Entity UUID to check
      * @return Map of cooldowns for the entity, or null if no cooldowns
      */
-    public static Map<String, Cooldown> getCooldowns(UUID uuid) {
+    public Map<String, Cooldown> getCooldowns(UUID uuid) {
         return cooldowns.get(uuid);
     }
 
@@ -175,7 +106,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      * @param group Cooldown group
      * @return true if an entity can perform action
      */
-    public static boolean isReady(UUID uuid, String group) {
+    public boolean isReady(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
         if (userCooldowns == null)
             return true;
@@ -191,7 +122,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      * @param group    Cooldown group
      * @param duration Cooldown duration in ms
      */
-    public static void use(UUID uuid, String group, long duration) {
+    public void use(UUID uuid, String group, long duration) {
         cooldowns.computeIfAbsent(uuid, k -> new HashMap<>())
                 .put(group, new Cooldown(uuid, group, duration, System.currentTimeMillis()));
     }
@@ -203,7 +134,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      * @param group Cooldown group
      * @return remaining time in milliseconds, 0 if no cooldown
      */
-    public static long getRemaining(UUID uuid, String group) {
+    public long getRemaining(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
         if (userCooldowns == null) return 0;
 
@@ -218,21 +149,15 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      * @param group           Nom du groupe de cooldown
      * @param reductionMillis Réduction en millisecondes
      */
-    public static void reduceCooldown(Player player, UUID uuid, String group, long reductionMillis) {
+    public void reduceCooldown(Player player, UUID uuid, String group, long reductionMillis) {
         var userCooldowns = cooldowns.get(uuid);
 
-        if (userCooldowns == null) {
-            return;
-        }
+        if (userCooldowns == null) return;
 
         Cooldown cooldown = userCooldowns.get(group);
-        if (cooldown == null) {
-            return;
-        }
+        if (cooldown == null) return;
 
-        if (cooldown.isReady()) {
-            return;
-        }
+        if (cooldown.isReady()) return;
 
         long remaining = cooldown.getRemaining();
         long newRemaining = Math.max(0, remaining - reductionMillis);
@@ -247,19 +172,9 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
             return;
         }
 
-        long newLastUse = System.currentTimeMillis() - (cooldown.duration - newRemaining);
-        Cooldown newCooldown = new Cooldown(uuid, group, cooldown.duration, newLastUse);
+        long newLastUse = System.currentTimeMillis() - (cooldown.getDuration() - newRemaining);
+        Cooldown newCooldown = new Cooldown(uuid, group, cooldown.getDuration(), newLastUse);
         userCooldowns.put(group, newCooldown);
-    }
-
-    /**
-     * Removes all expired cooldowns
-     */
-    public static void cleanup() {
-        cooldowns.entrySet().removeIf(entry -> {
-            entry.getValue().entrySet().removeIf(groupEntry -> groupEntry.getValue().isReady());
-            return entry.getValue().isEmpty();
-        });
     }
 
     /**
@@ -267,12 +182,12 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      *
      * @param group Cooldown group
      */
-    public static void clear(String group) {
-        cooldowns.forEach((uuid, userCooldowns) -> {
+    public void clear(String group) {
+        cooldowns.forEach((_, userCooldowns) -> {
             Cooldown removed = userCooldowns.remove(group);
             if (removed != null) removed.cancelTask();
         });
-        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty()); // A test
+        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
     /**
@@ -281,7 +196,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
      * @param uuid  Entity UUID
      * @param group Cooldown group
      */
-    public static void clear(UUID uuid, String group, boolean callEvent) {
+    public void clear(UUID uuid, String group, boolean callEvent) {
         var userCooldowns = cooldowns.get(uuid);
 
         if (userCooldowns != null) {

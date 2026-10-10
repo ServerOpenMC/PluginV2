@@ -9,11 +9,8 @@ import fr.openmc.core.hooks.itemsadder.sprite.SpriteUtils;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.riftengine.api.scanner.items.ItemEntry;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventSource;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +80,7 @@ public abstract class CustomItem {
      */
     public ItemStack getBest() {
         ItemStack item;
-        if (!ItemsAdderHook.isEnable() || getItemsAdder() == null) {
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() || getItemsAdder() == null) {
             item = getVanilla();
         } else {
             item = getItemsAdder();

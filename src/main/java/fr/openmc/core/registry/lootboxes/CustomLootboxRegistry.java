@@ -1,9 +1,5 @@
 package fr.openmc.core.registry.lootboxes;
 
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.bits.contents.lootboxes.KitchenLootbox;
 import fr.openmc.core.features.bits.contents.lootboxes.MedievalLootbox;
 import fr.openmc.core.features.bits.contents.lootboxes.ModernLootbox;
@@ -12,6 +8,10 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.lootboxes.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.lootboxes.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.lootboxes.RareFishingTreasureLootbox;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.lootboxes.contents.MachineBallLootbox;
 import fr.openmc.core.registry.lootboxes.listener.DesactivateFireworkDamageListener;
 

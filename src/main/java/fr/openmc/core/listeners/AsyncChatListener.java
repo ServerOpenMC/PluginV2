@@ -1,14 +1,13 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.hooks.LuckPermsHook;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.cacheddata.CachedMetaData;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -22,22 +21,21 @@ import java.util.regex.Pattern;
 public class AsyncChatListener implements Listener {
 
     private final OMCPlugin plugin;
-    private final LuckPerms luckperms;
+    private final LuckPermsHook luckPermsHook;
 
     public AsyncChatListener(OMCPlugin plugin) {
         this.plugin = plugin;
-        this.luckperms = LuckPermsHook.getApi();
+        this.luckPermsHook = OMCRegistry.HOOKS.LUCK_PERMS;
     }
 
     @EventHandler
     public void onChat(AsyncChatEvent event) {
         final Player player = event.getPlayer();
-        final CachedMetaData metaData = this.luckperms.getPlayerAdapter(Player.class).getMetaData(player);
 
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());
         String rawMessage = plugin.getConfig().getString("chat.message", "{prefix}{name}§7: {message}")
-                .replace("{prefix}", LuckPermsHook.getFormattedPAPIPrefix(player))
-                .replace("{suffix}", metaData.getSuffix() != null ? metaData.getSuffix() : "")
+                .replace("{prefix}", luckPermsHook.getFormattedPAPIPrefix(player))
+                .replace("{suffix}", luckPermsHook.getSuffix(player))
                 .replace("{name}", player.getName())
                 .replace("{message}", message);
 

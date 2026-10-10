@@ -1,7 +1,7 @@
 package fr.openmc.core.features.settings;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerSettings {
+    private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
 
     @Getter private final UUID playerUUID;
     private final Map<SettingType, Object> settings = new HashMap<>();
@@ -147,7 +148,7 @@ public class PlayerSettings {
         if (policy instanceof CityPolicy cityPolicy) {
             return switch (cityPolicy) {
                 case EVERYONE -> true;
-                case FRIENDS -> FriendManager.areFriends(playerUUID, targetUUID);
+                case FRIENDS -> friendManager.areFriends(playerUUID, targetUUID);
                 case NOBODY -> false;
             };
         }
@@ -155,7 +156,7 @@ public class PlayerSettings {
         if (policy instanceof GlobalPolicy globalPolicy) {
             return switch (globalPolicy) {
                 case EVERYONE -> true;
-                case FRIENDS -> FriendManager.areFriends(playerUUID, targetUUID);
+                case FRIENDS -> friendManager.areFriends(playerUUID, targetUUID);
                 case CITY_MEMBERS -> areSameCityMembers(playerUUID, targetUUID);
                 case NOBODY -> false;
             };
@@ -176,7 +177,7 @@ public class PlayerSettings {
 
         return switch (level) {
             case EVERYONE -> true;
-            case FRIENDS -> FriendManager.areFriends(friendUUID, playerUUID);
+            case FRIENDS -> friendManager.areFriends(friendUUID, playerUUID);
             case CITY_MEMBERS -> areSameCityMembers(playerUUID, friendUUID);
             case NOBODY -> false;
         };
@@ -191,7 +192,7 @@ public class PlayerSettings {
      * @return true if the player is visible to the friend, false otherwise
      */
     public boolean isVisibleToFriend(SettingType visibilitySetting, UUID friendUUID) {
-        if (!FriendManager.areFriends(playerUUID, friendUUID)) return false;
+        if (!friendManager.areFriends(playerUUID, friendUUID)) return false;
         return isVisibleTo(visibilitySetting, friendUUID);
     }
 
@@ -214,7 +215,7 @@ public class PlayerSettings {
      * @return true if both players are members of the same city, false otherwise
      */
     private boolean areSameCityMembers(UUID player1UUID, UUID player2UUID) {
-        City player2City = CityManager.getPlayerCity(player2UUID);
+        City player2City = City.ofPlayer(player2UUID);
         Player player1 = Bukkit.getPlayer(player1UUID);
         return player1 != null && player2City != null && player2City.isMember(player1);
     }

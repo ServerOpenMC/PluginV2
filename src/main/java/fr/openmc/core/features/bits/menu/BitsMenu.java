@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
+import fr.openmc.core.features.bits.models.BitsPlayer;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,9 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 public class BitsMenu extends Menu {
+    private final BitsManager manager;
 
     public BitsMenu(Player owner) {
         super(owner);
+        this.manager = OMCRegistry.FEATURES.BITS.get();
     }
 
     @Override
@@ -48,15 +51,15 @@ public class BitsMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        double bits = BitsManager.getBitsPlayer(getOwner().getUniqueId()) == null ? 0 :
-                BitsManager.getBitsPlayer(getOwner().getUniqueId()).getBits();
+        BitsPlayer bitsPlayer = manager.getBitsPlayer(getOwner().getUniqueId());
+        double bits = bitsPlayer == null ? 0d : bitsPlayer.getBits();
 
         inventory.put(12, new ItemMenuBuilder(this, Material.DIAMOND, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.bits.menu.main.bits"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.bits.menu.main.bits.lore",
                     Component.text(bits).color(NamedTextColor.AQUA),
-                    Component.text(BitsManager.LINE_REQ/BitsManager.BITS_PER_LINE_REQ).color(NamedTextColor.AQUA)
+                    Component.text(BitsManager.LINE_REQ / BitsManager.BITS_PER_LINE_REQ).color(NamedTextColor.AQUA)
             ));
         }));
 

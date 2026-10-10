@@ -1,21 +1,17 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.view.CityViewManager;
-import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.hooks.WorldGuardHook;
+import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -24,7 +20,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -33,6 +28,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CityCreateAction {
+    private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
+    private static final MayorManager MAYOR_MANAGER = OMCRegistry.CITY_FEATURES.MAYOR;
+    private static final MascotsManager MASCOTS_MANAGER = OMCRegistry.CITY_FEATURES.MASCOTS;
+    private static final CityClaimViewManager CLAIM_VIEW_MANAGER = OMCRegistry.CITY_FEATURES.CLAIM_VIEW;
+    private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static final int FREE_CLAIMS = 9;
     public static final long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
@@ -46,10 +46,9 @@ public class CityCreateAction {
         pendingCities.put(player.getUniqueId(), cityName);
 
         if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
+        if (!player.economy().withdrawBalance(CityCreateConditions.MONEY_CREATE)) return;
 
-        ItemInteraction.runLocationInteraction(
-                player,
+        player.inputs().sendLocationInput(
                 getMascotStick(),
                 "mascot:stick",
                 300,
@@ -63,7 +62,7 @@ public class CityCreateAction {
                 () -> {
                     pendingCities.remove(player.getUniqueId());
                     ItemUtils.giveItem(player, OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), CityCreateConditions.AYWENITE_CREATE);
-                    EconomyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
+                    player.economy().addBalance(CityCreateConditions.MONEY_CREATE, "Remboursement création ville annulée");
                 }
         );
     }
@@ -80,61 +79,60 @@ public class CityCreateAction {
         return stick;
     }
 
-    private static boolean isValidLocation(Player player, Location location) {
+    private static boolean isValidLocation(OMCPlayer player, Location location) {
         if (location == null || location.getWorld() == null) return false;
         if (!"world".equals(location.getWorld().getName())) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascot.mascot_wand.can_only_place_mascot"),
-                    Prefix.CITY, MessageType.ERROR, false);
-            return false;
+	       player.message().send(TranslationManager.translation("feature.city.mascot.mascot_wand.can_only_place_mascot"),
+                   Prefix.CITY, MessageType.ERROR, false);
+           return false;
         }
         if (location.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mascot.mascot_wand.hasnot_block_above"),
-                    Prefix.CITY, MessageType.ERROR, false);
+	       player.message().send(TranslationManager.translation("feature.city.mascot.mascot_wand.hasnot_block_above"),
+                   Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
     }
 
-    public static boolean finalizeCreation(Player player, Location mascotLocation) {
+    public static boolean finalizeCreation(OMCPlayer player, Location mascotLocation) {
         Chunk chunk = mascotLocation.getChunk();
 
-        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.is_in_region"), Prefix.CITY, MessageType.ERROR, false);
+        if (OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunk)) {
+            player.message().send(TranslationManager.translation("feature.city.claim.is_in_region"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (CityManager.isChunkClaimedInRadius(chunk, 1)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
+        if (CITY_MANAGER.isChunkClaimedInRadius(chunk, 1)) {
+            player.message().send(TranslationManager.translation("feature.city.claim.already_claim_in_adjacent"),
                     Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         UUID cityUUID = UUID.randomUUID();
 
-        UUID playerUUID = player.getUniqueId();
-        String pendingCityName = pendingCities.remove(playerUUID);
+        String pendingCityName = pendingCities.remove(player.getUniqueId());
         if (pendingCityName == null) return false;
 
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
         // Lois
-        MayorManager.createCityLaws(city, false, null);
+        MAYOR_MANAGER.createCityLaws(city, false, null);
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);
-        MascotsManager.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
+        MASCOTS_MANAGER.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
 
         // Feedback
-	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
-        MessagesManager.sendMessage(player,
+	    player.message().send(TranslationManager.translation("feature.city.create.success", Component.text(pendingCityName)).color(NamedTextColor.GREEN), Prefix.CITY, MessageType.SUCCESS, true);
+        player.message().send(
                 TranslationManager.translation("feature.city.create.free_claim",
                         Component.text(FREE_CLAIMS).color(NamedTextColor.GOLD)),
                 Prefix.CITY, MessageType.INFO, false);
 
-        DynamicCooldownManager.use(playerUUID, "city:big", 60000);
-        DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
+        player.cooldown().use("city:big", 60000);
+        DYNAMIC_COOLDOWN_MANAGER.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
-        CityViewManager.updateAllViews();
+        CLAIM_VIEW_MANAGER.updateAllViews();
         return true;
     }
 }

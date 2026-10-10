@@ -1,7 +1,6 @@
 package fr.openmc.core.registry.items.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import org.bukkit.entity.Player;
@@ -20,7 +19,7 @@ public class BlockBreakListener implements Listener {
         if (event.isCancelled()) return;
         if (event.getBlock() == null) return;
 
-        ProtectionsManager.verify(player, event, event.getBlock().getLocation());
+        OMCRegistry.CITY_FEATURES.PROTECTIONS.verify(player, event, event.getBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
@@ -28,5 +27,4 @@ public class BlockBreakListener implements Listener {
 
         if (item.get() instanceof BlockBreakableItem breakableItem) breakableItem.onBlockBreak(player, event);
     }
-
 }

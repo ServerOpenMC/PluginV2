@@ -1,7 +1,7 @@
 package fr.openmc.core.utils.text;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.registry.features.Feature;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,11 +13,10 @@ import java.util.Map;
 import java.util.Random;
 
 public class MotdUtils extends Feature {
-    private static Component motd;
-    private static YamlConfiguration motdConfig = null;
+    private YamlConfiguration motdConfig = null;
 
     @Override
-    public void init() {
+    public void onEnable() {
         File motdFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "motd.yml");
 
         if (!motdFile.exists()) {
@@ -39,7 +38,7 @@ public class MotdUtils extends Feature {
                 String line2 = (String) motdData.get("line2");
 
 
-                motd = Component.text(line1 + "\n" + line2);
+                Component motd = Component.text(line1 + "\n" + line2);
                 Bukkit.getServer().motd(motd);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12 000 ticks = 10 minutes

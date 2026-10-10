@@ -1,64 +1,68 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.api.scoreboard.repository.impl.ObjectCacheRepositoryImpl;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.scoreboards.sb.CityWarScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.MainScoreboard;
 import fr.openmc.core.features.displays.scoreboards.sb.RestartScoreboard;
 import fr.openmc.core.features.dream.displays.DreamScoreboard;
 import fr.openmc.core.hooks.LuckPermsHook;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.*;
 
-public class ScoreboardManager extends Feature implements Listener, NotLoadInUnitTest, LoadIfEnable<LuckPermsHook>, HasListeners {
-    public static final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
-    private static final List<BaseScoreboard> scoreboards = new ArrayList<>();
-    private static GlobalTeamManager globalTeamManager;
+public class ScoreboardManager extends Feature implements Listener, HasListeners {
+    private LuckPermsHook luckPermsHook;
+    public final ObjectCacheRepository<SternalBoard> boardCache = new ObjectCacheRepositoryImpl();
+    private final List<BaseScoreboard> scoreboards = new ArrayList<>();
+    private GlobalTeamManager globalTeamManager;
 
-    private static final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
+    private final Map<UUID, Map<BaseScoreboard, Long>> lastUpdate = new HashMap<>();
 
     @Override
-    public void init() {
+    public void onEnable() {
+        luckPermsHook = OMCRegistry.HOOKS.LUCK_PERMS;
+
         registerScoreboard(
-                new MainScoreboard(),
+                new MainScoreboard(OMCRegistry.FEATURES.CORPSE.get()),
                 new RestartScoreboard(),
                 new CityWarScoreboard(),
-                new DreamScoreboard()
+                new DreamScoreboard(OMCRegistry.FEATURES.DREAM.get())
         );
 
         Bukkit.getScheduler().runTaskTimer(
                 OMCPlugin.getInstance(),
-                ScoreboardManager::updateAllBoards,
+                this::updateAllBoards,
                 0L,
                 20L // every second
         );
 
-        if (LuckPermsHook.isEnable())
-            globalTeamManager = new GlobalTeamManager(boardCache);
+        if (luckPermsHook.isEnable())
+            globalTeamManager = new GlobalTeamManager(boardCache, luckPermsHook);
     }
 
     @Override
     public Set<ListenerFactory> getListeners() {
-        return Set.of(ScoreboardListener::new);
+        return Set.of(() -> new ScoreboardListener(this));
     }
 
-    public static void updateAllBoards() {
+    public void updateAllBoards() {
         long now = System.currentTimeMillis();
 
         Bukkit.getOnlinePlayers().forEach(player -> {
+            OMCPlayer omcPlayer = OMCPlayer.of(player);
             BaseScoreboard active = null;
             for (BaseScoreboard sb : scoreboards) {
-                if (sb.shouldDisplay(player)) {
+                if (sb.shouldDisplay(omcPlayer)) {
                     active = sb;
                     break;
                 }
@@ -75,26 +79,26 @@ public class ScoreboardManager extends Feature implements Listener, NotLoadInUni
             if (now - last < active.updateInterval() * 1000L) return;
 
 
-            SternalBoard board = boardCache.find(player.getUniqueId()) == null ? createNewBoard(player) : boardCache.find(player.getUniqueId());
+            SternalBoard board = boardCache.find(player.getUniqueId()) == null ? createNewBoard(omcPlayer) : boardCache.find(player.getUniqueId());
 
-            active.updateTitle(player, board);
-            active.update(player, board);
+            active.updateTitle(omcPlayer, board);
+            active.update(omcPlayer, board);
             playerUpdates.put(active, now);
 
-            if (LuckPermsHook.isEnable() && globalTeamManager != null) {
-                globalTeamManager.updatePlayerTeam(player);
+            if (luckPermsHook.isEnable() && globalTeamManager != null) {
+                globalTeamManager.updatePlayerTeam(omcPlayer);
             }
         });
     }
 
-    public static SternalBoard createNewBoard(Player player) {
-        SternalBoard board = new SternalBoard(player);
+    public SternalBoard createNewBoard(OMCPlayer player) {
+        SternalBoard board = new SternalBoard(player.getPlayer()); // getPlayer obligatoire afin d'éviter un pb d'instance
         updateBoard(player, board);
         boardCache.create(board);
         return board;
     }
 
-    public static void updateBoard(Player player, SternalBoard board) {
+    public void updateBoard(OMCPlayer player, SternalBoard board) {
         for (BaseScoreboard scoreboard : scoreboards) {
             if (scoreboard.shouldDisplay(player)) {
                 scoreboard.init(player, board);
@@ -102,17 +106,17 @@ public class ScoreboardManager extends Feature implements Listener, NotLoadInUni
             }
         }
 
-        if (LuckPermsHook.isEnable() && globalTeamManager != null) {
+        if (luckPermsHook.isEnable() && globalTeamManager != null) {
             globalTeamManager.updatePlayerTeam(player);
         }
     }
 
-    public static void registerScoreboard(BaseScoreboard... scoreboard) {
+    public void registerScoreboard(BaseScoreboard... scoreboard) {
         scoreboards.addAll(Arrays.asList(scoreboard));
         scoreboards.sort(Comparator.comparingInt(BaseScoreboard::priority).reversed());
     }
 
-    public static void cleanupPlayer(Player player) {
+    public void cleanupPlayer(Player player) {
         UUID uuid = player.getUniqueId();
         lastUpdate.remove(uuid);
         boardCache.delete(uuid);

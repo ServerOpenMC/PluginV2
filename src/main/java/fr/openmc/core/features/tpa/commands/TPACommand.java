@@ -2,17 +2,16 @@ package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
@@ -20,7 +19,8 @@ import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPACommand {
-	
+	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
+
 	/**
 	 * Command to send a teleport request to a player.
 	 * @param player The player sending the request.
@@ -32,7 +32,7 @@ public class TPACommand {
 			OMCPlayer player,
 			@Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
 	) {
-		if (TPAManager.requesterHasPendingRequest(player)) {
+		if (tpaManager.requesterHasPendingRequest(player)) {
 			player.message().send(
 					TranslationManager.translation("feature.tpa.already_pending")
 							.append(Component.text("\n"))
@@ -52,7 +52,7 @@ public class TPACommand {
 			return;
 		}
 		
-		if (TPAManager.hasPendingRequest(player)) {
+		if (tpaManager.hasPendingRequest(player)) {
 			player.message().send(TranslationManager.translation("feature.tpa.already_have_pending"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
@@ -61,7 +61,7 @@ public class TPACommand {
 	}
 	
 	private void sendTPARequest(OMCPlayer player, OMCPlayer target) {
-		TPAManager.addRequest(player, target);
+		tpaManager.addRequest(player, target);
 		
 		target.message().send(
 				TranslationManager.translation("feature.tpa.request.target_message", Component.text(player.getName()).color(NamedTextColor.GOLD))
@@ -85,7 +85,7 @@ public class TPACommand {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				TPAManager.expireRequest(player, target);
+				tpaManager.expireRequest(player, target);
 			}
 		}.runTaskLater(OMCPlugin.getInstance(), 800);
 	}

@@ -21,8 +21,11 @@ import java.util.Map;
 
 public class AdminShopMenu extends Menu {
 
-    public AdminShopMenu(Player owner) {
+    private final AdminShopManager manager;
+
+    public AdminShopMenu(Player owner, AdminShopManager manager) {
         super(owner);
+        this.manager = manager;
     }
 
     @Override
@@ -48,13 +51,13 @@ public class AdminShopMenu extends Menu {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         int slot = 10;
-        for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
+        for (ShopCategory category : manager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
             content.put(slot, new ItemMenuBuilder(this, category.material(), meta ->
                     meta.displayName(category.name().decoration(TextDecoration.ITALIC, false)
             )).setItemId(category.id())
                     .setOnClick(e -> {
-                        AdminShopManager.currentCategory.put(getOwner().getUniqueId(), category.id());
-                        new AdminShopCategoryMenu(getOwner(), category.id()).open();
+                        manager.currentCategory.put(getOwner().getUniqueId(), category.id());
+                        new AdminShopCategoryMenu(getOwner(), manager, category.id()).open();
                     }));
 
             slot += 2;

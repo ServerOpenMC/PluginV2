@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.registries.items.tools;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
@@ -8,7 +8,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -16,7 +15,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,15 +38,17 @@ public class MeteoWand extends DreamItem implements UsableItem {
     }
 
     @Override
-    public void onRightClick(Player player, PlayerInteractEvent event) {
+    public void onRightClick(OMCPlayer player, PlayerInteractEvent event) {
         World world = player.getWorld();
         if (!world.getName().equals("world")) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.must_be_overworld"), Prefix.OPENMC, MessageType.WARNING, false);
+            player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.must_be_overworld"), Prefix.OPENMC, MessageType.WARNING, false);
             return;
         }
 
-        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "player:meteo_wand")) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.cooldown", Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "player:meteo_wand"))).color(NamedTextColor.GREEN)), Prefix.OPENMC, MessageType.ERROR, false);
+        if (!player.cooldown().isReady("player:meteo_wand")) {
+            player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.cooldown",
+                    Component.text(DateUtils.convertMillisToTime(player.cooldown().getRemaining("player:meteo_wand"))).color(NamedTextColor.GREEN)),
+                    Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -70,7 +70,7 @@ public class MeteoWand extends DreamItem implements UsableItem {
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 40L);
 
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.item.meteo_wand.message.success"), Prefix.OPENMC, MessageType.SUCCESS, false);
-        DynamicCooldownManager.use(player.getUniqueId(), "player:meteo_wand", COOLDOWN_METEO_WAND);
+        player.message().send(TranslationManager.translation("feature.dream.item.meteo_wand.message.success"), Prefix.OPENMC, MessageType.SUCCESS, false);
+        player.cooldown().use("player:meteo_wand", COOLDOWN_METEO_WAND);
     }
 }

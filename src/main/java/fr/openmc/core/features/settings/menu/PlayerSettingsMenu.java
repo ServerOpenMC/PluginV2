@@ -35,10 +35,11 @@ import java.util.stream.IntStream;
 public class PlayerSettingsMenu extends PaginatedMenu {
 
     private final PlayerSettings settings;
+    private static final PlayerSettingsManager PLAYER_SETTINGS = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
 
     public PlayerSettingsMenu(Player player) {
         super(player);
-        this.settings = PlayerSettingsManager.getPlayerSettings(player);
+        this.settings = PLAYER_SETTINGS.getPlayerSettings(player);
     }
 
     @Override

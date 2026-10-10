@@ -1,6 +1,6 @@
 package fr.openmc.core.features.displays.holograms.commands.autocomplete;
 
-import fr.openmc.core.features.displays.holograms.HologramLoader;
+import fr.openmc.core.OMCRegistry;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -12,6 +12,6 @@ public class HologramAutoComplete implements SuggestionProvider<BukkitCommandAct
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return HologramLoader.displays.keySet().stream().toList();
+        return OMCRegistry.FEATURES.HOLOGRAM_LOADER.get().displays.keySet().stream().toList();
     }
 }

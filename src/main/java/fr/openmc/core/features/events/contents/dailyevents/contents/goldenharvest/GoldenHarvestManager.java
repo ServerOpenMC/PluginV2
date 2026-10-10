@@ -2,12 +2,12 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -30,12 +30,12 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
     public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 50% d'avoir une golden crosps sur des crops
 
     @Override
-    public void init() {
+    public void onEnable() {
         ObeseCropsRegistry.init();
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         ObeseCropsRegistry.save();
     }
 

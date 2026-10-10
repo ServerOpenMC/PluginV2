@@ -1,6 +1,5 @@
 package fr.openmc.core.features.shops.menus;
 
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -29,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class ShopSellingMenu extends PaginatedMenu {
+	private static final PlayerShopManager PLAYER_SHOP = OMCRegistry.SHOP_FEATURES.PLAYER_SHOP;
 	
 	private final Shop shop;
 	private final Inventory barrelInventory;
@@ -89,7 +89,7 @@ public class ShopSellingMenu extends PaginatedMenu {
 			list.add(new ItemMenuBuilder(this, item, itemMeta -> {
 				if (itemMeta.hasLore()) itemMeta.lore().addAll(TranslationManager.translationLore("feature.shop.menu.selling.item_lore"));
 				else itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.selling.item_lore"));
-			}).setOnClick(_ -> DialogInput.send(getOwner(),
+			}).setOnClick(_ -> getOwner().inputs().sendStringDialogInput(
 					TranslationManager.translation("feature.shop.menu.selling.price_input"),
 					Integer.MAX_VALUE,
 					s -> {
@@ -126,7 +126,7 @@ public class ShopSellingMenu extends PaginatedMenu {
 				() -> {
 					getOwner().closeInventory();
 					this.shop.setMenuOpened(false);
-					PlayerShopManager.deleteShop(getOwner(), shop);
+					PLAYER_SHOP.deleteShop(getOwner(), shop);
 				},
 				() -> new ShopSellingMenu(getOwner(), shop).open(),
 				TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.accept"),

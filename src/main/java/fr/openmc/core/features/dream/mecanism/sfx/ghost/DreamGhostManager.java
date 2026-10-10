@@ -4,6 +4,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.mecanism.sfx.ghost.listeners.DreamPlayerEnteredListener;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.nms.SkullNMS;
 import fr.openmc.core.utils.nms.entity.*;
@@ -19,26 +22,24 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Gestion des intéractions joueurs dans les reves.
  *
  * Cache tous les joueurs + met juste leur tete d'affiché avec particule
  */
-public class DreamGhostManager {
-    private static final Map<UUID, PlayerGhost> playerGhost = new HashMap<>();
+public class DreamGhostManager extends Feature implements HasListeners {
+    private final Map<UUID, PlayerGhost> playerGhost = new HashMap<>();
 
-    public static void init() {
-        OMCPlugin.registerEvents(
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
                 DreamPlayerEnteredListener::new
         );
     }
 
-    public static void setupGhost(Player player) {
+    public void setupGhost(Player player) {
         int entityId = player.getEntityId() + 100000;
 
         ArmorStand stand = ArmorStandNMS.createFakeStand(player, entityId, player.getLocation());
@@ -101,13 +102,13 @@ public class DreamGhostManager {
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
     }
 
-    private static void sendGhostTo(Player receiver, Player ghostOf, int entityId, ArmorStand stand) {
+    private void sendGhostTo(Player receiver, Player ghostOf, int entityId, ArmorStand stand) {
         EntitySpawnNMS.sendSpawnPacket(receiver, EntityTypes.ARMOR_STAND, entityId, stand.getUUID(), ghostOf.getLocation());
         EntitySpawnNMS.sendMetaDataEntity(receiver, stand);
         EntityEquipmentNMS.sendHelmetPacket(receiver, entityId, SkullNMS.getPlayerSkullNMS(ghostOf));
     }
 
-    public static void removeGhost(Player player) {
+    public void removeGhost(Player player) {
         if (!playerGhost.containsKey(player.getUniqueId())) return;
         PlayerGhost ghost = playerGhost.remove(player.getUniqueId());
 
@@ -121,7 +122,7 @@ public class DreamGhostManager {
         }
     }
 
-    public static void hidePlayer(Player receiver, Player toHide) {
+    public void hidePlayer(Player receiver, Player toHide) {
         EntityRemoveNMS.sendRemovePacket(receiver, toHide.getEntityId());
     }
 }

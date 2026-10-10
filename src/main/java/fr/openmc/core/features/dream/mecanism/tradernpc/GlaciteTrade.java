@@ -2,7 +2,6 @@ package fr.openmc.core.features.dream.mecanism.tradernpc;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -10,7 +9,7 @@ import net.kyori.adventure.text.Component;
 @Getter
 public enum GlaciteTrade {
     ORB_GLACITE(
-            DreamItemRegistry.GLACITE_ORB,
+            OMCRegistry.DREAM_ITEM.GLACITE_ORB,
             200,
             15,
             TranslationManager.translation("feature.dream.trader.trade.glacite_orb")
@@ -22,19 +21,19 @@ public enum GlaciteTrade {
             TranslationManager.translation("feature.dream.trader.trade.soulbound_book")
     ),
     SOMNIFERE(
-            DreamItemRegistry.SOMNIFERE,
+            OMCRegistry.DREAM_ITEM.SOMNIFERE,
             20,
             0,
             TranslationManager.translation("feature.dream.trader.trade.somnifere")
     ),
     ETERNAL_CAMPFIRE(
-            DreamItemRegistry.ETERNAL_CAMPFIRE,
+            OMCRegistry.DREAM_ITEM.ETERNAL_CAMPFIRE,
             0,
             2,
             TranslationManager.translation("feature.dream.trader.trade.eternal_campfire")
     ),
     EWENITE(
-            DreamItemRegistry.EWENITE,
+            OMCRegistry.DREAM_ITEM.EWENITE,
             80,
             0,
             TranslationManager.translation("feature.dream.trader.trade.ewenite")

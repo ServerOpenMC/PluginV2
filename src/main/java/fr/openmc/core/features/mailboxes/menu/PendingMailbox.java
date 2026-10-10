@@ -6,17 +6,10 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.mailboxes.Letter;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.utils.text.InputUtils.pluralize;
-
 public class PendingMailbox extends PaginatedMenu {
+    private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+
     public PendingMailbox(Player player) {
         super(player);
     }
@@ -61,9 +54,9 @@ public class PendingMailbox extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        MailboxManager.getSentLetters(getOwner()).forEach(letter -> {
+        MAILBOX_MANAGER.getSentLetters(getOwner()).forEach(letter -> {
             items.add(letter.toSenderLetterItemBuilder(this).setOnClick(e -> {
-                MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter);
+                MAILBOX_MANAGER.sendConfirmMenuToCancelLetter(getOwner(), letter);
             }));
         });
 
@@ -104,46 +97,6 @@ public class PendingMailbox extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return MailboxManager.getSentLetters(getOwner()).size();
-    }
-
-    public static void cancelLetter(Player player, int id) {
-        Letter letter = MailboxManager.getById(player, id);
-        if (letter == null) {
-            Component message = TranslationManager.translation(
-                    "feature.mailboxes.message.letter_not_found",
-                    Component.text(id).color(NamedTextColor.RED)
-            ).color(NamedTextColor.DARK_RED);
-            MessagesManager.sendMessage(
-                    player,
-                    message,
-                    Prefix.MAILBOX,
-                    MessageType.ERROR,
-                    true);
-            return;
-        }
-
-        int itemsCount = letter.getNumItems();
-        ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-        Player sender = CacheOfflinePlayer.getOfflinePlayer(letter.getSenderUUID()).getPlayer();
-
-        if (MailboxManager.deleteLetter(id)) {
-            if (sender != null)
-                MailboxManager.cancelLetter(sender);
-            MailboxManager.givePlayerItems(sender, items);
-            Component message = TranslationManager.translation(
-                    "feature.mailboxes.message.cancel_success_sender",
-                    Component.text(player.getName()).color(NamedTextColor.DARK_GREEN),
-                    Component.text(itemsCount).color(NamedTextColor.GREEN),
-                    pluralize(Component.space().append(TranslationManager.translation("global.item")), itemsCount).color(NamedTextColor.DARK_GREEN)
-            ).color(NamedTextColor.DARK_GREEN);
-
-            MessagesManager.sendMessage(
-                    sender,
-                    message,
-                    Prefix.MAILBOX,
-                    MessageType.SUCCESS,
-                    true);
-        }
+        return MAILBOX_MANAGER.getSentLetters(getOwner()).size();
     }
 }

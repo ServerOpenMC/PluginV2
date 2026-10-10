@@ -1,31 +1,47 @@
 package fr.openmc.core;
 
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
-import fr.openmc.core.bootstrap.registries.RegistryContext;
-import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
+import fr.openmc.core.features.chatanimations.ChatAnimationLootTableRegistry;
+import fr.openmc.core.features.city.CityFeaturesRegistry;
+import fr.openmc.core.features.dream.registries.DreamFeaturesRegistry;
+import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
+import fr.openmc.core.features.friend.FriendsFeaturesRegistry;
+import fr.openmc.core.features.homes.HomeFeaturesRegistry;
+import fr.openmc.core.features.quests.QuestsFeatureRegistry;
+import fr.openmc.core.features.shops.ShopFeaturesRegistry;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.RegistryContext;
+import fr.openmc.core.lifecycle.registries.RegistryLoadingType;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
+import fr.openmc.core.registry.features.FeaturesRegistry;
+import fr.openmc.core.registry.hooks.HooksRegistry;
 import fr.openmc.core.registry.items.CustomItemRegistry;
 import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
-import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class OMCRegistry {
     // * Registre globaux
+    public static FeaturesRegistry FEATURES;
+    public static HooksRegistry HOOKS;
+
     public static CustomItemRegistry CUSTOM_ITEMS;
     public static CustomMobRegistry CUSTOM_MOBS;
     public static CustomEnchantmentRegistry CUSTOM_ENCHANTS;
@@ -42,14 +58,47 @@ public final class OMCRegistry {
     // * Registres internes
     public static ScannerRegistry SCANNERS;
 
+    // ** Registre concernant la feature des animations dans le chat
+    public static ChatAnimationLootTableRegistry CHAT_ANIMATION_LOOT_TABLE;
+
+    // ** Registre concernant la feature de la Dimension des reves
+    public static DreamFeaturesRegistry DREAM_FEATURES;
+    public static DreamItemRegistry DREAM_ITEM;
+    public static DreamMobsRegistry DREAM_MOB;
+    public static DreamLootTableRegistry DREAM_LOOT_TABLE;
+
+    // * Registre concernant la feature des villes
+    public static CityFeaturesRegistry CITY_FEATURES;
+
+    // * Registre concernant la feature des contests
+    public static ContestFeaturesRegistry CONTEST_FEATURES;
+
+    // * Registre concernant la feature des homes
+    public static HomeFeaturesRegistry HOME_FEATURES;
+
+    // * Registre concernant la feature des villes
+    public static FriendsFeaturesRegistry FRIEND_FEATURES;
+
+    // * Registre concernant la feature des quests
+    public static QuestsFeatureRegistry QUEST_FEATURES;
+
+    // * Registre concernant la feature des shops
+    public static ShopFeaturesRegistry SHOP_FEATURES;
+
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
-    private static final List<RegistryContext> ALL = List.of(
+    private static final List<RegistryContext> ALL = new ArrayList<>(List.of(
+            new RegistryContext(
+                    () -> HOOKS = new HooksRegistry(),
+                    RegistryLoadingType.RUNTIME),
             new RegistryContext(
                     () -> CUSTOM_ITEMS = new CustomItemRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_ENCHANTS = new CustomEnchantmentRegistry(),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> OMCRegistry.DREAM_ITEM = new DreamItemRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.AFTER_IA),
             new RegistryContext(
                     () -> CUSTOM_LOOT_TABLES = new CustomLootTableRegistry(),
@@ -64,22 +113,21 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> WORLD_TEMPLATES = new WorldTemplateRegistry(),
                     RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
-            new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
-                    RegistryLoadingType.AFTER_IA),
-            new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
-                    RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_REGIONS = new CustomRegionRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(
+                    () -> FEATURES = new FeaturesRegistry(),
+                    RegistryLoadingType.RUNTIME, RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
                     () -> SCANNERS = new ScannerRegistry(),
                     RegistryLoadingType.RUNTIME)
-    );
+    ));
 
     private OMCRegistry() {}
 
     public static void bootstrapAll(BootstrapContext context) {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
+            if (!ctx.has(RegistryLoadingType.BOOTSTRAP)) continue;
 
             LifecycleRegistry r = load(ctx);
             try {
@@ -94,13 +142,18 @@ public final class OMCRegistry {
 
     public static void initAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
-            if (isNotTyped(ctx, RegistryLoadingType.RUNTIME)) continue;
+            if (!ctx.has(RegistryLoadingType.RUNTIME)) continue;
+            if (ctx.has(RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
 
             LifecycleRegistry r = load(ctx);
 
             if (r instanceof HasListeners hasListeners)
                 OMCPlugin.registerEvents(hasListeners.getListeners());
+
+            if (r instanceof HasCommands hasCommands)
+                for (Object command : hasCommands.getCommands()) {
+                    CommandsManager.getHandler().register(command);
+                }
 
             r.init();
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
@@ -109,13 +162,18 @@ public final class OMCRegistry {
 
     public static void postInitAll() {
         for (RegistryContext ctx : OMCRegistry.ALL) {
-            if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
-            if (isNotTyped(ctx, RegistryLoadingType.AFTER_IA)) continue;
+            if (!ctx.has(RegistryLoadingType.AFTER_IA)) continue;
+            if (ctx.has(RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
 
             LifecycleRegistry r = load(ctx);
 
             if (r instanceof HasListeners hasListeners)
                 OMCPlugin.registerEvents(hasListeners.getListeners());
+
+            if (r instanceof HasCommands hasCommands)
+                for (Object command : hasCommands.getCommands()) {
+                    CommandsManager.getHandler().register(command);
+                }
 
             r.postInit();
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
@@ -131,16 +189,11 @@ public final class OMCRegistry {
     }
 
     private static LifecycleRegistry load(RegistryContext ctx) {
-        LifecycleRegistry registry = ctx.registry().get();
-        LOADED.add(registry);
+        return load(ctx.get());
+    }
+
+    public static LifecycleRegistry load(LifecycleRegistry registry) {
+        if (!LOADED.contains(registry)) LOADED.add(registry);
         return registry;
-    }
-
-    private static boolean isNotTyped(RegistryContext ctx, RegistryLoadingType type) {
-        return Arrays.stream(ctx.loadingTypes()).noneMatch(t -> t == type);
-    }
-
-    private static boolean isTyped(RegistryContext ctx, RegistryLoadingType type) {
-        return Arrays.stream(ctx.loadingTypes()).anyMatch(t -> t == type);
     }
 }

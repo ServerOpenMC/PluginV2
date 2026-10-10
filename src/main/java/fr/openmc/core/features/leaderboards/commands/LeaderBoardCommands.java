@@ -1,5 +1,6 @@
 package fr.openmc.core.features.leaderboards.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -19,13 +20,15 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Command({"leaderboard", "lb"})
 public class LeaderBoardCommands {
+    private final LeaderBoardManager manager = OMCRegistry.FEATURES.LEADERBOARD.get();
+
     @CommandPriority.Low
     @Subcommand("<leaderboardName>")
     void mainCommand(CommandSender sender,
                      @Named("leaderboardName")
                      @SuggestWith(LeaderBoardAutoComplete.class)
                      String leaderboard) {
-            Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
+            Optional<LeaderBoard> lb = manager.getLeaderBoard(leaderboard);
             if (lb.isPresent()){
                 MessagesManager.sendMessage(sender,lb.get().createComponent(), Prefix.OPENMC,MessageType.INFO,false);
                 return;
@@ -43,7 +46,7 @@ public class LeaderBoardCommands {
             @SuggestWith(LeaderBoardAutoComplete.class)
             String leaderboard
     ) {
-        Optional<LeaderBoard> lb = LeaderBoardManager.getLeaderBoard(leaderboard);
+        Optional<LeaderBoard> lb = manager.getLeaderBoard(leaderboard);
         if (lb.isPresent()) {
             try {
                 lb.get().setLocation(player.getLocation());
@@ -87,7 +90,7 @@ public class LeaderBoardCommands {
     @CommandPermission("omc.admins.commands.leaderboard.disable")
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
-        LeaderBoardManager.stop();
+        manager.stop();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_disabled")
                 .color(NamedTextColor.RED));
     }
@@ -96,7 +99,7 @@ public class LeaderBoardCommands {
     @CommandPermission("omc.admins.commands.leaderboard.enable")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        LeaderBoardManager.start();
+        manager.start();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_enabled")
                 .color(NamedTextColor.GREEN));
     }
@@ -105,7 +108,7 @@ public class LeaderBoardCommands {
     @CommandPermission("omc.admins.commands.leaderboard.update")
     @Description("Met à jour les Holograms.")
     void updateCommand(CommandSender sender) {
-        LeaderBoardManager.update();
+        manager.update();
         sender.sendMessage(TranslationManager.translation("feature.leaderboards.command.holograms_updated")
                 .color(NamedTextColor.GREEN));
     }
@@ -114,7 +117,7 @@ public class LeaderBoardCommands {
     @CommandPermission("omc.admins.commands.leaderboard.reload")
     @Description("Recharge la configuration et les hologrammes.")
     void reloadCommand(CommandSender sender) {
-        LeaderBoardManager.reload();
+        manager.reload();
         sender.sendMessage(Component.text("Les leaderboards ont été rechargés.")
                 .color(NamedTextColor.GREEN));
     }
@@ -124,15 +127,31 @@ public class LeaderBoardCommands {
     @Description("Défini la taille des Holograms.")
     void setScaleCommand(
             Player player,
+            @Named("leaderboardName")
+            @SuggestWith(LeaderBoardAutoComplete.class)
+            String leaderboard,
             @Named("scale") float scale
     ) {
+        Optional<LeaderBoard> lb = manager.getLeaderBoard(leaderboard);
+        if (lb.isEmpty()) {
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation("feature.leaderboards.command.invalid_list")
+                            .color(NamedTextColor.RED),
+                    Prefix.STAFF,
+                    MessageType.WARNING,
+                    true
+            );
+            return;
+        }
+
         Component scaleComponent = Component.text(Float.toString(scale)).color(NamedTextColor.GREEN);
         player.sendMessage(TranslationManager.translation(
                 "feature.leaderboards.command.scale_changed",
                 scaleComponent
         ).color(NamedTextColor.GREEN));
         try {
-            LeaderBoard.setScale(scale);
+            lb.get().setScale(scale);
             player.sendMessage(TranslationManager.translation(
                     "feature.leaderboards.command.scale_changed",
                     scaleComponent

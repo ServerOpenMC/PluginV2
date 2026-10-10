@@ -5,7 +5,8 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
@@ -77,11 +78,12 @@ public class MascotsButton {
                 }
 
                 if (!mascot.isAlive()) {
+                    DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
                     lore = TranslationManager.translationLore(
                             "feature.city.menus.main.mascots.lore.dead",
                             Component.text(Math.floor(mob.getHealth())).color(NamedTextColor.RED),
                             Component.text(maxHealth).color(NamedTextColor.RED),
-                            Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
+                            Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
                             Component.text(mascot.getLevel()).color(NamedTextColor.RED)
                     );
                 } else {

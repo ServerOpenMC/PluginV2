@@ -1,9 +1,10 @@
 package fr.openmc.core.features.homes.icons;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -22,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class CachedIconItem {
+    private final HomeIconCacheManager homeIconCacheManager = OMCRegistry.FEATURES.HOME_ICON_CACHE.get();
 
     @Getter private final HomeIcon homeIcon;
     private final ItemStack normalItemWithBuilder, selectedItemWithBuilder;
@@ -107,7 +109,7 @@ public class CachedIconItem {
                                 ),
                                 Prefix.HOME, true);
 
-                        HomeIconCacheManager.clearRenderedCache();
+                        homeIconCacheManager.clearRenderedCache();
                     });
                     player.closeInventory();
                 }).hide(ItemUtils.getDataComponentType());

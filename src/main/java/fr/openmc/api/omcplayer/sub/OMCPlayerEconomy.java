@@ -1,13 +1,16 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class OMCPlayerEconomy extends OMCPlayerFeat {
-    public OMCPlayerEconomy(Player player) {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+
+    public OMCPlayerEconomy(OfflinePlayer player) {
         super(player);
     }
 
@@ -17,7 +20,7 @@ public class OMCPlayerEconomy extends OMCPlayerFeat {
      * @return la balance du joueur
      */
     public double getBalance() {
-        return EconomyManager.getBalance(getUniqueId());
+        return economyManager.getBalance(getUniqueId());
     }
 
     /**
@@ -26,30 +29,43 @@ public class OMCPlayerEconomy extends OMCPlayerFeat {
      * @return la balance du joueur formatee
      */
     public String getFormattedBalance() {
-        return EconomyManager.getFormattedBalance(getUniqueId());
+        return economyManager.getFormattedBalance(getUniqueId());
+    }
+
+    /**
+     * Recupere la balance du joueur formatté au mini (ect 2.4M + le logo de la monnaie)
+     *
+     * @return la balance du joueur formatee
+     */
+    public String getMiniBalance() {
+        return economyManager.getMiniBalance(getUniqueId());
     }
 
     public void addBalance(double amount) {
-        EconomyManager.addBalance(getUniqueId(), amount);
+        economyManager.addBalance(getUniqueId(), amount);
     }
 
     public void addBalance(double amount, @Nullable String reason) {
-        EconomyManager.addBalance(getUniqueId(), amount, reason);
+        economyManager.addBalance(getUniqueId(), amount, reason);
     }
 
     public boolean withdrawBalance(double amount) {
-        return EconomyManager.withdrawBalance(getUniqueId(), amount);
+        return economyManager.withdrawBalance(getUniqueId(), amount);
     }
 
     public boolean withdrawBalance(double amount, @Nullable String reason) {
-        return EconomyManager.withdrawBalance(getUniqueId(), amount, reason);
+        return economyManager.withdrawBalance(getUniqueId(), amount, reason);
     }
 
     public void setBalance(double amount) {
-        EconomyManager.setBalance(getUniqueId(), amount);
+        economyManager.setBalance(getUniqueId(), amount);
     }
 
     public boolean pay(UUID targetUUID, double amount, @Nullable String reason) {
-        return EconomyManager.transferBalance(getUniqueId(), targetUUID, amount, reason);
+        return economyManager.transferBalance(getUniqueId(), targetUUID, amount, reason);
+    }
+
+    public boolean hasEnoughMoney(int requiredAmount) {
+        return economyManager.hasEnoughMoney(getUniqueId(), requiredAmount);
     }
 }

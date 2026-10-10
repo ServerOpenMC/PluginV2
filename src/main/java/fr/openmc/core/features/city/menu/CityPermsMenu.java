@@ -8,10 +8,9 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -37,7 +36,7 @@ public class CityPermsMenu extends PaginatedMenu {
 
     public CityPermsMenu(Player owner, UUID memberUUID, boolean edit) {
         super(owner);
-        this.city = CityManager.getPlayerCity(owner.getUniqueId());
+        this.city = City.ofPlayer(owner);
         this.memberUUID = memberUUID;
         this.edit = edit;
     }
