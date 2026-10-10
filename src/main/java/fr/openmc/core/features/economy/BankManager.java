@@ -5,7 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -33,7 +32,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;

@@ -1,7 +1,6 @@
 package fr.openmc.core.utils.text.messages;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

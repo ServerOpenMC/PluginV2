@@ -5,7 +5,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;

@@ -1,9 +1,9 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;

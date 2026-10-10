@@ -1,7 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;

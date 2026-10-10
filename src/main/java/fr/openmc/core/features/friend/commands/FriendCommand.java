@@ -1,15 +1,14 @@
 package fr.openmc.core.features.friend.commands;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -20,8 +19,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 

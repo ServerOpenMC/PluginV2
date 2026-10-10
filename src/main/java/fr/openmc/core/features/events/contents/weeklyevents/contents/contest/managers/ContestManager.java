@@ -6,12 +6,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityFeaturesRegistry;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
@@ -24,9 +21,6 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.men
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.shops.ShopFeaturesRegistry;
-import fr.openmc.core.hooks.WorldGuardHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasDatabase;
@@ -35,8 +29,6 @@ import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
-import fr.openmc.core.utils.bukkit.ParticleUtils;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -47,7 +39,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -66,7 +57,6 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent
 
 @Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
 public class ContestManager extends Feature implements HasDatabase, HasRegistries {
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
     private TradeYMLManager tradeYMLManager;
     private ContestPlayerManager contestPlayerManager;
@@ -100,6 +90,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
     @Override
     public void onEnable() {
         this.tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
+        System.out.println("trade yùm ùa" + tradeYMLManager);
         this.contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
 
         // ** LISTENERS **

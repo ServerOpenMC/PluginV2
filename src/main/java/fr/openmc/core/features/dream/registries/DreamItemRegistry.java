@@ -40,7 +40,6 @@ import fr.openmc.core.features.dream.registries.items.tools.*;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.CustomItemRegistry;
-import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;

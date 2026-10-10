@@ -1,6 +1,5 @@
 package fr.openmc.core.listeners;
 
-import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

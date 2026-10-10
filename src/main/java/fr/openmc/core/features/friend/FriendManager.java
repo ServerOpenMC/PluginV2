@@ -1,11 +1,8 @@
 package fr.openmc.core.features.friend;
 
-import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityFeaturesRegistry;
 import fr.openmc.core.features.friend.commands.FriendCommand;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
@@ -13,7 +10,6 @@ import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import lombok.Getter;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;

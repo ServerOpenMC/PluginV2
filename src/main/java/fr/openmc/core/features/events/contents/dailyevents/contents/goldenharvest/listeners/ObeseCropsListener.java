@@ -6,7 +6,6 @@ import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
-import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;

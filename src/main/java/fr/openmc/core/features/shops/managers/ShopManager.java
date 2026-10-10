@@ -1,19 +1,15 @@
 package fr.openmc.core.features.shops.managers;
 
-import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.homes.HomeFeaturesRegistry;
 import fr.openmc.core.features.shops.ShopCommand;
 import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.ShopListener;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopSale;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;

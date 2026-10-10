@@ -1,11 +1,11 @@
 package fr.openmc.core.features.city.models.city.namespaces;
 
-import java.util.Set;
-import java.util.UUID;
-
 import fr.openmc.core.features.city.models.db.DBCityRank;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+import java.util.UUID;
 
 public interface CityRanks {
 

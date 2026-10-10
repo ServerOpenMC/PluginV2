@@ -2,7 +2,6 @@ package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.events.BankDepositEvent;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -10,7 +9,6 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.features.shops.managers.ShopManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;

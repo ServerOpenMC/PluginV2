@@ -2,7 +2,6 @@ package fr.openmc.core.hooks;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.registry.hooks.ApiHook;
 import fr.openmc.core.registry.hooks.Hooks;
 import lombok.Getter;

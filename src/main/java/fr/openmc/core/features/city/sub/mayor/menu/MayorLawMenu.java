@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.sub.mayor.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
@@ -10,7 +9,6 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;

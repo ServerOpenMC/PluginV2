@@ -2,10 +2,8 @@ package fr.openmc.core.features.city.sub.bank.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;

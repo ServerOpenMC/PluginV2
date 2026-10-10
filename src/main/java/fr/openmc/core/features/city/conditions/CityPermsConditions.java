@@ -1,13 +1,10 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.UUID;

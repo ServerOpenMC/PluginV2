@@ -9,7 +9,6 @@ import fr.openmc.core.features.mainmenu.menus.Page1;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
-import org.bukkit.entity.Player;
 
 import java.util.Set;
 

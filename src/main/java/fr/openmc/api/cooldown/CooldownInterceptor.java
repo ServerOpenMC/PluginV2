@@ -1,12 +1,10 @@
 package fr.openmc.api.cooldown;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.node.ExecutionContext;

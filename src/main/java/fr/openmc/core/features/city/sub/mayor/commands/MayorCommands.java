@@ -1,19 +1,15 @@
 package fr.openmc.core.features.city.sub.mayor.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;

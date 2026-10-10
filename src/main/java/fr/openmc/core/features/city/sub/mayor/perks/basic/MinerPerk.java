@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;

@@ -2,7 +2,6 @@ package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityFeaturesRegistry;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;

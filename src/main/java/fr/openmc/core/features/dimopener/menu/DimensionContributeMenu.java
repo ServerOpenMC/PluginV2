@@ -14,7 +14,6 @@ import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.dialog.Dialog;

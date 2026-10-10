@@ -3,16 +3,12 @@ package fr.openmc.core;
 import com.j256.ormlite.logger.LoggerFactory;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.ErrorReporter;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.ItemsAddersListener;
-
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
-import fr.openmc.core.utils.bukkit.ParticleUtils;
-import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
 import org.bukkit.Bukkit;

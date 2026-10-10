@@ -5,7 +5,6 @@ import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;

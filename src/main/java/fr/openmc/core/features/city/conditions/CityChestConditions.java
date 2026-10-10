@@ -1,9 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
@@ -15,8 +13,6 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**

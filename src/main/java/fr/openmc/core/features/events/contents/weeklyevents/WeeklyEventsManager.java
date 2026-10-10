@@ -6,7 +6,6 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;

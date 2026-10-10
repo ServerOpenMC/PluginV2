@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.chat;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

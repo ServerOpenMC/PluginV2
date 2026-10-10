@@ -1,7 +1,6 @@
 package fr.openmc.core.features.adminshop.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;

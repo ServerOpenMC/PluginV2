@@ -22,9 +22,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.util.*;
 
 @Credit(developers = {"iambibi_"})

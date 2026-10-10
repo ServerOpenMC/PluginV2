@@ -4,8 +4,6 @@ import fr.openmc.core.features.bits.contents.loottables.KitchenLootTable;
 import fr.openmc.core.features.bits.contents.loottables.MedievalLootTable;
 import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
 import fr.openmc.core.features.bits.contents.loottables.OfficeLootTable;
-import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeLootTable;
-import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;

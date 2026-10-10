@@ -14,7 +14,6 @@ import fr.openmc.core.registry.loottable.loots.TableLoot;
 import fr.openmc.core.utils.RngUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.event.entity.FishHookStateChangeEvent;

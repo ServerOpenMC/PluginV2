@@ -5,16 +5,15 @@ import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;

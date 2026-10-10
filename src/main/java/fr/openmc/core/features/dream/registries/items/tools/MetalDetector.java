@@ -15,7 +15,6 @@ import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.LocationUtils;
@@ -24,7 +23,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 

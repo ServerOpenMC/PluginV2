@@ -1,8 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;

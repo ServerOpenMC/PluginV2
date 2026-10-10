@@ -2,7 +2,6 @@ package fr.openmc.core.hooks.github.commands;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

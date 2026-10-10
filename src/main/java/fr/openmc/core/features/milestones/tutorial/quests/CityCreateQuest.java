@@ -1,9 +1,8 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.events.MemberJoinEvent;
-import fr.openmc.core.features.milestones.MilestonesManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;

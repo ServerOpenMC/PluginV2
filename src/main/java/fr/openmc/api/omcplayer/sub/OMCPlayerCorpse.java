@@ -1,8 +1,5 @@
 package fr.openmc.api.omcplayer.sub;
 
-import fr.openmc.api.chronometer.Chronometer;
-import fr.openmc.api.chronometer.ChronometerType;
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.CorpseManager;
 import fr.openmc.core.features.corpse.FoundTypes;
@@ -10,8 +7,6 @@ import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-
-import java.util.UUID;
 
 public class OMCPlayerCorpse extends OMCPlayerFeat {
     private final CorpseManager corpseManager = OMCRegistry.FEATURES.CORPSE.get();

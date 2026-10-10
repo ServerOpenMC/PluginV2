@@ -1,7 +1,7 @@
 package fr.openmc.core.features.privatemessage;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.registry.features.Feature;

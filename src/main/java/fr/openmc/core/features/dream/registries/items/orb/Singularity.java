@@ -8,7 +8,6 @@ import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
 import fr.openmc.core.registry.items.options.UsableItem;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 

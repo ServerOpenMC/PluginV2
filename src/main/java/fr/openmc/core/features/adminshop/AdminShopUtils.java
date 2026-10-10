@@ -2,7 +2,6 @@ package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

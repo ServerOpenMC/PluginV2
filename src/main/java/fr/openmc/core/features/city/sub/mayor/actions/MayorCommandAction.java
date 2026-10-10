@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.sub.mayor.actions;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -13,14 +12,11 @@ import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public class MayorCommandAction {
 

@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.*;
@@ -14,6 +13,7 @@ import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.city.menu.main.CityMenu;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;

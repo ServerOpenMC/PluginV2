@@ -1,22 +1,18 @@
 package fr.openmc.core.features.city.sub.rank;
 
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.rank.menus.CityRankDetailsMenu;
 import fr.openmc.core.features.city.sub.rank.menus.CityRankMemberMenu;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

@@ -21,10 +21,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})

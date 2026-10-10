@@ -2,11 +2,8 @@ package fr.openmc.api.cooldown;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.debug.DebugCooldownCommand;
 import fr.openmc.core.commands.utils.CooldownCommand;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
@@ -15,7 +12,6 @@ import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.util.*;

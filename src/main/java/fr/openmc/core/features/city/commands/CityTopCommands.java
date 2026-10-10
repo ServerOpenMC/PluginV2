@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityTopMenu;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

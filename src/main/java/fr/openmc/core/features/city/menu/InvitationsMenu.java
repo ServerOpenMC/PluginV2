@@ -1,18 +1,18 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;

@@ -1,21 +1,13 @@
 package fr.openmc.core.features.city.sub.mascots.utils;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotType;
-import org.bukkit.Chunk;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MascotUtils {

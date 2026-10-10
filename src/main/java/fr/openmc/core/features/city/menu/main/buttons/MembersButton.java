@@ -2,8 +2,8 @@ package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;

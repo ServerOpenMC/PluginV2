@@ -1,7 +1,6 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;

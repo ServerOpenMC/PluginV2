@@ -7,24 +7,19 @@ import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.autocomplete.InvitedAutoComplete;
 import fr.openmc.core.features.city.commands.autocomplete.InviterAutoComplete;
+import fr.openmc.core.features.city.conditions.CityInviteConditions;
 import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.city.conditions.CityInviteConditions;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 
 public class CityInviteCommands {

@@ -6,7 +6,6 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

@@ -3,7 +3,6 @@ package fr.openmc.core.features.events.contents.dailyevents;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
-import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.lifecycle.interfaces.HasFeature;

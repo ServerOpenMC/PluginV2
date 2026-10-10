@@ -1,13 +1,9 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.api.cooldown.DynamicCooldown;
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -17,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Cooldown;
 import revxrsal.commands.annotation.Description;

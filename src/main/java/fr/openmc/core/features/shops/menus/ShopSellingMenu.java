@@ -1,6 +1,5 @@
 package fr.openmc.core.features.shops.menus;
 
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;

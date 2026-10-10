@@ -3,7 +3,6 @@ package fr.openmc.core.utils.bukkit;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;

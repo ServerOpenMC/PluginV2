@@ -1,7 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;

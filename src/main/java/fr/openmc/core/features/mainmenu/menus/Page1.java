@@ -12,8 +12,8 @@ import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
@@ -30,7 +30,6 @@ import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -41,8 +40,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -134,9 +131,11 @@ public class Page1 implements Menu {
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));
 
         ItemStack contestItem = new ItemStack(Material.PAPER);
-        ContestData data = contestManager.getData();
-
-        if (weeklyEventsManager.getCurrentEvent() instanceof Contest && weeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase()) {
+        if (weeklyEventsManager.isEventActive()
+                && weeklyEventsManager.getCurrentEvent() != null
+                && weeklyEventsManager.getCurrentEvent() instanceof Contest
+                && weeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase()) {
+            ContestData data = contestManager.getData();
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
                 meta.itemName(data.getCampVSComponent());

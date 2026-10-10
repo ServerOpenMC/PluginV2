@@ -1,7 +1,6 @@
 package fr.openmc.core.hooks.github.commands.autocomplete;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.DBGithubMinecraft;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;

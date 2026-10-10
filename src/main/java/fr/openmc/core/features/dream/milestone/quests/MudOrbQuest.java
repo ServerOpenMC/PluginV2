@@ -6,7 +6,6 @@ import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.items.orb.MudOrb;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;

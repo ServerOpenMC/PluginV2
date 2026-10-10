@@ -2,12 +2,10 @@ package fr.openmc.core.features.leaderboards.leaderboards;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;

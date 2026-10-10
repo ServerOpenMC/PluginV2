@@ -1,6 +1,5 @@
 package fr.openmc.core.features.shops.managers;
 
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -13,7 +12,6 @@ import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import fr.openmc.core.utils.world.WorldUtils;
@@ -27,7 +25,6 @@ import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerShopManager extends Feature {

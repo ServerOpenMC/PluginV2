@@ -3,15 +3,10 @@ package fr.openmc.api.omcplayer.sub;
 import fr.openmc.api.cooldown.Cooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.settings.PlayerSettings;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class OMCPlayerCooldown extends OMCPlayerFeat {
     private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();

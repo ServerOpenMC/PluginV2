@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
+import fr.openmc.core.features.city.models.city.City;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;

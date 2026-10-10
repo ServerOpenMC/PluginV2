@@ -3,7 +3,6 @@ package fr.openmc.core.features.dream.milestone.quests;
 import fr.openmc.core.features.dream.events.PlayerEnterStructureEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.registries.DreamStructure;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;

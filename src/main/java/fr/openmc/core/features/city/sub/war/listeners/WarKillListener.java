@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.war.listeners;
 
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.war.War;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

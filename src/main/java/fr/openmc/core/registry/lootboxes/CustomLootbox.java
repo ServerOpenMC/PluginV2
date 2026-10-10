@@ -8,7 +8,6 @@ import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.stream.IntStream;

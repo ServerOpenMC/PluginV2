@@ -1,7 +1,6 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;

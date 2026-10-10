@@ -14,7 +14,6 @@ import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;

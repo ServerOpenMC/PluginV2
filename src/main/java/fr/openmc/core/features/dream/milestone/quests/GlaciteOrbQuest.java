@@ -4,7 +4,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.registries.items.orb.GlaciteOrb;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;

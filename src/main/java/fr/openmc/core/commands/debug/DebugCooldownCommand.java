@@ -1,11 +1,8 @@
 package fr.openmc.core.commands.debug;
 
 import fr.openmc.api.cooldown.DynamicCooldown;
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;

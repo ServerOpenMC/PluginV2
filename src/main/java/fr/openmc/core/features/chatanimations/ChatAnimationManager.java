@@ -6,7 +6,6 @@ import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListen
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
-import fr.openmc.core.features.shops.ShopFeaturesRegistry;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;

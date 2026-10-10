@@ -5,7 +5,6 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.data.property.NpcVisibility;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -15,7 +14,6 @@ import fr.openmc.core.utils.cache.CachePlayerName;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.inventory.ItemStack;
 

@@ -4,13 +4,11 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.entity.Player;
 
 public abstract class BaseScoreboard {
     /**

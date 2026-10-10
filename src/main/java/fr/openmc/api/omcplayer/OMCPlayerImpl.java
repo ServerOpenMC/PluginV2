@@ -1,6 +1,9 @@
 package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.omcplayer.sub.*;
+import fr.openmc.api.omcplayer.sub.OMCPlayerChronometer;
+import fr.openmc.api.omcplayer.sub.OMCPlayerCorpse;
+import fr.openmc.api.omcplayer.sub.OMCPlayerInputs;
+import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;

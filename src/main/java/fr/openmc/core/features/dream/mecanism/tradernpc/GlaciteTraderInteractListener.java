@@ -3,7 +3,6 @@ package fr.openmc.core.features.dream.mecanism.tradernpc;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.hooks.FancyNpcsHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

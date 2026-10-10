@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.models.city.namespaces;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import org.bukkit.entity.Player;
 
 public interface CityEconomy {
 

@@ -28,13 +28,12 @@ import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
-import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")

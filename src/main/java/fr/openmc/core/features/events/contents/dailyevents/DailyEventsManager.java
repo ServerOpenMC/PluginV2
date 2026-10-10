@@ -14,7 +14,10 @@ import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.Dai
 import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.*;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;

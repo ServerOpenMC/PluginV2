@@ -38,7 +38,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.damage.DamageType;
 import org.bukkit.inventory.ItemStack;

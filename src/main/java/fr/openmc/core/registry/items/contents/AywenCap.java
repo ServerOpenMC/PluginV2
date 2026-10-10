@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.items.contents;
 
-import fr.openmc.core.registry.items.options.EquipableItem;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.options.EquipableItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;

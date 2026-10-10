@@ -1,12 +1,8 @@
 package fr.openmc.core.features.dream.registries.enchantements;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
 import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;

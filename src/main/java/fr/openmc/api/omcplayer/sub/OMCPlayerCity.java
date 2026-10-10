@@ -1,10 +1,9 @@
 package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 

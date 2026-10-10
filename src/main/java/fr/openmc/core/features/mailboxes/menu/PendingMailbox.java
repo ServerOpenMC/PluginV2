@@ -7,11 +7,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class PendingMailbox extends PaginatedMenu {
     private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();

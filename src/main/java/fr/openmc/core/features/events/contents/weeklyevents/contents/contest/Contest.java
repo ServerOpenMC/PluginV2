@@ -8,8 +8,6 @@ import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.lifecycle.interfaces.HasFeature;
-import fr.openmc.core.registry.features.Feature;
-import fr.openmc.core.registry.features.loading.FeatureEntry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -19,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Contest extends WeeklyEvent implements HasMenu, HasFeature {
+    private final ContestManager contestManager = new ContestManager();
+
     @Override
     public Component getName() {
         return TranslationManager.translation("feature.events.contest.name");
@@ -28,7 +28,6 @@ public class Contest extends WeeklyEvent implements HasMenu, HasFeature {
     public List<Component> getDescription() {
         return TranslationManager.translationLore("feature.events.contest.description");
     }
-
 
     @Override
     public ItemStack getIcon() {
@@ -52,6 +51,6 @@ public class Contest extends WeeklyEvent implements HasMenu, HasFeature {
 
     @Override
     public ContestManager feature() {
-        return new ContestManager();
+        return contestManager;
     }
 }

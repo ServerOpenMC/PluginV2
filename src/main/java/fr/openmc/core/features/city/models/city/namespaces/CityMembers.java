@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.models.city.namespaces;
 
+import org.bukkit.entity.Player;
+
 import java.util.Set;
 import java.util.UUID;
-
-import org.bukkit.entity.Player;
 
 public interface CityMembers {
 

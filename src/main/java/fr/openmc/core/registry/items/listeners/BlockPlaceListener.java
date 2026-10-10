@@ -8,7 +8,6 @@ import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.LootboxBlock;
 import fr.openmc.core.registry.items.options.UsableBlock;
 import fr.openmc.core.utils.bukkit.ItemUtils;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

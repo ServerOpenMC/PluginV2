@@ -39,7 +39,7 @@ public abstract class Feature {
             }
 
             DatabaseManager.startFeatureDB(this);
-            onEnable();
+            this.onEnable();
 
             // Enregistre les listeners
             if (this instanceof HasListeners hasListeners) {

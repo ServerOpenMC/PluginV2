@@ -11,13 +11,10 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-
-import static fr.openmc.core.features.economy.EconomyManager.*;
 
 public class PlayerDeathListener implements Listener {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();

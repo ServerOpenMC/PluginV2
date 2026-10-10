@@ -7,7 +7,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestPlayerManager;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.MessageType;

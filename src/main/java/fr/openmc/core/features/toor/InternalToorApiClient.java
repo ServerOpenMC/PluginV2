@@ -1,6 +1,5 @@
 package fr.openmc.core.features.toor;
 
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.toor.utils.RequestSigner;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import org.json.simple.JSONObject;

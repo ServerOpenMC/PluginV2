@@ -6,7 +6,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
