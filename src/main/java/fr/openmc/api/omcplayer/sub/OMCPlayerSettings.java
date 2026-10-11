@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.api.omcplayer.feature.OMCPlayerFeat;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;

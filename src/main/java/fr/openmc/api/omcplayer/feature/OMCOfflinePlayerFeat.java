@@ -1,4 +1,4 @@
-package fr.openmc.api.omcplayer.sub;
+package fr.openmc.api.omcplayer.feature;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import lombok.Getter;
@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class OMCPlayerFeat {
+public class OMCOfflinePlayerFeat implements OMCFeat {
 
     @Getter
     private final OfflinePlayer offlinePlayer;
 
-    public OMCPlayerFeat(OfflinePlayer player) {
+    public OMCOfflinePlayerFeat(OfflinePlayer player) {
         this.offlinePlayer = player;
     }
 

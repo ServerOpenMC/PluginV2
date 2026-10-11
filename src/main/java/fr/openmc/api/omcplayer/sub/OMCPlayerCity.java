@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.api.omcplayer.feature.OMCOfflinePlayerFeat;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
@@ -7,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
 
-public class OMCPlayerCity extends OMCPlayerFeat {
+public class OMCPlayerCity extends OMCOfflinePlayerFeat {
     private final CityManager cityManager;
 
     public OMCPlayerCity(OfflinePlayer player) {

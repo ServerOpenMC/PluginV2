@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.api.omcplayer.feature.OMCOfflinePlayerFeat;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import org.bukkit.OfflinePlayer;
@@ -7,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class OMCPlayerEconomy extends OMCPlayerFeat {
+public class OMCPlayerEconomy extends OMCOfflinePlayerFeat {
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public OMCPlayerEconomy(OfflinePlayer player) {

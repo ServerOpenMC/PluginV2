@@ -2,6 +2,7 @@ package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.chronometer.ChronometerType;
+import fr.openmc.api.omcplayer.feature.OMCPlayerFeat;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 

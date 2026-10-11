@@ -3,6 +3,7 @@ package fr.openmc.api.omcplayer.sub;
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.omcplayer.feature.OMCPlayerFeat;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

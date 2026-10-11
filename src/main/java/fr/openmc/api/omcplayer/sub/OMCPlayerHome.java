@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.api.omcplayer.feature.OMCOfflinePlayerFeat;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomesManager;
@@ -10,7 +11,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.List;
 
-public class OMCPlayerHome extends OMCPlayerFeat {
+public class OMCPlayerHome extends OMCOfflinePlayerFeat {
     private final HomesManager homesManager = OMCRegistry.FEATURES.HOMES.get();
 
     public OMCPlayerHome(OfflinePlayer player) {

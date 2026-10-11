@@ -2,13 +2,14 @@ package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.api.cooldown.Cooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.feature.OMCOfflinePlayerFeat;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
 
-public class OMCPlayerCooldown extends OMCPlayerFeat {
+public class OMCPlayerCooldown extends OMCOfflinePlayerFeat {
     private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public OMCPlayerCooldown(OfflinePlayer player) {
